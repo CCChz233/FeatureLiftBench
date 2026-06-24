@@ -1,0 +1,83 @@
+{
+  "task_id": "vibe_app__pricing_rules_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "config_environment_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Pricing rules engine",
+    "description": "Extract VibeShop line-item pricing rules (category, tier, membership) as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.utils.compute_line_price",
+      "vibe_app.pricing.rules.PricingContext",
+      "vibe_app.pricing.rules.compute_line_price"
+    ],
+    "included_behaviors": [
+      "compute line totals from unit price, quantity, and category",
+      "apply category multipliers from pricing config",
+      "apply highest applicable quantity tier multiplier",
+      "apply membership discount when PricingContext.is_member is true",
+      "round totals using configured decimal precision"
+    ],
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and config merge",
+      "CSV import pipeline",
+      "legacy calc_price_v1 and calc_price_legacy helpers",
+      "global app factory and middleware clutter",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Correct pricing lives behind duplicate helpers in utils.py and pulls tier/category rules from YAML-backed global config spread across pricing modules.",
+    "signals": [
+      "three similarly named pricing functions with only one correct semantics",
+      "pricing rules read merged config from GLOBAL_STATE by default",
+      "routes and services import pricing through mixed indirection paths"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PricingContext, compute_line_price",
+    "callable": "featurelifted.compute_line_price",
+    "signature": "compute_line_price(unit_price: float, quantity: int, category: str, *, context: PricingContext | None = None) -> float"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

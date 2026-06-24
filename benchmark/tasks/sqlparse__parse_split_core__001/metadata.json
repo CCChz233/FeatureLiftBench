@@ -1,0 +1,81 @@
+{
+  "task_id": "sqlparse__parse_split_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "parser",
+    "tokenizer",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "sqlparse",
+    "url": "https://github.com/andialbrecht/sqlparse",
+    "commit": "f80af6a4007f11ada847218df8c29dc859238290",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "SQL parse and split core",
+    "description": "Extract sqlparse's SQL statement parsing and multi-statement splitting behavior as a standalone package.",
+    "source_entrypoints": [
+      "sqlparse.parse",
+      "sqlparse.parsestream",
+      "sqlparse.split"
+    ],
+    "included_behaviors": [
+      "parse SQL text into Statement token trees",
+      "split multi-statement SQL scripts while respecting strings, comments, and nesting",
+      "preserve statement-splitting behavior for semicolons inside quotes and comments"
+    ],
+    "excluded_behaviors": [
+      "SQL formatting and formatter filters",
+      "token tree navigation helpers beyond basic parse output",
+      "command line interface",
+      "original project tests",
+      "documentation and release tooling",
+      "packaging metadata from the original project",
+      "dialect-perfect SQL validation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "SQL parse and split behavior depends on tokenizer state, statement-splitting passes, and grouping rules spread across multiple modules.",
+    "signals": [
+      "lexer and statement-splitting state",
+      "grouped token tree data model for split boundaries",
+      "public API hides a multi-module runtime closure"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, parsestream, split",
+    "callable": "featurelifted.parse",
+    "signature": "parse(sql: str, encoding: str | None = None) -> tuple[Statement, ...]"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "sqlparse"
+    ],
+    "forbidden_imports": [
+      "sqlparse"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

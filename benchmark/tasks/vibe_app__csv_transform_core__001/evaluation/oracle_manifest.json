@@ -1,0 +1,19 @@
+{
+  "source_files": [
+    "vibe_app/state.py",
+    "vibe_app/helpers/strings.py",
+    "vibe_app/csv_transform/__init__.py",
+    "vibe_app/csv_transform/schema.py",
+    "vibe_app/csv_transform/reader.py",
+    "vibe_app/csv_transform/mapper.py",
+    "vibe_app/csv_transform/cleaner.py",
+    "vibe_app/csv_transform/writer.py",
+    "vibe_app/csv_transform/pipeline.py",
+    "vibe_app/csv_transform/transforms/__init__.py",
+    "vibe_app/csv_transform/transforms/normalize.py",
+    "vibe_app/csv_transform/transforms/filter_rows.py",
+    "vibe_app/csv_transform/transforms/aggregate.py",
+    "vibe_app/csv_transform/transforms/dedupe.py"
+  ],
+  "notes": "CSV transform pipeline closure. Pricing rules, YAML bootstrap, and HTTP routes excluded."
+}

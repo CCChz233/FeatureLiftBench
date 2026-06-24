@@ -1,0 +1,84 @@
+{
+  "task_id": "jsonschema__validator_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "jsonschema",
+    "validator",
+    "errors",
+    "schema",
+    "pure-python"
+  ],
+  "source": {
+    "name": "jsonschema",
+    "url": "https://github.com/python-jsonschema/jsonschema",
+    "commit": "4.23.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "JSON Schema Draft 2020-12 validation core",
+    "description": "Extract jsonschema's core Draft 2020-12 validation behavior for common schema constraints and structured errors.",
+    "source_entrypoints": [
+      "jsonschema.Draft202012Validator",
+      "jsonschema.validate",
+      "jsonschema.ValidationError",
+      "jsonschema.SchemaError",
+      "jsonschema.FormatChecker"
+    ],
+    "included_behaviors": [
+      "validate object, array, string, integer, number, boolean, and null types",
+      "support required, properties, additionalProperties, minimum, minLength, pattern, enum, anyOf, oneOf, and allOf",
+      "iterate ValidationError objects with path, schema_path, validator, validator_value, and message",
+      "perform format validation when a FormatChecker is provided",
+      "validate schemas and raise SchemaError for invalid schemas"
+    ],
+    "excluded_behaviors": [
+      "remote reference retrieval over network",
+      "CLI tooling",
+      "benchmark suites and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Validator behavior is coupled to validator class construction, format checking registries, error trees, and keyword handlers.",
+    "signals": [
+      "validator and format checker registries",
+      "ValidationError path/schema_path data model",
+      "keyword handler interactions"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Draft202012Validator, validate, ValidationError",
+    "callable": "featurelifted.Draft202012Validator",
+    "signature": "Draft202012Validator(schema, resolver=None, format_checker=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "attrs",
+      "jsonschema-specifications",
+      "referencing",
+      "rpds-py"
+    ],
+    "forbidden_dependencies": [
+      "jsonschema"
+    ],
+    "forbidden_imports": [
+      "jsonschema"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

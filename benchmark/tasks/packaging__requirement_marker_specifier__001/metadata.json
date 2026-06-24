@@ -1,0 +1,87 @@
+{
+  "task_id": "packaging__requirement_marker_specifier__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "parser",
+    "packaging",
+    "pep440",
+    "pep508",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "packaging",
+    "url": "https://github.com/pypa/packaging",
+    "commit": "24.1-installed-snapshot",
+    "license": "Apache-2.0 OR BSD-2-Clause"
+  },
+  "feature": {
+    "name": "Python package requirement, marker, specifier, and version semantics",
+    "description": "Extract packaging's core PEP 440 and PEP 508 parsing/evaluation behavior as a standalone package.",
+    "source_entrypoints": [
+      "packaging.version.Version",
+      "packaging.version.InvalidVersion",
+      "packaging.specifiers.Specifier",
+      "packaging.specifiers.SpecifierSet",
+      "packaging.specifiers.InvalidSpecifier",
+      "packaging.requirements.Requirement",
+      "packaging.requirements.InvalidRequirement",
+      "packaging.markers.Marker",
+      "packaging.markers.InvalidMarker",
+      "packaging.markers.default_environment"
+    ],
+    "included_behaviors": [
+      "parse, normalize, compare, hash, and stringify PEP 440 versions including epochs, post releases, pre releases, dev releases, and local versions",
+      "parse and evaluate specifier sets including compatible release, equality wildcard, exclusion, prerelease handling, filtering, and containment",
+      "parse PEP 508 requirements with extras, URL requirements, specifiers, and environment markers",
+      "parse and evaluate environment markers with and/or grouping, in/not in operators, extra handling, and default environment values",
+      "raise stable InvalidVersion, InvalidSpecifier, InvalidRequirement, and InvalidMarker errors for malformed input"
+    ],
+    "excluded_behaviors": [
+      "wheel tag generation and compatibility tags",
+      "manylinux and musllinux platform probing",
+      "package metadata validation",
+      "filename and sdist/wheel utility helpers outside the required entrypoints",
+      "original project tests, documentation, and release tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "PEP requirement behavior combines grammar parsing, specifier/version models, marker evaluation, and error classes.",
+    "signals": [
+      "requirement and marker grammar",
+      "version/specifier comparison models",
+      "cross-module exception semantics"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Version, SpecifierSet, Requirement, Marker, default_environment",
+    "callable": "featurelifted.Requirement",
+    "signature": "Requirement(requirement_string: str)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "packaging"
+    ],
+    "forbidden_imports": [
+      "packaging"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

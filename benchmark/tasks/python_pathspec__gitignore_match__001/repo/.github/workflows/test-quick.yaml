@@ -1,0 +1,83 @@
+name: Test Quick
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    branches-ignore:
+      - master
+
+jobs:
+  test:
+    name: Test / ${{ matrix.python }} (${{ matrix.backend }}) / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu
+        python:
+          - '3.9'
+          - '3.14'
+        backend:
+          - base
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2 from 2026-01-09.
+
+      - uses: ironsh/iron-proxy-action@fa1fd82ec32396d044deba7040a6db576bec927a  # v0.1.4 from 2026-04-28.
+        if: matrix.os == 'ubuntu'
+        with:
+          egress-rules: .github/egress-build-rules.yaml
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0 from 2026-01-21.
+        with:
+          allow-prereleases: true
+          cache: pip
+          python-version: ${{ matrix.python }}
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run tests
+        if: matrix.python != '3.9'
+        run: python -m tox -e ci-${{ matrix.backend }} -- --verbose
+
+      - name: Run tests (3.9)
+        if: matrix.python == '3.9'
+        run: python -m tox -c tox-ci-py39.ini -e ci-${{ matrix.backend }} -- --verbose
+
+      - uses: ironsh/iron-proxy-action/summary@fa1fd82ec32396d044deba7040a6db576bec927a  # v0.1.4 from 2026-04-28.
+        if: always() && matrix.os == 'ubuntu'
+
+  docs:
+    # Test documentation builds.
+    # This environment mirrors the ReadTheDocs build environment.
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2 from 2026-01-09.
+
+      - uses: ironsh/iron-proxy-action@fa1fd82ec32396d044deba7040a6db576bec927a  # v0.1.4 from 2026-04-28.
+        with:
+          egress-rules: .github/egress-build-rules.yaml
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0 from 2026-01-21.
+        with:
+          cache: pip
+          python-version: '3.13'
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run tests
+        run: python -m tox -e docs
+
+      - uses: ironsh/iron-proxy-action/summary@fa1fd82ec32396d044deba7040a6db576bec927a  # v0.1.4 from 2026-04-28.
+        if: always()

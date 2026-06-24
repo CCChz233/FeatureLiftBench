@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FeatureLiftBench evaluation result",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "task_id",
+    "submission",
+    "status",
+    "build_pass",
+    "test_pass",
+    "original_import_pass",
+    "environment",
+    "dependency_install",
+    "submission_install",
+    "public_tests",
+    "hidden_tests",
+    "metrics",
+    "scores",
+    "logs",
+    "errors"
+  ],
+  "properties": {
+    "task_id": { "type": "string" },
+    "submission": { "type": "string" },
+    "status": { "type": "string" },
+    "build_pass": { "type": "boolean" },
+    "test_pass": { "type": "boolean" },
+    "original_import_pass": { "type": "boolean" },
+    "environment": {
+      "type": "object",
+      "required": ["venv_dir", "python", "install_mode"],
+      "properties": {
+        "venv_dir": { "type": "string" },
+        "python": { "type": "string" },
+        "install_mode": { "type": "string" }
+      }
+    },
+    "dependency_install": { "$ref": "#/$defs/command_result" },
+    "submission_install": { "$ref": "#/$defs/command_result" },
+    "public_tests": { "$ref": "#/$defs/command_result" },
+    "hidden_tests": { "$ref": "#/$defs/command_result" },
+    "metrics": {
+      "type": "object",
+      "required": [
+        "file_count",
+        "loc",
+        "source_loc",
+        "package_bytes",
+        "dependency_count",
+        "suspicious_file_count"
+      ],
+      "properties": {
+        "file_count": { "type": "integer", "minimum": 0 },
+        "loc": { "type": "integer", "minimum": 0 },
+        "source_loc": { "type": "integer", "minimum": 0 },
+        "package_bytes": { "type": "integer", "minimum": 0 },
+        "dependency_count": { "type": "integer", "minimum": 0 },
+        "suspicious_file_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "scores": {
+      "type": "object",
+      "required": [
+        "functional_gate",
+        "extraction_ratio",
+        "final_score"
+      ],
+      "properties": {
+        "functional_gate": { "type": "number" },
+        "extraction_ratio": { "type": "number" },
+        "final_score": { "type": "number" }
+      }
+    },
+    "logs": { "type": "object" },
+    "errors": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "command_result": {
+      "type": "object",
+      "required": [
+        "returncode",
+        "passed",
+        "duration_seconds",
+        "timed_out",
+        "skipped",
+        "reason"
+      ],
+      "properties": {
+        "returncode": {
+          "anyOf": [
+            { "type": "integer" },
+            { "type": "null" }
+          ]
+        },
+        "passed": { "type": "boolean" },
+        "duration_seconds": { "type": "number" },
+        "timed_out": { "type": "boolean" },
+        "skipped": { "type": "boolean" },
+        "reason": { "type": "string" }
+      }
+    }
+  }
+}

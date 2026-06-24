@@ -1,0 +1,267 @@
+from __future__ import annotations
+
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from featureliftbench.evaluator import evaluate_submission
+
+
+class EvaluatorTests(unittest.TestCase):
+    def test_evaluate_submission_passes_minimal_task(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            output_dir = root / "output"
+
+            result = evaluate_submission(task_dir, submission_dir, output_dir)
+
+            self.assertEqual(result["status"], "passed")
+            self.assertTrue(result["build_pass"])
+            self.assertTrue(result["test_pass"])
+            self.assertTrue(result["original_import_pass"])
+            self.assertEqual(result["scores"]["functional_gate"], 1.0)
+            self.assertEqual(result["scores"]["extraction_ratio"], 0.5)
+            self.assertEqual(result["environment"]["install_mode"], "path")
+            self.assertTrue(result["dependency_install"]["skipped"])
+            self.assertTrue(result["submission_install"]["skipped"])
+            self.assertTrue((output_dir / "result.json").exists())
+
+    def test_evaluate_submission_installs_pyproject_submission(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (submission_dir / "pyproject.toml").write_text(
+                "[build-system]\n"
+                "requires = ['setuptools']\n"
+                "build-backend = 'setuptools.build_meta'\n\n"
+                "[project]\n"
+                "name = 'featurelifted-sample'\n"
+                "version = '0.0.0'\n\n"
+                "[tool.setuptools]\n"
+                "packages = ['featurelifted']\n",
+                encoding="utf-8",
+            )
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["environment"]["install_mode"], "editable")
+            self.assertTrue(result["submission_install"]["passed"])
+            self.assertFalse(result["submission_install"]["skipped"])
+
+    def test_evaluate_submission_falls_back_when_pyproject_is_not_output_package(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (submission_dir / "pyproject.toml").write_text(
+                "[build-system]\n"
+                "requires = ['setuptools']\n"
+                "build-backend = 'setuptools.build_meta'\n\n"
+                "[project]\n"
+                "name = 'not-featurelifted'\n"
+                "version = '0.0.0'\n"
+                "license = 'invalid-for-current-setuptools'\n",
+                encoding="utf-8",
+            )
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["environment"]["install_mode"], "path-fallback")
+            self.assertTrue(result["submission_install"]["skipped"])
+
+    def test_evaluate_submission_falls_back_when_editable_install_hides_output_package(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (submission_dir / "pyproject.toml").write_text(
+                "[build-system]\n"
+                "requires = ['setuptools']\n"
+                "build-backend = 'setuptools.build_meta'\n\n"
+                "[project]\n"
+                "name = 'not-featurelifted'\n"
+                "version = '0.0.0'\n\n"
+                "[tool.setuptools]\n"
+                "packages = []\n",
+                encoding="utf-8",
+            )
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["environment"]["install_mode"], "path-fallback")
+            self.assertTrue(result["submission_install"]["passed"])
+            self.assertFalse(result["submission_install"]["skipped"])
+
+    def test_evaluate_submission_fails_for_forbidden_import(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text(
+                "import forbiddenpkg\nVALUE = 1\n",
+                encoding="utf-8",
+            )
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "failed")
+            self.assertFalse(result["original_import_pass"])
+            self.assertIn(
+                "featurelifted/__init__.py:1: imports forbidden module 'forbiddenpkg'",
+                result["errors"],
+            )
+
+    def test_evaluate_submission_fails_for_forbidden_dependency_declaration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (submission_dir / "pyproject.toml").write_text(
+                "[build-system]\n"
+                "requires = ['setuptools']\n"
+                "build-backend = 'setuptools.build_meta'\n\n"
+                "[project]\n"
+                "name = 'featurelifted-sample'\n"
+                "version = '0.0.0'\n"
+                "dependencies = ['ForbiddenPkg>=1']\n\n"
+                "[tool.setuptools]\n"
+                "packages = ['featurelifted']\n",
+                encoding="utf-8",
+            )
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "failed")
+            self.assertFalse(result["original_import_pass"])
+            self.assertIn("declares forbidden dependency 'forbiddenpkg'", result["errors"])
+
+    def test_evaluate_submission_fails_when_lock_contains_unallowed_dependency(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task", lock_text="requests==2.0\n")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "failed")
+            self.assertFalse(result["build_pass"])
+            self.assertFalse(result["dependency_install"]["passed"])
+            self.assertIn(
+                "dependency lock contains dependencies that are not allowed: requests",
+                result["dependency_install"]["reason"] + result["dependency_install"].get("stderr", ""),
+            )
+
+
+def _make_task(task_dir: Path, lock_text: str = "") -> Path:
+    (task_dir / "repo").mkdir(parents=True)
+    (task_dir / "repo" / "sample.py").write_text("VALUE = 1\nOTHER = 2\n", encoding="utf-8")
+    (task_dir / "public_tests").mkdir()
+    (task_dir / "hidden_tests").mkdir()
+    (task_dir / "evaluation").mkdir()
+    (task_dir / "requirements.lock").write_text(lock_text, encoding="utf-8")
+    (task_dir / "evaluation" / "forbidden_imports.txt").write_text(
+        "forbiddenpkg\n",
+        encoding="utf-8",
+    )
+    (task_dir / "evaluation" / "oracle_manifest.json").write_text("{}", encoding="utf-8")
+    (task_dir / "metadata.json").write_text(
+        json.dumps(_metadata(task_dir.name)),
+        encoding="utf-8",
+    )
+    (task_dir / "public_tests" / "test_public.py").write_text(
+        "import featurelifted\n\n"
+        "def test_value():\n"
+        "    assert featurelifted.VALUE == 1\n",
+        encoding="utf-8",
+    )
+    (task_dir / "hidden_tests" / "test_hidden.py").write_text(
+        "from featurelifted import VALUE\n\n"
+        "def test_hidden_value():\n"
+        "    assert VALUE == 1\n",
+        encoding="utf-8",
+    )
+    return task_dir
+
+
+def _metadata(task_id: str) -> dict:
+    return {
+        "task_id": task_id,
+        "language": "python",
+        "source": {
+            "name": "sample",
+            "url": "https://example.com/sample",
+            "commit": "abc123",
+            "license": "MIT",
+        },
+        "feature": {
+            "name": "sample feature",
+            "description": "A sample feature.",
+            "source_entrypoints": ["sample.VALUE"],
+            "included_behaviors": ["export value"],
+            "excluded_behaviors": [],
+        },
+        "entanglement": {
+            "level": "low",
+            "types": ["implicit_dependency_coupling"],
+            "description": "Sample task with a small import boundary.",
+            "signals": ["single source entrypoint", "no framework runtime"],
+        },
+        "output": {
+            "package": "featurelifted",
+            "import": "import featurelifted",
+            "callable": "featurelifted.VALUE",
+            "signature": "VALUE",
+        },
+        "environment": {
+            "python": "3.11",
+            "network": False,
+            "timeout_seconds": 30,
+            "dependency_lock": "requirements.lock",
+            "allowed_dependencies": [],
+            "forbidden_dependencies": ["forbiddenpkg"],
+            "forbidden_imports": ["forbiddenpkg"],
+        },
+        "tests": {
+            "public": "public_tests/",
+            "hidden": "hidden_tests/",
+            "command": "pytest",
+        },
+        "scoring_reference": {
+            "copy_all_bytes": 100,
+            "copy_all_loc": 10,
+            "oracle_bytes": 50,
+            "oracle_loc": 5,
+            "oracle_dependency_count": 0,
+        },
+    }
+
+
+if __name__ == "__main__":
+    unittest.main()

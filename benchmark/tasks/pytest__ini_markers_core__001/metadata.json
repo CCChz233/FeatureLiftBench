@@ -1,0 +1,78 @@
+{
+  "task_id": "pytest__ini_markers_core__001",
+  "source": {
+    "name": "pytest",
+    "url": "https://github.com/pytest-dev/pytest",
+    "commit": "b55ab2aabb68c0ce94c3903139b062d0c2790152",
+    "license": "MIT"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "test-framework",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pytest"
+    ],
+    "forbidden_imports": [
+      "pytest",
+      "_pytest"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "pytest ini markers parsing",
+    "description": "Extract pytest ini markers linelist parsing and marker line normalization.",
+    "source_entrypoints": [
+      "_pytest.config.Config.getini",
+      "_pytest.config.Config.addinivalue_line",
+      "_pytest.mark.__init__.pytest_addoption"
+    ],
+    "included_behaviors": [
+      "parse multiline ini markers values into linelist entries",
+      "append marker lines preserving order",
+      "split marker lines into name and description",
+      "strip whitespace from linelist entries"
+    ],
+    "excluded_behaviors": [
+      "full Config initialization and plugin loading",
+      "strict marker validation at collection",
+      "conftest and pyproject discovery",
+      "CLI --markers display"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "global_state_registry_coupling"
+    ],
+    "description": "Ini marker definitions accumulate via config linelist merging across plugins and pytest.ini.",
+    "signals": [
+      "linelist ini type coerces multiline strings",
+      "addinivalue_line appends to cached marker registry",
+      "marker names/descriptions parsed for --markers output"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import MarkerRegistry, parse_linelist, split_marker_line",
+    "callable": "featurelifted.MarkerRegistry.from_ini",
+    "signature": "from_ini(value: str | list[str]) -> MarkerRegistry"
+  }
+}

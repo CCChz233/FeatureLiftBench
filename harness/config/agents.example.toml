@@ -1,0 +1,34 @@
+# FeatureLiftBench shared agent config.
+# Copy this file to harness/config/agents.toml and keep secrets in .env.
+
+profile = "default"
+env_file = ".env"
+
+[profiles.default]
+# mini-swe-agent uses provider-prefixed model names through litellm.
+model = "openai/gpt-5.4-mini"
+
+# Optional explicit executable path. Useful when mini-swe-agent lives in conda.
+# CLI --agent-bin overrides this value.
+# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
+
+# One shared key for all agents. Put the value in .env:
+# FEATURELIFTBENCH_API_KEY=sk-...
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+
+# Optional OpenAI-compatible endpoint/router.
+# Put this in .env if it is secret or user-specific:
+# FEATURELIFTBENCH_API_BASE=https://api.openai.com/v1
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+
+# mini-swe-agent global limits. Use strings because they become env vars.
+cost_limit = "10.00"
+call_limit = "0"
+
+[profiles.openai_compatible]
+model = "openai/gpt-5.4-mini"
+# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "10.00"
+call_limit = "0"

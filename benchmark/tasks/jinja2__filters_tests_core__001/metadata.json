@@ -1,0 +1,83 @@
+{
+  "task_id": "jinja2__filters_tests_core__001",
+  "source": {
+    "name": "jinja2",
+    "url": "https://github.com/pallets/jinja",
+    "commit": "15206881c006c79667fe5154fe80c01c65410679",
+    "license": "BSD-3-Clause"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "template-engine",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "jinja2",
+      "Jinja2"
+    ],
+    "forbidden_imports": [
+      "jinja2",
+      "jinja"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "Jinja2 filters and tests core",
+    "description": "Extract Jinja2 built-in filters, tests, and template usage via Environment.",
+    "source_entrypoints": [
+      "jinja2.filters.FILTERS",
+      "jinja2.tests.TESTS",
+      "jinja2.environment.Environment.call_filter",
+      "jinja2.environment.Environment.call_test"
+    ],
+    "included_behaviors": [
+      "apply built-in filters in templates and via call_filter",
+      "evaluate built-in tests in templates and via call_test",
+      "support common filters: capitalize, default, length, join, map, select",
+      "support common tests: defined, undefined, even, odd, number, string"
+    ],
+    "excluded_behaviors": [
+      "custom extension filters",
+      "async filter variants",
+      "loaders and template inheritance beyond from_string",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling",
+      "data_model_coupling"
+    ],
+    "description": "Filters/tests registry integrates with Environment, runtime Undefined, and template compilation.",
+    "signals": [
+      "DEFAULT_FILTERS/DEFAULT_TESTS wired through defaults.py",
+      "filters depend on runtime Undefined and MarkupSafe",
+      "call_filter/call_test require compiled expression path"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Environment",
+    "callable": "featurelifted.Environment.call_filter",
+    "signature": "call_filter(name: str, value: object, *args, **kwargs) -> object"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "task_id": "jinja2__compile_render_core__001",
+  "source": {
+    "name": "jinja2",
+    "url": "https://github.com/pallets/jinja",
+    "commit": "15206881c006c79667fe5154fe80c01c65410679",
+    "license": "BSD-3-Clause"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "template-engine",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "jinja2",
+      "Jinja2"
+    ],
+    "forbidden_imports": [
+      "jinja2",
+      "jinja"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "Jinja2 compile and render core",
+    "description": "Extract Jinja2 template compilation and rendering as a standalone package.",
+    "source_entrypoints": [
+      "jinja2.environment.Environment.from_string",
+      "jinja2.environment.Environment.compile",
+      "jinja2.environment.Template.render",
+      "jinja2.compiler",
+      "jinja2.runtime"
+    ],
+    "included_behaviors": [
+      "compile template source to executable code",
+      "render templates with context variables",
+      "support if/for/set/macro blocks and expressions",
+      "preserve undefined variable behavior with default Undefined"
+    ],
+    "excluded_behaviors": [
+      "loaders and extends/include inheritance graph",
+      "async rendering",
+      "extensions, bytecode cache, i18n",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "description": "Compile/render couples parser output, compiler code generation, runtime context, and default filters/tests registration.",
+    "signals": [
+      "compiler id-tracking and optimizer passes",
+      "runtime Context and exported variable handling",
+      "environment owns lexer, parser, compiler pipeline"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Environment",
+    "callable": "featurelifted.Environment.from_string",
+    "signature": "from_string(source: str, globals: dict | None = None) -> Template"
+  }
+}

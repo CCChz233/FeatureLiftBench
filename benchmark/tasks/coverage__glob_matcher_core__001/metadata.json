@@ -1,0 +1,80 @@
+{
+  "task_id": "coverage__glob_matcher_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "config_environment_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "coveragepy",
+    "url": "https://github.com/coveragepy/coveragepy",
+    "commit": "f0dcf65f47120d9f74f6777134d3b8e92515ce6f",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Glob matcher core",
+    "description": "Extract coverage.py glob pattern preparation and file-path matching used for include/omit and report filters.",
+    "source_entrypoints": [
+      "coverage.files.prep_patterns",
+      "coverage.files.GlobMatcher",
+      "coverage.files.globs_to_regex"
+    ],
+    "included_behaviors": [
+      "prepare relative and absolute glob patterns for matching",
+      "match file paths against include/omit style glob lists",
+      "convert glob syntax to compiled regex with Windows slash tolerance",
+      "reject invalid glob patterns such as triple-star segments"
+    ],
+    "excluded_behaviors": [
+      "path alias remapping for combine",
+      "source/include/omit selection policy",
+      "configuration file parsing",
+      "coverage measurement, reporting, and CLI",
+      "original project tests and packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "implicit_dependency_coupling",
+      "resource_coupling"
+    ],
+    "description": "Glob matching depends on path canonicalization helpers, platform flags, regex joining utilities, and error types spread across multiple modules.",
+    "signals": [
+      "glob tokenization and regex compilation pipeline",
+      "platform-specific case sensitivity behavior",
+      "shared files.py utilities also used by unrelated features"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import GlobMatcher, prep_patterns, globs_to_regex",
+    "callable": "featurelifted.GlobMatcher.match",
+    "signature": "GlobMatcher(pats: Iterable[str], name: str = 'unknown').match(fpath: str) -> bool"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "coverage"
+    ],
+    "forbidden_imports": [
+      "coverage"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

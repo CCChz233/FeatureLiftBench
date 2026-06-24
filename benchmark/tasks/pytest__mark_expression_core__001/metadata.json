@@ -1,0 +1,79 @@
+{
+  "task_id": "pytest__mark_expression_core__001",
+  "source": {
+    "name": "pytest",
+    "url": "https://github.com/pytest-dev/pytest",
+    "commit": "b55ab2aabb68c0ce94c3903139b062d0c2790152",
+    "license": "MIT"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "test-framework",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pytest"
+    ],
+    "forbidden_imports": [
+      "pytest",
+      "_pytest"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "pytest mark expression evaluator",
+    "description": "Extract pytest -m mark expression compile/evaluate logic as a standalone package.",
+    "source_entrypoints": [
+      "_pytest.mark.expression.Expression",
+      "_pytest.mark.expression.Expression.compile",
+      "_pytest.mark.expression.Expression.evaluate"
+    ],
+    "included_behaviors": [
+      "parse and compile mark expressions with and/or/not",
+      "evaluate expressions against a matcher callback",
+      "support identifier kwargs syntax for parameterized markers",
+      "empty expression evaluates to False"
+    ],
+    "excluded_behaviors": [
+      "full pytest collection and test running",
+      "keyword -k matching",
+      "marker registration and strict markers",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Mark expressions compile to Python bytecode evaluated against pytest marker matching hooks.",
+    "signals": [
+      "custom scanner/parser for marker grammar",
+      "MatcherAdapter bridges eval() to marker names",
+      "used by pytest -m but standalone logic lives in one module"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Expression, ParseError",
+    "callable": "featurelifted.Expression.compile",
+    "signature": "compile(input: str) -> Expression"
+  }
+}

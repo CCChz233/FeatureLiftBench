@@ -1,0 +1,87 @@
+{
+  "task_id": "sqlparse__token_tree_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "parser",
+    "tokenizer",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "sqlparse",
+    "url": "https://github.com/andialbrecht/sqlparse",
+    "commit": "f80af6a4007f11ada847218df8c29dc859238290",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "SQL token tree navigation core",
+    "description": "Extract sqlparse's SQL parsing and token tree traversal behavior as a standalone package.",
+    "source_entrypoints": [
+      "sqlparse.parse",
+      "sqlparse.parsestream",
+      "sqlparse.sql.Token",
+      "sqlparse.sql.TokenList",
+      "sqlparse.sql.Statement",
+      "sqlparse.sql.Identifier",
+      "sqlparse.sql.IdentifierList",
+      "sqlparse.tokens"
+    ],
+    "included_behaviors": [
+      "parse SQL text into Statement token trees",
+      "support token tree traversal and identifier helpers",
+      "preserve parent/ancestor relationships and comparison navigation",
+      "extract identifiers, aliases, and CTE structure from parsed statements"
+    ],
+    "excluded_behaviors": [
+      "multi-statement script splitting",
+      "SQL formatting and formatter filters",
+      "command line interface",
+      "original project tests",
+      "documentation and release tooling",
+      "packaging metadata from the original project",
+      "dialect-perfect SQL validation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Token tree navigation depends on grouping passes, token tree classes, and identifier helpers spread across multiple modules.",
+    "signals": [
+      "grouped token tree data model",
+      "identifier and comparison navigation helpers",
+      "public API hides a multi-module runtime closure"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, parsestream; from featurelifted import sql, tokens",
+    "callable": "featurelifted.parse",
+    "signature": "parse(sql: str, encoding: str | None = None) -> tuple[Statement, ...]"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "sqlparse"
+    ],
+    "forbidden_imports": [
+      "sqlparse"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

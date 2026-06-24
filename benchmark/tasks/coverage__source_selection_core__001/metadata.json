@@ -1,0 +1,81 @@
+{
+  "task_id": "coverage__source_selection_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "config_environment_coupling",
+    "resource_coupling",
+    "implicit_dependency_coupling",
+    "multi-module"
+  ],
+  "source": {
+    "name": "coveragepy",
+    "url": "https://github.com/coveragepy/coveragepy",
+    "commit": "f0dcf65f47120d9f74f6777134d3b8e92515ce6f",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Source/include/omit selection",
+    "description": "Extract coverage.py InOrOut logic that decides whether a file should be measured based on source, include, and omit settings.",
+    "source_entrypoints": [
+      "coverage.inorout.InOrOut.check_include_omit_etc",
+      "coverage.inorout.InOrOut.__init__"
+    ],
+    "included_behaviors": [
+      "honor --source directory and package specifications",
+      "apply run include and omit glob patterns after source scoping",
+      "exclude stdlib, third-party, and coverage.py paths when no source is set",
+      "return human-readable skip reasons for rejected files"
+    ],
+    "excluded_behaviors": [
+      "plugin file tracers and dynamic source filenames",
+      "coverage data collection and reporting",
+      "path alias remapping for combine",
+      "configuration file discovery beyond constructing a config object",
+      "original project tests and CLI"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling",
+      "global_state_registry_coupling"
+    ],
+    "description": "File selection combines config values, glob/tree/module matchers, interpreter install paths, and import state across many modules.",
+    "signals": [
+      "InOrOut matcher graph built from config and runtime paths",
+      "source versus include precedence rules",
+      "third-party and stdlib heuristics tied to sys.path"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import SourceSelector",
+    "callable": "featurelifted.SourceSelector.skip_reason",
+    "signature": "SourceSelector(...).skip_reason(filename: str, modulename: str | None = None) -> str | None"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "coverage"
+    ],
+    "forbidden_imports": [
+      "coverage"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

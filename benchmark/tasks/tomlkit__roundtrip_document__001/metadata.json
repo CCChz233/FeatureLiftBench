@@ -1,0 +1,96 @@
+{
+  "task_id": "tomlkit__roundtrip_document__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "parser",
+    "formatter",
+    "roundtrip",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "tomlkit",
+    "url": "https://github.com/python-poetry/tomlkit",
+    "commit": "9ac3f98214dbfbca0157b6c370c7986f497c34e4",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "TOML document parse and round-trip editing",
+    "description": "Extract tomlkit's core TOML parsing, document editing, and formatting-preserving dump API as a standalone package.",
+    "source_entrypoints": [
+      "tomlkit.parse",
+      "tomlkit.loads",
+      "tomlkit.dumps",
+      "tomlkit.document",
+      "tomlkit.table",
+      "tomlkit.inline_table",
+      "tomlkit.array",
+      "tomlkit.aot",
+      "tomlkit.string",
+      "tomlkit.item",
+      "tomlkit.exceptions.ParseError"
+    ],
+    "included_behaviors": [
+      "parse TOML strings and bytes into mutable TOMLDocument objects",
+      "preserve comments, blank lines, table order, inline tables, literal strings, multiline strings, and array formatting when dumping parsed documents",
+      "dump plain mappings, nested mappings, arrays, inline tables, and arrays of tables",
+      "support document/table/inline_table/array/aot/string/item constructors",
+      "support sorted-key dumping for mappings and parsed documents",
+      "support datetime, date, time, integers, floats, booleans, arrays, tables, dotted keys, and unicode strings",
+      "raise stable ParseError subclasses with line and column information for malformed TOML"
+    ],
+    "excluded_behaviors": [
+      "original project tests",
+      "original documentation",
+      "release tooling and CI configuration",
+      "packaging metadata from the original project",
+      "external toml compliance test fixtures"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Round-trip TOML behavior depends on parser state, document item models, formatting preservation, and error metadata.",
+    "signals": [
+      "parser and dumper state machines",
+      "document/node object model",
+      "format-preserving behavior across modules"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, loads, dumps, document, table, inline_table, array, aot, string, item",
+    "callable": "featurelifted.parse",
+    "signature": "parse(string: str | bytes) -> TOMLDocument"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "tomlkit"
+    ],
+    "forbidden_imports": [
+      "tomlkit"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 442317,
+    "copy_all_loc": 7580,
+    "oracle_bytes": 193160,
+    "oracle_loc": 4528,
+    "oracle_dependency_count": 0
+  }
+}

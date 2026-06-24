@@ -1,0 +1,80 @@
+{
+  "task_id": "pluggy__hook_call_order__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "plugin",
+    "hooks",
+    "dispatch",
+    "pure-python",
+    "stateful"
+  ],
+  "source": {
+    "name": "pluggy",
+    "url": "https://github.com/pytest-dev/pluggy",
+    "commit": "1.0.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Hook specification, registration, and call ordering",
+    "description": "Extract pluggy's core plugin manager behavior for declaring hooks, registering implementations, and dispatching calls.",
+    "source_entrypoints": [
+      "pluggy.PluginManager",
+      "pluggy.HookspecMarker",
+      "pluggy.HookimplMarker",
+      "pluggy.PluginValidationError",
+      "pluggy.HookCallError"
+    ],
+    "included_behaviors": [
+      "declare hook specifications with HookspecMarker",
+      "register plugins and call hook implementations through PluginManager",
+      "respect tryfirst and trylast ordering",
+      "support firstresult hooks",
+      "support hookwrapper implementations that inspect or modify results",
+      "reject unknown hook implementation arguments during validation",
+      "support unregistering plugins and querying registered plugin names"
+    ],
+    "excluded_behaviors": [
+      "pytest integration",
+      "project packaging metadata",
+      "development tests and release tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Hook behavior is coupled to plugin registration state, hook caller ordering, wrappers, and firstresult semantics.",
+    "signals": [
+      "plugin manager registry",
+      "hook caller ordering state",
+      "wrapper and firstresult interactions"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PluginManager, HookspecMarker, HookimplMarker",
+    "callable": "featurelifted.PluginManager",
+    "signature": "PluginManager(project_name: str)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pluggy"
+    ],
+    "forbidden_imports": [
+      "pluggy"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

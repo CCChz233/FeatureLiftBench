@@ -1,0 +1,81 @@
+{
+  "task_id": "vibe_app__yaml_config_bootstrap__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "config_environment_coupling",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "YAML config bootstrap",
+    "description": "Extract layered YAML config loading, env expansion, and deep merge bootstrap used by VibeShop.",
+    "source_entrypoints": [
+      "vibe_app.config_loader.bootstrap_config",
+      "vibe_app.config_loader.load_yaml_config",
+      "vibe_app.config_merge.merge_config_layers"
+    ],
+    "included_behaviors": [
+      "deep-merge layered config dicts with later overrides",
+      "bootstrap default/app/pricing/tiers YAML layers from a directory",
+      "expand ${ENV:-default} placeholders while loading YAML",
+      "record bootstrap side effects in process registry state"
+    ],
+    "excluded_behaviors": [
+      "pricing computation and CSV transforms",
+      "HTTP routes and app factory",
+      "broken bootstrap_config_fast shortcut",
+      "legacy shallow merge helper for production use",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "global_state_registry_coupling",
+      "legacy_vibe_clutter",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Config bootstrap mutates GLOBAL_STATE while loading multiple YAML layers and depends on deep merge helpers co-located with loader side effects.",
+    "signals": [
+      "YAML load increments counters and appends config_paths in GLOBAL_STATE",
+      "bootstrap wires four config files with nested merge semantics",
+      "duplicate merge helpers with incorrect shallow variant"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import bootstrap_config, merge_config_layers",
+    "callable": "featurelifted.bootstrap_config",
+    "signature": "bootstrap_config(config_dir: str | Path) -> dict"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

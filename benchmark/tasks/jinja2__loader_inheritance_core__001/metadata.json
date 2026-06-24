@@ -1,0 +1,82 @@
+{
+  "task_id": "jinja2__loader_inheritance_core__001",
+  "source": {
+    "name": "jinja2",
+    "url": "https://github.com/pallets/jinja",
+    "commit": "15206881c006c79667fe5154fe80c01c65410679",
+    "license": "BSD-3-Clause"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "template-engine",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "jinja2",
+      "Jinja2"
+    ],
+    "forbidden_imports": [
+      "jinja2",
+      "jinja"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "Jinja2 loader and inheritance core",
+    "description": "Extract Jinja2 template loading and extends/block inheritance rendering.",
+    "source_entrypoints": [
+      "jinja2.loaders.BaseLoader",
+      "jinja2.loaders.DictLoader",
+      "jinja2.environment.Environment.get_template",
+      "jinja2.environment.Template.render"
+    ],
+    "included_behaviors": [
+      "load templates via DictLoader and BaseLoader subclasses",
+      "resolve extends chains and block overrides",
+      "render nested block inheritance across multiple templates",
+      "support trim_blocks for layout templates"
+    ],
+    "excluded_behaviors": [
+      "PackageLoader zip/import paths beyond DictLoader",
+      "async rendering, extensions, bytecode cache",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "resource_coupling",
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "description": "Loader/inheritance couples template lookup, compile pipeline, and block resolution across multiple sources.",
+    "signals": [
+      "loader get_source and template cache",
+      "extends/import include graph in parser/compiler",
+      "block super() resolution at render time"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Environment, DictLoader",
+    "callable": "featurelifted.Environment.get_template",
+    "signature": "get_template(name: str) -> Template"
+  }
+}

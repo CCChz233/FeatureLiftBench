@@ -1,0 +1,80 @@
+{
+  "task_id": "vibe_app__csv_transform_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "implicit_dependency_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "CSV transform pipeline",
+    "description": "Extract the VibeShop CSV ingest pipeline (normalize, filter, dedupe, optional aggregate) as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.csv_transform.transform_csv",
+      "vibe_app.csv_transform.pipeline.transform_csv",
+      "vibe_app.csv_transform.pipeline.TransformOptions"
+    ],
+    "included_behaviors": [
+      "parse CSV text into row dicts",
+      "normalize headers and coerce quantity/unit_price fields",
+      "drop invalid rows and enforce minimum quantity",
+      "dedupe rows by sku keeping last occurrence",
+      "optionally aggregate rows by a grouping key",
+      "sort stable output when not aggregating"
+    ],
+    "excluded_behaviors": [
+      "pricing rules and YAML bootstrap",
+      "HTTP routes and catalog services",
+      "CSV writer serialization helpers for responses",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "legacy_vibe_clutter",
+      "implicit_dependency_coupling",
+      "global_state_registry_coupling"
+    ],
+    "description": "CSV processing is split across reader, mapper, cleaner, and transform stages with duplicate string helpers and pipeline side effects on GLOBAL_STATE.",
+    "signals": [
+      "pipeline orchestrates four transform modules with implicit ordering",
+      "header normalization duplicated in helpers and mapper paths",
+      "transform records last job metadata in GLOBAL_STATE"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import TransformOptions, transform_csv",
+    "callable": "featurelifted.transform_csv",
+    "signature": "transform_csv(csv_text: str, *, options: TransformOptions | None = None) -> list[dict]"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

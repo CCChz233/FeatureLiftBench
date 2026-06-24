@@ -1,0 +1,85 @@
+{
+  "task_id": "jinja2__lexer_parser_core__001",
+  "source": {
+    "name": "jinja2",
+    "url": "https://github.com/pallets/jinja",
+    "commit": "15206881c006c79667fe5154fe80c01c65410679",
+    "license": "BSD-3-Clause"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "template-engine",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "jinja2",
+      "Jinja2"
+    ],
+    "forbidden_imports": [
+      "jinja2",
+      "jinja"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "Jinja2 lexer and parser core",
+    "description": "Extract Jinja2 template lexing and parsing into AST nodes as a standalone package.",
+    "source_entrypoints": [
+      "jinja2.lexer.Lexer",
+      "jinja2.lexer.TokenStream",
+      "jinja2.parser.Parser",
+      "jinja2.environment.Environment.lex",
+      "jinja2.environment.Environment.parse",
+      "jinja2.nodes"
+    ],
+    "included_behaviors": [
+      "tokenize template source into token streams",
+      "parse templates into AST node trees",
+      "support block, variable, comment, and statement delimiters",
+      "preserve syntax error reporting with line numbers"
+    ],
+    "excluded_behaviors": [
+      "template compilation and rendering",
+      "loaders and template inheritance",
+      "filters, tests, extensions, async mode",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Lexer and parser behavior spans tokenization state, AST node hierarchy, and environment-driven delimiter configuration.",
+    "signals": [
+      "lexer token cache and delimiter configuration",
+      "parser tag stack and nested block state",
+      "AST node tree used by compiler but required for parse output"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Environment, nodes",
+    "callable": "featurelifted.Environment.parse",
+    "signature": "parse(source: str, name: str | None = None, filename: str | None = None) -> nodes.Template"
+  }
+}

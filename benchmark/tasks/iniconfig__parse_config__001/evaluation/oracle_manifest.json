@@ -1,0 +1,20 @@
+{
+  "required_source_files": [
+    "src/iniconfig/__init__.py",
+    "src/iniconfig/_parse.py",
+    "src/iniconfig/exceptions.py",
+    "src/iniconfig/py.typed"
+  ],
+  "excluded_source_paths": [
+    "testing/",
+    ".github/",
+    "README.rst",
+    "CHANGELOG",
+    "uv.lock"
+  ],
+  "runtime_dependencies": [],
+  "notes": [
+    "The parser implementation is contained in the public package files under src/iniconfig.",
+    "The extracted package may rename the package to featurelifted but should preserve the public API listed in metadata.json."
+  ]
+}

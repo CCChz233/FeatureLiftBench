@@ -1,0 +1,675 @@
+"""Evaluator entry points."""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from .checks import find_forbidden_dependencies
+from .checks import find_forbidden_imports
+from .checks import read_forbidden_imports
+from .metadata import load_metadata
+from .metrics import count_files
+from .metrics import count_python_loc
+from .metrics import count_runtime_dependencies
+from .metrics import count_suspicious_files
+from .metrics import dependency_name
+from .metrics import directory_size_bytes
+from .scoring import functional_gate
+from .scoring import score_submission
+from .validate import validate_task
+
+
+@dataclass(frozen=True)
+class CommandResult:
+    """Subprocess command result captured by the evaluator."""
+
+    returncode: int
+    duration_seconds: float
+    stdout: str
+    stderr: str
+    timed_out: bool = False
+    skipped: bool = False
+    reason: str = ""
+
+    @property
+    def passed(self) -> bool:
+        return self.skipped or (self.returncode == 0 and not self.timed_out)
+
+
+def evaluate_submission(
+    task_dir: str | Path,
+    submission_dir: str | Path,
+    output_dir: str | Path,
+) -> dict[str, Any]:
+    """Evaluate a submission and write ``result.json`` under ``output_dir``."""
+
+    task_path = Path(task_dir).resolve()
+    submission_path = Path(submission_dir).resolve()
+    output_path = Path(output_dir).resolve()
+    logs_path = output_path / "logs"
+    output_path.mkdir(parents=True, exist_ok=True)
+    logs_path.mkdir(parents=True, exist_ok=True)
+
+    errors: list[str] = []
+    validation = validate_task(task_path)
+    if not validation.valid:
+        errors.extend(f"invalid task: {error}" for error in validation.errors)
+
+    if not submission_path.exists():
+        errors.append(f"submission dir not found: {submission_path}")
+    elif not submission_path.is_dir():
+        errors.append(f"submission path is not a directory: {submission_path}")
+
+    metadata = load_metadata(task_path).data if not errors else {}
+    task_id = metadata.get("task_id", validation.task_id) if isinstance(metadata, dict) else validation.task_id
+    submission_name = submission_path.name
+
+    source_repo = task_path / "repo"
+    if _is_relative_to(submission_path, source_repo):
+        errors.append("submission must not be inside the task repo directory")
+
+    forbidden_names = _load_forbidden_names(task_path, metadata)
+    forbidden_issues = (
+        find_forbidden_imports(submission_path, forbidden_names)
+        if submission_path.exists() and submission_path.is_dir()
+        else []
+    )
+    forbidden_dependency_names = _forbidden_dependency_names(metadata)
+    forbidden_dependency_issues = (
+        find_forbidden_dependencies(submission_path, forbidden_dependency_names)
+        if submission_path.exists() and submission_path.is_dir()
+        else []
+    )
+    original_import_pass = (
+        not forbidden_issues
+        and not forbidden_dependency_issues
+        and not _is_relative_to(submission_path, source_repo)
+    )
+    errors.extend(issue.format(submission_path) for issue in forbidden_issues)
+    errors.extend(issue.format() for issue in forbidden_dependency_issues)
+
+    metrics = _collect_metrics(submission_path, source_repo=source_repo)
+
+    environment_info: dict[str, str] = {
+        "venv_dir": "",
+        "python": "",
+        "install_mode": "not-run",
+    }
+    dependency_install_result = None
+    submission_install_result = None
+    build_result = None
+    public_result = None
+    hidden_result = None
+    build_pass = False
+    test_pass = False
+
+    if submission_path.exists() and submission_path.is_dir():
+        timeout_seconds = _timeout_seconds(metadata)
+        with tempfile.TemporaryDirectory(prefix="featureliftbench-eval-") as tmp:
+            run_cwd = Path(tmp)
+            venv_dir = run_cwd / ".venv"
+            venv_python = _venv_python(venv_dir)
+            environment_info["venv_dir"] = str(venv_dir)
+            environment_info["python"] = str(venv_python)
+            output_package = _output_package(metadata)
+            import_guard_dir = _write_import_guard(
+                run_cwd=run_cwd,
+                output_package=output_package,
+                allowed_roots=[submission_path, venv_dir],
+            )
+
+            venv_result = _create_venv(
+                venv_dir=venv_dir,
+                cwd=run_cwd,
+                timeout_seconds=timeout_seconds,
+            )
+            _write_command_logs(logs_path, "venv", venv_result)
+
+            if not venv_result.passed:
+                errors.append("venv creation failed")
+            else:
+                base_env = _base_evaluation_env()
+                dependency_install_result = _install_dependency_lock(
+                    venv_python=venv_python,
+                    task_path=task_path,
+                    metadata=metadata,
+                    cwd=run_cwd,
+                    env=base_env,
+                    timeout_seconds=timeout_seconds,
+                )
+                _write_command_logs(logs_path, "dependency_install", dependency_install_result)
+                if not dependency_install_result.passed:
+                    errors.append("dependency installation failed")
+
+                submission_install_result, install_mode = _install_submission(
+                    venv_python=venv_python,
+                    submission_path=submission_path,
+                    output_package=output_package,
+                    cwd=run_cwd,
+                    env=base_env,
+                    timeout_seconds=timeout_seconds,
+                )
+                environment_info["install_mode"] = install_mode
+                _write_command_logs(logs_path, "submission_install", submission_install_result)
+                if not submission_install_result.passed:
+                    errors.append("submission installation failed")
+
+                if dependency_install_result.passed and submission_install_result.passed:
+                    env = _evaluation_env(
+                        submission_path if install_mode in {"path", "path-fallback"} else None,
+                        import_guard_dir=import_guard_dir,
+                    )
+                    build_result = _run_import_check(
+                        python=venv_python,
+                        package=output_package,
+                        cwd=run_cwd,
+                        env=env,
+                        timeout_seconds=timeout_seconds,
+                    )
+                    _write_command_logs(logs_path, "build", build_result)
+
+                    if (
+                        not build_result.passed
+                        and install_mode == "editable"
+                        and _has_direct_output_package(submission_path, output_package)
+                    ):
+                        fallback_env = _evaluation_env(
+                            submission_path,
+                            import_guard_dir=import_guard_dir,
+                        )
+                        fallback_build_result = _run_import_check(
+                            python=venv_python,
+                            package=output_package,
+                            cwd=run_cwd,
+                            env=fallback_env,
+                            timeout_seconds=timeout_seconds,
+                        )
+                        _write_command_logs(logs_path, "build_fallback", fallback_build_result)
+                        if fallback_build_result.passed:
+                            install_mode = "path-fallback"
+                            environment_info["install_mode"] = install_mode
+                            env = fallback_env
+                            build_result = fallback_build_result
+
+                    build_pass = build_result.passed
+
+                    if build_pass:
+                        public_result = _run_pytest(
+                            python=venv_python,
+                            test_path=task_path / _test_path(metadata, "public", "public_tests/"),
+                            cwd=run_cwd,
+                            env=env,
+                            timeout_seconds=timeout_seconds,
+                        )
+                        _write_command_logs(logs_path, "public", public_result)
+
+                        hidden_result = _run_pytest(
+                            python=venv_python,
+                            test_path=task_path / _test_path(metadata, "hidden", "hidden_tests/"),
+                            cwd=run_cwd,
+                            env=env,
+                            timeout_seconds=timeout_seconds,
+                        )
+                        _write_command_logs(logs_path, "hidden", hidden_result)
+
+                        test_pass = public_result.passed and hidden_result.passed
+
+    gate = functional_gate(
+        build_pass=build_pass,
+        test_pass=test_pass,
+        original_import_pass=original_import_pass,
+    )
+    scores = score_submission(
+        metrics=metrics,
+        metadata=metadata,
+        functional_gate_score=gate,
+    )
+
+    result: dict[str, Any] = {
+        "task_id": task_id,
+        "submission": submission_name,
+        "status": "passed" if gate else "failed",
+        "build_pass": build_pass,
+        "test_pass": test_pass,
+        "original_import_pass": original_import_pass,
+        "environment": environment_info,
+        "dependency_install": _command_result_payload(dependency_install_result),
+        "submission_install": _command_result_payload(submission_install_result),
+        "public_tests": _command_result_payload(public_result),
+        "hidden_tests": _command_result_payload(hidden_result),
+        "metrics": metrics,
+        "scores": scores,
+        "logs": {
+            "dir": str(logs_path),
+        },
+        "errors": errors,
+    }
+
+    result_path = output_path / "result.json"
+    result_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    return result
+
+
+def _load_forbidden_names(task_path: Path, metadata: dict[str, Any]) -> list[str]:
+    names: list[str] = []
+    forbidden_file = task_path / "evaluation" / "forbidden_imports.txt"
+    if forbidden_file.exists():
+        names.extend(read_forbidden_imports(forbidden_file))
+
+    environment = metadata.get("environment")
+    if isinstance(environment, dict):
+        forbidden_imports = environment.get("forbidden_imports")
+        if isinstance(forbidden_imports, list):
+            names.extend(item for item in forbidden_imports if isinstance(item, str))
+
+    deduped: list[str] = []
+    for name in names:
+        if name not in deduped:
+            deduped.append(name)
+    return deduped
+
+
+def _forbidden_dependency_names(metadata: dict[str, Any]) -> list[str]:
+    environment = metadata.get("environment")
+    if not isinstance(environment, dict):
+        return []
+    forbidden_dependencies = environment.get("forbidden_dependencies")
+    if not isinstance(forbidden_dependencies, list):
+        return []
+    return [item for item in forbidden_dependencies if isinstance(item, str)]
+
+
+def _collect_metrics(submission_path: Path, *, source_repo: Path) -> dict[str, int]:
+    source_loc = count_python_loc(source_repo) if source_repo.exists() else 0
+    if not submission_path.exists() or not submission_path.is_dir():
+        return {
+            "file_count": 0,
+            "loc": 0,
+            "source_loc": source_loc,
+            "package_bytes": 0,
+            "dependency_count": 0,
+            "suspicious_file_count": 0,
+        }
+
+    return {
+        "file_count": count_files(submission_path),
+        "loc": count_python_loc(submission_path),
+        "source_loc": source_loc,
+        "package_bytes": directory_size_bytes(submission_path),
+        "dependency_count": count_runtime_dependencies(submission_path),
+        "suspicious_file_count": count_suspicious_files(submission_path),
+    }
+
+
+def _timeout_seconds(metadata: dict[str, Any]) -> int:
+    environment = metadata.get("environment")
+    if isinstance(environment, dict):
+        value = environment.get("timeout_seconds")
+        if isinstance(value, int) and value > 0:
+            return value
+    return 60
+
+
+def _output_package(metadata: dict[str, Any]) -> str:
+    output = metadata.get("output")
+    if isinstance(output, dict):
+        package = output.get("package")
+        if isinstance(package, str) and package:
+            return package
+    return "featurelifted"
+
+
+def _test_path(metadata: dict[str, Any], key: str, default: str) -> str:
+    tests = metadata.get("tests")
+    if isinstance(tests, dict):
+        value = tests.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return default
+
+
+def _base_evaluation_env() -> dict[str, str]:
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
+    return env
+
+
+def _evaluation_env(
+    submission_path: Path | None,
+    *,
+    import_guard_dir: Path | None = None,
+) -> dict[str, str]:
+    env = _base_evaluation_env()
+    pythonpath_entries: list[str] = []
+    if import_guard_dir is not None:
+        pythonpath_entries.append(str(import_guard_dir))
+    if submission_path is not None:
+        pythonpath_entries.append(str(submission_path))
+    if pythonpath_entries:
+        env["PYTHONPATH"] = os.pathsep.join(pythonpath_entries)
+    return env
+
+
+def _write_import_guard(
+    *,
+    run_cwd: Path,
+    output_package: str,
+    allowed_roots: list[Path],
+) -> Path:
+    """Install sitecustomize that blocks stale system-site editable packages."""
+
+    guard_dir = run_cwd / "_featureliftbench_import_guard"
+    guard_dir.mkdir(parents=True, exist_ok=True)
+    top_level = output_package.split(".", 1)[0]
+    allowed = [str(path.resolve()) for path in allowed_roots]
+    (guard_dir / "sitecustomize.py").write_text(
+        (
+            "from __future__ import annotations\n"
+            "import os\n"
+            "import sys\n\n"
+            f"_PACKAGE = {top_level!r}\n"
+            f"_ALLOWED_ROOTS = {allowed!r}\n\n"
+            "def _is_relative_to(path: str, root: str) -> bool:\n"
+            "    try:\n"
+            "        return os.path.commonpath([path, root]) == root\n"
+            "    except ValueError:\n"
+            "        return False\n\n"
+            "def _entry_defines_package(entry: str) -> bool:\n"
+            "    if not entry:\n"
+            "        return False\n"
+            "    package_dir = os.path.join(entry, _PACKAGE)\n"
+            "    module_file = os.path.join(entry, _PACKAGE + '.py')\n"
+            "    return os.path.isfile(os.path.join(package_dir, '__init__.py')) or os.path.isfile(module_file)\n\n"
+            "def _entry_allowed(entry: str) -> bool:\n"
+            "    real = os.path.realpath(entry)\n"
+            "    return any(_is_relative_to(real, root) for root in _ALLOWED_ROOTS)\n\n"
+            "sys.path[:] = [\n"
+            "    entry for entry in sys.path\n"
+            "    if not (_entry_defines_package(entry) and not _entry_allowed(entry))\n"
+            "]\n"
+        ),
+        encoding="utf-8",
+    )
+    return guard_dir
+
+
+def _create_venv(
+    *,
+    venv_dir: Path,
+    cwd: Path,
+    timeout_seconds: int,
+) -> CommandResult:
+    return _run_command(
+        [sys.executable, "-B", "-m", "venv", "--system-site-packages", str(venv_dir)],
+        cwd=cwd,
+        env=_base_evaluation_env(),
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _install_dependency_lock(
+    *,
+    venv_python: Path,
+    task_path: Path,
+    metadata: dict[str, Any],
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    lock_path = _dependency_lock_path(task_path, metadata)
+    if lock_path is None or not lock_path.exists():
+        return _failed_command_result(f"dependency lock file not found: {lock_path}")
+
+    dependencies = _dependency_names_from_lock(lock_path)
+    if not dependencies:
+        return _skipped_command_result("dependency lock is empty")
+
+    allowed = set(_allowed_dependency_names(metadata))
+    forbidden = set(_forbidden_dependency_names_normalized(metadata))
+    not_allowed = sorted(name for name in dependencies if name not in allowed)
+    forbidden_used = sorted(set(dependencies) & forbidden)
+    validation_errors: list[str] = []
+    if not_allowed:
+        validation_errors.append(
+            "dependency lock contains dependencies that are not allowed: "
+            + ", ".join(not_allowed)
+        )
+    if forbidden_used:
+        validation_errors.append(
+            "dependency lock contains forbidden dependencies: "
+            + ", ".join(forbidden_used)
+        )
+    if validation_errors:
+        return _failed_command_result("; ".join(validation_errors))
+
+    return _run_command(
+        [str(venv_python), "-B", "-m", "pip", "install", "--no-index", "--no-deps", "-r", str(lock_path)],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _install_submission(
+    *,
+    venv_python: Path,
+    submission_path: Path,
+    output_package: str,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> tuple[CommandResult, str]:
+    if not (submission_path / "pyproject.toml").is_file():
+        return _skipped_command_result("submission has no pyproject.toml; using PYTHONPATH"), "path"
+
+    result = _run_command(
+        [
+            str(venv_python),
+            "-B",
+            "-m",
+            "pip",
+            "install",
+            "--no-deps",
+            "--no-build-isolation",
+            "-e",
+            str(submission_path),
+        ],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+    if not result.passed and _has_direct_output_package(submission_path, output_package):
+        return (
+            CommandResult(
+                returncode=0,
+                duration_seconds=result.duration_seconds,
+                stdout=result.stdout,
+                stderr=result.stderr,
+                reason="editable install failed; using PYTHONPATH fallback",
+                skipped=True,
+            ),
+            "path-fallback",
+        )
+    return result, "editable"
+
+
+def _has_direct_output_package(submission_path: Path, output_package: str) -> bool:
+    top_level = output_package.split(".", 1)[0]
+    return (
+        (submission_path / top_level / "__init__.py").is_file()
+        or (submission_path / f"{top_level}.py").is_file()
+    )
+
+
+def _dependency_lock_path(task_path: Path, metadata: dict[str, Any]) -> Path | None:
+    environment = metadata.get("environment")
+    if not isinstance(environment, dict):
+        return None
+    lock_file = environment.get("dependency_lock")
+    if not isinstance(lock_file, str) or not lock_file:
+        return None
+    return task_path / lock_file
+
+
+def _dependency_names_from_lock(lock_path: Path) -> list[str]:
+    names: list[str] = []
+    for line in lock_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        name = dependency_name(line)
+        if name:
+            names.append(name)
+    return names
+
+
+def _allowed_dependency_names(metadata: dict[str, Any]) -> list[str]:
+    environment = metadata.get("environment")
+    if not isinstance(environment, dict):
+        return []
+    allowed = environment.get("allowed_dependencies")
+    if not isinstance(allowed, list):
+        return []
+    return [dependency_name(item) for item in allowed if isinstance(item, str) and dependency_name(item)]
+
+
+def _forbidden_dependency_names_normalized(metadata: dict[str, Any]) -> list[str]:
+    return [
+        dependency_name(item)
+        for item in _forbidden_dependency_names(metadata)
+        if dependency_name(item)
+    ]
+
+
+def _run_import_check(
+    *,
+    python: Path,
+    package: str,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    code = f"import {package}"
+    return _run_command(
+        [str(python), "-B", "-c", code],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _run_pytest(
+    *,
+    python: Path,
+    test_path: Path,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    return _run_command(
+        [str(python), "-B", "-m", "pytest", str(test_path)],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _run_command(
+    command: list[str],
+    *,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    start = time.monotonic()
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=cwd,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as exc:
+        return CommandResult(
+            returncode=124,
+            duration_seconds=time.monotonic() - start,
+            stdout=exc.stdout or "",
+            stderr=exc.stderr or f"command timed out after {timeout_seconds}s",
+            timed_out=True,
+        )
+
+    return CommandResult(
+        returncode=completed.returncode,
+        duration_seconds=time.monotonic() - start,
+        stdout=completed.stdout,
+        stderr=completed.stderr,
+    )
+
+
+def _write_command_logs(logs_path: Path, name: str, result: CommandResult) -> None:
+    (logs_path / f"{name}.stdout").write_text(result.stdout, encoding="utf-8")
+    (logs_path / f"{name}.stderr").write_text(result.stderr, encoding="utf-8")
+
+
+def _command_result_payload(result: CommandResult | None) -> dict[str, Any]:
+    if result is None:
+        return {
+            "returncode": None,
+            "passed": False,
+            "duration_seconds": 0.0,
+            "timed_out": False,
+            "skipped": False,
+            "reason": "",
+        }
+    return {
+        "returncode": result.returncode,
+        "passed": result.passed,
+        "duration_seconds": round(result.duration_seconds, 6),
+        "timed_out": result.timed_out,
+        "skipped": result.skipped,
+        "reason": result.reason,
+    }
+
+
+def _venv_python(venv_dir: Path) -> Path:
+    if os.name == "nt":
+        return venv_dir / "Scripts" / "python.exe"
+    return venv_dir / "bin" / "python"
+
+
+def _skipped_command_result(reason: str) -> CommandResult:
+    return CommandResult(
+        returncode=0,
+        duration_seconds=0.0,
+        stdout="",
+        stderr="",
+        skipped=True,
+        reason=reason,
+    )
+
+
+def _failed_command_result(message: str) -> CommandResult:
+    return CommandResult(
+        returncode=1,
+        duration_seconds=0.0,
+        stdout="",
+        stderr=message,
+        reason=message,
+    )
+
+
+def _is_relative_to(path: Path, parent: Path) -> bool:
+    try:
+        path.relative_to(parent)
+    except ValueError:
+        return False
+    return True

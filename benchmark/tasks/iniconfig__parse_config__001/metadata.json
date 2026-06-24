@@ -1,0 +1,86 @@
+{
+  "task_id": "iniconfig__parse_config__001",
+  "language": "python",
+  "difficulty": "easy",
+  "tags": [
+    "parser",
+    "config",
+    "pure-python",
+    "no-deps"
+  ],
+  "source": {
+    "name": "iniconfig",
+    "url": "https://github.com/pytest-dev/iniconfig",
+    "commit": "77db208ab4ae0cd2061d909fe222a1db72867850",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "INI configuration parsing",
+    "description": "Extract iniconfig's public INI parser API as a standalone package.",
+    "source_entrypoints": [
+      "iniconfig.IniConfig",
+      "iniconfig.ParseError",
+      "iniconfig.iscommentline",
+      "iniconfig.COMMENTCHARS"
+    ],
+    "included_behaviors": [
+      "parse INI sections and key-value entries",
+      "preserve file order for sections and entries",
+      "support multiline value continuations",
+      "support equals and colon assignment syntax",
+      "support comment line detection",
+      "report parse errors with source path and line numbers",
+      "support IniConfig.get and section wrapper access",
+      "support IniConfig.parse inline-comment stripping options"
+    ],
+    "excluded_behaviors": [
+      "original project packaging metadata",
+      "original project tests",
+      "development tooling and CI configuration"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "types": [
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Clean pilot task for decoupling a small configuration parser from its package boundary.",
+    "signals": [
+      "configuration parsing semantics",
+      "single small runtime package",
+      "original package import is forbidden"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import IniConfig, ParseError, iscommentline, COMMENTCHARS",
+    "callable": "featurelifted.IniConfig",
+    "signature": "IniConfig(path, data=None, encoding='utf-8', **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "iniconfig"
+    ],
+    "forbidden_imports": [
+      "iniconfig"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 57496,
+    "copy_all_loc": 667,
+    "oracle_bytes": 13119,
+    "oracle_loc": 334,
+    "oracle_dependency_count": 0
+  }
+}

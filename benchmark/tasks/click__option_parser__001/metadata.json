@@ -1,0 +1,84 @@
+{
+  "task_id": "click__option_parser__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "cli",
+    "parser",
+    "context",
+    "errors",
+    "pure-python"
+  ],
+  "source": {
+    "name": "click",
+    "url": "https://github.com/pallets/click",
+    "commit": "8.1.7-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Command line option parsing and invocation",
+    "description": "Extract Click's core command, option, argument, type conversion, and testing runner behavior.",
+    "source_entrypoints": [
+      "click.command",
+      "click.group",
+      "click.option",
+      "click.argument",
+      "click.Choice",
+      "click.IntRange",
+      "click.echo",
+      "click.UsageError",
+      "click.testing.CliRunner"
+    ],
+    "included_behaviors": [
+      "decorate functions as commands and groups",
+      "parse options, flags, choices, defaults, integer ranges, and positional arguments",
+      "invoke commands through CliRunner and capture output, exit code, and exceptions",
+      "support nested groups and context object passing",
+      "render useful usage/error output for invalid options and bad values"
+    ],
+    "excluded_behaviors": [
+      "shell completion integration",
+      "terminal color/style platform integrations beyond basic echo",
+      "documentation and release tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "CLI behavior is coupled to command decorators, context stacks, parameter parsing, terminal output, and testing runner state.",
+    "signals": [
+      "command/group decorator framework",
+      "context and invocation state",
+      "CliRunner environment isolation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted as click; from featurelifted.testing import CliRunner",
+    "callable": "featurelifted.command",
+    "signature": "command(*args, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "click"
+    ],
+    "forbidden_imports": [
+      "click"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

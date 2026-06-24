@@ -1,0 +1,80 @@
+{
+  "task_id": "coverage__path_remap_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "config_environment_coupling",
+    "resource_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "coveragepy",
+    "url": "https://github.com/coveragepy/coveragepy",
+    "commit": "f0dcf65f47120d9f74f6777134d3b8e92515ce6f",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Combine path remap",
+    "description": "Extract coverage.py PathAliases logic that remaps measured file paths when combining data from different machines or checkout roots.",
+    "source_entrypoints": [
+      "coverage.files.PathAliases.add",
+      "coverage.files.PathAliases.map"
+    ],
+    "included_behaviors": [
+      "register glob-style path prefix aliases",
+      "map absolute and relative paths through the first matching alias",
+      "normalize path separators to the alias result style",
+      "reject alias patterns ending in wildcards and skip mappings to non-existent targets"
+    ],
+    "excluded_behaviors": [
+      "glob include/omit matching for measurement",
+      "run-section configuration parsing",
+      "InOrOut source selection policy",
+      "coverage data combine I/O and SQLite storage",
+      "original project tests and CLI"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Path remapping reuses glob-to-regex conversion, canonicalization, existence checks, and auto-generated relative alias rules.",
+    "signals": [
+      "PathAliases layered on globs_to_regex and canonical_filename",
+      "relative versus absolute alias modes",
+      "implicit alias generation for unmatched relative paths"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PathAliases",
+    "callable": "featurelifted.PathAliases.map",
+    "signature": "PathAliases(...).map(path: str, exists: Callable[[str], bool] = ...) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "coverage"
+    ],
+    "forbidden_imports": [
+      "coverage"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

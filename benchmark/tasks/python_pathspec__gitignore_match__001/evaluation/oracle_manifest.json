@@ -1,0 +1,18 @@
+{
+  "source_files": [
+    "pathspec/__init__.py",
+    "pathspec/gitignore.py",
+    "pathspec/pathspec.py",
+    "pathspec/pattern.py",
+    "pathspec/util.py",
+    "pathspec/backend.py",
+    "pathspec/_typing.py",
+    "pathspec/patterns/gitignore/base.py",
+    "pathspec/patterns/gitignore/basic.py",
+    "pathspec/patterns/gitignore/spec.py",
+    "pathspec/_backends/simple/pathspec.py",
+    "pathspec/_backends/simple/gitignore.py",
+    "pathspec/_backends/_utils.py"
+  ],
+  "notes": "Reference closure for gitignore-style matching using the simple backend only. Optional re2/hyperscan backends, docs, tests, benchmarks, packaging, and development tooling are intentionally excluded."
+}

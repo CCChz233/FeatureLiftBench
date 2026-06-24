@@ -1,0 +1,80 @@
+{
+  "task_id": "pyyaml__safe_load_dump__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "yaml",
+    "parser",
+    "serializer",
+    "security",
+    "pure-python"
+  ],
+  "source": {
+    "name": "PyYAML",
+    "url": "https://github.com/yaml/pyyaml",
+    "commit": "6.0.1-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Safe YAML load and dump",
+    "description": "Extract PyYAML's safe YAML parsing and dumping behavior without exposing unsafe object construction.",
+    "source_entrypoints": [
+      "yaml.safe_load",
+      "yaml.safe_load_all",
+      "yaml.safe_dump",
+      "yaml.safe_dump_all",
+      "yaml.YAMLError",
+      "yaml.constructor.ConstructorError"
+    ],
+    "included_behaviors": [
+      "parse mappings, sequences, scalars, booleans, nulls, integers, floats, and nested documents",
+      "support anchors, aliases, and merge keys with SafeLoader semantics",
+      "dump plain Python data through SafeDumper with deterministic sort_keys behavior",
+      "load and dump multi-document streams",
+      "reject unsafe Python object tags under safe_load"
+    ],
+    "excluded_behaviors": [
+      "unsafe load/object construction APIs",
+      "LibYAML C extension acceleration",
+      "command line utilities and test fixtures"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Safe YAML load/dump behavior depends on scanner/parser/composer/constructor/dumper pipelines and tag resolution.",
+    "signals": [
+      "multi-stage parser pipeline",
+      "constructor/representer data model",
+      "anchor, alias, merge key, and tag handling"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import safe_load, safe_dump, YAMLError",
+    "callable": "featurelifted.safe_load",
+    "signature": "safe_load(stream)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "PyYAML"
+    ],
+    "forbidden_imports": [
+      "yaml"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

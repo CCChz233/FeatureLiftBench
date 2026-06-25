@@ -1,0 +1,77 @@
+{
+  "task_id": "babel__plural_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "third_party_dependency_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "babel",
+    "url": "https://github.com/python-babel/babel",
+    "commit": "2.11.0-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "CLDR plural rules subset",
+    "description": "Extract Babel plural rule parsing and locale plural_form selection backed by CLDR locale-data files.",
+    "source_entrypoints": [
+      "babel.plural.PluralRule",
+      "babel.core.Locale",
+      "babel.core.Locale.plural_form",
+      "babel.localedata"
+    ],
+    "included_behaviors": [
+      "evaluate PluralRule expressions for numeric operands",
+      "resolve Locale plural categories for en, ru, fr, ja, and pl",
+      "load plural rules from packaged locale-data .dat resources"
+    ],
+    "excluded_behaviors": [
+      "gettext message catalogs and extraction",
+      "number/date/currency formatting modules",
+      "full CLDR locale-data tree"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "third_party_dependency_coupling",
+      "resource_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "third_party_dependency_coupling",
+    "description": "Plural selection depends on CLDR locale-data pickles, plural expression parsing, and Locale metadata wiring.",
+    "signals": [
+      "locale-data .dat resource loading",
+      "PluralRule expression AST evaluation",
+      "Locale inheritance through parent locales"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PluralRule, Locale",
+    "callable": "featurelifted.Locale.parse",
+    "signature": "Locale.parse(identifier: str) -> Locale"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "babel"
+    ],
+    "forbidden_imports": [
+      "babel"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

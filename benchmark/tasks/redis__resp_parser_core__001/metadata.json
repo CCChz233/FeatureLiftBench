@@ -1,0 +1,80 @@
+{
+  "task_id": "redis__resp_parser_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "redis",
+    "url": "https://github.com/redis/redis-py",
+    "commit": "8.0.1-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "RESP2/RESP3 wire parser",
+    "description": "Extract redis-py synchronous RESP2/RESP3 parsing and command encoding without network I/O.",
+    "source_entrypoints": [
+      "redis._parsers._RESP2Parser",
+      "redis._parsers._RESP3Parser",
+      "redis._parsers.Encoder",
+      "redis._parsers.SocketBuffer"
+    ],
+    "included_behaviors": [
+      "parse RESP simple, bulk, and multi-bulk replies",
+      "decode bulk strings with optional byte preservation",
+      "map Redis error prefixes to exception classes",
+      "encode commands to RESP bulk arrays",
+      "buffer incremental socket reads via SocketBuffer"
+    ],
+    "excluded_behaviors": [
+      "TCP/TLS connection management",
+      "Redis command client and cluster logic",
+      "pub/sub push notification handlers",
+      "hiredis C extension parser"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "RESP parsing couples incremental buffers, encoder settings, and error classification tables.",
+    "signals": [
+      "SocketBuffer incremental reads",
+      "parser rewind on partial reads",
+      "Encoder decode_responses flag"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted._parsers import _RESP2Parser, _RESP3Parser, Encoder",
+    "callable": "featurelifted._parsers._RESP2Parser.read_response",
+    "signature": "read_response(disable_decoding=False, timeout=SENTINEL)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "redis"
+    ],
+    "forbidden_imports": [
+      "redis"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -26,4 +26,6 @@ from featurelifted import Environment, nodes
 
 | Probe | Remove module | Hidden test(s) that must fail |
 | --- | --- | --- |
-| core module | see hidden tests | see hidden tests |
+| Lexer | `lexer.py` | `test_lexer_module_required_for_raw_blocks` |
+| Parser | `parser.py` | `test_parser_module_required_for_if_elif` |
+| AST nodes | `nodes.py` | `test_parse_for_loop_structure` |

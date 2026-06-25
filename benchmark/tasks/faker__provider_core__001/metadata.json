@@ -1,0 +1,78 @@
+{
+  "task_id": "faker__provider_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "resource_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "Faker",
+    "url": "https://github.com/joke2k/faker",
+    "commit": "40.23.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Single-locale Faker providers",
+    "description": "Extract Faker factory and Generator wiring for en_US person, address, and phone_number providers with embedded locale data.",
+    "source_entrypoints": [
+      "faker.proxy.Faker",
+      "faker.factory.Factory.create",
+      "faker.providers.person.en_US",
+      "faker.providers.address.en_US",
+      "faker.providers.phone_number.en_US"
+    ],
+    "included_behaviors": [
+      "construct Faker with locale en_US and default person/address/phone providers",
+      "generate deterministic fake names, addresses, and phone numbers with seed_instance",
+      "resolve localized provider modules and locale resource data"
+    ],
+    "excluded_behaviors": [
+      "multi-locale weighting and proxy locale switching",
+      "CLI, pytest plugin, and documentation",
+      "providers beyond person, address, and phone_number"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "resource_coupling",
+      "implicit_dependency_coupling",
+      "global_state_registry_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "Provider methods depend on locale-specific data tables loaded through dynamic provider discovery and import paths.",
+    "signals": [
+      "locale-scoped provider modules with embedded name/address lists",
+      "factory provider registration and weighted sampling",
+      "generator locale configuration"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Faker",
+    "callable": "featurelifted.Faker",
+    "signature": "Faker(locale: str = 'en_US', providers: list[str] | None = None, **config)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "faker"
+    ],
+    "forbidden_imports": [
+      "faker"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

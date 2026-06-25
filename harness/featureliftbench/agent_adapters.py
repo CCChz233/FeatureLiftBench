@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import os
 import shlex
+import signal
 import subprocess
 import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from .active_agent_processes import register_process
+from .active_agent_processes import terminate_active_agent_processes
+from .active_agent_processes import unregister_process
 
 
 @dataclass(frozen=True)
@@ -183,6 +188,7 @@ class AgentAdapter:
 
         stdout_chunks: list[str] = []
         stderr_chunks: list[str] = []
+        process: subprocess.Popen[str] | None = None
         try:
             process = subprocess.Popen(
                 command,
@@ -191,7 +197,9 @@ class AgentAdapter:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
+                start_new_session=True,
             )
+            register_process(process)
         except FileNotFoundError as exc:
             return AgentCommandResult(
                 name=self.name,
@@ -239,35 +247,47 @@ class AgentAdapter:
             thread.start()
 
         try:
-            returncode = process.wait(timeout=timeout_seconds)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=5)
+            try:
+                returncode = process.wait(timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                _kill_process_group(process)
+                process.wait(timeout=5)
+                for thread in threads:
+                    thread.join(timeout=1)
+                return AgentCommandResult(
+                    name=self.name,
+                    command=command,
+                    report_command=report_command,
+                    returncode=124,
+                    duration_seconds=time.monotonic() - start,
+                    stdout="".join(stdout_chunks),
+                    stderr="".join(stderr_chunks) or f"agent timed out after {timeout_seconds}s",
+                    timed_out=True,
+                    reason=f"agent timed out after {timeout_seconds}s",
+                )
+
             for thread in threads:
-                thread.join(timeout=1)
+                thread.join()
             return AgentCommandResult(
                 name=self.name,
                 command=command,
                 report_command=report_command,
-                returncode=124,
+                returncode=returncode,
                 duration_seconds=time.monotonic() - start,
                 stdout="".join(stdout_chunks),
-                stderr="".join(stderr_chunks) or f"agent timed out after {timeout_seconds}s",
-                timed_out=True,
-                reason=f"agent timed out after {timeout_seconds}s",
+                stderr="".join(stderr_chunks),
             )
+        finally:
+            unregister_process(process)
 
-        for thread in threads:
-            thread.join()
-        return AgentCommandResult(
-            name=self.name,
-            command=command,
-            report_command=report_command,
-            returncode=returncode,
-            duration_seconds=time.monotonic() - start,
-            stdout="".join(stdout_chunks),
-            stderr="".join(stderr_chunks),
-        )
+
+def _kill_process_group(process: subprocess.Popen[str]) -> None:
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        return
+    except (PermissionError, OSError):
+        process.kill()
 
 
 class MiniSweAgentAdapter(AgentAdapter):

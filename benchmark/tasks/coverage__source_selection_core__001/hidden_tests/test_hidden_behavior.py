@@ -40,3 +40,20 @@ def test_source_selector_rejects_non_utf8_filename(tmp_path) -> None:
     reason = selector.skip_reason(bad_name)
     assert reason is not None
     assert "non-encodable" in reason
+
+
+def test_source_selector_omit_wins_over_include(tmp_path) -> None:
+    root = tmp_path / "proj"
+    root.mkdir()
+    kept = root / "keep.py"
+    kept.write_text("a = 1\n", encoding="utf-8")
+    omitted = root / "skip.py"
+    omitted.write_text("b = 2\n", encoding="utf-8")
+
+    selector = SourceSelector(
+        run_include=[str(root / "*.py")],
+        run_omit=[str(omitted)],
+    )
+
+    assert selector.skip_reason(str(kept)) is None
+    assert selector.skip_reason(str(omitted)) is not None

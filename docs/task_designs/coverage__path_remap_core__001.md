@@ -18,6 +18,7 @@ from featurelifted import PathAliases
 | --- | --- | --- |
 | Alias map | `files.py` (`PathAliases.map`) | `test_path_aliases_multiple_rules` |
 | Glob partial match | `files.py` (`globs_to_regex`) | `test_path_aliases_relative_pattern` |
+| Wildcard validation | `files.py` (`PathAliases.add`) | `test_path_aliases_rejects_trailing_wildcards` |
 
 ## Manual Oracle Closure Plan
 

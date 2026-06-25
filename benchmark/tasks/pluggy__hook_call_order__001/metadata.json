@@ -43,9 +43,11 @@
   "entanglement": {
     "level": "high",
     "types": [
+      "framework_coupling",
       "global_state_registry_coupling",
       "implicit_dependency_coupling"
     ],
+    "primary": "framework_coupling",
     "description": "Hook behavior is coupled to plugin registration state, hook caller ordering, wrappers, and firstresult semantics.",
     "signals": [
       "plugin manager registry",
@@ -55,7 +57,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import PluginManager, HookspecMarker, HookimplMarker",
+    "import": "from featurelifted import PluginManager, HookspecMarker, HookimplMarker, PluginValidationError",
     "callable": "featurelifted.PluginManager",
     "signature": "PluginManager(project_name: str)"
   },

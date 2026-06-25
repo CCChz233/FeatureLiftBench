@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -12,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .eval_config import EVAL_PYTEST_VERSION
 from .checks import find_forbidden_dependencies
 from .checks import find_forbidden_imports
 from .checks import read_forbidden_imports
@@ -104,6 +106,7 @@ def evaluate_submission(
         "install_mode": "not-run",
     }
     dependency_install_result = None
+    eval_tooling_result = None
     submission_install_result = None
     build_result = None
     public_result = None
@@ -126,16 +129,15 @@ def evaluate_submission(
                 allowed_roots=[submission_path, venv_dir],
             )
 
-            venv_result = _create_venv(
+            venv_python, venv_result, eval_tooling_result, venv_errors = _prepare_eval_venv(
+                run_cwd=run_cwd,
                 venv_dir=venv_dir,
-                cwd=run_cwd,
+                logs_path=logs_path,
                 timeout_seconds=timeout_seconds,
             )
-            _write_command_logs(logs_path, "venv", venv_result)
+            errors.extend(venv_errors)
 
-            if not venv_result.passed:
-                errors.append("venv creation failed")
-            else:
+            if venv_python is not None and eval_tooling_result is not None and eval_tooling_result.passed:
                 base_env = _base_evaluation_env()
                 dependency_install_result = _install_dependency_lock(
                     venv_python=venv_python,
@@ -242,6 +244,7 @@ def evaluate_submission(
         "original_import_pass": original_import_pass,
         "environment": environment_info,
         "dependency_install": _command_result_payload(dependency_install_result),
+        "eval_tooling": _command_result_payload(eval_tooling_result),
         "submission_install": _command_result_payload(submission_install_result),
         "public_tests": _command_result_payload(public_result),
         "hidden_tests": _command_result_payload(hidden_result),
@@ -400,6 +403,131 @@ def _write_import_guard(
         encoding="utf-8",
     )
     return guard_dir
+
+
+def _prepare_eval_venv(
+    *,
+    run_cwd: Path,
+    venv_dir: Path,
+    logs_path: Path,
+    timeout_seconds: int,
+) -> tuple[Path | None, CommandResult | None, CommandResult | None, list[str]]:
+    """Create an eval venv and ensure pytest is available (retry once on failure)."""
+
+    errors: list[str] = []
+    last_venv_result: CommandResult | None = None
+    last_tooling_result: CommandResult | None = None
+
+    for attempt in range(2):
+        if attempt > 0 and venv_dir.exists():
+            shutil.rmtree(venv_dir, ignore_errors=True)
+
+        venv_suffix = "" if attempt == 0 else "_retry"
+        tooling_suffix = "" if attempt == 0 else "_retry"
+
+        last_venv_result = _create_venv(
+            venv_dir=venv_dir,
+            cwd=run_cwd,
+            timeout_seconds=timeout_seconds,
+        )
+        _write_command_logs(logs_path, f"venv{venv_suffix}", last_venv_result)
+        if not last_venv_result.passed:
+            continue
+
+        venv_python = _venv_python(venv_dir)
+        last_tooling_result = _ensure_eval_tooling(
+            venv_python=venv_python,
+            cwd=run_cwd,
+            env=_base_evaluation_env(),
+            timeout_seconds=timeout_seconds,
+        )
+        _write_command_logs(logs_path, f"eval_tooling{tooling_suffix}", last_tooling_result)
+        if last_tooling_result.passed:
+            return venv_python, last_venv_result, last_tooling_result, errors
+
+    if last_venv_result is not None and not last_venv_result.passed:
+        errors.append("venv creation failed")
+    else:
+        errors.append(
+            f"eval tooling failed: pytest is not available in evaluation venv "
+            f"(expected pytest=={EVAL_PYTEST_VERSION})"
+        )
+    return None, last_venv_result, last_tooling_result, errors
+
+
+def _ensure_eval_tooling(
+    *,
+    venv_python: Path,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    version_check = _run_pytest_version_check(
+        venv_python=venv_python,
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+    if version_check.passed:
+        return version_check
+
+    install_result = _run_command(
+        [
+            str(venv_python),
+            "-B",
+            "-m",
+            "pip",
+            "install",
+            f"pytest=={EVAL_PYTEST_VERSION}",
+        ],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+    if not install_result.passed:
+        install_result = CommandResult(
+            returncode=install_result.returncode,
+            duration_seconds=install_result.duration_seconds,
+            stdout=install_result.stdout,
+            stderr=install_result.stderr,
+            timed_out=install_result.timed_out,
+            reason=(
+                f"failed to install pytest=={EVAL_PYTEST_VERSION} in evaluation venv"
+            ),
+        )
+        return install_result
+
+    return _run_pytest_version_check(
+        venv_python=venv_python,
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _run_pytest_version_check(
+    *,
+    venv_python: Path,
+    cwd: Path,
+    env: dict[str, str],
+    timeout_seconds: int,
+) -> CommandResult:
+    result = _run_command(
+        [str(venv_python), "-B", "-m", "pytest", "--version"],
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+    )
+    if result.passed:
+        return result
+    return CommandResult(
+        returncode=result.returncode,
+        duration_seconds=result.duration_seconds,
+        stdout=result.stdout,
+        stderr=result.stderr,
+        timed_out=result.timed_out,
+        reason="pytest is not available in evaluation venv",
+    )
 
 
 def _create_venv(

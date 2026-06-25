@@ -51,11 +51,12 @@
       "multi-stage parser pipeline",
       "constructor/representer data model",
       "anchor, alias, merge key, and tag handling"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import safe_load, safe_dump, YAMLError",
+    "import": "from featurelifted import safe_load, safe_load_all, safe_dump, safe_dump_all, YAMLError; from featurelifted.constructor import ConstructorError",
     "callable": "featurelifted.safe_load",
     "signature": "safe_load(stream)"
   },

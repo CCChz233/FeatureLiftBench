@@ -5,7 +5,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from featureliftbench.metadata import load_metadata, validate_metadata_shape
+from featureliftbench.metadata import (
+    ENTANGLEMENT_PRIMARY_TYPES,
+    load_metadata,
+    validate_metadata_shape,
+)
 
 
 class MetadataTests(unittest.TestCase):
@@ -53,6 +57,46 @@ class MetadataTests(unittest.TestCase):
 
         self.assertIn(
             "field entanglement.types contains unknown values: mystery_coupling",
+            errors,
+        )
+
+    def test_validate_metadata_shape_accepts_entanglement_primary(self) -> None:
+        metadata = _valid_metadata("sample_task")
+        metadata["entanglement"]["types"] = [
+            "parser_state_coupling",
+            "implicit_dependency_coupling",
+        ]
+        metadata["entanglement"]["primary"] = "parser_state_coupling"
+
+        errors = validate_metadata_shape(metadata)
+
+        self.assertEqual(errors, [])
+
+    def test_validate_metadata_shape_rejects_primary_not_in_types(self) -> None:
+        metadata = _valid_metadata("sample_task")
+        metadata["entanglement"]["types"] = ["implicit_dependency_coupling"]
+        metadata["entanglement"]["primary"] = "framework_coupling"
+
+        errors = validate_metadata_shape(metadata)
+
+        self.assertIn(
+            "field entanglement.primary must also appear in entanglement.types: framework_coupling",
+            errors,
+        )
+
+    def test_validate_metadata_shape_rejects_secondary_only_primary(self) -> None:
+        metadata = _valid_metadata("sample_task")
+        metadata["entanglement"]["types"] = [
+            "implicit_dependency_coupling",
+            "global_state_registry_coupling",
+        ]
+        metadata["entanglement"]["primary"] = "implicit_dependency_coupling"
+
+        errors = validate_metadata_shape(metadata)
+
+        self.assertIn(
+            "field entanglement.primary must be one of: "
+            + ", ".join(ENTANGLEMENT_PRIMARY_TYPES),
             errors,
         )
 

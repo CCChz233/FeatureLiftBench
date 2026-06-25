@@ -1,0 +1,76 @@
+{
+  "task_id": "json5__parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "parser",
+    "json5",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "json5",
+    "url": "https://github.com/google/json5",
+    "commit": "0.9.25-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "JSON5 parse and loads",
+    "description": "Extract json5's parser-driven loads API as a standalone package.",
+    "source_entrypoints": [
+      "json5.loads",
+      "json5.load",
+      "json5.parser.Parser"
+    ],
+    "included_behaviors": [
+      "parse JSON5 objects, arrays, strings, numbers, booleans, and null",
+      "support unquoted keys, single-quoted strings, trailing commas, and comments",
+      "support hexadecimal and leading-plus numeric literals",
+      "raise ValueError with line/column context for malformed input",
+      "optional duplicate-key rejection via allow_duplicate_keys=False"
+    ],
+    "excluded_behaviors": [
+      "json5 dump/dumps serialization",
+      "CLI tool and arg_parser modules",
+      "original project tests and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "JSON5 parsing depends on recursive-descent parser state, scope stack, memoization cache, and lib.py value materialization.",
+    "signals": [
+      "Parser position/errpos/failed flags",
+      "_scopes stack and _cache memoization",
+      "loads bridges Parser output into Python values"
+    ],
+    "primary": "parser_state_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import loads, load",
+    "callable": "featurelifted.loads",
+    "signature": "loads(s: str, *, allow_duplicate_keys: bool = True) -> object"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "json5"
+    ],
+    "forbidden_imports": [
+      "json5"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

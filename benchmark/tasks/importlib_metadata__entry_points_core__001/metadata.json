@@ -1,0 +1,83 @@
+{
+  "task_id": "importlib_metadata__entry_points_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "config_environment_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "importlib_metadata",
+    "url": "https://github.com/python/importlib_metadata",
+    "commit": "7.0.1-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Entry point discovery and selection",
+    "description": "Extract importlib_metadata entry point parsing, EntryPoints selection, and PathDistribution metadata reading.",
+    "source_entrypoints": [
+      "importlib_metadata.entry_points",
+      "importlib_metadata.EntryPoint",
+      "importlib_metadata.EntryPoints",
+      "importlib_metadata.PathDistribution",
+      "importlib_metadata.Sectioned"
+    ],
+    "included_behaviors": [
+      "parse entry point definitions from metadata",
+      "select entry points by group and name",
+      "load entry point targets",
+      "read entry points from PathDistribution metadata directories",
+      "parse INI-style sectioned entry point config"
+    ],
+    "excluded_behaviors": [
+      "full distribution discovery across sys.path",
+      "package file listing and requirements resolution",
+      "original project tests and CLI"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Entry points couple metadata file formats, distribution objects, and environment scanning.",
+    "signals": [
+      "metadata INI section parsing",
+      "PathDistribution filesystem layout",
+      "EntryPoints selection API"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import EntryPoint, EntryPoints, PathDistribution, Sectioned",
+    "callable": "featurelifted.EntryPoints.select",
+    "signature": "EntryPoints.select(**params) -> EntryPoints"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "importlib_metadata",
+      "importlib-metadata"
+    ],
+    "forbidden_imports": [
+      "importlib_metadata"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

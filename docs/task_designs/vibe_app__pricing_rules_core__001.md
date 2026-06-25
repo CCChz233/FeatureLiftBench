@@ -46,6 +46,7 @@ from featurelifted import PricingContext, compute_line_price
 | --- | --- | --- |
 | Tier lookup | `pricing/tiers.py` | `test_tier_boundary_uses_highest_applicable` |
 | Category discounts | `pricing/discounts.py` | `test_unknown_category_falls_back_to_default` |
+| Rules orchestration | `pricing/rules.py` | `test_category_multiplier_applied` (public) |
 
 ## Manual Oracle Closure Plan
 

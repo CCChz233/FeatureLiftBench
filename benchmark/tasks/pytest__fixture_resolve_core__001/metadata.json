@@ -1,0 +1,83 @@
+{
+  "task_id": "pytest__fixture_resolve_core__001",
+  "source": {
+    "name": "pytest",
+    "url": "https://github.com/pytest-dev/pytest",
+    "commit": "b55ab2aabb68c0ce94c3903139b062d0c2790152",
+    "license": "MIT"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "test-framework",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pytest"
+    ],
+    "forbidden_imports": [
+      "pytest",
+      "_pytest"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "pytest fixture name resolution",
+    "description": "Extract pytest fixture name closure resolution and lookup helpers from _pytest.fixtures as a standalone package.",
+    "source_entrypoints": [
+      "_pytest.fixtures.getfixturemarker",
+      "_pytest.fixtures.FixtureManager.getfixtureclosure",
+      "_pytest.fixtures.FixtureManager.getfixturedefs",
+      "_pytest.fixtures.deduplicate_names",
+      "_pytest.fixtures.FixtureLookupError"
+    ],
+    "included_behaviors": [
+      "resolve transitive fixture name closure from initial argnames",
+      "match fixture definitions to parent nodeids",
+      "deduplicate fixture name sequences preserving order",
+      "sort closure fixtures by scope (session before function)",
+      "detect missing fixtures via FixtureLookupError"
+    ],
+    "excluded_behaviors": [
+      "fixture execution, setup/teardown, and parametrization",
+      "full pytest collection and plugin manager integration",
+      "request.getfixturevalue dynamic lookup",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Fixture name resolution couples registry state, nodeid visibility rules, and transitive dependency closure used throughout pytest setup.",
+    "signals": [
+      "FixtureManager arg2fixturedefs registry with nodeid scoping",
+      "getfixtureclosure expands fixture argnames transitively",
+      "scope-ordered teardown/setup sequencing encoded in closure sort"
+    ],
+    "primary": "framework_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import FixtureDef, FixtureRegistry, deduplicate_names, fixture, getfixturemarker, resolve_fixture_closure",
+    "callable": "featurelifted.resolve_fixture_closure",
+    "signature": "resolve_fixture_closure(parent_nodeids, initialnames, registry, ignore_args=None) -> tuple[list[str], dict[str, tuple[FixtureDef, ...]]]"
+  }
+}

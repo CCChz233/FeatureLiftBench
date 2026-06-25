@@ -1,0 +1,83 @@
+{
+  "task_id": "pluggy__hook_specs_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "plugin",
+    "hooks",
+    "validation",
+    "pure-python",
+    "stateful"
+  ],
+  "source": {
+    "name": "pluggy",
+    "url": "https://github.com/pytest-dev/pluggy",
+    "commit": "1.0.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Hook specification validation and discovery",
+    "description": "Extract pluggy hook specification declaration, validation, and pending-hook checks as a standalone package.",
+    "source_entrypoints": [
+      "pluggy.PluginManager",
+      "pluggy.HookspecMarker",
+      "pluggy.HookimplMarker",
+      "pluggy.PluginValidationError",
+      "pluggy.PluginManager.check_pending",
+      "pluggy.PluginManager.add_hookspecs"
+    ],
+    "included_behaviors": [
+      "declare hook specifications with HookspecMarker including firstresult and historic flags",
+      "reject hook implementations with unknown arguments during registration",
+      "reject hookwrapper implementations that are not generator functions",
+      "reject historic hookwrapper combinations via PluginValidationError",
+      "check_pending raises for unknown non-optional hook implementations",
+      "support optionalhook implementations for undeclared hooks",
+      "replay historic hook calls for plugins registered after the first dispatch"
+    ],
+    "excluded_behaviors": [
+      "pytest integration and setuptools entry point loading",
+      "project packaging metadata",
+      "development tests and release tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Hook specification validation is coupled to plugin registration state, historic replay buffers, and caller ordering metadata.",
+    "signals": [
+      "plugin manager registry and hook caller specs",
+      "_verify_hook argument matching against hookspec signatures",
+      "historic hook replay on late plugin registration"
+    ],
+    "primary": "framework_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PluginManager, HookspecMarker, HookimplMarker, PluginValidationError",
+    "callable": "featurelifted.PluginManager.check_pending",
+    "signature": "PluginManager.check_pending() -> None"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pluggy"
+    ],
+    "forbidden_imports": [
+      "pluggy"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

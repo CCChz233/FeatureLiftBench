@@ -26,4 +26,6 @@ from featurelifted import Environment, DictLoader
 
 | Probe | Remove module | Hidden test(s) that must fail |
 | --- | --- | --- |
-| core module | see hidden tests | see hidden tests |
+| Loader cache | `loaders.py` | `test_loader_module_required_for_missing_template` |
+| BaseLoader API | `loaders.py` (`BaseLoader`) | `test_base_loader_subclass_get_source` |
+| Inheritance compile | compiler block resolution | `test_multi_level_inheritance` |

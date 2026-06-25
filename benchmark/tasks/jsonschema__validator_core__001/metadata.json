@@ -50,11 +50,12 @@
       "validator and format checker registries",
       "ValidationError path/schema_path data model",
       "keyword handler interactions"
-    ]
+    ],
+    "primary": "data_model_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Draft202012Validator, validate, ValidationError",
+    "import": "from featurelifted import Draft202012Validator, validate, ValidationError, SchemaError, FormatChecker",
     "callable": "featurelifted.Draft202012Validator",
     "signature": "Draft202012Validator(schema, resolver=None, format_checker=None)"
   },

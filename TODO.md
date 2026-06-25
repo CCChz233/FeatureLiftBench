@@ -2,7 +2,9 @@
 
 这个 TODO 记录 FeatureLiftBench pilot MVP 的完成状态和后续 backlog。FeatureLiftBench 当前定位为：**面向缠绕仓库的功能级解耦评测基准**，英文问题是 **Can Code Agents Decouple Features from Entangled Repositories?**
 
-当前最小闭环已经跑通：十个 clean OSS pilot 任务、任务校验、venv evaluator、基础评分、Agent Harness、并行 suite、token/step 记录和 Copy-All/Oracle 验证都已完成。现在已新增第一条 hard-plus task：`sqlparse__parse_format_core__001`，下一阶段重点是把任务从“干净开源包中的基础解耦 pilot”推进到“vibe/legacy/entangled 仓库中的功能级解耦”。
+当前最小闭环已经跑通：**主榜 50 hard** + **3 smoke**、Oracle **50/50**、Harness **59** 单测、Flash-50 baseline **41/50 functional pass**。**扩榜已完成**（2026-06-25）；**下一阶段：难度校准**（hidden/closure）+ **Pro-50 baseline**。
+
+**Benchmark 现状（含 pass 口径、Flash-50、Pro 进度）** → [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md)
 
 **已知缺陷与限制**见 [docs/limitations.md](docs/limitations.md)。
 
@@ -56,22 +58,33 @@ experiments/              # 成绩单
 | Medium | Oracle closure 通常为 4-10 个运行时文件，约 500-2500 LOC；允许 0-1 个小型白名单依赖；功能跨多个 helper/module；涉及 unicode、路径、转义、排序、错误类型、文件遍历或多参数组合。 | `python-slugify`、`python-pathspec`，候选 `tabulate`、`xmltodict`、`python-frontmatter` |
 | Hard | Oracle closure 通常超过 10 个运行时文件或 2500 LOC；存在 lexer/parser 状态机、插件/注册机制、round-trip 保真、复杂配置继承、数据文件或多依赖交互；hidden tests 覆盖组合行为和错误恢复。 | `tomlkit`、`packaging`、`pluggy`、`click`、`markdown-it-py`、`PyYAML`、`jsonschema` |
 
-当前 benchmark 共 **28 条 task**（easy 1 / medium 2 / hard 25）。完整列表见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)。
+当前 benchmark：**主榜 50 hard**（`benchmark/tasks/`）+ **3 smoke**（`benchmark/sanity/`）。完整列表见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)。
 
-早期 10 题难度示例：
+历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。**当前主 baseline：Flash-50** `benchmark-50-hard-flash-001` → **41/50 (82%)** functional，avg `final_score` **0.472**（目标 functional ~20–30%，仍偏易）。Pro-50 进行中。
 
-* `iniconfig__parse_config__001`：Easy。
-* `python_slugify__slugify_core__001`：Medium。
-* `python_pathspec__gitignore_match__001`：Medium。
-* `tomlkit__roundtrip_document__001`：Hard。
-* `packaging__requirement_marker_specifier__001`：Hard。
-* `pluggy__hook_call_order__001`：Hard。
-* `click__option_parser__001`：Hard。
-* `markdown_it__commonmark_render__001`：Hard。
-* `pyyaml__safe_load_dump__001`：Hard。
-* `jsonschema__validator_core__001`：Hard。
+## 当前 sprint：50 hard 扩榜完成（2026-06-25）
 
-后续 18 题均为 `difficulty=hard`，含 sqlparse×4、coverage×4、jinja2×4、pytest×3、策展 vibe_app×3（同一 pinned commit 多题）。10 条 pilot 已完成两轮 `mini-swe-agent` suite；全量 28 题 suite 见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)。
+| 优先级 | 事项 | 状态 |
+| --- | --- | --- |
+| P0 | Smoke 3 题迁至 `benchmark/sanity/`；默认 hard-only | **完成** |
+| P0 | 加严 8–10 道 Flash 过易 hard（hidden/L3） | **完成** |
+| P0 | 新增 25 hard（5 批） | **完成** |
+| P0 | `verify_all_oracles.py` 50/50 | **完成** |
+| P0 | Design notes 50/50 + module probes ≥3 | **完成** |
+| P1 | 文档：benchmark_tasks / BENCHMARK_STATUS / README / limitations | **完成** |
+| 进行中 | Pro-50 baseline（`deepseek_v4_pro`） | 见 `benchmark-50-hard-pro-*` |
+| 下一步 | 难度校准：high-extraction pass 题加 hidden；functional 压向 20–30% | — |
+| 下一步 | Pro-50 完成后更新 BENCHMARK_STATUS + entanglement 分层表 | — |
+
+## 历史 sprint：28 题夯实（2026-06-24）
+
+| 优先级 | 事项 | 状态 |
+| --- | --- | --- |
+| P0 | 补 8 题 `metadata.output.import` + `audit_output_imports.py` | **完成** |
+| P0 | 28 题 oracle `eval` 可回归 | **完成** |
+| P0 | L1 import + design note 28/28 + module probes ≥3 | **完成** |
+| P1 | `TASK.md` 工作流 / forbidden import / hidden 提示 | **完成** |
+| P2 | L3 included_behaviors 微调（Flash 失败 7 题） | **完成** |
 
 ## Benchmark 维护（新增 / 删除）
 
@@ -89,6 +102,7 @@ experiments/              # 成绩单
 ## Entangled / 多题同库（已并入统一 benchmark）
 
 - [x] `entanglement` 字段与全量 metadata。
+- [x] `entanglement.primary`（7 类互斥主标签）+ `report_entanglement_coverage.py` + **50 hard** 标注。
 - [x] sqlparse / coverage / jinja2 / pytest / vibe_app 多题同库设计。
 - [x] Agent 校准记录：[`experiments/mini-swe-agent/extreme-18-analysis.md`](experiments/mini-swe-agent/extreme-18-analysis.md)（历史 run 名称保留）。
 

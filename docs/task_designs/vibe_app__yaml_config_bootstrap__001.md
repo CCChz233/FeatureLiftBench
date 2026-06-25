@@ -47,6 +47,7 @@ from featurelifted import bootstrap_config, merge_config_layers
 | --- | --- | --- |
 | Deep merge | `config_merge.py` | `test_merge_does_not_mutate_inputs` |
 | Env expansion | `config_loader.py` | `test_env_placeholder_expansion` |
+| Side-effect registry | `state.py` | `test_bootstrap_records_side_effects` |
 
 ## Manual Oracle Closure Plan
 

@@ -52,11 +52,12 @@
       "YAML load increments counters and appends config_paths in GLOBAL_STATE",
       "bootstrap wires four config files with nested merge semantics",
       "duplicate merge helpers with incorrect shallow variant"
-    ]
+    ],
+    "primary": "legacy_vibe_clutter"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import bootstrap_config, merge_config_layers",
+    "import": "from featurelifted import bootstrap_config, merge_config_layers; from featurelifted.config_loader import load_yaml_config; from featurelifted.state import GLOBAL_STATE, reset_state",
     "callable": "featurelifted.bootstrap_config",
     "signature": "bootstrap_config(config_dir: str | Path) -> dict"
   },

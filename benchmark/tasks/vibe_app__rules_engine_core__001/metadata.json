@@ -1,0 +1,81 @@
+{
+  "task_id": "vibe_app__rules_engine_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Business rules engine",
+    "description": "Extract VibeShop rules evaluation (conditions, actions, priority) as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.rules_engine.engine.RulesEngine",
+      "vibe_app.rules_engine.engine.evaluate_rules",
+      "vibe_app.rules_engine.conditions.match_condition",
+      "vibe_app.rules_engine.actions.apply_actions"
+    ],
+    "included_behaviors": [
+      "match field conditions with eq/gt/gte/in/contains operators",
+      "apply set/inc/append actions to facts mappings",
+      "evaluate rules in descending priority order",
+      "track evaluation count in GLOBAL_STATE registry"
+    ],
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and pricing computation",
+      "evaluate_rules_v1 and evaluate_rules_legacy wrong helpers",
+      "CSV import pipeline and app factory clutter",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Correct rules evaluation lives behind duplicate helpers in utils.py and mutates GLOBAL_STATE counters during evaluation.",
+    "signals": [
+      "three similarly named rules helpers with only one correct semantics",
+      "rules engine increments rules_evaluated in GLOBAL_STATE",
+      "conditions/actions split across modules with orchestration in engine.py"
+    ],
+    "primary": "legacy_vibe_clutter"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Rule, RulesEngine, evaluate_rules",
+    "callable": "featurelifted.evaluate_rules",
+    "signature": "evaluate_rules(facts: dict, rules: list[Rule]) -> dict"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

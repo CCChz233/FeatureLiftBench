@@ -89,6 +89,18 @@
             ]
           }
         },
+        "primary": {
+          "type": "string",
+          "enum": [
+            "framework_coupling",
+            "config_environment_coupling",
+            "parser_state_coupling",
+            "resource_coupling",
+            "data_model_coupling",
+            "third_party_dependency_coupling",
+            "legacy_vibe_clutter"
+          ]
+        },
         "description": { "type": "string", "minLength": 1 },
         "signals": {
           "type": "array",

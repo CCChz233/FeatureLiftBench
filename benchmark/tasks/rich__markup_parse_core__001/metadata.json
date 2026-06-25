@@ -1,0 +1,78 @@
+{
+  "task_id": "rich__markup_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "rich",
+    "url": "https://github.com/Textualize/rich",
+    "commit": "13.7.1-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Console markup parsing",
+    "description": "Extract Rich console markup rendering into Text spans, including escaping, nested styles, links, and error handling.",
+    "source_entrypoints": [
+      "rich.markup.render",
+      "rich.markup.escape",
+      "rich.text.Text.from_markup",
+      "rich.errors.MarkupError"
+    ],
+    "included_behaviors": [
+      "render markup tags into Text with style spans",
+      "escape square brackets for literal markup",
+      "support nested/open/close tags and link metadata",
+      "raise MarkupError on mismatched closing tags"
+    ],
+    "excluded_behaviors": [
+      "full Console rendering pipeline and terminal detection",
+      "progress bars, tables, and layout renderables",
+      "syntax highlighting and live displays"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Markup parsing maintains style stacks, span lists, and emoji normalization while building Text objects.",
+    "signals": [
+      "tag open/close stack with implicit close",
+      "style span accumulation on Text",
+      "escaped bracket handling"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted.markup import render, escape; from featurelifted.text import Text; from featurelifted.errors import MarkupError",
+    "callable": "featurelifted.markup.render",
+    "signature": "render(markup: str, style: str | Style = '', emoji: bool = True) -> Text"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "rich"
+    ],
+    "forbidden_imports": [
+      "rich"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

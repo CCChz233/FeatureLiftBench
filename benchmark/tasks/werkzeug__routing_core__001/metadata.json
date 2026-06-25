@@ -1,0 +1,83 @@
+{
+  "task_id": "werkzeug__routing_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "framework_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "werkzeug",
+    "url": "https://github.com/pallets/werkzeug",
+    "commit": "3.0.3-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "URL routing map and adapter",
+    "description": "Extract Werkzeug URL routing: Map, Rule, converters, match, and build.",
+    "source_entrypoints": [
+      "werkzeug.routing.Map",
+      "werkzeug.routing.Rule",
+      "werkzeug.routing.MapAdapter",
+      "werkzeug.routing.Subdomain",
+      "werkzeug.routing.Submount"
+    ],
+    "included_behaviors": [
+      "define URL rules with converters and HTTP methods",
+      "match paths to endpoints with argument extraction",
+      "build URLs from endpoints and arguments",
+      "subdomain and submount rule factories",
+      "redirect and alias redirect exceptions on match"
+    ],
+    "excluded_behaviors": [
+      "WSGI request/response wrappers",
+      "development server and middleware",
+      "form parsing and file uploads",
+      "original project tests and CLI"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Routing couples rule factories, converters, host binding, and WSGI host helpers.",
+    "signals": [
+      "Map/MapAdapter framework objects",
+      "converter registry and validation",
+      "subdomain and mount prefix composition"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted.routing import Map, Rule, MapAdapter, Subdomain, Submount",
+    "callable": "featurelifted.routing.Map",
+    "signature": "Map(rules=None, default_subdomain='', **options)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "werkzeug"
+    ],
+    "forbidden_imports": [
+      "werkzeug"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -93,6 +93,7 @@ featurelifted.parse(sql: str, encoding: str | None = None) -> tuple[Statement, .
 | --- | --- | --- |
 | Grouping | `engine/grouping.py` | `test_cte_aliases_and_identifier_helpers` |
 | SQL data model | `sql.py` | `test_token_navigation_and_ancestor_relationships` |
+| Lexer tokens | `lexer.py` | `test_token_navigation_and_ancestor_relationships` |
 
 ## Manual Oracle Closure Plan
 

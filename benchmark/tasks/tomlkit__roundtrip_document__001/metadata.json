@@ -60,11 +60,12 @@
       "parser and dumper state machines",
       "document/node object model",
       "format-preserving behavior across modules"
-    ]
+    ],
+    "primary": "data_model_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import parse, loads, dumps, document, table, inline_table, array, aot, string, item",
+    "import": "from featurelifted import parse, loads, dumps, document, table, inline_table, array, aot, string, item; from featurelifted.exceptions import ParseError, UnexpectedCharError, InvalidUnicodeValueError",
     "callable": "featurelifted.parse",
     "signature": "parse(string: str | bytes) -> TOMLDocument"
   },

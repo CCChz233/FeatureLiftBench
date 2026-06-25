@@ -26,4 +26,6 @@ from featurelifted import Environment
 
 | Probe | Remove module | Hidden test(s) that must fail |
 | --- | --- | --- |
-| core module | see hidden tests | see hidden tests |
+| Compiler | `compiler.py` | `test_compiler_module_required_for_set_block` |
+| Runtime context | `runtime.py` | `test_runtime_context_exported_vars` |
+| Macros | `compiler.py` / macro emit | `test_macro_render_and_caller` |

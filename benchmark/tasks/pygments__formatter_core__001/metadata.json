@@ -1,0 +1,85 @@
+{
+  "task_id": "pygments__formatter_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "formatter",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "pygments",
+    "url": "https://github.com/pygments/pygments",
+    "commit": "2.15.1",
+    "license": "BSD-2-Clause"
+  },
+  "feature": {
+    "name": "HTML formatter core",
+    "description": "Extract Pygments HTML syntax highlighting formatter and highlight() integration with lexers as a standalone package.",
+    "source_entrypoints": [
+      "pygments.highlight",
+      "pygments.formatters.html.HtmlFormatter",
+      "pygments.formatter.Formatter",
+      "pygments.style.Style",
+      "pygments.lexers.get_lexer_by_name"
+    ],
+    "included_behaviors": [
+      "render token streams to HTML spans with HtmlFormatter",
+      "highlight source with highlight(code, lexer, formatter)",
+      "support nowrap, linenos, cssclass, and title options",
+      "escape HTML in source text and preserve token class names",
+      "resolve Python lexer for integrated highlighting"
+    ],
+    "excluded_behaviors": [
+      "image, LaTeX, RTF, SVG, and terminal formatters",
+      "command-line pygmentize tool",
+      "full lexer catalog beyond Python integration",
+      "original project tests and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "HTML formatting couples formatter option state, style registries, token-to-CSS mapping, and lexer-driven highlight pipelines.",
+    "signals": [
+      "formatter option validation and defaults",
+      "style and token class translation",
+      "highlight() lexer-formatter pipeline",
+      "line number and wrapper table state"
+    ],
+    "primary": "parser_state_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import highlight, HtmlFormatter, get_lexer_by_name",
+    "callable": "featurelifted.highlight",
+    "signature": "highlight(code: str, lexer: Lexer, formatter: Formatter, outfile: IO[str] | None = None) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pygments"
+    ],
+    "forbidden_imports": [
+      "pygments"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

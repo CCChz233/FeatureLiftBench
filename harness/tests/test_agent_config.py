@@ -87,6 +87,39 @@ class AgentConfigTests(unittest.TestCase):
 
             self.assertEqual(loaded.run_config.agent_bin, "/cli/bin/mini")
 
+    def test_nex_profile_uses_siliconflow_base_not_deepseek(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            env_file = root / ".env"
+            config_file = root / "agents.toml"
+            env_file.write_text(
+                'FEATURELIFTBENCH_API_BASE="https://api.deepseek.com/v1"\n'
+                'SILICONFLOW_API_BASE="https://api.siliconflow.cn/v1"\n'
+                'SILICONFLOW_API_KEY="sk-sf-test"\n',
+                encoding="utf-8",
+            )
+            config_file.write_text(
+                "[profiles.nex_n2_pro]\n"
+                'model = "openai/nex-agi/Nex-N2-Pro"\n'
+                'api_base_env = "SILICONFLOW_API_BASE"\n'
+                'api_key_env = "SILICONFLOW_API_KEY"\n',
+                encoding="utf-8",
+            )
+
+            loaded = load_agent_run_config(
+                base_config=AgentRunConfig(agent="mini-swe-agent"),
+                config_path=config_file,
+                profile_name="nex_n2_pro",
+                env_file=env_file,
+            )
+
+            self.assertEqual(loaded.run_config.model, "openai/nex-agi/Nex-N2-Pro")
+            self.assertEqual(loaded.summary["api_base"], "https://api.siliconflow.cn/v1")
+            self.assertTrue(loaded.summary["api_key_present"])
+            env = loaded.run_config.env or {}
+            self.assertEqual(env["OPENAI_BASE_URL"], "https://api.siliconflow.cn/v1")
+            self.assertEqual(env["OPENAI_API_KEY"], "sk-sf-test")
+
 
 if __name__ == "__main__":
     unittest.main()

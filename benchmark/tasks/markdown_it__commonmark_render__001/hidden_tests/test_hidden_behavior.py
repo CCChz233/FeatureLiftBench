@@ -33,3 +33,10 @@ def test_fence_rule_disable_and_link_attributes() -> None:
     link_open = token.children[0]
     assert link_open.type == "link_open"
     assert link_open.attrGet("href") == "https://example.com"
+
+
+def test_strikethrough_and_reference_links() -> None:
+    md = MarkdownIt("commonmark", {"linkify": False}).enable("strikethrough")
+    html = md.render("~~gone~~ and [ref][]\n\n[ref]: https://example.com").strip()
+    assert "<s>gone</s>" in html
+    assert 'href="https://example.com"' in html

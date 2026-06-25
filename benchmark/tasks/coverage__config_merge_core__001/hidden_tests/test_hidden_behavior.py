@@ -50,3 +50,18 @@ def test_read_run_config_multiline_lists(tmp_path, monkeypatch) -> None:
     config = read_run_config(config_file=True)
 
     assert config.run_include == ["first", "second", "third"]
+
+
+def test_read_run_config_relative_files_section(tmp_path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    Path(".coveragerc").write_text(
+        "[run]\n"
+        "relative_files = true\n"
+        "disable_warnings = no-data-collected\n",
+        encoding="utf-8",
+    )
+
+    config = read_run_config(config_file=True)
+
+    assert config.relative_files is True
+    assert "no-data-collected" in config.disable_warnings

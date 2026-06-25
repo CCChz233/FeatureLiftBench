@@ -73,11 +73,12 @@
       "compiler id-tracking and optimizer passes",
       "runtime Context and exported variable handling",
       "environment owns lexer, parser, compiler pipeline"
-    ]
+    ],
+    "primary": "framework_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Environment",
+    "import": "from featurelifted import Environment; from featurelifted.compiler import generate; from featurelifted.runtime import Context",
     "callable": "featurelifted.Environment.from_string",
     "signature": "from_string(source: str, globals: dict | None = None) -> Template"
   }

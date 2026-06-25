@@ -18,6 +18,7 @@ from featurelifted import GlobMatcher, prep_patterns, globs_to_regex
 | --- | --- | --- |
 | Regex join helper | `misc.py` (`join_regex`) | `test_glob_matcher_many_patterns` |
 | Glob tokenizer | `files.py` (`_glob_to_regex`) | `test_glob_matcher_backslash_pattern` |
+| Windows paths | `files.py` (`GlobMatcher.match`) | `test_glob_matcher_respects_windows_style_paths` |
 
 ## Manual Oracle Closure Plan
 

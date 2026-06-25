@@ -1,0 +1,29 @@
+name: Eval Oracles
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "harness/**"
+      - "benchmark/tasks/**"
+      - "docker/Dockerfile.eval"
+
+jobs:
+  oracle-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build eval image
+        run: docker build -f docker/Dockerfile.eval -t featureliftbench-eval:latest .
+
+      - name: Verify oracle submissions in Docker
+        run: |
+          docker run --rm --entrypoint python \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            -e PYTHONPATH=/workspace/harness \
+            featureliftbench-eval:latest \
+            harness/scripts/verify_all_oracles.py --json

@@ -51,7 +51,9 @@
       "apply built-in filters in templates and via call_filter",
       "evaluate built-in tests in templates and via call_test",
       "support common filters: capitalize, default, length, join, map, select",
-      "support common tests: defined, undefined, even, odd, number, string"
+      "support common tests: defined, undefined, even, odd, number, string",
+      "default filter honors boolean true to treat falsey values as missing",
+      "runtime Undefined and filters/tests registries must be available for call_filter/call_test"
     ],
     "excluded_behaviors": [
       "custom extension filters",
@@ -72,11 +74,12 @@
       "DEFAULT_FILTERS/DEFAULT_TESTS wired through defaults.py",
       "filters depend on runtime Undefined and MarkupSafe",
       "call_filter/call_test require compiled expression path"
-    ]
+    ],
+    "primary": "framework_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Environment",
+    "import": "from featurelifted import Environment, filters, tests; from featurelifted.runtime import Undefined",
     "callable": "featurelifted.Environment.call_filter",
     "signature": "call_filter(name: str, value: object, *args, **kwargs) -> object"
   }

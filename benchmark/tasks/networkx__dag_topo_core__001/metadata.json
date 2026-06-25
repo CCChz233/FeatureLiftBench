@@ -1,0 +1,83 @@
+{
+  "task_id": "networkx__dag_topo_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "graph",
+    "dag",
+    "topological-sort",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "networkx",
+    "url": "https://github.com/networkx/networkx",
+    "commit": "3.3-curated-dag-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "DAG topological sorting",
+    "description": "Extract NetworkX directed-acyclic-graph topological sort APIs as a standalone package.",
+    "source_entrypoints": [
+      "networkx.DiGraph",
+      "networkx.topological_sort",
+      "networkx.lexicographical_topological_sort",
+      "networkx.topological_generations",
+      "networkx.is_directed_acyclic_graph",
+      "networkx.NetworkXError",
+      "networkx.NetworkXUnfeasible"
+    ],
+    "included_behaviors": [
+      "construct directed graphs and add edges",
+      "yield nodes in topological sort order for DAGs",
+      "yield lexicographically stable topological orderings",
+      "yield topological generations (Kahn layers)",
+      "detect directed acyclic graphs",
+      "raise NetworkXError for undirected graphs and NetworkXUnfeasible for cycles"
+    ],
+    "excluded_behaviors": [
+      "full NetworkX algorithm suite and drawing backends",
+      "SciPy/NumPy graph backends",
+      "original project tests and documentation",
+      "graph I/O formats and generators beyond empty_graph helper"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Topological ordering depends on DiGraph adjacency views, indegree bookkeeping, and exception types across multiple class modules.",
+    "signals": [
+      "DiGraph succ/pred views and edge mutation",
+      "topological_generations indegree map state",
+      "graph class hierarchy shared with convert helpers"
+    ],
+    "primary": "data_model_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import DiGraph, topological_sort, lexicographical_topological_sort, is_directed_acyclic_graph; from featurelifted.exception import NetworkXError, NetworkXUnfeasible",
+    "callable": "featurelifted.topological_sort",
+    "signature": "topological_sort(G: DiGraph)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "networkx"
+    ],
+    "forbidden_imports": [
+      "networkx"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

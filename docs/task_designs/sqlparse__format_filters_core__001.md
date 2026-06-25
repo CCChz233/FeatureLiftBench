@@ -87,6 +87,7 @@ featurelifted.format(sql: str, encoding: str | None = None, **options) -> str
 | --- | --- | --- |
 | Reindent filter | `filters/reindent.py` | `test_formatter_comment_stripping_and_spacing` |
 | Formatter validation | `formatter.py` | `test_formatter_rejects_invalid_options` |
+| Filter stack | `engine/filter_stack.py` | `test_formatter_comment_stripping_and_spacing` |
 
 ## Manual Oracle Closure Plan
 

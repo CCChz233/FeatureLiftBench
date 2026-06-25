@@ -34,7 +34,8 @@
       "parse SQL text into Statement token trees",
       "support token tree traversal and identifier helpers",
       "preserve parent/ancestor relationships and comparison navigation",
-      "extract identifiers, aliases, and CTE structure from parsed statements"
+      "extract identifiers, aliases, and CTE structure from parsed statements",
+      "Identifier.get_name/get_real_name/get_alias and token ancestor navigation within Where clauses"
     ],
     "excluded_behaviors": [
       "multi-statement script splitting",
@@ -58,7 +59,8 @@
       "grouped token tree data model",
       "identifier and comparison navigation helpers",
       "public API hides a multi-module runtime closure"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",

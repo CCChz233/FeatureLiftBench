@@ -18,6 +18,7 @@ from featurelifted import CoverageConfig, read_run_config
 | --- | --- | --- |
 | INI parser | `config.py` (`HandyConfigParser`) | `test_read_run_config_from_setup_cfg` |
 | Env merge | `config.py` (`read_coverage_config`) | `test_read_run_config_env_data_file` |
+| Multiline lists | `config.py` / `tomlconfig.py` list merge | `test_read_run_config_multiline_lists` |
 
 ## Manual Oracle Closure Plan
 

@@ -1,12 +1,17 @@
 # FeatureLiftBench Docs
 
-This directory holds design notes that are not yet benchmark tasks.
+Canonical docs for the **28-task unified benchmark**:
 
-Current structure:
+| Doc | Purpose |
+| --- | --- |
+| [CONCEPTS.md](CONCEPTS.md) | **Start here** — what we measure, how a task is defined, tests, submission |
+| [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) | **Current baseline, spec gaps, fix priority** |
+| [benchmark_tasks.md](benchmark_tasks.md) | Task catalog and run commands |
+| [TASK_FORMAT.md](TASK_FORMAT.md) | Task directory and `metadata.json` spec |
+| [limitations.md](limitations.md) | Harness / evaluator known issues |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Three-layer layout |
+| [DIRECTORY.md](DIRECTORY.md) | Path map |
 
-```text
-docs/
-  task_designs/   # candidate task specs before a real tasks/<task_id>/ directory exists
-```
+Design notes for individual tasks: [task_designs/](task_designs/) (human notes; machine spec is `TASK_FORMAT.md`).
 
-A task design note is allowed to be speculative. A real task under `tasks/` should only be added after the source repo snapshot, pinned commit, public tests, hidden tests, metadata, forbidden imports, and at least one oracle/baseline path are ready.
+A task design note is allowed to be speculative. A real task under `benchmark/tasks/` should only ship after source snapshot, public/hidden tests, metadata, forbidden imports, and oracle eval path are ready.

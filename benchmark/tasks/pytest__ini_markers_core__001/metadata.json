@@ -46,8 +46,9 @@
     "included_behaviors": [
       "parse multiline ini markers values into linelist entries",
       "append marker lines preserving order",
-      "split marker lines into name and description",
-      "strip whitespace from linelist entries"
+      "split marker lines into name and description (strip name; preserve description whitespace)",
+      "strip whitespace from linelist entries",
+      "MarkerRegistry preserves marker declaration order from ini lines"
     ],
     "excluded_behaviors": [
       "full Config initialization and plugin loading",
@@ -67,7 +68,8 @@
       "linelist ini type coerces multiline strings",
       "addinivalue_line appends to cached marker registry",
       "marker names/descriptions parsed for --markers output"
-    ]
+    ],
+    "primary": "config_environment_coupling"
   },
   "output": {
     "package": "featurelifted",

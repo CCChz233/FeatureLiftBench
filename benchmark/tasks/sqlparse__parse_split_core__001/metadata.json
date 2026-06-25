@@ -52,11 +52,12 @@
       "lexer and statement-splitting state",
       "grouped token tree data model for split boundaries",
       "public API hides a multi-module runtime closure"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import parse, parsestream, split",
+    "import": "from featurelifted import parse, parsestream, split, sql, tokens",
     "callable": "featurelifted.parse",
     "signature": "parse(sql: str, encoding: str | None = None) -> tuple[Statement, ...]"
   },

@@ -1,0 +1,83 @@
+{
+  "task_id": "jinja2__extensions_core__001",
+  "source": {
+    "name": "jinja2",
+    "url": "https://github.com/pallets/jinja",
+    "commit": "15206881c006c79667fe5154fe80c01c65410679",
+    "license": "BSD-3-Clause"
+  },
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "template-engine",
+    "pure-python",
+    "multi-module"
+  ],
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "jinja2",
+      "Jinja2"
+    ],
+    "forbidden_imports": [
+      "jinja2",
+      "jinja"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "feature": {
+    "name": "Jinja2 extension loading",
+    "description": "Extract Jinja2 extension registration, loading, and template integration as a standalone package.",
+    "source_entrypoints": [
+      "jinja2.environment.load_extensions",
+      "jinja2.environment.Environment.extensions",
+      "jinja2.ext.Extension"
+    ],
+    "included_behaviors": [
+      "load extensions by import path string or Extension subclass",
+      "register extension tags and preprocessors with Environment",
+      "iterate extensions in priority order",
+      "render templates using bundled loopcontrols and do extensions"
+    ],
+    "excluded_behaviors": [
+      "i18n/gettext extension and babel integration",
+      "async rendering and bytecode cache",
+      "loaders and extends/include inheritance graph",
+      "CLI, original tests, docs, packaging metadata"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Extension loading couples Environment initialization, parser tag registration, and compile/render pipeline hooks.",
+    "signals": [
+      "load_extensions resolves import strings and binds to Environment",
+      "Extension.priority controls parser/preprocess ordering",
+      "extensions mutate lexer/parser state during Environment setup"
+    ],
+    "primary": "framework_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Environment, Extension",
+    "callable": "featurelifted.Environment",
+    "signature": "Environment(extensions: Sequence[str | Type[Extension]] = ()) -> Environment"
+  }
+}

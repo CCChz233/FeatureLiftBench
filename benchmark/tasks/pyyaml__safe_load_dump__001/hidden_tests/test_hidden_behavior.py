@@ -44,3 +44,11 @@ def test_parse_errors_and_flow_style_dumping() -> None:
     assert safe_dump({"items": [{"x": 1}, {"y": 2}]}, default_flow_style=True) == (
         "{items: [{x: 1}, {y: 2}]}\n"
     )
+
+
+def test_unicode_scalar_and_timestamp_tag() -> None:
+    doc = safe_load("when: 2020-01-02\nemoji: \U0001f600\n")
+    assert doc["when"].year == 2020
+    assert doc["emoji"] == "\U0001f600"
+    roundtrip = safe_load(safe_dump(doc))
+    assert roundtrip["emoji"] == "\U0001f600"

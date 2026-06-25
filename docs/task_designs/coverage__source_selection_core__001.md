@@ -19,8 +19,9 @@ selector.skip_reason(filename, modulename=None)
 
 | Probe | Remove module | Hidden test(s) that must fail |
 | --- | --- | --- |
-| Matchers | `files.py` (`GlobMatcher`) | `test_source_selector_honors_omit` |
+| Matchers | `files.py` (`GlobMatcher`) | `test_source_selector_include_without_source` |
 | Policy core | `inorout.py` (`check_include_omit_etc`) | `test_source_selector_package_name` |
+| Encoding guard | `inorout.py` / disposition | `test_source_selector_rejects_non_utf8_filename` |
 
 ## Manual Oracle Closure Plan
 

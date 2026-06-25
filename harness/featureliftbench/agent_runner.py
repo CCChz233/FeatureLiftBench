@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import sys
+import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
@@ -13,12 +15,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .active_agent_processes import terminate_active_agent_processes
 from .agent_adapters import AgentRunConfig
 from .agent_adapters import AgentRunContext
 from .agent_adapters import get_agent_adapter
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
 from .paths import resolve_task_input
+from .suite_utils import compact_suite_run_entry
+from .suite_utils import evaluation_payload as _evaluation_payload
+from .suite_utils import rebuild_suite_summary
+from .suite_utils import run_status as _run_status
+from .task_discovery import discover_main_task_dirs
 from .suite_progress import SuiteBatchProgressManager
 from .suite_progress import live_suite_progress
 from .validate import validate_task
@@ -34,13 +42,20 @@ USAGE_SUM_FIELDS = (
     "billed_tokens",
 )
 
-USAGE_COMPACT_FIELDS = (
-    "assistant_steps",
-    "api_calls",
-    "prompt_tokens",
-    "completion_tokens",
-    "total_tokens",
+RATE_LIMIT_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"rate limit",
+        r"ratelimit",
+        r"too many requests",
+        r"\b429\b",
+        r"quota exceeded",
+        r"tpm limit",
+    )
 )
+
+# SiliconFlow TPM limits use a rolling 60s window; wait long enough to clear it.
+RATE_LIMIT_RETRY_WAIT_SECONDS = 65.0
 
 
 def run_agent_on_path(
@@ -50,11 +65,15 @@ def run_agent_on_path(
     agent_config_summary: dict[str, Any] | None = None,
     num_workers: int = 1,
     progress: bool = False,
+    *,
+    task_ids: list[str] | None = None,
+    skip_completed_dir: str | Path | None = None,
+    retry_rate_limit: int = 1,
 ) -> dict[str, Any]:
     """Run an agent on one task directory or every task under a dataset root."""
 
     resolved = resolve_task_input(input_path)
-    task_dirs = discover_task_dirs(resolved)
+    task_dirs = discover_task_dirs(resolved, task_ids=task_ids)
     output_path = Path(output_dir).resolve()
     if len(task_dirs) == 1 and (resolved / "metadata.json").is_file():
         return run_agent_on_task(
@@ -70,6 +89,8 @@ def run_agent_on_path(
         agent_config_summary=agent_config_summary,
         num_workers=num_workers,
         progress=progress,
+        skip_completed_dir=skip_completed_dir,
+        retry_rate_limit=retry_rate_limit,
     )
 
 
@@ -80,6 +101,8 @@ def run_agent_on_suite(
     agent_config_summary: dict[str, Any] | None = None,
     num_workers: int = 1,
     progress: bool = False,
+    skip_completed_dir: str | Path | None = None,
+    retry_rate_limit: int = 1,
 ) -> dict[str, Any]:
     """Run an agent on multiple tasks and write a suite summary."""
 
@@ -87,34 +110,24 @@ def run_agent_on_suite(
     output_path.mkdir(parents=True, exist_ok=True)
     worker_count = max(1, int(num_workers))
 
+    skipped_runs = load_skipped_runs(skip_completed_dir)
+    runnable_dirs = [task_dir for task_dir in task_dirs if task_dir.name not in skipped_runs]
+
     runs = _run_suite_tasks(
-        task_dirs=task_dirs,
+        task_dirs=runnable_dirs,
         output_path=output_path,
         config=config,
         agent_config_summary=agent_config_summary,
         num_workers=worker_count,
         progress=progress,
+        retry_rate_limit=max(1, int(retry_rate_limit)),
     )
 
-    final_scores = [
-        run.get("evaluation", {}).get("scores", {}).get("final_score")
-        for run in runs
-        if isinstance(run.get("evaluation"), dict)
-    ]
-    numeric_scores = [score for score in final_scores if isinstance(score, (int, float))]
+    if skipped_runs:
+        runs = _merge_suite_runs(task_dirs, runs, skipped_runs)
+
+    summary = rebuild_suite_summary(runs)
     agent_usage_totals = _sum_agent_usage(runs)
-    summary = {
-        "total": len(runs),
-        "passed": sum(1 for run in runs if run.get("status") == "passed"),
-        "failed": sum(1 for run in runs if run.get("status") != "passed"),
-        "agent_failures": sum(1 for run in runs if not run.get("agent", {}).get("passed", False)),
-        "missing_submissions": sum(
-            1 for run in runs if not run.get("submission", {}).get("exists", False)
-        ),
-        "average_final_score": (
-            round(sum(numeric_scores) / len(numeric_scores), 6) if numeric_scores else 0.0
-        ),
-    }
     result = {
         "mode": "suite",
         "generated_at": _utc_now(),
@@ -122,23 +135,11 @@ def run_agent_on_suite(
         "agent_config": agent_config_summary or {},
         "output_dir": str(output_path),
         "num_workers": worker_count,
+        "retry_rate_limit": max(1, int(retry_rate_limit)),
+        "skipped_completed": sorted(skipped_runs),
         "summary": summary,
         "agent_usage_totals": agent_usage_totals,
-        "runs": [
-            {
-                "task_id": run.get("task_id", ""),
-                "status": run.get("status", "failed"),
-                "run_json": run.get("run_json", ""),
-                "result_json": run.get("evaluation", {}).get("result_json", ""),
-                "final_score": run.get("evaluation", {}).get("scores", {}).get("final_score", 0.0),
-                "agent_usage": _compact_agent_usage(
-                    run.get("agent", {}).get("usage", {})
-                    if isinstance(run.get("agent"), dict)
-                    else {}
-                ),
-            }
-            for run in runs
-        ],
+        "runs": [compact_suite_run_entry(run) for run in runs],
     }
     (output_path / "suite.json").write_text(
         json.dumps(result, indent=2, sort_keys=True),
@@ -270,6 +271,7 @@ def _run_suite_tasks(
     agent_config_summary: dict[str, Any] | None,
     num_workers: int,
     progress: bool,
+    retry_rate_limit: int = 1,
 ) -> list[dict[str, Any]]:
     total = len(task_dirs)
     use_live_progress = progress and sys.stderr.isatty() and total > 1
@@ -284,6 +286,7 @@ def _run_suite_tasks(
                 num_workers=num_workers,
                 total=total,
                 progress_manager=progress_manager,
+                retry_rate_limit=retry_rate_limit,
             )
 
     return _execute_suite_tasks(
@@ -295,6 +298,7 @@ def _run_suite_tasks(
         total=total,
         progress=progress,
         progress_manager=None,
+        retry_rate_limit=retry_rate_limit,
     )
 
 
@@ -308,40 +312,48 @@ def _execute_suite_tasks(
     total: int,
     progress: bool = False,
     progress_manager: SuiteBatchProgressManager | None = None,
+    retry_rate_limit: int = 1,
 ) -> list[dict[str, Any]]:
     if num_workers == 1:
         runs = []
-        for index, task_dir in enumerate(task_dirs, start=1):
-            runs.append(
-                _run_suite_task_safely(
-                    index=index,
-                    total=total,
-                    task_dir=task_dir,
-                    output_path=output_path,
-                    config=config,
-                    agent_config_summary=agent_config_summary,
-                    progress=progress and progress_manager is None,
-                    progress_manager=progress_manager,
+        try:
+            for index, task_dir in enumerate(task_dirs, start=1):
+                runs.append(
+                    _run_suite_task_safely(
+                        index=index,
+                        total=total,
+                        task_dir=task_dir,
+                        output_path=output_path,
+                        config=config,
+                        agent_config_summary=agent_config_summary,
+                        progress=progress and progress_manager is None,
+                        progress_manager=progress_manager,
+                        retry_rate_limit=retry_rate_limit,
+                    )
                 )
-            )
+        except KeyboardInterrupt:
+            _stop_suite_run()
+            raise SystemExit(130) from None
         return runs
 
     runs_by_index: dict[int, dict[str, Any]] = {}
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        futures = {
-            executor.submit(
-                _run_suite_task_safely,
-                index=index,
-                total=total,
-                task_dir=task_dir,
-                output_path=output_path,
-                config=config,
-                agent_config_summary=agent_config_summary,
-                progress=progress and progress_manager is None,
-                progress_manager=progress_manager,
-            ): index
-            for index, task_dir in enumerate(task_dirs, start=1)
-        }
+    executor = ThreadPoolExecutor(max_workers=num_workers)
+    futures = {
+        executor.submit(
+            _run_suite_task_safely,
+            index=index,
+            total=total,
+            task_dir=task_dir,
+            output_path=output_path,
+            config=config,
+            agent_config_summary=agent_config_summary,
+            progress=progress and progress_manager is None,
+            progress_manager=progress_manager,
+            retry_rate_limit=retry_rate_limit,
+        ): index
+        for index, task_dir in enumerate(task_dirs, start=1)
+    }
+    try:
         for future in as_completed(futures):
             index = futures[future]
             try:
@@ -356,7 +368,20 @@ def _execute_suite_tasks(
                     exc,
                     progress_manager=progress_manager,
                 )
+    except KeyboardInterrupt:
+        _stop_suite_run()
+        for future in futures:
+            future.cancel()
+        executor.shutdown(wait=False, cancel_futures=True)
+        raise SystemExit(130) from None
+    else:
+        executor.shutdown(wait=True)
     return [runs_by_index[index] for index in range(1, total + 1)]
+
+
+def _stop_suite_run() -> None:
+    print("\nStopping suite run and terminating active agent processes...", file=sys.stderr, flush=True)
+    terminate_active_agent_processes()
 
 
 def _run_suite_task_safely(
@@ -369,6 +394,7 @@ def _run_suite_task_safely(
     agent_config_summary: dict[str, Any] | None,
     progress: bool,
     progress_manager: SuiteBatchProgressManager | None = None,
+    retry_rate_limit: int = 1,
 ) -> dict[str, Any]:
     task_id = task_dir.name
     if progress_manager is not None:
@@ -379,11 +405,12 @@ def _run_suite_task_safely(
 
     run_output = output_path / task_id
     try:
-        result = run_agent_on_task(
-            task_dir,
-            run_output,
-            config,
+        result = _run_suite_task_with_retries(
+            task_dir=task_dir,
+            run_output=run_output,
+            config=config,
             agent_config_summary=agent_config_summary,
+            max_attempts=retry_rate_limit,
         )
     except Exception as exc:  # Defensive: one task should not abort the suite.
         result = _exception_run_result(
@@ -458,23 +485,110 @@ def _progress(enabled: bool, message: str) -> None:
         print(message, file=sys.stderr, flush=True)
 
 
-def discover_task_dirs(input_path: str | Path) -> list[Path]:
+def discover_task_dirs(input_path: str | Path, task_ids: list[str] | None = None) -> list[Path]:
     """Discover task directories from either a task dir or a dataset root."""
 
     path = resolve_task_input(input_path)
-    if (path / "metadata.json").is_file():
-        return [path]
-    if not path.is_dir():
-        raise ValueError(f"task path does not exist or is not a directory: {path}")
-    skip_dirs = {"extreme"}
-    task_dirs = sorted(
-        child
-        for child in path.iterdir()
-        if child.name not in skip_dirs and (child / "metadata.json").is_file()
-    )
-    if not task_dirs:
-        raise ValueError(f"no task directories found under: {path}")
-    return task_dirs
+    hard_only = path.resolve() == resolve_task_input("benchmark/tasks").resolve()
+    return discover_main_task_dirs(path, task_ids=task_ids, hard_only=hard_only)
+
+
+def load_skipped_runs(skip_dir: str | Path | None) -> dict[str, dict[str, Any]]:
+    """Load passed task run.json payloads from a previous suite output directory."""
+
+    if skip_dir is None:
+        return {}
+    base_dir = Path(skip_dir).resolve()
+    suite_path = base_dir / "suite.json"
+    if not suite_path.is_file():
+        return {}
+    suite = json.loads(suite_path.read_text(encoding="utf-8"))
+    skipped: dict[str, dict[str, Any]] = {}
+    for entry in suite.get("runs", []):
+        if not isinstance(entry, dict) or entry.get("status") != "passed":
+            continue
+        task_id = entry.get("task_id")
+        if not isinstance(task_id, str) or not task_id:
+            continue
+        run_json = base_dir / task_id / "run.json"
+        if run_json.is_file():
+            skipped[task_id] = json.loads(run_json.read_text(encoding="utf-8"))
+    return skipped
+
+
+def _merge_suite_runs(
+    ordered_task_dirs: list[Path],
+    fresh_runs: list[dict[str, Any]],
+    skipped_runs: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    fresh_by_id = {
+        run.get("task_id"): run for run in fresh_runs if isinstance(run.get("task_id"), str)
+    }
+    merged: list[dict[str, Any]] = []
+    for task_dir in ordered_task_dirs:
+        task_id = task_dir.name
+        if task_id in skipped_runs:
+            merged.append(skipped_runs[task_id])
+        elif task_id in fresh_by_id:
+            merged.append(fresh_by_id[task_id])
+    return merged
+
+
+def _run_suite_task_with_retries(
+    *,
+    task_dir: Path,
+    run_output: Path,
+    config: AgentRunConfig,
+    agent_config_summary: dict[str, Any] | None,
+    max_attempts: int = 1,
+) -> dict[str, Any]:
+    attempts = max(1, int(max_attempts))
+    result: dict[str, Any] = {}
+    for attempt in range(attempts):
+        result = run_agent_on_task(
+            task_dir,
+            run_output,
+            config,
+            agent_config_summary=agent_config_summary,
+        )
+        if result.get("status") == "passed" or not _is_rate_limit_failure(result):
+            return result
+        if attempt < attempts - 1:
+            task_id = result.get("task_id", task_dir.name)
+            print(
+                f"Rate limit on {task_id}; retrying in {RATE_LIMIT_RETRY_WAIT_SECONDS:.0f}s "
+                f"(attempt {attempt + 2}/{attempts})...",
+                file=sys.stderr,
+                flush=True,
+            )
+            time.sleep(RATE_LIMIT_RETRY_WAIT_SECONDS)
+    return result
+
+
+def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
+    chunks: list[str] = []
+    agent = result.get("agent")
+    if isinstance(agent, dict):
+        usage = agent.get("usage")
+        if isinstance(usage, dict):
+            exit_status = usage.get("exit_status")
+            if isinstance(exit_status, str) and exit_status:
+                chunks.append(exit_status)
+        for key in ("reason",):
+            value = agent.get(key)
+            if isinstance(value, str):
+                chunks.append(value)
+        for log_key in ("stderr_log", "stdout_log"):
+            log_path = agent.get(log_key)
+            if isinstance(log_path, str):
+                path = Path(log_path)
+                if path.is_file():
+                    chunks.append(path.read_text(encoding="utf-8", errors="replace"))
+    errors = result.get("errors")
+    if isinstance(errors, list):
+        chunks.extend(str(item) for item in errors)
+    text = "\n".join(chunks)
+    return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
 
 
 def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, metadata: dict[str, Any]) -> Path:
@@ -554,11 +668,28 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
     allowed_dependencies = _format_list(environment.get("allowed_dependencies", []))
     forbidden_dependencies = _format_list(environment.get("forbidden_dependencies", []))
     forbidden_imports = _format_list(environment.get("forbidden_imports", []))
+    forbidden_import_names = [
+        item.strip("- ").strip()
+        for item in (environment.get("forbidden_imports") or [])
+        if isinstance(item, str) and item.strip()
+    ]
+    forbidden_grep = " ".join(forbidden_import_names[:5]) or "original package names"
 
     return (
         f"# FeatureLiftBench Task: {metadata.get('task_id', '')}\n\n"
         "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
         "`repo/` into a standalone, installable Python package under `submission/`.\n\n"
+        "## How to work\n\n"
+        "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
+        "listed import path, not just the primary callable.\n"
+        "2. Copy the **minimal** implementation closure from `repo/` into `submission/featurelifted/`.\n"
+        "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
+        f"4. Before submitting, grep your submission for forbidden imports, e.g. "
+        f"`grep -R \"import \" submission/ | grep -E '({forbidden_grep})'` — any match fails evaluation.\n"
+        "5. Run `pytest public_tests/` in the workspace and fix failures.\n"
+        "6. **Public tests passing does not mean you are done.** The evaluator also runs hidden tests "
+        "and stricter checks you cannot see here.\n"
+        "7. When confident, submit with the command at the bottom.\n\n"
         "## Workspace\n\n"
         "- `repo/`: source repository snapshot for the fixed commit.\n"
         "- `public_tests/`: tests you may run while developing.\n"
@@ -587,13 +718,19 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         f"- Package: `{output.get('package', 'featurelifted')}`\n"
         f"- Import: `{output.get('import', '')}`\n"
         f"- Callable: `{output.get('callable', '')}`\n"
-        f"- Signature: `{output.get('signature', '')}`\n\n"
+        f"- Signature: `{output.get('signature', '')}`\n"
+        "- Implementation scope: use **Source entrypoints** above to locate code in `repo/`; "
+        "the import line lists the public surface your package must expose.\n\n"
         "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
         "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
         "- Do not import from the original source package or rely on the original repo path at runtime.\n"
         "- Do not symlink or copy hidden/evaluator files. They are intentionally unavailable.\n"
         "- Keep only code and dependencies needed for the target feature.\n"
+        "- **Forbidden imports are a hard gate:** if your submission imports a forbidden name, "
+        "`functional_gate` is 0 even when tests pass.\n"
+        "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "
+        "Passing with a whole-repo copy scores near zero — extract only what the feature needs.\n"
         f"- Allowed dependencies:\n{allowed_dependencies}\n"
         f"- Forbidden dependencies:\n{forbidden_dependencies}\n"
         f"- Forbidden imports:\n{forbidden_imports}\n\n"
@@ -750,24 +887,6 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
     return totals
 
 
-def _compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
-    if usage.get("available") is not True:
-        compact = {
-            "available": False,
-            "reason": usage.get("reason", "usage unavailable"),
-        }
-        if isinstance(usage.get("source"), str):
-            compact["source"] = usage["source"]
-        return compact
-
-    compact: dict[str, Any] = {"available": True}
-    for key in USAGE_COMPACT_FIELDS:
-        value = usage.get(key)
-        if isinstance(value, int):
-            compact[key] = value
-    return compact
-
-
 def _unavailable_agent_usage(source: Path, reason: str) -> dict[str, Any]:
     return {
         "available": False,
@@ -784,40 +903,6 @@ def _int_metric(value: Any) -> int | None:
     if isinstance(value, float) and value.is_integer():
         return int(value)
     return None
-
-
-def _evaluation_payload(eval_result: dict[str, Any] | None, eval_output_dir: Path) -> dict[str, Any]:
-    if eval_result is None:
-        return {
-            "dir": str(eval_output_dir),
-            "result_json": "",
-            "status": "not-run",
-            "scores": {},
-        }
-    return {
-        "dir": str(eval_output_dir),
-        "result_json": str(eval_output_dir / "result.json"),
-        "status": eval_result.get("status", "failed"),
-        "scores": eval_result.get("scores", {}),
-    }
-
-
-def _run_status(
-    *,
-    validation_ok: bool,
-    agent_passed: bool,
-    submission_exists: bool,
-    eval_result: dict[str, Any] | None,
-) -> str:
-    if not validation_ok:
-        return "invalid_task"
-    if not submission_exists:
-        return "missing_submission"
-    if eval_result is None:
-        return "not_evaluated"
-    if agent_passed and eval_result.get("status") == "passed":
-        return "passed"
-    return "failed"
 
 
 def _test_path(metadata: dict[str, Any], key: str, default: str) -> str:

@@ -19,6 +19,15 @@ ENTANGLEMENT_TYPES = {
     "third_party_dependency_coupling",
     "legacy_vibe_clutter",
 }
+ENTANGLEMENT_PRIMARY_TYPES = (
+    "framework_coupling",
+    "config_environment_coupling",
+    "parser_state_coupling",
+    "resource_coupling",
+    "data_model_coupling",
+    "third_party_dependency_coupling",
+    "legacy_vibe_clutter",
+)
 
 
 class MetadataError(ValueError):
@@ -129,6 +138,22 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
             if unknown:
                 errors.append(
                     "field entanglement.types contains unknown values: " + ", ".join(unknown)
+                )
+        primary = entanglement.get("primary")
+        if primary is not None:
+            _require_type(metadata, "entanglement.primary", str, errors)
+            if isinstance(primary, str) and primary not in ENTANGLEMENT_PRIMARY_TYPES:
+                errors.append(
+                    "field entanglement.primary must be one of: "
+                    + ", ".join(ENTANGLEMENT_PRIMARY_TYPES)
+                )
+            if (
+                isinstance(primary, str)
+                and isinstance(types, list)
+                and primary not in types
+            ):
+                errors.append(
+                    f"field entanglement.primary must also appear in entanglement.types: {primary}"
                 )
 
     output = metadata.get("output")

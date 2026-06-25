@@ -26,4 +26,6 @@ from featurelifted import Environment
 
 | Probe | Remove module | Hidden test(s) that must fail |
 | --- | --- | --- |
-| core module | see hidden tests | see hidden tests |
+| Filters registry | `filters.py` | `test_default_filter_with_boolean` |
+| Tests registry | `tests.py` | `test_defined_test_in_template` |
+| Join filter | `filters.py` (`do_join`) | `test_filters_module_required_for_join` |

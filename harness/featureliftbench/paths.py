@@ -7,6 +7,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BENCHMARK_ROOT = REPO_ROOT / "benchmark"
 TASKS_DIR = BENCHMARK_ROOT / "tasks"
+SANITY_TASKS_DIR = BENCHMARK_ROOT / "sanity"
 SUBMISSIONS_DIR = BENCHMARK_ROOT / "submissions"
 SOURCES_DIR = BENCHMARK_ROOT / "sources"
 VENDOR_WHEELS_DIR = BENCHMARK_ROOT / "vendor-wheels"

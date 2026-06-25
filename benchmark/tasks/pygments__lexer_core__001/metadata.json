@@ -1,0 +1,86 @@
+{
+  "task_id": "pygments__lexer_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "lexer",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "pygments",
+    "url": "https://github.com/pygments/pygments",
+    "commit": "2.15.1",
+    "license": "BSD-2-Clause"
+  },
+  "feature": {
+    "name": "Regex lexer core",
+    "description": "Extract Pygments lexer infrastructure and Python lexer tokenization as a standalone package.",
+    "source_entrypoints": [
+      "pygments.lex",
+      "pygments.lexer.Lexer",
+      "pygments.lexer.RegexLexer",
+      "pygments.lexers.get_lexer_by_name",
+      "pygments.lexers.python.PythonLexer",
+      "pygments.token"
+    ],
+    "included_behaviors": [
+      "tokenize Python source with PythonLexer and lex()",
+      "resolve lexers by alias with get_lexer_by_name",
+      "emit Token types for keywords, strings, comments, numbers, operators, and names",
+      "honor lexer options such as stripall and ensurenl",
+      "support modeline and encoding helpers used by lexer lookup"
+    ],
+    "excluded_behaviors": [
+      "HTML, LaTeX, terminal, and other formatters",
+      "command-line pygmentize tool",
+      "hundreds of non-Python language lexers",
+      "original project tests and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Lexer tokenization couples regex state machines, token types, filter hooks, plugin lookup, and lexer registry state across multiple modules.",
+    "signals": [
+      "RegexLexer state stack and rule matching",
+      "token type hierarchy shared with filters",
+      "lexer cache and alias mapping in lexers package",
+      "encoding and modeline side channels"
+    ],
+    "primary": "parser_state_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import lex, get_lexer_by_name, PythonLexer; from featurelifted import token",
+    "callable": "featurelifted.lex",
+    "signature": "lex(code: str, lexer: Lexer) -> Iterable[tuple[token._TokenType, str]]"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pygments"
+    ],
+    "forbidden_imports": [
+      "pygments"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

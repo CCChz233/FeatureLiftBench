@@ -11,7 +11,12 @@ from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_adapters import MiniSweAgentAdapter
 from featureliftbench.agent_runner import _collect_agent_usage
+from featureliftbench.agent_runner import _is_rate_limit_failure
+from featureliftbench.agent_runner import _merge_suite_runs
 from featureliftbench.agent_runner import _sum_agent_usage
+from featureliftbench.agent_runner import build_task_prompt
+from featureliftbench.agent_runner import discover_task_dirs
+from featureliftbench.agent_runner import load_skipped_runs
 from featureliftbench.agent_runner import prepare_agent_workspace
 from featureliftbench.agent_runner import run_agent_on_path
 from featureliftbench.agent_runner import run_agent_on_task
@@ -19,6 +24,91 @@ from featureliftbench.metadata import load_metadata
 
 
 class AgentRunnerTests(unittest.TestCase):
+    def test_build_task_prompt_includes_workflow_and_forbidden_gate(self) -> None:
+        task_dir = (
+            Path(__file__).resolve().parents[2]
+            / "benchmark"
+            / "sanity"
+            / "iniconfig__parse_config__001"
+        )
+        metadata = load_metadata(task_dir).data
+        prompt = build_task_prompt(metadata)
+
+        self.assertIn("## How to work", prompt)
+        self.assertIn("Forbidden imports are a hard gate", prompt)
+        self.assertIn("Public tests passing does not mean you are done", prompt)
+        self.assertIn("final_score = functional_gate", prompt)
+        self.assertIn("pytest public_tests/", prompt)
+
+    def test_discover_task_dirs_can_filter_by_task_id(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "tasks"
+            _make_task(dataset / "sample_a")
+            _make_task(dataset / "sample_b")
+
+            filtered = discover_task_dirs(dataset, task_ids=["sample_b"])
+
+            self.assertEqual([path.name for path in filtered], ["sample_b"])
+
+    def test_load_skipped_runs_reads_passed_suite_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            suite_dir = root / "prev_run"
+            (suite_dir / "sample_a").mkdir(parents=True)
+            (suite_dir / "sample_b").mkdir(parents=True)
+            (suite_dir / "sample_a" / "run.json").write_text(
+                json.dumps({"task_id": "sample_a", "status": "passed"}),
+                encoding="utf-8",
+            )
+            (suite_dir / "sample_b" / "run.json").write_text(
+                json.dumps({"task_id": "sample_b", "status": "failed"}),
+                encoding="utf-8",
+            )
+            (suite_dir / "suite.json").write_text(
+                json.dumps(
+                    {
+                        "runs": [
+                            {"task_id": "sample_a", "status": "passed"},
+                            {"task_id": "sample_b", "status": "failed"},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            skipped = load_skipped_runs(suite_dir)
+
+            self.assertEqual(list(skipped), ["sample_a"])
+            self.assertEqual(skipped["sample_a"]["status"], "passed")
+
+    def test_merge_suite_runs_preserves_dataset_order(self) -> None:
+        task_dirs = [Path("tasks/sample_a"), Path("tasks/sample_b")]
+        fresh_runs = [{"task_id": "sample_b", "status": "passed"}]
+        skipped_runs = {"sample_a": {"task_id": "sample_a", "status": "passed"}}
+
+        merged = _merge_suite_runs(task_dirs, fresh_runs, skipped_runs)
+
+        self.assertEqual([run["task_id"] for run in merged], ["sample_a", "sample_b"])
+
+    def test_rate_limit_failure_detects_429_message(self) -> None:
+        result = {
+            "status": "failed",
+            "agent": {"reason": "HTTP 429 Too Many Requests"},
+            "errors": [],
+        }
+
+        self.assertTrue(_is_rate_limit_failure(result))
+
+    def test_rate_limit_failure_detects_exit_status(self) -> None:
+        result = {
+            "status": "missing_submission",
+            "agent": {"usage": {"exit_status": "RateLimitError"}, "stderr_log": ""},
+            "errors": ["agent did not create any files under workspace/submission"],
+        }
+
+        self.assertTrue(_is_rate_limit_failure(result))
+
     def test_prepare_agent_workspace_redacts_hidden_material(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

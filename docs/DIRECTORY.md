@@ -20,10 +20,12 @@ FeatureLiftBench/
 
 | Path | Purpose |
 | --- | --- |
+| [CONCEPTS.md](CONCEPTS.md) | Core concepts: feature definition, tests, submission, scoring |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Three-layer design and data flow |
 | [TASK_FORMAT.md](TASK_FORMAT.md) | Canonical task directory and metadata spec |
 | [DIRECTORY.md](DIRECTORY.md) | This file |
 | [benchmark_tasks.md](benchmark_tasks.md) | 28-task catalog and CLI examples |
+| [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) | Current baseline, spec gaps, fix priority |
 | [limitations.md](limitations.md) | Known defects |
 | [task_designs/](task_designs/) | Per-task design notes |
 

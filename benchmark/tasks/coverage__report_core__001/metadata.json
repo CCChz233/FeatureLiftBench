@@ -1,0 +1,82 @@
+{
+  "task_id": "coverage__report_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "config_environment_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "coveragepy",
+    "url": "https://github.com/coveragepy/coveragepy",
+    "commit": "f0dcf65f47120d9f74f6777134d3b8e92515ce6f",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Cobertura XML report writer",
+    "description": "Extract coverage.py XML report generation (XmlReporter) and supporting analysis types as a standalone package.",
+    "source_entrypoints": [
+      "coverage.xmlreport.XmlReporter",
+      "coverage.xmlreport.XmlReporter.report",
+      "coverage.xmlreport.rate",
+      "coverage.results.Analysis"
+    ],
+    "included_behaviors": [
+      "emit Cobertura-compatible XML with coverage, packages, and classes",
+      "serialize line and branch hit information from Analysis objects",
+      "honor xml_package_depth and skip_empty config options",
+      "compute line-rate and branch-rate attributes"
+    ],
+    "excluded_behaviors": [
+      "coverage data collection and measurement",
+      "HTML/JSON/LCOV report writers",
+      "configuration file discovery beyond CoverageConfig fields",
+      "plugin loading and CLI entrypoints",
+      "original project tests and docs"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "description": "XML reporting couples CoverageConfig report options, Analysis results, FileReporter metadata, and DOM serialization.",
+    "signals": [
+      "xml_package_depth truncates package names from relative paths",
+      "skip_empty omits zero-statement files from output",
+      "branch arcs encoded in line elements when data.has_arcs()"
+    ],
+    "primary": "config_environment_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Analysis, CoverageConfig, XmlReporter, rate, serialize_xml",
+    "callable": "featurelifted.XmlReporter.report",
+    "signature": "XmlReporter(coverage).report(morfs, outfile=None) -> float"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "coverage"
+    ],
+    "forbidden_imports": [
+      "coverage"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

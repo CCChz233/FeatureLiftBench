@@ -61,11 +61,12 @@
       "grouped token tree data model",
       "formatter behavior composed from multiple filters",
       "public API hides a multi-module runtime closure"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import parse, parsestream, split, format",
+    "import": "from featurelifted import parse, parsestream, split, format, sql, tokens; from featurelifted.exceptions import SQLParseError",
     "callable": "featurelifted.parse",
     "signature": "parse(sql: str, encoding: str | None = None) -> tuple[Statement, ...]"
   },

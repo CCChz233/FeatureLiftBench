@@ -1,0 +1,84 @@
+{
+  "task_id": "typer__command_parser_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "cli",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "framework_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "typer",
+    "url": "https://github.com/fastapi/typer",
+    "commit": "0.20.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Typer command parser and CLI runner",
+    "description": "Extract Typer CLI command building, type-hint parameter parsing, and CliRunner invocation.",
+    "source_entrypoints": [
+      "typer.Typer",
+      "typer.run",
+      "typer.testing.CliRunner",
+      "typer.Argument",
+      "typer.Option"
+    ],
+    "included_behaviors": [
+      "build commands from type-annotated functions",
+      "parse options, arguments, defaults, and choices",
+      "invoke Typer apps through CliRunner",
+      "nested subcommands and context passing",
+      "usage errors for invalid parameters"
+    ],
+    "excluded_behaviors": [
+      "shell completion integration",
+      "rich markup rendering beyond basic echo",
+      "documentation and release tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Typer couples Click decorators, type-hint introspection, and CliRunner invocation.",
+    "signals": [
+      "Typer/Click command framework",
+      "type-hint to parameter conversion",
+      "CliRunner test harness"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted as typer; from featurelifted.testing import CliRunner",
+    "callable": "featurelifted.Typer",
+    "signature": "Typer(name=None, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "typer",
+      "click"
+    ],
+    "forbidden_imports": [
+      "typer",
+      "click"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

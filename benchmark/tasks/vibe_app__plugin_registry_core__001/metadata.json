@@ -1,0 +1,81 @@
+{
+  "task_id": "vibe_app__plugin_registry_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Plugin registry and metaclass discovery",
+    "description": "Extract VibeShop plugin registration, metaclass discovery, and dispatch as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.plugin_registry.registry.PluginRegistry",
+      "vibe_app.plugin_registry.base.BasePlugin",
+      "vibe_app.plugin_registry.metaclass.PluginMeta"
+    ],
+    "included_behaviors": [
+      "register plugin instances and resolve them by name",
+      "dispatch run(payload) on registered plugins",
+      "auto-register plugin subclasses via PluginMeta into GLOBAL_STATE",
+      "discover plugin classes registered by metaclass",
+      "track plugin names in GLOBAL_STATE plugin_names list"
+    ],
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap, pricing, CSV, and ORM modules",
+      "get_plugin_v1 and register_plugin_legacy wrong helpers",
+      "setuptools entry point loading",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Plugin resolution is split across registry, metaclass, and utils shortcuts with GLOBAL_STATE class and name bookkeeping.",
+    "signals": [
+      "two similarly named plugin helpers with incorrect semantics",
+      "PluginMeta stores classes in GLOBAL_STATE plugin_classes",
+      "register appends names to GLOBAL_STATE plugin_names"
+    ],
+    "primary": "legacy_vibe_clutter"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import BasePlugin, PluginMeta, PluginRegistry",
+    "callable": "featurelifted.PluginRegistry.register",
+    "signature": "PluginRegistry.register(plugin: BasePlugin) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "task_id": "marshmallow__schema_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "data_model_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "marshmallow",
+    "url": "https://github.com/marshmallow-code/marshmallow",
+    "commit": "4.3.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Schema load and dump",
+    "description": "Extract Marshmallow Schema declaration, field validation, nested schemas, and load/dump round-trips.",
+    "source_entrypoints": [
+      "marshmallow.Schema",
+      "marshmallow.fields",
+      "marshmallow.ValidationError",
+      "marshmallow.schema.Schema.load",
+      "marshmallow.schema.Schema.dump"
+    ],
+    "included_behaviors": [
+      "declare Schema subclasses with typed fields",
+      "load dict payloads with validation and nested schemas",
+      "dump objects to dicts with field selection",
+      "handle unknown=EXCLUDE and partial load validation errors"
+    ],
+    "excluded_behaviors": [
+      "flask-smorest and web framework integrations",
+      "original project tests and packaging metadata",
+      "schema class registry across entry points"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Schema load/dump couples field descriptors, nested schema graphs, error stores, and decorator hooks.",
+    "signals": [
+      "nested Schema and List(Field) graphs",
+      "pre/post load and dump hooks",
+      "ValidationError aggregation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Schema, fields, ValidationError, EXCLUDE, RAISE",
+    "callable": "featurelifted.Schema.load",
+    "signature": "Schema.load(data, *, many: bool = False, partial=None, unknown=RAISE)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "marshmallow"
+    ],
+    "forbidden_imports": [
+      "marshmallow"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

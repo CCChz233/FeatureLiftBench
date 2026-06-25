@@ -71,11 +71,12 @@
       "loader get_source and template cache",
       "extends/import include graph in parser/compiler",
       "block super() resolution at render time"
-    ]
+    ],
+    "primary": "framework_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Environment, DictLoader",
+    "import": "from featurelifted import Environment, DictLoader; from featurelifted.exceptions import TemplateNotFound; from featurelifted.loaders import BaseLoader",
     "callable": "featurelifted.Environment.get_template",
     "signature": "get_template(name: str) -> Template"
   }

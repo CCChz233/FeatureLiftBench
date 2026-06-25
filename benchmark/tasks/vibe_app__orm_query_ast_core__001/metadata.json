@@ -1,0 +1,81 @@
+{
+  "task_id": "vibe_app__orm_query_ast_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "framework_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "ORM query builder and SQL AST",
+    "description": "Extract VibeShop's mini Query-to-SQL AST compiler as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.orm_query.query.Query",
+      "vibe_app.orm_query.compiler.compile_query",
+      "vibe_app.orm_query.compiler.compile_ast",
+      "vibe_app.orm_query.ast.SelectNode"
+    ],
+    "included_behaviors": [
+      "build SELECT queries with columns, FROM table, WHERE predicates, and INNER joins",
+      "materialize immutable SQL AST nodes from Query.build_ast",
+      "compile AST nodes and Query objects to parameterized SQL strings",
+      "track compiled query AST payloads in GLOBAL_STATE",
+      "support eq/neq/gt/gte/lt/lte comparison operators in WHERE clauses"
+    ],
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap, pricing, CSV, and session modules",
+      "compile_query_v1 and build_query_legacy wrong helpers",
+      "database drivers and runtime query execution",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Query compilation is split across builder, AST, and compiler modules with duplicate utils shortcuts and GLOBAL_STATE query bookkeeping.",
+    "signals": [
+      "two similarly named query helpers with incorrect semantics",
+      "build_ast appends compiled AST dicts to GLOBAL_STATE",
+      "compiler updates last_compiled_sql in GLOBAL_STATE"
+    ],
+    "primary": "framework_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Query, compile_query",
+    "callable": "featurelifted.compile_query",
+    "signature": "compile_query(query: Query) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

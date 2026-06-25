@@ -58,11 +58,12 @@
       "requirement and marker grammar",
       "version/specifier comparison models",
       "cross-module exception semantics"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Version, SpecifierSet, Requirement, Marker, default_environment",
+    "import": "from featurelifted import Version, Specifier, SpecifierSet, Requirement, Marker, default_environment, InvalidVersion, InvalidSpecifier, InvalidRequirement, InvalidMarker",
     "callable": "featurelifted.Requirement",
     "signature": "Requirement(requirement_string: str)"
   },

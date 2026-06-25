@@ -68,11 +68,12 @@
       "custom scanner/parser for marker grammar",
       "MatcherAdapter bridges eval() to marker names",
       "used by pytest -m but standalone logic lives in one module"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Expression, ParseError",
+    "import": "from featurelifted import Expression, ParseError; from featurelifted import expression; from featurelifted.expression import Scanner, TokenType",
     "callable": "featurelifted.Expression.compile",
     "signature": "compile(input: str) -> Expression"
   }

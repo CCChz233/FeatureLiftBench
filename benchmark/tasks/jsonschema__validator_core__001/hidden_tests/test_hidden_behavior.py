@@ -70,3 +70,17 @@ def test_format_checker_schema_errors_and_additional_properties() -> None:
 
     with pytest.raises(SchemaError):
         Draft202012Validator.check_schema({"type": 123})
+
+
+def test_oneof_and_const_keyword() -> None:
+    schema = {
+        "oneOf": [
+            {"type": "string", "const": "yes"},
+            {"type": "string", "const": "no"},
+        ]
+    }
+    validator = Draft202012Validator(schema)
+    assert validator.is_valid("yes")
+    assert not validator.is_valid("maybe")
+    errors = list(validator.iter_errors("maybe"))
+    assert errors and errors[0].validator == "oneOf"

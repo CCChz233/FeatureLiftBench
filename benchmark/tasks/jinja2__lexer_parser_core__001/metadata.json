@@ -74,11 +74,12 @@
       "lexer token cache and delimiter configuration",
       "parser tag stack and nested block state",
       "AST node tree used by compiler but required for parse output"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Environment, nodes",
+    "import": "from featurelifted import Environment, nodes; from featurelifted.lexer import Lexer; from featurelifted.parser import Parser",
     "callable": "featurelifted.Environment.parse",
     "signature": "parse(source: str, name: str | None = None, filename: str | None = None) -> nodes.Template"
   }

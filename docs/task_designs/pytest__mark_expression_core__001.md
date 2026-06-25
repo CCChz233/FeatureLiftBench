@@ -20,4 +20,20 @@ Standalone -m expression evaluator from _pytest/mark/expression.py.
 
 ```python
 from featurelifted import Expression, ParseError
+from featurelifted import expression
+from featurelifted.expression import Scanner, TokenType
 ```
+
+## Module Probes
+
+| Probe | Remove module | Hidden test(s) that must fail |
+| --- | --- | --- |
+| Expression compile/eval | `Expression` / compile path | `test_kwargs_matcher` |
+| Scanner | `expression.py` (`Scanner`) | `test_expression_module_scanner` |
+| Parser grammar | expression parse module | `test_kwargs_matcher` |
+
+## Agent Calibration
+
+| Run | Model | Passed | Hidden failure |
+| --- | --- | --- | --- |
+| `benchmark-28-deepseek-flash-003` | deepseek-v4-flash | **failed** | hidden collect ERROR (missing `expression` submodule) |

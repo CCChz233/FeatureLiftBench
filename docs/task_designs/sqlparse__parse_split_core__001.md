@@ -90,6 +90,7 @@ featurelifted.parse(sql: str, encoding: str | None = None) -> tuple[Statement, .
 | --- | --- | --- |
 | Statement splitter | `engine/statement_splitter.py` | `test_split_handles_comments_and_embedded_semicolons` |
 | Grouping | `engine/grouping.py` | `test_parse_multiple_statements` |
+| Lexer | `lexer.py` | `test_split_handles_comments_and_embedded_semicolons` |
 
 ## Manual Oracle Closure Plan
 

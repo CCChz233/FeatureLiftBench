@@ -12,22 +12,15 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
-from featureliftbench.paths import TASKS_DIR
+from featureliftbench.paths import SANITY_TASKS_DIR, TASKS_DIR
+from featureliftbench.task_discovery import discover_task_dirs_under
 
 # Convenience alias only; not a separate benchmark partition.
 SKIP_DIRS = {"extreme"}
 
 
 def discover_task_dirs(root: Path) -> list[Path]:
-    if (root / "metadata.json").is_file():
-        return [root.resolve()]
-    if not root.is_dir():
-        raise ValueError(f"task path does not exist or is not a directory: {root}")
-    return sorted(
-        child.resolve()
-        for child in root.iterdir()
-        if child.name not in SKIP_DIRS and (child / "metadata.json").is_file()
-    )
+    return discover_task_dirs_under(root, hard_only=False)
 
 
 def load_tags(task_dir: Path) -> list[str]:
@@ -44,7 +37,17 @@ def main() -> None:
         "--root",
         type=Path,
         default=TASKS_DIR,
-        help="Task root directory (default: benchmark/tasks/)",
+        help="Task root directory (default: benchmark/tasks/; use benchmark/sanity for smoke)",
+    )
+    parser.add_argument(
+        "--all-difficulties",
+        action="store_true",
+        help="Include easy/medium when listing benchmark/tasks/ (default: hard only)",
+    )
+    parser.add_argument(
+        "--include-sanity",
+        action="store_true",
+        help="Also list tasks under benchmark/sanity/",
     )
     parser.add_argument(
         "--tag",
@@ -63,8 +66,19 @@ def main() -> None:
         help="Print task directory paths only (for scripting)",
     )
     args = parser.parse_args()
-    root = args.root.resolve()
-    task_dirs = discover_task_dirs(root)
+    roots = [args.root.resolve()]
+    if args.include_sanity and args.root.resolve() == TASKS_DIR:
+        roots.append(SANITY_TASKS_DIR)
+    hard_only = not args.all_difficulties and args.root.resolve() == TASKS_DIR
+
+    task_dirs: list[Path] = []
+    for root in roots:
+        if not root.is_dir():
+            continue
+        task_dirs.extend(
+            discover_task_dirs_under(root, hard_only=hard_only if root == TASKS_DIR else False)
+        )
+    task_dirs = sorted({path.resolve() for path in task_dirs})
 
     if args.tag:
         required = set(args.tag)

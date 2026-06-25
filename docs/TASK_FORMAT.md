@@ -1,6 +1,6 @@
 # FeatureLiftBench Task Format
 
-This document is the **canonical specification** for one benchmark task. Machine-readable schema: [`harness/featureliftbench/schemas/task_metadata.schema.json`](../harness/featureliftbench/schemas/task_metadata.schema.json). Directory checks: `featureliftbench validate-task`.
+Human-oriented overview: [CONCEPTS.md](CONCEPTS.md). This document is the **canonical specification** for one benchmark task. Machine-readable schema: [`harness/featureliftbench/schemas/task_metadata.schema.json`](../harness/featureliftbench/schemas/task_metadata.schema.json). Directory checks: `featureliftbench validate-task`.
 
 Human design notes (optional but recommended for new hard tasks): [`task_designs/TEMPLATE.md`](task_designs/TEMPLATE.md).
 
@@ -93,6 +93,14 @@ Rules:
 | `feature` | `name`, `description`, `source_entrypoints`, `included_behaviors`, `excluded_behaviors` |
 | `entanglement` | `level`, `types`, `description`, `signals` |
 | `output` | Expected API: `package`, `import`, `callable`, `signature` |
+
+#### `output.import` vs tests (maintainer note)
+
+- **`output.import`** is what agents see in `TASK.md` as the primary public API. It should list every symbol and submodule path that **public tests import**, and ideally anything **hidden-only** that is part of the intended package surface (not discriminator edge cases).
+- **`feature.source_entrypoints`** describes where to read implementation in `repo/`; it is often **broader** than `output.import`.
+- **Hidden tests** may still test oracle fidelity beyond `included_behaviors` (functional discriminator). That is intentional; do not treat `output.import` alone as the full spec without reading entrypoints and oracle manifest.
+- Full-task audit and known gaps: [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md).
+
 | `environment` | Runtime constraints (see below) |
 | `tests` | `public`, `hidden`, `command` paths |
 
@@ -104,9 +112,24 @@ Rules:
 | `tags` | e.g. `multi-task-repo`, `functional-discriminator` |
 | `scoring_reference` | Copy-All / Oracle LOC bytes for manual comparison (**not used by evaluator**) |
 
-### `entanglement.types` (enum)
+### `entanglement.types` (multi-label) and `entanglement.primary`
+
+**`types`** — multi-label coupling tags for design notes and failure analysis. All 9 values:
 
 `framework_coupling`, `config_environment_coupling`, `global_state_registry_coupling`, `resource_coupling`, `implicit_dependency_coupling`, `parser_state_coupling`, `data_model_coupling`, `third_party_dependency_coupling`, `legacy_vibe_clutter`
+
+**`primary`** — optional but recommended; exactly **one** mutually-exclusive category for suite reports and paper figures. Must also appear in `types`. Allowed values (7):
+
+`framework_coupling`, `config_environment_coupling`, `parser_state_coupling`, `resource_coupling`, `data_model_coupling`, `third_party_dependency_coupling`, `legacy_vibe_clutter`
+
+`global_state_registry_coupling` and `implicit_dependency_coupling` remain **secondary tags only** (do not use as `primary`). `implicit_dependency_coupling` is often tautological when many modules share a closure—prefer a sharper primary.
+
+Report coverage:
+
+```bash
+python3 harness/scripts/report_entanglement_coverage.py \
+  --suite-dir experiments/mini-swe-agent/benchmark-28-deepseek-flash-003
+```
 
 ### `environment`
 
@@ -151,11 +174,28 @@ Defined in [`harness/featureliftbench/scoring.py`](../harness/featureliftbench/s
 1. Create `benchmark/tasks/<task_id>/` with the layout above.
 2. Write `metadata.json` matching the schema.
 3. Add `public_tests/` and `hidden_tests/` (pytest).
-4. Fill `evaluation/forbidden_imports.txt` and `oracle_manifest.json`.
+4. Fill `evaluation/forbidden_imports.txt` and `oracle_manifest.json` (see schema below).
 5. Run `featureliftbench validate-task benchmark/tasks/<task_id>/`.
-6. Build and verify Oracle: `harness/scripts/build_oracle_submission.py` + `featureliftbench eval ...`.
+6. Build and verify Oracle:
+
+```bash
+python3 harness/scripts/build_oracle_submission.py benchmark/tasks/<task_id>/
+python3 harness/scripts/verify_all_oracles.py --task-id <task_id>
+```
+
 7. Add [`docs/task_designs/<task_id>.md`](task_designs/) for non-trivial tasks.
 8. Update [`benchmark_tasks.md`](benchmark_tasks.md) catalog.
+
+### `oracle_manifest.json` schema
+
+| Field | Purpose |
+| --- | --- |
+| `source_package_name` | Top-level package directory under `repo/` (e.g. `iniconfig`, `yaml`) |
+| `required_source_files` | Paths relative to `repo/` copied into `featurelifted/` (legacy alias: `source_files`) |
+| `runtime_dependencies` | Notes only; actual deps come from `requirements.lock` |
+| `notes` | Maintainer rationale for closure boundaries |
+
+Pilot OSS tasks use manifest-driven copy in `build_oracle_submission.py`; multi-profile families (sqlparse, coverage, …) keep curated profiles.
 
 Do **not** introduce alternate task roots, schemas, or scoring tracks.
 
@@ -166,7 +206,9 @@ pip install -e .
 
 featureliftbench validate-task benchmark/tasks/<task_id>/
 
-# optional: oracle must pass
+# optional: oracle must pass (all tasks)
+python3 harness/scripts/verify_all_oracles.py
+
 featureliftbench eval \
   benchmark/tasks/<task_id> \
   benchmark/submissions/<task_id>/oracle \

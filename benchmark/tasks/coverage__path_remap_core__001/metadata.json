@@ -29,7 +29,8 @@
       "register glob-style path prefix aliases",
       "map absolute and relative paths through the first matching alias",
       "normalize path separators to the alias result style",
-      "reject alias patterns ending in wildcards and skip mappings to non-existent targets"
+      "reject alias patterns ending in wildcards with ConfigError (message: must not end with wildcards)",
+      "skip mappings when the mapped target path does not exist"
     ],
     "excluded_behaviors": [
       "glob include/omit matching for measurement",
@@ -51,11 +52,12 @@
       "PathAliases layered on globs_to_regex and canonical_filename",
       "relative versus absolute alias modes",
       "implicit alias generation for unmatched relative paths"
-    ]
+    ],
+    "primary": "resource_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import PathAliases",
+    "import": "from featurelifted import PathAliases; from featurelifted.exceptions import ConfigError",
     "callable": "featurelifted.PathAliases.map",
     "signature": "PathAliases(...).map(path: str, exists: Callable[[str], bool] = ...) -> str"
   },

@@ -1,0 +1,81 @@
+{
+  "task_id": "h11__message_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "h11",
+    "url": "https://github.com/python-hyper/h11",
+    "commit": "0.14.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "HTTP/1.1 message parse and state machine",
+    "description": "Extract h11 Connection state machine for parsing and framing HTTP/1.1 request/response messages.",
+    "source_entrypoints": [
+      "h11.Connection",
+      "h11.Request",
+      "h11.Response",
+      "h11.Data",
+      "h11.EndOfMessage"
+    ],
+    "included_behaviors": [
+      "parse request and response start-lines and headers",
+      "frame bodies with content-length and chunked encoding",
+      "drive client/server role state transitions",
+      "surface protocol errors for malformed messages",
+      "serialize events back to wire bytes"
+    ],
+    "excluded_behaviors": [
+      "socket I/O and TLS",
+      "HTTP/2 or WebSocket upgrades beyond state flags",
+      "original project tests"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "HTTP parsing couples connection role state, incremental buffers, and event readers/writers.",
+    "signals": [
+      "Connection state machine",
+      "incremental receive buffer",
+      "reader/writer dispatch tables"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Connection, CLIENT, SERVER, Request, Response, Data, EndOfMessage, NEED_DATA",
+    "callable": "featurelifted.Connection",
+    "signature": "Connection(our_role, max_incomplete_event_size=16384)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "h11"
+    ],
+    "forbidden_imports": [
+      "h11"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

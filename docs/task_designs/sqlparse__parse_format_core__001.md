@@ -129,6 +129,14 @@ Hidden tests should force real decoupling rather than public-test hardcoding:
 - Malformed or incomplete SQL should follow original tokenizer/parser behavior and should not become a validating SQL parser.
 - No runtime import of `sqlparse`.
 
+## Module Probes
+
+| Probe | Remove module | Hidden test(s) that must fail |
+| --- | --- | --- |
+| Statement splitter | `engine/statement_splitter.py` | `test_split_handles_comments_and_embedded_semicolons` |
+| Token grouping | `engine/grouping.py` | `test_cte_aliases_and_identifier_helpers` |
+| Formatter filters | `filters/reindent.py` | `test_formatter_comment_stripping_and_spacing` |
+
 ## Manual Oracle Closure Plan
 
 Manual oracle status:

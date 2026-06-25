@@ -16,6 +16,7 @@ if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
 from featureliftbench.paths import EXPERIMENTS_DIR
+from featureliftbench.suite_utils import detect_eval_flake
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -36,14 +37,28 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
     scores = evaluation.get("scores") or {}
     metrics = evaluation.get("metrics") or {}
 
+    result_json_path = Path(evaluation.get("result_json") or suite_dir / task_id / "eval" / "result.json")
+    if result_json_path.is_file():
+        eval_detail = load_json(result_json_path)
+        scores = eval_detail.get("scores") or scores
+        metrics = eval_detail.get("metrics") or metrics
+        build_pass = eval_detail.get("build_pass", evaluation.get("build_pass"))
+        test_pass = eval_detail.get("test_pass", evaluation.get("test_pass"))
+    else:
+        build_pass = evaluation.get("build_pass")
+        test_pass = evaluation.get("test_pass")
+
+    task_run_dir = suite_dir / task_id
+    eval_flake = detect_eval_flake(task_run_dir)
+
     enriched = dict(run)
     enriched.update(
         {
             "functional_gate": scores.get("functional_gate"),
             "extraction_ratio": scores.get("extraction_ratio"),
             "final_score": scores.get("final_score", run.get("final_score")),
-            "build_pass": evaluation.get("build_pass"),
-            "test_pass": evaluation.get("test_pass"),
+            "build_pass": build_pass,
+            "test_pass": test_pass,
             "submission_loc": metrics.get("loc"),
             "source_loc": metrics.get("source_loc"),
             "assistant_steps": usage.get("assistant_steps"),
@@ -54,6 +69,7 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
             "agent_duration_seconds": agent.get("duration_seconds"),
             "trajectory_json": str(suite_dir / task_id / "agent" / "trajectory.json"),
             "status": evaluation.get("status") or run.get("status"),
+            "eval_flake": eval_flake,
         }
     )
     return enriched
@@ -88,15 +104,18 @@ def main() -> int:
     suite = load_json(suite_path)
     suite_name = suite_dir.name
     runs = [enrich_run(run, suite_dir) for run in suite.get("runs") or []]
+    eval_flake_count = sum(1 for run in runs if run.get("eval_flake"))
 
     comparison_path = args.output or EXPERIMENTS_DIR / "mini-swe-agent" / f"{suite_name}-comparison.json"
     analysis_prefix = args.analysis_prefix or EXPERIMENTS_DIR / "mini-swe-agent" / f"{suite_name}-analysis"
 
     comparison = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "eval_flake_count": eval_flake_count,
         "suites": {
             suite_name: {
                 **{k: v for k, v in suite.items() if k != "runs"},
+                "eval_flake_count": eval_flake_count,
                 "runs": runs,
             }
         },

@@ -51,11 +51,12 @@
       "glob tokenization and regex compilation pipeline",
       "platform-specific case sensitivity behavior",
       "shared files.py utilities also used by unrelated features"
-    ]
+    ],
+    "primary": "resource_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import GlobMatcher, prep_patterns, globs_to_regex",
+    "import": "from featurelifted import GlobMatcher, prep_patterns, globs_to_regex; from featurelifted.exceptions import ConfigError",
     "callable": "featurelifted.GlobMatcher.match",
     "signature": "GlobMatcher(pats: Iterable[str], name: str = 'unknown').match(fpath: str) -> bool"
   },

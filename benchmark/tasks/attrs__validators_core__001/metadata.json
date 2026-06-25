@@ -1,0 +1,85 @@
+{
+  "task_id": "attrs__validators_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "data_model_coupling",
+    "validators",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "attrs",
+    "url": "https://github.com/python-attrs/attrs",
+    "commit": "23.1.0",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "attrs field validators",
+    "description": "Extract attrs class definition with field validators and validate() as a standalone package.",
+    "source_entrypoints": [
+      "attrs.define",
+      "attrs.field",
+      "attrs.validators",
+      "attrs.validate",
+      "attr._make._AndValidator"
+    ],
+    "included_behaviors": [
+      "attach validators to fields on define() classes",
+      "run instance_of, ge, lt, matches_re, in_, and length validators",
+      "compose validators with and_, not_, and optional",
+      "validate deep_iterable and deep_mapping structures",
+      "globally disable validators with set_disabled and validate()"
+    ],
+    "excluded_behaviors": [
+      "cmp, converters beyond validator helpers, and custom setters",
+      "asdict, astuple, and serialization helpers",
+      "original project tests and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "description": "Validators are coupled to attrs class construction, Attribute metadata, runtime validation hooks, and generated __init__ wiring.",
+    "signals": [
+      "field validator attachment in class building",
+      "validator composition objects",
+      "deep structure traversal over instances",
+      "global validator enable/disable state"
+    ],
+    "primary": "data_model_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import define, field, validate; from featurelifted import validators",
+    "callable": "featurelifted.validators.instance_of",
+    "signature": "instance_of(type: type) -> Callable"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "attrs",
+      "attr"
+    ],
+    "forbidden_imports": [
+      "attrs",
+      "attr"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

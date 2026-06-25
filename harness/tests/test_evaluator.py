@@ -1,10 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
+from featureliftbench.evaluator import _ensure_eval_tooling
 from featureliftbench.evaluator import evaluate_submission
 
 
@@ -177,6 +182,49 @@ class EvaluatorTests(unittest.TestCase):
                 "dependency lock contains dependencies that are not allowed: requests",
                 result["dependency_install"]["reason"] + result["dependency_install"].get("stderr", ""),
             )
+
+    def test_ensure_eval_tooling_installs_pytest_when_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            venv_dir = root / ".venv"
+            created = subprocess.run(
+                [sys.executable, "-B", "-m", "venv", str(venv_dir)],
+                cwd=root,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(created.returncode, 0)
+            venv_python = venv_dir / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+
+            tooling = _ensure_eval_tooling(
+                venv_python=venv_python,
+                cwd=root,
+                env=os.environ.copy(),
+                timeout_seconds=120,
+            )
+
+            self.assertTrue(tooling.passed, tooling.stderr or tooling.reason)
+            self.assertIn("pytest", tooling.stdout.lower())
+
+    def test_evaluate_submission_records_eval_tooling_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+
+            with mock.patch(
+                "featureliftbench.evaluator._prepare_eval_venv",
+                return_value=(None, None, None, ["eval tooling failed: pytest is not available in evaluation venv"]),
+            ):
+                result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertEqual(result["status"], "failed")
+            self.assertFalse(result["build_pass"])
+            self.assertIn("eval tooling failed", result["errors"][0])
 
 
 def _make_task(task_dir: Path, lock_text: str = "") -> Path:

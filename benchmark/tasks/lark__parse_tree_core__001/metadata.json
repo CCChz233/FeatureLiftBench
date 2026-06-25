@@ -1,0 +1,86 @@
+{
+  "task_id": "lark__parse_tree_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "decoupling-discriminator",
+    "parser_state_coupling",
+    "parser",
+    "pure-python",
+    "multi-module"
+  ],
+  "source": {
+    "name": "lark",
+    "url": "https://github.com/lark-parser/lark",
+    "commit": "1.2.2",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "LALR parse tree core",
+    "description": "Extract Lark grammar loading and LALR parsing into parse trees as a standalone package.",
+    "source_entrypoints": [
+      "lark.Lark",
+      "lark.Lark.parse",
+      "lark.Tree",
+      "lark.Token",
+      "lark.exceptions.UnexpectedToken",
+      "lark.exceptions.UnexpectedCharacters"
+    ],
+    "included_behaviors": [
+      "parse input with inline grammars using LALR",
+      "build Tree nodes with rule data and Token leaves",
+      "support %import, %ignore, and common terminal imports",
+      "raise structured parse errors with line/column context",
+      "expose pretty() and child navigation on trees"
+    ],
+    "excluded_behaviors": [
+      "tree Transformer and Visitor APIs as public surface",
+      "standalone code generation tools",
+      "earley-only advanced forest transforms",
+      "original project tests and documentation"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Parsing couples grammar loading, lexer tables, parser frontends, and tree construction across many cooperating modules.",
+    "signals": [
+      "LALR parser state machine",
+      "grammar import and transformation pipeline",
+      "lexer and terminal definition coupling",
+      "Tree/Token data model"
+    ],
+    "primary": "parser_state_coupling"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Lark, Tree, Token, UnexpectedToken, UnexpectedCharacters",
+    "callable": "featurelifted.Lark.parse",
+    "signature": "Lark.parse(text: str, start: str | None = None, on_error: Callable | None = None) -> Tree"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "lark"
+    ],
+    "forbidden_imports": [
+      "lark"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

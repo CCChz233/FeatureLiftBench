@@ -25,3 +25,9 @@ def test_glob_matcher_many_patterns(tmp_path) -> None:
 def test_glob_matcher_backslash_pattern(tmp_path) -> None:
     matcher = GlobMatcher([r"*\foo.py"])
     assert matcher.match(r"dir\foo.py") is True
+
+
+def test_glob_matcher_question_mark_single_char() -> None:
+    matcher = GlobMatcher(["file?.py"])
+    assert matcher.match("file1.py") is True
+    assert matcher.match("file12.py") is False

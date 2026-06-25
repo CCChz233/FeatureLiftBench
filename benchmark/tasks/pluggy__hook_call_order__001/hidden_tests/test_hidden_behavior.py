@@ -83,3 +83,28 @@ def test_validation_unregister_and_plugin_names() -> None:
     assert manager.hook.step(value="ok") == ["OK"]
     assert manager.unregister(name="good") is plugin
     assert not manager.has_plugin("good")
+
+
+def test_hook_historic_and_subset_hooknames() -> None:
+    hookspec = HookspecMarker("demo")
+    hookimpl = HookimplMarker("demo")
+
+    class Spec:
+        @hookspec
+        def alpha(self, value):
+            """First hook."""
+
+        @hookspec
+        def beta(self, value):
+            """Second hook."""
+
+    class Plugin:
+        @hookimpl
+        def alpha(self, value):
+            return value + "-a"
+
+    manager = PluginManager("demo")
+    manager.add_hookspecs(Spec)
+    manager.register(Plugin())
+    assert manager.hook.alpha(value="x") == ["x-a"]
+    assert set(manager.hook.__dict__.keys()) >= {"alpha", "beta"}

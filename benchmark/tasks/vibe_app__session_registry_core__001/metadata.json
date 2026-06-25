@@ -1,0 +1,81 @@
+{
+  "task_id": "vibe_app__session_registry_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "source": {
+    "name": "vibe_app",
+    "url": "sources/vibe_app/",
+    "commit": "curated",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Session token registry",
+    "description": "Extract VibeShop session registration, resolution, and revocation as a standalone package.",
+    "source_entrypoints": [
+      "vibe_app.session_registry.registry.SessionRegistry",
+      "vibe_app.session_registry.registry.SessionRegistry.register",
+      "vibe_app.session_registry.registry.SessionRegistry.resolve",
+      "vibe_app.session_registry.tokens.normalize_token"
+    ],
+    "included_behaviors": [
+      "register sessions and return opaque tokens",
+      "resolve sessions by normalized token strings",
+      "revoke sessions and remove ids from GLOBAL_STATE",
+      "store user_id and metadata payloads in SessionStore"
+    ],
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP cookie handling",
+      "YAML bootstrap and pricing/CSV modules",
+      "get_session_v1 and lookup_session_legacy wrong helpers",
+      "app factory and middleware clutter",
+      "original project tests and CLI entrypoints"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Session resolution is split across registry, store, and token helpers with duplicate utils shortcuts and GLOBAL_STATE session bookkeeping.",
+    "signals": [
+      "two similarly named session lookup helpers with incorrect semantics",
+      "register appends session ids to GLOBAL_STATE sessions list",
+      "token normalization required for case/whitespace-insensitive lookup"
+    ],
+    "primary": "legacy_vibe_clutter"
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import SessionRegistry",
+    "callable": "featurelifted.SessionRegistry.register",
+    "signature": "SessionRegistry.register(user_id: str, *, metadata: dict | None = None) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

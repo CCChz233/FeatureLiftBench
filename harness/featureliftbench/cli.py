@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
-from .agent_adapters import AgentRunConfig
 from .agent_adapters import SUPPORTED_AGENTS
-from .agent_config import load_agent_run_config
-from .agent_runner import run_agent_on_path
+from .docker_eval import DEFAULT_EVAL_IMAGE
+from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .paths import DEFAULT_AGENT_CONFIG
 from .paths import resolve_task_input
@@ -29,6 +29,16 @@ def main(argv: list[str] | None = None) -> int:
     eval_parser.add_argument("task_dir", type=Path)
     eval_parser.add_argument("submission_dir", type=Path)
     eval_parser.add_argument("--output", type=Path, required=True)
+    eval_parser.add_argument(
+        "--docker",
+        action="store_true",
+        help="run evaluation inside the featureliftbench-eval Docker image",
+    )
+    eval_parser.add_argument(
+        "--docker-image",
+        default=DEFAULT_EVAL_IMAGE,
+        help=f"Docker image for --docker (default: {DEFAULT_EVAL_IMAGE})",
+    )
 
     score_parser = subparsers.add_parser("score", help="print scores from a result file")
     score_parser.add_argument("result_json", type=Path)
@@ -93,6 +103,26 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="extra argument appended to the agent command; may be repeated",
     )
+    run_agent_parser.add_argument(
+        "--task-id",
+        action="append",
+        dest="task_ids",
+        help="limit suite run to specific task_id values; may be repeated",
+    )
+    run_agent_parser.add_argument(
+        "--skip-completed",
+        type=Path,
+        help="previous suite output directory; skip agent runs for tasks that already passed",
+    )
+    run_agent_parser.add_argument(
+        "--retry-rate-limit",
+        type=int,
+        default=1,
+        help=(
+            "when a task fails due to API rate limiting, retry up to this many total attempts "
+            "(waits ~65s between tries to clear TPM windows; default: 1)"
+        ),
+    )
 
     args = parser.parse_args(argv)
 
@@ -131,7 +161,21 @@ def _cmd_validate_task(args: argparse.Namespace) -> int:
 
 
 def _cmd_eval(args: argparse.Namespace) -> int:
-    result = evaluate_submission(args.task_dir, args.submission_dir, args.output)
+    use_docker = args.docker or os.environ.get("FEATURELIFTBENCH_EVAL_DOCKER", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    if use_docker:
+        result = evaluate_submission_docker(
+            args.task_dir,
+            args.submission_dir,
+            args.output,
+            image=args.docker_image,
+            use_docker=True,
+        )
+    else:
+        result = evaluate_submission(args.task_dir, args.submission_dir, args.output)
     result_path = args.output / "result.json"
     print(json.dumps(result, indent=2, sort_keys=True))
     print(f"wrote result: {result_path}", file=sys.stderr)
@@ -158,6 +202,10 @@ def _cmd_score(args: argparse.Namespace) -> int:
 
 
 def _cmd_run_agent(args: argparse.Namespace) -> int:
+    from .agent_adapters import AgentRunConfig
+    from .agent_config import load_agent_run_config
+    from .agent_runner import run_agent_on_path
+
     base_config = AgentRunConfig(
         agent=args.agent,
         agent_bin=args.agent_bin,
@@ -182,6 +230,9 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             agent_config_summary=loaded_config.summary,
             num_workers=args.num_workers,
             progress=not args.no_progress,
+            task_ids=args.task_ids or None,
+            skip_completed_dir=args.skip_completed,
+            retry_rate_limit=args.retry_rate_limit,
         )
     except ValueError as exc:
         print(str(exc), file=sys.stderr)

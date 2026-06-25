@@ -50,11 +50,12 @@
       "formatter behavior composed from multiple filters",
       "filter stack postprocessing and serialization",
       "public API hides a multi-module runtime closure"
-    ]
+    ],
+    "primary": "parser_state_coupling"
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import format",
+    "import": "from featurelifted import format; from featurelifted.exceptions import SQLParseError",
     "callable": "featurelifted.format",
     "signature": "format(sql: str, encoding: str | None = None, **options) -> str"
   },

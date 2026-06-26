@@ -25,8 +25,16 @@ from rich.progress import (
 )
 from rich.table import Table
 
-_MINI_STEP_RE = re.compile(
+_MINI_STEP_TOKEN_RE = re.compile(
     r"mini-swe-agent \(step (\d+), (\d+) tokens\)",
+    re.IGNORECASE,
+)
+_MINI_STEP_COST_RE = re.compile(
+    r"mini-swe-agent \(step (\d+), \$[\d.]+\)",
+    re.IGNORECASE,
+)
+_MINI_STEP_ONLY_RE = re.compile(
+    r"mini-swe-agent \(step (\d+)[,\)]",
     re.IGNORECASE,
 )
 _ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
@@ -49,6 +57,17 @@ def _normalize_log_text(value: str) -> str:
     return _RICH_TAG_RE.sub("", _strip_ansi(value))
 
 
+def _is_noise_log_line(line: str) -> bool:
+    cleaned = line.strip()
+    if not cleaned:
+        return True
+    if cleaned.startswith("─") or cleaned.startswith("="):
+        return True
+    if cleaned in {"User:", "System:", "Assistant:"}:
+        return True
+    return False
+
+
 def parse_mini_progress_from_log(path: Path) -> str | None:
     """Extract the latest mini-swe-agent step/token status from agent stdout."""
 
@@ -59,15 +78,26 @@ def parse_mini_progress_from_log(path: Path) -> str | None:
     except OSError:
         return None
 
-    matches = list(_MINI_STEP_RE.finditer(_normalize_log_text(text)))
-    if matches:
-        last = matches[-1]
+    normalized = _normalize_log_text(text)
+    token_matches = list(_MINI_STEP_TOKEN_RE.finditer(normalized))
+    if token_matches:
+        last = token_matches[-1]
         return f"Step {last.group(1)} ({last.group(2)} toks)"
+
+    cost_matches = list(_MINI_STEP_COST_RE.finditer(normalized))
+    if cost_matches:
+        last = cost_matches[-1]
+        return f"Step {last.group(1)}"
+
+    step_matches = list(_MINI_STEP_ONLY_RE.finditer(normalized))
+    if step_matches:
+        return f"Step {step_matches[-1].group(1)}"
 
     for line in reversed(text.splitlines()):
         cleaned = _normalize_log_text(line).strip()
-        if cleaned:
-            return _shorten_str(cleaned, 30)
+        if _is_noise_log_line(cleaned):
+            continue
+        return _shorten_str(cleaned, 30)
     return None
 
 

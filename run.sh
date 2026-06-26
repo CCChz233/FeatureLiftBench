@@ -56,7 +56,7 @@ $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --num-workers "${NUM_WORKERS:-4}" \
   --retry-rate-limit 2 \
   --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
-  --no-progress \
+  ${NO_PROGRESS:+--no-progress} \
   --output "${OUTPUT}" \
   "${RESUME_FLAG[@]}"
 

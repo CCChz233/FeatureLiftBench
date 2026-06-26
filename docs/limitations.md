@@ -13,7 +13,7 @@
 | 断点续跑 | `--resume` 同目录续跑；保留非 retry 状态题，重跑 `missing_submission` / `failed` 等；`run.json` 归档为 `run.attemptN.json` | 无 agent 中途 checkpoint；`--skip-completed` 仍可用（仅保留 passed） |
 | 用量解析仍偏轻量 | 新 run 会写 `run.json/suite.json`；标准路径为 `agent/usage.json`，mini fallback 解析 `trajectory.json` | 其他 Agent 若不写 `usage.json`，会显示 `usage.available=false` |
 | 不记录 cost | mini `info.model_stats.cost_usd` 常为 `0`（未配 DeepSeek 定价 / `cost_tracking: ignore_errors`） | harness 只记录 token、API call 和 step 数 |
-| 环境强依赖本机路径 | `agents.toml` 写死 conda 内 `mini` 路径；README 示例曾用系统 `python3` | 换机器易碎；系统 Python 3.9 会因缺 `tomllib` 启动失败，需 **Python 3.11+** |
+| 环境强依赖本机路径 | `agents.toml` / `.env` 不进 Git；`./setup.sh` 会生成并 patch `agent_bin` | 服务器：`git clone` → `./setup.sh` → 编辑 `.env` → `./run.sh` |
 | 仅内置 `mini-swe-agent` 与 `command` | 无通用 SDK 接入层 | 换 Agent 需写 adapter 或 shell 模板 |
 | mini batch 必须 `--yolo` | 默认 confirm 模式会在 `Execute?` 处阻塞非交互 subprocess | `run-agent` 须加 `--yolo` 或改 mini 配置 |
 

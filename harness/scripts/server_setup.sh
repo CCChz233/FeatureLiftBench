@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Bootstrap FeatureLiftBench on a Linux server for long agent suites.
+# Bootstrap FeatureLiftBench on a fresh clone (local or Linux server).
 #
-# Usage (on server, after git clone):
-#   ./harness/scripts/server_setup.sh
-#   cp .env.example .env   # fill API keys
+# Usage:
+#   ./setup.sh
+#   # edit .env with API keys if preflight warns
 #   ./run.sh
 #
 # Optional env:
-#   PYTHON=python3.12  VENV_DIR=.venv  SKIP_MINI=1
+#   PYTHON=python3.12  VENV_DIR=.venv  SKIP_MINI=1  MINI_BIN=/path/to/mini
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -39,75 +39,56 @@ fi
 source "$VENV_DIR/bin/activate"
 python -m pip install -U pip wheel
 
-echo "Installing harness test deps + mini-swe-agent..."
+echo "Installing harness deps + mini-swe-agent..."
 python -m pip install pytest==7.4.4 rich
 
 if [[ "${SKIP_MINI:-0}" != "1" ]]; then
   python -m pip install mini-swe-agent
 fi
 
-MINI_BIN="${MINI_BIN:-$(command -v mini || true)}"
-if [[ -z "$MINI_BIN" ]]; then
-  echo "Warning: 'mini' not on PATH. Install mini-swe-agent or set MINI_BIN." >&2
-  MINI_BIN="/usr/local/bin/mini"
+if [[ -n "${MINI_BIN:-}" ]]; then
+  MINI="$MINI_BIN"
+elif [[ -x "$VENV_DIR/bin/mini" ]]; then
+  MINI="$VENV_DIR/bin/mini"
+else
+  MINI="$(command -v mini || true)"
 fi
-
-AGENTS_TOML="$ROOT/harness/config/agents.toml"
-if [[ ! -f "$AGENTS_TOML" ]]; then
-  cp "$ROOT/harness/config/agents.example.toml" "$AGENTS_TOML"
+if [[ -z "$MINI" || ! -x "$MINI" ]]; then
+  echo "ERROR: mini CLI not found. pip install mini-swe-agent in $VENV_DIR or set MINI_BIN." >&2
+  exit 1
 fi
-
-# Patch agent_bin in agents.toml (idempotent enough for fresh copy).
-"$PYTHON" - <<PY
-from pathlib import Path
-import re
-
-path = Path("$AGENTS_TOML")
-text = path.read_text(encoding="utf-8")
-mini = "$MINI_BIN"
-if "agent_bin" in text:
-    text = re.sub(
-        r'^agent_bin\s*=\s*".*"$',
-        f'agent_bin = "{mini}"',
-        text,
-        flags=re.MULTILINE,
-    )
-else:
-    text = text.replace(
-        "# agent_bin = ",
-        f'agent_bin = "{mini}"\n# agent_bin = ",
-        1,
-    )
-path.write_text(text, encoding="utf-8")
-print(f"Updated agent_bin -> {mini}")
-PY
-
-if [[ ! -f "$ROOT/.env" ]]; then
-  cp "$ROOT/.env.example" "$ROOT/.env"
-  echo "Created .env from .env.example — add API keys before running suites."
-fi
+echo "Using mini: $MINI"
 
 export PYTHONPATH="$ROOT/harness"
-python -m pytest harness/tests/ -q --tb=no -q 2>/dev/null | tail -3 || true
+export PATH="$VENV_DIR/bin:$PATH"
+python "$ROOT/harness/scripts/preflight.py" --bootstrap --mini-bin "$MINI" || true
+
+if [[ ! -f "$ROOT/.env" ]]; then
+  echo "Created .env from example — add API keys before ./run.sh"
+fi
+
+python -m pytest harness/tests/ -q --tb=no 2>/dev/null | tail -3 || true
 
 cat <<EOF
 
 Setup complete.
 
+  ./run.sh
+
+Or manually:
   source $VENV_DIR/bin/activate
   export PYTHONPATH=$ROOT/harness
-  # edit .env with API keys
+  # ensure .env has API keys
   ./run.sh
 
 Long runs (recommended):
   tmux new -s flb
   ./run.sh
-  # Ctrl-B D to detach
 
 Resume after interrupt:
   RESUME_DIR=experiments/mini-swe-agent/<previous-run> ./run.sh
 
-Optional automatic second pass for failed tasks:
+Optional automatic second pass:
   EXTRA_AGENT_PASSES=1 ./run.sh
 
 EOF

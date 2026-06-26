@@ -6,6 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
 export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
+export PATH="$ROOT/.venv/bin:${PATH}"
 
 if [[ -n "${PYTHON:-}" ]]; then
   :
@@ -16,6 +17,13 @@ elif command -v python3.12 >/dev/null 2>&1; then
 else
   PYTHON=python3
 fi
+
+AGENT_PROFILE="${AGENT_PROFILE:-deepseek_v4_pro}"
+
+"$PYTHON" "$ROOT/harness/scripts/preflight.py" \
+  --bootstrap \
+  --agent-profile "$AGENT_PROFILE" \
+  ${MINI_BIN:+--mini-bin "$MINI_BIN"}
 
 if [[ -n "${RESUME_DIR:-}" ]]; then
   OUTPUT="${RESUME_DIR}"
@@ -28,7 +36,7 @@ fi
 
 EXTRA_AGENT_PASSES="${EXTRA_AGENT_PASSES:-0}"
 
-echo "Profile: deepseek_v4_pro"
+echo "Profile: ${AGENT_PROFILE}"
 echo "Output:  ${OUTPUT}"
 echo "Python:  $PYTHON"
 echo "Workers: ${NUM_WORKERS:-4}"
@@ -42,7 +50,7 @@ fi
 $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --agent mini-swe-agent \
   --agent-config harness/config/agents.toml \
-  --agent-profile deepseek_v4_pro \
+  --agent-profile "${AGENT_PROFILE}" \
   --env-file .env \
   --yolo \
   --num-workers "${NUM_WORKERS:-4}" \

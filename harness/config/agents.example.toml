@@ -1,56 +1,47 @@
 # FeatureLiftBench shared agent config.
-# Copy this file to harness/config/agents.toml and keep secrets in .env.
+# Secrets live in .env (never commit .env).
 #
-# One profile = one reproducible model + endpoint + key env var.
-# Switch models with: --agent-profile <name>
-#
-# api_base must be the OpenAI-compatible ROOT (e.g. https://api.example.com/v1).
-# Do NOT include /chat/completions — mini-swe-agent / LiteLLM append that path.
+# Fresh clone: ./setup.sh creates harness/config/agents.toml from this file.
+# Switch models: AGENT_PROFILE=deepseek_v4_flash ./run.sh  or  --agent-profile
 
-profile = "deepseek_v4_flash"
+profile = "deepseek_v4_pro"
 env_file = ".env"
-
-# --- DeepSeek official API (Flash / Pro share FEATURELIFTBENCH_* in .env) ---
-
-[profiles.deepseek_v4_flash]
-model = "deepseek/deepseek-v4-flash"
-# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
-api_key_env = "FEATURELIFTBENCH_API_KEY"
-api_base_env = "FEATURELIFTBENCH_API_BASE"
-cost_limit = "0"
-call_limit = "0"
 
 [profiles.deepseek_v4_pro]
 model = "deepseek/deepseek-v4-pro"
-# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
+agent_bin = "mini"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
 call_limit = "0"
 
-# --- SiliconFlow (shared SILICONFLOW_* in .env) ---
-# Use api_base_env so FEATURELIFTBENCH_API_BASE does not override these profiles.
+[profiles.deepseek_v4_flash]
+model = "deepseek/deepseek-v4-flash"
+agent_bin = "mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
 
 [profiles.nex_n2_pro]
 model = "openai/nex-agi/Nex-N2-Pro"
+agent_bin = "mini"
 api_base_env = "SILICONFLOW_API_BASE"
 api_key_env = "SILICONFLOW_API_KEY"
-# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
 cost_limit = "0"
 call_limit = "0"
 
 [profiles.qwen3_6_27b]
 model = "openai/Qwen/Qwen3.6-27B"
+agent_bin = "mini"
 api_base_env = "SILICONFLOW_API_BASE"
 api_key_env = "SILICONFLOW_API_KEY"
-# agent_bin = "/path/to/conda/envs/miniswe/bin/mini"
 cost_limit = "0"
 call_limit = "0"
 
-# --- Generic OpenAI-compatible (template) ---
-
 [profiles.default]
 model = "openai/gpt-5.4-mini"
+agent_bin = "mini"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "10.00"
@@ -58,6 +49,7 @@ call_limit = "0"
 
 [profiles.openai_compatible]
 model = "openai/gpt-5.4-mini"
+agent_bin = "mini"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "10.00"

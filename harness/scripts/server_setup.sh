@@ -30,10 +30,38 @@ import sys
 assert sys.version_info >= (3, 11)
 PY
 
+PY_VER="$("$PYTHON" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+
+_venv_module_hint() {
+  cat >&2 <<EOF
+
+ERROR: $PYTHON ($PY_VER) cannot import the venv module.
+Debian/Ubuntu minimal images ship python3.12 without venv — install the OS package first:
+
+  sudo apt update
+  sudo apt install -y python${PY_VER}-venv python${PY_VER}-pip
+
+Other distros (examples):
+  Fedora/RHEL:  sudo dnf install python${PY_VER}-venv
+  Arch:         sudo pacman -S python
+
+Then re-run: ./setup.sh
+EOF
+}
+
+if ! "$PYTHON" -c "import venv" 2>/dev/null; then
+  _venv_module_hint
+  exit 1
+fi
+
 VENV_DIR="${VENV_DIR:-$ROOT/.venv}"
 if [[ ! -d "$VENV_DIR" ]]; then
   echo "Creating venv: $VENV_DIR"
-  "$PYTHON" -m venv "$VENV_DIR"
+  if ! "$PYTHON" -m venv "$VENV_DIR" 2>/dev/null; then
+    echo "ERROR: failed to create venv at $VENV_DIR" >&2
+    _venv_module_hint
+    exit 1
+  fi
 fi
 # shellcheck disable=SC1091
 source "$VENV_DIR/bin/activate"

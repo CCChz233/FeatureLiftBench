@@ -36,12 +36,26 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py \
 | --- | --- |
 | **操作系统** | Linux 或 macOS（服务器推荐 Linux） |
 | **Python** | **3.11+**（推荐 **3.12**）。3.9/3.10 缺少 `tomllib`，CLI 无法启动 |
+| **Linux 系统包** | Debian/Ubuntu 需 **`python3.12-venv`**（及 `python3.12-pip`）；仅装 `python3.12` 不够 |
 | **磁盘** | 仓库约 **150MB+**（含 50 题 `repo/` 快照）；`experiments/` 每轮额外占用（轨迹、submission、eval 日志） |
 | **内存** | 建议 **8GB+**；`NUM_WORKERS=4` 并行时更吃内存 |
 | **网络** | 需访问所选模型的 **API**（DeepSeek、SiliconFlow 等）；agent 跑题期间要联网 |
 | **Docker** | **非必须**；仅在使用 `eval --docker` 或 CI oracle 时需要 |
 
 不需要事先全局安装 conda；推荐用项目内 **`.venv`**（`./setup.sh` 自动创建）。
+
+**Debian / Ubuntu 服务器**（在 `./setup.sh` 之前）：
+
+```bash
+sudo apt update
+sudo apt install -y python3.12 python3.12-venv python3.12-pip git
+```
+
+若已装 `python3.12` 但 `./setup.sh` 报 `No module named venv`，补装：
+
+```bash
+sudo apt install -y python3.12-venv python3.12-pip
+```
 
 ---
 
@@ -198,6 +212,7 @@ python harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/<ru
 
 | 现象 | 可能原因 | 处理 |
 | --- | --- | --- |
+| `No module named venv` / `ensurepip is not available` | Debian/Ubuntu 未装 `python3.12-venv` | `sudo apt install python3.12-venv python3.12-pip` 后重跑 `./setup.sh` |
 | `agent config file not found` | 未跑 `./setup.sh` | `./setup.sh` |
 | `FEATURELIFTBENCH_API_KEY is empty` | `.env` 未填 key | 编辑 `.env` |
 | `mini-swe-agent CLI not found` | 未装 mini 或 PATH 不对 | `./setup.sh`；或 `export PATH="$PWD/.venv/bin:$PATH"` |

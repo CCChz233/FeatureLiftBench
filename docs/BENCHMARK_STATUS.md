@@ -2,7 +2,7 @@
 
 本文档记录 **当前 50 hard 主榜 + 3 smoke** 的健康度、baseline、评分口径与后续校准优先级。
 
-相关文档：[limitations.md](limitations.md) · [benchmark_tasks.md](benchmark_tasks.md) · [TASK_FORMAT.md](TASK_FORMAT.md) · [CONCEPTS.md](CONCEPTS.md)
+相关文档：[limitations.md](limitations.md) · [SETUP.md](SETUP.md) · [benchmark_tasks.md](benchmark_tasks.md) · [TASK_FORMAT.md](TASK_FORMAT.md) · [CONCEPTS.md](CONCEPTS.md)
 
 最后更新：**2026-06-25**（Eval harness 修复 + Pro-50 re-eval 修正 + Docker eval 镜像）
 
@@ -259,6 +259,12 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 ---
 
+## 环境与部署
+
+系统要求、`.env` / `agents.toml`、服务器清单与常见失败处理见 **[SETUP.md](SETUP.md)**。
+
+---
+
 ## 续跑与失败重试
 
 **场景：** suite 中断、`missing_submission`、或首轮 eval/agent 失败后的二轮补跑。
@@ -297,6 +303,8 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 | `harness/scripts/verify_module_probes.py` | design probe 审计；`--verify-oracle` 删模块回归 |
 | `harness/scripts/audit_output_imports.py` | metadata.output vs 测试 import |
 | `harness/scripts/analyze_benchmark_suite.py` | suite 汇总 + high/compact pass 分类 + `eval_flake` |
+| `harness/scripts/preflight.py` | 开跑前环境/API key/mini 预检 |
+| `setup.sh` / `harness/scripts/server_setup.sh` | 一键 venv + 依赖 + 配置模板 |
 | `harness/scripts/reeval_suite.py` | 不重跑 agent，批量重算 eval 并更新 suite.json |
 | `harness/scripts/report_entanglement_coverage.py` | 按 primary 分层通过率 |
 | `harness/scripts/calibrate_flash_baseline.sh` | Flash 50-hard 封装（Python 3.12） |

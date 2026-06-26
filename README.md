@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-**Concepts (start here):** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · **Task format:** [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) · **Benchmark status:** [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) · **Directory map:** [docs/DIRECTORY.md](docs/DIRECTORY.md) · **Task catalog:** [docs/benchmark_tasks.md](docs/benchmark_tasks.md)
+**Concepts (start here):** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **Setup & environment:** [docs/SETUP.md](docs/SETUP.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · **Task format:** [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) · **Benchmark status:** [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) · **Directory map:** [docs/DIRECTORY.md](docs/DIRECTORY.md) · **Task catalog:** [docs/benchmark_tasks.md](docs/benchmark_tasks.md)
 
 **FeatureLiftBench: Can Code Agents Decouple Features from Entangled Repositories?**
 
@@ -218,6 +218,8 @@ jq '.info.model_stats' experiments/mini-swe-agent/<suite_run_id>/<task_id>/agent
 
 推荐运行 CLI 时使用 **Python 3.11+**（例如 `python3.12`）。系统自带的 `python3` 若为 3.9/3.10，会因缺少 `tomllib` 无法启动。
 
+**首次部署**（本机或服务器）：见 **[docs/SETUP.md](docs/SETUP.md)** — `./setup.sh` → 编辑 `.env` → `./run.sh`。
+
 `hidden_tests/`、`evaluation/` 和未公开评测规则不会进入 agent workspace。Agent 只能看到源仓库、public tests、锁定依赖和裁剪后的任务说明。
 
 当前内置两个 adapter：
@@ -238,10 +240,12 @@ FeatureLiftBench 自己不直接调用模型 API。它只负责：
 
 ```text
 harness/config/agents.toml   # 非敏感配置：model、profile、cost limit
-.env                 # 敏感配置：API key、可选 base URL
+.env                         # 敏感配置：API key、可选 base URL
 ```
 
-先复制模板：
+一键生成上述文件：`./setup.sh`（从 example 复制并安装 `.venv`）。详见 [docs/SETUP.md](docs/SETUP.md)。
+
+手动复制模板：
 
 ```bash
 cp harness/config/agents.example.toml harness/config/agents.toml

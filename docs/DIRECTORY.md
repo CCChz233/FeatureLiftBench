@@ -21,6 +21,7 @@ FeatureLiftBench/
 | Path | Purpose |
 | --- | --- |
 | [CONCEPTS.md](CONCEPTS.md) | Core concepts: feature definition, tests, submission, scoring |
+| [SETUP.md](SETUP.md) | Environment, `./setup.sh`, `.env`, server deploy, preflight |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Three-layer design and data flow |
 | [TASK_FORMAT.md](TASK_FORMAT.md) | Canonical task directory and metadata spec |
 | [DIRECTORY.md](DIRECTORY.md) | This file |

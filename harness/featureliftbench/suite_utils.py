@@ -10,6 +10,58 @@ from typing import Any
 EVAL_FLAKE_PYTEST_MISSING = "No module named pytest"
 EVAL_TOOLING_ERROR_PREFIX = "eval tooling failed"
 
+ALL_RUN_STATUSES = frozenset(
+    {"passed", "failed", "missing_submission", "not_evaluated", "invalid_task"}
+)
+DEFAULT_RETRY_ONLY_STATUSES = frozenset({"missing_submission", "failed", "not_evaluated"})
+
+
+def parse_retry_only_statuses(value: str | None) -> frozenset[str]:
+    """Parse a comma-separated list of run statuses eligible for agent retry."""
+
+    if not value:
+        return DEFAULT_RETRY_ONLY_STATUSES
+    statuses = frozenset(part.strip() for part in value.split(",") if part.strip())
+    if not statuses:
+        return DEFAULT_RETRY_ONLY_STATUSES
+    unknown = statuses - ALL_RUN_STATUSES
+    if unknown:
+        raise ValueError(
+            f"unknown retry-only status values: {', '.join(sorted(unknown))}; "
+            f"allowed: {', '.join(sorted(ALL_RUN_STATUSES))}"
+        )
+    return statuses
+
+
+def load_retained_runs(
+    suite_dir: str | Path | None,
+    *,
+    retain_statuses: frozenset[str] = frozenset({"passed"}),
+) -> dict[str, dict[str, Any]]:
+    """Load full task run.json payloads from a previous suite output directory."""
+
+    if suite_dir is None:
+        return {}
+    base_dir = Path(suite_dir).resolve()
+    suite_path = base_dir / "suite.json"
+    if not suite_path.is_file():
+        return {}
+    suite = json.loads(suite_path.read_text(encoding="utf-8"))
+    retained: dict[str, dict[str, Any]] = {}
+    for entry in suite.get("runs", []):
+        if not isinstance(entry, dict):
+            continue
+        status = entry.get("status")
+        if not isinstance(status, str) or status not in retain_statuses:
+            continue
+        task_id = entry.get("task_id")
+        if not isinstance(task_id, str) or not task_id:
+            continue
+        run_json = base_dir / task_id / "run.json"
+        if run_json.is_file():
+            retained[task_id] = json.loads(run_json.read_text(encoding="utf-8"))
+    return retained
+
 
 def evaluation_payload(eval_result: dict[str, Any] | None, eval_output_dir: Path) -> dict[str, Any]:
     if eval_result is None:
@@ -86,6 +138,18 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         if isinstance(run.get("evaluation"), dict)
     ]
     numeric_scores = [score for score in final_scores if isinstance(score, (int, float))]
+    by_status: dict[str, int] = {}
+    tasks_by_status: dict[str, list[str]] = {}
+    for run in runs:
+        status = run.get("status", "failed")
+        if not isinstance(status, str):
+            status = "failed"
+        by_status[status] = by_status.get(status, 0) + 1
+        task_id = run.get("task_id")
+        if isinstance(task_id, str) and task_id:
+            tasks_by_status.setdefault(status, []).append(task_id)
+    for task_ids in tasks_by_status.values():
+        task_ids.sort()
     return {
         "total": len(runs),
         "passed": sum(1 for run in runs if run.get("status") == "passed"),
@@ -97,6 +161,8 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         "average_final_score": (
             round(sum(numeric_scores) / len(numeric_scores), 6) if numeric_scores else 0.0
         ),
+        "by_status": by_status,
+        "tasks_by_status": tasks_by_status,
     }
 
 

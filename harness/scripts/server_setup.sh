@@ -105,6 +105,9 @@ Long runs (recommended):
   # Ctrl-B D to detach
 
 Resume after interrupt:
-  ./run.sh   # or add --skip-completed experiments/mini-swe-agent/<previous-run>
+  RESUME_DIR=experiments/mini-swe-agent/<previous-run> ./run.sh
+
+Optional automatic second pass for failed tasks:
+  EXTRA_AGENT_PASSES=1 ./run.sh
 
 EOF

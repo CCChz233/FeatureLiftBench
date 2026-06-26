@@ -112,7 +112,35 @@ def main(argv: list[str] | None = None) -> int:
     run_agent_parser.add_argument(
         "--skip-completed",
         type=Path,
-        help="previous suite output directory; skip agent runs for tasks that already passed",
+        help="deprecated alias: previous suite output directory; retains only passed tasks",
+    )
+    run_agent_parser.add_argument(
+        "--resume",
+        nargs="?",
+        const=True,
+        default=None,
+        metavar="DIR",
+        help="resume a suite run in --output (or DIR); retains non-retry statuses from existing suite.json",
+    )
+    run_agent_parser.add_argument(
+        "--retry-only-status",
+        default=None,
+        help=(
+            "comma-separated run statuses to re-run when using --resume "
+            "(default: missing_submission,failed,not_evaluated)"
+        ),
+    )
+    run_agent_parser.add_argument(
+        "--extra-agent-passes",
+        type=int,
+        default=0,
+        help="after the first suite pass, automatically re-run failed tasks up to N additional times",
+    )
+    run_agent_parser.add_argument(
+        "--max-task-attempts",
+        type=int,
+        default=None,
+        help="skip agent re-runs for tasks that already reached this many attempts",
     )
     run_agent_parser.add_argument(
         "--retry-rate-limit",
@@ -205,6 +233,7 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
     from .agent_adapters import AgentRunConfig
     from .agent_config import load_agent_run_config
     from .agent_runner import run_agent_on_path
+    from .suite_utils import parse_retry_only_statuses
 
     base_config = AgentRunConfig(
         agent=args.agent,
@@ -223,6 +252,8 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             profile_name=args.agent_profile,
             env_file=args.env_file,
         )
+        resume_dir, resume_mode = _resolve_resume_args(args)
+        retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)
         result = run_agent_on_path(
             resolve_task_input(args.input_path),
             args.output,
@@ -233,6 +264,11 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             task_ids=args.task_ids or None,
             skip_completed_dir=args.skip_completed,
             retry_rate_limit=args.retry_rate_limit,
+            resume_dir=resume_dir,
+            resume_mode=resume_mode,
+            retry_only_statuses=retry_only_statuses,
+            extra_agent_passes=args.extra_agent_passes,
+            max_task_attempts=args.max_task_attempts,
         )
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
@@ -242,6 +278,14 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
     if result.get("mode") == "suite":
         return 0 if result.get("summary", {}).get("failed") == 0 else 1
     return 0 if result.get("status") == "passed" else 1
+
+
+def _resolve_resume_args(args: argparse.Namespace) -> tuple[Path | None, bool]:
+    if args.resume is not None:
+        if args.resume is True:
+            return args.output.resolve(), True
+        return Path(args.resume).resolve(), True
+    return None, False
 
 
 if __name__ == "__main__":

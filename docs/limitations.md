@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | Suite 并行仍需人工控流 | `run-agent tasks --num-workers N` 已支持并行，但没有自适应 API rate-limit/backoff | 并发过高可能触发限流、超时或本机资源争用；建议先用 2–4 |
 | 进度与日志 | 已支持 Rich Live 进度（step/token、ETA、exit 表）；`stdout.log` 流式写入并可轮询 | 非 TTY 或 `--no-progress` 时仍为纯文本 started/finished |
-| 断点续跑有限 | 支持 `--skip-completed DIR` 跳过已 pass 题；否则重跑会清空该 task output | 中断后可用 skip-completed 续跑，但无单题 atomic checkpoint |
+| 断点续跑 | `--resume` 同目录续跑；保留非 retry 状态题，重跑 `missing_submission` / `failed` 等；`run.json` 归档为 `run.attemptN.json` | 无 agent 中途 checkpoint；`--skip-completed` 仍可用（仅保留 passed） |
 | 用量解析仍偏轻量 | 新 run 会写 `run.json/suite.json`；标准路径为 `agent/usage.json`，mini fallback 解析 `trajectory.json` | 其他 Agent 若不写 `usage.json`，会显示 `usage.available=false` |
 | 不记录 cost | mini `info.model_stats.cost_usd` 常为 `0`（未配 DeepSeek 定价 / `cost_tracking: ignore_errors`） | harness 只记录 token、API call 和 step 数 |
 | 环境强依赖本机路径 | `agents.toml` 写死 conda 内 `mini` 路径；README 示例曾用系统 `python3` | 换机器易碎；系统 Python 3.9 会因缺 `tomllib` 启动失败，需 **Python 3.11+** |
@@ -106,7 +106,7 @@
 
 1. **P0（benchmark spec）**：补 5 题 `metadata.output.import`；全题 oracle `eval` 回归。
 2. **P1（agent 指令）**：`TASK.md` 工作流 + forbidden import / hidden 提示。
-3. **P2（harness）**：断点续跑；并行限流/backoff；`analyze_benchmark_suite` 跨 run 对比。
+3. **P2（harness）**：并行限流/backoff；`analyze_benchmark_suite` 跨 run 对比。（续跑/重试见 `--resume` / `EXTRA_AGENT_PASSES`）
 4. **P3（infra）**：evaluator 离线 wheel；baselines CLI；Agent 容器化（eval 容器已提供）
 5. **暂缓**：扩题到 30–50；网络隔离；代码相似度约束。
 

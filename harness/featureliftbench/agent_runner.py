@@ -22,8 +22,11 @@ from .agent_adapters import get_agent_adapter
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
 from .paths import resolve_task_input
+from .suite_utils import ALL_RUN_STATUSES
+from .suite_utils import DEFAULT_RETRY_ONLY_STATUSES
 from .suite_utils import compact_suite_run_entry
 from .suite_utils import evaluation_payload as _evaluation_payload
+from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
 from .suite_utils import run_status as _run_status
 from .task_discovery import discover_main_task_dirs
@@ -69,6 +72,11 @@ def run_agent_on_path(
     task_ids: list[str] | None = None,
     skip_completed_dir: str | Path | None = None,
     retry_rate_limit: int = 1,
+    resume_dir: str | Path | None = None,
+    resume_mode: bool = False,
+    retry_only_statuses: frozenset[str] | None = None,
+    extra_agent_passes: int = 0,
+    max_task_attempts: int | None = None,
 ) -> dict[str, Any]:
     """Run an agent on one task directory or every task under a dataset root."""
 
@@ -91,6 +99,11 @@ def run_agent_on_path(
         progress=progress,
         skip_completed_dir=skip_completed_dir,
         retry_rate_limit=retry_rate_limit,
+        resume_dir=resume_dir,
+        resume_mode=resume_mode,
+        retry_only_statuses=retry_only_statuses or DEFAULT_RETRY_ONLY_STATUSES,
+        extra_agent_passes=extra_agent_passes,
+        max_task_attempts=max_task_attempts,
     )
 
 
@@ -103,15 +116,47 @@ def run_agent_on_suite(
     progress: bool = False,
     skip_completed_dir: str | Path | None = None,
     retry_rate_limit: int = 1,
+    resume_dir: str | Path | None = None,
+    resume_mode: bool = False,
+    retry_only_statuses: frozenset[str] = DEFAULT_RETRY_ONLY_STATUSES,
+    extra_agent_passes: int = 0,
+    max_task_attempts: int | None = None,
 ) -> dict[str, Any]:
     """Run an agent on multiple tasks and write a suite summary."""
 
     output_path = Path(output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
     worker_count = max(1, int(num_workers))
+    extra_passes = max(0, int(extra_agent_passes))
 
-    skipped_runs = load_skipped_runs(skip_completed_dir)
-    runnable_dirs = [task_dir for task_dir in task_dirs if task_dir.name not in skipped_runs]
+    suite_source_dir = _resolve_suite_source_dir(
+        output_path=output_path,
+        resume_dir=resume_dir,
+        resume_mode=resume_mode,
+        skip_completed_dir=skip_completed_dir,
+    )
+    use_resume_retain = resume_mode or resume_dir is not None
+    retain_statuses = _resolve_retain_statuses(
+        resume_mode=use_resume_retain,
+        skip_completed_dir=skip_completed_dir if not use_resume_retain else None,
+        retry_only_statuses=retry_only_statuses,
+    )
+    retained_runs = load_retained_runs(suite_source_dir, retain_statuses=retain_statuses)
+    skipped_max_attempts = _tasks_at_max_attempts(
+        task_dirs,
+        output_path,
+        max_task_attempts,
+        exclude_task_ids=set(retained_runs),
+    )
+    retained_runs = _merge_retained_runs(
+        retained_runs,
+        _load_existing_runs(output_path, skipped_max_attempts),
+    )
+    runnable_dirs = [
+        task_dir
+        for task_dir in task_dirs
+        if task_dir.name not in retained_runs and task_dir.name not in skipped_max_attempts
+    ]
 
     runs = _run_suite_tasks(
         task_dirs=runnable_dirs,
@@ -123,8 +168,50 @@ def run_agent_on_suite(
         retry_rate_limit=max(1, int(retry_rate_limit)),
     )
 
-    if skipped_runs:
-        runs = _merge_suite_runs(task_dirs, runs, skipped_runs)
+    if retained_runs:
+        runs = _merge_suite_runs(task_dirs, runs, retained_runs)
+
+    for pass_index in range(extra_passes):
+        runs_by_id = {
+            run.get("task_id"): run for run in runs if isinstance(run.get("task_id"), str)
+        }
+        retry_dirs = [
+            task_dir
+            for task_dir in task_dirs
+            if runs_by_id.get(task_dir.name, {}).get("status") in retry_only_statuses
+            and task_dir.name not in skipped_max_attempts
+            and not _task_at_max_attempts(output_path / task_dir.name, max_task_attempts)
+        ]
+        if not retry_dirs:
+            break
+        retained = {
+            task_id: run
+            for task_id, run in runs_by_id.items()
+            if run.get("status") not in retry_only_statuses
+        }
+        fresh_runs = _run_suite_tasks(
+            task_dirs=retry_dirs,
+            output_path=output_path,
+            config=config,
+            agent_config_summary=agent_config_summary,
+            num_workers=worker_count,
+            progress=progress,
+            retry_rate_limit=max(1, int(retry_rate_limit)),
+        )
+        runs = _merge_suite_runs(task_dirs, fresh_runs, retained)
+        snapshot_path = output_path / f"suite.pass{pass_index + 1}.json"
+        _write_suite_snapshot(
+            snapshot_path,
+            runs=runs,
+            config=config,
+            agent_config_summary=agent_config_summary,
+            output_path=output_path,
+            worker_count=worker_count,
+            retry_rate_limit=max(1, int(retry_rate_limit)),
+            retry_only_statuses=retry_only_statuses,
+            extra_agent_passes=extra_passes,
+            pass_index=pass_index + 1,
+        )
 
     summary = rebuild_suite_summary(runs)
     agent_usage_totals = _sum_agent_usage(runs)
@@ -136,7 +223,17 @@ def run_agent_on_suite(
         "output_dir": str(output_path),
         "num_workers": worker_count,
         "retry_rate_limit": max(1, int(retry_rate_limit)),
-        "skipped_completed": sorted(skipped_runs),
+        "retry_only_statuses": sorted(retry_only_statuses),
+        "extra_agent_passes": extra_passes,
+        "max_task_attempts": max_task_attempts,
+        "skipped_completed": sorted(retained_runs),
+        "resume": {
+            "enabled": resume_mode or resume_dir is not None or skip_completed_dir is not None,
+            "source_dir": str(suite_source_dir) if suite_source_dir is not None else "",
+            "retained": len(retained_runs),
+            "retried": len(runnable_dirs),
+            "skipped_max_attempts": sorted(skipped_max_attempts),
+        },
         "summary": summary,
         "agent_usage_totals": agent_usage_totals,
         "runs": [compact_suite_run_entry(run) for run in runs],
@@ -159,6 +256,8 @@ def run_agent_on_task(
     task_path = Path(task_dir).resolve()
     output_path = Path(output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
+
+    next_attempt, previous_attempt_json = _archive_previous_run(output_path)
 
     workspace_dir = output_path / "workspace"
     agent_output_dir = output_path / "agent"
@@ -245,6 +344,7 @@ def run_agent_on_task(
         "generated_at": _utc_now(),
         "task_id": task_id,
         "status": status,
+        "attempt": next_attempt,
         "agent": agent_payload,
         "agent_config": agent_config_summary or {},
         "workspace": {
@@ -259,6 +359,8 @@ def run_agent_on_task(
         "errors": errors,
         "run_json": str(run_json_path),
     }
+    if previous_attempt_json is not None:
+        result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     return result
 
@@ -496,24 +598,147 @@ def discover_task_dirs(input_path: str | Path, task_ids: list[str] | None = None
 def load_skipped_runs(skip_dir: str | Path | None) -> dict[str, dict[str, Any]]:
     """Load passed task run.json payloads from a previous suite output directory."""
 
-    if skip_dir is None:
-        return {}
-    base_dir = Path(skip_dir).resolve()
-    suite_path = base_dir / "suite.json"
-    if not suite_path.is_file():
-        return {}
-    suite = json.loads(suite_path.read_text(encoding="utf-8"))
-    skipped: dict[str, dict[str, Any]] = {}
-    for entry in suite.get("runs", []):
-        if not isinstance(entry, dict) or entry.get("status") != "passed":
+    return load_retained_runs(skip_dir, retain_statuses=frozenset({"passed"}))
+
+
+def _resolve_suite_source_dir(
+    *,
+    output_path: Path,
+    resume_dir: str | Path | None,
+    resume_mode: bool,
+    skip_completed_dir: str | Path | None,
+) -> Path | None:
+    if resume_dir is not None:
+        return Path(resume_dir).resolve()
+    if resume_mode:
+        return output_path
+    if skip_completed_dir is not None:
+        return Path(skip_completed_dir).resolve()
+    return None
+
+
+def _resolve_retain_statuses(
+    *,
+    resume_mode: bool,
+    skip_completed_dir: str | Path | None,
+    retry_only_statuses: frozenset[str],
+) -> frozenset[str]:
+    if resume_mode:
+        return ALL_RUN_STATUSES - retry_only_statuses
+    if skip_completed_dir is not None:
+        return frozenset({"passed"})
+    return frozenset()
+
+
+def _load_existing_runs(output_path: Path, task_ids: set[str]) -> dict[str, dict[str, Any]]:
+    runs: dict[str, dict[str, Any]] = {}
+    for task_id in sorted(task_ids):
+        run_json = output_path / task_id / "run.json"
+        if not run_json.is_file():
             continue
-        task_id = entry.get("task_id")
-        if not isinstance(task_id, str) or not task_id:
+        try:
+            payload = json.loads(run_json.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
             continue
-        run_json = base_dir / task_id / "run.json"
-        if run_json.is_file():
-            skipped[task_id] = json.loads(run_json.read_text(encoding="utf-8"))
+        if isinstance(payload, dict):
+            runs[task_id] = payload
+    return runs
+
+
+def _merge_retained_runs(
+    primary: dict[str, dict[str, Any]],
+    secondary: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    merged = dict(primary)
+    for task_id, run in secondary.items():
+        merged.setdefault(task_id, run)
+    return merged
+
+
+def _read_task_attempt(task_run_dir: Path) -> int:
+    run_json_path = task_run_dir / "run.json"
+    if not run_json_path.is_file():
+        return 0
+    try:
+        data = json.loads(run_json_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return 0
+    attempt = data.get("attempt", 1)
+    if isinstance(attempt, int) and attempt >= 1:
+        return attempt
+    return 1
+
+
+def _task_at_max_attempts(task_run_dir: Path, max_task_attempts: int | None) -> bool:
+    if max_task_attempts is None or max_task_attempts < 1:
+        return False
+    return _read_task_attempt(task_run_dir) >= max_task_attempts
+
+
+def _tasks_at_max_attempts(
+    task_dirs: list[Path],
+    output_path: Path,
+    max_task_attempts: int | None,
+    *,
+    exclude_task_ids: set[str],
+) -> set[str]:
+    if max_task_attempts is None or max_task_attempts < 1:
+        return set()
+    skipped: set[str] = set()
+    for task_dir in task_dirs:
+        task_id = task_dir.name
+        if task_id in exclude_task_ids:
+            continue
+        if _task_at_max_attempts(output_path / task_id, max_task_attempts):
+            skipped.add(task_id)
     return skipped
+
+
+def _archive_previous_run(output_path: Path) -> tuple[int, str | None]:
+    run_json_path = output_path / "run.json"
+    if not run_json_path.is_file():
+        return 1, None
+    try:
+        data = json.loads(run_json_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return 1, None
+    current_attempt = data.get("attempt", 1)
+    if not isinstance(current_attempt, int) or current_attempt < 1:
+        current_attempt = 1
+    archive_name = f"run.attempt{current_attempt}.json"
+    archive_path = output_path / archive_name
+    shutil.copy2(run_json_path, archive_path)
+    return current_attempt + 1, str(archive_path)
+
+
+def _write_suite_snapshot(
+    snapshot_path: Path,
+    *,
+    runs: list[dict[str, Any]],
+    config: AgentRunConfig,
+    agent_config_summary: dict[str, Any] | None,
+    output_path: Path,
+    worker_count: int,
+    retry_rate_limit: int,
+    retry_only_statuses: frozenset[str],
+    extra_agent_passes: int,
+    pass_index: int,
+) -> None:
+    snapshot = {
+        "mode": "suite_snapshot",
+        "generated_at": _utc_now(),
+        "pass_index": pass_index,
+        "agent": config.agent,
+        "output_dir": str(output_path),
+        "retry_only_statuses": sorted(retry_only_statuses),
+        "extra_agent_passes": extra_agent_passes,
+        "summary": rebuild_suite_summary(runs),
+        "runs": [compact_suite_run_entry(run) for run in runs],
+        "num_workers": worker_count,
+        "retry_rate_limit": retry_rate_limit,
+        "agent_config": agent_config_summary or {},
+    }
+    snapshot_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True), encoding="utf-8")
 
 
 def _merge_suite_runs(

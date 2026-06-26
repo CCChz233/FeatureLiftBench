@@ -17,13 +17,27 @@ else
   PYTHON=python3
 fi
 
-RUN_ID="${RUN_ID:-benchmark-50-hard-pro-$(date +%Y%m%d-%H%M%S)}"
-OUTPUT="experiments/mini-swe-agent/${RUN_ID}"
+if [[ -n "${RESUME_DIR:-}" ]]; then
+  OUTPUT="${RESUME_DIR}"
+  RESUME_FLAG=(--resume)
+else
+  RUN_ID="${RUN_ID:-benchmark-50-hard-pro-$(date +%Y%m%d-%H%M%S)}"
+  OUTPUT="experiments/mini-swe-agent/${RUN_ID}"
+  RESUME_FLAG=()
+fi
+
+EXTRA_AGENT_PASSES="${EXTRA_AGENT_PASSES:-0}"
 
 echo "Profile: deepseek_v4_pro"
 echo "Output:  ${OUTPUT}"
 echo "Python:  $PYTHON"
 echo "Workers: ${NUM_WORKERS:-4}"
+if [[ "${#RESUME_FLAG[@]}" -gt 0 ]]; then
+  echo "Resume:  yes"
+fi
+if [[ "${EXTRA_AGENT_PASSES}" != "0" ]]; then
+  echo "Extra agent passes: ${EXTRA_AGENT_PASSES}"
+fi
 
 $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --agent mini-swe-agent \
@@ -33,8 +47,10 @@ $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --yolo \
   --num-workers "${NUM_WORKERS:-4}" \
   --retry-rate-limit 2 \
+  --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
   --no-progress \
-  --output "${OUTPUT}"
+  --output "${OUTPUT}" \
+  "${RESUME_FLAG[@]}"
 
 $PYTHON harness/scripts/analyze_benchmark_suite.py "${OUTPUT}"
 $PYTHON harness/scripts/report_entanglement_coverage.py --suite-dir "${OUTPUT}"

@@ -259,6 +259,25 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 ---
 
+## 续跑与失败重试
+
+**场景：** suite 中断、`missing_submission`、或首轮 eval/agent 失败后的二轮补跑。
+
+| 机制 | 用法 |
+| --- | --- |
+| 手动续跑 | `RESUME_DIR=experiments/mini-swe-agent/<run> ./run.sh` 或 `run-agent ... --output DIR --resume` |
+| 只重跑 missing_submission | `--resume --retry-only-status missing_submission` |
+| 挂机自动二轮 | `EXTRA_AGENT_PASSES=1 ./run.sh` 或 `--extra-agent-passes 1` |
+| 单题尝试上限 | `--max-task-attempts N`（跨 resume 累计，见 `run.json` 的 `attempt`） |
+| API 限流重试 | `--retry-rate-limit N`（单题单次 invocation 内，与上面分离） |
+| eval flake 重算 | `reeval_suite.py`（**不重跑 agent**，仅重算 submission eval） |
+
+**记录：** 重跑前旧 `run.json` 归档为 `run.attemptN.json`；`suite.json` 的 `summary.tasks_by_status` 列出各状态 task_id。
+
+**不做：** agent 中途 trajectory checkpoint（单题仍整题 `_reset_dir` 后重跑）。
+
+---
+
 ## 当前优先级
 
 1. **难度校准**：对 high-extraction pass 的 9 题 + 旧 25 题中 Flash 过易者 **加强 hidden / 缩 closure**（目标 Flash functional pass ~25–35%）

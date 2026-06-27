@@ -110,6 +110,27 @@ class SuiteResumeTests(unittest.TestCase):
         self.assertEqual(summary["by_status"]["passed"], 1)
         self.assertEqual(summary["by_status"]["missing_submission"], 1)
         self.assertEqual(summary["tasks_by_status"]["missing_submission"], ["b"])
+        self.assertEqual(summary["recovered_submissions"], 0)
+
+    def test_rebuild_suite_summary_counts_recovered_submissions(self) -> None:
+        summary = rebuild_suite_summary(
+            [
+                {
+                    "task_id": "a",
+                    "status": "failed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True, "recovered": True},
+                },
+                {
+                    "task_id": "b",
+                    "status": "passed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True, "recovered": False},
+                },
+            ]
+        )
+
+        self.assertEqual(summary["recovered_submissions"], 1)
 
     def test_archive_previous_run_creates_attempt_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

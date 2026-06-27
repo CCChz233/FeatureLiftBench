@@ -7,6 +7,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the three product layers plus local e
 ```text
 FeatureLiftBench/
   README.md
+  RUN.md                # Quick run cheatsheet (vLLM / SiliconFlow)
   pyproject.toml
   TODO.md
 
@@ -25,8 +26,9 @@ FeatureLiftBench/
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Three-layer design and data flow |
 | [TASK_FORMAT.md](TASK_FORMAT.md) | Canonical task directory and metadata spec |
 | [DIRECTORY.md](DIRECTORY.md) | This file |
-| [benchmark_tasks.md](benchmark_tasks.md) | 28-task catalog and CLI examples |
+| [benchmark_tasks.md](benchmark_tasks.md) | 50 hard task catalog and CLI examples |
 | [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) | Current baseline, spec gaps, fix priority |
+| [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) | Local vLLM / API experiment summaries |
 | [limitations.md](limitations.md) | Known defects |
 | [task_designs/](task_designs/) | Per-task design notes |
 
@@ -34,7 +36,8 @@ FeatureLiftBench/
 
 | Path | Purpose | Git |
 | --- | --- | --- |
-| `benchmark/tasks/` | 28 benchmark tasks | Yes |
+| `benchmark/tasks/` | 50 hard benchmark tasks | Yes |
+| `benchmark/sanity/` | 3 smoke tasks (appendix) | Yes |
 | `benchmark/sources/` | Upstream master copies (vibe_app) | Yes |
 | `benchmark/vendor-wheels/` | Wheels for Oracle builder | Yes |
 | `benchmark/submissions/` | Oracle answers | Gitignored |
@@ -56,6 +59,7 @@ benchmark/tasks/<task_id>/
 | Path | Purpose |
 | --- | --- |
 | `harness/featureliftbench/` | Python package: evaluator, agent runner, CLI |
+| `harness/featureliftbench/mini_live_runner.py` | In-process mini with per-step trajectory snapshots (live token progress) |
 | `harness/featureliftbench/paths.py` | Repo path constants |
 | `harness/config/` | Agent config (`agents.example.toml`) |
 | `harness/scripts/` | Maintenance and analysis scripts |
@@ -82,7 +86,9 @@ Shorthand: `run-agent benchmark` resolves to `benchmark/tasks/`.
 | Script | Use |
 | --- | --- |
 | `harness/scripts/list_tasks.py` | List/filter tasks |
-| `harness/scripts/analyze_benchmark_suite.py` | Suite analysis |
+| `harness/scripts/analyze_benchmark_suite.py` | Per-run enrichment + optional `--aggregate` |
+| `harness/scripts/summarize_experiment_runs.py` | Cross-run failure taxonomy + metadata join |
+| `harness/scripts/reeval_suite.py` | Re-eval existing submissions (no agent re-run) |
 | `harness/scripts/build_oracle_submission.py` | Build/verify Oracle |
 
 ## Layer 4: `experiments/`

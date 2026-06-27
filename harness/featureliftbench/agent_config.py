@@ -69,6 +69,7 @@ def load_agent_run_config(
     if model:
         env.setdefault("FEATURELIFTBENCH_MODEL", model)
         env.setdefault("MSWEA_MODEL_NAME", model)
+    env.setdefault("MSWEA_CONFIGURED", "true")
 
     cost_limit = _string_value(profile.get("cost_limit"))
     call_limit = _string_value(profile.get("call_limit"))

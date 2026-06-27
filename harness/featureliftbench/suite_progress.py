@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import json
 import re
 import threading
 import time
 from datetime import timedelta
 from pathlib import Path
+from typing import Any
 from typing import Iterator
 
 from rich.console import Group
@@ -101,6 +103,79 @@ def parse_mini_progress_from_log(path: Path) -> str | None:
     return None
 
 
+def _int_metric(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return None
+
+
+def _format_token_count(value: int) -> str:
+    if value >= 1_000_000:
+        return f"{value / 1_000_000:.1f}M"
+    if value >= 10_000:
+        return f"{value // 1000}k"
+    return f"{value:,}"
+
+
+def parse_mini_token_total_from_trajectory(path: Path) -> int | None:
+    """Sum prompt/completion tokens from mini trajectory message usage."""
+
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+
+    prompt_tokens = 0
+    completion_tokens = 0
+    saw_usage = False
+    for message in data.get("messages") or []:
+        if not isinstance(message, dict):
+            continue
+        extra = message.get("extra")
+        if not isinstance(extra, dict):
+            continue
+        response = extra.get("response")
+        if not isinstance(response, dict):
+            continue
+        usage = response.get("usage")
+        if not isinstance(usage, dict):
+            continue
+
+        prompt = _int_metric(usage.get("prompt_tokens"))
+        completion = _int_metric(usage.get("completion_tokens"))
+        if prompt is not None:
+            prompt_tokens += prompt
+            saw_usage = True
+        if completion is not None:
+            completion_tokens += completion
+            saw_usage = True
+
+    if not saw_usage:
+        return None
+    return prompt_tokens + completion_tokens
+
+
+def format_mini_task_status(*, step_status: str, tokens: int | None) -> tuple[str, int | None]:
+    """Combine step text from stdout with token totals from trajectory."""
+
+    if tokens is None:
+        return step_status, None
+    token_text = _format_token_count(tokens)
+    if re.search(r"\(\d+ toks\)", step_status):
+        return step_status, tokens
+    if step_status.startswith("Step "):
+        return f"{step_status} ({token_text} toks)", tokens
+    return f"{step_status} ({token_text} toks)", tokens
+
+
 class SuiteBatchProgressManager:
     """Manage overall and per-task progress for a FeatureLiftBench suite run."""
 
@@ -158,7 +233,10 @@ class SuiteBatchProgressManager:
 
     def _total_tokens_text(self) -> str:
         with self._lock:
-            return str(sum(self._task_tokens.values()))
+            total = sum(self._task_tokens.values())
+            if total <= 0:
+                return "0"
+            return _format_token_count(total)
 
     def _update_main_bar(self) -> None:
         self._main_progress_bar.update(
@@ -224,13 +302,16 @@ class SuiteBatchProgressManager:
 
     def poll_task_logs(self, output_dir: Path) -> None:
         for task_id in self.active_task_ids():
-            status = parse_mini_progress_from_log(output_dir / task_id / "agent" / "stdout.log")
-            if status is None:
+            agent_dir = output_dir / task_id / "agent"
+            step_status = parse_mini_progress_from_log(agent_dir / "stdout.log")
+            if step_status is None:
                 continue
-            tokens = None
-            match = re.search(r"\((\d+) toks\)", status)
-            if match:
-                tokens = int(match.group(1))
+            tokens = parse_mini_token_total_from_trajectory(agent_dir / "trajectory.json")
+            if tokens is None:
+                match = re.search(r"\((\d+) toks\)", step_status)
+                if match:
+                    tokens = int(match.group(1))
+            status, tokens = format_mini_task_status(step_status=step_status, tokens=tokens)
             self.update_task_status(task_id, status, tokens=tokens)
 
 

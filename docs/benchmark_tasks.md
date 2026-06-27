@@ -10,6 +10,7 @@ Benchmark evolution is **add or remove tasks** under `benchmark/tasks/`; do not 
 - Architecture: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Task format:** [TASK_FORMAT.md](TASK_FORMAT.md)
 - **Benchmark status & open issues:** [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)
+- **Experiment results (vLLM / API):** [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)
 - Directory map: [DIRECTORY.md](DIRECTORY.md)
 - Design note template: [task_designs/TEMPLATE.md](task_designs/TEMPLATE.md)
 
@@ -30,7 +31,7 @@ $PYTHON -B -m featureliftbench.cli run-agent \
   --agent-profile deepseek_v4_flash \
   --env-file .env \
   --yolo \
-  --num-workers 4 \
+  --num-workers 1 \
   --output experiments/mini-swe-agent/<run_id>
 ```
 
@@ -44,20 +45,29 @@ Copy [`harness/config/agents.example.toml`](../harness/config/agents.example.tom
 | --- | --- | --- |
 | `deepseek_v4_flash` | `deepseek/deepseek-v4-flash` | `FEATURELIFTBENCH_API_KEY`, `FEATURELIFTBENCH_API_BASE` |
 | `deepseek_v4_pro` | `deepseek/deepseek-v4-pro` | 同上 |
-| `nex_n2_pro` | `openai/nex-agi/Nex-N2-Pro` | `SILICONFLOW_API_KEY`, `SILICONFLOW_API_BASE` |
+| `gpt_oss_120b_vllm` | `openai/GPT-OSS-120B` | `VLLM_GPT_OSS_120B_API_KEY`, `VLLM_GPT_OSS_120B_API_BASE` |
+| `qwen3_coder_30b_vllm` | `openai/Qwen3-Coder-30B-A3B-Instruct` | `VLLM_QWEN3_CODER_30B_*` |
+| `glm_5_2` | `openai/zai-org/GLM-5.2` | `SILICONFLOW_API_KEY`, `SILICONFLOW_API_BASE` |
+| `kimi_k2_7_code` | `openai/moonshotai/Kimi-K2.7-Code` | 同上 |
+| `minimax_m2_5` | `openai/MiniMaxAI/MiniMax-M2.5` | 同上 |
+| `nex_n2_pro` | `openai/nex-agi/Nex-N2-Pro` | 同上 |
 | `qwen3_6_27b` | `openai/Qwen/Qwen3.6-27B` | 同上 |
 
 Switch models with `--agent-profile` only (no need to edit base URL in `.env` between runs).
 
 **Important:** `SILICONFLOW_API_BASE` must be `https://api.siliconflow.cn/v1` (not `/chat/completions`). Non-DeepSeek profiles need their own `*_API_BASE` env var so they are not overridden by `FEATURELIFTBENCH_API_BASE`.
 
+**Quick commands:** root [`RUN.md`](../RUN.md) (vLLM + SiliconFlow). **Results:** [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md).
+
 Generic 50-hard baseline script:
 
 ```bash
 ./harness/scripts/run_baseline.sh nex_n2_pro
 ./harness/scripts/run_baseline.sh deepseek_v4_flash benchmark-50-hard-flash-002
-NUM_WORKERS=2 ./harness/scripts/run_baseline.sh deepseek_v4_pro
+NUM_WORKERS=1 ./harness/scripts/run_baseline.sh deepseek_v4_pro
 ```
+
+Until agent/eval memory limits are built into the harness, keep full-suite runs serial (`NUM_WORKERS=1`). Untrusted submissions can make `pytest` allocate hundreds of GB if they enter an infinite loop or recursive parser path.
 
 Smoke connectivity check (sanity task, one question):
 

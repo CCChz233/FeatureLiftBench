@@ -4,11 +4,11 @@
 
 相关文档：[limitations.md](limitations.md) · [SETUP.md](SETUP.md) · [benchmark_tasks.md](benchmark_tasks.md) · [TASK_FORMAT.md](TASK_FORMAT.md) · [CONCEPTS.md](CONCEPTS.md)
 
-最后更新：**2026-06-25**（Eval harness 修复 + Pro-50 re-eval 修正 + Docker eval 镜像）
+最后更新：**2026-06-27**（pytest OOM 事故记录 + 内存隔离列为 P0）
 
 ---
 
-## 当前快照（2026-06-25）
+## 当前快照（2026-06-26）
 
 ### 规模与结构
 
@@ -26,7 +26,7 @@
 | 检查 | 状态 |
 | --- | --- |
 | `verify_all_oracles.py` | **50/50 passed** |
-| Harness 单测 | **61/61 passed** |
+| Harness 单测 | **88** tests（`PYTHONPATH=harness pytest harness/tests`） |
 | Design notes + module probes ≥3 | **50/50** |
 | Agent 轨迹 | 每题 `experiments/.../<task_id>/agent/trajectory.json` |
 
@@ -174,9 +174,30 @@ python3 harness/scripts/analyze_benchmark_suite.py \
 
 仅作扩榜前后对比；**主榜 baseline 以 Flash-50 为准**。
 
+### 本地 vLLM（非官方 baseline）
+
+| 项 | 值 |
+| --- | --- |
+| 模型 | GPT-OSS-120B（`:8008`）、Qwen3-Coder-30B（`:8009`） |
+| 协议 | 各模型 **3 轮独立 full run**，`NUM_WORKERS=2` |
+| **Functional pass（mean ± std）** | GPT-OSS **6.3 ± 1.7 / 50**；Qwen **7.0 ± 3.6 / 50** |
+| 深度分析 | [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) §3.4 |
+
+与 Flash-50（82%）**不可直接对比**：endpoint、模型、agent 稳定性（missing_submission）均不同。
+
+### SiliconFlow API（探索中）
+
+| Profile | 模型 | 状态 |
+| --- | --- | --- |
+| `glm_5_2` | GLM-5.2 | run1 进行中（2/50 passed，成本 ~¥5–6/题） |
+| `minimax_m2_5` | MiniMax-M2.5 | run1 进行中 |
+| `kimi_k2_7_code` | Kimi-K2.7-Code | 未开始 |
+
+详见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) §5、[RUN.md](../RUN.md)。
+
 ---
 
-## 多模型配置（2026-06-25）
+## 多模型配置（2026-06-26）
 
 维护者用 **profile** 管理模型；密钥在 `.env`，非敏感项在 `harness/config/agents.toml`（模板见 `agents.example.toml`）。
 
@@ -184,7 +205,13 @@ python3 harness/scripts/analyze_benchmark_suite.py \
 | --- | --- | --- |
 | `deepseek_v4_flash` | `deepseek/deepseek-v4-flash` | `FEATURELIFTBENCH_API_BASE` |
 | `deepseek_v4_pro` | `deepseek/deepseek-v4-pro` | 同上 |
-| `nex_n2_pro` | `openai/nex-agi/Nex-N2-Pro` | `SILICONFLOW_API_BASE=https://api.siliconflow.cn/v1` |
+| `gpt_oss_120b_vllm` | `openai/GPT-OSS-120B` | `VLLM_GPT_OSS_120B_API_BASE`（本地 vLLM） |
+| `qwen3_coder_30b_vllm` | `openai/Qwen3-Coder-30B-A3B-Instruct` | `VLLM_QWEN3_CODER_30B_API_BASE` |
+| `glm_5_2` | `openai/zai-org/GLM-5.2` | `SILICONFLOW_API_BASE` |
+| `kimi_k2_7_code` | `openai/moonshotai/Kimi-K2.7-Code` | 同上 |
+| `minimax_m2_5` | `openai/MiniMaxAI/MiniMax-M2.5` | 同上 |
+| `qwen3_6_27b` | `openai/Qwen/Qwen3.6-27B` | 同上 |
+| `nex_n2_pro` | `openai/nex-agi/Nex-N2-Pro` | 同上 |
 
 ```bash
 # 全量 50 hard（自动 analyze + entanglement 报告）
@@ -265,6 +292,29 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 ---
 
+## 运行安全：pytest OOM（2026-06-27）
+
+**已确认现象**：服务器内核日志多次显示 `Out of memory: Killed process ... (pytest)`。被杀的是测试进程 `pytest`，不是 vLLM 服务。单个 pytest 进程 RSS 可达数十 GB 到数百 GB。
+
+**具体行为**：Agent 生成的 `submission/featurelifted/` 是 untrusted code。Agent 自测或 evaluator 执行 `pytest public_tests/` / `pytest hidden_tests/` 时，会 import 并运行这份代码。若模型写出无限递归、无限循环、parser 不消费输入、指数级数据结构膨胀或错误目录遍历，内存会在 `pytest` 进程内持续增长；当前没有 per-process memory limit 时，最终由 Linux OOM killer 接管。
+
+**对结果的影响**：
+
+- 可能留下无 `run.json` / 无 `trajectory.json` 的半截 task 目录。
+- 不一定在 `eval/result.json` 中出现 `returncode=-9`，因为 OOM 可能发生在 agent 自测阶段或结果写入前。
+- 2026-06-27 MiniMax run1 在 `vibe_app__csv_transform_core__001` 中断，无 `run.json` 和 `trajectory.json`，符合系统级中断特征，但现有日志无法唯一证明该题就是 OOM 触发源。
+
+**当前运行约束**：
+
+| 项 | 建议 |
+| --- | --- |
+| suite 并发 | `NUM_WORKERS=1` |
+| 多模型 | 不要多个 full suite 重叠跑；本地 vLLM 一次只保留一个大模型服务 |
+| 临时保护 | `ulimit -v $((32 * 1024 * 1024))` 包住 `./run.sh` |
+| 正式修复 | 增加 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB`；final eval 用 Docker/cgroup `--memory` |
+
+---
+
 ## 续跑与失败重试
 
 **场景：** suite 中断、`missing_submission`、或首轮 eval/agent 失败后的二轮补跑。
@@ -286,11 +336,12 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 ## 当前优先级
 
-1. **难度校准**：对 high-extraction pass 的 9 题 + 旧 25 题中 Flash 过易者 **加强 hidden / 缩 closure**（目标 Flash functional pass ~25–35%）
-2. **报告口径**：论文/summary 同时报 functional pass、avg final_score、high-extraction pass count
-3. **L1 审计**：`audit_output_imports.py --fail-on-gap` 纳入改题流程
-4. **Docker eval**：本地 `docker build -f docker/Dockerfile.eval`；CI 见 `.github/workflows/eval-oracles.yml`
-5. **暂缓**：再扩题、Agent 容器化
+1. **P0 运行安全**：给 agent 自测和 evaluator pytest 加内存上限，避免 untrusted submission OOM 宿主机。
+2. **难度校准**：对 high-extraction pass 的 9 题 + 旧 25 题中 Flash 过易者 **加强 hidden / 缩 closure**（目标 Flash functional pass ~25–35%）
+3. **报告口径**：论文/summary 同时报 functional pass、avg final_score、high-extraction pass count
+4. **L1 审计**：`audit_output_imports.py --fail-on-gap` 纳入改题流程
+5. **Docker eval**：本地 `docker build -f docker/Dockerfile.eval`；CI 见 `.github/workflows/eval-oracles.yml`
+6. **暂缓**：再扩题、Agent 容器化
 
 ---
 

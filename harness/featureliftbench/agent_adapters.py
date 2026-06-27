@@ -6,6 +6,7 @@ import os
 import shlex
 import signal
 import subprocess
+import sys
 import threading
 import time
 from dataclasses import dataclass
@@ -298,14 +299,26 @@ class MiniSweAgentAdapter(AgentAdapter):
     def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
         agent_bin = config.agent_bin or "mini"
         trajectory_path = context.agent_output_dir / "trajectory.json"
-        command = [
-            agent_bin,
-            "--task",
-            context.task_text,
-            "--output",
-            str(trajectory_path),
-            "--exit-immediately",
-        ]
+        if _use_live_trajectory_runner(agent_bin):
+            command = [
+                sys.executable,
+                "-m",
+                "featureliftbench.mini_live_runner",
+                "--task",
+                context.task_text,
+                "--output",
+                str(trajectory_path),
+                "--exit-immediately",
+            ]
+        else:
+            command = [
+                agent_bin,
+                "--task",
+                context.task_text,
+                "--output",
+                str(trajectory_path),
+                "--exit-immediately",
+            ]
         if config.model:
             command.extend(["--model", config.model])
         if config.config:
@@ -337,6 +350,20 @@ class CommandAgentAdapter(AgentAdapter):
         command = shlex.split(rendered)
         command.extend(config.extra_args)
         return command
+
+
+def _use_live_trajectory_runner(agent_bin: str) -> bool:
+    """Use in-process mini runner that snapshots trajectory.json after each step."""
+
+    if os.environ.get("FEATURELIFTBENCH_LIVE_TRAJECTORY", "1").strip().lower() in {
+        "0",
+        "false",
+        "no",
+        "off",
+    }:
+        return False
+    normalized = Path(agent_bin).name
+    return normalized in {"mini", "mini-swe-agent"}
 
 
 def get_agent_adapter(name: str) -> AgentAdapter:

@@ -1,6 +1,6 @@
 # FeatureLiftBench 实验结果汇总
 
-本文档集中记录 **FeatureLiftBench 50 hard** 主榜上的 agent 实验结果。  
+本文档集中记录 **FeatureLiftBench 50 hard** 主榜上的 agent 实验结果。
 官方 DeepSeek baseline 见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)；评分定义见 [CONCEPTS.md](CONCEPTS.md) 第 6 节。
 
 **最后更新：** 2026-06-27（MiniMax run1 中断 + pytest OOM 风险记录）
@@ -102,9 +102,9 @@ submission 存在 → eval 完成 → agent.passed 且 eval.status=passed → pa
 
 **两模型均至少过 1 次的 8 题：**
 
-`coverage__report_core__001`, `json5__parse_core__001`, `pytest__mark_expression_core__001`,  
-`vibe_app__csv_transform_core__001`, `vibe_app__plugin_registry_core__001`,  
-`vibe_app__pricing_rules_core__001`, `vibe_app__session_registry_core__001`,  
+`coverage__report_core__001`, `json5__parse_core__001`, `pytest__mark_expression_core__001`,
+`vibe_app__csv_transform_core__001`, `vibe_app__plugin_registry_core__001`,
+`vibe_app__pricing_rules_core__001`, `vibe_app__session_registry_core__001`,
 `vibe_app__yaml_config_bootstrap__001`
 
 ### 3.3 与官方 DeepSeek baseline 对比（口径不同）

@@ -19,6 +19,61 @@ from featureliftbench.paths import EXPERIMENTS_DIR
 from featureliftbench.suite_utils import detect_eval_flake
 
 
+def aggregate_suite_summaries(suite_dirs: list[Path]) -> dict[str, Any]:
+    summaries: list[dict[str, Any]] = []
+    for suite_dir in suite_dirs:
+        suite_path = suite_dir / "suite.json"
+        if not suite_path.is_file():
+            raise FileNotFoundError(f"missing suite.json: {suite_path}")
+        suite = load_json(suite_path)
+        summary = suite.get("summary") if isinstance(suite.get("summary"), dict) else {}
+        summaries.append(
+            {
+                "suite_dir": str(suite_dir),
+                "suite_name": suite_dir.name,
+                "passed": summary.get("passed", 0),
+                "total": summary.get("total", 0),
+                "missing_submissions": summary.get("missing_submissions", 0),
+                "recovered_submissions": summary.get("recovered_submissions", 0),
+                "average_final_score": summary.get("average_final_score", 0.0),
+            }
+        )
+
+    def _mean_std(key: str) -> dict[str, float]:
+        values = [float(item[key]) for item in summaries]
+        if not values:
+            return {"mean": 0.0, "std": 0.0}
+        mean = sum(values) / len(values)
+        if len(values) == 1:
+            return {"mean": round(mean, 6), "std": 0.0}
+        variance = sum((value - mean) ** 2 for value in values) / len(values)
+        return {"mean": round(mean, 6), "std": round(variance**0.5, 6)}
+
+    pass_rates = [
+        (item["passed"] / item["total"]) if item["total"] else 0.0 for item in summaries
+    ]
+    pass_rate_mean = sum(pass_rates) / len(pass_rates) if pass_rates else 0.0
+    if len(pass_rates) > 1:
+        pass_rate_std = (
+            sum((value - pass_rate_mean) ** 2 for value in pass_rates) / len(pass_rates)
+        ) ** 0.5
+    else:
+        pass_rate_std = 0.0
+
+    return {
+        "run_count": len(summaries),
+        "suites": summaries,
+        "passed": _mean_std("passed"),
+        "missing_submissions": _mean_std("missing_submissions"),
+        "recovered_submissions": _mean_std("recovered_submissions"),
+        "average_final_score": _mean_std("average_final_score"),
+        "pass_rate": {
+            "mean": round(pass_rate_mean, 6),
+            "std": round(pass_rate_std, 6),
+        },
+    }
+
+
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -34,6 +89,7 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
     agent = detail.get("agent") or {}
     usage = agent.get("usage") or {}
     evaluation = detail.get("evaluation") or {}
+    submission = detail.get("submission") or {}
     scores = evaluation.get("scores") or {}
     metrics = evaluation.get("metrics") or {}
 
@@ -67,6 +123,8 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
             "completion_tokens": usage.get("completion_tokens"),
             "total_tokens": usage.get("total_tokens"),
             "agent_duration_seconds": agent.get("duration_seconds"),
+            "submission_recovered": submission.get("recovered", False),
+            "submission_recovery_sources": submission.get("recovery_sources", []),
             "trajectory_json": str(suite_dir / task_id / "agent" / "trajectory.json"),
             "status": evaluation.get("status") or run.get("status"),
             "eval_flake": eval_flake,
@@ -80,7 +138,15 @@ def main() -> int:
     parser.add_argument(
         "suite_dir",
         type=Path,
+        nargs="?",
+        default=None,
         help="Directory containing suite.json from run-agent",
+    )
+    parser.add_argument(
+        "--aggregate",
+        nargs="+",
+        type=Path,
+        help="Aggregate multiple suite directories (mean/std over summary fields)",
     )
     parser.add_argument(
         "--output",
@@ -95,6 +161,34 @@ def main() -> int:
         help="Analysis output prefix without suffix (default: experiments/mini-swe-agent/<suite>-analysis)",
     )
     args = parser.parse_args()
+
+    if args.aggregate:
+        aggregate = aggregate_suite_summaries([path.resolve() for path in args.aggregate])
+        aggregate_path = args.output or EXPERIMENTS_DIR / "mini-swe-agent" / "suite-aggregate.json"
+        aggregate_path.parent.mkdir(parents=True, exist_ok=True)
+        with aggregate_path.open("w", encoding="utf-8") as handle:
+            json.dump(
+                {
+                    "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+                    **aggregate,
+                },
+                handle,
+                ensure_ascii=False,
+                indent=2,
+            )
+            handle.write("\n")
+        print(f"Wrote {aggregate_path}")
+        print(
+            "pass_rate mean={mean} std={std} | recovered_submissions mean={rec_mean}".format(
+                mean=aggregate["pass_rate"]["mean"],
+                std=aggregate["pass_rate"]["std"],
+                rec_mean=aggregate["recovered_submissions"]["mean"],
+            )
+        )
+        return 0
+
+    if args.suite_dir is None:
+        raise SystemExit("suite_dir is required unless --aggregate is used")
 
     suite_dir = args.suite_dir.resolve()
     suite_path = suite_dir / "suite.json"

@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-**Concepts (start here):** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **Setup & environment:** [docs/SETUP.md](docs/SETUP.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · **Task format:** [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) · **Benchmark status:** [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) · **Directory map:** [docs/DIRECTORY.md](docs/DIRECTORY.md) · **Task catalog:** [docs/benchmark_tasks.md](docs/benchmark_tasks.md)
+**Concepts (start here):** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **Setup & environment:** [docs/SETUP.md](docs/SETUP.md) · **Run cheatsheet:** [RUN.md](RUN.md) · **Experiment results:** [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · **Task format:** [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) · **Benchmark status:** [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) · **Directory map:** [docs/DIRECTORY.md](docs/DIRECTORY.md) · **Task catalog:** [docs/benchmark_tasks.md](docs/benchmark_tasks.md)
 
 **FeatureLiftBench: Can Code Agents Decouple Features from Entangled Repositories?**
 

@@ -708,6 +708,14 @@ def _run_pytest(
     )
 
 
+def _ensure_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
 def _run_command(
     command: list[str],
     *,
@@ -727,25 +735,28 @@ def _run_command(
             check=False,
         )
     except subprocess.TimeoutExpired as exc:
+        stderr = exc.stderr
+        if not stderr:
+            stderr = f"command timed out after {timeout_seconds}s"
         return CommandResult(
             returncode=124,
             duration_seconds=time.monotonic() - start,
-            stdout=exc.stdout or "",
-            stderr=exc.stderr or f"command timed out after {timeout_seconds}s",
+            stdout=_ensure_text(exc.stdout),
+            stderr=_ensure_text(stderr),
             timed_out=True,
         )
 
     return CommandResult(
         returncode=completed.returncode,
         duration_seconds=time.monotonic() - start,
-        stdout=completed.stdout,
-        stderr=completed.stderr,
+        stdout=_ensure_text(completed.stdout),
+        stderr=_ensure_text(completed.stderr),
     )
 
 
 def _write_command_logs(logs_path: Path, name: str, result: CommandResult) -> None:
-    (logs_path / f"{name}.stdout").write_text(result.stdout, encoding="utf-8")
-    (logs_path / f"{name}.stderr").write_text(result.stderr, encoding="utf-8")
+    (logs_path / f"{name}.stdout").write_text(_ensure_text(result.stdout), encoding="utf-8")
+    (logs_path / f"{name}.stderr").write_text(_ensure_text(result.stderr), encoding="utf-8")
 
 
 def _command_result_payload(result: CommandResult | None) -> dict[str, Any]:

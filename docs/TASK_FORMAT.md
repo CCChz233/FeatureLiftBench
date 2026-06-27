@@ -128,7 +128,7 @@ Report coverage:
 
 ```bash
 python3 harness/scripts/report_entanglement_coverage.py \
-  --suite-dir experiments/mini-swe-agent/benchmark-28-deepseek-flash-003
+  --suite-dir experiments/mini-swe-agent/benchmark-50-hard-flash-001
 ```
 
 ### `environment`
@@ -215,4 +215,4 @@ featureliftbench eval \
   --output experiments/validate-<task_id>
 ```
 
-All **28** current tasks pass `validate-task`.
+All **50 hard** tasks under `benchmark/tasks/` pass `validate-task` (plus 3 smoke under `benchmark/sanity/`).

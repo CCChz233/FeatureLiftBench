@@ -4,7 +4,7 @@
 
 相关：[limitations.md](limitations.md) · [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)（续跑与重试）
 
-最后更新：2026-06-25
+最后更新：2026-06-27
 
 ---
 
@@ -16,14 +16,17 @@ cd FeatureLiftBench
 
 ./setup.sh              # 创建 .venv，安装 pytest / rich / mini-swe-agent
 nano .env               # 填入 API Key（见下文）
-./run.sh                # 默认 deepseek_v4_pro，50 hard，4 workers
+./run.sh                # 默认 profile 见 harness/config/agents.toml
 ```
+
+**本机常用（conda + 本地 vLLM 或 SiliconFlow API）**：见根目录 [`RUN.md`](../RUN.md)。
 
 开跑前可选验证：
 
 ```bash
-PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py \
-  --agent-profile deepseek_v4_pro
+PYTHONPATH=harness python harness/scripts/preflight.py \
+  --agent-profile minimax_m2_5 \
+  --mini-bin "$(which mini)"
 ```
 
 长跑建议 `tmux` / `screen` 挂后台。
@@ -38,9 +41,9 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py \
 | **Python** | **3.11+**（推荐 **3.12**）。3.9/3.10 缺少 `tomllib`，CLI 无法启动 |
 | **Linux 系统包** | Debian/Ubuntu 需 **`python3.12-venv`**（及 `python3.12-pip`）；仅装 `python3.12` 不够 |
 | **磁盘** | 仓库约 **150MB+**（含 50 题 `repo/` 快照）；`experiments/` 每轮额外占用（轨迹、submission、eval 日志） |
-| **内存** | 建议 **8GB+**；`NUM_WORKERS=4` 并行时更吃内存 |
+| **内存** | 建议 **8GB+**；正式 agent suite 先用 `NUM_WORKERS=1`。未加内存沙箱前，错误 submission 可能让 `pytest` 吃掉数百 GB |
 | **网络** | 需访问所选模型的 **API**（DeepSeek、SiliconFlow 等）；agent 跑题期间要联网 |
-| **Docker** | **非必须**；仅在使用 `eval --docker` 或 CI oracle 时需要 |
+| **Docker** | **推荐用于正式 eval**；可用 `--memory` / cgroup 隔离 untrusted submission |
 
 不需要事先全局安装 conda；推荐用项目内 **`.venv`**（`./setup.sh` 自动创建）。
 
@@ -103,11 +106,37 @@ FEATURELIFTBENCH_API_KEY=sk-...
 FEATURELIFTBENCH_API_BASE=https://api.deepseek.com/v1
 ```
 
-### SiliconFlow（Qwen、Nex 等）
+### SiliconFlow API（GLM-5.2 / Kimi / MiniMax / Qwen 等）
 
 ```bash
 SILICONFLOW_API_KEY=sk-...
 SILICONFLOW_API_BASE=https://api.siliconflow.cn/v1
+```
+
+**注意：** Base URL 必须是 `https://api.siliconflow.cn/v1`，**不要**带 `/chat/completions`。
+
+API 跑 50 hard 建议（限流 500 RPM / 2M TPM）：
+
+```bash
+AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 ./run.sh
+```
+
+完整命令见 [`RUN.md`](../RUN.md)。
+
+### 本地 vLLM（自建 endpoint）
+
+```bash
+VLLM_GPT_OSS_120B_API_KEY=sk-dummy
+VLLM_GPT_OSS_120B_API_BASE=http://127.0.0.1:8008/v1
+
+VLLM_QWEN3_CODER_30B_API_KEY=sk-dummy
+VLLM_QWEN3_CODER_30B_API_BASE=http://127.0.0.1:8009/v1
+```
+
+推荐 `conda activate bench`，`run.sh` 优先用 `$CONDA_PREFIX/bin/python`：
+
+```bash
+AGENT_PROFILE=qwen3_coder_30b_vllm NUM_WORKERS=1 ./run.sh
 ```
 
 运行时指定 profile：
@@ -118,14 +147,19 @@ AGENT_PROFILE=qwen3_6_27b ./run.sh
 
 ### Profile 一览
 
-见 [`harness/config/agents.example.toml`](../harness/config/agents.example.toml)：
+见 [`harness/config/agents.example.toml`](../harness/config/agents.example.toml)（本地 `agents.toml` 可能含机器专属 `agent_bin` 路径）：
 
 | Profile | 模型 | Key 环境变量 |
 | --- | --- | --- |
 | `deepseek_v4_pro` | deepseek-v4-pro | `FEATURELIFTBENCH_*` |
 | `deepseek_v4_flash` | deepseek-v4-flash | `FEATURELIFTBENCH_*` |
-| `qwen3_6_27b` | Qwen3.6-27B | `SILICONFLOW_*` |
-| `nex_n2_pro` | Nex-N2-Pro | `SILICONFLOW_*` |
+| `gpt_oss_120b_vllm` | GPT-OSS-120B（本地 vLLM） | `VLLM_GPT_OSS_120B_*` |
+| `qwen3_coder_30b_vllm` | Qwen3-Coder-30B（本地 vLLM） | `VLLM_QWEN3_CODER_30B_*` |
+| `glm_5_2` | zai-org/GLM-5.2 | `SILICONFLOW_*` |
+| `kimi_k2_7_code` | moonshotai/Kimi-K2.7-Code | `SILICONFLOW_*` |
+| `minimax_m2_5` | MiniMaxAI/MiniMax-M2.5 | `SILICONFLOW_*` |
+| `qwen3_6_27b` | Qwen/Qwen3.6-27B | `SILICONFLOW_*` |
+| `nex_n2_pro` | nex-agi/Nex-N2-Pro | `SILICONFLOW_*` |
 
 ---
 
@@ -137,11 +171,13 @@ AGENT_PROFILE=qwen3_6_27b ./run.sh
 
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
-| `AGENT_PROFILE` | `deepseek_v4_pro` | `agents.toml` 中的 profile |
-| `NUM_WORKERS` | `4` | 并行题数 |
+| `AGENT_PROFILE` | `agents.toml` 中 `profile` 字段 | 如 `minimax_m2_5`、`qwen3_coder_30b_vllm` |
+| `NUM_WORKERS` | `4` | 并行题数；**SiliconFlow API 建议 `1`** |
+| `RETRY_RATE_LIMIT` | `2` | 429 限流时最多重试次数（每次等 ~65s）；API 建议 `5` |
 | `RUN_ID` | 时间戳 | 新 run 的目录名 |
 | `RESUME_DIR` | — | 中断续跑，同目录 `--resume` |
 | `EXTRA_AGENT_PASSES` | `0` | 首轮结束后自动再跑失败题 |
+| `NO_PROGRESS` | — | 设为 `1` 关闭 Rich 进度条 |
 
 示例：
 
@@ -155,9 +191,29 @@ RESUME_DIR=experiments/mini-swe-agent/benchmark-50-hard-pro-20260625-212817 ./ru
 # 挂机自动二轮
 EXTRA_AGENT_PASSES=1 ./run.sh
 
-# 换 Flash、降并行
-AGENT_PROFILE=deepseek_v4_flash NUM_WORKERS=2 ./run.sh
+# 换 Flash，保持串行
+AGENT_PROFILE=deepseek_v4_flash NUM_WORKERS=1 ./run.sh
 ```
+
+### 内存安全运行建议
+
+FeatureLiftBench 会运行 untrusted agent submission。Agent 自测和最终 evaluator 都可能执行 `pytest`，如果 submission 写出无限递归、无限循环、parser 不消费输入或指数级数据结构，`pytest` 进程会持续申请内存。2026-06-27 已观察到内核 OOM killer 杀死 `pytest`，单进程 RSS 可达数百 GB。
+
+未实现 harness 内置内存沙箱前，建议：
+
+```bash
+# 临时限制当前 shell 及其子进程虚拟内存为 32GB。
+# 这样 mini 自测里的 pytest 也会继承限制。
+ulimit -v $((32 * 1024 * 1024))
+
+AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 ./run.sh
+```
+
+注意：
+
+- `NUM_WORKERS=1` 是当前最稳的默认值；本地 vLLM 或 API 模型都不要多 suite 重叠跑。
+- Docker/cgroup 更适合正式 eval；shell `ulimit` 是短期止血，可能让少数正常但内存较高的题误失败。
+- 需要在 harness 中补 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB` 这类可审计配置后，再把内存限制纳入标准实验口径。
 
 输出目录：`experiments/mini-swe-agent/<run_id>/`（gitignored）。
 
@@ -179,6 +235,7 @@ Harness 评测每题时会：
 - **少数题** 有第三方依赖（如 `text-unidecode`），依赖**本机 pip 缓存**里已有 wheel；极干净的服务器可能 eval 失败
 - 修复 eval 基础设施问题用 [`harness/scripts/reeval_suite.py`](../harness/scripts/reeval_suite.py)（**不重跑 agent**）
 - 更干净的可复现 eval 可用 Docker：[`docker/Dockerfile.eval`](../docker/Dockerfile.eval)
+- 正式 eval 建议用 Docker/cgroup 加内存上限；只限制 final eval 不足以保护 agent 自测阶段，后者仍需 `ulimit` 或 harness 级 agent sandbox
 
 ---
 
@@ -203,10 +260,18 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py
 tmux new -s flb
 ./run.sh
 # Ctrl-B D 脱离
+```
 
+```bash
 # 6. 分析
 python harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/<run_id>
+
+# 跨多 run 汇总（failure taxonomy + 按 source 分组）
+python harness/scripts/summarize_experiment_runs.py experiments/mini-swe-agent/<run_id> ... \
+  --output experiments/mini-swe-agent/formal-50hard-6run-summary.json
 ```
+
+实验结果汇总表见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
 
 ### 常见失败与处理
 
@@ -219,6 +284,7 @@ python harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/<ru
 | 50 题全 `missing_submission` | API key/模型/base URL 错误 | 查 `preflight`、agent `stderr.log` |
 | eval `No module named pytest` | 旧 harness | `git pull`；或对旧 suite 跑 `reeval_suite.py` |
 | eval 装依赖失败 | pip 缓存无 wheel | 在该机先 `pip download` 相关包，或用 Docker eval |
+| 系统 OOM，内核日志显示 `Killed process ... (pytest)` | Agent 生成的 submission 在自测或 eval 中被 pytest 执行后失控申请内存 | 暂用 `NUM_WORKERS=1` + `ulimit -v`；下一步加 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB` 或 Docker/cgroup |
 
 ---
 

@@ -278,6 +278,7 @@ def run_agent_on_task(
 
     agent_result = None
     eval_result = None
+    recovery_info: dict[str, Any] | None = None
     workspace_submission_dir = workspace_dir / "submission"
 
     if validation.valid:
@@ -311,7 +312,15 @@ def run_agent_on_task(
             _copy_submission(workspace_submission_dir, collected_submission_dir)
             eval_result = evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
         else:
-            errors.append("agent did not create any files under workspace/submission")
+            recovery_info = _recover_misplaced_submission(workspace_dir, workspace_submission_dir)
+            if recovery_info is not None and recovery_info.get("message"):
+                errors.append(str(recovery_info["message"]))
+            if _has_submission_files(workspace_submission_dir):
+                _copy_submission(workspace_submission_dir, collected_submission_dir)
+                eval_result = evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
+            else:
+                errors.append("agent did not create any files under workspace/submission")
+                errors.append(_missing_submission_diagnostic(workspace_dir))
 
     agent_payload: dict[str, Any]
     if agent_result is None:
@@ -339,6 +348,14 @@ def run_agent_on_task(
         eval_result=eval_result,
     )
     run_json_path = output_path / "run.json"
+    submission_payload: dict[str, Any] = {
+        "dir": str(collected_submission_dir),
+        "exists": submission_exists,
+        "recovered": bool(recovery_info and recovery_info.get("recovered")),
+    }
+    recovery_sources = recovery_info.get("recovery_sources") if isinstance(recovery_info, dict) else None
+    if isinstance(recovery_sources, list) and recovery_sources:
+        submission_payload["recovery_sources"] = recovery_sources
     result = {
         "mode": "task",
         "generated_at": _utc_now(),
@@ -351,10 +368,7 @@ def run_agent_on_task(
             "dir": str(workspace_dir),
             "task_file": str(workspace_dir / "TASK.md"),
         },
-        "submission": {
-            "dir": str(collected_submission_dir),
-            "exists": submission_exists,
-        },
+        "submission": submission_payload,
         "evaluation": evaluation_payload,
         "errors": errors,
         "run_json": str(run_json_path),
@@ -914,7 +928,11 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         "5. Run `pytest public_tests/` in the workspace and fix failures.\n"
         "6. **Public tests passing does not mean you are done.** The evaluator also runs hidden tests "
         "and stricter checks you cannot see here.\n"
-        "7. When confident, submit with the command at the bottom.\n\n"
+        "7. Before submitting, verify your package is under `submission/featurelifted/`, e.g. "
+        "`test -d submission/featurelifted && ls submission/featurelifted | head`.\n"
+        "8. Do **not** put your package in `featurelifted/` at the workspace root — only "
+        "`submission/featurelifted/` counts.\n"
+        "9. When confident, submit with the command at the bottom.\n\n"
         "## Workspace\n\n"
         "- `repo/`: source repository snapshot for the fixed commit.\n"
         "- `public_tests/`: tests you may run while developing.\n"
@@ -1002,6 +1020,62 @@ def _has_submission_files(path: Path) -> bool:
     return any(child.name != ".gitkeep" for child in path.iterdir())
 
 
+def _package_has_python_files(path: Path) -> bool:
+    return path.is_dir() and any(path.rglob("*.py"))
+
+
+def _recover_misplaced_submission(workspace_dir: Path, submission_dir: Path) -> dict[str, Any] | None:
+    """Collect agent output from known misplaced workspace paths into submission/."""
+
+    if _has_submission_files(submission_dir):
+        return None
+
+    recovery_sources: list[str] = []
+    try:
+        featurelifted_root = workspace_dir / "featurelifted"
+        if _package_has_python_files(featurelifted_root):
+            dest = submission_dir / "featurelifted"
+            submission_dir.mkdir(parents=True, exist_ok=True)
+            if dest.exists():
+                shutil.rmtree(dest)
+            shutil.copytree(featurelifted_root, dest, dirs_exist_ok=True)
+            recovery_sources.append("workspace/featurelifted")
+
+        pyproject_root = workspace_dir / "pyproject.toml"
+        if pyproject_root.is_file() and not (submission_dir / "pyproject.toml").is_file():
+            submission_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(pyproject_root, submission_dir / "pyproject.toml")
+            recovery_sources.append("workspace/pyproject.toml")
+    except OSError as exc:
+        return {
+            "recovered": False,
+            "recovery_sources": recovery_sources,
+            "message": f"submission recovery failed: {exc}",
+        }
+
+    if not recovery_sources or not _has_submission_files(submission_dir):
+        return None
+
+    sources_text = ", ".join(recovery_sources)
+    return {
+        "recovered": True,
+        "recovery_sources": recovery_sources,
+        "message": (
+            f"recovered submission from misplaced paths ({sources_text}); "
+            "agent wrote outside workspace/submission"
+        ),
+    }
+
+
+def _missing_submission_diagnostic(workspace_dir: Path) -> str:
+    if _package_has_python_files(workspace_dir / "featurelifted"):
+        return (
+            "workspace/featurelifted exists but submission recovery did not populate "
+            "workspace/submission"
+        )
+    return "no submission files and no recoverable misplaced paths found under workspace/"
+
+
 def _write_agent_logs(agent_output_dir: Path, result: Any) -> None:
     agent_output_dir.mkdir(parents=True, exist_ok=True)
     (agent_output_dir / "stdout.log").write_text(result.stdout, encoding="utf-8")
@@ -1032,6 +1106,52 @@ def _parse_agent_usage_json(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         return _unavailable_agent_usage(path, "usage.json must contain a JSON object")
     return _sanitize_usage_payload(data, path)
+
+
+def _aggregate_message_usage(messages: list[Any]) -> dict[str, int]:
+    prompt_tokens = 0
+    completion_tokens = 0
+    total_tokens = 0
+    saw_prompt = False
+    saw_completion = False
+    saw_total = False
+
+    for message in messages:
+        if not isinstance(message, dict):
+            continue
+        extra = message.get("extra")
+        if not isinstance(extra, dict):
+            continue
+        response = extra.get("response")
+        if not isinstance(response, dict):
+            continue
+        usage = response.get("usage")
+        if not isinstance(usage, dict):
+            continue
+
+        prompt = _int_metric(usage.get("prompt_tokens"))
+        if prompt is not None:
+            prompt_tokens += prompt
+            saw_prompt = True
+        completion = _int_metric(usage.get("completion_tokens"))
+        if completion is not None:
+            completion_tokens += completion
+            saw_completion = True
+        total = _int_metric(usage.get("total_tokens"))
+        if total is not None:
+            total_tokens += total
+            saw_total = True
+
+    aggregated: dict[str, int] = {}
+    if saw_prompt:
+        aggregated["prompt_tokens"] = prompt_tokens
+    if saw_completion:
+        aggregated["completion_tokens"] = completion_tokens
+    if saw_prompt or saw_completion:
+        aggregated["total_tokens"] = prompt_tokens + completion_tokens
+    elif saw_total:
+        aggregated["total_tokens"] = total_tokens
+    return aggregated
 
 
 def _parse_mini_trajectory_usage(path: Path) -> dict[str, Any]:
@@ -1070,6 +1190,12 @@ def _parse_mini_trajectory_usage(path: Path) -> dict[str, Any]:
         value = _int_metric(model_stats.get(key))
         if value is not None:
             usage[key] = value
+
+    if isinstance(messages, list):
+        aggregated = _aggregate_message_usage(messages)
+        for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+            if key not in usage and key in aggregated:
+                usage[key] = aggregated[key]
 
     exit_status = info.get("exit_status")
     if isinstance(exit_status, str):

@@ -37,6 +37,8 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertIn("## How to work", prompt)
         self.assertIn("Forbidden imports are a hard gate", prompt)
         self.assertIn("Public tests passing does not mean you are done", prompt)
+        self.assertIn("submission/featurelifted", prompt)
+        self.assertIn("Do **not** put your package in `featurelifted/` at the workspace root", prompt)
         self.assertIn("final_score = functional_gate", prompt)
         self.assertIn("pytest public_tests/", prompt)
 
@@ -149,6 +151,7 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertEqual(result["status"], "passed")
             self.assertTrue(result["agent"]["passed"])
             self.assertTrue(result["submission"]["exists"])
+            self.assertFalse(result["submission"]["recovered"])
             self.assertEqual(result["evaluation"]["status"], "passed")
             self.assertEqual(result["evaluation"]["scores"]["functional_gate"], 1.0)
             self.assertEqual(result["evaluation"]["scores"]["extraction_ratio"], 0.5)
@@ -159,6 +162,68 @@ class AgentRunnerTests(unittest.TestCase):
             run_json = json.loads((root / "output" / "run.json").read_text(encoding="utf-8"))
             self.assertEqual(run_json["agent"]["usage"]["prompt_tokens"], 100)
             self.assertFalse((root / "output" / "workspace" / "hidden_tests").exists())
+
+    def test_recovers_misplaced_submission_from_workspace_featurelifted(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            fake_agent = root / "fake_misplaced_agent.py"
+            command = _write_fake_misplaced_agent(fake_agent)
+
+            result = run_agent_on_task(
+                task_dir,
+                root / "output",
+                AgentRunConfig(agent="command", command=command, timeout_seconds=120),
+            )
+
+            self.assertNotEqual(result["status"], "missing_submission")
+            self.assertTrue(result["submission"]["exists"])
+            self.assertTrue(result["submission"]["recovered"])
+            self.assertEqual(result["submission"]["recovery_sources"], ["workspace/featurelifted"])
+            self.assertTrue(
+                (root / "output" / "workspace" / "featurelifted" / "__init__.py").is_file()
+            )
+            self.assertTrue(
+                (root / "output" / "workspace" / "submission" / "featurelifted" / "__init__.py").is_file()
+            )
+
+    def test_missing_submission_when_no_recoverable_files(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            fake_agent = root / "fake_empty_agent.py"
+            command = _write_fake_empty_agent(fake_agent)
+
+            result = run_agent_on_task(
+                task_dir,
+                root / "output",
+                AgentRunConfig(agent="command", command=command, timeout_seconds=120),
+            )
+
+            self.assertEqual(result["status"], "missing_submission")
+            self.assertFalse(result["submission"]["exists"])
+            self.assertFalse(result["submission"]["recovered"])
+            self.assertIn(
+                "no submission files and no recoverable misplaced paths found",
+                result["errors"][-1],
+            )
+
+    def test_does_not_recover_when_submission_already_populated(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            fake_agent = root / "fake_agent_with_misplaced_copy.py"
+            command = _write_fake_agent_with_misplaced_copy(fake_agent)
+
+            result = run_agent_on_task(
+                task_dir,
+                root / "output",
+                AgentRunConfig(agent="command", command=command, timeout_seconds=120),
+            )
+
+            self.assertEqual(result["status"], "passed")
+            self.assertTrue(result["submission"]["exists"])
+            self.assertFalse(result["submission"]["recovered"])
 
     def test_suite_json_includes_agent_usage_totals(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -254,6 +319,58 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertEqual(usage["exit_status"], "Submitted")
             self.assertNotIn("cost_usd", usage)
 
+    def test_collects_mini_trajectory_usage_from_message_responses(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_output = root / "agent"
+            agent_output.mkdir()
+            (agent_output / "trajectory.json").write_text(
+                json.dumps(
+                    {
+                        "messages": [
+                            {"role": "system"},
+                            {
+                                "role": "assistant",
+                                "extra": {
+                                    "response": {
+                                        "usage": {
+                                            "prompt_tokens": 100,
+                                            "completion_tokens": 20,
+                                            "total_tokens": 120,
+                                        }
+                                    }
+                                },
+                            },
+                            {"role": "user"},
+                            {
+                                "role": "assistant",
+                                "extra": {
+                                    "response": {
+                                        "usage": {
+                                            "prompt_tokens": 150,
+                                            "completion_tokens": 30,
+                                        }
+                                    }
+                                },
+                            },
+                        ],
+                        "info": {
+                            "exit_status": "Submitted",
+                            "model_stats": {"api_calls": 2},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            usage = _collect_agent_usage("mini-swe-agent", agent_output)
+
+            self.assertTrue(usage["available"])
+            self.assertEqual(usage["api_calls"], 2)
+            self.assertEqual(usage["prompt_tokens"], 250)
+            self.assertEqual(usage["completion_tokens"], 50)
+            self.assertEqual(usage["total_tokens"], 300)
+
     def test_missing_agent_usage_is_non_fatal(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             usage = _collect_agent_usage("command", Path(tmp) / "agent")
@@ -322,7 +439,8 @@ class AgentRunnerTests(unittest.TestCase):
             command = adapter.build_command(context, config)
             report_command = adapter.build_report_command(context, config)
 
-            self.assertEqual(command[:2], ["mini", "--task"])
+            self.assertEqual(command[:3], [sys.executable, "-m", "featureliftbench.mini_live_runner"])
+            self.assertIn("--task", command)
             self.assertIn("Solve this task", command)
             self.assertIn("--output", command)
             self.assertIn(str(root / "agent" / "trajectory.json"), command)
@@ -384,6 +502,54 @@ def _write_fake_usage_agent(path: Path) -> str:
         "    'cost_usd': 999,\n"
         "}), encoding='utf-8')\n"
         "print('created submission')\n",
+        encoding="utf-8",
+    )
+    return (
+        f"{shlex.quote(sys.executable)} "
+        f"{shlex.quote(str(path))} "
+        "{submission_dir} "
+        "{agent_output_dir}"
+    )
+
+
+def _write_fake_misplaced_agent(path: Path) -> str:
+    path.write_text(
+        "from pathlib import Path\n"
+        "import sys\n"
+        "submission = Path(sys.argv[1])\n"
+        "workspace = submission.parent\n"
+        "package = workspace / 'featurelifted'\n"
+        "package.mkdir(parents=True, exist_ok=True)\n"
+        "(package / '__init__.py').write_text('VALUE = 1\\n', encoding='utf-8')\n"
+        "print('created misplaced submission')\n",
+        encoding="utf-8",
+    )
+    return (
+        f"{shlex.quote(sys.executable)} "
+        f"{shlex.quote(str(path))} "
+        "{submission_dir} "
+        "{agent_output_dir}"
+    )
+
+
+def _write_fake_empty_agent(path: Path) -> str:
+    path.write_text(
+        "print('submitted without files')\n",
+        encoding="utf-8",
+    )
+    return f"{shlex.quote(sys.executable)} {shlex.quote(str(path))}"
+
+
+def _write_fake_agent_with_misplaced_copy(path: Path) -> str:
+    path.write_text(
+        "from pathlib import Path\n"
+        "import sys\n"
+        "submission = Path(sys.argv[1])\n"
+        "workspace = submission.parent\n"
+        "for target in (submission / 'featurelifted', workspace / 'featurelifted'):\n"
+        "    target.mkdir(parents=True, exist_ok=True)\n"
+        "    (target / '__init__.py').write_text('VALUE = 1\\n', encoding='utf-8')\n"
+        "print('created submission and misplaced copy')\n",
         encoding="utf-8",
     )
     return (

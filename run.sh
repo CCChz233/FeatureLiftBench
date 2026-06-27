@@ -6,10 +6,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
 export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
-export PATH="$ROOT/.venv/bin:${PATH}"
 
 if [[ -n "${PYTHON:-}" ]]; then
   :
+elif [[ -n "${CONDA_PREFIX:-}" && -x "${CONDA_PREFIX}/bin/python" ]]; then
+  PYTHON="${CONDA_PREFIX}/bin/python"
 elif [[ -x "$ROOT/.venv/bin/python" ]]; then
   PYTHON="$ROOT/.venv/bin/python"
 elif command -v python3.12 >/dev/null 2>&1; then
@@ -17,6 +18,8 @@ elif command -v python3.12 >/dev/null 2>&1; then
 else
   PYTHON=python3
 fi
+
+export PATH="$ROOT/.venv/bin:${PATH}"
 
 AGENT_PROFILE="${AGENT_PROFILE:-deepseek_v4_pro}"
 
@@ -35,6 +38,7 @@ else
 fi
 
 EXTRA_AGENT_PASSES="${EXTRA_AGENT_PASSES:-0}"
+RETRY_RATE_LIMIT="${RETRY_RATE_LIMIT:-2}"
 
 echo "Profile: ${AGENT_PROFILE}"
 echo "Output:  ${OUTPUT}"
@@ -54,9 +58,9 @@ $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --env-file .env \
   --yolo \
   --num-workers "${NUM_WORKERS:-4}" \
-  --retry-rate-limit 2 \
+  --retry-rate-limit "${RETRY_RATE_LIMIT}" \
   --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
-  --no-progress \
+  ${NO_PROGRESS:+--no-progress} \
   --output "${OUTPUT}" \
   "${RESUME_FLAG[@]}"
 

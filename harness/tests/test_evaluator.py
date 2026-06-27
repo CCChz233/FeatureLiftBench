@@ -9,7 +9,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from featureliftbench.evaluator import CommandResult
 from featureliftbench.evaluator import _ensure_eval_tooling
+from featureliftbench.evaluator import _run_command
+from featureliftbench.evaluator import _write_command_logs
 from featureliftbench.evaluator import evaluate_submission
 
 
@@ -225,6 +228,41 @@ class EvaluatorTests(unittest.TestCase):
             self.assertEqual(result["status"], "failed")
             self.assertFalse(result["build_pass"])
             self.assertIn("eval tooling failed", result["errors"][0])
+
+    def test_write_command_logs_accepts_bytes_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            logs_path = Path(tmp)
+            result = CommandResult(
+                returncode=0,
+                duration_seconds=1.0,
+                stdout=b"binary stdout",
+                stderr=b"binary stderr",
+            )
+
+            _write_command_logs(logs_path, "test", result)
+
+            self.assertEqual((logs_path / "test.stdout").read_text(encoding="utf-8"), "binary stdout")
+            self.assertEqual((logs_path / "test.stderr").read_text(encoding="utf-8"), "binary stderr")
+
+    def test_run_command_decodes_timeout_output(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch("featureliftbench.evaluator.subprocess.run") as run:
+                run.side_effect = subprocess.TimeoutExpired(
+                    cmd=["echo"],
+                    timeout=1,
+                    output=b"partial out",
+                    stderr=b"partial err",
+                )
+                result = _run_command(
+                    ["echo"],
+                    cwd=Path(tmp),
+                    env={},
+                    timeout_seconds=1,
+                )
+
+            self.assertTrue(result.timed_out)
+            self.assertEqual(result.stdout, "partial out")
+            self.assertEqual(result.stderr, "partial err")
 
 
 def _make_task(task_dir: Path, lock_text: str = "") -> Path:

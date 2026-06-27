@@ -15,6 +15,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
+from featureliftbench.agent_runner import _has_submission_files  # noqa: E402
 from featureliftbench.docker_eval import evaluate_submission_docker  # noqa: E402
 from featureliftbench.evaluator import evaluate_submission  # noqa: E402
 from featureliftbench.paths import TASKS_DIR  # noqa: E402
@@ -84,9 +85,14 @@ def reeval_task(
     agent = run_data.get("agent") if isinstance(run_data.get("agent"), dict) else {}
     submission = run_data.get("submission") if isinstance(run_data.get("submission"), dict) else {}
     agent_passed = bool(agent.get("passed", False))
-    submission_exists = submission.get("exists", submission_dir.is_dir())
+    submission_exists = _has_submission_files(submission_dir)
 
     run_data["generated_at"] = utc_now()
+    run_data["submission"] = {
+        **submission,
+        "dir": str(submission_dir),
+        "exists": submission_exists,
+    }
     run_data["evaluation"] = evaluation_payload(eval_result, eval_output_dir)
     run_data["status"] = run_status(
         validation_ok=True,

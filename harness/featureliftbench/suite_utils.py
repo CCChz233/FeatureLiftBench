@@ -158,6 +158,9 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         "missing_submissions": sum(
             1 for run in runs if not run.get("submission", {}).get("exists", False)
         ),
+        "recovered_submissions": sum(
+            1 for run in runs if run.get("submission", {}).get("recovered", False)
+        ),
         "average_final_score": (
             round(sum(numeric_scores) / len(numeric_scores), 6) if numeric_scores else 0.0
         ),
@@ -195,7 +198,8 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
     usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
     evaluation = run.get("evaluation") if isinstance(run.get("evaluation"), dict) else {}
     scores = evaluation.get("scores") if isinstance(evaluation.get("scores"), dict) else {}
-    return {
+    submission = run.get("submission") if isinstance(run.get("submission"), dict) else {}
+    entry: dict[str, Any] = {
         "task_id": run.get("task_id", ""),
         "status": run.get("status", "failed"),
         "run_json": run.get("run_json", ""),
@@ -203,3 +207,6 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
         "final_score": scores.get("final_score", 0.0),
         "agent_usage": compact_agent_usage(usage),
     }
+    if submission.get("recovered") is True:
+        entry["submission_recovered"] = True
+    return entry

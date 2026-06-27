@@ -2,7 +2,10 @@
 
 这个 TODO 记录 FeatureLiftBench pilot MVP 的完成状态和后续 backlog。FeatureLiftBench 当前定位为：**面向缠绕仓库的功能级解耦评测基准**，英文问题是 **Can Code Agents Decouple Features from Entangled Repositories?**
 
-当前最小闭环已经跑通：**主榜 50 hard** + **3 smoke**、Oracle **50/50**、Harness **59** 单测、Flash-50 baseline **41/50 functional pass**。**扩榜已完成**（2026-06-25）；**下一阶段：难度校准**（hidden/closure）+ **Pro-50 baseline**。
+当前最小闭环已经跑通：**主榜 50 hard** + **3 smoke**、Oracle **50/50**、Harness **88** 单测、Flash-50 baseline **41/50 functional pass**。**扩榜已完成**（2026-06-25）；**下一阶段：难度校准**（hidden/closure）+ 本地/API 模型对比实验。
+
+**本地 vLLM 6-run 汇总** → [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md)
+**SiliconFlow API 实验（GLM / MiniMax / Kimi）** → [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) §5 · [RUN.md](RUN.md)
 
 **Benchmark 现状（含 pass 口径、Flash-50、Pro 进度）** → [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md)
 
@@ -60,7 +63,7 @@ experiments/              # 成绩单
 
 当前 benchmark：**主榜 50 hard**（`benchmark/tasks/`）+ **3 smoke**（`benchmark/sanity/`）。完整列表见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)。
 
-历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。**当前主 baseline：Flash-50** `benchmark-50-hard-flash-001` → **41/50 (82%)** functional，avg `final_score` **0.472**（目标 functional ~20–30%，仍偏易）。Pro-50 进行中。
+历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。**当前主 baseline：Flash-50** `benchmark-50-hard-flash-001` → **41/50 (82%)** functional；Pro-50 re-eval **42/50 (84%)**。本地 vLLM 与 SiliconFlow 实验见 [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md)。
 
 ## 当前 sprint：50 hard 扩榜完成（2026-06-25）
 

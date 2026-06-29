@@ -1,0 +1,80 @@
+{
+  "task_id": "chameleon__template_compile_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "chameleon",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "chameleon",
+    "url": "https://github.com/malthe/chameleon",
+    "commit": "4.6.0-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "ZPT template compile and render",
+    "description": "Extract Chameleon PageTemplate compile/render with TAL/TALES without importing chameleon.",
+    "source_entrypoints": [
+      "chameleon.zpt.template.PageTemplate",
+      "chameleon.compiler.ExpressionEngine",
+      "chameleon.tal",
+      "chameleon.tales",
+      "chameleon.exc.TemplateError"
+    ],
+    "included_behaviors": [
+      "compile and render PageTemplate from source strings",
+      "TAL attributes content/repeat/condition",
+      "TALES path and python expressions",
+      "macro define/use via metal namespace"
+    ],
+    "excluded_behaviors": [
+      "filesystem PageTemplateFile loader and auto_reload",
+      "i18n translation catalogs beyond defaults",
+      "benchmark utilities and legacy loader paths",
+      "original chameleon import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "ZPT compile couples tokenization, TAL/TALES expression engines, and codegen into renderable programs.",
+    "signals": [
+      "TAL repeat and condition compilation",
+      "TALES expression parser for path/python/string forms",
+      "macro metal:define-slot/use-slot wiring"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import TemplateError; from featurelifted.zpt.template import PageTemplate",
+    "callable": "featurelifted.zpt.template.PageTemplate",
+    "signature": "PageTemplate(source: str, **config)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "chameleon"
+    ],
+    "forbidden_imports": [
+      "chameleon"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

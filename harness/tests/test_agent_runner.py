@@ -6,8 +6,10 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from featureliftbench.agent_adapters import AgentRunConfig
+from featureliftbench.agent_adapters import AgentCommandResult
 from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_adapters import MiniSweAgentAdapter
 from featureliftbench.agent_runner import _collect_agent_usage
@@ -35,6 +37,9 @@ class AgentRunnerTests(unittest.TestCase):
         prompt = build_task_prompt(metadata)
 
         self.assertIn("## How to work", prompt)
+        self.assertIn("smallest **behavior-complete** implementation closure", prompt)
+        self.assertIn("## Closure Discipline", prompt)
+        self.assertIn("not a toy rewrite for public tests", prompt)
         self.assertIn("Forbidden imports are a hard gate", prompt)
         self.assertIn("Public tests passing does not mean you are done", prompt)
         self.assertIn("submission/featurelifted", prompt)
@@ -162,6 +167,79 @@ class AgentRunnerTests(unittest.TestCase):
             run_json = json.loads((root / "output" / "run.json").read_text(encoding="utf-8"))
             self.assertEqual(run_json["agent"]["usage"]["prompt_tokens"], 100)
             self.assertFalse((root / "output" / "workspace" / "hidden_tests").exists())
+
+    def test_command_agent_can_evaluate_with_docker_backend(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            fake_agent = root / "fake_agent.py"
+            command = _write_fake_usage_agent(fake_agent)
+            eval_result = {
+                "status": "passed",
+                "scores": {
+                    "functional_gate": 1.0,
+                    "extraction_ratio": 0.5,
+                    "final_score": 0.5,
+                },
+                "build_pass": True,
+                "test_pass": True,
+            }
+
+            with mock.patch(
+                "featureliftbench.agent_runner.evaluate_submission_docker",
+                return_value=eval_result,
+            ) as docker_eval:
+                result = run_agent_on_task(
+                    task_dir,
+                    root / "output",
+                    AgentRunConfig(agent="command", command=command, timeout_seconds=120),
+                    eval_docker=True,
+                    eval_docker_image="custom-eval:latest",
+                )
+
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["eval_backend"], "docker")
+            self.assertEqual(result["eval_docker_image"], "custom-eval:latest")
+            docker_eval.assert_called_once()
+            self.assertEqual(docker_eval.call_args.kwargs["image"], "custom-eval:latest")
+
+    def test_command_agent_can_run_with_agent_docker_backend(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+
+            def fake_docker_agent(context, config, *, image, stdout_log, stderr_log):
+                package = context.submission_dir / "featurelifted"
+                package.mkdir(parents=True, exist_ok=True)
+                (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+                return AgentCommandResult(
+                    name="command-docker",
+                    command=["docker", "run"],
+                    report_command=["docker", "run"],
+                    returncode=0,
+                    duration_seconds=1.0,
+                    stdout="created submission",
+                    stderr="",
+                )
+
+            with mock.patch(
+                "featureliftbench.agent_runner.run_agent_in_docker",
+                side_effect=fake_docker_agent,
+            ) as docker_agent:
+                result = run_agent_on_task(
+                    task_dir,
+                    root / "output",
+                    AgentRunConfig(agent="command", command="unused", timeout_seconds=120),
+                    agent_docker=True,
+                    agent_docker_image="featureliftbench-agent:test",
+                )
+
+            self.assertEqual(result["status"], "passed")
+            self.assertEqual(result["agent_backend"], "docker")
+            self.assertEqual(result["agent_docker_image"], "featureliftbench-agent:test")
+            docker_agent.assert_called_once()
+            run_json = json.loads((root / "output" / "run.json").read_text(encoding="utf-8"))
+            self.assertEqual(run_json["agent_backend"], "docker")
 
     def test_recovers_misplaced_submission_from_workspace_featurelifted(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

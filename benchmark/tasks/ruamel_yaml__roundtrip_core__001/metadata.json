@@ -1,0 +1,76 @@
+{
+  "task_id": "ruamel_yaml__roundtrip_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "ruamel-yaml",
+    "roundtrip",
+    "hard-first",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "ruamel.yaml",
+    "url": "https://sourceforge.net/projects/ruamel-yaml/",
+    "commit": "0.18.6-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "YAML roundtrip with comments",
+    "description": "Extract ruamel.yaml round-trip load/dump preserving comments and key order.",
+    "source_entrypoints": [
+      "ruamel.yaml.round_trip_load",
+      "ruamel.yaml.round_trip_dump",
+      "ruamel.yaml.YAML"
+    ],
+    "included_behaviors": [
+      "round-trip load/dump preserves end-of-line comments",
+      "CommentedMap key order preserved",
+      "flow style and literal block scalars"
+    ],
+    "excluded_behaviors": [
+      "C yaml acceleration",
+      "jinja2 templating",
+      "original ruamel import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Round-trip YAML couples scanner comment tokens, CommentedMap model, and emitter layout.",
+    "signals": [
+      "CommentedMap comment slots",
+      "RoundTripLoader/Dumper pairing",
+      "scalar string quote preservation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import YAML, round_trip_load, round_trip_dump, CommentedMap",
+    "callable": "featurelifted.round_trip_load",
+    "signature": "round_trip_load(stream) -> CommentedMap"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "ruamel.yaml",
+      "ruamel"
+    ],
+    "forbidden_imports": [
+      "ruamel"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

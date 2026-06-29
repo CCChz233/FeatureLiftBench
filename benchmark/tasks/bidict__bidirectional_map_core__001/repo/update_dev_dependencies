@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# Copyright 2009-2026 Joshua Bronson. All rights reserved.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+set -euo pipefail
+
+log() {
+  >&2 printf "> %s\n" "$@"
+}
+
+
+main() {
+  declare -r hint="Hint: Use 'nix develop' to bootstrap a development environment"
+
+  for cmd in uv prek; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      log "Error: No '$cmd' on PATH. $hint"
+      exit 1
+    fi
+  done
+
+  log "Upgrading PyPI dependencies..."
+  uv lock --upgrade && uv sync
+  log "Upgrading PyPI dependencies: Done"
+  log
+  log "Upgrading pre-commit hooks..."
+  prek auto-update
+  log "Upgrading pre-commit hooks: Done"
+  log
+  log "Reminders:"
+  log " - Check release notes of upgraded packages for anything that affects bidict."
+  log " - Ensure tests pass for all supported Python versions."
+  log " - Check output for any new warnings, not just test failures."
+  log " - Ensure 'prek run --all-files' still succeeds."
+}
+
+main

@@ -1,76 +1,125 @@
-# FeatureLiftBench Architecture
+# Architecture & Repository Layout
 
-FeatureLiftBench is organized into four top-level layers. Three define the product; one holds local experiment artifacts.
+FeatureLiftBench: four layers (three product + local experiments).
 
-## Layers
+## Layers & data flow
 
 ```text
-docs/           Layer 1 — Documentation (human-facing)
-benchmark/      Layer 2 — Dataset (tasks, sources, Oracle; no agent code)
-harness/        Layer 3 — Tooling (evaluator + optional agent runner)
-experiments/    Layer 4 — Local runs (gitignored; not part of the benchmark definition)
+docs/           Layer 1 — documentation
+benchmark/      Layer 2 — dataset (tasks, staging, sources, oracle)
+harness/        Layer 3 — evaluator + agent tooling
+experiments/    Layer 4 — local runs (gitignored)
 ```
-
-## Data flow
 
 ```text
 benchmark/tasks/<task_id>/          # Question
-benchmark/submissions/<id>/oracle/  # Reference answer (local, gitignored)
+benchmark/submissions/<id>/oracle/  # Reference submission (gitignored)
          │
          ▼
-harness/featureliftbench/evaluator  # Grader (core contract)
+harness/featureliftbench/evaluator
          │
          ▼
-experiments/<run_id>/eval/          # Scores and logs
+experiments/<run_id>/eval/
+
+Optional: benchmark/tasks/ → agent_runner → submission/ → evaluator
 ```
 
-Optional agent path:
+Benchmark definition does **not** require an agent (`eval`, `validate-task` work standalone).
+
+## Top-level tree
 
 ```text
-benchmark/tasks/  ──►  harness/agent_runner  ──►  submission/  ──►  evaluator  ──►  experiments/
+FeatureLiftBench/
+  README.md
+  RUN.md                 # Quick run (vLLM / API)
+  setup.sh
+  TODO.md                # Engineering backlog (not doc index)
+
+  docs/                  # Layer 1 — see docs/README.md
+  benchmark/
+    tasks/               # Main leaderboard (batch-0 → 100)
+    staging/             # Candidates — see EXPANSION.md
+    sanity/              # 3 smoke tasks
+    sources/             # vibe_app master; OSS uses pinned repo/ per task
+    vendor-wheels/
+    submissions/         # Oracle (gitignored)
+  harness/
+    featureliftbench/    # Python package
+    config/
+    scripts/
+    tests/
+  experiments/           # Run outputs (gitignored)
 ```
 
-The benchmark definition does **not** depend on any agent. `eval` and `validate-task` work without `run-agent`.
+## Benchmark layer
 
-## Layer responsibilities
+| Path | Purpose | Git |
+| --- | --- | --- |
+| `benchmark/tasks/` | Official hard tasks | Yes |
+| `benchmark/staging/` | Trial tasks before promote | Yes |
+| `benchmark/sanity/` | Smoke appendix | Yes |
+| `benchmark/sources/` | Curated upstream (e.g. vibe_app) | Yes |
+| `benchmark/submissions/` | Oracle answers | Gitignored |
 
-| Layer | Path | Contains | Does not contain |
-| --- | --- | --- | --- |
-| Docs | `docs/` | Architecture, task catalog, design notes, limitations | Executable code, task snapshots |
-| Benchmark | `benchmark/` | `tasks/`, `sources/`, `vendor-wheels/`, local `submissions/` | Evaluator, agent harness, experiment logs |
-| Harness | `harness/` | `featureliftbench/`, `config/`, `scripts/`, `tests/` | Per-task `repo/` snapshots |
-| Experiments | `experiments/` | Agent/eval run output | Benchmark schema or task data |
+Per-task layout: [TASK_FORMAT.md](TASK_FORMAT.md).
 
-## Harness internals
+## Harness
 
 | Component | Module | Role |
 | --- | --- | --- |
-| Evaluator | `evaluator.py`, `validate.py`, `scoring.py` | Grade submissions; define the benchmark contract |
-| Agent runner | `agent_runner.py`, `agent_adapters.py` | Optional; produce submissions via external agents |
-| CLI | `cli.py` | `validate-task`, `eval`, `score`, `run-agent` |
-| Paths | `paths.py` | Single source of truth for repo layout |
+| Evaluator | `evaluator.py`, `validate.py`, `scoring.py` | Grading contract |
+| Runtime safety | `resource_limits.py`, `run_limited.py` | Memory caps (Linux) |
+| Agent runner | `agent_runner.py`, `agent_adapters.py` | Optional agent path |
+| CLI | `cli.py` | `validate-task`, `eval`, `run-agent` |
+| Paths | `paths.py` | `TASKS_DIR`, etc. |
 
-## Path constants
+### Key scripts (`harness/scripts/`)
 
-All code should prefer [`harness/featureliftbench/paths.py`](../harness/featureliftbench/paths.py):
+| Script | Role |
+| --- | --- |
+| `preflight.py` | Pre-run env / API / mini check |
+| `server_setup.sh` | Called by `./setup.sh` |
+| `verify_all_oracles.py` | Oracle regression |
+| `build_oracle_submission.py` | Build oracle from task |
+| `analyze_benchmark_suite.py` | Suite analysis |
+| `reeval_suite.py` | Re-eval without re-running agent |
+| `list_tasks.py` | Task listing (default: `tasks/` only) |
 
-- `TASKS_DIR` → `benchmark/tasks/`
-- `SUBMISSIONS_DIR` → `benchmark/submissions/`
-- `EXPERIMENTS_DIR` → `experiments/`
-- `CONFIG_DIR` → `harness/config/`
+Path constants: [`harness/featureliftbench/paths.py`](../harness/featureliftbench/paths.py). CLI `benchmark` → `benchmark/tasks/`.
 
-CLI shorthand: `benchmark` or `benchmark/tasks` resolves to `TASKS_DIR` for `run-agent`.
+## Experiments output
 
-## Evolution rules
+```text
+experiments/mini-swe-agent/<run_id>/
+  suite.json
+  <task_id>/
+    run.json
+    agent/trajectory.json
+    submission/
+    eval/result.json
+```
 
-- Add or remove tasks under `benchmark/tasks/` only.
-- Do not fork alternate collections or schemas.
-- Oracle stays local (`benchmark/submissions/`, gitignored).
-- Prune old directories under `experiments/` when disk is tight.
+Safe to delete old `experiments/` locally. **Do not** delete `benchmark/tasks/` or `harness/`.
+
+## Evolution
+
+- **batch-0 (50 tasks):** frozen — no edits for expansion scope.
+- **batch-1:** add via staging only — [EXPANSION.md](EXPANSION.md).
+- No forked schemas or second benchmark collection.
+- Oracle stays gitignored under `benchmark/submissions/`.
+
+## Path migration (historical)
+
+| Old | New |
+| --- | --- |
+| `tasks/` | `benchmark/tasks/` |
+| `outputs/` | `experiments/` |
+| `featureliftbench/` | `harness/featureliftbench/` |
+| `KNOWN_LIMITATIONS.md` | `docs/limitations.md` |
 
 ## Related docs
 
-- [TASK_FORMAT.md](TASK_FORMAT.md) — canonical task directory and metadata spec
-- [DIRECTORY.md](DIRECTORY.md) — full directory map
-- [benchmark_tasks.md](benchmark_tasks.md) — task catalog and CLI examples
-- [limitations.md](limitations.md) — known defects
+- [docs/README.md](README.md) — documentation index
+- [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) — reproducibility contract
+- [TASK_FORMAT.md](TASK_FORMAT.md) — per-task spec
+- [EXPANSION.md](EXPANSION.md) — 50→100 workflow

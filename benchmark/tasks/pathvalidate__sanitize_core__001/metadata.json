@@ -1,0 +1,89 @@
+{
+  "task_id": "pathvalidate__sanitize_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "pathvalidate",
+    "path-sanitization",
+    "functional-discriminator",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "name": "pathvalidate",
+    "url": "https://github.com/thombashi/pathvalidate",
+    "commit": "1ca0a50fce51d5b5bd633457a72abf74dbe3112d",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Filename and filepath sanitization core",
+    "description": "Extract cross-platform filename and filepath sanitization with platform-specific reserved names, validation errors, and sanitize/validate helpers without importing pathvalidate.",
+    "source_entrypoints": [
+      "pathvalidate.sanitize_filename",
+      "pathvalidate.sanitize_filepath",
+      "pathvalidate.validate_filename",
+      "pathvalidate.validate_filepath",
+      "pathvalidate.is_valid_filename",
+      "pathvalidate.is_valid_filepath",
+      "pathvalidate.Platform",
+      "pathvalidate.error.ValidationError",
+      "pathvalidate.error.ErrorReason",
+      "pathvalidate.error.ReservedNameError",
+      "pathvalidate._filename.FileNameSanitizer",
+      "pathvalidate._filepath.FilePathSanitizer"
+    ],
+    "included_behaviors": [
+      "sanitize_filename replaces invalid characters",
+      "sanitize_filepath sanitizes each path segment",
+      "Windows reserved device names (CON, PRN, etc.) rejected or rewritten",
+      "ValidationError exposes ErrorReason and reserved_name metadata",
+      "platform parameter selects Windows/Linux/macOS/universal rules"
+    ],
+    "excluded_behaviors": [
+      "click and argparse CLI integrations",
+      "LTSV label and symbol replacement helpers",
+      "upstream test suite and docs",
+      "original pathvalidate import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Sanitization couples platform detection, reserved-name tables, per-segment filename rules, path normalization, and typed validation error metadata across _base, _common, _filename, and _filepath.",
+    "signals": [
+      "Platform enum drives Windows vs POSIX invalid char sets",
+      "ReservedNameHandler rewrites CON/PRN after regex sanitize",
+      "FilePathSanitizer delegates each segment to FileNameSanitizer",
+      "ValidationError carries ErrorReason codes and reserved_name"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Platform, sanitize_filename, sanitize_filepath, validate_filename, validate_filepath, is_valid_filename, is_valid_filepath, ValidationError, ErrorReason, ReservedNameError, InvalidCharError",
+    "callable": "featurelifted.sanitize_filename",
+    "signature": "sanitize_filename(value, platform='auto', replacement_text='', **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pathvalidate"
+    ],
+    "forbidden_imports": [
+      "pathvalidate"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "task_id": "passlib__hash_context_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "passlib",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "passlib",
+    "url": "https://github.com/glic3rinu/passlib",
+    "commit": "1.7.4-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "CryptContext hash and verify",
+    "description": "Extract passlib CryptContext multi-scheme hashing and verification without importing passlib.",
+    "source_entrypoints": [
+      "passlib.context.CryptContext",
+      "passlib.context.LazyCryptContext",
+      "passlib.registry.get_crypt_handler",
+      "passlib.handlers.pbkdf2"
+    ],
+    "included_behaviors": [
+      "CryptContext hash and verify for pbkdf2_sha256",
+      "scheme options like default_rounds and deprecated schemes",
+      "needs_update and identify handlers"
+    ],
+    "excluded_behaviors": [
+      "apache htpasswd helpers and TOTP",
+      "django extension and host-specific handlers",
+      "original passlib import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "CryptContext couples handler registry, scheme option coercion, and multi-scheme verification policy.",
+    "signals": [
+      "handler registry and scheme deprecation",
+      "context policy for rounds and identify",
+      "pbkdf2_sha256 handler wiring"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import CryptContext",
+    "callable": "featurelifted.CryptContext",
+    "signature": "CryptContext(schemes=None, **kw)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "passlib"
+    ],
+    "forbidden_imports": [
+      "passlib"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

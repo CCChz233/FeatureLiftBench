@@ -56,7 +56,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import BasePlugin, PluginMeta, PluginRegistry",
+    "import": "from featurelifted import BasePlugin, PluginMeta, PluginRegistry; from featurelifted.state import GLOBAL_STATE, reset_state",
     "callable": "featurelifted.PluginRegistry.register",
     "signature": "PluginRegistry.register(plugin: BasePlugin) -> str"
   },

@@ -58,7 +58,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted.routing import Map, Rule, MapAdapter, Subdomain, Submount",
+    "import": "from featurelifted.routing import Map, Rule, MapAdapter, Subdomain, Submount; from featurelifted.routing.exceptions import RequestRedirect",
     "callable": "featurelifted.routing.Map",
     "signature": "Map(rules=None, default_subdomain='', **options)"
   },

@@ -1,0 +1,96 @@
+{
+  "task_id": "dataclasses_json__serde_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "dataclasses-json",
+    "serialization",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling",
+    "framework_coupling"
+  ],
+  "source": {
+    "name": "dataclasses-json",
+    "url": "https://github.com/lidatong/dataclasses-json",
+    "commit": "dc63902eeb5e1c5ce1ea4e078c50e0eb9bc1a541",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Dataclass JSON serde core",
+    "description": "Extract dataclass to/from JSON with field config, letter-case transforms, and exclusion predicates without original dataclasses_json import.",
+    "source_entrypoints": [
+      "dataclasses_json.dataclass_json",
+      "dataclasses_json.DataClassJsonMixin",
+      "dataclasses_json.config",
+      "dataclasses_json.LetterCase",
+      "dataclasses_json.Exclude",
+      "dataclasses_json.global_config",
+      "dataclasses_json.core._asdict",
+      "dataclasses_json.core._decode_dataclass",
+      "dataclasses_json.undefined.Undefined"
+    ],
+    "included_behaviors": [
+      "round-trip dataclass instances through JSON and dict payloads",
+      "apply class-level and field-level letter case transforms",
+      "exclude fields via config predicates and Exclude helpers",
+      "register per-type encoders and decoders via config and global_config",
+      "decode nested dataclass fields recursively",
+      "reject unknown keys when undefined=Undefined.RAISE"
+    ],
+    "excluded_behaviors": [
+      "marshmallow schema generation and mm_field validation",
+      "CatchAll undefined INCLUDE mode and schema dump hooks",
+      "upstream tests, docs, CI, and packaging metadata",
+      "original dataclasses_json import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "dataclasses-json couples dataclass introspection, field metadata merging, letter-case encoding, exclusion predicates, undefined-parameter actions, and recursive decode across api, core, cfg, utils, stringcase, and undefined modules.",
+    "signals": [
+      "FieldOverride merges global, class, and field-level dataclasses_json metadata",
+      "LetterCase transforms must round-trip consistently on encode and decode",
+      "Exclude predicates gate keys during _encode_overrides",
+      "_decode_dataclass recurses into nested dataclass fields with type hints",
+      "Undefined.RAISE wraps init via _handle_undefined_parameters_safe"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import DataClassJsonMixin, LetterCase, Exclude, Undefined, dataclass_json, config, global_config; from featurelifted.undefined import UndefinedParameterError",
+    "callable": "featurelifted.dataclass_json",
+    "signature": "dataclass_json(cls=None, *, letter_case=None, undefined=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "typing-inspect"
+    ],
+    "forbidden_dependencies": [
+      "dataclasses-json",
+      "dataclasses_json",
+      "marshmallow"
+    ],
+    "forbidden_imports": [
+      "dataclasses_json",
+      "dataclasses-json",
+      "marshmallow"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

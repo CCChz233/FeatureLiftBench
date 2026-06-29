@@ -76,7 +76,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import FixtureDef, FixtureRegistry, deduplicate_names, fixture, getfixturemarker, resolve_fixture_closure",
+    "import": "from featurelifted import FixtureDef, FixtureLookupError, FixtureRegistry, deduplicate_names, fixture, getfixturemarker, resolve_fixture_closure",
     "callable": "featurelifted.resolve_fixture_closure",
     "signature": "resolve_fixture_closure(parent_nodeids, initialnames, registry, ignore_args=None) -> tuple[list[str], dict[str, tuple[FixtureDef, ...]]]"
   }

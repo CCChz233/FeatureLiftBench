@@ -1,0 +1,75 @@
+{
+  "task_id": "deepdiff__deep_compare_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "deepdiff",
+    "structural-diff",
+    "hard-first",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "deepdiff",
+    "url": "https://github.com/seperman/deepdiff",
+    "commit": "9.1.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "DeepDiff path and exclude subset",
+    "description": "Extract DeepDiff structural comparison with exclude_paths and parse_path.",
+    "source_entrypoints": [
+      "deepdiff.DeepDiff",
+      "deepdiff.path.parse_path",
+      "deepdiff.path.extract"
+    ],
+    "included_behaviors": [
+      "DeepDiff dict/list value changes",
+      "exclude_paths and include_paths filtering",
+      "parse_path and extract by path expression"
+    ],
+    "excluded_behaviors": [
+      "DeepSearch",
+      "Delta patch",
+      "original deepdiff import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "DeepDiff couples path expression parsing, diff tree model, and recursive comparison.",
+    "signals": [
+      "exclude_paths wildcard matching",
+      "DiffLevel parent stack",
+      "type-specific relationships"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import DeepDiff, parse_path, extract",
+    "callable": "featurelifted.DeepDiff",
+    "signature": "DeepDiff(t1, t2, exclude_paths=None, include_paths=None, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "deepdiff"
+    ],
+    "forbidden_imports": [
+      "deepdiff"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "task_id": "cerberus__schema_validate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "cerberus",
+    "validation",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "cerberus",
+    "url": "https://github.com/pyeve/cerberus",
+    "commit": "f2221c5a901bbf8618efb694ef9364bd0882ac9a",
+    "license": "ISC"
+  },
+  "feature": {
+    "name": "Schema validation core",
+    "description": "Extract Cerberus Validator with nested schema rules, type coercion, and structured error aggregation without original cerberus import.",
+    "source_entrypoints": [
+      "cerberus.Validator",
+      "cerberus.Validator.validate",
+      "cerberus.Validator.normalized",
+      "cerberus.Validator.document",
+      "cerberus.Validator.errors",
+      "cerberus.schema.DefinitionSchema",
+      "cerberus.errors.ValidationError",
+      "cerberus.errors.BasicErrorHandler"
+    ],
+    "included_behaviors": [
+      "validate dict documents against nested schema definitions",
+      "enforce required fields and type rules on nested mappings and lists",
+      "coerce field values during validation and reflect coerced document",
+      "aggregate nested validation failures into structured error trees"
+    ],
+    "excluded_behaviors": [
+      "schema_registry and rules_set_registry named schema indirection",
+      "normalization rename/default pipelines beyond coerce in tests",
+      "benchmarks, upstream tests, docs, and packaging metadata",
+      "original cerberus import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Cerberus couples schema compilation, rule dispatch, nested document walking, coercion side effects, and error-tree rewriting across validator, schema, and errors modules.",
+    "signals": [
+      "DefinitionSchema expands and validates rule graphs before Validator runs",
+      "Validator walks nested mappings/lists with document_path crumbs",
+      "coerce rule mutates document values during validation",
+      "BasicErrorHandler rewrites nested ValidationError trees into v.errors"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Validator, DocumentError, SchemaError",
+    "callable": "featurelifted.Validator",
+    "signature": "Validator(schema=None, allow_unknown=False, require_all=False)(document)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "cerberus"
+    ],
+    "forbidden_imports": [
+      "cerberus"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

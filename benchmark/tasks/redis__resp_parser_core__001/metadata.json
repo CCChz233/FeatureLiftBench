@@ -55,7 +55,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted._parsers import _RESP2Parser, _RESP3Parser, Encoder",
+    "import": "from featurelifted._parsers import _RESP2Parser, _RESP3Parser, Encoder; from featurelifted.exceptions import ResponseError",
     "callable": "featurelifted._parsers._RESP2Parser.read_response",
     "signature": "read_response(disable_decoding=False, timeout=SENTINEL)"
   },

@@ -1,0 +1,79 @@
+{
+  "task_id": "jsonpointer__resolve_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "jsonpointer",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "jsonpointer",
+    "url": "https://github.com/stefankoegl/python-json-pointer",
+    "commit": "5998f951dcc5ace60f67f35afe6778c445401a07",
+    "license": "Modified BSD License"
+  },
+  "feature": {
+    "name": "JSON Pointer resolve and set",
+    "description": "Extract RFC 6901 JSON Pointer parsing, resolve, set, and escape/unescape without importing jsonpointer.",
+    "source_entrypoints": [
+      "jsonpointer.JsonPointer",
+      "jsonpointer.resolve_pointer",
+      "jsonpointer.set_pointer",
+      "jsonpointer.escape",
+      "jsonpointer.unescape"
+    ],
+    "included_behaviors": [
+      "resolve pointers against nested dict/list documents",
+      "set values including array append via '-' token",
+      "escape and unescape ~ and / in token names",
+      "default values for missing paths and invalid escapes"
+    ],
+    "excluded_behaviors": [
+      "jsonpatch operations beyond pointer resolve/set",
+      "upstream tests and docs",
+      "original jsonpointer import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "JSON Pointer couples token unescaping, sequence vs mapping dispatch, EndOfList sentinel handling, and in-place deepcopy mutation paths.",
+    "signals": [
+      "pointer parts split/unescape RFC 6901 tokens",
+      "walk/get_part distinguishes Mapping vs Sequence indexing",
+      "set handles '-' append vs mapping assignment",
+      "invalid ~ escapes validated at parse time"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import EndOfList, JsonPointer, JsonPointerException, resolve_pointer, set_pointer, escape, unescape",
+    "callable": "featurelifted.resolve_pointer",
+    "signature": "resolve_pointer(doc, pointer, default=...)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "jsonpointer"
+    ],
+    "forbidden_imports": [
+      "jsonpointer"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

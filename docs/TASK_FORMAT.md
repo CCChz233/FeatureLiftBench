@@ -1,8 +1,8 @@
 # FeatureLiftBench Task Format
 
-Human-oriented overview: [CONCEPTS.md](CONCEPTS.md). This document is the **canonical specification** for one benchmark task. Machine-readable schema: [`harness/featureliftbench/schemas/task_metadata.schema.json`](../harness/featureliftbench/schemas/task_metadata.schema.json). Directory checks: `featureliftbench validate-task`.
+Human-oriented overview: [CONCEPTS.md](CONCEPTS.md). **Reproducibility contract:** [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md). This document is the **per-task file layout** spec. Machine-readable schema: [`harness/featureliftbench/schemas/task_metadata.schema.json`](../harness/featureliftbench/schemas/task_metadata.schema.json). Directory checks: `featureliftbench validate-task`.
 
-Human design notes (optional but recommended for new hard tasks): [`task_designs/TEMPLATE.md`](task_designs/TEMPLATE.md).
+Human design notes (recommended for all hard tasks): [`task_designs/TEMPLATE.md`](task_designs/TEMPLATE.md). **Selection and replacement policy:** [EXPANSION.md](EXPANSION.md).
 
 ## Task identity
 

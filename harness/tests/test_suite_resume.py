@@ -12,6 +12,8 @@ from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_runner import _archive_previous_run
 from featureliftbench.agent_runner import _read_task_attempt
 from featureliftbench.agent_runner import _task_at_max_attempts
+from featureliftbench.agent_runner import _write_suite_checkpoint
+from featureliftbench.agent_runner import _SuiteCheckpointContext
 from featureliftbench.agent_runner import load_skipped_runs
 from featureliftbench.agent_runner import run_agent_on_path
 from featureliftbench.agent_runner import run_agent_on_suite
@@ -19,8 +21,12 @@ from featureliftbench.agent_runner import run_agent_on_task
 from featureliftbench.suite_utils import load_retained_runs
 from featureliftbench.suite_utils import parse_retry_only_statuses
 from featureliftbench.suite_utils import rebuild_suite_summary
+from featureliftbench.suite_utils import evaluation_payload
 
-import test_agent_runner
+try:
+    from harness.tests import test_agent_runner
+except ImportError:  # pragma: no cover - supports running from harness/tests directly.
+    import test_agent_runner
 
 _make_task = test_agent_runner._make_task
 _write_fake_usage_agent = test_agent_runner._write_fake_usage_agent
@@ -60,6 +66,76 @@ class SuiteResumeTests(unittest.TestCase):
 
             self.assertEqual(list(passed_only), ["task_a"])
             self.assertEqual(sorted(resume_retained), ["task_a"])
+
+    def test_load_retained_runs_falls_back_to_run_json_without_suite_json(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            suite_dir = Path(tmp) / "suite"
+            (suite_dir / "task_a").mkdir(parents=True)
+            (suite_dir / "task_b").mkdir(parents=True)
+            (suite_dir / "task_a" / "run.json").write_text(
+                json.dumps({"task_id": "task_a", "status": "passed"}),
+                encoding="utf-8",
+            )
+            (suite_dir / "task_b" / "run.json").write_text(
+                json.dumps({"task_id": "task_b", "status": "failed"}),
+                encoding="utf-8",
+            )
+
+            resume_retained = load_retained_runs(
+                suite_dir,
+                retain_statuses=frozenset({"passed", "failed"}),
+            )
+
+            self.assertEqual(sorted(resume_retained), ["task_a", "task_b"])
+
+    def test_checkpoint_mid_suite_retains_passed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            suite_dir = Path(tmp) / "suite"
+            (suite_dir / "task_a").mkdir(parents=True)
+            (suite_dir / "task_b").mkdir(parents=True)
+            run_a = {
+                "task_id": "task_a",
+                "status": "passed",
+                "attempt": 1,
+                "agent": {"passed": True, "usage": {"available": False}},
+                "submission": {"exists": True},
+                "evaluation": {"status": "passed", "scores": {"final_score": 1.0}},
+                "run_json": str(suite_dir / "task_a" / "run.json"),
+            }
+            (suite_dir / "task_a" / "run.json").write_text(json.dumps(run_a), encoding="utf-8")
+            config = AgentRunConfig(agent="command", command="echo", timeout_seconds=120)
+            ctx = _SuiteCheckpointContext(
+                output_path=suite_dir,
+                ordered_task_dirs=[suite_dir / "task_a", suite_dir / "task_b"],
+                retained_runs={},
+                config=config,
+                agent_config_summary={},
+                worker_count=1,
+                retry_rate_limit=1,
+                retry_only_statuses=frozenset({"missing_submission", "failed", "not_evaluated"}),
+                extra_agent_passes=0,
+                max_task_attempts=None,
+                eval_docker=False,
+                eval_docker_image="featureliftbench-eval:latest",
+                agent_docker=False,
+                agent_docker_image="featureliftbench-agent:latest",
+                resume_enabled=True,
+                suite_source_dir=suite_dir,
+                skipped_max_attempts=frozenset(),
+                runnable_count=2,
+            )
+            _write_suite_checkpoint(ctx, [run_a])
+
+            suite_payload = json.loads((suite_dir / "suite.json").read_text(encoding="utf-8"))
+            self.assertTrue(suite_payload.get("checkpoint"))
+            self.assertEqual(suite_payload["summary"]["passed"], 1)
+
+            retained = load_retained_runs(
+                suite_dir,
+                retain_statuses=frozenset({"passed", "failed"}),
+            )
+            self.assertEqual(list(retained), ["task_a"])
+            self.assertEqual(retained["task_a"]["status"], "passed")
 
     def test_load_skipped_runs_still_reads_only_passed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -131,6 +207,55 @@ class SuiteResumeTests(unittest.TestCase):
         )
 
         self.assertEqual(summary["recovered_submissions"], 1)
+
+    def test_rebuild_suite_summary_counts_eval_resource_categories(self) -> None:
+        summary = rebuild_suite_summary(
+            [
+                {
+                    "task_id": "a",
+                    "status": "failed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True},
+                    "evaluation": {"resource_limited": True},
+                },
+                {
+                    "task_id": "b",
+                    "status": "failed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True},
+                    "evaluation": {"log_limit_exceeded": True},
+                },
+                {
+                    "task_id": "c",
+                    "status": "failed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True},
+                    "evaluation": {"docker_sandbox_error": True},
+                },
+            ]
+        )
+
+        self.assertEqual(summary["resource_limited_failures"], 1)
+        self.assertEqual(summary["log_limit_failures"], 1)
+        self.assertEqual(summary["docker_sandbox_failures"], 1)
+
+    def test_evaluation_payload_lifts_eval_sandbox_flags(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            payload = evaluation_payload(
+                {
+                    "status": "failed",
+                    "scores": {},
+                    "public_tests": {"resource_limited": True},
+                    "hidden_tests": {"log_limit_exceeded": True},
+                    "sandbox": {"backend": "docker", "docker_sandbox_error": True},
+                },
+                Path(tmp),
+            )
+
+        self.assertTrue(payload["resource_limited"])
+        self.assertTrue(payload["log_limit_exceeded"])
+        self.assertTrue(payload["docker_sandbox_error"])
+        self.assertEqual(payload["sandbox_backend"], "docker")
 
     def test_archive_previous_run_creates_attempt_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

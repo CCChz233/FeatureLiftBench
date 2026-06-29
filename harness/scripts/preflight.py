@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -17,6 +19,9 @@ from featureliftbench.agent_config import load_agent_run_config  # noqa: E402
 from featureliftbench.agent_adapters import AgentRunConfig  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG_EXAMPLE  # noqa: E402
+
+DEFAULT_AGENT_IMAGE = "featureliftbench-agent:latest"
+DEFAULT_EVAL_IMAGE = "featureliftbench-eval:latest"
 
 
 def _fail(message: str) -> int:
@@ -107,6 +112,104 @@ def _patch_agent_bin(mini_bin: str) -> None:
     path.write_text(patched, encoding="utf-8")
 
 
+def _docker_image_exists(image: str) -> bool:
+    completed = subprocess.run(
+        ["docker", "image", "inspect", image],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
+def _list_stale_flb_containers() -> list[str]:
+    completed = subprocess.run(
+        [
+            "docker",
+            "ps",
+            "-a",
+            "--filter",
+            "name=flb-",
+            "--format",
+            "{{.Names}}",
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        return []
+    return [line.strip() for line in completed.stdout.splitlines() if line.strip()]
+
+
+def _check_run_lock(output_dir: Path) -> str | None:
+    lock_dir = output_dir / ".run.lock"
+    if not lock_dir.is_dir():
+        return None
+    pid_path = lock_dir / "pid"
+    holder = pid_path.read_text(encoding="utf-8").strip() if pid_path.is_file() else ""
+    message = f"another suite run holds {lock_dir}"
+    if holder:
+        message += f" (pid {holder})"
+    message += f"; stop that run or remove stale lock: rmdir {lock_dir}"
+    return message
+
+
+def _check_docker_suite(*, output_dir: Path | None) -> int:
+    if shutil.which("docker") is None:
+        return _fail("docker CLI not found on PATH")
+
+    completed = subprocess.run(
+        ["docker", "info"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        detail = (completed.stderr or completed.stdout or "").strip()
+        return _fail(f"docker info failed: {detail or 'unknown error'}")
+
+    for image in (DEFAULT_AGENT_IMAGE, DEFAULT_EVAL_IMAGE):
+        if not _docker_image_exists(image):
+            return _fail(
+                f"Docker image {image} not found; build with "
+                f"docker/build_agent_image.sh / docker/build_eval_image.sh"
+            )
+
+    live_trajectory = os.environ.get("FEATURELIFTBENCH_LIVE_TRAJECTORY", "1").strip().lower()
+    if live_trajectory in {"0", "false", "no", "off"}:
+        print(
+            "preflight: warning FEATURELIFTBENCH_LIVE_TRAJECTORY=0 — "
+            "suite progress may show 0 tokens",
+            file=sys.stderr,
+        )
+
+    if output_dir is not None:
+        output_path = output_dir.resolve()
+        lock_message = _check_run_lock(output_path)
+        if lock_message:
+            return _fail(lock_message)
+
+    stale = _list_stale_flb_containers()
+    if stale:
+        names = " ".join(stale[:10])
+        suffix = f" (+{len(stale) - 10} more)" if len(stale) > 10 else ""
+        print(
+            f"preflight: warning stale flb-* containers: {names}{suffix}",
+            file=sys.stderr,
+        )
+        print(
+            "preflight: cleanup example: docker rm -f $(docker ps -aq --filter name=flb-)",
+            file=sys.stderr,
+        )
+
+    print(
+        f"preflight: docker ok images={DEFAULT_AGENT_IMAGE},{DEFAULT_EVAL_IMAGE}",
+        file=sys.stderr,
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="FeatureLiftBench run preflight checks")
     parser.add_argument(
@@ -123,6 +226,16 @@ def main(argv: list[str] | None = None) -> int:
         "--mini-bin",
         default="",
         help="expected mini executable path (default: shutil.which('mini'))",
+    )
+    parser.add_argument(
+        "--docker-suite",
+        action="store_true",
+        help="validate Docker daemon and agent/eval images for long suite runs",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="",
+        help="suite output directory (used with --docker-suite for lock checks)",
     )
     args = parser.parse_args(argv)
 
@@ -171,6 +284,12 @@ def main(argv: list[str] | None = None) -> int:
     agent_bin = summary.get("agent_bin") or mini_bin
     if not Path(agent_bin).is_file() and shutil.which(agent_bin) is None:
         return _fail(f"agent_bin not executable: {agent_bin}")
+
+    if args.docker_suite:
+        output_dir = Path(args.output_dir).resolve() if args.output_dir else None
+        docker_status = _check_docker_suite(output_dir=output_dir)
+        if docker_status != 0:
+            return docker_status
 
     print(
         "preflight: ok "

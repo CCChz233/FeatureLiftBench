@@ -1,0 +1,85 @@
+{
+  "task_id": "cachetools__cache_eviction_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "cachetools",
+    "data-structures",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "cachetools",
+    "url": "https://github.com/tkem/cachetools",
+    "commit": "48284d73d0a8834c9c50f8d41bb99e6f93b2dfed",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Cache eviction core",
+    "description": "Extract LRUCache, TTLCache, and LFUCache eviction policies, TTL expiry with injectable timers, and cached decorator key helpers without importing cachetools.",
+    "source_entrypoints": [
+      "cachetools.LRUCache",
+      "cachetools.TTLCache",
+      "cachetools.LFUCache",
+      "cachetools.cached",
+      "cachetools.keys.hashkey",
+      "cachetools.keys.typedkey"
+    ],
+    "included_behaviors": [
+      "LRU eviction order with touch-on-get and maxsize enforcement",
+      "LFU frequency buckets and least-frequent eviction",
+      "TTL expiry with injectable timer and doubly-linked expiry list",
+      "cached decorator memoization with optional cache_info hits/misses",
+      "hashkey and typedkey cache key functions for decorator kwargs and types"
+    ],
+    "excluded_behaviors": [
+      "async caches, cachedmethod, func.lru_cache wrappers, and TLRUCache",
+      "upstream benchmarks, docs, tests, and packaging metadata",
+      "original cachetools import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "global_state_registry_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Cache classes couple base size accounting, per-policy auxiliary structures (OrderedDict touch order, LFU frequency links, TTL expiry ring), injectable timer state, and decorator key hashing.",
+    "signals": [
+      "LRU __touch moves OrderedDict keys on every cache hit",
+      "LFU _Link nodes bucket keys by frequency with relinking on access",
+      "TTLCache expire() walks doubly-linked list against monotonic timer",
+      "cached/_cached.py branches on lock, condition, and info wrappers",
+      "keys._HashedTuple caches hash for repeated decorator lookups"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import LRUCache, TTLCache, LFUCache, cached, hashkey, typedkey",
+    "callable": "featurelifted.LRUCache",
+    "signature": "LRUCache(maxsize, getsizeof=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "cachetools"
+    ],
+    "forbidden_imports": [
+      "cachetools"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

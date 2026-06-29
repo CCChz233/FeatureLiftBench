@@ -1,0 +1,146 @@
+[project]
+name = "bidict"
+version = "0.23.2.dev0"
+description = "The bidirectional mapping library for Python."
+authors = [{ name = "Joshua Bronson", email = "jabronson@gmail.com" }]
+license = "MPL-2.0"
+license-files = ["LICENSE"]
+dependencies = [
+  # bidict/_typing.py's `typing`/`typing_extensions` imports branch on python<3.12
+  "typing_extensions>=4.0; python_version<'3.12'",
+]
+requires-python = ">=3.11"
+readme = "README.rst"
+keywords = [
+  "bidict",
+  "bimap",
+  "bidirectional",
+  "dict",
+  "dictionary",
+  "mapping",
+  "collections",
+]
+classifiers = [
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Typing :: Typed",
+]
+
+[project.urls]
+# https://github.com/pypi/warehouse/blob/main/warehouse/templates/packaging/detail.html#L20-L62
+Changelog = "https://bidict.readthedocs.io/changelog.html"
+Documentation = "https://bidict.readthedocs.io"
+Sponsor = "https://bidict.readthedocs.io/#sponsoring"
+Repository = "https://github.com/jab/bidict"
+
+[dependency-groups]
+test = [
+  "coverage",
+  "hypothesis",
+  "mypy; implementation_name != 'pypy'",  # https://github.com/python/mypy/issues/20329
+  "pytest",
+  "pytest-benchmark",
+  "pytest-sphinx",
+  "pytest-xdist",
+  "sortedcollections",
+  "sortedcontainers",
+  "typing_extensions",
+]
+dev = [
+  "pytest-clarity",
+  "pytest-icdiff",
+  "pytest-sugar",
+  "tox",
+  "tox-uv",
+]
+docs = [
+  "sphinx",
+  "sphinx-copybutton",
+  "furo",
+]
+
+[tool.uv]
+default-groups = ["test", "dev", "docs"]
+
+[tool.uv.build-backend]
+module-root = ""
+source-exclude = [".mypy_cache"]
+
+[build-system]
+requires = ["uv_build>=0.7.13,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.mypy]
+strict = true
+show_error_codes = true
+show_error_context = true
+show_column_numbers = true
+pretty = true
+
+[tool.ruff]
+preview = true
+line-length = 121
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules/
+extend-select = [
+  "A",
+  "ARG",
+  "B",
+  "BLE",
+  "E",
+  "F",
+  "FA",
+  "FLY",
+  "FURB",
+  "G",
+  "I",
+  "ICN",
+  "PERF",
+  "PGH",
+  "PIE",
+  "PT",
+  "PTH",
+  "RET",
+  "RSE",
+  "RUF",
+  "SLOT",
+  "T20",
+  "T100",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  "PLC0414", # Allow explicit re-exports (import X as X)
+  "PYI025",  # Prefer `Set` over `AbstractSet` for readability
+  "RUF067",  # Allow __init__.py to set __module__ on re-exported classes
+  "SIM118",  # https://github.com/astral-sh/ruff/issues/4481
+]
+typing-modules = ["bidict._typing"]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+preview = true
+quote-style = "single"
+
+[tool.pytest]
+addopts = [
+  "-vv",
+  "--doctest-modules",
+  "--doctest-glob=docs/*.rst",
+  "--durations=5",
+  "--hypothesis-profile=less-examples",
+  "--numprocesses=auto",
+]
+doctest_optionflags = ["ELLIPSIS"]
+strict = true
+testpaths = ["bidict", "tests", "docs"]

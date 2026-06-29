@@ -2,7 +2,7 @@
 
 本文档记录 **pilot 阶段已确认** 的工程缺口、评测局限和实验口径问题。FeatureLiftBench 的长期目标是评估 Agent 能否从 vibe/legacy/entangled 仓库中完成功能级解耦；与 [README.md](README.md) 中的研究性「待讨论问题」不同，这里侧重当前实现里 **已经观察到** 的限制。
 
-最后更新：2026-06-27（新增 pytest OOM 事故记录与内存隔离待办）
+最后更新：2026-06-29（长跑稳定性 harness + [SERVER_DEPLOY.md](SERVER_DEPLOY.md)）
 
 ## 1. Agent Harness
 
@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | Suite 并行 API 限流 | `--retry-rate-limit N` 遇 429 等 ~65s 后重试；无全局 TPM 节流 | SiliconFlow 等 API 建议 `NUM_WORKERS=1`、`RETRY_RATE_LIMIT=5`；勿多模型共 key 并行 |
 | 进度与 token 显示 | Rich Live 轮询 `stdout.log` + `trajectory.json`；默认经 `mini_live_runner` **每步写 trajectory** | mini stdout 仅显示 `$0.00` 不显示 token；旧 run 或未重启 harness 可能仍 `0 toks` |
-| 断点续跑 | `--resume` 同目录续跑；保留非 retry 状态题，重跑 `missing_submission` / `failed` 等 | 无 agent 中途 checkpoint；`--skip-completed` 仍可用 |
+| 断点续跑 | `--resume` 同目录续跑；保留非 retry 状态题，重跑 `missing_submission` / `failed` 等 | 每题增量写 `suite.json` checkpoint；无 `suite.json` 时扫各题 `run.json` fallback |
 | misplaced submission | `_recover_misplaced_submission` 从 `workspace/featurelifted/` 等路径回收 | 2026-06-26 前旧 run 无 `recovered_submissions` 字段 |
 | 用量 / token | `run.json` / `suite.json` 从 `trajectory.json` messages 聚合 prompt/completion | SiliconFlow 上 cost 常为 0（`MSWEA_COST_TRACKING=ignore_errors`） |
 | 不记录 dollar cost | litellm 对多数 API 模型无定价表 | 只记录 token、API call、step；API 费用需按平台单价自行估算 |
@@ -27,7 +27,7 @@
 | venv 复用宿主机 site-packages | `venv --system-site-packages`；**pytest 已改为显式安装**（`pytest==7.4.4`） | 任务依赖仍可能走 system-site-packages；Docker eval 镜像更干净 |
 | 临时 venv 路径 | 每次 eval 在 `/tmp/featureliftbench-eval-*` 建 venv | 正常但不可复现调试同一 venv；日志里只有路径快照 |
 | 历史 suite 可能含 eval flake | 修复前并行 eval 偶发 `No module named pytest` | 用 `reeval_suite.py` 重算；`analyze_benchmark_suite.py` 标 `eval_flake` |
-| pytest 无内存沙箱 | Agent 自测与最终 eval 都会执行 untrusted submission；当前只有限时，没有 per-process memory/cgroup 上限 | 2026-06-27 观察到 Linux OOM killer 杀死 `pytest`，单进程 RSS 可达数百 GB；需给 agent/eval 的 pytest 加内存上限 |
+| pytest 资源边界 | 正式 eval 用 Docker memory/cpu/pids/log/network/read-only mount；eval 外层 wall-clock 超时默认 600s（`FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS`） | 完整规格见 [SETUP.md](SETUP.md) §4；论文结果应使用 Docker eval 口径 |
 | 无代码相似度 / 来源约束 | 只测行为 + LOC 比例 | Agent 可重写窄实现或通过大量无关代码投机（靠 hidden tests 部分遏制） |
 | Oracle / Copy-All 无统一 CLI | `featureliftbench/baselines/` 未实现 | baseline 靠手工 submission + `eval`，`submissions/` 目录基本空置 |
 
@@ -35,9 +35,9 @@
 
 | 缺陷 | 现状 | 影响 |
 | --- | --- | --- |
-| 任务规模 | 主榜 **50 hard** + smoke **3**（`benchmark/sanity/`） | 规模已扩至目标；单题仍影响 suite 比例 2% |
-| Functional 校准未达标 | Flash-50 **41/50 (82%)** functional pass | 目标 ~20–30%；copy-all 路径 + hidden 偏软导致 functional 偏高 |
-| Entangled 覆盖 | 含 sqlparse/coverage/jinja2/pytest 多题同库及策展 `vibe_app` | 缠绕类型仍待结合 Agent 失败模式继续校准 |
+| 任务规模 | 主榜 **100 hard**（batch-0 五十题冻结 + batch-1 新增五十题）+ smoke **3** | batch-1 经 staging 新增，见 [EXPANSION.md](EXPANSION.md) |
+| Functional 与解耦判别 | Flash-50 **41/50 (82%)** functional pass | 难度可再评估；判别靠 **final_score** + high/compact extraction 分层 |
+| Entangled 覆盖 | 43 OSS + 7 策展 `vibe_app` | 论文应分层报告；vibe_app 为 legacy 应力非真实 PyPI 库 |
 | 缠绕类型标注未校准 | metadata 已有 `entanglement.level/types/signals`，但当前标注主要来自人工静态判断 | 后续需要结合 Manual Oracle Closure、Agent 失败模式和 hidden tests 覆盖来校准 |
 | Hard 任务区分度不足（解耦维度） | Flash-50：9/41 passed 题 extraction≥0.8；marshmallow/typer/markdown_it 等仍 copy-heavy pass | functional pass 高不等于解耦强；须看 `final_score` 与 high-extraction pass 占比 |
 | 难度标签未充分校验 | `difficulty` 在 metadata 中为人工标注 | 与真实 oracle closure 可能有偏差 |
@@ -91,45 +91,19 @@
 
 ### 4.6 pytest OOM 事故（2026-06-27）
 
-**现象**：服务器内核日志显示多次：
+**Canonical doc：** [SETUP.md](SETUP.md) §4（威胁模型、默认配置、结果解读、实验 checklist）。
 
-```text
-Out of memory: Killed process ... (pytest)
-```
+**现象**：服务器内核日志多次 `Out of memory: Killed process ... (pytest)`；单进程 RSS 可达数百 GB。MiniMax run1 等 suite 出现半截 task（无 `run.json`），与系统级 OOM 一致。
 
-被杀进程名是 `pytest`，不是 vLLM 服务。部分 `pytest` 的 RSS 达数十 GB 到数百 GB，说明内存峰值来自测试执行阶段。
+**当前缓解**：正式实验使用 Docker 边界：`FEATURELIFTBENCH_EVAL_DOCKER=1` 限制 submission/pytest 的内存、CPU、进程数、日志和网络；`FEATURELIFTBENCH_AGENT_DOCKER=1` 限制 agent 可见/可写的宿主文件范围。`run.sh` 仍保留本地 `EVAL_MEMORY_MB` / `AGENT_MEMORY_MB` 作为非 Docker 调试兜底。eval 结果字段包含 `resource_limited`、`log_limit_exceeded`、`docker_sandbox_error`。
 
-**具体行为链路**：
-
-1. Agent 生成不可信的 `submission/featurelifted/`。
-2. Agent 自测或 harness eval 启动 `pytest public_tests/` / `pytest hidden_tests/`。
-3. `pytest` import 并执行 submission 代码。
-4. 某些错误实现触发无限递归、无限循环追加、parser 不消费输入、指数级数据结构膨胀、错误目录遍历或反复加载数据。
-5. 因当前只有 timeout、没有内存上限，单个 `pytest` 可以持续申请内存，最终由 Linux OOM killer 杀掉。
-
-**证据与限制**：
-
-- OOM 截图只记录 pid 与进程名 `pytest`，没有 cwd/argv，无法 100% 反推出唯一 task。
-- `eval/result.json` 中未必能看到 `returncode=-9`：若系统 OOM 在 agent 自测阶段或 harness 来不及写结果时发生，结果文件会缺失或只留下不完整 task 目录。
-- MiniMax run1 在 `vibe_app__csv_transform_core__001` 停在无 `run.json` / 无 `trajectory.json` 的状态，和系统级中断特征一致，但不能单独证明该题就是唯一触发点。
-
-**短期规避**：
-
-- 正式实验先用 `NUM_WORKERS=1`，避免多个 pytest 同时失控。
-- 不要同时跑多个 suite 或多个本地 vLLM 模型。
-- 临时用 shell `ulimit -v` 包住 `./run.sh`，让 agent 自测继承内存上限。
-
-**待修方向**：
-
-- 在 harness 中增加 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB`，对 mini 子进程与 evaluator pytest 分别设置内存上限。
-- 最终 eval 推荐 Docker/cgroup：`--memory` / `--memory-swap` 限制 untrusted submission。
-- 将内存超限归档为明确状态（如 `resource_limit_exceeded`），避免被误判为普通 test fail 或 missing submission。
+**仍待办**：跑完整主榜 Docker oracle 验收；分析脚本/论文表格中把 resource/log/sandbox failure 与普通 functional failure 分开报告。
 
 ## 5. 仓库与文档
 
 | 缺陷 | 现状 |
 | --- | --- |
-| 无 Docker / CI 一键复现 | 已有 `docker/Dockerfile.eval` + `.github/workflows/eval-oracles.yml`；Agent 仍本机跑 | 官方 baseline eval 推荐 Docker 或 pinned local evaluator |
+| 无 Docker / CI 一键复现 | 已有 `docker/Dockerfile.eval`、`docker/Dockerfile.agent`、`.github/workflows/eval-oracles.yml` | 官方 baseline eval 推荐 Docker；agent Docker 用于长跑/共享机器/外部 agent |
 | License / 引用占位 | README「Coming soon」 |
 | 设计文档仍很轻 | 已建立 `docs/task_designs/` 并完成第一条 `sqlparse` hard-plus 设计；更完整的方法论和任务构造规范仍分散在 README / TODO / 本文 |
 | 大量 `experiments/` 与 `.pytest_cache` 在仓库内 | 体积大；experiments 为 gitignore 的本地 run |
@@ -142,14 +116,15 @@ Out of memory: Killed process ... (pytest)
 
 ## 7. 建议的修复优先级（非承诺）
 
-当前重心：**把 50 hard 主榜做扎实**（见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)）。本地 vLLM 与 SiliconFlow API 实验汇总见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
+当前重心：**batch-0 五十题已闭环**；**batch-1 +50** 进行中（见 [EXPANSION.md](EXPANSION.md)）。实验汇总见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
 
-1. **P0（benchmark spec）**：补 5 题 `metadata.output.import`；全题 oracle `eval` 回归。
-2. **P1（agent 指令）**：`TASK.md` 工作流 + forbidden import / hidden 提示。
-3. **P2（safety）**：给 agent 自测与 evaluator pytest 增加内存沙箱（`AGENT_MEMORY_MB` / `EVAL_MEMORY_MB` 或 Docker/cgroup），防止 untrusted submission OOM 宿主机。
-4. **P3（harness）**：全局 TPM 节流；`analyze_benchmark_suite` 跨 run 对比。（429 重试见 `RETRY_RATE_LIMIT`；续跑见 `--resume` / `EXTRA_AGENT_PASSES`）
-5. **P4（infra）**：evaluator 离线 wheel；baselines CLI；Agent 容器化（eval 容器已提供）
-6. **暂缓**：网络隔离；代码相似度约束。（扩题至 50 hard 已完成）
+1. **P0（official run）**：用 agent Docker + eval Docker 跑 Flash / Pro 完整主榜，保存可复现产物。
+2. **P0（official eval）**：Docker oracle 全量验收，确认 eval image 依赖闭包和资源边界。
+3. **P0（task gate）**：`audit_output_imports.py --fail-on-gap` 作为 staging 和 promote 硬门，防止 batch-1 重复早期 L1 缺口。
+4. **P1（扩题）**：按 [EXPANSION.md](EXPANSION.md) 从 starter idea → shortlist → staging pilot → batch-1 **+50**；batch-0 不修改。
+5. **P1（experiments）**：多模型主榜 run 继续；分析时把 OOM / resource / log / sandbox failure 与模型功能失败分开。
+6. **P2（harness）**：全局 TPM 节流；`analyze_benchmark_suite` 跨 run 对比；baselines CLI；evaluator 离线 wheel。
+7. **暂缓**：公开 hostile sandbox、代码相似度约束、Go v2 扩题、替换 batch-0 弱题。
 
 ## 8. 相关文件
 

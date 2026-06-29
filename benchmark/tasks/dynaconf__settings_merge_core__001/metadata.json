@@ -1,0 +1,80 @@
+{
+  "task_id": "dynaconf__settings_merge_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "dynaconf",
+    "hard-first",
+    "functional-discriminator",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "name": "dynaconf",
+    "url": "https://github.com/dynaconf/dynaconf",
+    "commit": "3.3.1-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Layered settings merge",
+    "description": "Extract Dynaconf object_merge and LazySettings layered TOML/env merge without importing dynaconf.",
+    "source_entrypoints": [
+      "dynaconf.utils.object_merge",
+      "dynaconf.Dynaconf",
+      "dynaconf.base.LazySettings",
+      "dynaconf.loaders.settings_loader",
+      "dynaconf.loaders.env_loader"
+    ],
+    "included_behaviors": [
+      "recursive object_merge with list_merge shallow/deep/merge modes",
+      "Dynaconf loads layered TOML settings files with environment sections",
+      "envvar_prefix overrides nested keys with precedence over file values",
+      "merge_enabled combines multiple settings files"
+    ],
+    "excluded_behaviors": [
+      "Flask/Django extensions and CLI",
+      "vault/redis external loaders",
+      "typed settings subsystem and validators beyond merge",
+      "original dynaconf import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling",
+      "framework_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Settings merge couples nested dict trees, list_merge policies, TOML loaders, and env override precedence.",
+    "signals": [
+      "object_merge list_merge shallow/deep/full_path semantics",
+      "Dynaconf layered environments and envvar_prefix",
+      "settings_loader merges multiple TOML files"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Dynaconf, object_merge; from featurelifted.utils import object_merge as merge_util",
+    "callable": "featurelifted.utils.object_merge",
+    "signature": "object_merge(old, new, unique=False, full_path=None, list_merge='merge')"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "dynaconf"
+    ],
+    "forbidden_imports": [
+      "dynaconf"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

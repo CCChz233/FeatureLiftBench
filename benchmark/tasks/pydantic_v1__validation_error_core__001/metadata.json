@@ -1,0 +1,87 @@
+{
+  "task_id": "pydantic_v1__validation_error_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "validation",
+    "hard-first",
+    "functional-discriminator",
+    "framework_coupling"
+  ],
+  "source": {
+    "name": "pydantic",
+    "url": "https://github.com/pydantic/pydantic",
+    "commit": "5ebcdc13b83fba5da34ad9b0f008f7b4faf89396",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "BaseModel validation and structured ValidationError core",
+    "description": "Extract Pydantic v1 BaseModel field parsing, validator/root_validator hooks, model Config, and ValidationError error trees without JSON Schema, networks, or settings machinery.",
+    "source_entrypoints": [
+      "pydantic.BaseModel",
+      "pydantic.ValidationError",
+      "pydantic.validator",
+      "pydantic.root_validator",
+      "pydantic.Field",
+      "pydantic.config.Extra",
+      "pydantic.error_wrappers.ValidationError.errors"
+    ],
+    "included_behaviors": [
+      "declare BaseModel subclasses and parse dict input",
+      "field validators with pre/each_item semantics",
+      "root_validator whole-model checks",
+      "Config.extra forbid for unknown keys",
+      "ValidationError.errors() with loc/type/msg for nested models"
+    ],
+    "excluded_behaviors": [
+      "JSON Schema generation and schema_json",
+      "network/email/DSN types and BaseSettings",
+      "dataclasses bridge, validate_arguments, mypy plugin",
+      "original pydantic package import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "framework_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Model validation couples metaclass field setup, validator registries, config inheritance, nested model graphs, and ValidationError flattening.",
+    "signals": [
+      "ModelMetaclass builds fields and validator groups at class creation",
+      "nested BaseModel errors require loc prefix merging",
+      "root_validator error locations differ from field validators",
+      "Config.extra changes validation behavior"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import BaseModel, Field, ValidationError, validator, root_validator, Extra",
+    "callable": "featurelifted.BaseModel.parse_obj",
+    "signature": "BaseModel.parse_obj(obj)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "typing_extensions"
+    ],
+    "forbidden_dependencies": [
+      "pydantic"
+    ],
+    "forbidden_imports": [
+      "pydantic"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

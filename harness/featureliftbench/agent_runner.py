@@ -10,6 +10,7 @@ import time
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
+from dataclasses import dataclass
 from datetime import UTC
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +20,10 @@ from .active_agent_processes import terminate_active_agent_processes
 from .agent_adapters import AgentRunConfig
 from .agent_adapters import AgentRunContext
 from .agent_adapters import get_agent_adapter
+from .agent_docker import DEFAULT_AGENT_IMAGE
+from .agent_docker import run_agent_in_docker
+from .docker_eval import DEFAULT_EVAL_IMAGE
+from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
 from .paths import resolve_task_input
@@ -61,6 +66,28 @@ RATE_LIMIT_PATTERNS = tuple(
 RATE_LIMIT_RETRY_WAIT_SECONDS = 65.0
 
 
+@dataclass(frozen=True)
+class _SuiteCheckpointContext:
+    output_path: Path
+    ordered_task_dirs: list[Path]
+    retained_runs: dict[str, dict[str, Any]]
+    config: AgentRunConfig
+    agent_config_summary: dict[str, Any] | None
+    worker_count: int
+    retry_rate_limit: int
+    retry_only_statuses: frozenset[str]
+    extra_agent_passes: int
+    max_task_attempts: int | None
+    eval_docker: bool
+    eval_docker_image: str
+    agent_docker: bool
+    agent_docker_image: str
+    resume_enabled: bool
+    suite_source_dir: Path | None
+    skipped_max_attempts: frozenset[str]
+    runnable_count: int
+
+
 def run_agent_on_path(
     input_path: str | Path,
     output_dir: str | Path,
@@ -77,6 +104,10 @@ def run_agent_on_path(
     retry_only_statuses: frozenset[str] | None = None,
     extra_agent_passes: int = 0,
     max_task_attempts: int | None = None,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     """Run an agent on one task directory or every task under a dataset root."""
 
@@ -89,6 +120,10 @@ def run_agent_on_path(
             output_path,
             config,
             agent_config_summary=agent_config_summary,
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
     return run_agent_on_suite(
         task_dirs,
@@ -104,6 +139,10 @@ def run_agent_on_path(
         retry_only_statuses=retry_only_statuses or DEFAULT_RETRY_ONLY_STATUSES,
         extra_agent_passes=extra_agent_passes,
         max_task_attempts=max_task_attempts,
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
     )
 
 
@@ -121,6 +160,10 @@ def run_agent_on_suite(
     retry_only_statuses: frozenset[str] = DEFAULT_RETRY_ONLY_STATUSES,
     extra_agent_passes: int = 0,
     max_task_attempts: int | None = None,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     """Run an agent on multiple tasks and write a suite summary."""
 
@@ -158,6 +201,27 @@ def run_agent_on_suite(
         if task_dir.name not in retained_runs and task_dir.name not in skipped_max_attempts
     ]
 
+    checkpoint_ctx = _SuiteCheckpointContext(
+        output_path=output_path,
+        ordered_task_dirs=task_dirs,
+        retained_runs=retained_runs,
+        config=config,
+        agent_config_summary=agent_config_summary,
+        worker_count=worker_count,
+        retry_rate_limit=max(1, int(retry_rate_limit)),
+        retry_only_statuses=retry_only_statuses,
+        extra_agent_passes=extra_passes,
+        max_task_attempts=max_task_attempts,
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
+        resume_enabled=use_resume_retain or skip_completed_dir is not None,
+        suite_source_dir=suite_source_dir,
+        skipped_max_attempts=frozenset(skipped_max_attempts),
+        runnable_count=len(runnable_dirs),
+    )
+
     runs = _run_suite_tasks(
         task_dirs=runnable_dirs,
         output_path=output_path,
@@ -166,6 +230,11 @@ def run_agent_on_suite(
         num_workers=worker_count,
         progress=progress,
         retry_rate_limit=max(1, int(retry_rate_limit)),
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
+        checkpoint_ctx=checkpoint_ctx,
     )
 
     if retained_runs:
@@ -197,6 +266,10 @@ def run_agent_on_suite(
             num_workers=worker_count,
             progress=progress,
             retry_rate_limit=max(1, int(retry_rate_limit)),
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
         runs = _merge_suite_runs(task_dirs, fresh_runs, retained)
         snapshot_path = output_path / f"suite.pass{pass_index + 1}.json"
@@ -211,6 +284,8 @@ def run_agent_on_suite(
             retry_only_statuses=retry_only_statuses,
             extra_agent_passes=extra_passes,
             pass_index=pass_index + 1,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
 
     summary = rebuild_suite_summary(runs)
@@ -222,6 +297,10 @@ def run_agent_on_suite(
         "agent_config": agent_config_summary or {},
         "output_dir": str(output_path),
         "num_workers": worker_count,
+        "agent_backend": "docker" if agent_docker else "local",
+        "agent_docker_image": agent_docker_image if agent_docker else "",
+        "eval_backend": "docker" if eval_docker else "local",
+        "eval_docker_image": eval_docker_image if eval_docker else "",
         "retry_rate_limit": max(1, int(retry_rate_limit)),
         "retry_only_statuses": sorted(retry_only_statuses),
         "extra_agent_passes": extra_passes,
@@ -250,6 +329,11 @@ def run_agent_on_task(
     output_dir: str | Path,
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None = None,
+    *,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     """Run an agent on a single task, collect its submission, and evaluate it."""
 
@@ -280,6 +364,8 @@ def run_agent_on_task(
     eval_result = None
     recovery_info: dict[str, Any] | None = None
     workspace_submission_dir = workspace_dir / "submission"
+    stdout_log = agent_output_dir / "stdout.log"
+    stderr_log = agent_output_dir / "stderr.log"
 
     if validation.valid:
         task_file = prepare_agent_workspace(task_path, workspace_dir, metadata)
@@ -293,16 +379,23 @@ def run_agent_on_task(
             agent_output_dir=agent_output_dir,
             task_text=task_file.read_text(encoding="utf-8"),
         )
-        adapter = get_agent_adapter(config.agent)
-        stdout_log = agent_output_dir / "stdout.log"
-        stderr_log = agent_output_dir / "stderr.log"
         try:
-            agent_result = adapter.run(
-                context,
-                config,
-                stdout_log=stdout_log,
-                stderr_log=stderr_log,
-            )
+            if agent_docker:
+                agent_result = run_agent_in_docker(
+                    context,
+                    config,
+                    image=agent_docker_image,
+                    stdout_log=stdout_log,
+                    stderr_log=stderr_log,
+                )
+            else:
+                adapter = get_agent_adapter(config.agent)
+                agent_result = adapter.run(
+                    context,
+                    config,
+                    stdout_log=stdout_log,
+                    stderr_log=stderr_log,
+                )
         except ValueError as exc:
             errors.append(str(exc))
         if agent_result is not None and not stdout_log.is_file():
@@ -310,14 +403,26 @@ def run_agent_on_task(
 
         if _has_submission_files(workspace_submission_dir):
             _copy_submission(workspace_submission_dir, collected_submission_dir)
-            eval_result = evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
+            eval_result = _evaluate_collected_submission(
+                task_path=task_path,
+                collected_submission_dir=collected_submission_dir,
+                eval_output_dir=eval_output_dir,
+                eval_docker=eval_docker,
+                eval_docker_image=eval_docker_image,
+            )
         else:
             recovery_info = _recover_misplaced_submission(workspace_dir, workspace_submission_dir)
             if recovery_info is not None and recovery_info.get("message"):
                 errors.append(str(recovery_info["message"]))
             if _has_submission_files(workspace_submission_dir):
                 _copy_submission(workspace_submission_dir, collected_submission_dir)
-                eval_result = evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
+                eval_result = _evaluate_collected_submission(
+                    task_path=task_path,
+                    collected_submission_dir=collected_submission_dir,
+                    eval_output_dir=eval_output_dir,
+                    eval_docker=eval_docker,
+                    eval_docker_image=eval_docker_image,
+                )
             else:
                 errors.append("agent did not create any files under workspace/submission")
                 errors.append(_missing_submission_diagnostic(workspace_dir))
@@ -332,6 +437,10 @@ def run_agent_on_task(
             "duration_seconds": 0.0,
             "timed_out": False,
             "reason": "",
+            "resource_limited": False,
+            "stdout_truncated": False,
+            "stderr_truncated": False,
+            "log_limit_exceeded": False,
             "stdout_log": str(stdout_log),
             "stderr_log": str(stderr_log),
         }
@@ -363,6 +472,8 @@ def run_agent_on_task(
         "status": status,
         "attempt": next_attempt,
         "agent": agent_payload,
+        "agent_backend": "docker" if agent_docker else "local",
+        "agent_docker_image": agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
         "workspace": {
             "dir": str(workspace_dir),
@@ -370,6 +481,8 @@ def run_agent_on_task(
         },
         "submission": submission_payload,
         "evaluation": evaluation_payload,
+        "eval_backend": "docker" if eval_docker else "local",
+        "eval_docker_image": eval_docker_image if eval_docker else "",
         "errors": errors,
         "run_json": str(run_json_path),
     }
@@ -377,6 +490,25 @@ def run_agent_on_task(
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     return result
+
+
+def _evaluate_collected_submission(
+    *,
+    task_path: Path,
+    collected_submission_dir: Path,
+    eval_output_dir: Path,
+    eval_docker: bool,
+    eval_docker_image: str,
+) -> dict[str, Any]:
+    if eval_docker:
+        return evaluate_submission_docker(
+            task_path,
+            collected_submission_dir,
+            eval_output_dir,
+            image=eval_docker_image,
+            use_docker=True,
+        )
+    return evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
 
 
 def _run_suite_tasks(
@@ -388,6 +520,11 @@ def _run_suite_tasks(
     num_workers: int,
     progress: bool,
     retry_rate_limit: int = 1,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
+    checkpoint_ctx: _SuiteCheckpointContext | None = None,
 ) -> list[dict[str, Any]]:
     total = len(task_dirs)
     use_live_progress = progress and sys.stderr.isatty() and total > 1
@@ -403,6 +540,11 @@ def _run_suite_tasks(
                 total=total,
                 progress_manager=progress_manager,
                 retry_rate_limit=retry_rate_limit,
+                eval_docker=eval_docker,
+                eval_docker_image=eval_docker_image,
+                agent_docker=agent_docker,
+                agent_docker_image=agent_docker_image,
+                checkpoint_ctx=checkpoint_ctx,
             )
 
     return _execute_suite_tasks(
@@ -415,6 +557,11 @@ def _run_suite_tasks(
         progress=progress,
         progress_manager=None,
         retry_rate_limit=retry_rate_limit,
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
+        checkpoint_ctx=checkpoint_ctx,
     )
 
 
@@ -429,6 +576,11 @@ def _execute_suite_tasks(
     progress: bool = False,
     progress_manager: SuiteBatchProgressManager | None = None,
     retry_rate_limit: int = 1,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
+    checkpoint_ctx: _SuiteCheckpointContext | None = None,
 ) -> list[dict[str, Any]]:
     if num_workers == 1:
         runs = []
@@ -445,8 +597,14 @@ def _execute_suite_tasks(
                         progress=progress and progress_manager is None,
                         progress_manager=progress_manager,
                         retry_rate_limit=retry_rate_limit,
+                        eval_docker=eval_docker,
+                        eval_docker_image=eval_docker_image,
+                        agent_docker=agent_docker,
+                        agent_docker_image=agent_docker_image,
                     )
                 )
+                if checkpoint_ctx is not None:
+                    _write_suite_checkpoint(checkpoint_ctx, runs)
         except KeyboardInterrupt:
             _stop_suite_run()
             raise SystemExit(130) from None
@@ -466,6 +624,10 @@ def _execute_suite_tasks(
             progress=progress and progress_manager is None,
             progress_manager=progress_manager,
             retry_rate_limit=retry_rate_limit,
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         ): index
         for index, task_dir in enumerate(task_dirs, start=1)
     }
@@ -483,7 +645,12 @@ def _execute_suite_tasks(
                     agent_config_summary,
                     exc,
                     progress_manager=progress_manager,
+                    agent_docker=agent_docker,
+                    agent_docker_image=agent_docker_image,
                 )
+            if checkpoint_ctx is not None:
+                completed = [runs_by_index[i] for i in sorted(runs_by_index)]
+                _write_suite_checkpoint(checkpoint_ctx, completed)
     except KeyboardInterrupt:
         _stop_suite_run()
         for future in futures:
@@ -511,6 +678,10 @@ def _run_suite_task_safely(
     progress: bool,
     progress_manager: SuiteBatchProgressManager | None = None,
     retry_rate_limit: int = 1,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     task_id = task_dir.name
     if progress_manager is not None:
@@ -527,6 +698,10 @@ def _run_suite_task_safely(
             config=config,
             agent_config_summary=agent_config_summary,
             max_attempts=retry_rate_limit,
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
     except Exception as exc:  # Defensive: one task should not abort the suite.
         result = _exception_run_result(
@@ -536,6 +711,8 @@ def _run_suite_task_safely(
             agent_config_summary,
             exc,
             progress_manager=progress_manager,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
 
     status = result.get("status", "failed")
@@ -553,6 +730,8 @@ def _exception_run_result(
     agent_config_summary: dict[str, Any] | None,
     exc: Exception,
     progress_manager: SuiteBatchProgressManager | None = None,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True, exist_ok=True)
     run_json_path = output_dir / "run.json"
@@ -569,8 +748,14 @@ def _exception_run_result(
             "duration_seconds": 0.0,
             "timed_out": False,
             "reason": "suite task raised an exception",
+            "resource_limited": False,
+            "stdout_truncated": False,
+            "stderr_truncated": False,
+            "log_limit_exceeded": False,
             "usage": _unavailable_agent_usage(output_dir / "agent" / "usage.json", "task raised before usage was available"),
         },
+        "agent_backend": "docker" if agent_docker else "local",
+        "agent_docker_image": agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
         "workspace": {
             "dir": str(output_dir / "workspace"),
@@ -737,12 +922,16 @@ def _write_suite_snapshot(
     retry_only_statuses: frozenset[str],
     extra_agent_passes: int,
     pass_index: int,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> None:
     snapshot = {
         "mode": "suite_snapshot",
         "generated_at": _utc_now(),
         "pass_index": pass_index,
         "agent": config.agent,
+        "agent_backend": "docker" if agent_docker else "local",
+        "agent_docker_image": agent_docker_image if agent_docker else "",
         "output_dir": str(output_path),
         "retry_only_statuses": sorted(retry_only_statuses),
         "extra_agent_passes": extra_agent_passes,
@@ -753,6 +942,50 @@ def _write_suite_snapshot(
         "agent_config": agent_config_summary or {},
     }
     snapshot_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_suite_checkpoint(
+    ctx: _SuiteCheckpointContext,
+    completed_fresh_runs: list[dict[str, Any]],
+) -> None:
+    merged = _merge_suite_runs(ctx.ordered_task_dirs, completed_fresh_runs, ctx.retained_runs)
+    agent_usage_totals = _sum_agent_usage(merged)
+    payload = {
+        "mode": "suite",
+        "checkpoint": True,
+        "generated_at": _utc_now(),
+        "agent": ctx.config.agent,
+        "agent_config": ctx.agent_config_summary or {},
+        "output_dir": str(ctx.output_path),
+        "num_workers": ctx.worker_count,
+        "agent_backend": "docker" if ctx.agent_docker else "local",
+        "agent_docker_image": ctx.agent_docker_image if ctx.agent_docker else "",
+        "eval_backend": "docker" if ctx.eval_docker else "local",
+        "eval_docker_image": ctx.eval_docker_image if ctx.eval_docker else "",
+        "retry_rate_limit": ctx.retry_rate_limit,
+        "retry_only_statuses": sorted(ctx.retry_only_statuses),
+        "extra_agent_passes": ctx.extra_agent_passes,
+        "max_task_attempts": ctx.max_task_attempts,
+        "skipped_completed": sorted(ctx.retained_runs),
+        "resume": {
+            "enabled": ctx.resume_enabled,
+            "source_dir": str(ctx.suite_source_dir) if ctx.suite_source_dir is not None else "",
+            "retained": len(ctx.retained_runs),
+            "retried": ctx.runnable_count,
+            "skipped_max_attempts": sorted(ctx.skipped_max_attempts),
+        },
+        "summary": rebuild_suite_summary(merged),
+        "agent_usage_totals": agent_usage_totals,
+        "runs": [compact_suite_run_entry(run) for run in merged],
+        "checkpoint_progress": {
+            "completed_this_run": len(completed_fresh_runs),
+            "runnable_total": ctx.runnable_count,
+        },
+    }
+    (ctx.output_path / "suite.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
 
 
 def _merge_suite_runs(
@@ -780,6 +1013,10 @@ def _run_suite_task_with_retries(
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None,
     max_attempts: int = 1,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     attempts = max(1, int(max_attempts))
     result: dict[str, Any] = {}
@@ -789,6 +1026,10 @@ def _run_suite_task_with_retries(
             run_output,
             config,
             agent_config_summary=agent_config_summary,
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
         if result.get("status") == "passed" or not _is_rate_limit_failure(result):
             return result
@@ -921,7 +1162,8 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         "## How to work\n\n"
         "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
         "listed import path, not just the primary callable.\n"
-        "2. Copy the **minimal** implementation closure from `repo/` into `submission/featurelifted/`.\n"
+        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        "into `submission/featurelifted/`.\n"
         "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
         f"4. Before submitting, grep your submission for forbidden imports, e.g. "
         f"`grep -R \"import \" submission/ | grep -E '({forbidden_grep})'` — any match fails evaluation.\n"
@@ -939,6 +1181,17 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         "- `requirements.lock`: locked third-party runtime dependencies allowed by the task.\n"
         "- `metadata.json`: redacted task metadata. Hidden tests and evaluator internals are not present.\n"
         "- `submission/`: write your final package here.\n\n"
+        "## Closure Discipline\n\n"
+        "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
+        "- Start from source entrypoints, follow imports, helpers, constants, data files, "
+        "exceptions, and resources needed for the included behaviors, then trim unrelated "
+        "package areas.\n"
+        "- Every copied file should support target behavior, public API compatibility, an "
+        "exception/type/resource, or a transitive helper used by that behavior.\n"
+        "- Remove tests, docs, CLI, network/runtime subsystems, and unrelated adapters unless "
+        "the feature specification needs them.\n"
+        "- If public tests pass with a shallow rewrite, still inspect included behaviors and "
+        "hidden-risk edge cases before submitting.\n\n"
         "## Source\n\n"
         f"- Name: {source.get('name', '')}\n"
         f"- URL: {source.get('url', '')}\n"
@@ -969,7 +1222,8 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
         "- Do not import from the original source package or rely on the original repo path at runtime.\n"
         "- Do not symlink or copy hidden/evaluator files. They are intentionally unavailable.\n"
-        "- Keep only code and dependencies needed for the target feature.\n"
+        "- Keep only behavior-relevant code and dependencies needed for the target feature; "
+        "prefer a compact closure, but do not remove helpers/resources required by edge cases.\n"
         "- **Forbidden imports are a hard gate:** if your submission imports a forbidden name, "
         "`functional_gate` is 0 even when tests pass.\n"
         "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "

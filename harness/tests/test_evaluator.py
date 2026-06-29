@@ -64,8 +64,10 @@ class EvaluatorTests(unittest.TestCase):
 
             self.assertEqual(result["status"], "passed")
             self.assertEqual(result["environment"]["install_mode"], "editable")
+            self.assertIn("submission-runtime", result["environment"]["runtime_submission_dir"])
             self.assertTrue(result["submission_install"]["passed"])
             self.assertFalse(result["submission_install"]["skipped"])
+            self.assertFalse(any(submission_dir.glob("*.egg-info")))
 
     def test_evaluate_submission_falls_back_when_pyproject_is_not_output_package(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -189,23 +191,41 @@ class EvaluatorTests(unittest.TestCase):
     def test_ensure_eval_tooling_installs_pytest_when_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            venv_dir = root / ".venv"
-            created = subprocess.run(
-                [sys.executable, "-B", "-m", "venv", str(venv_dir)],
-                cwd=root,
-                check=False,
-                capture_output=True,
-                text=True,
-            )
-            self.assertEqual(created.returncode, 0)
-            venv_python = venv_dir / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+            venv_python = root / ".venv" / "bin" / "python"
 
-            tooling = _ensure_eval_tooling(
-                venv_python=venv_python,
-                cwd=root,
-                env=os.environ.copy(),
-                timeout_seconds=120,
-            )
+            with mock.patch(
+                "featureliftbench.evaluator._run_pytest_version_check",
+                side_effect=[
+                    CommandResult(
+                        returncode=1,
+                        duration_seconds=0.1,
+                        stdout="",
+                        stderr="No module named pytest",
+                        reason="pytest is not available in evaluation venv",
+                    ),
+                    CommandResult(
+                        returncode=0,
+                        duration_seconds=0.1,
+                        stdout="pytest 7.4.4\n",
+                        stderr="",
+                    ),
+                ],
+            ):
+                with mock.patch(
+                    "featureliftbench.evaluator._run_command",
+                    return_value=CommandResult(
+                        returncode=0,
+                        duration_seconds=0.1,
+                        stdout="installed pytest",
+                        stderr="",
+                    ),
+                ):
+                    tooling = _ensure_eval_tooling(
+                        venv_python=venv_python,
+                        cwd=root,
+                        env=os.environ.copy(),
+                        timeout_seconds=120,
+                    )
 
             self.assertTrue(tooling.passed, tooling.stderr or tooling.reason)
             self.assertIn("pytest", tooling.stdout.lower())
@@ -246,12 +266,15 @@ class EvaluatorTests(unittest.TestCase):
 
     def test_run_command_decodes_timeout_output(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            with mock.patch("featureliftbench.evaluator.subprocess.run") as run:
-                run.side_effect = subprocess.TimeoutExpired(
-                    cmd=["echo"],
-                    timeout=1,
-                    output=b"partial out",
-                    stderr=b"partial err",
+            with mock.patch("featureliftbench.evaluator.run_captured_command") as run_cmd:
+                from featureliftbench.resource_limits import CapturedCommandResult
+
+                run_cmd.return_value = CapturedCommandResult(
+                    returncode=124,
+                    duration_seconds=1.0,
+                    stdout="partial out",
+                    stderr="partial err",
+                    timed_out=True,
                 )
                 result = _run_command(
                     ["echo"],

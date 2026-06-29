@@ -1,12 +1,40 @@
 from __future__ import annotations
 
+import io
 import json
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
 from featureliftbench.docker_eval import evaluate_submission_docker
+
+
+class _FakeDockerEvalProcess:
+    def __init__(
+        self,
+        *,
+        stdout: str = "",
+        stderr: str = "",
+        returncode: int | None = 0,
+        hang: bool = False,
+    ) -> None:
+        self.stdout = io.StringIO(stdout)
+        self.stderr = io.StringIO(stderr)
+        self.returncode = returncode
+        self.hang = hang
+        self.killed = False
+
+    def communicate(self, timeout: float | None = None) -> tuple[str, str]:
+        if self.hang and not self.killed:
+            raise subprocess.TimeoutExpired(cmd=["docker"], timeout=timeout or 0)
+        return self.stdout.getvalue(), self.stderr.getvalue()
+
+    def kill(self) -> None:
+        self.killed = True
+        self.returncode = -9
 
 
 class DockerEvalTests(unittest.TestCase):
@@ -27,7 +55,7 @@ class DockerEvalTests(unittest.TestCase):
             self.assertEqual(result["status"], "passed")
             local_eval.assert_called_once()
 
-    def test_evaluate_submission_docker_runs_container(self) -> None:
+    def test_evaluate_submission_docker_runs_container_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             task_dir = root / "task"
@@ -40,8 +68,13 @@ class DockerEvalTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            with mock.patch("featureliftbench.docker_eval.subprocess.run") as run_mock:
-                run_mock.return_value = mock.Mock(returncode=0, stdout="", stderr="")
+            captured: dict[str, list[str]] = {}
+
+            def _popen(command: list[str], **kwargs: object) -> _FakeDockerEvalProcess:
+                captured["command"] = command
+                return _FakeDockerEvalProcess()
+
+            with mock.patch("featureliftbench.docker_eval.subprocess.Popen", side_effect=_popen):
                 result = evaluate_submission_docker(
                     task_dir,
                     submission_dir,
@@ -50,13 +83,133 @@ class DockerEvalTests(unittest.TestCase):
                     use_docker=True,
                 )
 
-            self.assertEqual(result["status"], "passed")
-            command = run_mock.call_args.args[0]
+            command = captured["command"]
             self.assertEqual(command[0], "docker")
+            self.assertIn("--name", command)
+            self.assertIn("flb-eval-", command[command.index("--name") + 1])
             self.assertIn("featureliftbench-eval:latest", command)
+            self.assertIn("--network", command)
+            self.assertIn("none", command)
+            self.assertIn("--memory", command)
+            self.assertIn("4g", command)
+            self.assertIn("--memory-swap", command)
+            self.assertIn("--cpus", command)
+            self.assertIn("2", command)
+            self.assertIn("--pids-limit", command)
+            self.assertIn("256", command)
+            self.assertIn("--read-only", command)
+            self.assertIn("--tmpfs", command)
+            self.assertIn("/tmp:rw,nosuid,nodev,size=2g", command)
+            self.assertIn("--cap-drop", command)
+            self.assertIn("ALL", command)
+            self.assertIn("--security-opt", command)
+            self.assertIn("no-new-privileges", command)
             joined = " ".join(command)
             self.assertIn("/workspace/tasks/", joined)
             self.assertIn("/workspace/harness", joined)
+            self.assertIn(f"{output_dir.resolve()}:/workspace/output:rw", joined)
+            self.assertEqual(result["sandbox"]["backend"], "docker")
+
+    def test_evaluate_submission_docker_uses_env_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = root / "task"
+            submission_dir = root / "submission"
+            output_dir = root / "output"
+            for path in (task_dir, submission_dir, output_dir):
+                path.mkdir()
+            (output_dir / "result.json").write_text(json.dumps({"status": "passed"}), encoding="utf-8")
+
+            captured: dict[str, list[str]] = {}
+
+            def _popen(command: list[str], **kwargs: object) -> _FakeDockerEvalProcess:
+                captured["command"] = command
+                return _FakeDockerEvalProcess()
+
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FEATURELIFTBENCH_DOCKER_MEMORY": "2g",
+                    "FEATURELIFTBENCH_DOCKER_CPUS": "1.5",
+                    "FEATURELIFTBENCH_DOCKER_PIDS": "64",
+                    "FEATURELIFTBENCH_DOCKER_TMPFS": "/tmp:rw,size=512m",
+                    "FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES": "1024",
+                },
+            ):
+                with mock.patch("featureliftbench.docker_eval.subprocess.Popen", side_effect=_popen):
+                    result = evaluate_submission_docker(
+                        task_dir,
+                        submission_dir,
+                        output_dir,
+                        use_docker=True,
+                    )
+
+            command = captured["command"]
+            self.assertIn("2g", command)
+            self.assertIn("1.5", command)
+            self.assertIn("64", command)
+            self.assertIn("/tmp:rw,size=512m", command)
+            self.assertIn("--env", command)
+            self.assertIn("FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES", command)
+            self.assertEqual(result["sandbox"]["memory"], "2g")
+            self.assertEqual(result["sandbox"]["cpus"], "1.5")
+
+    def test_evaluate_submission_docker_writes_structured_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = root / "task"
+            submission_dir = root / "submission"
+            output_dir = root / "output"
+            for path in (task_dir, submission_dir):
+                path.mkdir()
+
+            with mock.patch(
+                "featureliftbench.docker_eval.subprocess.Popen",
+                return_value=_FakeDockerEvalProcess(stderr="Killed", returncode=137),
+            ):
+                result = evaluate_submission_docker(
+                    task_dir,
+                    submission_dir,
+                    output_dir,
+                    use_docker=True,
+                )
+
+            self.assertEqual(result["status"], "failed")
+            self.assertTrue(result["docker_sandbox_error"])
+            self.assertEqual(result["docker_returncode"], 137)
+            self.assertTrue(result["resource_limited"])
+            self.assertEqual(result["sandbox"]["backend"], "docker")
+            self.assertTrue((output_dir / "result.json").is_file())
+
+    def test_evaluate_submission_docker_timeout_kills_container(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = root / "task"
+            submission_dir = root / "submission"
+            output_dir = root / "output"
+            for path in (task_dir, submission_dir):
+                path.mkdir()
+
+            fake = _FakeDockerEvalProcess(hang=True)
+            with mock.patch("featureliftbench.docker_eval.subprocess.Popen", return_value=fake):
+                with mock.patch("featureliftbench.docker_eval._kill_container") as kill_mock:
+                    with mock.patch.dict(
+                        os.environ,
+                        {"FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS": "30"},
+                    ):
+                        result = evaluate_submission_docker(
+                            task_dir,
+                            submission_dir,
+                            output_dir,
+                            use_docker=True,
+                        )
+
+            self.assertTrue(result["timed_out"])
+            self.assertTrue(result["docker_sandbox_error"])
+            self.assertEqual(result["docker_returncode"], 124)
+            self.assertIn("timed out", result["errors"][0])
+            kill_mock.assert_called_once()
+            self.assertTrue(fake.killed)
 
 
 if __name__ == "__main__":

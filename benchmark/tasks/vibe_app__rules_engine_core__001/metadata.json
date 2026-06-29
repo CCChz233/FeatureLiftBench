@@ -56,7 +56,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Rule, RulesEngine, evaluate_rules",
+    "import": "from featurelifted import Rule, RulesEngine, evaluate_rules; from featurelifted.state import GLOBAL_STATE, reset_state",
     "callable": "featurelifted.evaluate_rules",
     "signature": "evaluate_rules(facts: dict, rules: list[Rule]) -> dict"
   },

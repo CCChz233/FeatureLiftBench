@@ -1,0 +1,78 @@
+{
+  "task_id": "phonenumbers__parse_format_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "phonenumbers",
+    "hard-first",
+    "functional-discriminator",
+    "resource_coupling"
+  ],
+  "source": {
+    "name": "phonenumbers",
+    "url": "https://github.com/daviddrysdale/python-phonenumbers",
+    "commit": "9.0.33-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Phone number parse and format",
+    "description": "Extract libphonenumber parse/format for US and GB regions without importing phonenumbers.",
+    "source_entrypoints": [
+      "phonenumbers.parse",
+      "phonenumbers.format_number",
+      "phonenumbers.PhoneNumberFormat",
+      "phonenumbers.is_valid_number",
+      "phonenumbers.phonenumberutil"
+    ],
+    "included_behaviors": [
+      "parse E.164 and national numbers for US and GB",
+      "format NATIONAL, INTERNATIONAL, and E164",
+      "validate numbers against region metadata"
+    ],
+    "excluded_behaviors": [
+      "full global geodata/carrier/timezone datasets",
+      "PhoneNumberMatcher and short-number data",
+      "original phonenumbers import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "resource_coupling",
+      "data_model_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "Parse/format couples PhoneNumber model, metadata tables, and region-specific formatting rules.",
+    "signals": [
+      "region metadata lazy loading for US/GB",
+      "national vs international formatting patterns",
+      "country code inference from E.164 input"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PhoneNumberFormat, NumberParseException, format_number, is_valid_number, parse; from featurelifted.phonenumberutil import NumberParseException",
+    "callable": "featurelifted.parse",
+    "signature": "parse(number: str, region: str | None = None) -> PhoneNumber"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "phonenumbers"
+    ],
+    "forbidden_imports": [
+      "phonenumbers"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

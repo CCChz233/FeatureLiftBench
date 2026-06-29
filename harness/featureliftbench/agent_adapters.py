@@ -16,6 +16,7 @@ from typing import Any
 from .active_agent_processes import register_process
 from .active_agent_processes import terminate_active_agent_processes
 from .active_agent_processes import unregister_process
+from .resource_limits import apply_agent_memory_limit
 
 
 @dataclass(frozen=True)
@@ -58,6 +59,10 @@ class AgentCommandResult:
     stderr: str
     timed_out: bool = False
     reason: str = ""
+    resource_limited: bool = False
+    stdout_truncated: bool = False
+    stderr_truncated: bool = False
+    log_limit_exceeded: bool = False
 
     @property
     def passed(self) -> bool:
@@ -72,6 +77,10 @@ class AgentCommandResult:
             "duration_seconds": round(self.duration_seconds, 6),
             "timed_out": self.timed_out,
             "reason": self.reason,
+            "resource_limited": self.resource_limited,
+            "stdout_truncated": self.stdout_truncated,
+            "stderr_truncated": self.stderr_truncated,
+            "log_limit_exceeded": self.log_limit_exceeded,
         }
         if stdout_log is not None:
             payload["stdout_log"] = str(stdout_log)
@@ -113,6 +122,7 @@ class AgentAdapter:
                 "PYTHONDONTWRITEBYTECODE": "1",
             }
         )
+        command = apply_agent_memory_limit(command, env)
 
         start = time.monotonic()
         try:

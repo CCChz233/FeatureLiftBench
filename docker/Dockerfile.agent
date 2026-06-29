@@ -1,0 +1,23 @@
+ARG PYTHON_BASE=python:3.11-slim
+FROM ${PYTHON_BASE}
+
+WORKDIR /flb
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/flb/harness \
+    PIP_NO_CACHE_DIR=1
+
+RUN pip install \
+    "pytest==7.4.4" \
+    "rich" \
+    "mini-swe-agent==1.17.3"
+
+RUN printf '%s\n' \
+    '#!/usr/bin/env sh' \
+    'set -eu' \
+    'mkdir -p "${HOME:-/tmp/flb-home}"' \
+    'exec "$@"' \
+    > /usr/local/bin/flb-agent-entrypoint \
+    && chmod +x /usr/local/bin/flb-agent-entrypoint
+
+ENTRYPOINT ["flb-agent-entrypoint"]

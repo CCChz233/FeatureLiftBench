@@ -1,0 +1,190 @@
+---
+
+ci:
+  autoupdate_schedule: quarterly
+
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: 'v6.0.0'
+  hooks:
+  - id: check-merge-conflict
+- repo: https://github.com/astral-sh/ruff-pre-commit.git
+  rev: v0.15.9
+  hooks:
+  - id: ruff-check
+    name: ruff check | PEP 517 backend
+    args:
+    # Ref: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    - --exit-non-zero-on-fix
+    - --fix  # NOTE: When `--fix` is used, linting should be before ruff-format
+    - --show-fixes
+    files: ^packaging/pep517_backend/.+$
+
+- repo: https://github.com/astral-sh/ruff-pre-commit.git
+  rev: v0.15.9
+  hooks:
+  - id: ruff-check
+    name: ruff check | yarl & tests
+    # Uses the [tool.ruff] config in pyproject.toml. Enforces PLC0415
+    # (top-level imports) and `I` (import sorting, replacing isort).
+    # Legitimate lazy imports must be opted in with `# noqa: PLC0415`
+    # plus a comment. Runs before ruff-format because --fix is used.
+    args:
+    # Ref: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    - --exit-non-zero-on-fix
+    - --fix
+    - --show-fixes
+    exclude: ^packaging/pep517_backend/.+$
+  - id: ruff-format
+    name: ruff format | yarl & tests
+    # Replaces the standalone black hook. Defaults to a black-compatible
+    # 88-column style; no [tool.ruff.format] overrides in pyproject.toml.
+    exclude: ^packaging/pep517_backend/.+$
+
+- repo: https://github.com/astral-sh/ruff-pre-commit.git
+  rev: v0.15.9
+  hooks:
+  - id: ruff-format
+    alias: ruff-format-first-pass
+    name: ruff-format | PEP 517 backend (first pass)
+    files: ^packaging/pep517_backend/.+$
+
+- repo: https://github.com/asottile/add-trailing-comma.git
+  rev: v4.0.0
+  hooks:
+  - id: add-trailing-comma
+    name: Add trailing commas | PEP 517 backend
+    files: ^packaging/pep517_backend/.+$
+
+- repo: https://github.com/astral-sh/ruff-pre-commit.git
+  rev: v0.15.9
+  hooks:
+  - id: ruff-format
+    alias: ruff-format-second-pass
+    name: ruff-format | PEP 517 backend (second pass)
+    files: ^packaging/pep517_backend/.+$
+
+- repo: https://github.com/python-jsonschema/check-jsonschema.git
+  rev: 0.37.1
+  hooks:
+  - id: check-github-workflows
+    files: ^\.github/workflows/[^/]+$
+    types:
+    - yaml
+  - id: check-jsonschema
+    alias: check-github-workflows-timeout
+    name: Check GitHub Workflows set timeout-minutes
+    args:
+    - --builtin-schema
+    - github-workflows-require-timeout
+    files: ^\.github/workflows/[^/]+$
+    types:
+    - yaml
+  - id: check-readthedocs
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: 'v6.0.0'
+  hooks:
+  - id: end-of-file-fixer
+  - id: requirements-txt-fixer
+  - id: trailing-whitespace
+  - id: file-contents-sorter
+    files: |
+      docs/spelling_wordlist.txt|
+      .gitignore|
+      .gitattributes
+  - id: check-case-conflict
+  - id: check-json
+  - id: check-xml
+  - id: check-executables-have-shebangs
+  - id: check-toml
+  - id: check-xml
+  - id: check-yaml
+  - id: debug-statements
+  - id: check-added-large-files
+  - id: check-symlinks
+  - id: debug-statements
+  - id: detect-aws-credentials
+    args: ['--allow-missing-credentials']
+  - id: detect-private-key
+    exclude: ^examples/
+- repo: https://github.com/asottile/pyupgrade
+  rev: 'v3.21.2'
+  hooks:
+  - id: pyupgrade
+    args: ['--py310-plus']
+    exclude: ^packaging/pep517_backend/.+$
+- repo: https://github.com/PyCQA/flake8
+  rev: '7.3.0'
+  hooks:
+  - id: flake8
+    exclude: "^docs/"
+
+- repo: https://github.com/codespell-project/codespell.git
+  rev: v2.4.2
+  hooks:
+  - id: codespell
+
+- repo: https://github.com/adrienverge/yamllint.git
+  rev: v1.38.0
+  hooks:
+  - id: yamllint
+    args:
+    - --strict
+
+- repo: https://github.com/MarcoGorelli/cython-lint.git
+  rev: v0.19.0
+  hooks:
+  - id: cython-lint
+
+- repo: https://github.com/Lucas-C/pre-commit-hooks-markup
+  rev: v1.0.1
+  hooks:
+  - id: rst-linter
+    exclude: ^CHANGES\.rst$
+    files: >-
+      ^[^/]+[.]rst$
+
+- repo: https://github.com/pre-commit/mirrors-mypy.git
+  rev: v1.20.0
+  hooks:
+  - id: mypy
+    alias: mypy-py311
+    name: MyPy, for Python 3.11
+    additional_dependencies:
+    - Cython
+    - expandvars
+    - idna
+    - hypothesis
+    - lxml  # dep of `--txt-report`, `--cobertura-xml-report` & `--html-report`
+    - multidict
+    - propcache >= 0.3.1
+    - pytest
+    - tomli  # requirement of packaging/pep517_backend/
+    - types-setuptools  # requirement of packaging/pep517_backend/
+    - types-Pygments
+    - types-colorama
+    - pytest_codspeed==3.0.0
+    - pydantic >= 2.0
+    args:
+    - --python-version=3.11
+    - --txt-report=.tox/.tmp/.mypy/python-3.11
+    - --cobertura-xml-report=.tox/.tmp/.mypy/python-3.11
+    - --html-report=.tox/.tmp/.mypy/python-3.11
+    pass_filenames: false
+
+- repo: https://github.com/rhysd/actionlint.git
+  rev: v1.7.12
+  hooks:
+  - id: actionlint
+    args:
+    - -ignore
+    - >-  # https://github.com/rhysd/actionlint/issues/384
+      ^type of expression at "float number value" must be number
+      but found type string$
+    - -ignore
+    - >-  # https://github.com/rhysd/actionlint/pull/380#issuecomment-2325391372
+      ^input "attestations" is not defined in action
+      "pypa/gh-action-pypi-publish@release/v1". available inputs are ".*"$
+
+...

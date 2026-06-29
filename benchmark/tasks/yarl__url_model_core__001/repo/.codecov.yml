@@ -1,0 +1,43 @@
+---
+
+codecov:
+  notify:
+    manual_trigger: true  # prevent notifications until we notify Codecov
+
+  require_ci_to_pass: false
+
+  token: >-  # notsecret  # repo-scoped, upload-only, stability in fork PRs
+    26f4a393-24a9-48d9-8fa4-f1344d930846
+
+comment:
+  require_changes: true
+
+coverage:
+  range: 99.34..100
+  status:
+    patch:
+      default:
+        target: 96%
+        flags:
+        - pytest
+    project:
+      default:
+        target: 99%
+      lib:
+        flags:
+        - pytest
+        paths:
+        - yarl/
+        target: 97.91%
+      packaging:
+        paths:
+        - packaging/
+        target: 75.24%
+      tests:
+        flags:
+        - pytest
+        paths:
+        - tests/
+        target: 99.87%  # 100%
+
+...

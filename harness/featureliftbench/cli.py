@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from .agent_adapters import SUPPORTED_AGENTS
+from .agent_docker import DEFAULT_AGENT_IMAGE
 from .docker_eval import DEFAULT_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
@@ -151,6 +152,26 @@ def main(argv: list[str] | None = None) -> int:
             "(waits ~65s between tries to clear TPM windows; default: 1)"
         ),
     )
+    run_agent_parser.add_argument(
+        "--eval-docker",
+        action="store_true",
+        help="evaluate collected submissions inside the Docker eval image",
+    )
+    run_agent_parser.add_argument(
+        "--eval-docker-image",
+        default=DEFAULT_EVAL_IMAGE,
+        help=f"Docker image for --eval-docker (default: {DEFAULT_EVAL_IMAGE})",
+    )
+    run_agent_parser.add_argument(
+        "--agent-docker",
+        action="store_true",
+        help="run the agent itself inside the FeatureLiftBench agent Docker image",
+    )
+    run_agent_parser.add_argument(
+        "--agent-docker-image",
+        default=None,
+        help=f"Docker image for --agent-docker (default: {DEFAULT_AGENT_IMAGE})",
+    )
 
     args = parser.parse_args(argv)
 
@@ -254,6 +275,13 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)
+        eval_docker = args.eval_docker or _env_truthy("FEATURELIFTBENCH_EVAL_DOCKER")
+        agent_docker = args.agent_docker or _env_truthy("FEATURELIFTBENCH_AGENT_DOCKER")
+        agent_docker_image = (
+            args.agent_docker_image
+            or os.environ.get("FEATURELIFTBENCH_AGENT_DOCKER_IMAGE", "").strip()
+            or DEFAULT_AGENT_IMAGE
+        )
         result = run_agent_on_path(
             resolve_task_input(args.input_path),
             args.output,
@@ -269,6 +297,10 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             retry_only_statuses=retry_only_statuses,
             extra_agent_passes=args.extra_agent_passes,
             max_task_attempts=args.max_task_attempts,
+            eval_docker=eval_docker,
+            eval_docker_image=args.eval_docker_image,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
         )
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
@@ -278,6 +310,10 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
     if result.get("mode") == "suite":
         return 0 if result.get("summary", {}).get("failed") == 0 else 1
     return 0 if result.get("status") == "passed" else 1
+
+
+def _env_truthy(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes"}
 
 
 def _resolve_resume_args(args: argparse.Namespace) -> tuple[Path | None, bool]:

@@ -4,7 +4,7 @@
 
 相关：[limitations.md](limitations.md) · [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)（续跑与重试）
 
-最后更新：2026-06-27
+最后更新：2026-06-29
 
 ---
 
@@ -16,6 +16,11 @@ cd FeatureLiftBench
 
 ./setup.sh              # 创建 .venv，安装 pytest / rich / mini-swe-agent
 nano .env               # 填入 API Key（见下文）
+docker/build_agent_image.sh featureliftbench-agent:latest
+docker/build_eval_image.sh featureliftbench-eval:latest
+
+FEATURELIFTBENCH_AGENT_DOCKER=1 \
+FEATURELIFTBENCH_EVAL_DOCKER=1 \
 ./run.sh                # 默认 profile 见 harness/config/agents.toml
 ```
 
@@ -40,10 +45,10 @@ PYTHONPATH=harness python harness/scripts/preflight.py \
 | **操作系统** | Linux 或 macOS（服务器推荐 Linux） |
 | **Python** | **3.11+**（推荐 **3.12**）。3.9/3.10 缺少 `tomllib`，CLI 无法启动 |
 | **Linux 系统包** | Debian/Ubuntu 需 **`python3.12-venv`**（及 `python3.12-pip`）；仅装 `python3.12` 不够 |
-| **磁盘** | 仓库约 **150MB+**（含 50 题 `repo/` 快照）；`experiments/` 每轮额外占用（轨迹、submission、eval 日志） |
-| **内存** | 建议 **8GB+**；正式 agent suite 先用 `NUM_WORKERS=1`。未加内存沙箱前，错误 submission 可能让 `pytest` 吃掉数百 GB |
+| **磁盘** | 仓库约 **150MB+**（含 task `repo/` 快照）；`experiments/` 每轮额外占用（轨迹、submission、eval 日志） |
+| **内存** | 建议 **8GB+**；正式 suite 默认 `NUM_WORKERS=1` + 内存上限（见下文 §4） |
 | **网络** | 需访问所选模型的 **API**（DeepSeek、SiliconFlow 等）；agent 跑题期间要联网 |
-| **Docker** | **推荐用于正式 eval**；可用 `--memory` / cgroup 隔离 untrusted submission |
+| **Docker** | **正式实验推荐启用**；eval 用禁网短命容器，agent 用 bounded container |
 
 不需要事先全局安装 conda；推荐用项目内 **`.venv`**（`./setup.sh` 自动创建）。
 
@@ -115,9 +120,10 @@ SILICONFLOW_API_BASE=https://api.siliconflow.cn/v1
 
 **注意：** Base URL 必须是 `https://api.siliconflow.cn/v1`，**不要**带 `/chat/completions`。
 
-API 跑 50 hard 建议（限流 500 RPM / 2M TPM）：
+API 跑完整主榜建议（限流 500 RPM / 2M TPM）：
 
 ```bash
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
 AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 ./run.sh
 ```
 
@@ -167,12 +173,26 @@ AGENT_PROFILE=qwen3_6_27b ./run.sh
 
 [`run.sh`](../run.sh) 在开跑前会调用 [`harness/scripts/preflight.py`](../harness/scripts/preflight.py)，检查 Python、配置、`mini`、pytest、**非空 API Key**。
 
+正式实验推荐直接打开 agent Docker 和 eval Docker：
+
+```bash
+FEATURELIFTBENCH_AGENT_DOCKER=1 \
+FEATURELIFTBENCH_EVAL_DOCKER=1 \
+AGENT_PROFILE=deepseek_v4_flash \
+NUM_WORKERS=1 \
+RETRY_RATE_LIMIT=5 \
+RUN_ID=benchmark-main-flash-run1-$(date +%Y%m%d-%H%M%S) \
+./run.sh
+```
+
 常用环境变量：
 
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
 | `AGENT_PROFILE` | `agents.toml` 中 `profile` 字段 | 如 `minimax_m2_5`、`qwen3_coder_30b_vllm` |
-| `NUM_WORKERS` | `4` | 并行题数；**SiliconFlow API 建议 `1`** |
+| `FEATURELIFTBENCH_AGENT_DOCKER` | 空 | 设为 `1` 后 agent 在短命 Docker container 中运行 |
+| `FEATURELIFTBENCH_EVAL_DOCKER` | 空 | 设为 `1` 后每题 submission 用 Docker eval 评分 |
+| `NUM_WORKERS` | `1` | 并行题数；正式 Docker 跑批和 SiliconFlow API 建议 `1` |
 | `RETRY_RATE_LIMIT` | `2` | 429 限流时最多重试次数（每次等 ~65s）；API 建议 `5` |
 | `RUN_ID` | 时间戳 | 新 run 的目录名 |
 | `RESUME_DIR` | — | 中断续跑，同目录 `--resume` |
@@ -183,45 +203,111 @@ AGENT_PROFILE=qwen3_6_27b ./run.sh
 
 ```bash
 # 新跑
-./run.sh
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 ./run.sh
 
 # 续跑
-RESUME_DIR=experiments/mini-swe-agent/benchmark-50-hard-pro-20260625-212817 ./run.sh
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
+RESUME_DIR=experiments/mini-swe-agent/<run_id> ./run.sh
 
 # 挂机自动二轮
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
 EXTRA_AGENT_PASSES=1 ./run.sh
 
 # 换 Flash，保持串行
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
 AGENT_PROFILE=deepseek_v4_flash NUM_WORKERS=1 ./run.sh
 ```
 
-### 内存安全运行建议
+### Batch-1 Flash 专用跑法
 
-FeatureLiftBench 会运行 untrusted agent submission。Agent 自测和最终 evaluator 都可能执行 `pytest`，如果 submission 写出无限递归、无限循环、parser 不消费输入或指数级数据结构，`pytest` 进程会持续申请内存。2026-06-27 已观察到内核 OOM killer 杀死 `pytest`，单进程 RSS 可达数百 GB。
-
-未实现 harness 内置内存沙箱前，建议：
+如果只跑 batch-1 新增 50 题的 Docker Flash 实验，直接用根目录脚本：
 
 ```bash
-# 临时限制当前 shell 及其子进程虚拟内存为 32GB。
-# 这样 mini 自测里的 pytest 也会继承限制。
-ulimit -v $((32 * 1024 * 1024))
-
-AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 ./run.sh
+./run-batch1-docker-flash.sh
 ```
 
-注意：
+它会自动筛选 `batch-1` tag、启用 agent/eval Docker、使用 `deepseek_v4_flash`、设置 `FEATURELIFTBENCH_LIVE_TRAJECTORY=1`、串行运行并在结束后生成分析。中断后续跑：
 
-- `NUM_WORKERS=1` 是当前最稳的默认值；本地 vLLM 或 API 模型都不要多 suite 重叠跑。
-- Docker/cgroup 更适合正式 eval；shell `ulimit` 是短期止血，可能让少数正常但内存较高的题误失败。
-- 需要在 harness 中补 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB` 这类可审计配置后，再把内存限制纳入标准实验口径。
+```bash
+RESUME_DIR=experiments/mini-swe-agent/<run_id> ./run-batch1-docker-flash.sh
+```
+
+旧的 batch-1 review 脚本只用于出题验收，不用于正式 Docker Flash 实验。
+
+### 长跑稳定性
+
+| 机制 | 说明 |
+| --- | --- |
+| `.run.lock` | `run.sh` / `run-batch1-docker-flash.sh` 在 `OUTPUT` 下 mkdir 锁；禁止同目录双 runner |
+| `preflight --docker-suite` | 检查 `docker info`、agent/eval 镜像、`LIVE_TRAJECTORY=0` 警告、残留 `flb-*` 容器 |
+| Eval 超时 | `FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS`（默认 600）；超时记失败并继续 |
+| 增量 checkpoint | 每题写完 `suite.json`（`checkpoint: true`）；resume 可读中途进度 |
+| 健康诊断 | `./harness/scripts/check_run_health.sh <output-dir>` |
+
+Mac Docker Desktop 长跑建议 Memory **≥16GB**；Linux 单 worker 默认 8g agent + 4g eval 串行峰值约 8–10GB。
+
+### Docker 安全运行
+
+Untrusted submission 会在 pytest 中执行；**资源边界是 benchmark 运行规格的一部分**。正式实验优先用 Docker，而不是只依赖本地 `RLIMIT_AS`。
+
+Eval Docker 默认：
+
+```text
+network: none
+memory: 4g
+memory-swap: 4g
+cpus: 2
+pids-limit: 256
+root filesystem: read-only
+/tmp: tmpfs 2g
+stdout/stderr: 8 MiB per stream
+```
+
+Agent Docker 默认：
+
+```text
+network: bridge
+memory: 8g
+cpus: 2
+pids-limit: 512
+mounts: prepared workspace rw, agent output rw, harness ro
+not mounted: benchmark root, hidden tests, host home, .env, Docker socket
+stdout/stderr: 8 MiB per stream
+```
+
+常用覆盖：
+
+```bash
+FEATURELIFTBENCH_DOCKER_MEMORY=6g
+FEATURELIFTBENCH_DOCKER_CPUS=2
+FEATURELIFTBENCH_DOCKER_PIDS=256
+FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS=600
+FEATURELIFTBENCH_AGENT_DOCKER_MEMORY=8g
+FEATURELIFTBENCH_AGENT_DOCKER_CPUS=2
+FEATURELIFTBENCH_AGENT_DOCKER_PIDS=512
+FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES=8388608
+```
+
+本地 `EVAL_MEMORY_MB` / `AGENT_MEMORY_MB` 仍可用于非 Docker 调试；正式实验结果请优先用 Docker eval 口径。
 
 输出目录：`experiments/mini-swe-agent/<run_id>/`（gitignored）。
 
-手动 CLI 等价命令见 [README.md](../README.md) 中 `run-agent` 一节。
+手动 CLI 等价命令见根目录 [RUN.md](../RUN.md)。
 
 ---
 
 ## 5. Eval 阶段的额外说明
+
+正式 eval 推荐走 Docker：
+
+```bash
+PYTHONPATH=harness .venv/bin/python harness/scripts/reeval_suite.py \
+  experiments/mini-swe-agent/<run_id> \
+  --docker \
+  --workers 1
+```
+
+`run-agent` 时如果已经设置 `FEATURELIFTBENCH_EVAL_DOCKER=1` 或传入 `--eval-docker`，则每题会直接写 Docker eval 结果，不需要额外 re-eval。
 
 Harness 评测每题时会：
 
@@ -232,10 +318,10 @@ Harness 评测每题时会：
 因此：
 
 - **多数题** `requirements.lock` 为空，eval 只依赖 harness 已装的 pytest
-- **少数题** 有第三方依赖（如 `text-unidecode`），依赖**本机 pip 缓存**里已有 wheel；极干净的服务器可能 eval 失败
+- **少数题** 有第三方依赖；正式 Docker eval 镜像应预装这些依赖，避免依赖本机 pip cache
 - 修复 eval 基础设施问题用 [`harness/scripts/reeval_suite.py`](../harness/scripts/reeval_suite.py)（**不重跑 agent**）
-- 更干净的可复现 eval 可用 Docker：[`docker/Dockerfile.eval`](../docker/Dockerfile.eval)
-- 正式 eval 建议用 Docker/cgroup 加内存上限；只限制 final eval 不足以保护 agent 自测阶段，后者仍需 `ulimit` 或 harness 级 agent sandbox
+- 资源与并发见上文 §4；Docker eval 会记录 `resource_limited`、`log_limit_exceeded`、`docker_sandbox_error`
+- local eval 只用于开发调试，不作为论文 official baseline
 
 ---
 
@@ -253,22 +339,35 @@ cd FeatureLiftBench
 # 3. 密钥（必做）
 nano .env
 
-# 4. 预检
-PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py
+# 4. 预检（Docker 长跑）
+PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py \
+  --bootstrap \
+  --agent-profile deepseek_v4_flash \
+  --docker-suite \
+  --output-dir experiments/mini-swe-agent/preflight-check
 
-# 5. 长跑
+# 5. 构建 Docker 镜像
+docker/build_agent_image.sh featureliftbench-agent:latest
+docker/build_eval_image.sh featureliftbench-eval:latest
+
+# 6A. 长跑：完整主榜
 tmux new -s flb
-./run.sh
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 ./run.sh
+# Ctrl-B D 脱离
+
+# 6B. 长跑：只跑 batch-1 Docker Flash
+tmux new -s flb-batch1
+./run-batch1-docker-flash.sh
 # Ctrl-B D 脱离
 ```
 
 ```bash
-# 6. 分析
+# 7. 分析
 python harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/<run_id>
 
 # 跨多 run 汇总（failure taxonomy + 按 source 分组）
 python harness/scripts/summarize_experiment_runs.py experiments/mini-swe-agent/<run_id> ... \
-  --output experiments/mini-swe-agent/formal-50hard-6run-summary.json
+  --output experiments/mini-swe-agent/formal-main-6run-summary.json
 ```
 
 实验结果汇总表见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
@@ -281,10 +380,17 @@ python harness/scripts/summarize_experiment_runs.py experiments/mini-swe-agent/<
 | `agent config file not found` | 未跑 `./setup.sh` | `./setup.sh` |
 | `FEATURELIFTBENCH_API_KEY is empty` | `.env` 未填 key | 编辑 `.env` |
 | `mini-swe-agent CLI not found` | 未装 mini 或 PATH 不对 | `./setup.sh`；或 `export PATH="$PWD/.venv/bin:$PATH"` |
-| 50 题全 `missing_submission` | API key/模型/base URL 错误 | 查 `preflight`、agent `stderr.log` |
+| 全题 `missing_submission` | API key/模型/base URL 错误 | 查 `preflight`、agent `stderr.log` |
 | eval `No module named pytest` | 旧 harness | `git pull`；或对旧 suite 跑 `reeval_suite.py` |
 | eval 装依赖失败 | pip 缓存无 wheel | 在该机先 `pip download` 相关包，或用 Docker eval |
-| 系统 OOM，内核日志显示 `Killed process ... (pytest)` | Agent 生成的 submission 在自测或 eval 中被 pytest 执行后失控申请内存 | 暂用 `NUM_WORKERS=1` + `ulimit -v`；下一步加 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB` 或 Docker/cgroup |
+| Docker build 拉不到 `python:3.12-slim` | Docker mirror / DNS 问题 | 默认已用 `python:3.11-slim`；需要 3.12 时先修 Docker mirror，再设 `FEATURELIFTBENCH_*_PYTHON_BASE` |
+| eval `resource_limited: true` | submission/pytest 超出 Docker 内存或被 OOM kill | 记录为资源失败；必要时调 `FEATURELIFTBENCH_DOCKER_MEMORY` |
+| eval `log_limit_exceeded: true` | submission 或测试大量输出 | 记录为日志边界失败；必要时调 `FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES` |
+| eval 挂死超过 10 分钟 | 旧 harness 无外层超时 | `git pull` 后用新代码；或 `docker kill` 挂住容器 |
+| eval `timed_out: true` | eval 超过 `FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS` | 正常失败，suite 会继续 |
+| `.run.lock` 拒绝启动 | 同 OUTPUT 已有 runner 或崩溃残留 | 确认无旧进程；`rmdir experiments/.../.run.lock` |
+| agent `timed_out: true` | agent 卡住或模型长时间无响应 | 续跑该题；必要时调 `--timeout-seconds` 或 profile 限额 |
+| 系统 OOM，内核日志显示 `Killed process ... (pytest)` | 未启用 Docker eval 或 Docker memory 设得过高 | 正式实验用 `FEATURELIFTBENCH_EVAL_DOCKER=1`；必要时降低 worker/内存 |
 
 ---
 
@@ -292,8 +398,8 @@ python harness/scripts/summarize_experiment_runs.py experiments/mini-swe-agent/<
 
 | 层级 | 是否需要本页环境 |
 | --- | --- |
-| 跑 **agent suite**（`run.sh`） | 是：Python 3.11+、`.venv`、`mini`、`.env` |
-| 只跑 **oracle / eval**（`verify_all_oracles.py`） | Python 3.11+、pytest；不需 API key |
+| 跑 **agent suite**（`run.sh`） | 是：Python 3.11+、`.venv`、`mini`、`.env`；正式实验还需要 agent/eval Docker image |
+| 只跑 **oracle / eval**（`verify_all_oracles.py` / `reeval_suite.py --docker`） | Python 3.11+、pytest；Docker eval 不需 API key |
 | 只跑 **harness 单测** | `pip install pytest==7.4.4` + `PYTHONPATH=harness` |
 
-Agent **中途 checkpoint**（trajectory 断点恢复）当前不支持；续跑粒度为**整题**，见 [BENCHMARK_STATUS.md — 续跑与失败重试](BENCHMARK_STATUS.md#续跑与失败重试)。
+Agent **单题 trajectory 中途 checkpoint** 当前不支持；**suite 级**续跑粒度为整题，支持增量 `suite.json` checkpoint + 各题 `run.json` fallback，见 [SERVER_DEPLOY.md](SERVER_DEPLOY.md) 与 [BENCHMARK_STATUS.md — 续跑与失败重试](BENCHMARK_STATUS.md#续跑与失败重试)。

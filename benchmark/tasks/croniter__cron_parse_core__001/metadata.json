@@ -1,0 +1,86 @@
+{
+  "task_id": "croniter__cron_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "cron",
+    "scheduling",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "croniter",
+    "url": "https://github.com/pallets-eco/croniter",
+    "commit": "dc04395e2291b44a74507919d27a13f922b7f77d",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Cron expression parse and next/prev iteration",
+    "description": "Extract croniter cron parsing with field expansion and naive datetime next/prev iteration without original croniter import.",
+    "source_entrypoints": [
+      "croniter.croniter",
+      "croniter.croniter.croniter",
+      "croniter.croniter.croniter.get_next",
+      "croniter.croniter.croniter.get_prev",
+      "croniter.croniter.datetime_to_timestamp"
+    ],
+    "included_behaviors": [
+      "parse standard 5-field cron expressions",
+      "compute next matching naive datetime from a base time",
+      "compute previous matching naive datetime from a base time",
+      "step and range field expansion (e.g. */15, 9-17)",
+      "reject invalid field values with CroniterBadCronError"
+    ],
+    "excluded_behaviors": [
+      "croniter_range generator",
+      "hash/random H() field expansion",
+      "match_range and is_valid helpers",
+      "original croniter import at runtime",
+      "timezone/DST-aware scheduling (tests use naive datetimes only)"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Croniter couples regex field parsing, expansion tables, calendar arithmetic, DOM/DOW union logic, and iterator state for next/prev walks.",
+    "signals": [
+      "field expanders build per-index value sets from cron tokens",
+      "DOM and DOW interact via day_or union vs intersection",
+      "_calc walks minute/hour/dom/month/dow with rollover",
+      "relativedelta used for month/year stepping in expansion"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import croniter, datetime_to_timestamp, CroniterBadCronError, CroniterBadDateError, CroniterNotAlphaError",
+    "callable": "featurelifted.croniter",
+    "signature": "croniter(expr_format, start_time=None, ret_type=...)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "python-dateutil"
+    ],
+    "forbidden_dependencies": [
+      "croniter"
+    ],
+    "forbidden_imports": [
+      "croniter"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

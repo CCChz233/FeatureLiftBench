@@ -1,0 +1,37 @@
+name: release to test.pypi.org
+
+"on":
+  push:
+    tags:
+      # To publish a test release to test.pypi.org,
+      # create and push a tag as follows:
+      #     git tag -a 0.21.3.rc1 -m "Tag 0.21.3.rc1 for release to test.pypi.org"
+      #     git push --tags
+      # Go to https://github.com/jab/bidict/actions?query=workflow%3A%22Release+to+Test+PyPI%22
+      # and watch for a new run of this workflow to publish to test.pypi.org.
+      # IMPORTANT: Run the following to clean up after:
+      #     git tag -d 0.21.3.rc1
+      #     git push origin :0.21.3.rc1
+      - "[0-9]+.[0-9]+.[0-9]+.rc[0-9]+"
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25
+      - name: build distributions
+        run: nix develop .#build --command uv build
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          verbose: true
+
+permissions:
+  contents: read

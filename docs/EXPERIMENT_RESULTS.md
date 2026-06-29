@@ -1,43 +1,26 @@
 # FeatureLiftBench 实验结果汇总
 
-本文档集中记录 **FeatureLiftBench 50 hard** 主榜上的 agent 实验结果。
-官方 DeepSeek baseline 见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)；评分定义见 [CONCEPTS.md](CONCEPTS.md) 第 6 节。
+本文档集中记录历史 **batch-0 50 hard** agent 实验结果。当前主榜已经扩到 **100 hard**；正式论文/模型对比需要按 [RUN.md](../RUN.md) 的 agent Docker + eval Docker 流程重新跑 100 题。官方历史 DeepSeek baseline 见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)；评分定义见 [CONCEPTS.md](CONCEPTS.md) 第 6 节。
 
-**最后更新：** 2026-06-27（MiniMax run1 中断 + pytest OOM 风险记录）
+**最后更新：** 2026-06-27（题目策展 [EXPANSION.md](EXPANSION.md)；MiniMax OOM 记录）
 
 ---
 
-## 1. 评价指标（Benchmark 口径）
+## 1. 评价指标
 
-### 1.1 单题评分（evaluator 输出）
+单题 `FunctionalGate`、`ExtractionRatio`、`final_score` 定义见 **[CONCEPTS.md](CONCEPTS.md) 第 6 节**。下文只列 **suite 汇总与多轮分析** 口径。
 
-每题 submission 经 harness 评测后，在 `eval/result.json` 的 `scores` 中写入：
-
-| 指标 | 公式 / 含义 | 范围 |
-|------|-------------|------|
-| **FunctionalGate** | `build_pass ∧ test_pass ∧ original_import_pass` | 0 或 1 |
-| **ExtractionRatio** | `submission Python LOC / repo Python LOC` | ≥ 0，越低越好 |
-| **final_score** | `FunctionalGate × (1 - ExtractionRatio)`；gate=0 时恒为 0 | [0, 1] |
-
-**FunctionalGate 三项：**
-
-| 门控 | 检查 |
-|------|------|
-| BuildPass | 干净 venv 中可安装/导入 `featurelifted` |
-| TestPass | public + hidden pytest 全部通过 |
-| OriginalImportPass | 无 forbidden import / forbidden dependency |
-
-> 整包复制可通过 TestPass，但 ExtractionRatio≈1 → final_score≈0。这是设计预期，不是 bug。
-
-### 1.2 Suite 级汇总（`suite.json` → `summary`）
+### 1.1 Suite 级汇总
 
 | 字段 | 含义 | 是否主榜 headline |
 |------|------|-------------------|
 | **passed** | 单题 `status=passed` 的数量（agent 正常结束 **且** eval functional pass） | **是** |
-| **average_final_score** | 50 题 `final_score` 的算术平均（失败题为 0） | 是（辅） |
+| **average_final_score** | 当前 suite 全部题目的 `final_score` 算术平均（失败题为 0） | 是（辅） |
 | **missing_submissions** | `workspace/submission/` 无文件、未 eval 的题数 | 否（运行质量） |
 | **recovered_submissions** | 从错路径 auto-recover 后再 eval 的题数（见 harness 改动） | 否（审计） |
 | **by_status.failed** | 有 submission 但 functional 未过的题数 | 否 |
+
+报告当前 100 题正式结果时，应并列 functional pass、average `final_score`、high-extraction pass、compact pass，并单独披露 resource/log/sandbox failure；历史 50-hard 结果只用于 pilot 对照。
 
 单题 **passed** 判定（[`run_status`](harness/featureliftbench/suite_utils.py)）：
 
@@ -46,7 +29,7 @@ submission 存在 → eval 完成 → agent.passed 且 eval.status=passed → pa
 否则 → failed 或 missing_submission
 ```
 
-### 1.3 多轮实验衍生指标（分析用，非 harness 内置）
+### 1.2 多轮实验衍生指标（分析用，非 harness 内置）
 
 | 指标 | 定义 |
 |------|------|
@@ -55,7 +38,7 @@ submission 存在 → eval 完成 → agent.passed 且 eval.status=passed → pa
 | **pass@k（all）** | k 次 run 全部 functional pass 的题数 |
 | **mean ± std** | k 次 run 的 passed 或 pass rate 的均值与标准差 |
 
-### 1.4 Agent 运行统计（不影响 functional pass）
+### 1.3 Agent 运行统计（不影响 functional pass）
 
 来自 `agent/trajectory.json` 或 `usage.json`，写入 `agent_usage_totals`：
 
@@ -214,7 +197,7 @@ compact 典型题：多数 `vibe_app__*`, `coverage__report_core__001`, `pytest_
 | Run ID | Profile | 模型 | 进度（2026-06-26） | 备注 |
 |--------|---------|------|-------------------|------|
 | [glm-5.2-run1-20260626-230548](../experiments/mini-swe-agent/benchmark-50-hard-glm-5.2-run1-20260626-230548/) | `glm_5_2` | GLM-5.2 | 2/50 完成（attrs、babel **passed**）；click 进行中 | 单题 ~1M tokens、~¥5–6/题；全量 50 题估算 **¥250–300** |
-| [minimax-m2.5-run1-20260626-233336](../experiments/mini-swe-agent/benchmark-50-hard-minimax-m2.5-run1-20260626-233336/) | `minimax_m2_5` | MiniMax-M2.5 | 42/50 完成；12 passed、29 missing、1 failed；`vibe_app__csv_transform_core__001` 中断 | 无完整 `suite.json`；系统日志显示 `pytest` OOM，需加内存沙箱后再续跑 |
+| [minimax-m2.5-run1-20260626-233336](../experiments/mini-swe-agent/benchmark-50-hard-minimax-m2.5-run1-20260626-233336/) | `minimax_m2_5` | MiniMax-M2.5 | 42/50 完成；12 passed、29 missing、1 failed；`vibe_app__csv_transform_core__001` 中断 | 无完整 `suite.json`；系统日志显示 `pytest` OOM；续跑须启用 [SETUP.md](SETUP.md) §4 默认配置 |
 | — | `kimi_k2_7_code` | Kimi-K2.7-Code | **未开始** | |
 
 > GLM / MiniMax run 若在 **live trajectory** harness 落地前启动，进度条可能仍显示 `0 toks`；重跑或等当前题结束后再看 `trajectory.json`。
@@ -229,16 +212,15 @@ MiniMax run1 最后停在 `vibe_app__csv_transform_core__001`：
 
 同一时间段服务器内核日志出现多条 `Out of memory: Killed process ... (pytest)`。这说明至少有测试阶段的 `pytest` 进程被 OOM killer 杀死。现有日志只能确认 OOM 发生在 pytest 执行 untrusted submission 时，不能 100% 将唯一触发源归到某一道题；但该 run 的中断形态与系统级 OOM 一致。
 
-后续续跑 MiniMax 前，应先用已有 `run.json` 重建最小 `suite.json`，否则 `RESUME_DIR` 无法识别已经完成的 42 题，会从头重跑。补好 `suite.json` 后再采用：
+续跑前须确认 harness 内存上限（`run.sh` 默认已开，见 [SETUP.md](SETUP.md) §4）：
 
 ```bash
-ulimit -v $((32 * 1024 * 1024))
-AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 \
+AGENT_PROFILE=minimax_m2_5 \
   RESUME_DIR=experiments/mini-swe-agent/benchmark-50-hard-minimax-m2.5-run1-20260626-233336 \
   ./run.sh
 ```
 
-长期应在 harness 内增加 agent/eval 两层内存上限，详见 [limitations.md](limitations.md) §4.6。
+内存规格说明见 [SETUP.md](SETUP.md) §4。该 run 发生在 harness 内存上限落地**之前**，续跑/重跑须在实验记录中注明 harness 版本。
 
 ---
 
@@ -252,7 +234,7 @@ AGENT_PROFILE=minimax_m2_5 NUM_WORKERS=1 RETRY_RATE_LIMIT=5 \
 - `benchmark-50-hard-gpt-oss-run2-20260626-165016`
 - `benchmark-50-hard-gpt-oss-run3-200637`
 - `benchmark-50-hard-gpt-oss-run3-20260626-165018`
-- `benchmark-50-hard-minimax-m2.5-run1-20260626-233336`（pytest OOM 后中断；续跑前需补 `suite.json` 或先加内存限制）
+- `benchmark-50-hard-minimax-m2.5-run1-20260626-233336`（pytest OOM 后中断；续跑见 [SETUP.md](SETUP.md) §4）
 
 ---
 

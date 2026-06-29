@@ -1,0 +1,93 @@
+{
+  "task_id": "tabulate__table_format_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "tabulate",
+    "table-formatting",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "tabulate",
+    "url": "https://github.com/astanin/python-tabulate",
+    "commit": "268615a5c27dc40e5c22454c07b44d5c50410da0",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Table formatting core",
+    "description": "Extract tabulate() table formatting with format registry, Unicode display width, column alignment, and data normalization without importing tabulate or CLI entrypoints.",
+    "source_entrypoints": [
+      "tabulate.tabulate",
+      "tabulate.tabulate_formats",
+      "tabulate.simple_separated_format",
+      "tabulate._visible_width",
+      "tabulate._align_column",
+      "tabulate._format_table",
+      "tabulate._normalize_tabular_data",
+      "tabulate._table_formats"
+    ],
+    "included_behaviors": [
+      "tabulate() renders simple, grid, pipe, and plain table formats",
+      "automatic numeric decimal alignment and string column padding",
+      "colalign and colglobalalign per-column alignment overrides",
+      "Unicode wide-character display width via wcwidth when available",
+      "ANSI escape sequences excluded from visible column width",
+      "simple_separated_format builds custom separator TableFormat",
+      "tabulate_formats lists supported output format names"
+    ],
+    "excluded_behaviors": [
+      "CLI entrypoint tabulate/cli.py and __main__",
+      "upstream benchmark and example scripts",
+      "original tabulate import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Table formatting couples format template registry, wcwidth display measurement, numeric type inference, column alignment, and tabular data normalization across formats, layout, and render modules.",
+    "signals": [
+      "_table_formats maps 36+ output templates",
+      "_visible_width uses wcwidth.width or wcswidth with ANSI stripping",
+      "numalign decimal pads fractional parts for alignment",
+      "colglobalalign applies before per-column colalign overrides"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import tabulate, tabulate_formats, simple_separated_format",
+    "callable": "featurelifted.tabulate",
+    "signature": "tabulate(tabular_data, headers=(), tablefmt='simple', floatfmt='g', intfmt='', numalign='default', stralign='default', missingval='', showindex='default', disable_numparse=False, colglobalalign=None, colalign=None, preserve_whitespace=False, maxcolwidths=None, headersglobalalign=None, headersalign=None, rowalign=None, maxheadercolwidths=None, break_long_words=True, break_on_hyphens=True)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "tabulate"
+    ],
+    "forbidden_imports": [
+      "tabulate"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "oracle_loc": 2311,
+    "oracle_bytes": 104749,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 7385,
+    "copy_all_bytes": 315755
+  }
+}

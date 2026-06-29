@@ -56,7 +56,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import SessionRegistry",
+    "import": "from featurelifted import SessionRegistry; from featurelifted.state import GLOBAL_STATE, reset_state",
     "callable": "featurelifted.SessionRegistry.register",
     "signature": "SessionRegistry.register(user_id: str, *, metadata: dict | None = None) -> str"
   },

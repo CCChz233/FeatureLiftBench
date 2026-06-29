@@ -1,0 +1,76 @@
+{
+  "task_id": "parso__python_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "parso",
+    "python-parser",
+    "hard-first",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "parso",
+    "url": "https://github.com/davidhalter/parso",
+    "commit": "0.8.3-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Python parser grammar core",
+    "description": "Extract parso parse/load_grammar with error recovery and get_code roundtrip.",
+    "source_entrypoints": [
+      "parso.parse",
+      "parso.load_grammar",
+      "parso.Grammar.parse"
+    ],
+    "included_behaviors": [
+      "parse Python source to syntax tree",
+      "get_code round-trip on nodes",
+      "iter_errors for multiple syntax issues",
+      "version-specific grammars"
+    ],
+    "excluded_behaviors": [
+      "diff parser",
+      "pep8 normalizer",
+      "original parso import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Parser couples pgen2 grammar, token stream, and Python AST node graph.",
+    "signals": [
+      "Grammar version selection",
+      "error recovery in parser",
+      "prefix/leaves on tree nodes"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import parse, load_grammar, Grammar",
+    "callable": "featurelifted.parse",
+    "signature": "parse(code=None, *, version=None, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "parso"
+    ],
+    "forbidden_imports": [
+      "parso"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

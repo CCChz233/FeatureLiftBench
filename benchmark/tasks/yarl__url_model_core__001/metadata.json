@@ -1,0 +1,97 @@
+{
+  "task_id": "yarl__url_model_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "yarl",
+    "url-model",
+    "functional-discriminator",
+    "no-network",
+    "parser_state_coupling",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "yarl",
+    "url": "https://github.com/aio-libs/yarl",
+    "commit": "b0d27e478c543c28045296311a821f924729150f",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "URL parse, join, query, and path model",
+    "description": "Extract yarl.URL immutable URL data model with RFC 3986 parsing, relative join, query MultiDict semantics, path normalization, and IDNA host handling without aiohttp or network I/O.",
+    "source_entrypoints": [
+      "yarl.URL",
+      "yarl._parse.split_url",
+      "yarl._path.normalize_path",
+      "yarl._query.get_str_query",
+      "yarl._quoters.QUOTER",
+      "yarl._url.URL.join",
+      "yarl._url.URL.with_query",
+      "yarl._url.URL.update_query",
+      "yarl._url.URL.joinpath"
+    ],
+    "included_behaviors": [
+      "parse and construct URL objects with scheme, host, port, path, query, fragment",
+      "join absolute and relative URLs preserving query and fragment rules",
+      "MultiDict query with duplicate keys, ordering, and semicolon-in-value handling",
+      "path normalization for dot and dot-dot segments",
+      "IDNA host encoding and decoding; default port omission in string form",
+      "with_query, update_query, and joinpath helpers"
+    ],
+    "excluded_behaviors": [
+      "aiohttp, network I/O, HTTP client/server integration",
+      "Cython _quoting_c extension build (pure-Python quoting fallback only)",
+      "upstream test suite, docs, CI, and packaging metadata at runtime",
+      "original yarl package import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "URL behavior couples split/join parsing, percent-encoding quoters, MultiDict query serialization, path normalization, and cached IDNA host transforms across multiple internal modules.",
+    "signals": [
+      "split_url and join must agree on authority, path, and query composition",
+      "query encoding interacts with quoters and multidict duplicate-key semantics",
+      "path normalization affects join and joinpath results",
+      "IDNA encode/decode caching and host validation cross-cut URL construction",
+      "immutable URL updates flow through internal from_parts state"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import URL, Query, QueryVariable, SimpleQuery, cache_clear, cache_configure, cache_info",
+    "callable": "featurelifted.URL",
+    "signature": "URL(val='', *, encoded=False, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "idna",
+      "multidict",
+      "propcache"
+    ],
+    "forbidden_dependencies": [
+      "yarl",
+      "aiohttp"
+    ],
+    "forbidden_imports": [
+      "yarl",
+      "aiohttp"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

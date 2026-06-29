@@ -58,7 +58,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import DiGraph, topological_sort, lexicographical_topological_sort, is_directed_acyclic_graph; from featurelifted.exception import NetworkXError, NetworkXUnfeasible",
+    "import": "from featurelifted import DiGraph, Graph, topological_sort, topological_generations, lexicographical_topological_sort, is_directed_acyclic_graph; from featurelifted.exception import NetworkXError, NetworkXUnfeasible",
     "callable": "featurelifted.topological_sort",
     "signature": "topological_sort(G: DiGraph)"
   },

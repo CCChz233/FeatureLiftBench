@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 import shutil
-import subprocess
 import sys
 import tempfile
 import time
@@ -26,6 +25,9 @@ from .metrics import dependency_name
 from .metrics import directory_size_bytes
 from .scoring import functional_gate
 from .scoring import score_submission
+from .resource_limits import command_result_resource_fields
+from .resource_limits import eval_memory_limit_mb
+from .resource_limits import run_captured_command
 from .validate import validate_task
 
 
@@ -40,10 +42,19 @@ class CommandResult:
     timed_out: bool = False
     skipped: bool = False
     reason: str = ""
+    resource_limited: bool = False
+    stdout_truncated: bool = False
+    stderr_truncated: bool = False
+    log_limit_exceeded: bool = False
 
     @property
     def passed(self) -> bool:
-        return self.skipped or (self.returncode == 0 and not self.timed_out)
+        return self.skipped or (
+            self.returncode == 0
+            and not self.timed_out
+            and not self.resource_limited
+            and not self.log_limit_exceeded
+        )
 
 
 def evaluate_submission(
@@ -120,13 +131,19 @@ def evaluate_submission(
             run_cwd = Path(tmp)
             venv_dir = run_cwd / ".venv"
             venv_python = _venv_python(venv_dir)
+            runtime_submission_path = run_cwd / "submission-runtime"
+            try:
+                shutil.copytree(submission_path, runtime_submission_path, symlinks=True)
+            except OSError as exc:
+                errors.append(f"submission runtime copy failed: {exc}")
             environment_info["venv_dir"] = str(venv_dir)
             environment_info["python"] = str(venv_python)
+            environment_info["runtime_submission_dir"] = str(runtime_submission_path)
             output_package = _output_package(metadata)
             import_guard_dir = _write_import_guard(
                 run_cwd=run_cwd,
                 output_package=output_package,
-                allowed_roots=[submission_path, venv_dir],
+                allowed_roots=[runtime_submission_path, venv_dir],
             )
 
             venv_python, venv_result, eval_tooling_result, venv_errors = _prepare_eval_venv(
@@ -137,7 +154,12 @@ def evaluate_submission(
             )
             errors.extend(venv_errors)
 
-            if venv_python is not None and eval_tooling_result is not None and eval_tooling_result.passed:
+            if (
+                runtime_submission_path.is_dir()
+                and venv_python is not None
+                and eval_tooling_result is not None
+                and eval_tooling_result.passed
+            ):
                 base_env = _base_evaluation_env()
                 dependency_install_result = _install_dependency_lock(
                     venv_python=venv_python,
@@ -153,7 +175,7 @@ def evaluate_submission(
 
                 submission_install_result, install_mode = _install_submission(
                     venv_python=venv_python,
-                    submission_path=submission_path,
+                    submission_path=runtime_submission_path,
                     output_package=output_package,
                     cwd=run_cwd,
                     env=base_env,
@@ -166,7 +188,7 @@ def evaluate_submission(
 
                 if dependency_install_result.passed and submission_install_result.passed:
                     env = _evaluation_env(
-                        submission_path if install_mode in {"path", "path-fallback"} else None,
+                        runtime_submission_path if install_mode in {"path", "path-fallback"} else None,
                         import_guard_dir=import_guard_dir,
                     )
                     build_result = _run_import_check(
@@ -175,16 +197,17 @@ def evaluate_submission(
                         cwd=run_cwd,
                         env=env,
                         timeout_seconds=timeout_seconds,
+                        expected_root=runtime_submission_path if install_mode == "editable" else None,
                     )
                     _write_command_logs(logs_path, "build", build_result)
 
                     if (
                         not build_result.passed
                         and install_mode == "editable"
-                        and _has_direct_output_package(submission_path, output_package)
+                        and _has_direct_output_package(runtime_submission_path, output_package)
                     ):
                         fallback_env = _evaluation_env(
-                            submission_path,
+                            runtime_submission_path,
                             import_guard_dir=import_guard_dir,
                         )
                         fallback_build_result = _run_import_check(
@@ -223,6 +246,10 @@ def evaluate_submission(
                         _write_command_logs(logs_path, "hidden", hidden_result)
 
                         test_pass = public_result.passed and hidden_result.passed
+                        if public_result.resource_limited:
+                            errors.append("public tests exceeded memory limit")
+                        if hidden_result.resource_limited:
+                            errors.append("hidden tests exceeded memory limit")
 
     gate = functional_gate(
         build_pass=build_pass,
@@ -246,6 +273,7 @@ def evaluate_submission(
         "dependency_install": _command_result_payload(dependency_install_result),
         "eval_tooling": _command_result_payload(eval_tooling_result),
         "submission_install": _command_result_payload(submission_install_result),
+        "build": _command_result_payload(build_result),
         "public_tests": _command_result_payload(public_result),
         "hidden_tests": _command_result_payload(hidden_result),
         "metrics": metrics,
@@ -682,8 +710,20 @@ def _run_import_check(
     cwd: Path,
     env: dict[str, str],
     timeout_seconds: int,
+    expected_root: Path | None = None,
 ) -> CommandResult:
-    code = f"import {package}"
+    if expected_root is None:
+        code = f"import {package}"
+    else:
+        root = str(expected_root.resolve())
+        code = (
+            f"import {package} as _m; import os; "
+            f"_path = getattr(_m, '__file__', None); "
+            f"assert _path, 'package has no __file__'; "
+            f"_real = os.path.realpath(_path); "
+            f"_root = os.path.realpath({root!r}); "
+            f"assert _real == _root or _real.startswith(_root + os.sep), (_real, _root)"
+        )
     return _run_command(
         [str(python), "-B", "-c", code],
         cwd=cwd,
@@ -699,12 +739,15 @@ def _run_pytest(
     cwd: Path,
     env: dict[str, str],
     timeout_seconds: int,
+    memory_mb: int | None = None,
 ) -> CommandResult:
+    limit = memory_mb if memory_mb is not None else eval_memory_limit_mb()
     return _run_command(
-        [str(python), "-B", "-m", "pytest", str(test_path)],
+        [str(python), "-B", "-m", "pytest", str(test_path), "--maxfail=1", "-q"],
         cwd=cwd,
         env=env,
         timeout_seconds=timeout_seconds,
+        memory_mb=limit,
     )
 
 
@@ -722,35 +765,27 @@ def _run_command(
     cwd: Path,
     env: dict[str, str],
     timeout_seconds: int,
+    memory_mb: int | None = None,
 ) -> CommandResult:
-    start = time.monotonic()
-    try:
-        completed = subprocess.run(
-            command,
-            cwd=cwd,
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        stderr = exc.stderr
-        if not stderr:
-            stderr = f"command timed out after {timeout_seconds}s"
-        return CommandResult(
-            returncode=124,
-            duration_seconds=time.monotonic() - start,
-            stdout=_ensure_text(exc.stdout),
-            stderr=_ensure_text(stderr),
-            timed_out=True,
-        )
-
+    captured = run_captured_command(
+        command,
+        cwd=cwd,
+        env=env,
+        timeout_seconds=timeout_seconds,
+        memory_mb=memory_mb,
+    )
+    extra = command_result_resource_fields(captured)
     return CommandResult(
-        returncode=completed.returncode,
-        duration_seconds=time.monotonic() - start,
-        stdout=_ensure_text(completed.stdout),
-        stderr=_ensure_text(completed.stderr),
+        returncode=captured.returncode,
+        duration_seconds=captured.duration_seconds,
+        stdout=captured.stdout,
+        stderr=captured.stderr,
+        timed_out=captured.timed_out,
+        resource_limited=captured.resource_limited,
+        stdout_truncated=captured.stdout_truncated,
+        stderr_truncated=captured.stderr_truncated,
+        log_limit_exceeded=captured.log_limit_exceeded,
+        reason=extra.get("reason", ""),
     )
 
 
@@ -767,6 +802,10 @@ def _command_result_payload(result: CommandResult | None) -> dict[str, Any]:
             "duration_seconds": 0.0,
             "timed_out": False,
             "skipped": False,
+            "resource_limited": False,
+            "stdout_truncated": False,
+            "stderr_truncated": False,
+            "log_limit_exceeded": False,
             "reason": "",
         }
     return {
@@ -775,6 +814,10 @@ def _command_result_payload(result: CommandResult | None) -> dict[str, Any]:
         "duration_seconds": round(result.duration_seconds, 6),
         "timed_out": result.timed_out,
         "skipped": result.skipped,
+        "resource_limited": result.resource_limited,
+        "stdout_truncated": result.stdout_truncated,
+        "stderr_truncated": result.stderr_truncated,
+        "log_limit_exceeded": result.log_limit_exceeded,
         "reason": result.reason,
     }
 

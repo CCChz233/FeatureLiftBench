@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full 50-hard run: DeepSeek V4 Pro (mini-swe-agent + --yolo)
+# Full main-board run: mini-swe-agent + --yolo.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -21,12 +21,11 @@ fi
 
 export PATH="$ROOT/.venv/bin:${PATH}"
 
-AGENT_PROFILE="${AGENT_PROFILE:-deepseek_v4_pro}"
+export EVAL_MEMORY_MB="${EVAL_MEMORY_MB:-4096}"
+export AGENT_MEMORY_MB="${AGENT_MEMORY_MB:-8192}"
+export NUM_WORKERS="${NUM_WORKERS:-1}"
 
-"$PYTHON" "$ROOT/harness/scripts/preflight.py" \
-  --bootstrap \
-  --agent-profile "$AGENT_PROFILE" \
-  ${MINI_BIN:+--mini-bin "$MINI_BIN"}
+AGENT_PROFILE="${AGENT_PROFILE:-deepseek_v4_pro}"
 
 if [[ -n "${RESUME_DIR:-}" ]]; then
   OUTPUT="${RESUME_DIR}"
@@ -37,13 +36,33 @@ else
   RESUME_FLAG=()
 fi
 
+mkdir -p "$OUTPUT"
+
+PREFLIGHT_ARGS=(
+  --bootstrap
+  --agent-profile "$AGENT_PROFILE"
+  --output-dir "$OUTPUT"
+)
+if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" || -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
+  PREFLIGHT_ARGS+=(--docker-suite)
+fi
+"$PYTHON" "$ROOT/harness/scripts/preflight.py" \
+  "${PREFLIGHT_ARGS[@]}" \
+  ${MINI_BIN:+--mini-bin "$MINI_BIN"}
+
+# shellcheck source=harness/scripts/run_lock.sh
+source "$ROOT/harness/scripts/run_lock.sh"
+acquire_run_lock "$OUTPUT"
+
 EXTRA_AGENT_PASSES="${EXTRA_AGENT_PASSES:-0}"
 RETRY_RATE_LIMIT="${RETRY_RATE_LIMIT:-2}"
 
 echo "Profile: ${AGENT_PROFILE}"
 echo "Output:  ${OUTPUT}"
 echo "Python:  $PYTHON"
-echo "Workers: ${NUM_WORKERS:-4}"
+echo "Workers: ${NUM_WORKERS}"
+echo "Eval memory MB: ${EVAL_MEMORY_MB}"
+echo "Agent memory MB: ${AGENT_MEMORY_MB}"
 if [[ "${#RESUME_FLAG[@]}" -gt 0 ]]; then
   echo "Resume:  yes"
 fi
@@ -51,20 +70,31 @@ if [[ "${EXTRA_AGENT_PASSES}" != "0" ]]; then
   echo "Extra agent passes: ${EXTRA_AGENT_PASSES}"
 fi
 
+set +e
 $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --agent mini-swe-agent \
   --agent-config harness/config/agents.toml \
   --agent-profile "${AGENT_PROFILE}" \
   --env-file .env \
   --yolo \
-  --num-workers "${NUM_WORKERS:-4}" \
+  --num-workers "${NUM_WORKERS}" \
   --retry-rate-limit "${RETRY_RATE_LIMIT}" \
   --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
   ${NO_PROGRESS:+--no-progress} \
   --output "${OUTPUT}" \
   "${RESUME_FLAG[@]}"
+RUN_AGENT_STATUS=$?
+set -e
+
+if [[ "${RUN_AGENT_STATUS}" -ge 2 ]]; then
+  echo "run-agent failed before completing the suite (exit ${RUN_AGENT_STATUS}); skipping analysis" >&2
+  exit "${RUN_AGENT_STATUS}"
+fi
 
 $PYTHON harness/scripts/analyze_benchmark_suite.py "${OUTPUT}"
 $PYTHON harness/scripts/report_entanglement_coverage.py --suite-dir "${OUTPUT}"
 
+if [[ "${RUN_AGENT_STATUS}" -eq 1 ]]; then
+  echo "Suite completed with benchmark failures; analysis was generated." >&2
+fi
 echo "Done: ${OUTPUT}"

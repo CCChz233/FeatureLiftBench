@@ -1,0 +1,80 @@
+{
+  "task_id": "astroid__nodes_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "astroid",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "astroid",
+    "url": "https://github.com/PyCQA/astroid",
+    "commit": "2.14.2-installed-snapshot",
+    "license": "LGPL-2.1-or-later"
+  },
+  "feature": {
+    "name": "Astroid parse and nodes subset",
+    "description": "Extract astroid string parsing into NodeNG trees via TreeRebuilder without inference, brain plugins, or import introspection.",
+    "source_entrypoints": [
+      "astroid.builder.parse",
+      "astroid.rebuilder.TreeRebuilder",
+      "astroid.nodes"
+    ],
+    "included_behaviors": [
+      "parse Python source into astroid Module trees",
+      "rebuild functions, classes, async, and match statements",
+      "preserve docstrings, annotations, and default arguments",
+      "NodeNG as_string and basic structural attributes"
+    ],
+    "excluded_behaviors": [
+      "inference engine and brain module overrides",
+      "live object introspection and import graph analysis",
+      "pylint integration and original astroid import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "framework_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "AST rebuilding couples stdlib ast parsing, TreeRebuilder visitor dispatch, scoped node graphs, and manager transform hooks.",
+    "signals": [
+      "TreeRebuilder maintains global/import-from/delayed-assattr stacks",
+      "nodes package mirrors stdlib AST with extra inference hooks",
+      "builder applies transform visitors after rebuild",
+      "full astroid includes large brain/ inference subsystems"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, nodes; from featurelifted.nodes import Module, ClassDef, FunctionDef, AsyncFunctionDef, Match",
+    "callable": "featurelifted.parse",
+    "signature": "parse(code: str, module_name: str = '', path: str | None = None) -> Module"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "wrapt"
+    ],
+    "forbidden_dependencies": [
+      "astroid"
+    ],
+    "forbidden_imports": [
+      "astroid"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,197 @@
+name: benchmark
+
+"on":
+  push:
+    branches:
+      - main
+      - dev
+      - deps
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: (optional) ref to benchmark
+
+env:
+  FORCE_COLOR: "1"
+  PYTHONHASHSEED: "42"
+  BASELINE_RELEASE_TAG: microbenchmarks
+  PR_BENCHMARK_COMPARE_FAIL: min:5%
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: install valgrind
+        uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05
+        with:
+          packages: valgrind
+      - name: check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+      - name: install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25
+      - name: resolve benchmark metadata
+        id: metadata
+        run: |
+          mapfile -t python_info < <(nix develop .#benchmark --command bash -c "python - <<'PY'
+          import platform
+          print(platform.python_version())
+          print(platform.python_implementation())
+          PY")
+          python_version=${python_info[0]}
+          python_impl=${python_info[1]}
+          python_series=${python_version%.*}
+          arch=$(uname -m)
+          baseline_asset_name="GHA-linux-cachegrind-${arch}-${python_impl}-${python_series}-baseline.json"
+          baseline_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${BASELINE_RELEASE_TAG}/${baseline_asset_name}"
+          {
+            echo "python_version=$python_version"
+            echo "python_series=$python_series"
+            echo "baseline_asset_name=$baseline_asset_name"
+            echo "baseline_url=$baseline_url"
+          } >> "$GITHUB_OUTPUT"
+      - name: benchmark and compare to baseline
+        id: benchmark
+        run: |
+          compare_fail_expr=
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            compare_fail_expr="${PR_BENCHMARK_COMPARE_FAIL}"
+          fi
+
+          set +e
+          nix develop .#benchmark --command bash -c '
+            set -euo pipefail
+            git checkout ${{ github.event.inputs.ref || github.sha }}
+            # install a non-editable version of bidict at the revision under test
+            uv pip install --python "$VIRTUAL_ENV/bin/python" --no-deps .
+            # restore the current revision so we use its version of tests/microbenchmarks.py
+            git checkout ${{ github.sha }}
+            # move aside the '"'"'bidict'"'"' subdirectory to make sure we always import the installed version
+            mv -v bidict src
+            curl -L -s -o baseline.json "${{ steps.metadata.outputs.baseline_url }}"
+            line1=$(head -n1 baseline.json)
+            [ "$line1" = "{" ]
+            compare_fail_args=()
+            if [ -n "${COMPARE_FAIL_EXPR:-}" ]; then
+              compare_fail_args+=(--benchmark-compare-fail="$COMPARE_FAIL_EXPR")
+            fi
+            ./cachegrind.py pytest -c /dev/null -n0 \
+                --benchmark-autosave \
+                --benchmark-columns=min,rounds,iterations \
+                --benchmark-disable-gc \
+                --benchmark-group-by=name \
+                --benchmark-compare=baseline.json \
+                "${compare_fail_args[@]}" \
+                microbenchmarks.py
+          ' 2>&1 | tee benchmark-output.txt
+          benchmark_status=${PIPESTATUS[0]}
+          echo "exit_code=$benchmark_status" >> "$GITHUB_OUTPUT"
+          if [ "$benchmark_status" -eq 0 ]; then
+            result_state=ok
+            result_message='no threshold-triggering regressions detected'
+          elif grep -Fq 'Performance has regressed:' benchmark-output.txt; then
+            result_state=regression
+            result_message="one or more benchmarks slowed down by at least ${PR_BENCHMARK_COMPARE_FAIL}; workflow kept green because PR benchmarking is informational"
+          else
+            result_state=failed
+            result_message='benchmark execution failed'
+          fi
+          echo "result_state=$result_state" >> "$GITHUB_OUTPUT"
+          echo "result_message=$result_message" >> "$GITHUB_OUTPUT"
+          if [ "$benchmark_status" -ne 0 ] && [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "::warning::Benchmark comparison exceeded the informational PR threshold (${PR_BENCHMARK_COMPARE_FAIL}) or the benchmark run failed; see the job summary and artifact for details."
+            exit 0
+          fi
+          exit "$benchmark_status"
+        env:
+          COMPARE_FAIL_EXPR: ${{ github.event_name == 'pull_request' && env.PR_BENCHMARK_COMPARE_FAIL || '' }}
+      - name: summarize benchmark result
+        if: always()
+        run: |
+          {
+            echo '## Benchmark result'
+            echo
+            echo "- Baseline asset: \`${{ steps.metadata.outputs.baseline_asset_name }}\`"
+            echo "- Benchmark run: [${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              echo "- PR mode: informational only"
+              echo "- Warning threshold: \`${PR_BENCHMARK_COMPARE_FAIL}\`"
+            else
+              echo "- PR mode: n/a"
+              echo "- Warning threshold: not applied"
+            fi
+            echo "- Result: ${{ steps.benchmark.outputs.result_message }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: prepare PR benchmark comment
+        if: always() && github.event_name == 'pull_request'
+        env:
+          BASELINE_ASSET_NAME: ${{ steps.metadata.outputs.baseline_asset_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RESULT_MESSAGE: ${{ steps.benchmark.outputs.result_message }}
+          RESULT_STATE: ${{ steps.benchmark.outputs.result_state }}
+        run: |
+          mkdir -p benchmark-pr-comment
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          case "$RESULT_STATE" in
+            ok)
+              status_line=':white_check_mark: No threshold-triggering regressions detected.'
+              ;;
+            regression)
+              status_line=':warning: Informational benchmark regression detected.'
+              ;;
+            *)
+              status_line=':warning: Benchmark execution failed.'
+              ;;
+          esac
+          cat > benchmark-pr-comment/comment.md <<EOF
+          <!-- bidict-benchmark-comment -->
+          ## Benchmark report
+
+          ${status_line}
+
+          - Baseline asset: \`${BASELINE_ASSET_NAME}\`
+          - Threshold: \`${PR_BENCHMARK_COMPARE_FAIL}\`
+          - Result: ${RESULT_MESSAGE}
+          - Run: [benchmark workflow run](${run_url})
+
+          _This benchmark check is informational and does not block merging._
+          EOF
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          payload = {
+              'pr_number': os.environ['PR_NUMBER'],
+              'result_state': os.environ['RESULT_STATE'],
+              'result_message': os.environ['RESULT_MESSAGE'],
+              'baseline_asset_name': os.environ['BASELINE_ASSET_NAME'],
+              'threshold': os.environ['PR_BENCHMARK_COMPARE_FAIL'],
+              'run_url': f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+          }
+          Path('benchmark-pr-comment/result.json').write_text(json.dumps(payload, indent=2) + '\n')
+          PY
+      - name: archive PR benchmark comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: benchmark-pr-comment
+          path: benchmark-pr-comment
+          if-no-files-found: error
+      - name: archive benchmark results
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+        with:
+          name: microbenchmark results (CPython ${{ steps.metadata.outputs.python_version }})
+          path: |
+            .benchmarks
+            benchmark-output.txt
+          include-hidden-files: true
+          if-no-files-found: error
+
+permissions:
+  contents: read

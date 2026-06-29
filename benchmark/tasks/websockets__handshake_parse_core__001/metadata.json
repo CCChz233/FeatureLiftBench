@@ -1,0 +1,92 @@
+{
+  "task_id": "websockets__handshake_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "websockets",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling",
+    "no-network"
+  ],
+  "source": {
+    "name": "websockets",
+    "url": "https://github.com/python-websockets/websockets",
+    "commit": "d4303a5d3e373fc8c34177c3dec1a9c75c8865fa",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "WebSocket HTTP upgrade handshake parsing",
+    "description": "Extract websockets HTTP/1.1 handshake request parsing, header grammars (Connection, Upgrade, extensions, subprotocols), and handshake header validation without socket I/O or frame protocol.",
+    "source_entrypoints": [
+      "websockets.headers.parse_connection",
+      "websockets.headers.parse_upgrade",
+      "websockets.headers.parse_extension",
+      "websockets.headers.parse_subprotocol",
+      "websockets.http11.Request.parse",
+      "websockets.http11.Response.parse",
+      "websockets.datastructures.Headers",
+      "websockets.server.ServerProtocol.process_request",
+      "websockets.utils.accept_key"
+    ],
+    "included_behaviors": [
+      "parse Connection and Upgrade header lists with OWS and empty elements",
+      "parse Sec-WebSocket-Extensions and Sec-WebSocket-Protocol grammars",
+      "parse WebSocket handshake HTTP requests from byte streams",
+      "case-insensitive Headers lookup with multiple values per name",
+      "validate handshake request headers including Sec-WebSocket-Key and Version",
+      "compute Sec-WebSocket-Accept from Sec-WebSocket-Key",
+      "raise typed errors for malformed headers and upgrade requests"
+    ],
+    "excluded_behaviors": [
+      "socket and asyncio/sync network I/O",
+      "WebSocket frame encoding and masking",
+      "ServerProtocol and ClientProtocol connection state machines",
+      "extensions negotiation with permessage-deflate implementations",
+      "CLI, docs, CI, and original tests",
+      "original websockets package import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Handshake parsing couples RFC 7230/6455 header grammars, case-insensitive header storage, generator-based HTTP/1.1 line parsing, and upgrade validation rules.",
+    "signals": [
+      "manual ABNF parsers in headers.py share list/OWS helpers",
+      "Headers preserves insertion order and duplicate header names",
+      "Request.parse uses generator coroutines over StreamReader buffers",
+      "upgrade validation composes parse_connection, parse_upgrade, and key checks",
+      "full websockets package includes large unrelated async/sync transport stacks"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Headers, Request, Response, accept_key, generate_key, validate_handshake_request; from featurelifted.headers import parse_connection, parse_upgrade, parse_extension, parse_subprotocol, build_subprotocol, validate_subprotocols, parse_authorization_basic, build_authorization_basic, build_www_authenticate_basic; from featurelifted.exceptions import InvalidHeaderFormat, InvalidHeaderValue, InvalidUpgrade, InvalidHeader, InvalidOrigin, SecurityError; from featurelifted.http11 import parse_headers; from featurelifted.streams import StreamReader",
+    "callable": "featurelifted.validate_handshake_request",
+    "signature": "validate_handshake_request(request, *, origins=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "websockets"
+    ],
+    "forbidden_imports": [
+      "websockets"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

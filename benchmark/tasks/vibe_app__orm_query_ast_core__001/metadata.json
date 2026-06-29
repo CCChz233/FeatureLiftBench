@@ -56,7 +56,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Query, compile_query",
+    "import": "from featurelifted import Query, compile_query; from featurelifted.state import GLOBAL_STATE, reset_state",
     "callable": "featurelifted.compile_query",
     "signature": "compile_query(query: Query) -> str"
   },

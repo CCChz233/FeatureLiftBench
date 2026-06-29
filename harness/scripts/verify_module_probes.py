@@ -151,8 +151,22 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
             hidden_passed = hidden.get("passed")
             stdout_path = eval_out / "logs" / "hidden.stdout"
             stdout = stdout_path.read_text(encoding="utf-8") if stdout_path.is_file() else ""
+            build_stdout_path = eval_out / "logs" / "build.stderr"
+            build_stderr = (
+                build_stdout_path.read_text(encoding="utf-8")
+                if build_stdout_path.is_file()
+                else ""
+            )
             must_fail = list(probe.get("must_fail_tests") or [])
             matched_tests = [name for name in must_fail if name in stdout and "FAILED" in stdout]
+            import_blocked = (
+                result.get("build_pass") is False
+                or hidden.get("returncode") == 2
+                or "ModuleNotFoundError" in stdout
+                or "ImportError" in stdout
+                or "ModuleNotFoundError" in build_stderr
+                or "ImportError" in build_stderr
+            )
             probe_results.append(
                 {
                     "label": probe.get("label"),
@@ -161,7 +175,13 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
                     "must_fail_tests": must_fail,
                     "hidden_passed": hidden_passed,
                     "matched_failures": matched_tests,
-                    "passed": hidden_passed is False and (not must_fail or bool(matched_tests)),
+                    "import_blocked": import_blocked,
+                    "passed": hidden_passed is False
+                    and (
+                        not must_fail
+                        or bool(matched_tests)
+                        or (import_blocked and bool(removed))
+                    ),
                 }
             )
 
@@ -188,6 +208,7 @@ def main() -> None:
         task_dirs = sorted(
             path for path in TASKS_DIR.iterdir() if path.is_dir() and (path / "metadata.json").is_file()
         )
+    task_dir_map = {path.name: path for path in task_dirs}
 
     audit = audit_design_coverage(task_dirs, min_probes=args.min_probes)
     gaps = [item for item in audit if not item["ok"]]
@@ -195,7 +216,8 @@ def main() -> None:
     oracle_reports: list[dict[str, object]] = []
     if args.verify_oracle:
         for item in audit:
-            task_dir = TASKS_DIR / str(item["task_id"])
+            task_id = str(item["task_id"])
+            task_dir = task_dir_map.get(task_id, TASKS_DIR / task_id)
             probes = list(item.get("probes") or [])
             if probes:
                 oracle_reports.append(verify_oracle_probes(task_dir, probes))

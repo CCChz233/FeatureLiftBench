@@ -1,0 +1,78 @@
+{
+  "task_id": "python_box__config_box_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "python-box",
+    "config",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "python-box",
+    "url": "https://github.com/cdgriffith/Box",
+    "commit": "7.4.1-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "ConfigBox dot-access config transforms",
+    "description": "Extract python-box ConfigBox typed accessors without importing box.",
+    "source_entrypoints": [
+      "box.config_box.ConfigBox",
+      "box.box.Box"
+    ],
+    "included_behaviors": [
+      "dot and bracket dict access",
+      "case-insensitive ConfigBox keys",
+      "bool/int/float/list coercion helpers",
+      "default values on missing keys"
+    ],
+    "excluded_behaviors": [
+      "yaml/toml/msgpack converters and file loaders",
+      "ShorthandBox and BoxList extras",
+      "original box import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "ConfigBox couples Box dot-access recursion, case folding, and typed coercion tables.",
+    "signals": [
+      "__getattr__ lowercases missing keys",
+      "bool() treats yes/no/false strings",
+      "list() splits comma strings with mod callback",
+      "defaults bypass BoxKeyError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Box, ConfigBox; from featurelifted.exceptions import BoxKeyError",
+    "callable": "featurelifted.ConfigBox",
+    "signature": "ConfigBox(*args, **kwargs) -> ConfigBox"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "python-box",
+      "box"
+    ],
+    "forbidden_imports": [
+      "box"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

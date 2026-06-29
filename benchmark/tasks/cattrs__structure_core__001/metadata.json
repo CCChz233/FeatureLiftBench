@@ -1,0 +1,93 @@
+{
+  "task_id": "cattrs__structure_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "cattrs",
+    "serialization",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling",
+    "third_party_dependency_coupling"
+  ],
+  "source": {
+    "name": "cattrs",
+    "url": "https://github.com/python-attrs/cattrs",
+    "commit": "5dc43b3f3887f443a58c61d7c89650357c236d51",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Structure/unstructure core",
+    "description": "Extract cattrs Converter with structure/unstructure for attrs classes, dataclasses, and nested dict/list payloads with generated dict hooks and field overrides, without original cattrs import.",
+    "source_entrypoints": [
+      "cattrs.Converter",
+      "cattrs.Converter.structure",
+      "cattrs.Converter.unstructure",
+      "cattrs.structure",
+      "cattrs.unstructure",
+      "cattrs.gen.make_dict_structure_fn",
+      "cattrs.gen.make_dict_unstructure_fn",
+      "cattrs.gen.override",
+      "cattrs.dispatch.MultiStrategyDispatch",
+      "cattrs.errors.ClassValidationError"
+    ],
+    "included_behaviors": [
+      "round-trip attrs and dataclass instances through dict payloads",
+      "structure and unstructure nested mappings and sequences",
+      "register custom dict structure/unstructure hooks via gen helpers",
+      "apply per-field rename and omit_if_default overrides",
+      "reject extra dict keys when forbid_extra_keys is enabled"
+    ],
+    "excluded_behaviors": [
+      "preconf JSON/YAML/msgpack adapters and third-party codec integrations",
+      "strategies package for union/subclass hook registry explosion",
+      "GenConverter code generation and transform_error validation helpers",
+      "upstream tests, docs, benchmarks, and packaging metadata",
+      "original cattrs import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "cattrs couples attrs/dataclass introspection, multi-strategy hook dispatch, generated dict hooks, collection factories, and validation errors across converters, dispatch, gen, and _compat modules while depending on attrs metadata.",
+    "signals": [
+      "MultiStrategyDispatch resolves structure hooks by type predicates",
+      "make_dict_structure_fn compiles per-field overrides into closures",
+      "cols/_compat bridge attrs fields, dataclasses, and typing generics",
+      "forbid_extra_keys and nested payloads share ClassValidationError paths"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Converter, structure, unstructure; from featurelifted.gen import make_dict_structure_fn, make_dict_unstructure_fn, override; from featurelifted.errors import ClassValidationError, ForbiddenExtraKeysError",
+    "callable": "featurelifted.Converter.structure",
+    "signature": "Converter.structure(obj: Any, cl: type) -> Any"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "attrs"
+    ],
+    "forbidden_dependencies": [
+      "cattrs"
+    ],
+    "forbidden_imports": [
+      "cattrs"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

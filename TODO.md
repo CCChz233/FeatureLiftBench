@@ -1,15 +1,144 @@
 # FeatureLiftBench TODO
 
-这个 TODO 记录 FeatureLiftBench pilot MVP 的完成状态和后续 backlog。FeatureLiftBench 当前定位为：**面向缠绕仓库的功能级解耦评测基准**，英文问题是 **Can Code Agents Decouple Features from Entangled Repositories?**
+工程 backlog（非文档导航）。文档入口 → [docs/README.md](docs/README.md)
 
-当前最小闭环已经跑通：**主榜 50 hard** + **3 smoke**、Oracle **50/50**、Harness **88** 单测、Flash-50 baseline **41/50 functional pass**。**扩榜已完成**（2026-06-25）；**下一阶段：难度校准**（hidden/closure）+ 本地/API 模型对比实验。
+| 主题 | 文档 |
+| --- | --- |
+| 扩题 50→100 | [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)（七步执行）· [docs/EXPANSION.md](docs/EXPANSION.md) · [docs/candidate_backlog.md](docs/candidate_backlog.md) |
+| 官方 baseline | [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) |
+| vLLM / API 实验 | [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) · [RUN.md](RUN.md) |
+| 已知局限 | [docs/limitations.md](docs/limitations.md) |
 
-**本地 vLLM 6-run 汇总** → [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md)
-**SiliconFlow API 实验（GLM / MiniMax / Kimi）** → [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) §5 · [RUN.md](RUN.md)
+**当前状态（2026-06-28）：** batch-0 **50 hard** 冻结（grandfather） · batch-1 **50/50 入榜** · 主榜 **100/100 hard** · Oracle **100/100** · batch-1 质量验收 **进行中**（G0–G4 evidence 50/50，Flash 运行中）
 
-**Benchmark 现状（含 pass 口径、Flash-50、Pro 进度）** → [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md)
+## 现在照这个做
 
-**已知缺陷与限制**见 [docs/limitations.md](docs/limitations.md)。
+**当前唯一主线：** batch-1 **质量验收** — evidence + Flash + gate promote（见 [docs/BENCHMARK_ACCEPTANCE_2026-06-28.md](docs/BENCHMARK_ACCEPTANCE_2026-06-28.md)）
+
+**当前正在做的题：** Flash 校准（`experiments/run-batch1-flash-missing.sh`）
+
+**本轮目标：** batch-1 **50/50 promote** — **已完成**
+
+**当前最近一步：** 质量验收通过；`check_batch1_acceptance.py` **50/50**。
+
+### 为什么先做这一题
+
+`httpx__request_model_core__001` 的目标不是轻量 URL parser，而是从 HTTPX 中解耦一个离线 HTTP request builder：
+
+```text
+Request / URL / Headers / QueryParams / Cookies
++ client/request merge semantics
+- network / transport / response / async runtime
+```
+
+这题只有在同时满足以下三点时才继续推进：
+
+| Gate | 必须满足 |
+| --- | --- |
+| Useful | 提取物是真实可复用的离线 request model / request builder |
+| Hard | 不是单文件 helper；跨 URL、headers、cookies、body、merge 语义等多个模块 |
+| Testable | public/hidden 都是 deterministic offline pytest；oracle/copy-all/naive baseline 能分层 |
+
+### 当前进度
+
+| 项 | 目标 | 当前 |
+| --- | ---: | ---: |
+| batch-0（冻结） | 50 | 50 |
+| backlog idea | 80 | 30 |
+| hard-first shortlist | 5 | 5 |
+| design spike | 1 | 1（`httpx` 已写） |
+| staging pilot | 1 | 1（已 promote） |
+| staging 进行中 | 20 | 0 |
+| batch-1 已入榜 | 50 | 50 |
+| 主榜合计 | 100 | 100 |
+
+### 本周执行清单
+
+按顺序做，前一步不过不要往后走。
+
+1. **确认 spike 边界**
+   - 文件：[docs/task_designs/httpx__request_model_core__001.md](docs/task_designs/httpx__request_model_core__001.md)
+   - 产物：确认 output API、included/excluded behaviors、hidden 测试点。
+   - 通过标准：仍然是 useful + hard + testable；如果降成 URL-only，直接 redesign。
+
+2. **创建 staging 目录**
+   - 目标目录：`benchmark/staging/httpx__request_model_core__001/`
+   - 必备文件：
+     ```text
+     metadata.json
+     requirements.lock
+     repo/
+     public_tests/
+     hidden_tests/
+     evaluation/forbidden_imports.txt
+     evaluation/oracle_manifest.json
+     ```
+   - 产物：HTTPX pinned source snapshot + 初版 metadata/tests/evaluation。
+
+3. **做 throwaway oracle closure**
+   - 位置：`benchmark/submissions/httpx__request_model_core__001/oracle/`
+   - 目标：先能证明题可解，不要求第一次就优雅。
+   - 通过标准：
+     - oracle functional pass；
+     - oracle closure 不是单文件薄 wrapper；
+     - 不包含 network-capable API surface。
+
+4. **做 naive baseline**
+   - 目标：写一个浅实现，例如 `URL=str`、`Headers=dict`、`QueryParams=dict`。
+   - 通过标准：public 可以过一部分或大部分，但 hidden 必须因为真实语义缺失而失败。
+   - 失败原因应指向 duplicate query、raw headers、cookie merge、body/header interaction 等具体行为。
+
+5. **跑本地验证**
+   ```bash
+   export PYTHONPATH=harness
+   python -B -m featureliftbench.cli validate-task benchmark/staging/httpx__request_model_core__001/
+   python3 harness/scripts/audit_output_imports.py benchmark/staging/httpx__request_model_core__001/ --fail-on-gap
+   python3 harness/scripts/build_oracle_submission.py benchmark/staging/httpx__request_model_core__001/
+   python -B -m featureliftbench.cli eval benchmark/staging/httpx__request_model_core__001/ \
+     benchmark/submissions/httpx__request_model_core__001/oracle \
+     --output experiments/validate-httpx__request_model_core__001
+   python3 harness/scripts/verify_module_probes.py benchmark/staging/httpx__request_model_core__001/ \
+     --verify-oracle
+   ```
+
+6. **跑 Flash 单题校准**
+   ```bash
+   export PYTHONPATH=harness
+   python -B -m featureliftbench.cli run-agent benchmark/staging/httpx__request_model_core__001/ \
+     --agent mini-swe-agent \
+     --agent-config harness/config/agents.toml \
+     --agent-profile deepseek_v4_flash \
+     --env-file .env \
+     --yolo \
+     --output experiments/mini-swe-agent/httpx__request_model_core__001-flash-001
+   ```
+   - 通过标准：public 指引够清楚，hidden 有判别力；copy-heavy pass 只能拿低 final_score。
+
+7. **决定 promoted / redesign / dropped**
+   - Promote 条件：oracle 过、copy-all 过但 high extraction、naive hidden fail、module probes ≥3、Flash 结果有判别力。
+   - Redesign 条件：题有价值但边界太宽/太窄、hidden 不够准、oracle closure 不理想。
+   - Drop 条件：不好稳定评估、必须复制大半 HTTPX、或实际难度只是轻量 utility。
+
+### 当前不要做
+
+- 不要修改 batch-0 50 题。
+- 不要为了数量开 10 个 staging。
+- 不要先补多模型 full run；模型实验等第一题模板跑通后再继续。
+- 不要让没有 oracle 的题进入 `benchmark/tasks/`。
+- 不要把网络 I/O、transport、response streaming 或 async runtime 纳入 `httpx` 这题。
+
+### 后续队列
+
+`httpx` pilot 跑通后，按这个顺序推进下一批 hard-first spike：
+
+1. `pydantic_v1__validation_error_core__001`
+2. `python_dateutil__rrule_core__001`
+3. `jsonpath_ng__expression_eval_core__001`
+4. `configobj__roundtrip_config_core__001`
+
+完整扩题规则见 [docs/EXPANSION.md](docs/EXPANSION.md)，**七步执行标准**见 [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)，候选池见 [docs/candidate_backlog.md](docs/candidate_backlog.md)。
+
+---
 
 ## 项目目标
 
@@ -23,14 +152,7 @@ Agent 能否在保持目标功能行为正确的前提下，
 
 现实意义：评估 Agent 能否把 vibe coding 和 legacy code 中常见的“能跑但混乱”的仓库整理成更模块化、可维护、可复用的软件资产。
 
-前 10 条任务属于 **clean OSS pilot set**，主要用于验证评测闭环和基础区分度。当前已开始加入 **entangled / hard-plus** 任务，第一条是 `sqlparse__parse_format_core__001`。后续应继续覆盖：
-
-* framework coupling；
-* config/environment coupling；
-* global state / registry coupling；
-* resource coupling；
-* implicit dependency coupling；
-* legacy/vibe-coded clutter。
+前 10 条任务属于早期 **clean OSS pilot**；主榜现已 **50 hard**，entanglement 七类已标满。题源与缠绕分布见 [benchmark_tasks.md](docs/benchmark_tasks.md)。
 
 ## 核心关系
 
@@ -65,7 +187,7 @@ experiments/              # 成绩单
 
 历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。**当前主 baseline：Flash-50** `benchmark-50-hard-flash-001` → **41/50 (82%)** functional；Pro-50 re-eval **42/50 (84%)**。本地 vLLM 与 SiliconFlow 实验见 [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md)。
 
-## 当前 sprint：50 hard 扩榜完成（2026-06-25）
+## 已完成 sprint：50 hard 扩榜（2026-06-25）
 
 | 优先级 | 事项 | 状态 |
 | --- | --- | --- |
@@ -75,11 +197,10 @@ experiments/              # 成绩单
 | P0 | `verify_all_oracles.py` 50/50 | **完成** |
 | P0 | Design notes 50/50 + module probes ≥3 | **完成** |
 | P1 | 文档：benchmark_tasks / BENCHMARK_STATUS / README / limitations | **完成** |
-| 进行中 | Pro-50 baseline（`deepseek_v4_pro`） | 见 `benchmark-50-hard-pro-*` |
-| 下一步 | 难度校准：high-extraction pass 题加 hidden；functional 压向 20–30% | — |
-| 下一步 | Pro-50 完成后更新 BENCHMARK_STATUS + entanglement 分层表 | — |
+| P1 | Pro-50 baseline（`deepseek_v4_pro`）re-eval 冻结 | **完成**（42/50） |
+| P2 | 难度校准：functional 压向 20–30% | **暂缓**（用 extraction / final_score 区分） |
 
-## 历史 sprint：28 题夯实（2026-06-24）
+## 已完成 sprint：28 题夯实（2026-06-24）
 
 | 优先级 | 事项 | 状态 |
 | --- | --- | --- |
@@ -111,7 +232,7 @@ experiments/              # 成绩单
 
 ## 目录结构
 
-三层产品架构见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)；目录映射见 [`docs/DIRECTORY.md`](docs/DIRECTORY.md)；**题目格式规范**见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。
+架构与目录见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)；题目格式见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。
 
 ```text
 docs/           # 文档
@@ -425,33 +546,16 @@ python3 -B -m featureliftbench.cli run-agent \
 * `featureliftbench/task/` 子包；
 * `featureliftbench/evaluation/` 子包；
 * `featureliftbench/baselines/` 子包；
-* `docs/` 大量设计文档；
+* `docs/` 设计文档（已整理为 [docs/README.md](docs/README.md) 索引）；
 * 更复杂的多 Agent leaderboard/report；
 * 复杂 RelevanceScore；
-* Docker/container 隔离。
+* Docker eval 官方流程固化与 Agent 容器化；
+* Go v2 多语言扩题（见 [BENCHMARK_SPEC.md](docs/BENCHMARK_SPEC.md)）。
 
-等 `evaluator.py` 或 `checks.py` 真的变大，再拆模块。
+等 evaluator 或 checks 模块继续膨胀时再拆子包。
 
-## 当前状态
+---
 
-当前 TODO 中的 pilot MVP checklist 已全部完成，并且已经具备真实 Agent Harness 和十条 benchmark task。
+## 历史里程碑（pilot → 50 hard，存档）
 
-已完成两轮完整 10 条 `mini-swe-agent` suite，结果目录：
-
-* `outputs/mini-swe-agent/deepseek-v4-pro-suite-10-hard-001/`：10/10 通过，avg `final_score=0.407`。
-* `outputs/mini-swe-agent/deepseek-v4-flash-suite-10-hard-001/`：9/10 通过，avg `final_score=0.346`；`jsonschema` hidden 失败。
-
-这两轮历史 run 的逐步轨迹在 `agent/trajectory.json`（含 step 数与 token）。当时在不改 harness 代码的前提下，把用量汇总落到：
-
-* 每个 suite 目录：`agent_usage.json`、`agent_usage.md`
-* 跨 suite 对比：`experiments/mini-swe-agent/suite-comparison.{json,md}`
-* Suite 分析报告：`experiments/mini-swe-agent/suite-analysis.{json,md}`，由 `harness/scripts/analyze_suite_results.py` 生成
-
-更早的 pilot 记录：
-
-* 使用本机 conda 环境 `/Users/chz/anaconda3/envs/miniswe/bin/mini`。
-* `tomlkit` 曾暴露任务规范缺口，已修正 metadata/public tests 后单独重跑通过。
-* `packaging` Agent 跑通，`extraction_ratio≈0.58`，说明评分能区分 copy-all 与相对精简的解耦结果。
-* 新增 5 条 hard task 均已通过 full-copy oracle 验证。
-
-下一步：围绕 `jsonschema` hidden 失败和高 extraction ratio 任务（`click`、`markdown_it`、`pluggy`、`pyyaml`）做失败模式分析，决定先加固 hidden tests 还是先调整任务边界。
+以下 Phase 0–6 checklist 为 **2026-06 初 pilot 开发记录**，路径已迁移至 `benchmark/tasks/`；保留供追溯，**非当前待办**。

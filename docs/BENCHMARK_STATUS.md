@@ -1,10 +1,12 @@
 # Benchmark 现状与待修问题
 
-本文档记录 **当前 50 hard 主榜 + 3 smoke** 的健康度、baseline、评分口径与后续校准优先级。
+本文档记录 **batch-0 五十题 + 3 smoke** 的健康度、**官方 DeepSeek baseline**、评分口径与维护优先级。
 
-相关文档：[limitations.md](limitations.md) · [SETUP.md](SETUP.md) · [benchmark_tasks.md](benchmark_tasks.md) · [TASK_FORMAT.md](TASK_FORMAT.md) · [CONCEPTS.md](CONCEPTS.md)
+**非官方实验**（本地 vLLM、SiliconFlow API）→ [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)
 
-最后更新：**2026-06-27**（pytest OOM 事故记录 + 内存隔离列为 P0）
+相关文档：[limitations.md](limitations.md) · [SETUP.md](SETUP.md) · [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) · [benchmark_tasks.md](benchmark_tasks.md) · [TASK_FORMAT.md](TASK_FORMAT.md) · [CONCEPTS.md](CONCEPTS.md)
+
+最后更新：**2026-06-27**（题目策展 [EXPANSION.md](EXPANSION.md)；内存安全 [SETUP.md](SETUP.md) §4）
 
 ---
 
@@ -62,6 +64,15 @@ extraction_ratio = submission Python LOC / repo Python LOC
 | `resource_coupling` | 4 |
 | `third_party_dependency_coupling` | 1 |
 
+### 题源构成（策展口径）
+
+| 类型 | 数量 | 说明 |
+| --- | ---: | --- |
+| **真实开源库切片** | 43 | pinned upstream `repo/`；主论文叙事 |
+| **策展 vibe_app** | 7 | `benchmark/sources/vibe_app/`；legacy / vibe-coded 应力切片 |
+
+完整原则见 [EXPANSION.md](EXPANSION.md)。
+
 ---
 
 ## Baseline 跑分
@@ -99,12 +110,14 @@ extraction_ratio = submission Python LOC / repo Python LOC
 | 扩榜前 25 hard（Phase 0 加严后） | 23/25（92%） |
 | 新增 25 hard | 18/25（72%） |
 
-**校准目标 vs 现状：**
+**校准目标 vs 现状（参考，可随论文周期再评估）：**
 
-| 指标 | 目标 | Flash-50 现状 |
-| --- | --- | --- |
-| Functional pass | ~20–30% | **82%**（仍偏易） |
-| 强 Agent functional pass | ~35–45% | Pro **42/50（84%）** |
+| 指标 | 历史校准目标 | Flash-50 现状 | 备注 |
+| --- | --- | --- | --- |
+| Functional pass | ~20–30% | **82%** | 当前难度下仍可用 **extraction / final_score** 区分解耦质量 |
+| 强 Agent functional pass | ~35–45% | Pro **42/50（84%）** | batch-1 **+50** 进行中，见 [EXPANSION.md](EXPANSION.md) |
+
+报告 suite 时并列：**functional pass**、**avg final_score**、**high-extraction pass（≥0.8）**、**compact pass（≤0.25）**。是否收紧 hidden 不作为冻结主榜的前提。
 
 分析产物：
 
@@ -174,85 +187,31 @@ python3 harness/scripts/analyze_benchmark_suite.py \
 
 仅作扩榜前后对比；**主榜 baseline 以 Flash-50 为准**。
 
-### 本地 vLLM（非官方 baseline）
-
-| 项 | 值 |
-| --- | --- |
-| 模型 | GPT-OSS-120B（`:8008`）、Qwen3-Coder-30B（`:8009`） |
-| 协议 | 各模型 **3 轮独立 full run**，`NUM_WORKERS=2` |
-| **Functional pass（mean ± std）** | GPT-OSS **6.3 ± 1.7 / 50**；Qwen **7.0 ± 3.6 / 50** |
-| 深度分析 | [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) §3.4 |
-
-与 Flash-50（82%）**不可直接对比**：endpoint、模型、agent 稳定性（missing_submission）均不同。
-
-### SiliconFlow API（探索中）
-
-| Profile | 模型 | 状态 |
-| --- | --- | --- |
-| `glm_5_2` | GLM-5.2 | run1 进行中（2/50 passed，成本 ~¥5–6/题） |
-| `minimax_m2_5` | MiniMax-M2.5 | run1 进行中 |
-| `kimi_k2_7_code` | Kimi-K2.7-Code | 未开始 |
-
-详见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) §5、[RUN.md](../RUN.md)。
+**其他模型实验**（vLLM 6-run、SiliconFlow GLM/MiniMax/Kimi 等）见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。与 Flash-50 **不可直接对比**（endpoint、稳定性、harness 版本不同）。
 
 ---
 
-## 多模型配置（2026-06-26）
+## 多模型 profile
 
-维护者用 **profile** 管理模型；密钥在 `.env`，非敏感项在 `harness/config/agents.toml`（模板见 `agents.example.toml`）。
-
-| Profile | Model | API base（`.env`） |
-| --- | --- | --- |
-| `deepseek_v4_flash` | `deepseek/deepseek-v4-flash` | `FEATURELIFTBENCH_API_BASE` |
-| `deepseek_v4_pro` | `deepseek/deepseek-v4-pro` | 同上 |
-| `gpt_oss_120b_vllm` | `openai/GPT-OSS-120B` | `VLLM_GPT_OSS_120B_API_BASE`（本地 vLLM） |
-| `qwen3_coder_30b_vllm` | `openai/Qwen3-Coder-30B-A3B-Instruct` | `VLLM_QWEN3_CODER_30B_API_BASE` |
-| `glm_5_2` | `openai/zai-org/GLM-5.2` | `SILICONFLOW_API_BASE` |
-| `kimi_k2_7_code` | `openai/moonshotai/Kimi-K2.7-Code` | 同上 |
-| `minimax_m2_5` | `openai/MiniMaxAI/MiniMax-M2.5` | 同上 |
-| `qwen3_6_27b` | `openai/Qwen/Qwen3.6-27B` | 同上 |
-| `nex_n2_pro` | `openai/nex-agi/Nex-N2-Pro` | 同上 |
+维护者用 `harness/config/agents.toml` + `.env` 管理模型；完整 profile 表与 CLI 示例见 [benchmark_tasks.md](benchmark_tasks.md) §Running。
 
 ```bash
-# 全量 50 hard（自动 analyze + entanglement 报告）
 ./harness/scripts/run_baseline.sh nex_n2_pro
-
-# 或指定 run id
 ./harness/scripts/run_baseline.sh deepseek_v4_flash benchmark-50-hard-flash-002
 ```
 
-### Nex-N2-Pro 50-hard（待跑）
-
-| 项 | 值 |
-| --- | --- |
-| Profile | `nex_n2_pro` |
-| Provider | SiliconFlow |
-| 状态 | **待 `SILICONFLOW_API_KEY` 填入 `.env` 后执行** |
-| Smoke | `experiments/mini-swe-agent/nex-n2-pro-smoke-001` — harness 已验证 endpoint/model；`AuthenticationError`（key 未配置） |
-| 计划 Run ID | `benchmark-50-hard-nex_n2_pro-<timestamp>` |
-
-### Flash vs Pro vs Nex（对比表）
-
-| 指标 | Flash-50 | Pro-50（re-eval） | Nex-N2-Pro |
-| --- | ---: | ---: | ---: |
-| Functional pass | **41/50 (82%)** | **42/50 (84%)** | *pending* |
-| Avg `final_score` | **0.472** | **0.481** | *pending* |
-| High-extraction pass | 9 | 9 | *pending* |
-| Total tokens | ~62M | ~61M | *pending* |
-
-Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
+Nex-N2-Pro 50-hard：**待** `SILICONFLOW_API_KEY` 配置后执行；smoke 已验证 endpoint（`nex-n2-pro-smoke-001`）。
 
 ---
 
-## 为何 functional pass 仍偏高（82%）
+## 为何 functional pass 偏高（82%）— 与论文口径
 
-1. **Pass 门槛不含 extraction** — copy-all + 改 import 即可 functional pass，`final_score` 会很低但不 fail。
-2. **Hidden 偏少/偏软** — 平均 ~3 条 hidden/题；部分题 design note 标注 hidden **挡不住 copy-all**。
-3. **任务形态友好** — workspace 含完整 `repo/` + 清晰 `metadata.output`；Flash 擅长大规模 copy-edit。
-4. **Phase 0 加严影响有限** — 旧 25 题仍 23/25 pass。
-5. **扩题未逐批校准** — 50 题齐后跑一轮 Flash，未在 pass>70% 时停扩并优先加 hidden。
+1. **Pass 门槛不含 extraction** — copy-all + 改 import 即可 functional pass，`final_score` 会很低但不 fail → 须报 **high-extraction pass**。
+2. **Hidden 偏少/偏软** — 平均 ~3 条 hidden/题；部分题挡不住 copy-all（可加强，但**非发表硬门槛**）。
+3. **任务形态友好** — workspace 含完整 `repo/` + 清晰 `metadata.output`；强 Agent 擅长大规模 copy-edit。
+4. **判别在解耦维度** — 41 题 pass 中仅 16 题 compact（ratio≤0.25），9 题 copy-heavy（≥0.8）。
 
-**工程上 benchmark 已合格；校准上 functional 难度未达 20–30% 目标。** 后续应优先加 hidden、收 manifest closure、报告 high-extraction pass rate。
+**工程上 benchmark 已合格（50 题、oracle 全绿、harness 闭环）。** 后续新增或替换题须满足 [EXPANSION.md](EXPANSION.md) 的 **实用性** 检查清单；functional 难度可随模型代际 **再评估**。
 
 ---
 
@@ -282,36 +241,15 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 - `analyze_benchmark_suite.py`：输出 `eval_flake` / `eval_flake_count` 标记基础设施误判
 - **Docker eval 镜像**（`docker/Dockerfile.eval`）：官方 baseline 推荐在容器内 eval；`featureliftbench eval --docker`
 
-**对外口径：** 公布的 functional pass / `final_score` 应在修复后的 evaluator 或 Docker eval 镜像中生成。
+**对外口径：** 论文和正式模型对比的 functional pass / `final_score` 应以 Docker eval 结果为准；local eval 只用于开发调试或定位基础设施问题。
 
 ---
 
-## 环境与部署
+## 运行安全（Docker 边界）
 
-系统要求、`.env` / `agents.toml`、服务器清单与常见失败处理见 **[SETUP.md](SETUP.md)**。
+Untrusted submission 在 pytest 中执行；正式实验推荐同时启用 `FEATURELIFTBENCH_AGENT_DOCKER=1` 和 `FEATURELIFTBENCH_EVAL_DOCKER=1`。eval Docker 负责内存、CPU、进程数、日志、禁网和只读 mount；agent Docker 负责限制 agent 可见/可写的宿主文件范围。完整规格与 checklist → **[SETUP.md](SETUP.md) §4**。
 
----
-
-## 运行安全：pytest OOM（2026-06-27）
-
-**已确认现象**：服务器内核日志多次显示 `Out of memory: Killed process ... (pytest)`。被杀的是测试进程 `pytest`，不是 vLLM 服务。单个 pytest 进程 RSS 可达数十 GB 到数百 GB。
-
-**具体行为**：Agent 生成的 `submission/featurelifted/` 是 untrusted code。Agent 自测或 evaluator 执行 `pytest public_tests/` / `pytest hidden_tests/` 时，会 import 并运行这份代码。若模型写出无限递归、无限循环、parser 不消费输入、指数级数据结构膨胀或错误目录遍历，内存会在 `pytest` 进程内持续增长；当前没有 per-process memory limit 时，最终由 Linux OOM killer 接管。
-
-**对结果的影响**：
-
-- 可能留下无 `run.json` / 无 `trajectory.json` 的半截 task 目录。
-- 不一定在 `eval/result.json` 中出现 `returncode=-9`，因为 OOM 可能发生在 agent 自测阶段或结果写入前。
-- 2026-06-27 MiniMax run1 在 `vibe_app__csv_transform_core__001` 中断，无 `run.json` 和 `trajectory.json`，符合系统级中断特征，但现有日志无法唯一证明该题就是 OOM 触发源。
-
-**当前运行约束**：
-
-| 项 | 建议 |
-| --- | --- |
-| suite 并发 | `NUM_WORKERS=1` |
-| 多模型 | 不要多个 full suite 重叠跑；本地 vLLM 一次只保留一个大模型服务 |
-| 临时保护 | `ulimit -v $((32 * 1024 * 1024))` 包住 `./run.sh` |
-| 正式修复 | 增加 `AGENT_MEMORY_MB` / `EVAL_MEMORY_MB`；final eval 用 Docker/cgroup `--memory` |
+2026-06-27 MiniMax run 因 pytest OOM 中断 → [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) §5.1 · [limitations.md](limitations.md)。后续正式 run 不应只依赖本地 `EVAL_MEMORY_MB` / `AGENT_MEMORY_MB`。
 
 ---
 
@@ -321,12 +259,12 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 | 机制 | 用法 |
 | --- | --- |
-| 手动续跑 | `RESUME_DIR=experiments/mini-swe-agent/<run> ./run.sh` 或 `run-agent ... --output DIR --resume` |
+| 手动续跑 | `FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 RESUME_DIR=experiments/mini-swe-agent/<run> ./run.sh` 或 `run-agent ... --output DIR --resume` |
 | 只重跑 missing_submission | `--resume --retry-only-status missing_submission` |
 | 挂机自动二轮 | `EXTRA_AGENT_PASSES=1 ./run.sh` 或 `--extra-agent-passes 1` |
 | 单题尝试上限 | `--max-task-attempts N`（跨 resume 累计，见 `run.json` 的 `attempt`） |
 | API 限流重试 | `--retry-rate-limit N`（单题单次 invocation 内，与上面分离） |
-| eval flake 重算 | `reeval_suite.py`（**不重跑 agent**，仅重算 submission eval） |
+| eval flake / Docker 口径重算 | `reeval_suite.py --docker`（**不重跑 agent**，仅重算 submission eval） |
 
 **记录：** 重跑前旧 `run.json` 归档为 `run.attemptN.json`；`suite.json` 的 `summary.tasks_by_status` 列出各状态 task_id。
 
@@ -336,12 +274,15 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 ## 当前优先级
 
-1. **P0 运行安全**：给 agent 自测和 evaluator pytest 加内存上限，避免 untrusted submission OOM 宿主机。
-2. **难度校准**：对 high-extraction pass 的 9 题 + 旧 25 题中 Flash 过易者 **加强 hidden / 缩 closure**（目标 Flash functional pass ~25–35%）
-3. **报告口径**：论文/summary 同时报 functional pass、avg final_score、high-extraction pass count
-4. **L1 审计**：`audit_output_imports.py --fail-on-gap` 纳入改题流程
-5. **Docker eval**：本地 `docker build -f docker/Dockerfile.eval`；CI 见 `.github/workflows/eval-oracles.yml`
-6. **暂缓**：再扩题、Agent 容器化
+1. **P0 正式实验跑批**：用 `FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1` 跑 Flash / Pro 完整主榜，并保存 `suite.json`、每题 `run.json`、每题 `eval/result.json`。
+2. **P0 Docker oracle 验收**：用 Docker eval 跑完整主榜 oracle，确认依赖镜像闭包和资源边界没有漏项。
+3. **P0 入榜硬门**：`audit_output_imports.py --fail-on-gap` 纳入 staging 与 promote 流程。
+4. **P1 题目扩榜（batch-1）**：按 [EXPANSION.md](EXPANSION.md) 从 30 条 starter idea → 5 个 hard-first shortlist → 1 个 staging pilot → **+50**；batch-0 **不修改**。主榜只收 useful + hard，轻量 utility 留作 control/sanity。
+5. **P1 实验与报告**：补齐多模型完整主榜 run；分析时单独报告 functional fail、resource/log/sandbox fail 和 missing submission。
+6. **P2 可选难度收紧**：对 9 题 high-extraction pass 加强 hidden（**可随论文再评估**，非阻塞，不影响 batch-0 冻结）。
+7. **暂缓**：公开 hostile sandbox、Go 语言扩题（v2，见 [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md)）、替换 batch-0 弱题。
+
+**扩题（进行中）：** Python batch-1 **+50**（batch-0 不动）→ [EXPANSION.md](EXPANSION.md)
 
 ---
 
@@ -349,7 +290,7 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 
 | 路径 | 用途 |
 | --- | --- |
-| `harness/scripts/verify_all_oracles.py` | 50 题 oracle 一键回归 |
+| `harness/scripts/verify_all_oracles.py` | 主榜 oracle 一键回归 |
 | `harness/scripts/build_oracle_submission.py` | 构建 oracle submission |
 | `harness/scripts/verify_module_probes.py` | design probe 审计；`--verify-oracle` 删模块回归 |
 | `harness/scripts/audit_output_imports.py` | metadata.output vs 测试 import |
@@ -360,8 +301,9 @@ Nex 行在 `./harness/scripts/run_baseline.sh nex_n2_pro` 完成后更新。
 | `harness/scripts/report_entanglement_coverage.py` | 按 primary 分层通过率 |
 | `harness/scripts/calibrate_flash_baseline.sh` | Flash 50-hard 封装（Python 3.12） |
 | `harness/scripts/calibrate_pro_baseline.sh` | Pro 50-hard 封装（Python 3.12） |
-| `docker/Dockerfile.eval` | 可复现 eval 镜像（Python 3.12 + pytest 7.4.4） |
-| `harness/scripts/list_tasks.py` | 默认 50 hard；`--include-sanity` 含 smoke |
+| `docker/Dockerfile.eval` | 可复现 eval 镜像（默认 Python 3.11 slim + pytest 7.4.4；base image 可覆盖） |
+| `docker/Dockerfile.agent` | bounded agent run 镜像（pin `mini-swe-agent==1.17.3`） |
+| `harness/scripts/list_tasks.py` | 默认列出主榜 tasks；`--include-sanity` 含 smoke |
 
 Suite 产物每题目录：
 

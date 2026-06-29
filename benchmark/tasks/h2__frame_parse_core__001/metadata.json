@@ -1,0 +1,81 @@
+{
+  "task_id": "h2__frame_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "h2",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "h2",
+    "url": "https://github.com/python-hyper/h2",
+    "commit": "4.3.0-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "HTTP/2 frame parse and buffer",
+    "description": "Extract hyperframe HTTP/2 frame serialization and h2 FrameBuffer reassembly without connection/stream state machines.",
+    "source_entrypoints": [
+      "hyperframe.frame.Frame.parse_frame_header",
+      "hyperframe.frame.DataFrame.serialize",
+      "h2.frame_buffer.FrameBuffer"
+    ],
+    "included_behaviors": [
+      "parse and serialize HTTP/2 frames (DATA, HEADERS, PING, SETTINGS, etc.)",
+      "FrameBuffer incremental parsing with continuation reassembly",
+      "HTTP/2 connection preamble validation for server mode",
+      "frame size limits and typed protocol errors"
+    ],
+    "excluded_behaviors": [
+      "h2 connection and stream state machines",
+      "HPACK header compression and flow control windows",
+      "network sockets and asyncio integration",
+      "original h2 or hyperframe imports at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Frame parsing couples binary struct layouts, flag validation, continuation backlog state, and cross-package hyperframe/h2 error types.",
+    "signals": [
+      "FrameBuffer tracks partial headers blocks across CONTINUATION frames",
+      "hyperframe frame classes enforce stream-id association rules",
+      "server preamble bytes consumed before frame iteration",
+      "full h2 package includes large connection/stream modules"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted.hyperframe.frame import Frame, DataFrame, PingFrame, HeadersFrame, ContinuationFrame, SettingsFrame; from featurelifted.h2.frame_buffer import FrameBuffer; from featurelifted.h2.exceptions import ProtocolError, FrameTooLargeError; from featurelifted.hyperframe.exceptions import InvalidDataError, InvalidFrameError",
+    "callable": "featurelifted.hyperframe.frame.Frame.parse_frame_header",
+    "signature": "Frame.parse_frame_header(memoryview) -> tuple[Frame, int]"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "h2",
+      "hyperframe"
+    ],
+    "forbidden_imports": [
+      "h2",
+      "hyperframe"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

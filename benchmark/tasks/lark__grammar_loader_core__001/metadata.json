@@ -53,7 +53,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Lark",
+    "import": "import featurelifted; from featurelifted import Lark; from featurelifted.exceptions import GrammarError; from featurelifted.load_grammar import FromPackageLoader",
     "callable": "featurelifted.Lark.open",
     "signature": "Lark.open(grammar_filename: str, rel_to: str | None = None, **options) -> Lark"
   },

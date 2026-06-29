@@ -1,0 +1,80 @@
+{
+  "task_id": "pydantic_settings__env_source_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "pydantic_settings",
+    "hard-first",
+    "functional-discriminator",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "name": "pydantic-settings",
+    "url": "https://github.com/pydantic/pydantic-settings",
+    "commit": "2.14.2-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Environment settings source",
+    "description": "Extract pydantic-settings BaseSettings env source with nested delimiter parsing without importing pydantic_settings.",
+    "source_entrypoints": [
+      "pydantic_settings.BaseSettings",
+      "pydantic_settings.sources.EnvSettingsSource",
+      "pydantic_settings.sources.utils.parse_env_vars",
+      "pydantic_settings.SettingsConfigDict"
+    ],
+    "included_behaviors": [
+      "BaseSettings loads fields from os.environ with env_prefix",
+      "nested models via env_nested_delimiter",
+      "json/complex field parsing and case_sensitive option",
+      "env_ignore_empty and env_parse_none_str"
+    ],
+    "excluded_behaviors": [
+      "dotenv, yaml/toml/json file sources and cloud secret providers",
+      "CLI settings source and subcommand parsing",
+      "original pydantic_settings import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling",
+      "framework_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Env source couples pydantic field metadata, nested delimiter expansion, and complex JSON env values.",
+    "signals": [
+      "env_nested_delimiter builds nested dicts",
+      "complex fields parsed via pydantic TypeAdapter",
+      "case_sensitive env key matching"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import BaseSettings, SettingsConfigDict, SettingsError",
+    "callable": "featurelifted.BaseSettings",
+    "signature": "class Settings(BaseSettings): ..."
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "pydantic"
+    ],
+    "forbidden_dependencies": [
+      "pydantic_settings"
+    ],
+    "forbidden_imports": [
+      "pydantic_settings"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

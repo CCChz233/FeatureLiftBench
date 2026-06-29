@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-**Concepts (start here):** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **Setup & environment:** [docs/SETUP.md](docs/SETUP.md) · **Run cheatsheet:** [RUN.md](RUN.md) · **Experiment results:** [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) · **Architecture:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · **Task format:** [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) · **Benchmark status:** [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) · **Directory map:** [docs/DIRECTORY.md](docs/DIRECTORY.md) · **Task catalog:** [docs/benchmark_tasks.md](docs/benchmark_tasks.md)
+**文档索引：** [docs/README.md](docs/README.md) · **概念：** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **规格：** [docs/BENCHMARK_SPEC.md](docs/BENCHMARK_SPEC.md) · **部署：** [docs/SERVER_DEPLOY.md](docs/SERVER_DEPLOY.md) · [docs/SETUP.md](docs/SETUP.md) · **扩题：** [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md) · [docs/EXPANSION.md](docs/EXPANSION.md) · **运行：** [RUN.md](RUN.md)
 
 **FeatureLiftBench: Can Code Agents Decouple Features from Entangled Repositories?**
 
@@ -62,7 +62,7 @@ FeatureLiftBench 的现实意义在于评估代码智能体能否把“能跑但
 * **Implicit dependency coupling**：跨模块 import 链长，必要依赖和无关依赖混在一起；
 * **Legacy/vibe-coded clutter**：重复代码、历史兼容层、未使用模块、命名混乱、文档缺失。
 
-当前 benchmark **主榜 50 道 hard**（`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；架构说明见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
+当前 benchmark **主榜 100 道 hard**（batch-0 五十题冻结 + batch-1 新增五十题；`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；架构说明见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 
 演进方式：**新增或删除** `benchmark/tasks/` 下的题目，不另建第二套 benchmark 或 harness。
 
@@ -153,6 +153,26 @@ python3 -B -m featureliftbench.cli run-agent \
 列出题目：`python3 harness/scripts/list_tasks.py`。按难度或 tag 切片：`python3 harness/scripts/list_tasks.py --difficulty hard --paths`。
 
 `--num-workers` 只在传入 `benchmark/tasks/` 这类数据集根目录时生效；默认 `1` 保持串行。跑真实模型时建议先用 `2` 或 `3`，避免 API 限流和本机资源争用。
+
+正式跑批建议把 Agent 执行和 eval 都放进短命 Docker container：
+
+```bash
+docker/build_agent_image.sh featureliftbench-agent:latest
+docker/build_eval_image.sh featureliftbench-eval:latest
+
+PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent \
+  benchmark/tasks \
+  --agent mini-swe-agent \
+  --model <model-name> \
+  --agent-docker \
+  --eval-docker \
+  --num-workers 1 \
+  --output experiments/mini-swe-agent/<run_id>
+```
+
+`--agent-docker` 限制 Agent 只能看到 prepared workspace、agent output 和只读 harness；不挂载 benchmark root、hidden tests、host home、`.env` 或 Docker socket。`--eval-docker` 使用独立的禁网 eval container，并对内存、CPU、进程数、日志和只读挂载做限制。两个开关也可通过 `FEATURELIFTBENCH_AGENT_DOCKER=1` 与 `FEATURELIFTBENCH_EVAL_DOCKER=1` 启用。
+
+两个 Docker build 脚本默认使用 `python:3.11-slim`，可分别用 `FEATURELIFTBENCH_AGENT_PYTHON_BASE` / `FEATURELIFTBENCH_EVAL_PYTHON_BASE` 覆盖；agent 镜像 pin `mini-swe-agent==1.17.3`，避免 upstream CLI/API 变动破坏 `mini_live_runner`。
 
 Agent Harness 会为每个任务创建一个 agent 可见 workspace：
 
@@ -666,7 +686,7 @@ FeatureLiftBench 主要关注以下问题：
 
 ## 当前状态
 
-FeatureLiftBench **统一 benchmark** 已落地：主榜 **50 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；目录说明见 [`docs/DIRECTORY.md`](docs/DIRECTORY.md)。
+FeatureLiftBench **统一 benchmark** 已落地：主榜 **50 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；仓库结构见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 
 演进方式：在 `benchmark/tasks/` 下**新增或删除**题目，不另建第二套 collection。
 

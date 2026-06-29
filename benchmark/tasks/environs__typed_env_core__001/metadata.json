@@ -1,0 +1,95 @@
+{
+  "task_id": "environs__typed_env_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "environs",
+    "config",
+    "hard-first",
+    "functional-discriminator",
+    "config_environment_coupling",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "environs",
+    "url": "https://github.com/sloria/environs",
+    "commit": "97f9b7065c753b763949a8d61ec2fee880458d4a",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Typed environment variable parsing",
+    "description": "Extract environs Env typed parsers with marshmallow field deserialization, custom validators, list/dict subcasts, expand_vars, prefix, and deferred seal validation without importing environs or python-dotenv.",
+    "source_entrypoints": [
+      "environs.Env",
+      "environs.Env.int",
+      "environs.Env.bool",
+      "environs.Env.str",
+      "environs.Env.list",
+      "environs.Env.dict",
+      "environs.Env.timedelta",
+      "environs.Env.seal",
+      "environs.Env.prefixed",
+      "environs.validate",
+      "environs.fields.TimeDelta"
+    ],
+    "included_behaviors": [
+      "typed casting for int, bool, str with defaults and eager errors",
+      "marshmallow validate= callables and validators on parsed fields",
+      "list and dict env strings with delimiter/subcast preprocessing",
+      "expand_vars ${VAR:-default} substitution in env values",
+      "constructor and context-manager prefix for env key names",
+      "deferred validation via eager=False and seal() error aggregation",
+      "custom timedelta duration strings via fields.TimeDelta"
+    ],
+    "excluded_behaviors": [
+      "read_env dotenv file loading and FileAwareEnv file indirection",
+      "django URL parsers (dj_db_url, dj_email_url, dj_cache_url)",
+      "module-level env singleton, upstream tests, docs, and packaging metadata",
+      "original environs import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Env couples os.environ access, optional expand_vars proxy resolution, marshmallow field factories, preprocess hooks for composite types, and deferred error aggregation across env, fields, types, and exceptions modules.",
+    "signals": [
+      "_field2method wires marshmallow Field.deserialize with validate kwargs",
+      "_preprocess_list and _preprocess_dict split env strings before subcast fields",
+      "_get_from_environ recursively resolves ${VAR:-default} expansions",
+      "eager=False accumulates ValidationError messages until seal()",
+      "fields.TimeDelta adds GEP-2257 and ISO-8601 duration parsing beyond marshmallow"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Env, EnvError, EnvValidationError, EnvSealedError, ParserConflictError, ValidationError, validate",
+    "callable": "featurelifted.Env",
+    "signature": "Env(*, eager=True, expand_vars=False, prefix=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "marshmallow"
+    ],
+    "forbidden_dependencies": [
+      "environs"
+    ],
+    "forbidden_imports": [
+      "environs"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

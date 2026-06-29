@@ -54,7 +54,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Schema, fields, ValidationError, EXCLUDE, RAISE",
+    "import": "from featurelifted import Schema, fields, ValidationError, EXCLUDE, RAISE; from featurelifted.decorators import post_load, validates_schema",
     "callable": "featurelifted.Schema.load",
     "signature": "Schema.load(data, *, many: bool = False, partial=None, unknown=RAISE)"
   },

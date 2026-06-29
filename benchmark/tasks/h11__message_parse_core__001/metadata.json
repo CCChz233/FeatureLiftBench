@@ -56,7 +56,7 @@
   },
   "output": {
     "package": "featurelifted",
-    "import": "from featurelifted import Connection, CLIENT, SERVER, Request, Response, Data, EndOfMessage, NEED_DATA",
+    "import": "from featurelifted import Connection, CLIENT, SERVER, Request, Response, Data, EndOfMessage, NEED_DATA, RemoteProtocolError",
     "callable": "featurelifted.Connection",
     "signature": "Connection(our_role, max_incomplete_event_size=16384)"
   },

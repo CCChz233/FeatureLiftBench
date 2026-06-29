@@ -1,0 +1,83 @@
+{
+  "task_id": "arrow__parse_format_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "arrow",
+    "datetime",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "arrow",
+    "url": "https://github.com/arrow-py/arrow",
+    "commit": "1.2.3-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Arrow parse, format, and humanize subset",
+    "description": "Extract Arrow parsing, strftime-style formatting, and English humanize without importing arrow.",
+    "source_entrypoints": [
+      "arrow.get",
+      "arrow.Arrow.format",
+      "arrow.Arrow.humanize",
+      "arrow.parser.DateTimeParser"
+    ],
+    "included_behaviors": [
+      "parse ISO and format-string datetimes",
+      "format with token literals in brackets",
+      "humanize relative deltas in English",
+      "ordinal Do token parsing"
+    ],
+    "excluded_behaviors": [
+      "60+ locale packs beyond English",
+      "timezone name database beyond utc/fixed offsets",
+      "factory range/span utilities and CLI",
+      "original arrow import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Arrow couples parser token tables, formatter locale lookups, and Arrow datetime humanize hooks.",
+    "signals": [
+      "parser handles ordinal and timezone tokens",
+      "formatter escapes bracket literals",
+      "humanize uses English locale frames",
+      "factory normalizes whitespace in parse strings"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Arrow, get",
+    "callable": "featurelifted.get",
+    "signature": "get(*args, **kwargs) -> Arrow"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "python-dateutil"
+    ],
+    "forbidden_dependencies": [
+      "arrow"
+    ],
+    "forbidden_imports": [
+      "arrow"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "task_id": "boltons__iterutils_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "boltons",
+    "iterutils",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "boltons",
+    "url": "https://github.com/mahmoud/boltons",
+    "commit": "23.0.0-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Iterutils iterator toolkit",
+    "description": "Extract boltons iterutils chunked/windowed/remap/bucketize helpers without importing boltons.",
+    "source_entrypoints": [
+      "boltons.iterutils.chunked",
+      "boltons.iterutils.windowed",
+      "boltons.iterutils.pairwise",
+      "boltons.iterutils.unique",
+      "boltons.iterutils.bucketize",
+      "boltons.iterutils.remap",
+      "boltons.iterutils.get_path"
+    ],
+    "included_behaviors": [
+      "chunked and windowed iteration with size validation",
+      "pairwise adjacent pairs",
+      "unique with optional key function",
+      "bucketize grouping with key_filter and value_transform",
+      "remap tree walk with visit/enter/exit hooks",
+      "get_path nested dict/list access"
+    ],
+    "excluded_behaviors": [
+      "other boltons utility modules beyond curated snapshot",
+      "upstream docs and packaging",
+      "original boltons import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "iterutils couples iterator adapters, nested structure remapping with path stacks, and bucketize aggregation semantics.",
+    "signals": [
+      "remap maintains parent stack across enter/exit hooks",
+      "chunked_iter validates size and handles fill for last chunk",
+      "bucketize key_filter and value_transform alter grouping",
+      "get_path walks heterogeneous tree paths with defaults"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import chunked, windowed, pairwise, unique, bucketize, remap, get_path, partition; from featurelifted.iterutils import backoff, chunk_ranges",
+    "callable": "featurelifted.chunked",
+    "signature": "chunked(src, size, count=None, **kw) -> list"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "boltons"
+    ],
+    "forbidden_imports": [
+      "boltons"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "task_id": "urllib3__retry_backoff_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "urllib3",
+    "retry-policy",
+    "functional-discriminator",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "name": "urllib3",
+    "url": "https://github.com/urllib3/urllib3",
+    "commit": "2f68c5363ef632d73dd4d9300289d7ce5ff275b4",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Retry backoff policy core",
+    "description": "Extract urllib3 Retry configuration, exponential backoff, status_forcelist matching, redirect accounting, and increment/history semantics without importing urllib3 or performing HTTP I/O.",
+    "source_entrypoints": [
+      "urllib3.util.retry.Retry",
+      "urllib3.util.retry.RequestHistory",
+      "urllib3.util.retry.Retry.get_backoff_time",
+      "urllib3.util.retry.Retry.is_retry",
+      "urllib3.util.retry.Retry.increment",
+      "urllib3.util.retry.Retry.parse_retry_after",
+      "urllib3.exceptions.MaxRetryError"
+    ],
+    "included_behaviors": [
+      "Retry defaults and from_int coercion",
+      "connect/read/status/redirect/other counter decrement and exhaustion",
+      "status_forcelist and allowed_methods conjunction",
+      "exponential backoff with max cap and redirect reset",
+      "Retry-After header parsing with numeric and HTTP-date forms",
+      "RequestHistory accumulation on increment",
+      "remove_headers_on_redirect lowercasing"
+    ],
+    "excluded_behaviors": [
+      "HTTP connection pools, sockets, TLS, and actual request/response I/O",
+      "PoolManager and connectionpool integration",
+      "upstream test suite and dummyserver",
+      "original urllib3 import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Retry couples multi-counter configuration, backoff history semantics, status/method allowlists, redirect vs error history, and typed MaxRetryError reasons.",
+    "signals": [
+      "total/connect/read/status/redirect/other counter interplay",
+      "consecutive error backoff vs redirect history reset",
+      "status_forcelist AND allowed_methods gating",
+      "RequestHistory tuple growth on increment branches",
+      "parse_retry_after numeric vs HTTP-date branches"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Retry, RequestHistory, ConnectTimeoutError, ReadTimeoutError, MaxRetryError, ResponseError, InvalidHeader",
+    "callable": "featurelifted.Retry",
+    "signature": "Retry(total=10, connect=None, read=None, redirect=None, status=None, other=None, **kw)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "urllib3"
+    ],
+    "forbidden_imports": [
+      "urllib3"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

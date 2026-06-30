@@ -12,6 +12,7 @@ from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_docker import build_agent_docker_invocation
 from featureliftbench.agent_docker import run_agent_in_docker
+from featureliftbench.agent_docker import _should_mirror_agent_logs
 from featureliftbench.paths import HARNESS_ROOT
 
 
@@ -96,6 +97,7 @@ class AgentDockerTests(unittest.TestCase):
             self.assertEqual(invocation.env["OPENAI_API_KEY"], "sk-secret-value")
             self.assertEqual(invocation.env["PYTHONPATH"], "/flb/harness")
             self.assertEqual(invocation.env["HOME"], "/tmp/flb-home")
+            self.assertEqual(invocation.env["PYTHONUNBUFFERED"], "1")
 
     def test_agent_docker_env_overrides_resource_defaults(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -284,6 +286,92 @@ class AgentDockerTests(unittest.TestCase):
             )
             self.assertIn("[REDACTED]", result.stdout)
             self.assertIn("[REDACTED]", result.stderr)
+
+    def test_pump_stream_writes_stdout_log_immediately(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            agent_output.mkdir()
+            context = AgentRunContext(
+                workspace_dir=workspace,
+                task_file=workspace / "TASK.md",
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                task_text="Solve this task",
+            )
+            config = AgentRunConfig(
+                agent="command",
+                command="python -c 'print(\"ok\")'",
+            )
+            stdout_log = agent_output / "stdout.log"
+            fake_process = _FakeDockerProcess(stdout=b"line one\nline two\n", returncode=0)
+
+            with mock.patch(
+                "featureliftbench.agent_docker.subprocess.Popen",
+                return_value=fake_process,
+            ):
+                run_agent_in_docker(
+                    context,
+                    config,
+                    stdout_log=stdout_log,
+                    stderr_log=agent_output / "stderr.log",
+                )
+
+            self.assertEqual(stdout_log.read_text(encoding="utf-8"), "line one\nline two\n")
+
+    def test_mirror_writes_redacted_output_to_stderr(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            agent_output.mkdir()
+            context = AgentRunContext(
+                workspace_dir=workspace,
+                task_file=workspace / "TASK.md",
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                task_text="Solve this task",
+            )
+            config = AgentRunConfig(
+                agent="command",
+                command="python -c 'print(\"ok\")'",
+                env={"OPENAI_API_KEY": "sk-secret-value"},
+            )
+            fake_process = _FakeDockerProcess(
+                stdout=b"token=sk-secret-value\n",
+                returncode=0,
+            )
+            stderr_capture = io.StringIO()
+
+            with mock.patch(
+                "featureliftbench.agent_docker._should_mirror_agent_logs",
+                return_value=True,
+            ):
+                with mock.patch("featureliftbench.agent_docker.sys.stderr", stderr_capture):
+                    with mock.patch(
+                        "featureliftbench.agent_docker.subprocess.Popen",
+                        return_value=fake_process,
+                    ):
+                        run_agent_in_docker(
+                            context,
+                            config,
+                            stdout_log=agent_output / "stdout.log",
+                            stderr_log=agent_output / "stderr.log",
+                        )
+
+            mirrored = stderr_capture.getvalue()
+            self.assertIn("[REDACTED]", mirrored)
+            self.assertNotIn("sk-secret-value", mirrored)
+
+    def test_should_mirror_agent_logs_respects_env_override(self) -> None:
+        with mock.patch("featureliftbench.agent_docker.sys.stderr.isatty", return_value=True):
+            with mock.patch.dict(os.environ, {"FEATURELIFTBENCH_AGENT_LOG_MIRROR": "0"}):
+                self.assertFalse(_should_mirror_agent_logs())
+            with mock.patch.dict(os.environ, {"FEATURELIFTBENCH_AGENT_LOG_MIRROR": "1"}):
+                self.assertTrue(_should_mirror_agent_logs())
 
 
 if __name__ == "__main__":

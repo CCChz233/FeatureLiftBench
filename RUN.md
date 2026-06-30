@@ -244,6 +244,29 @@ not mounted: benchmark root, hidden tests, host home, .env, Docker socket
 stdout/stderr: 8 MiB per stream
 ```
 
+### Docker 实时日志
+
+Agent Docker 容器内 Python 默认无 TTY，输出可能块缓冲。Harness 通过以下机制保证交互终端下可见进度：
+
+- 容器注入 `PYTHONUNBUFFERED=1`，`stdout.log` / `stderr.log` 实时落盘
+- 交互终端（`stderr` 为 TTY）默认将 redact 后的 agent 日志 **mirror 到终端 stderr**，与 Rich 进度条并存
+- 进度条 polling 在 `stdout.log` 为空时会 fallback 到 `agent/trajectory.json`（step / tokens）
+
+关闭终端 mirror（仅写 log 文件）：
+
+```bash
+FEATURELIFTBENCH_AGENT_LOG_MIRROR=0
+```
+
+调试时可另开终端：
+
+```bash
+tail -f experiments/.../agent/stdout.log
+docker logs -f flb-agent-<container-id>
+```
+
+单题 `run-agent` 与 suite 在 TTY 下均会显示 Rich 进度（含仅 1 题的情况）。
+
 常用覆盖：
 
 ```bash

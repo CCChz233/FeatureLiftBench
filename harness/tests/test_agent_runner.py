@@ -168,6 +168,40 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertEqual(run_json["agent"]["usage"]["prompt_tokens"], 100)
             self.assertFalse((root / "output" / "workspace" / "hidden_tests").exists())
 
+    def test_single_task_enables_live_progress_when_tty(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            fake_agent = root / "fake_agent.py"
+            command = _write_fake_usage_agent(fake_agent)
+            output_dir = root / "output"
+
+            mock_pm = mock.MagicMock()
+            mock_pm.__enter__ = mock.Mock(return_value=mock_pm)
+            mock_pm.__exit__ = mock.Mock(return_value=False)
+
+            with mock.patch("featureliftbench.agent_runner.sys.stderr.isatty", return_value=True):
+                with mock.patch(
+                    "featureliftbench.agent_runner.live_suite_progress",
+                    return_value=mock_pm,
+                ) as live_mock:
+                    result = run_agent_on_task(
+                        task_dir,
+                        output_dir,
+                        AgentRunConfig(agent="command", command=command, timeout_seconds=120),
+                        progress=True,
+                    )
+
+            live_mock.assert_called_once_with(
+                num_tasks=1,
+                output_dir=output_dir.resolve(),
+                layout="flat",
+            )
+            mock_pm.on_task_start.assert_called_once()
+            mock_pm.update_task_status.assert_called()
+            mock_pm.on_task_end.assert_called_once()
+            self.assertEqual(result["status"], "passed")
+
     def test_command_agent_can_evaluate_with_docker_backend(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

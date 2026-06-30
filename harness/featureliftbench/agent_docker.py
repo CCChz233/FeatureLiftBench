@@ -52,8 +52,13 @@ def run_agent_in_docker(
     start = time.monotonic()
     redact_values = _redaction_values(config.env)
     output_limit = command_output_limit_bytes(invocation.env)
-    stdout_capture = _BoundedRedactedLog(stdout_log, output_limit, redact_values)
-    stderr_capture = _BoundedRedactedLog(stderr_log, output_limit, redact_values)
+    mirror_logs = _should_mirror_agent_logs()
+    stdout_capture = _BoundedRedactedLog(
+        stdout_log, output_limit, redact_values, mirror=mirror_logs
+    )
+    stderr_capture = _BoundedRedactedLog(
+        stderr_log, output_limit, redact_values, mirror=mirror_logs
+    )
     process: subprocess.Popen[bytes] | None = None
     log_limit_event = threading.Event()
     try:
@@ -247,6 +252,7 @@ def _docker_env(config: AgentRunConfig) -> tuple[set[str], dict[str, str]]:
         "FEATURELIFTBENCH_SUBMISSION_DIR": str(CONTAINER_WORKSPACE / "submission"),
         "FEATURELIFTBENCH_AGENT_OUTPUT_DIR": str(CONTAINER_AGENT_OUTPUT),
         "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONUNBUFFERED": "1",
         "PYTHONPATH": str(CONTAINER_HARNESS),
         "HOME": "/tmp/flb-home",
     }
@@ -320,10 +326,13 @@ class _BoundedRedactedLog:
         path: Path | None,
         limit_bytes: int | None,
         redact_values: tuple[str, ...],
+        *,
+        mirror: bool = False,
     ) -> None:
         self.path = path
         self.limit_bytes = limit_bytes if limit_bytes is None or limit_bytes > 0 else None
         self.redact_values = redact_values
+        self.mirror = mirror
         self._raw_bytes = 0
         self._parts: list[str] = []
         self.truncated = False
@@ -360,6 +369,9 @@ class _BoundedRedactedLog:
         if self._handle is not None:
             self._handle.write(text)
             self._handle.flush()
+        if self.mirror and text:
+            sys.stderr.write(text)
+            sys.stderr.flush()
 
     def text(self) -> str:
         with self._lock:
@@ -370,6 +382,15 @@ class _BoundedRedactedLog:
             if self._handle is not None:
                 self._handle.close()
                 self._handle = None
+
+
+def _should_mirror_agent_logs() -> bool:
+    mirror_env = os.environ.get("FEATURELIFTBENCH_AGENT_LOG_MIRROR", "").strip().lower()
+    if mirror_env in {"0", "false", "no", "off"}:
+        return False
+    if mirror_env in {"1", "true", "yes", "on"}:
+        return True
+    return sys.stderr.isatty()
 
 
 def _redaction_values(env: dict[str, str] | None) -> tuple[str, ...]:

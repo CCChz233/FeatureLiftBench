@@ -12,6 +12,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 from typing import Iterator
+from typing import Literal
 
 from rich.console import Group
 from rich.live import Live
@@ -163,6 +164,58 @@ def parse_mini_token_total_from_trajectory(path: Path) -> int | None:
     return prompt_tokens + completion_tokens
 
 
+def parse_mini_step_from_trajectory(path: Path) -> str | None:
+    """Return Step N from assistant message count in a live trajectory snapshot."""
+
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+
+    assistant_steps = 0
+    for message in data.get("messages") or []:
+        if isinstance(message, dict) and message.get("role") == "assistant":
+            assistant_steps += 1
+    if assistant_steps <= 0:
+        return None
+    return f"Step {assistant_steps}"
+
+
+def resolve_agent_log_dir(
+    output_dir: Path,
+    task_id: str,
+    *,
+    layout: Literal["suite", "flat"] = "suite",
+) -> Path:
+    if layout == "flat":
+        return output_dir / "agent"
+    return output_dir / task_id / "agent"
+
+
+def poll_agent_task_status(agent_dir: Path) -> tuple[str | None, int | None]:
+    """Resolve step text and token totals from stdout.log with trajectory fallback."""
+
+    step_status = parse_mini_progress_from_log(agent_dir / "stdout.log")
+    trajectory_path = agent_dir / "trajectory.json"
+    if step_status is None:
+        step_status = parse_mini_step_from_trajectory(trajectory_path)
+    tokens = parse_mini_token_total_from_trajectory(trajectory_path)
+    if tokens is None and step_status is not None:
+        match = re.search(r"\((\d+) toks\)", step_status)
+        if match:
+            tokens = int(match.group(1))
+    if step_status is None and tokens is None:
+        return None, None
+    if step_status is None:
+        step_status = "running"
+    status, tokens = format_mini_task_status(step_status=step_status, tokens=tokens)
+    return status, tokens
+
+
 def format_mini_task_status(*, step_status: str, tokens: int | None) -> tuple[str, int | None]:
     """Combine step text from stdout with token totals from trajectory."""
 
@@ -179,7 +232,13 @@ def format_mini_task_status(*, step_status: str, tokens: int | None) -> tuple[st
 class SuiteBatchProgressManager:
     """Manage overall and per-task progress for a FeatureLiftBench suite run."""
 
-    def __init__(self, num_tasks: int) -> None:
+    def __init__(
+        self,
+        num_tasks: int,
+        *,
+        layout: Literal["suite", "flat"] = "suite",
+    ) -> None:
+        self._layout = layout
         self._lock = threading.Lock()
         self._start_time = time.time()
         self._total_tasks = num_tasks
@@ -302,16 +361,10 @@ class SuiteBatchProgressManager:
 
     def poll_task_logs(self, output_dir: Path) -> None:
         for task_id in self.active_task_ids():
-            agent_dir = output_dir / task_id / "agent"
-            step_status = parse_mini_progress_from_log(agent_dir / "stdout.log")
-            if step_status is None:
+            agent_dir = resolve_agent_log_dir(output_dir, task_id, layout=self._layout)
+            status, tokens = poll_agent_task_status(agent_dir)
+            if status is None:
                 continue
-            tokens = parse_mini_token_total_from_trajectory(agent_dir / "trajectory.json")
-            if tokens is None:
-                match = re.search(r"\((\d+) toks\)", step_status)
-                if match:
-                    tokens = int(match.group(1))
-            status, tokens = format_mini_task_status(step_status=step_status, tokens=tokens)
             self.update_task_status(task_id, status, tokens=tokens)
 
 
@@ -321,10 +374,11 @@ def live_suite_progress(
     num_tasks: int,
     output_dir: Path,
     refresh_per_second: float = 4.0,
+    layout: Literal["suite", "flat"] = "suite",
 ) -> Iterator[SuiteBatchProgressManager]:
     """Render suite progress with Rich Live and poll running agent logs."""
 
-    manager = SuiteBatchProgressManager(num_tasks)
+    manager = SuiteBatchProgressManager(num_tasks, layout=layout)
     stop_event = threading.Event()
 
     def poll_loop() -> None:

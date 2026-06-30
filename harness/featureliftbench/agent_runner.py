@@ -120,6 +120,7 @@ def run_agent_on_path(
             output_path,
             config,
             agent_config_summary=agent_config_summary,
+            progress=progress,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -330,12 +331,64 @@ def run_agent_on_task(
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None = None,
     *,
+    progress: bool = False,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
     agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     """Run an agent on a single task, collect its submission, and evaluate it."""
+
+    use_live_progress = progress and sys.stderr.isatty()
+    if use_live_progress:
+        task_path = Path(task_dir).resolve()
+        output_path = Path(output_dir).resolve()
+        validation = validate_task(task_path)
+        task_id = validation.task_id
+        if validation.valid:
+            metadata = load_metadata(task_path).data
+            task_id = metadata.get("task_id", task_id)
+        with live_suite_progress(num_tasks=1, output_dir=output_path, layout="flat") as progress_manager:
+            progress_manager.on_task_start(task_id)
+            progress_manager.update_task_status(task_id, "preparing workspace")
+            result = _run_agent_on_task_body(
+                task_dir=task_dir,
+                output_dir=output_dir,
+                config=config,
+                agent_config_summary=agent_config_summary,
+                eval_docker=eval_docker,
+                eval_docker_image=eval_docker_image,
+                agent_docker=agent_docker,
+                agent_docker_image=agent_docker_image,
+            )
+            progress_manager.on_task_end(task_id, result.get("status"))
+            return result
+
+    return _run_agent_on_task_body(
+        task_dir=task_dir,
+        output_dir=output_dir,
+        config=config,
+        agent_config_summary=agent_config_summary,
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
+        progress=progress,
+    )
+
+
+def _run_agent_on_task_body(
+    task_dir: str | Path,
+    output_dir: str | Path,
+    config: AgentRunConfig,
+    agent_config_summary: dict[str, Any] | None = None,
+    *,
+    progress: bool = False,
+    eval_docker: bool = False,
+    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
+    agent_docker: bool = False,
+    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
+) -> dict[str, Any]:
 
     task_path = Path(task_dir).resolve()
     output_path = Path(output_dir).resolve()
@@ -359,6 +412,9 @@ def run_agent_on_task(
     else:
         metadata = load_metadata(task_path).data
         task_id = metadata.get("task_id", task_id)
+
+    if progress:
+        _progress(True, f"started {task_id}")
 
     agent_result = None
     eval_result = None
@@ -489,6 +545,8 @@ def run_agent_on_task(
     if previous_attempt_json is not None:
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    if progress:
+        _progress(True, f"finished {task_id}: {status}")
     return result
 
 
@@ -527,7 +585,7 @@ def _run_suite_tasks(
     checkpoint_ctx: _SuiteCheckpointContext | None = None,
 ) -> list[dict[str, Any]]:
     total = len(task_dirs)
-    use_live_progress = progress and sys.stderr.isatty() and total > 1
+    use_live_progress = progress and sys.stderr.isatty() and total >= 1
 
     if use_live_progress:
         with live_suite_progress(num_tasks=total, output_dir=output_path) as progress_manager:

@@ -27,7 +27,7 @@ class LlmEnvTests(unittest.TestCase):
 
         self.assertEqual(env["LLM_API_KEY"], "sk-test")
         self.assertEqual(env["LLM_BASE_URL"], "https://api.deepseek.com/v1")
-        self.assertEqual(env["LLM_MODEL"], "deepseek-v4-flash")
+        self.assertEqual(env["LLM_MODEL"], "deepseek/deepseek-v4-flash")
 
 
 if __name__ == "__main__":

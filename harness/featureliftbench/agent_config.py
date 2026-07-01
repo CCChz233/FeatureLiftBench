@@ -88,10 +88,20 @@ def load_agent_run_config(
 
     cost_limit = _string_value(profile.get("cost_limit"))
     call_limit = _string_value(profile.get("call_limit"))
+    cost_tracking = _string_value(profile.get("cost_tracking"))
     if cost_limit:
         env.setdefault("MSWEA_GLOBAL_COST_LIMIT", cost_limit)
     if call_limit:
         env.setdefault("MSWEA_GLOBAL_CALL_LIMIT", call_limit)
+    if cost_tracking:
+        env.setdefault("MSWEA_COST_TRACKING", cost_tracking)
+
+    native_tool_calling = profile.get("native_tool_calling")
+    if _is_openhands_agent(base_config.agent) and native_tool_calling is not None:
+        env.setdefault(
+            "LLM_NATIVE_TOOL_CALLING",
+            "true" if _truthy(native_tool_calling) else "false",
+        )
 
     extra_args = _merge_extra_args(
         _featurelift_profile_extra_args(profile, agent=base_config.agent),
@@ -126,6 +136,7 @@ def load_agent_run_config(
         "api_base": api_base or "",
         "cost_limit": cost_limit or "",
         "call_limit": call_limit or "",
+        "cost_tracking": cost_tracking or "",
         "openhands_command": openhands_command if _is_openhands_agent(base_config.agent) else "",
         "openhands_command_configured": bool(openhands_command)
         if _is_openhands_agent(base_config.agent)

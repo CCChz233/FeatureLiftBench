@@ -28,6 +28,17 @@ DEFAULT_AGENT_DOCKER_PIDS = "512"
 DEFAULT_AGENT_DOCKER_NETWORK = "bridge"
 DEFAULT_AGENT_DOCKER_TMPFS = "/tmp:rw,nosuid,nodev,size=2g"
 
+# OpenHands CLI unconditionally clones github.com/OpenHands/extensions on startup to
+# load "public skills". On networks that cannot reach github this hangs until git's
+# internal timeout (~120s) on every run. Resolving these hosts to a dead local
+# address makes the clone fail instantly; OpenHands then skips public skills and
+# proceeds. Override or disable via FEATURELIFTBENCH_AGENT_DOCKER_ADD_HOSTS.
+DEFAULT_OPENHANDS_BLOCKED_HOSTS = (
+    "github.com:127.0.0.1",
+    "codeload.github.com:127.0.0.1",
+    "raw.githubusercontent.com:127.0.0.1",
+)
+
 CONTAINER_WORKSPACE = Path("/flb/workspace")
 CONTAINER_AGENT_OUTPUT = Path("/flb/agent")
 CONTAINER_HARNESS = Path("/flb/harness")
@@ -210,6 +221,7 @@ def build_agent_docker_invocation(
         "-v",
         f"{HARNESS_ROOT.resolve()}:{CONTAINER_HARNESS}:ro",
     ]
+    command.extend(_docker_add_hosts(config))
     for key in sorted(env_keys):
         command.extend(["--env", key])
     command.extend([image, *inner_command])
@@ -247,6 +259,31 @@ def _normalize_inner_command(command: list[str]) -> list[str]:
     ]:
         return ["python", *command[1:]]
     return command
+
+
+def _is_openhands_agent(agent: str) -> bool:
+    normalized = agent.strip().lower().replace("_", "-")
+    return normalized in {"openhands", "openhands-agent", "openhandsagent"}
+
+
+def _docker_add_hosts(config: AgentRunConfig) -> list[str]:
+    """Return docker --add-host args for the agent container.
+
+    Configurable via FEATURELIFTBENCH_AGENT_DOCKER_ADD_HOSTS (comma-separated
+    ``host:ip`` entries). When unset, OpenHands agents default to blocking
+    github hosts so the startup public-skills clone fails fast instead of hanging.
+    """
+    raw = os.environ.get("FEATURELIFTBENCH_AGENT_DOCKER_ADD_HOSTS")
+    if raw is None:
+        entries: tuple[str, ...] = (
+            DEFAULT_OPENHANDS_BLOCKED_HOSTS if _is_openhands_agent(config.agent) else ()
+        )
+    else:
+        entries = tuple(item.strip() for item in raw.split(",") if item.strip())
+    args: list[str] = []
+    for entry in entries:
+        args.extend(["--add-host", entry])
+    return args
 
 
 def _docker_env(config: AgentRunConfig) -> tuple[set[str], dict[str, str]]:

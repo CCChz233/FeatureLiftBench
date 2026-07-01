@@ -13,21 +13,24 @@ ARG INSTALL_OPENHANDS
 ARG OPENHANDS_VERSION
 
 RUN if [ "$INSTALL_OPENHANDS" = "1" ]; then \
+      sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true; \
+      sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list 2>/dev/null || true; \
       apt-get update \
       && apt-get install -y --no-install-recommends git ca-certificates \
       && rm -rf /var/lib/apt/lists/*; \
     fi
 
-RUN pip install \
+RUN pip install --index-url https://mirrors.aliyun.com/pypi/simple/ \
     "pytest==7.4.4" \
     "rich"
 
 RUN if [ "$INSTALL_OPENHANDS" = "1" ]; then \
-      pip install "uv>=0.11.6" \
+      pip install --index-url https://mirrors.aliyun.com/pypi/simple/ "uv>=0.11.6" \
       && UV_TOOL_DIR=/opt/uv-tools UV_TOOL_BIN_DIR=/usr/local/bin \
+         UV_DEFAULT_INDEX=https://mirrors.aliyun.com/pypi/simple/ \
          uv tool install "openhands==${OPENHANDS_VERSION}" --python python3; \
     else \
-      pip install "mini-swe-agent==1.17.3"; \
+      pip install --index-url https://mirrors.aliyun.com/pypi/simple/ "mini-swe-agent==1.17.3"; \
     fi
 
 COPY benchmark/vendor-wheels /flb/benchmark/vendor-wheels

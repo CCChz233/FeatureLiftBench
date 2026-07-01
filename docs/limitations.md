@@ -2,7 +2,7 @@
 
 本文档记录 **pilot 阶段已确认** 的工程缺口、评测局限和实验口径问题。FeatureLiftBench 的长期目标是评估 Agent 能否从 vibe/legacy/entangled 仓库中完成功能级解耦；与 [README.md](README.md) 中的研究性「待讨论问题」不同，这里侧重当前实现里 **已经观察到** 的限制。
 
-最后更新：2026-06-29（长跑稳定性 harness + [SERVER_DEPLOY.md](SERVER_DEPLOY.md)）
+最后更新：2026-07-01（OpenHands 跑批踩坑见 [OPENHANDS_RUN_PITFALLS.md](OPENHANDS_RUN_PITFALLS.md)）
 
 ## 1. Agent Harness
 

@@ -5,6 +5,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
+export FEATURELIFTBENCH_AGENT_DOCKER="${FEATURELIFTBENCH_AGENT_DOCKER:-1}"
+export FEATURELIFTBENCH_EVAL_DOCKER="${FEATURELIFTBENCH_EVAL_DOCKER:-1}"
 export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
 
 if [[ -n "${PYTHON:-}" ]]; then

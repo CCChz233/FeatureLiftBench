@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import shlex
+import shutil
 import signal
 import subprocess
 import sys
@@ -162,6 +163,7 @@ def run(config: OpenHandsRunnerConfig) -> int:
     )
     env = apply_openhands_llm_env(env)
     env.setdefault("OPENHANDS_SUPPRESS_BANNER", "1")
+    _maybe_seed_agent_settings(command, env, config.agent_output_dir)
 
     start = time.monotonic()
     proxy = maybe_start_openhands_usage_proxy(env, config.agent_output_dir)
@@ -231,6 +233,117 @@ def _point_openhands_to_proxy(env: dict[str, str], proxy_base_url: str) -> None:
     ):
         if key in env:
             env[key] = "featureliftbench-proxy"
+
+
+_TRUTHY = {"true", "1", "yes", "on"}
+
+_AGENT_SETTINGS_GENERATOR = """
+import os
+from openhands.sdk.llm import LLM
+from openhands_cli.utils import get_default_cli_agent
+
+out = os.environ["FLB_AGENT_SETTINGS_OUT"]
+llm = LLM(
+    model="openai/placeholder",
+    api_key="placeholder",
+    usage_id="agent",
+    native_tool_calling=False,
+)
+agent = get_default_cli_agent(llm)
+
+
+def _off(inner):
+    return inner.model_copy(update={"native_tool_calling": False})
+
+
+updates = {"llm": _off(agent.llm)}
+condenser = getattr(agent, "condenser", None)
+if condenser is not None and hasattr(condenser, "llm"):
+    updates["condenser"] = condenser.model_copy(update={"llm": _off(condenser.llm)})
+agent = agent.model_copy(update=updates)
+os.makedirs(os.path.dirname(out), exist_ok=True)
+with open(out, "w", encoding="utf-8") as handle:
+    handle.write(agent.model_dump_json())
+"""
+
+
+def _maybe_seed_agent_settings(
+    command: list[str],
+    env: dict[str, str],
+    agent_output_dir: Path,
+) -> None:
+    """Persist an agent_settings.json so OpenHands honors native_tool_calling=False.
+
+    The OpenHands CLI only overrides model/api_key/base_url from env vars; other
+    LLM fields (like ``native_tool_calling``) are taken from a persisted agent
+    spec. When LLM_NATIVE_TOOL_CALLING is explicitly falsy we generate a default
+    agent spec with native tool calling disabled and drop it in the persistence
+    directory. This lets local vLLM servers without --enable-auto-tool-choice work
+    by using prompt-based tool calling.
+    """
+    native = env.get("LLM_NATIVE_TOOL_CALLING")
+    if native is None or native.strip().lower() in _TRUTHY:
+        return
+
+    home = env.get("HOME") or os.path.expanduser("~")
+    persist_dir = env.get("OPENHANDS_PERSISTENCE_DIR") or os.path.join(home, ".openhands")
+    env["OPENHANDS_PERSISTENCE_DIR"] = persist_dir
+    settings_path = os.path.join(persist_dir, "agent_settings.json")
+    if os.path.isfile(settings_path):
+        return
+
+    interpreter = _resolve_openhands_python(command)
+    if interpreter is None:
+        print(
+            "FeatureLiftBench: could not resolve OpenHands interpreter; "
+            "native_tool_calling override skipped.",
+            file=sys.stderr,
+        )
+        return
+
+    gen_env = dict(env)
+    gen_env["FLB_AGENT_SETTINGS_OUT"] = settings_path
+    result = subprocess.run(
+        [interpreter, "-c", _AGENT_SETTINGS_GENERATOR],
+        env=gen_env,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    log_path = agent_output_dir / "agent_settings_seed.log"
+    log_path.write_text(
+        f"returncode={result.returncode}\n"
+        f"settings_path={settings_path}\n"
+        f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}\n",
+        encoding="utf-8",
+    )
+    if result.returncode != 0 or not os.path.isfile(settings_path):
+        print(
+            "FeatureLiftBench: failed to seed agent_settings.json for "
+            "native_tool_calling override (see agent_settings_seed.log).",
+            file=sys.stderr,
+        )
+
+
+def _resolve_openhands_python(command: list[str]) -> str | None:
+    """Best-effort resolution of the Python interpreter that runs OpenHands."""
+    if not command:
+        return None
+    binary = shutil.which(command[0]) or command[0]
+    try:
+        with open(binary, encoding="utf-8", errors="replace") as handle:
+            first_line = handle.readline().strip()
+    except OSError:
+        first_line = ""
+    if first_line.startswith("#!"):
+        shebang = first_line[2:].strip()
+        interpreter = shebang.split()[0] if shebang else ""
+        if interpreter and os.path.exists(interpreter):
+            return interpreter
+    fallback = "/opt/uv-tools/openhands/bin/python"
+    if os.path.exists(fallback):
+        return fallback
+    return None
 
 
 def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:

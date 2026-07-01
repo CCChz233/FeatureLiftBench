@@ -33,13 +33,13 @@ def apply_openhands_llm_env(env: dict[str, str]) -> dict[str, str]:
         updated.get("FEATURELIFTBENCH_API_BASE"),
         updated.get("LLM_BASE_URL"),
     )
-    model = _first_non_empty(updated.get("FEATURELIFTBENCH_MODEL"), updated.get("LLM_MODEL"))
-    normalized_model = normalize_api_model_name(model, api_base) if model else ""
-
     if api_key:
         updated.setdefault("LLM_API_KEY", api_key)
     if api_base:
         updated.setdefault("LLM_BASE_URL", api_base)
-    if normalized_model:
-        updated.setdefault("LLM_MODEL", normalized_model)
+    model = _first_non_empty(updated.get("FEATURELIFTBENCH_MODEL"), updated.get("LLM_MODEL"))
+    if model:
+        # OpenHands routes through LiteLLM, which needs the provider prefix
+        # (e.g. deepseek/deepseek-v4-flash). Do not strip deepseek/ here.
+        updated.setdefault("LLM_MODEL", model)
     return updated

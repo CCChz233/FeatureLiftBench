@@ -305,13 +305,15 @@ export FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY=0
 
 ## 11. 常见问题
 
+**完整踩坑记录（vLLM 网络、tool calling、DeepSeek 模型名、GitHub clone 等）** → [OPENHANDS_RUN_PITFALLS.md](OPENHANDS_RUN_PITFALLS.md)
+
 | 现象 | 处理 |
 | --- | --- |
 | `openhands CLI not found` | 用 Python 3.12 base 重建 agent 镜像，并设置 `FEATURELIFTBENCH_INSTALL_OPENHANDS=1` |
 | `docker_sandbox_error=true` | 先看 `eval/result.json` 和 Docker 超时/OOM；这是基础设施失败，不应计入模型功能结论 |
 | `log_limit_exceeded` | 降低 OpenHands 噪声、提高 `FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES`，或保留为日志超限失败 |
 | `usage_unverified=true` | provider 未返回 usage，或 proxy 被关闭；该 run 只能标 pilot |
-| 全题 `missing_submission` | 查 `.env`、profile、`agent/openhands_stderr.log`、模型 API 是否可用 |
+| 全题 `missing_submission` | 先查 `api_calls` 是否为 0；见 [OPENHANDS_RUN_PITFALLS.md](OPENHANDS_RUN_PITFALLS.md) §5 排障表 |
 | `.run.lock` 阻止开跑 | 确认没有旧进程；崩溃残留才执行 `rmdir <OUT>/.run.lock` |
 
 ## 12. 最小安全检查清单

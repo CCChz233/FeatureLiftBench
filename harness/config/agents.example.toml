@@ -23,6 +23,14 @@ api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
 call_limit = "0"
 
+[profiles.openhands_deepseek_v4_flash]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
 # --- Local vLLM (OpenAI-compatible; key can be dummy) ---
 
 [profiles.gpt_oss_120b_vllm]

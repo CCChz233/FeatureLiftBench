@@ -11,20 +11,24 @@ ENTANGLEMENT_LEVELS = {"low", "medium", "high"}
 ENTANGLEMENT_TYPES = {
     "framework_coupling",
     "config_environment_coupling",
+    "concurrency_coupling",
     "global_state_registry_coupling",
     "resource_coupling",
     "implicit_dependency_coupling",
     "parser_state_coupling",
     "data_model_coupling",
+    "reflection_tag_coupling",
     "third_party_dependency_coupling",
     "legacy_vibe_clutter",
 }
 ENTANGLEMENT_PRIMARY_TYPES = (
     "framework_coupling",
     "config_environment_coupling",
+    "concurrency_coupling",
     "parser_state_coupling",
     "resource_coupling",
     "data_model_coupling",
+    "reflection_tag_coupling",
     "third_party_dependency_coupling",
     "legacy_vibe_clutter",
 )
@@ -92,6 +96,13 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
     for key, expected_type in required_top_level.items():
         _require_type(metadata, key, expected_type, errors)
 
+    language = metadata.get("language")
+    if isinstance(language, str):
+        if language not in {"python", "go"}:
+            errors.append("field language must be one of: python, go")
+    else:
+        language = ""
+
     difficulty = metadata.get("difficulty")
     if difficulty is not None:
         if not isinstance(difficulty, str):
@@ -110,6 +121,8 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
     if isinstance(source, dict):
         for key in ("name", "url", "commit", "license"):
             _require_type(metadata, f"source.{key}", str, errors)
+        if language == "go":
+            _require_type(metadata, "source.module_path", str, errors)
 
     feature = metadata.get("feature")
     if isinstance(feature, dict):
@@ -158,18 +171,31 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
 
     output = metadata.get("output")
     if isinstance(output, dict):
-        for key in ("package", "import", "callable", "signature"):
+        output_keys = ("package", "import", "callable", "signature")
+        if language == "go":
+            output_keys = ("module", "package", "import")
+        for key in output_keys:
             _require_type(metadata, f"output.{key}", str, errors)
+        if language == "go":
+            _require_string_list(metadata, "output.symbols", errors)
 
     environment = metadata.get("environment")
     if isinstance(environment, dict):
-        _require_type(metadata, "environment.python", str, errors)
-        _require_type(metadata, "environment.network", bool, errors)
-        _require_type(metadata, "environment.timeout_seconds", int, errors)
-        _require_type(metadata, "environment.dependency_lock", str, errors)
-        _require_string_list(metadata, "environment.allowed_dependencies", errors)
-        _require_string_list(metadata, "environment.forbidden_dependencies", errors)
-        _require_string_list(metadata, "environment.forbidden_imports", errors)
+        if language == "go":
+            _require_type(metadata, "environment.go", str, errors)
+            _require_type(metadata, "environment.network", bool, errors)
+            _require_type(metadata, "environment.timeout_seconds", int, errors)
+            _require_string_list(metadata, "environment.allowed_modules", errors)
+            _require_string_list(metadata, "environment.forbidden_modules", errors)
+            _require_string_list(metadata, "environment.forbidden_imports", errors)
+        else:
+            _require_type(metadata, "environment.python", str, errors)
+            _require_type(metadata, "environment.network", bool, errors)
+            _require_type(metadata, "environment.timeout_seconds", int, errors)
+            _require_type(metadata, "environment.dependency_lock", str, errors)
+            _require_string_list(metadata, "environment.allowed_dependencies", errors)
+            _require_string_list(metadata, "environment.forbidden_dependencies", errors)
+            _require_string_list(metadata, "environment.forbidden_imports", errors)
 
     tests = metadata.get("tests")
     if isinstance(tests, dict):
@@ -191,6 +217,28 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
             "oracle_dependency_count",
         ):
             _require_number(metadata, f"scoring_reference.{key}", errors)
+
+    concurrency = metadata.get("concurrency")
+    if concurrency is not None:
+        if not isinstance(concurrency, dict):
+            errors.append(f"field concurrency must be dict, got {type(concurrency).__name__}")
+        else:
+            enabled = concurrency.get("enabled")
+            if enabled is not None and not isinstance(enabled, bool):
+                errors.append(
+                    f"field concurrency.enabled must be bool, got {type(enabled).__name__}"
+                )
+            race_test = concurrency.get("race_test")
+            if race_test is not None and not isinstance(race_test, bool):
+                errors.append(
+                    f"field concurrency.race_test must be bool, got {type(race_test).__name__}"
+                )
+            for key in ("stress_count", "timeout_seconds"):
+                value = concurrency.get(key)
+                if value is not None and not isinstance(value, int):
+                    errors.append(
+                        f"field concurrency.{key} must be int, got {type(value).__name__}"
+                    )
 
     return errors
 

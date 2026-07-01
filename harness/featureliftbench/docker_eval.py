@@ -16,6 +16,7 @@ from .metadata import load_metadata
 from .paths import REPO_ROOT
 
 DEFAULT_EVAL_IMAGE = "featureliftbench-eval:latest"
+DEFAULT_GO_EVAL_IMAGE = "featureliftbench-eval-go:latest"
 DEFAULT_DOCKER_MEMORY = "4g"
 DEFAULT_DOCKER_CPUS = "2"
 DEFAULT_DOCKER_PIDS = "256"
@@ -49,6 +50,7 @@ def evaluate_submission_docker(
     submission_path = Path(submission_dir).resolve()
     output_path = Path(output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
+    image = _select_eval_image(task_path, image)
     harness_root = (REPO_ROOT / "harness").resolve()
     container_name = _eval_container_name(task_path.name)
 
@@ -244,6 +246,16 @@ def _docker_eval_timeout_seconds(task_path: Path) -> int:
     except (OSError, ValueError):
         pass
     return max(300, per_step * 8)
+
+
+def _select_eval_image(task_path: Path, image: str) -> str:
+    if image != DEFAULT_EVAL_IMAGE:
+        return image
+    try:
+        metadata = load_metadata(task_path).data
+    except (OSError, ValueError):
+        return image
+    return DEFAULT_GO_EVAL_IMAGE if metadata.get("language") == "go" else image
 
 
 def _env_default(name: str, default: str) -> str:

@@ -1,0 +1,68 @@
+{
+  "task_id": "go_dummy__adder_core__001",
+  "language": "go",
+  "difficulty": "easy",
+  "tags": [
+    "go",
+    "dummy",
+    "harness-smoke"
+  ],
+  "source": {
+    "name": "go-dummy-adder",
+    "url": "local://featureliftbench/go_dummy_adder",
+    "commit": "0000000000000000000000000000000000000000",
+    "license": "MIT",
+    "module_path": "example.com/featureliftbench/go-dummy-adder"
+  },
+  "feature": {
+    "name": "integer adder",
+    "description": "Extract a tiny Add function into a standalone Go package for harness smoke testing.",
+    "source_entrypoints": [
+      "adder/adder.go"
+    ],
+    "included_behaviors": [
+      "Add two integers and return the sum"
+    ],
+    "excluded_behaviors": [
+      "No overflow handling beyond normal Go int behavior"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "primary": "data_model_coupling",
+    "types": [
+      "data_model_coupling"
+    ],
+    "description": "Dummy task with minimal source structure used only to validate Go harness plumbing.",
+    "signals": [
+      "stable Go module output",
+      "public and hidden Go tests",
+      "forbidden original module checks"
+    ]
+  },
+  "output": {
+    "module": "featurelifted.local/go_dummy__adder_core__001",
+    "package": "featurelifted",
+    "import": "featurelifted.local/go_dummy__adder_core__001/featurelifted",
+    "symbols": [
+      "Add"
+    ]
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 30,
+    "allowed_modules": [],
+    "forbidden_modules": [
+      "example.com/featureliftbench/go-dummy-adder"
+    ],
+    "forbidden_imports": [
+      "example.com/featureliftbench/go-dummy-adder"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "go test ./..."
+  }
+}

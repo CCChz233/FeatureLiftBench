@@ -205,7 +205,10 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
             1 for run in runs if run.get("evaluation", {}).get("resource_limited") is True
         ),
         "log_limit_failures": sum(
-            1 for run in runs if run.get("evaluation", {}).get("log_limit_exceeded") is True
+            1
+            for run in runs
+            if run.get("evaluation", {}).get("log_limit_exceeded") is True
+            or _agent_result_has_log_limit(run)
         ),
         "docker_sandbox_failures": sum(
             1 for run in runs if run.get("evaluation", {}).get("docker_sandbox_error") is True
@@ -239,6 +242,53 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
         value = usage.get(key)
         if isinstance(value, int):
             compact[key] = value
+    context_audit = usage.get("context_audit")
+    if isinstance(context_audit, dict):
+        compact_audit: dict[str, Any] = {}
+        for key in (
+            "context_window_tokens",
+            "reserved_output_tokens",
+            "max_prompt_tokens_per_call",
+            "max_total_tokens_per_call",
+        ):
+            value = context_audit.get(key)
+            if isinstance(value, int):
+                compact_audit[key] = value
+        for key in ("context_violation", "usage_unverified"):
+            value = context_audit.get(key)
+            if isinstance(value, bool):
+                compact_audit[key] = value
+        if compact_audit:
+            compact["context_audit"] = compact_audit
+    tool_summary = usage.get("tool_summary")
+    if isinstance(tool_summary, dict):
+        compact_tool: dict[str, Any] = {}
+        for key in (
+            "total_actions",
+            "success_actions",
+            "failed_actions",
+            "blocked_actions",
+            "timeout_actions",
+            "error_actions",
+        ):
+            value = tool_summary.get(key)
+            if isinstance(value, int):
+                compact_tool[key] = value
+        for key in (
+            "actions_enabled",
+        ):
+            value = tool_summary.get(key)
+            if isinstance(value, bool):
+                compact_tool[key] = value
+        for key in (
+            "final_check_status",
+            "public_tests_status",
+        ):
+            value = tool_summary.get(key)
+            if isinstance(value, str):
+                compact_tool[key] = value
+        if compact_tool:
+            compact["tool_summary"] = compact_tool
     return compact
 
 
@@ -262,6 +312,8 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
         value = evaluation.get(key)
         if value:
             entry[key] = value
+    if _agent_result_has_log_limit(run):
+        entry["log_limit_exceeded"] = True
     return entry
 
 
@@ -280,3 +332,15 @@ def _eval_result_has_flag(eval_result: dict[str, Any], flag: str) -> bool:
         if isinstance(payload, dict) and payload.get(flag) is True:
             return True
     return False
+
+
+def _agent_result_has_log_limit(run: dict[str, Any]) -> bool:
+    agent = run.get("agent")
+    if not isinstance(agent, dict):
+        return False
+    if agent.get("log_limit_exceeded") is True:
+        return True
+    usage = agent.get("usage")
+    if not isinstance(usage, dict):
+        return False
+    return usage.get("exit_status") == "log_limit_exceeded"

@@ -23,7 +23,7 @@ class ValidationResult:
         return not self.errors
 
 
-REQUIRED_PATHS = (
+PYTHON_REQUIRED_PATHS = (
     "metadata.json",
     "requirements.lock",
     "repo",
@@ -31,6 +31,18 @@ REQUIRED_PATHS = (
     "hidden_tests",
     "evaluation",
     "evaluation/forbidden_imports.txt",
+    "evaluation/oracle_manifest.json",
+)
+
+GO_REQUIRED_PATHS = (
+    "metadata.json",
+    "repo",
+    "public_tests",
+    "hidden_tests",
+    "evaluation",
+    "evaluation/forbidden_imports.txt",
+    "evaluation/forbidden_modules.txt",
+    "evaluation/allowed_modules.txt",
     "evaluation/oracle_manifest.json",
 )
 
@@ -46,11 +58,6 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
     if not root.is_dir():
         return ValidationResult(task_dir=root, task_id="", errors=[f"task path is not a directory: {root}"])
 
-    for relative_path in REQUIRED_PATHS:
-        path = root / relative_path
-        if not path.exists():
-            errors.append(f"missing required path: {relative_path}")
-
     metadata = None
     try:
         metadata = load_metadata(root)
@@ -58,8 +65,19 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
         errors.append(str(exc))
 
     task_id = ""
+    language = "python"
     if metadata is not None:
         task_id = metadata.task_id
+        raw_language = metadata.data.get("language")
+        if isinstance(raw_language, str):
+            language = raw_language
+
+    for relative_path in _required_paths_for_language(language):
+        path = root / relative_path
+        if not path.exists():
+            errors.append(f"missing required path: {relative_path}")
+
+    if metadata is not None:
         errors.extend(validate_metadata_shape(metadata.data))
 
         if task_id and task_id != root.name:
@@ -85,13 +103,18 @@ def _validate_dependency_sets(metadata: dict) -> list[str]:
     if not isinstance(environment, dict):
         return []
 
-    allowed = environment.get("allowed_dependencies", [])
-    forbidden = environment.get("forbidden_dependencies", [])
+    if metadata.get("language") == "go":
+        allowed = environment.get("allowed_modules", [])
+        forbidden = environment.get("forbidden_modules", [])
+    else:
+        allowed = environment.get("allowed_dependencies", [])
+        forbidden = environment.get("forbidden_dependencies", [])
     if not isinstance(allowed, list) or not isinstance(forbidden, list):
         return []
 
-    allowed_names = {_normalize_distribution_name(item) for item in allowed if isinstance(item, str)}
-    forbidden_names = {_normalize_distribution_name(item) for item in forbidden if isinstance(item, str)}
+    normalizer = _normalize_go_module if metadata.get("language") == "go" else _normalize_distribution_name
+    allowed_names = {normalizer(item) for item in allowed if isinstance(item, str)}
+    forbidden_names = {normalizer(item) for item in forbidden if isinstance(item, str)}
     conflicts = sorted(allowed_names & forbidden_names)
     if not conflicts:
         return []
@@ -119,3 +142,13 @@ def _validate_lock_file_name(metadata: dict, task_dir: Path) -> list[str]:
 
 def _normalize_distribution_name(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
+
+
+def _normalize_go_module(name: str) -> str:
+    return name.strip().rstrip("/").lower()
+
+
+def _required_paths_for_language(language: str) -> tuple[str, ...]:
+    if language == "go":
+        return GO_REQUIRED_PATHS
+    return PYTHON_REQUIRED_PATHS

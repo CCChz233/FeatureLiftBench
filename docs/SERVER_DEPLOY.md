@@ -2,6 +2,10 @@
 
 在 Linux 服务器上跑 **batch-1 Docker Flash** 或完整主榜的简明清单。详细环境说明见 [SETUP.md](SETUP.md)；命令速查见 [RUN.md](../RUN.md)。
 
+当前如果要用 **OpenHands 测 FeatureLiftBench**，不要按本文的 mini-swe-agent
+batch-1 流程直接大跑；使用专门的
+[OpenHands 服务器运行指南](OPENHANDS_SERVER_RUNBOOK.md)。
+
 最后更新：2026-06-29
 
 ---

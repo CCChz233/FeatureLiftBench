@@ -154,7 +154,7 @@ class SuiteProgressTests(unittest.TestCase):
         self.assertEqual(tokens, 6900)
 
     def test_task_lifecycle_updates_completed_count(self) -> None:
-        manager = SuiteBatchProgressManager(num_tasks=2)
+        manager = SuiteBatchProgressManager(num_tasks=2, agent="mini-swe-agent")
         manager.on_task_start("task_a")
         manager.update_task_status("task_a", "Step 1 (10 toks)", tokens=10)
         manager.on_task_end("task_a", "passed")

@@ -154,6 +154,48 @@ class DockerEvalTests(unittest.TestCase):
             self.assertEqual(result["sandbox"]["memory"], "2g")
             self.assertEqual(result["sandbox"]["cpus"], "1.5")
 
+    def test_evaluate_submission_docker_auto_selects_go_image(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = root / "go_task"
+            submission_dir = root / "submission"
+            output_dir = root / "output"
+            for path in (task_dir, submission_dir, output_dir):
+                path.mkdir()
+            (task_dir / "metadata.json").write_text(
+                json.dumps(
+                    {
+                        "task_id": "go_task",
+                        "language": "go",
+                        "source": {},
+                        "feature": {},
+                        "entanglement": {},
+                        "output": {},
+                        "environment": {},
+                        "tests": {},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (output_dir / "result.json").write_text(json.dumps({"status": "passed"}), encoding="utf-8")
+
+            captured: dict[str, list[str]] = {}
+
+            def _popen(command: list[str], **kwargs: object) -> _FakeDockerEvalProcess:
+                captured["command"] = command
+                return _FakeDockerEvalProcess()
+
+            with mock.patch("featureliftbench.docker_eval.subprocess.Popen", side_effect=_popen):
+                result = evaluate_submission_docker(
+                    task_dir,
+                    submission_dir,
+                    output_dir,
+                    use_docker=True,
+                )
+
+            self.assertIn("featureliftbench-eval-go:latest", captured["command"])
+            self.assertEqual(result["sandbox"]["image"], "featureliftbench-eval-go:latest")
+
     def test_evaluate_submission_docker_writes_structured_failure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

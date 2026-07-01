@@ -17,6 +17,7 @@ if str(_HARNESS_ROOT) not in sys.path:
 
 from featureliftbench.agent_config import load_agent_run_config  # noqa: E402
 from featureliftbench.agent_adapters import AgentRunConfig  # noqa: E402
+from featureliftbench.dependency_install import sanity_vendor_wheels_ready  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG_EXAMPLE  # noqa: E402
 
@@ -60,6 +61,43 @@ def _ensure_env_file(*, bootstrap: bool) -> str | None:
     env_path.write_text(example_path.read_text(encoding="utf-8"), encoding="utf-8")
     print(f"preflight: created {env_path} from example — add API keys before running", file=sys.stderr)
     return None
+
+
+def _is_featurelift_agent(agent: str) -> bool:
+    normalized = agent.strip().lower().replace("_", "-")
+    return normalized in {"featurelift-agent", "featureliftagent", "featurelift"}
+
+
+def _is_openhands_agent(agent: str) -> bool:
+    normalized = agent.strip().lower().replace("_", "-")
+    return normalized in {"openhands", "openhands-agent", "openhandsagent"}
+
+
+def _openhands_available_locally() -> bool:
+    return shutil.which("openhands") is not None
+
+
+def _openhands_available_in_docker(image: str) -> bool:
+    completed = subprocess.run(
+        ["docker", "run", "--rm", "--entrypoint", "which", image, "openhands"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
+def _check_vendor_wheels(*, agent: str) -> str | None:
+    if not _is_featurelift_agent(agent):
+        return None
+    ready, missing = sanity_vendor_wheels_ready()
+    if ready:
+        return None
+    return (
+        "missing vendor wheels for sanity tasks: "
+        + ", ".join(missing)
+        + "; run PYTHONPATH=harness python harness/scripts/bootstrap_vendor_wheels.py"
+    )
 
 
 def _read_configured_mini_bin(profile_name: str) -> str:
@@ -213,6 +251,11 @@ def _check_docker_suite(*, output_dir: Path | None) -> int:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="FeatureLiftBench run preflight checks")
     parser.add_argument(
+        "--agent",
+        default="mini-swe-agent",
+        help="agent adapter to validate (default: mini-swe-agent)",
+    )
+    parser.add_argument(
         "--agent-profile",
         default="deepseek_v4_pro",
         help="profile to validate (default: deepseek_v4_pro)",
@@ -249,21 +292,33 @@ def main(argv: list[str] | None = None) -> int:
         if message:
             return _fail(message)
 
-    mini_bin = _resolve_mini_bin(mini_bin_arg=args.mini_bin, profile_name=args.agent_profile)
-    if mini_bin:
-        _patch_agent_bin(mini_bin)
-    else:
-        return _fail(
-            "mini-swe-agent CLI not found on PATH; run ./setup.sh or "
-            "pip install mini-swe-agent into .venv"
-        )
+    for message in (
+        _ensure_agent_config(bootstrap=args.bootstrap),
+        _ensure_env_file(bootstrap=args.bootstrap),
+        _check_vendor_wheels(agent=args.agent),
+    ):
+        if message:
+            return _fail(message)
+
+    featurelift_agent = _is_featurelift_agent(args.agent)
+    openhands_agent = _is_openhands_agent(args.agent)
+    mini_bin = ""
+    if not featurelift_agent and not openhands_agent:
+        mini_bin = _resolve_mini_bin(mini_bin_arg=args.mini_bin, profile_name=args.agent_profile)
+        if mini_bin:
+            _patch_agent_bin(mini_bin)
+        else:
+            return _fail(
+                "mini-swe-agent CLI not found on PATH; run ./setup.sh or "
+                "pip install mini-swe-agent into .venv"
+            )
 
     if shutil.which("pytest") is None:
         return _fail("pytest not found; run ./setup.sh")
 
     try:
         loaded = load_agent_run_config(
-            base_config=AgentRunConfig(agent="mini-swe-agent", yolo=True),
+            base_config=AgentRunConfig(agent=args.agent, yolo=not featurelift_agent),
             config_path=DEFAULT_AGENT_CONFIG,
             profile_name=args.agent_profile,
             env_file=_REPO_ROOT / ".env",
@@ -281,9 +336,40 @@ def main(argv: list[str] | None = None) -> int:
     if not summary.get("api_base"):
         return _fail(f"API base URL missing for profile {args.agent_profile}")
 
-    agent_bin = summary.get("agent_bin") or mini_bin
-    if not Path(agent_bin).is_file() and shutil.which(agent_bin) is None:
-        return _fail(f"agent_bin not executable: {agent_bin}")
+    if not featurelift_agent and not openhands_agent:
+        agent_bin = summary.get("agent_bin") or mini_bin
+        if not Path(agent_bin).is_file() and shutil.which(agent_bin) is None:
+            return _fail(f"agent_bin not executable: {agent_bin}")
+    elif featurelift_agent:
+        extra_args = loaded.run_config.extra_args
+        if "--enable-llm" not in extra_args:
+            return _fail(
+                f"profile {args.agent_profile} must enable featurelift LLM "
+                "(featurelift_enable_llm=true or --agent-arg --enable-llm)"
+            )
+        if "--execute-actions" not in extra_args:
+            return _fail(
+                f"profile {args.agent_profile} must enable featurelift actions "
+                "(featurelift_execute_actions=true or --agent-arg --execute-actions)"
+            )
+    elif openhands_agent:
+        if not loaded.run_config.command:
+            return _fail(
+                f"openhands command not configured for profile {args.agent_profile}; "
+                "set openhands_command in agents.toml or FEATURELIFTBENCH_OPENHANDS_COMMAND"
+            )
+        if args.docker_suite:
+            if not _openhands_available_in_docker(DEFAULT_AGENT_IMAGE):
+                return _fail(
+                    f"openhands CLI not found in Docker image {DEFAULT_AGENT_IMAGE}; "
+                    "rebuild with FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim "
+                    "FEATURELIFTBENCH_INSTALL_OPENHANDS=1 ./docker/build_agent_image.sh"
+                )
+        elif not _openhands_available_locally():
+            return _fail(
+                "openhands CLI not found on PATH; pip install openhands (Python 3.12+) "
+                "or set FEATURELIFTBENCH_AGENT_DOCKER=1 for Docker agent runs"
+            )
 
     if args.docker_suite:
         output_dir = Path(args.output_dir).resolve() if args.output_dir else None
@@ -291,13 +377,32 @@ def main(argv: list[str] | None = None) -> int:
         if docker_status != 0:
             return docker_status
 
-    print(
-        "preflight: ok "
-        f"profile={args.agent_profile} "
-        f"model={summary.get('model', '')} "
-        f"mini={agent_bin}",
-        file=sys.stderr,
-    )
+    if featurelift_agent:
+        print(
+            "preflight: ok "
+            f"agent={args.agent} "
+            f"profile={args.agent_profile} "
+            f"model={summary.get('model', '')}",
+            file=sys.stderr,
+        )
+    elif openhands_agent:
+        print(
+            "preflight: ok "
+            f"agent={args.agent} "
+            f"profile={args.agent_profile} "
+            f"model={summary.get('model', '')} "
+            f"openhands_command={'set' if summary.get('openhands_command_configured') else 'missing'}",
+            file=sys.stderr,
+        )
+    else:
+        agent_bin = summary.get("agent_bin") or mini_bin
+        print(
+            "preflight: ok "
+            f"profile={args.agent_profile} "
+            f"model={summary.get('model', '')} "
+            f"mini={agent_bin}",
+            file=sys.stderr,
+        )
     return 0
 
 

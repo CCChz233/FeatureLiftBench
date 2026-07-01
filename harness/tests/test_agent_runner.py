@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shlex
 import sys
 import tempfile
@@ -8,10 +9,14 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from featureliftbench import featurelift_agent
+from featureliftbench import openhands_runner
 from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_adapters import AgentCommandResult
 from featureliftbench.agent_adapters import AgentRunContext
+from featureliftbench.agent_adapters import FeatureLiftAgentAdapter
 from featureliftbench.agent_adapters import MiniSweAgentAdapter
+from featureliftbench.agent_adapters import OpenHandsAgentAdapter
 from featureliftbench.agent_runner import _collect_agent_usage
 from featureliftbench.agent_runner import _is_rate_limit_failure
 from featureliftbench.agent_runner import _merge_suite_runs
@@ -22,6 +27,7 @@ from featureliftbench.agent_runner import load_skipped_runs
 from featureliftbench.agent_runner import prepare_agent_workspace
 from featureliftbench.agent_runner import run_agent_on_path
 from featureliftbench.agent_runner import run_agent_on_task
+from featureliftbench.evaluator import evaluate_submission
 from featureliftbench.metadata import load_metadata
 
 
@@ -195,12 +201,841 @@ class AgentRunnerTests(unittest.TestCase):
             live_mock.assert_called_once_with(
                 num_tasks=1,
                 output_dir=output_dir.resolve(),
+                agent="command",
                 layout="flat",
             )
             mock_pm.on_task_start.assert_called_once()
             mock_pm.update_task_status.assert_called()
             mock_pm.on_task_end.assert_called_once()
             self.assertEqual(result["status"], "passed")
+
+    def test_featurelift_agent_run_writes_protocol_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+
+            result = run_agent_on_task(
+                task_dir,
+                root / "output",
+                AgentRunConfig(
+                    agent="featurelift-agent",
+                    model="openai/example",
+                    timeout_seconds=120,
+                ),
+            )
+
+            self.assertEqual(result["status"], "failed")
+            self.assertTrue(result["agent"]["passed"])
+            self.assertTrue(result["submission"]["exists"])
+            self.assertEqual(result["agent"]["usage"]["agent_name"], "featurelift-agent")
+            self.assertEqual(result["agent"]["usage"]["context_audit"]["context_window_tokens"], 131072)
+            self.assertTrue((root / "output" / "agent" / "context_audit.jsonl").is_file())
+            self.assertTrue((root / "output" / "agent" / "state" / "closure_plan.md").is_file())
+            self.assertTrue((root / "output" / "agent" / "state" / "repo_map.md").is_file())
+            source_entrypoints = json.loads(
+                (root / "output" / "agent" / "state" / "source_entrypoints.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(source_entrypoints["entrypoints"], ["sample.VALUE"])
+            manifest = json.loads(
+                (root / "output" / "agent" / "state" / "dependency_manifest.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(manifest["source_entrypoints"], ["sample.VALUE"])
+            self.assertTrue(
+                (root / "output" / "workspace" / "submission" / "featurelifted" / "__init__.py").is_file()
+            )
+
+    def test_featurelift_agent_llm_closure_phase_records_provider_usage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace_dir = root / "workspace"
+            metadata = load_metadata(task_dir).data
+            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            agent_output_dir = root / "agent"
+
+            response = _FakeHttpResponse(
+                {
+                    "id": "chatcmpl-test",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": (
+                                    "## Runtime Files To Inspect\n"
+                                    "- repo/sample.py\n\n"
+                                    "## Likely Resources\n"
+                                    "- None\n\n"
+                                    "## Hidden-Risk Behaviors\n"
+                                    "- VALUE export\n\n"
+                                    "## First Actions\n"
+                                    "- Copy sample closure"
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 123,
+                        "completion_tokens": 45,
+                        "total_tokens": 168,
+                    },
+                }
+            )
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen",
+                return_value=response,
+            ) as urlopen:
+                code = featurelift_agent.run(
+                    featurelift_agent.FeatureLiftAgentConfig(
+                        workspace=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_dir / "submission",
+                        agent_output_dir=agent_output_dir,
+                        model="openai/example",
+                        context_window_tokens=131072,
+                        reserved_output_tokens=8192,
+                        runtime="scaffold",
+                        enable_llm=True,
+                        api_base="https://api.example.test/v1",
+                        api_key="sk-test",
+                        request_timeout_seconds=30,
+                        max_tokens=1024,
+                    )
+                )
+
+            self.assertEqual(code, 0)
+            urlopen.assert_called_once()
+            usage = json.loads((agent_output_dir / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(usage["api_calls"], 1)
+            self.assertEqual(usage["prompt_tokens"], 123)
+            self.assertEqual(usage["completion_tokens"], 45)
+            self.assertEqual(usage["total_tokens"], 168)
+            self.assertFalse(usage["context_audit"]["usage_unverified"])
+            audit_lines = (agent_output_dir / "context_audit.jsonl").read_text(
+                encoding="utf-8"
+            ).splitlines()
+            self.assertEqual(len(audit_lines), 2)
+            model_audit = json.loads(audit_lines[1])
+            self.assertEqual(model_audit["phase"], "closure_plan")
+            self.assertEqual(model_audit["token_source"], "provider_usage")
+            self.assertEqual(model_audit["prompt_tokens"], 123)
+            closure_plan = (agent_output_dir / "state" / "closure_plan.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("## LLM Closure Plan", closure_plan)
+            self.assertIn("Runtime Files To Inspect", closure_plan)
+
+    def test_featurelift_agent_runs_multiple_llm_phases_sequentially(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace_dir = root / "workspace"
+            metadata = load_metadata(task_dir).data
+            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            agent_output_dir = root / "agent"
+
+            closure_response = _FakeHttpResponse(
+                {
+                    "id": "chatcmpl-closure",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": (
+                                    "```json\n"
+                                    "{\n"
+                                    '  "phase": "closure_plan",\n'
+                                    '  "summary": "closure summary from phase one",\n'
+                                    '  "actions": [{"type": "inspect_file", "target": "repo/sample.py", "reason": "source entrypoint"}],\n'
+                                    '  "risks": ["constant export"]\n'
+                                    "}\n"
+                                    "```\n"
+                                    "Inspect repo/sample.py first."
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 100,
+                        "completion_tokens": 20,
+                        "total_tokens": 120,
+                    },
+                }
+            )
+            extraction_response = _FakeHttpResponse(
+                {
+                    "id": "chatcmpl-extraction",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": (
+                                    "```json\n"
+                                    "{\n"
+                                    '  "phase": "extraction_plan",\n'
+                                    '  "summary": "copy the value export",\n'
+                                    '  "actions": [{"type": "write_file", "target": "submission/featurelifted/__init__.py", "reason": "export VALUE"}],\n'
+                                    '  "risks": []\n'
+                                    "}\n"
+                                    "```\n"
+                                    "Write a minimal package."
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 150,
+                        "completion_tokens": 30,
+                        "total_tokens": 180,
+                    },
+                }
+            )
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen",
+                side_effect=[closure_response, extraction_response],
+            ) as urlopen:
+                code = featurelift_agent.run(
+                    featurelift_agent.FeatureLiftAgentConfig(
+                        workspace=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_dir / "submission",
+                        agent_output_dir=agent_output_dir,
+                        model="openai/example",
+                        context_window_tokens=131072,
+                        reserved_output_tokens=8192,
+                        runtime="scaffold",
+                        enable_llm=True,
+                        api_base="https://api.example.test/v1",
+                        api_key="sk-test",
+                        request_timeout_seconds=30,
+                        max_tokens=1024,
+                        llm_phases=("closure_plan", "extraction_plan"),
+                    )
+                )
+
+            self.assertEqual(code, 0)
+            self.assertEqual(urlopen.call_count, 2)
+            second_request = urlopen.call_args_list[1].args[0]
+            second_payload = json.loads(second_request.data.decode("utf-8"))
+            second_user_prompt = second_payload["messages"][1]["content"]
+            self.assertIn("closure summary from phase one", second_user_prompt)
+
+            usage = json.loads((agent_output_dir / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(usage["api_calls"], 2)
+            self.assertEqual(usage["prompt_tokens"], 250)
+            self.assertEqual(usage["completion_tokens"], 50)
+            self.assertEqual(usage["total_tokens"], 300)
+            audit_lines = (agent_output_dir / "context_audit.jsonl").read_text(
+                encoding="utf-8"
+            ).splitlines()
+            self.assertEqual(len(audit_lines), 3)
+            self.assertEqual(json.loads(audit_lines[1])["phase"], "closure_plan")
+            self.assertEqual(json.loads(audit_lines[2])["phase"], "extraction_plan")
+            self.assertTrue((agent_output_dir / "state" / "closure_plan.json").is_file())
+            extraction_json = json.loads(
+                (agent_output_dir / "state" / "extraction_plan.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(extraction_json["phase"], "extraction_plan")
+
+    def test_featurelift_agent_executes_bounded_phase_actions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace_dir = root / "workspace"
+            metadata = load_metadata(task_dir).data
+            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            agent_output_dir = root / "agent"
+
+            closure_response = _FakeHttpResponse(
+                {
+                    "id": "chatcmpl-closure-actions",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": (
+                                    "```json\n"
+                                    + json.dumps(
+                                        {
+                                            "phase": "closure_plan",
+                                            "summary": "inspect the source file",
+                                            "actions": [
+                                                {
+                                                    "type": "inspect_file",
+                                                    "target": "repo/sample.py",
+                                                    "reason": "source entrypoint",
+                                                }
+                                            ],
+                                            "risks": [],
+                                        }
+                                    )
+                                    + "\n```"
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 100,
+                        "completion_tokens": 20,
+                        "total_tokens": 120,
+                    },
+                }
+            )
+            extraction_response = _FakeHttpResponse(
+                {
+                    "id": "chatcmpl-extraction-actions",
+                    "choices": [
+                        {
+                            "message": {
+                                "content": (
+                                    "```json\n"
+                                    + json.dumps(
+                                        {
+                                            "phase": "extraction_plan",
+                                            "summary": "write a minimal extracted package",
+                                            "actions": [
+                                                {
+                                                    "type": "write_file",
+                                                    "target": "submission/featurelifted/__init__.py",
+                                                    "reason": "export required value",
+                                                    "content": "VALUE = 1\n",
+                                                }
+                                            ],
+                                            "risks": [],
+                                        }
+                                    )
+                                    + "\n```"
+                                )
+                            }
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 150,
+                        "completion_tokens": 30,
+                        "total_tokens": 180,
+                    },
+                }
+            )
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen",
+                side_effect=[closure_response, extraction_response],
+            ) as urlopen:
+                code = featurelift_agent.run(
+                    featurelift_agent.FeatureLiftAgentConfig(
+                        workspace=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_dir / "submission",
+                        agent_output_dir=agent_output_dir,
+                        model="openai/example",
+                        context_window_tokens=131072,
+                        reserved_output_tokens=8192,
+                        runtime="scaffold",
+                        enable_llm=True,
+                        api_base="https://api.example.test/v1",
+                        api_key="sk-test",
+                        request_timeout_seconds=30,
+                        max_tokens=1024,
+                        llm_phases=("closure_plan", "extraction_plan"),
+                        execute_actions=True,
+                    )
+                )
+
+            self.assertEqual(code, 0)
+            second_request = urlopen.call_args_list[1].args[0]
+            second_payload = json.loads(second_request.data.decode("utf-8"))
+            self.assertIn("VALUE = 1", second_payload["messages"][1]["content"])
+            submission_init = workspace_dir / "submission" / "featurelifted" / "__init__.py"
+            self.assertEqual(submission_init.read_text(encoding="utf-8"), "VALUE = 1\n")
+            observations = [
+                json.loads(line)
+                for line in (agent_output_dir / "state" / "tool_observations.jsonl").read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
+            self.assertEqual([item["action_type"] for item in observations], ["inspect_file", "write_file"])
+            self.assertEqual([item["status"] for item in observations], ["success", "success"])
+            extraction_log = (agent_output_dir / "state" / "extraction_log.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("repo/sample.py", extraction_log)
+            self.assertIn("VALUE = 1", extraction_log)
+            usage = json.loads((agent_output_dir / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(usage["exit_status"], "actions_complete")
+
+    def test_featurelift_agent_three_phase_smoke_passes_evaluator(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace_dir = root / "workspace"
+            metadata = load_metadata(task_dir).data
+            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            agent_output_dir = root / "agent"
+
+            closure_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-smoke-closure",
+                    {
+                        "phase": "closure_plan",
+                        "summary": "inspect the source entrypoint before extraction",
+                        "actions": [
+                            {
+                                "type": "inspect_file",
+                                "target": "repo/sample.py",
+                                "reason": "source entrypoint",
+                            }
+                        ],
+                        "risks": ["ensure no original package import remains"],
+                    },
+                    prompt_tokens=100,
+                    completion_tokens=20,
+                )
+            )
+            extraction_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-smoke-extraction",
+                    {
+                        "phase": "extraction_plan",
+                        "summary": "write the standalone feature package and run public tests",
+                        "actions": [
+                            {
+                                "type": "write_file",
+                                "target": "submission/featurelifted/__init__.py",
+                                "reason": "export the required public value",
+                                "content": "VALUE = 1\n",
+                            },
+                            {
+                                "type": "run_public_tests",
+                                "target": "public_tests",
+                                "reason": "verify public behavior before final audit",
+                            },
+                        ],
+                        "risks": [],
+                    },
+                    prompt_tokens=150,
+                    completion_tokens=30,
+                )
+            )
+            final_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-smoke-final",
+                    {
+                        "phase": "final_checklist",
+                        "summary": "prune transient files, then run final checks",
+                        "actions": [
+                            {
+                                "type": "prune_submission",
+                                "target": "submission",
+                                "reason": "remove transient cache files before final audit",
+                            },
+                            {
+                                "type": "final_check",
+                                "target": "featurelifted import and forbidden imports",
+                                "reason": "final pre-submit audit",
+                            }
+                        ],
+                        "risks": [],
+                    },
+                    prompt_tokens=125,
+                    completion_tokens=25,
+                )
+            )
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen",
+                side_effect=[closure_response, extraction_response, final_response],
+            ) as urlopen:
+                code = featurelift_agent.run(
+                    featurelift_agent.FeatureLiftAgentConfig(
+                        workspace=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_dir / "submission",
+                        agent_output_dir=agent_output_dir,
+                        model="openai/example",
+                        context_window_tokens=131072,
+                        reserved_output_tokens=8192,
+                        runtime="scaffold",
+                        enable_llm=True,
+                        api_base="https://api.example.test/v1",
+                        api_key="sk-test",
+                        request_timeout_seconds=30,
+                        max_tokens=1024,
+                        llm_phases=("closure_plan", "extraction_plan", "final_checklist"),
+                        execute_actions=True,
+                        tool_timeout_seconds=30,
+                    )
+                )
+
+            self.assertEqual(code, 0)
+            self.assertEqual(urlopen.call_count, 3)
+            final_request = urlopen.call_args_list[2].args[0]
+            final_payload = json.loads(final_request.data.decode("utf-8"))
+            self.assertIn("pytest exited 0", final_payload["messages"][1]["content"])
+
+            observations = [
+                json.loads(line)
+                for line in (agent_output_dir / "state" / "tool_observations.jsonl").read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
+            self.assertEqual(
+                [item["action_type"] for item in observations],
+                ["inspect_file", "write_file", "run_public_tests", "prune_submission", "final_check"],
+            )
+            self.assertEqual(observations[-1]["status"], "success")
+            self.assertIn("public_tests=success", observations[-1]["summary"])
+            self.assertEqual(observations[-2]["status"], "success")
+
+            eval_result = evaluate_submission(
+                task_dir,
+                workspace_dir / "submission",
+                root / "evaluation_result",
+            )
+            self.assertEqual(eval_result["status"], "passed")
+            self.assertEqual(eval_result["scores"]["functional_gate"], 1.0)
+            usage = json.loads((agent_output_dir / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(usage["api_calls"], 3)
+            self.assertEqual(usage["exit_status"], "actions_complete")
+            self.assertEqual(usage["tool_summary"]["total_actions"], 5)
+            self.assertEqual(usage["tool_summary"]["failed_actions"], 0)
+            self.assertEqual(usage["tool_summary"]["final_check_status"], "success")
+
+    def test_featurelift_agent_repairs_failed_public_tests(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace_dir = root / "workspace"
+            metadata = load_metadata(task_dir).data
+            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            agent_output_dir = root / "agent"
+
+            closure_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-repair-closure",
+                    {
+                        "phase": "closure_plan",
+                        "summary": "inspect source",
+                        "actions": [
+                            {
+                                "type": "inspect_file",
+                                "target": "repo/sample.py",
+                                "reason": "source entrypoint",
+                            }
+                        ],
+                        "risks": [],
+                    },
+                    prompt_tokens=100,
+                    completion_tokens=20,
+                )
+            )
+            extraction_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-repair-extraction",
+                    {
+                        "phase": "extraction_plan",
+                        "summary": "write an initial implementation and test it",
+                        "actions": [
+                            {
+                                "type": "write_file",
+                                "target": "submission/featurelifted/__init__.py",
+                                "reason": "initial implementation",
+                                "content": "VALUE = 2\n",
+                            },
+                            {
+                                "type": "run_public_tests",
+                                "target": "public_tests",
+                                "reason": "detect behavior mismatch",
+                            },
+                        ],
+                        "risks": ["public tests may fail if VALUE is wrong"],
+                    },
+                    prompt_tokens=150,
+                    completion_tokens=30,
+                )
+            )
+            repair_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-repair-plan",
+                    {
+                        "phase": "repair_plan",
+                        "summary": "fix the observed public-test mismatch",
+                        "actions": [
+                            {
+                                "type": "write_file",
+                                "target": "submission/featurelifted/__init__.py",
+                                "reason": "public test expects VALUE == 1",
+                                "content": "VALUE = 1\n",
+                            },
+                            {
+                                "type": "run_public_tests",
+                                "target": "public_tests",
+                                "reason": "verify repaired behavior",
+                            },
+                        ],
+                        "risks": [],
+                    },
+                    prompt_tokens=130,
+                    completion_tokens=30,
+                )
+            )
+            final_response = _FakeHttpResponse(
+                _chat_payload(
+                    "chatcmpl-repair-final",
+                    {
+                        "phase": "final_checklist",
+                        "summary": "final audit after repair",
+                        "actions": [
+                            {
+                                "type": "final_check",
+                                "target": "featurelifted import and forbidden imports",
+                                "reason": "final pre-submit audit",
+                            }
+                        ],
+                        "risks": [],
+                    },
+                    prompt_tokens=120,
+                    completion_tokens=25,
+                )
+            )
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen",
+                side_effect=[closure_response, extraction_response, repair_response, final_response],
+            ) as urlopen:
+                code = featurelift_agent.run(
+                    featurelift_agent.FeatureLiftAgentConfig(
+                        workspace=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_dir / "submission",
+                        agent_output_dir=agent_output_dir,
+                        model="openai/example",
+                        context_window_tokens=131072,
+                        reserved_output_tokens=8192,
+                        runtime="scaffold",
+                        enable_llm=True,
+                        api_base="https://api.example.test/v1",
+                        api_key="sk-test",
+                        request_timeout_seconds=30,
+                        max_tokens=1024,
+                        llm_phases=("closure_plan", "extraction_plan", "final_checklist"),
+                        execute_actions=True,
+                        max_repair_rounds=1,
+                        tool_timeout_seconds=30,
+                    )
+                )
+
+            self.assertEqual(code, 0)
+            self.assertEqual(urlopen.call_count, 4)
+            repair_request = urlopen.call_args_list[2].args[0]
+            repair_payload = json.loads(repair_request.data.decode("utf-8"))
+            self.assertIn("failed_observations", repair_payload["messages"][1]["content"])
+            self.assertIn("pytest exited 1", repair_payload["messages"][1]["content"])
+
+            observations = [
+                json.loads(line)
+                for line in (agent_output_dir / "state" / "tool_observations.jsonl").read_text(
+                    encoding="utf-8"
+                ).splitlines()
+            ]
+            self.assertEqual(
+                [item["action_type"] for item in observations],
+                [
+                    "inspect_file",
+                    "write_file",
+                    "run_public_tests",
+                    "write_file",
+                    "run_public_tests",
+                    "final_check",
+                ],
+            )
+            self.assertEqual(observations[2]["status"], "failed")
+            self.assertEqual(observations[-1]["status"], "success")
+
+            eval_result = evaluate_submission(
+                task_dir,
+                workspace_dir / "submission",
+                root / "evaluation_result",
+            )
+            self.assertEqual(eval_result["status"], "passed")
+            usage = json.loads((agent_output_dir / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(usage["api_calls"], 4)
+            self.assertEqual(usage["exit_status"], "actions_complete_with_repairs")
+            self.assertEqual(usage["tool_summary"]["failed_actions"], 1)
+            self.assertEqual(usage["tool_summary"]["final_check_status"], "success")
+
+    def test_featurelift_agent_tool_executor_blocks_hidden_boundary_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace_dir = root / "workspace"
+            state_dir = root / "state"
+            (workspace_dir / "evaluation").mkdir(parents=True)
+            (workspace_dir / "evaluation" / "secret.txt").write_text("hidden\n", encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "closure_plan.json").write_text(
+                json.dumps(
+                    {
+                        "phase": "closure_plan",
+                        "actions": [
+                            {
+                                "type": "inspect_file",
+                                "target": "evaluation/secret.txt",
+                                "reason": "should be blocked",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            observations = featurelift_agent._execute_phase_actions(
+                featurelift_agent.FeatureLiftAgentConfig(
+                    workspace=workspace_dir,
+                    task_file=workspace_dir / "TASK.md",
+                    submission_dir=workspace_dir / "submission",
+                    agent_output_dir=root / "agent",
+                    model="openai/example",
+                    context_window_tokens=131072,
+                    reserved_output_tokens=8192,
+                    runtime="scaffold",
+                    enable_llm=False,
+                    api_base="",
+                    api_key="",
+                    request_timeout_seconds=30,
+                    max_tokens=1024,
+                ),
+                state_dir,
+                "closure_plan",
+            )
+
+            self.assertEqual(len(observations), 1)
+            self.assertEqual(observations[0]["status"], "blocked")
+            self.assertIn("outside the agent-visible task boundary", observations[0]["summary"])
+            self.assertNotIn("hidden", json.dumps(observations[0]))
+
+    def test_featurelift_agent_tools_accept_repo_relative_paths_and_directory_copy(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace_dir = root / "workspace"
+            state_dir = root / "state"
+            (workspace_dir / "repo" / "pkg").mkdir(parents=True)
+            (workspace_dir / "repo" / "pkg" / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "closure_plan.json").write_text(
+                json.dumps(
+                    {
+                        "phase": "closure_plan",
+                        "actions": [
+                            {
+                                "type": "inspect_file",
+                                "target": "pkg/__init__.py",
+                                "reason": "repo-relative path from repo map",
+                            },
+                            {
+                                "type": "copy_file",
+                                "source": "pkg",
+                                "destination": "submission/featurelifted/pkg",
+                                "target": "submission/featurelifted/pkg",
+                                "reason": "copy package directory",
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            observations = featurelift_agent._execute_phase_actions(
+                featurelift_agent.FeatureLiftAgentConfig(
+                    workspace=workspace_dir,
+                    task_file=workspace_dir / "TASK.md",
+                    submission_dir=workspace_dir / "submission",
+                    agent_output_dir=root / "agent",
+                    model="openai/example",
+                    context_window_tokens=131072,
+                    reserved_output_tokens=8192,
+                    runtime="scaffold",
+                    enable_llm=False,
+                    api_base="",
+                    api_key="",
+                    request_timeout_seconds=30,
+                    max_tokens=1024,
+                ),
+                state_dir,
+                "closure_plan",
+            )
+
+            self.assertEqual([item["status"] for item in observations], ["success", "success"])
+            self.assertEqual(observations[0]["target"], "repo/pkg/__init__.py")
+            copied = workspace_dir / "submission" / "featurelifted" / "pkg" / "__init__.py"
+            self.assertEqual(copied.read_text(encoding="utf-8"), "VALUE = 1\n")
+
+    def test_featurelift_agent_parses_llm_phases(self) -> None:
+        self.assertEqual(
+            featurelift_agent._parse_llm_phases("closure_plan, extraction_plan"),
+            ("closure_plan", "extraction_plan"),
+        )
+        with self.assertRaises(ValueError):
+            featurelift_agent._parse_llm_phases("")
+        with self.assertRaises(ValueError):
+            featurelift_agent._parse_llm_phases("closure_plan,unknown")
+        with self.assertRaises(ValueError):
+            featurelift_agent._parse_llm_phases("closure_plan,closure_plan")
+
+    def test_featurelift_agent_normalizes_deepseek_api_model_name(self) -> None:
+        config = featurelift_agent.FeatureLiftAgentConfig(
+            workspace=Path("/tmp/workspace"),
+            task_file=Path("/tmp/workspace/TASK.md"),
+            submission_dir=Path("/tmp/workspace/submission"),
+            agent_output_dir=Path("/tmp/agent"),
+            model="deepseek/deepseek-v4-flash",
+            context_window_tokens=131072,
+            reserved_output_tokens=8192,
+            runtime="scaffold",
+            enable_llm=True,
+            api_base="https://api.deepseek.com/v1",
+            api_key="sk-test",
+            request_timeout_seconds=30,
+            max_tokens=1024,
+        )
+
+        self.assertEqual(featurelift_agent._api_model_name(config), "deepseek-v4-flash")
+
+    def test_featurelift_agent_refuses_oversized_model_prompt_before_http(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            state_dir = root / "state"
+            state_dir.mkdir()
+            (state_dir / "task_brief.md").write_text("short\n", encoding="utf-8")
+            (state_dir / "source_entrypoints.json").write_text("{}", encoding="utf-8")
+            (state_dir / "repo_map.md").write_text("x" * 1000, encoding="utf-8")
+
+            with mock.patch(
+                "featureliftbench.featurelift_agent.urllib.request.urlopen"
+            ) as urlopen:
+                with self.assertRaises(featurelift_agent.ContextBudgetError) as raised:
+                    featurelift_agent._run_bootstrap_llm_call(
+                        featurelift_agent.FeatureLiftAgentConfig(
+                            workspace=root / "workspace",
+                            task_file=root / "TASK.md",
+                            submission_dir=root / "submission",
+                            agent_output_dir=root / "agent",
+                            model="openai/example",
+                            context_window_tokens=100,
+                            reserved_output_tokens=10,
+                            runtime="scaffold",
+                            enable_llm=True,
+                            api_base="https://api.example.test/v1",
+                            api_key="sk-test",
+                            request_timeout_seconds=30,
+                            max_tokens=100,
+                        ),
+                        state_dir,
+                    )
+
+            urlopen.assert_not_called()
+            self.assertTrue(raised.exception.audit_record["over_context"])
 
     def test_command_agent_can_evaluate_with_docker_backend(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -529,6 +1364,154 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertEqual(totals["completion_tokens"], 12)
         self.assertEqual(totals["total_tokens"], 42)
 
+    def test_collects_usage_json_v1_context_audit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_output = root / "agent"
+            agent_output.mkdir()
+            (agent_output / "usage.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": "featureliftbench.agent_usage.v1",
+                        "agent_name": "featurelift-agent",
+                        "model": "openai/example",
+                        "assistant_steps": 0,
+                        "api_calls": 0,
+                        "prompt_tokens": 0,
+                        "completion_tokens": 0,
+                        "total_tokens": 0,
+                        "context_audit": {
+                            "available": True,
+                            "context_window_tokens": 131072,
+                            "reserved_output_tokens": 8192,
+                            "max_prompt_tokens_per_call": 4000,
+                            "max_total_tokens_per_call": 4000,
+                            "context_violation": False,
+                            "usage_unverified": True,
+                            "history_policy": "stateful_bounded",
+                        },
+                        "tool_summary": {
+                            "available": True,
+                            "actions_enabled": True,
+                            "total_actions": 3,
+                            "success_actions": 2,
+                            "failed_actions": 1,
+                            "blocked_actions": 0,
+                            "timeout_actions": 0,
+                            "error_actions": 0,
+                            "final_check_status": "failed",
+                            "public_tests_status": "success",
+                            "action_types": {"write_file": 1, "run_public_tests": 1, "final_check": 1},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            usage = _collect_agent_usage("featurelift-agent", agent_output)
+
+            self.assertTrue(usage["available"])
+            self.assertEqual(usage["schema_version"], "featureliftbench.agent_usage.v1")
+            self.assertEqual(usage["agent_name"], "featurelift-agent")
+            self.assertEqual(usage["model"], "openai/example")
+            self.assertEqual(usage["context_audit"]["context_window_tokens"], 131072)
+            self.assertTrue(usage["context_audit"]["usage_unverified"])
+            self.assertEqual(usage["tool_summary"]["total_actions"], 3)
+            self.assertEqual(usage["tool_summary"]["failed_actions"], 1)
+            self.assertEqual(usage["tool_summary"]["action_types"]["final_check"], 1)
+
+    def test_sums_context_audit_for_suite(self) -> None:
+        runs = [
+            {
+                "agent": {
+                    "usage": {
+                        "available": True,
+                        "total_tokens": 0,
+                        "context_audit": {
+                            "available": True,
+                            "max_prompt_tokens_per_call": 100,
+                            "max_total_tokens_per_call": 120,
+                            "context_violation": False,
+                            "usage_unverified": True,
+                        },
+                    }
+                }
+            },
+            {
+                "agent": {
+                    "usage": {
+                        "available": True,
+                        "total_tokens": 0,
+                        "context_audit": {
+                            "available": True,
+                            "max_prompt_tokens_per_call": 200,
+                            "max_total_tokens_per_call": 240,
+                            "context_violation": True,
+                            "usage_unverified": False,
+                        },
+                    }
+                }
+            },
+        ]
+
+        totals = _sum_agent_usage(runs)
+
+        audit = totals["context_audit"]
+        self.assertEqual(audit["available_runs"], 2)
+        self.assertEqual(audit["context_violation_runs"], 1)
+        self.assertEqual(audit["usage_unverified_runs"], 1)
+        self.assertEqual(audit["max_prompt_tokens_per_call"], 200)
+
+    def test_sums_tool_summary_for_suite(self) -> None:
+        runs = [
+            {
+                "agent": {
+                    "usage": {
+                        "available": True,
+                        "tool_summary": {
+                            "available": True,
+                            "actions_enabled": True,
+                            "total_actions": 3,
+                            "success_actions": 3,
+                            "failed_actions": 0,
+                            "blocked_actions": 0,
+                            "timeout_actions": 0,
+                            "error_actions": 0,
+                            "final_check_status": "success",
+                        },
+                    }
+                }
+            },
+            {
+                "agent": {
+                    "usage": {
+                        "available": True,
+                        "tool_summary": {
+                            "available": True,
+                            "actions_enabled": True,
+                            "total_actions": 2,
+                            "success_actions": 1,
+                            "failed_actions": 1,
+                            "blocked_actions": 0,
+                            "timeout_actions": 0,
+                            "error_actions": 0,
+                            "final_check_status": "failed",
+                        },
+                    }
+                }
+            },
+        ]
+
+        totals = _sum_agent_usage(runs)
+
+        tool_summary = totals["tool_summary"]
+        self.assertEqual(tool_summary["available_runs"], 2)
+        self.assertEqual(tool_summary["actions_enabled_runs"], 2)
+        self.assertEqual(tool_summary["runs_with_failed_actions"], 1)
+        self.assertEqual(tool_summary["final_check_failed_runs"], 1)
+        self.assertEqual(tool_summary["total_actions"], 5)
+        self.assertEqual(tool_summary["failed_actions"], 1)
+
     def test_mini_adapter_builds_expected_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -564,6 +1547,265 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertIn("--yolo", command)
             self.assertIn("@TASK.md", report_command)
             self.assertNotIn("Solve this task", report_command)
+
+    def test_featurelift_agent_adapter_builds_expected_command(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            context = AgentRunContext(
+                workspace_dir=root / "workspace",
+                task_file=root / "workspace" / "TASK.md",
+                submission_dir=root / "workspace" / "submission",
+                agent_output_dir=root / "agent",
+                task_text="Solve this task",
+            )
+            adapter = FeatureLiftAgentAdapter()
+            config = AgentRunConfig(
+                agent="featurelift-agent",
+                model="openai/example",
+                extra_args=("--context-window", "128000"),
+            )
+
+            command = adapter.build_command(context, config)
+
+            self.assertEqual(command[:3], [sys.executable, "-m", "featureliftbench.featurelift_agent"])
+            self.assertIn("run", command)
+            self.assertIn("--workspace", command)
+            self.assertIn(str(root / "workspace"), command)
+            self.assertIn("--submission-dir", command)
+            self.assertIn(str(root / "workspace" / "submission"), command)
+            self.assertIn("--agent-output-dir", command)
+            self.assertIn(str(root / "agent"), command)
+            self.assertIn("--model", command)
+            self.assertIn("openai/example", command)
+            self.assertIn("--context-window", command)
+            self.assertIn("128000", command)
+
+    def test_openhands_agent_adapter_builds_expected_command(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            context = AgentRunContext(
+                workspace_dir=root / "workspace",
+                task_file=root / "workspace" / "TASK.md",
+                submission_dir=root / "workspace" / "submission",
+                agent_output_dir=root / "agent",
+                task_text="Solve this task",
+            )
+            adapter = OpenHandsAgentAdapter()
+            config = AgentRunConfig(
+                agent="openhands-agent",
+                model="deepseek/deepseek-v4-flash",
+                command="openhands run --prompt-file {prompt_file}",
+                timeout_seconds=120,
+                extra_args=("--extra", "value"),
+            )
+
+            command = adapter.build_command(context, config)
+
+            self.assertEqual(command[:3], [sys.executable, "-m", "featureliftbench.openhands_runner"])
+            self.assertIn("run", command)
+            self.assertIn("--workspace", command)
+            self.assertIn(str(root / "workspace"), command)
+            self.assertIn("--submission-dir", command)
+            self.assertIn(str(root / "workspace" / "submission"), command)
+            self.assertIn("--agent-output-dir", command)
+            self.assertIn(str(root / "agent"), command)
+            self.assertIn("--timeout-seconds", command)
+            self.assertIn("110", command)
+            self.assertIn("--model", command)
+            self.assertIn("deepseek/deepseek-v4-flash", command)
+            self.assertIn("--openhands-command", command)
+            self.assertIn("openhands run --prompt-file {prompt_file}", command)
+            self.assertIn("--extra", command)
+            self.assertIn("value", command)
+
+    def test_openhands_runner_missing_command_writes_usage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+
+            code = openhands_runner.run(
+                openhands_runner.OpenHandsRunnerConfig(
+                    workspace_dir=workspace,
+                    task_file=task_file,
+                    submission_dir=workspace / "submission",
+                    agent_output_dir=agent_output,
+                    model="deepseek/deepseek-v4-flash",
+                    openhands_command="",
+                )
+            )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            command_record = json.loads(
+                (agent_output / "openhands_command.json").read_text(encoding="utf-8")
+            )
+
+            self.assertEqual(code, 2)
+            self.assertEqual(usage["agent_name"], "openhands-agent")
+            self.assertEqual(usage["exit_status"], "not_configured")
+            self.assertFalse(usage["context_audit"]["available"])
+            self.assertTrue(usage["context_audit"]["usage_unverified"])
+            self.assertFalse(command_record["configured"])
+            self.assertTrue((agent_output / "openhands_task.md").is_file())
+
+    def test_openhands_runner_executes_command_template_and_merges_usage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "from pathlib import Path\n"
+                "import json\n"
+                "import sys\n"
+                "submission = Path(sys.argv[1])\n"
+                "agent = Path(sys.argv[2])\n"
+                "prompt = Path(sys.argv[3])\n"
+                "pkg = submission / 'featurelifted'\n"
+                "pkg.mkdir(parents=True, exist_ok=True)\n"
+                "(pkg / '__init__.py').write_text('VALUE = 1\\n', encoding='utf-8')\n"
+                "(agent / 'prompt_seen.txt').write_text(prompt.read_text(encoding='utf-8'), encoding='utf-8')\n"
+                "(agent / 'openhands_usage.json').write_text(json.dumps({\n"
+                "    'assistant_steps': 3,\n"
+                "    'api_calls': 2,\n"
+                "    'prompt_tokens': 100,\n"
+                "    'completion_tokens': 25,\n"
+                "    'context_audit': {\n"
+                "        'available': True,\n"
+                "        'runtime': 'openhands',\n"
+                "        'history_policy': 'external_openhands',\n"
+                "        'max_prompt_tokens_per_call': 80,\n"
+                "        'max_total_tokens_per_call': 105,\n"
+                "        'usage_unverified': False,\n"
+                "    },\n"
+                "}), encoding='utf-8')\n",
+                encoding="utf-8",
+            )
+            command_template = (
+                "{python} "
+                f"{shlex.quote(str(fake_openhands))} "
+                "{submission_dir} {agent_output_dir} {prompt_file}"
+            )
+
+            code = openhands_runner.run(
+                openhands_runner.OpenHandsRunnerConfig(
+                    workspace_dir=workspace,
+                    task_file=task_file,
+                    submission_dir=workspace / "submission",
+                    agent_output_dir=agent_output,
+                    model="deepseek/deepseek-v4-flash",
+                    openhands_command=command_template,
+                    timeout_seconds=30,
+                )
+            )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            prompt_seen = (agent_output / "prompt_seen.txt").read_text(encoding="utf-8")
+
+            self.assertEqual(code, 0)
+            self.assertEqual(usage["agent_name"], "openhands-agent")
+            self.assertEqual(usage["exit_status"], "passed")
+            self.assertEqual(usage["assistant_steps"], 3)
+            self.assertEqual(usage["api_calls"], 2)
+            self.assertEqual(usage["prompt_tokens"], 100)
+            self.assertEqual(usage["completion_tokens"], 25)
+            self.assertEqual(usage["total_tokens"], 125)
+            self.assertEqual(usage["context_audit"]["max_prompt_tokens_per_call"], 80)
+            self.assertFalse(usage["context_audit"]["usage_unverified"])
+            self.assertIn("FeatureLiftBench Task for OpenHands", prompt_seen)
+            self.assertTrue((workspace / "submission" / "featurelifted" / "__init__.py").is_file())
+
+    def test_openhands_runner_splits_json_events_from_stdout_log(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import json\n"
+                "print('OpenHands banner')\n"
+                "print(json.dumps({'source': 'environment', 'tool_name': 'bash'}))\n"
+                "print('plain status line')\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0"},
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="deepseek/deepseek-v4-flash",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            stdout_text = (agent_output / "openhands_stdout.log").read_text(encoding="utf-8")
+            events_text = (agent_output / "openhands_events.jsonl").read_text(encoding="utf-8")
+            self.assertEqual(code, 0)
+            self.assertIn("OpenHands banner", stdout_text)
+            self.assertIn("plain status line", stdout_text)
+            self.assertNotIn('"tool_name": "bash"', stdout_text)
+            self.assertIn('"tool_name": "bash"', events_text)
+
+    def test_openhands_runner_kills_command_when_log_limit_is_exceeded(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import time\n"
+                "for _ in range(200):\n"
+                "    print('x' * 100, flush=True)\n"
+                "time.sleep(10)\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FEATURELIFTBENCH_COMMAND_OUTPUT_LIMIT_BYTES": "1024",
+                    "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0",
+                },
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="deepseek/deepseek-v4-flash",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(code, 125)
+            self.assertEqual(usage["exit_status"], "log_limit_exceeded")
+            self.assertLessEqual((agent_output / "openhands_stdout.log").stat().st_size, 1200)
 
 
 def _make_task(task_dir: Path) -> Path:
@@ -670,6 +1912,44 @@ def _write_fake_agent_with_misplaced_copy(path: Path) -> str:
         "{submission_dir} "
         "{agent_output_dir}"
     )
+
+
+class _FakeHttpResponse:
+    def __init__(self, payload: dict) -> None:
+        self.payload = payload
+
+    def __enter__(self) -> "_FakeHttpResponse":
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> None:
+        return None
+
+    def read(self) -> bytes:
+        return json.dumps(self.payload).encode("utf-8")
+
+
+def _chat_payload(
+    response_id: str,
+    content_json: dict,
+    *,
+    prompt_tokens: int,
+    completion_tokens: int,
+) -> dict:
+    return {
+        "id": response_id,
+        "choices": [
+            {
+                "message": {
+                    "content": "```json\n" + json.dumps(content_json) + "\n```",
+                }
+            }
+        ],
+        "usage": {
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "total_tokens": prompt_tokens + completion_tokens,
+        },
+    }
 
 
 def _metadata(task_id: str) -> dict:

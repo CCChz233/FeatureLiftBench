@@ -13,6 +13,9 @@ RUN pip install \
     "multidict==6.0.4" \
     "propcache==0.4.1"
 
+COPY benchmark/vendor-wheels /workspace/benchmark/vendor-wheels
 COPY harness /workspace/harness
+
+ENV PIP_FIND_LINKS=/workspace/benchmark/vendor-wheels
 
 ENTRYPOINT ["python", "-B", "-m", "featureliftbench.cli"]

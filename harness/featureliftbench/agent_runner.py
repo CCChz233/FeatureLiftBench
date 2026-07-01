@@ -21,8 +21,10 @@ from .agent_adapters import AgentRunConfig
 from .agent_adapters import AgentRunContext
 from .agent_adapters import get_agent_adapter
 from .agent_docker import DEFAULT_AGENT_IMAGE
+from .agent_docker import DEFAULT_GO_AGENT_IMAGE
 from .agent_docker import run_agent_in_docker
 from .docker_eval import DEFAULT_EVAL_IMAGE
+from .docker_eval import DEFAULT_GO_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
@@ -348,7 +350,12 @@ def run_agent_on_task(
         if validation.valid:
             metadata = load_metadata(task_path).data
             task_id = metadata.get("task_id", task_id)
-        with live_suite_progress(num_tasks=1, output_dir=output_path, layout="flat") as progress_manager:
+        with live_suite_progress(
+            num_tasks=1,
+            output_dir=output_path,
+            agent=config.agent,
+            layout="flat",
+        ) as progress_manager:
             progress_manager.on_task_start(task_id)
             progress_manager.update_task_status(task_id, "preparing workspace")
             result = _run_agent_on_task_body(
@@ -412,6 +419,8 @@ def _run_agent_on_task_body(
     else:
         metadata = load_metadata(task_path).data
         task_id = metadata.get("task_id", task_id)
+    selected_agent_docker_image = _select_agent_docker_image(metadata, agent_docker_image)
+    selected_eval_docker_image = _select_eval_docker_image(metadata, eval_docker_image)
 
     if progress:
         _progress(True, f"started {task_id}")
@@ -440,7 +449,7 @@ def _run_agent_on_task_body(
                 agent_result = run_agent_in_docker(
                     context,
                     config,
-                    image=agent_docker_image,
+                    image=selected_agent_docker_image,
                     stdout_log=stdout_log,
                     stderr_log=stderr_log,
                 )
@@ -464,7 +473,7 @@ def _run_agent_on_task_body(
                 collected_submission_dir=collected_submission_dir,
                 eval_output_dir=eval_output_dir,
                 eval_docker=eval_docker,
-                eval_docker_image=eval_docker_image,
+                eval_docker_image=selected_eval_docker_image,
             )
         else:
             recovery_info = _recover_misplaced_submission(workspace_dir, workspace_submission_dir)
@@ -477,7 +486,7 @@ def _run_agent_on_task_body(
                     collected_submission_dir=collected_submission_dir,
                     eval_output_dir=eval_output_dir,
                     eval_docker=eval_docker,
-                    eval_docker_image=eval_docker_image,
+                    eval_docker_image=selected_eval_docker_image,
                 )
             else:
                 errors.append("agent did not create any files under workspace/submission")
@@ -529,7 +538,7 @@ def _run_agent_on_task_body(
         "attempt": next_attempt,
         "agent": agent_payload,
         "agent_backend": "docker" if agent_docker else "local",
-        "agent_docker_image": agent_docker_image if agent_docker else "",
+        "agent_docker_image": selected_agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
         "workspace": {
             "dir": str(workspace_dir),
@@ -538,7 +547,7 @@ def _run_agent_on_task_body(
         "submission": submission_payload,
         "evaluation": evaluation_payload,
         "eval_backend": "docker" if eval_docker else "local",
-        "eval_docker_image": eval_docker_image if eval_docker else "",
+        "eval_docker_image": selected_eval_docker_image if eval_docker else "",
         "errors": errors,
         "run_json": str(run_json_path),
     }
@@ -569,6 +578,18 @@ def _evaluate_collected_submission(
     return evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
 
 
+def _select_agent_docker_image(metadata: dict[str, Any], image: str) -> str:
+    if image != DEFAULT_AGENT_IMAGE:
+        return image
+    return DEFAULT_GO_AGENT_IMAGE if metadata.get("language") == "go" else image
+
+
+def _select_eval_docker_image(metadata: dict[str, Any], image: str) -> str:
+    if image != DEFAULT_EVAL_IMAGE:
+        return image
+    return DEFAULT_GO_EVAL_IMAGE if metadata.get("language") == "go" else image
+
+
 def _run_suite_tasks(
     *,
     task_dirs: list[Path],
@@ -588,7 +609,11 @@ def _run_suite_tasks(
     use_live_progress = progress and sys.stderr.isatty() and total >= 1
 
     if use_live_progress:
-        with live_suite_progress(num_tasks=total, output_dir=output_path) as progress_manager:
+        with live_suite_progress(
+            num_tasks=total,
+            output_dir=output_path,
+            agent=config.agent,
+        ) as progress_manager:
             return _execute_suite_tasks(
                 task_dirs=task_dirs,
                 output_path=output_path,
@@ -750,6 +775,8 @@ def _run_suite_task_safely(
 
     run_output = output_path / task_id
     try:
+        if progress_manager is not None:
+            progress_manager.update_task_status(task_id, "running agent")
         result = _run_suite_task_with_retries(
             task_dir=task_dir,
             run_output=run_output,
@@ -1138,11 +1165,14 @@ def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, met
 
     _copy_path(task_path / "repo", workspace_path / "repo")
     _copy_path(task_path / _test_path(metadata, "public", "public_tests/"), workspace_path / "public_tests")
-    lock_path = task_path / _dependency_lock(metadata)
-    if lock_path.exists():
-        shutil.copy2(lock_path, workspace_path / "requirements.lock")
+    if metadata.get("language") == "go":
+        _write_go_public_test_runner(workspace_path, metadata)
     else:
-        (workspace_path / "requirements.lock").write_text("", encoding="utf-8")
+        lock_path = task_path / _dependency_lock(metadata)
+        if lock_path.exists():
+            shutil.copy2(lock_path, workspace_path / "requirements.lock")
+        else:
+            (workspace_path / "requirements.lock").write_text("", encoding="utf-8")
 
     redacted_metadata = redact_task_metadata(metadata)
     (workspace_path / "metadata.json").write_text(
@@ -1160,6 +1190,29 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
 
     environment = metadata.get("environment") if isinstance(metadata.get("environment"), dict) else {}
     tests = metadata.get("tests") if isinstance(metadata.get("tests"), dict) else {}
+    if metadata.get("language") == "go":
+        return {
+            "task_id": metadata.get("task_id", ""),
+            "language": metadata.get("language", ""),
+            "difficulty": metadata.get("difficulty", ""),
+            "tags": metadata.get("tags", []),
+            "source": metadata.get("source", {}),
+            "feature": metadata.get("feature", {}),
+            "entanglement": metadata.get("entanglement", {}),
+            "output": metadata.get("output", {}),
+            "environment": {
+                "go": environment.get("go", ""),
+                "network": environment.get("network", False),
+                "timeout_seconds": environment.get("timeout_seconds", 0),
+                "allowed_modules": environment.get("allowed_modules", []),
+                "forbidden_modules": environment.get("forbidden_modules", []),
+                "forbidden_imports": environment.get("forbidden_imports", []),
+            },
+            "tests": {
+                "public": "public_tests/",
+                "command": tests.get("command", "go test ./..."),
+            },
+        }
     return {
         "task_id": metadata.get("task_id", ""),
         "language": metadata.get("language", ""),
@@ -1185,8 +1238,8 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build_task_prompt(metadata: dict[str, Any]) -> str:
-    """Build the task prompt given to the agent."""
+def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
+    """Build the Python task prompt given to the agent."""
 
     feature = metadata.get("feature", {}) if isinstance(metadata.get("feature"), dict) else {}
     output = metadata.get("output", {}) if isinstance(metadata.get("output"), dict) else {}
@@ -1295,6 +1348,131 @@ def build_task_prompt(metadata: dict[str, Any]) -> str:
         "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
         "```\n"
     )
+
+
+def build_go_task_prompt(metadata: dict[str, Any]) -> str:
+    """Build the Go task prompt given to the agent."""
+
+    feature = metadata.get("feature", {}) if isinstance(metadata.get("feature"), dict) else {}
+    output = metadata.get("output", {}) if isinstance(metadata.get("output"), dict) else {}
+    entanglement = (
+        metadata.get("entanglement", {}) if isinstance(metadata.get("entanglement"), dict) else {}
+    )
+    environment = (
+        metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
+    )
+    source = metadata.get("source", {}) if isinstance(metadata.get("source"), dict) else {}
+    tags = _format_list(metadata.get("tags", []))
+    entanglement_types = _format_list(entanglement.get("types", []))
+    entanglement_signals = _format_list(entanglement.get("signals", []))
+    included = _format_list(feature.get("included_behaviors", []))
+    excluded = _format_list(feature.get("excluded_behaviors", []))
+    entrypoints = _format_list(feature.get("source_entrypoints", []))
+    symbols = _format_list(output.get("symbols", []))
+    allowed_modules = _format_list(environment.get("allowed_modules", []))
+    forbidden_modules = _format_list(environment.get("forbidden_modules", []))
+    forbidden_imports = _format_list(environment.get("forbidden_imports", []))
+    module_path = output.get("module") or f"featurelifted.local/{metadata.get('task_id', '')}"
+
+    return (
+        f"# FeatureLiftBench Go Task: {metadata.get('task_id', '')}\n\n"
+        "You are in a FeatureLiftBench agent workspace. Decouple the requested Go feature from "
+        "`repo/` into a standalone Go module under `submission/`.\n\n"
+        "## How to work\n\n"
+        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
+        "2. Copy the smallest behavior-complete implementation closure from `repo/` into "
+        "`submission/featurelifted/`.\n"
+        f"3. Create `submission/go.mod` with exactly `module {module_path}`.\n"
+        "4. Rewrite imports so runtime code does not import or require the original module.\n"
+        "5. Run `./run_public_tests.sh` from the workspace and fix failures.\n"
+        "6. Public tests passing does not mean you are done; hidden tests and module gates also run.\n"
+        "7. Do not write the package at workspace root; only `submission/` is collected.\n\n"
+        "## Workspace\n\n"
+        "- `repo/`: source repository snapshot for the fixed commit.\n"
+        "- `public_tests/`: Go tests you may run while developing.\n"
+        "- `run_public_tests.sh`: copies `submission/` to a temp module, injects public tests, and runs `go test` offline.\n"
+        "- `metadata.json`: redacted task metadata. Hidden tests and evaluator internals are not present.\n"
+        "- `submission/`: write your final Go module here.\n\n"
+        "## Source\n\n"
+        f"- Name: {source.get('name', '')}\n"
+        f"- URL: {source.get('url', '')}\n"
+        f"- Commit: {source.get('commit', '')}\n"
+        f"- License: {source.get('license', '')}\n"
+        f"- Original Go module: `{source.get('module_path', '')}`\n\n"
+        "## Target Feature\n\n"
+        f"- Name: {feature.get('name', '')}\n"
+        f"- Difficulty: {metadata.get('difficulty', '')}\n"
+        f"- Tags:\n{tags}\n"
+        f"- Description: {feature.get('description', '')}\n"
+        f"- Source entrypoints:\n{entrypoints}\n"
+        f"- Included behaviors:\n{included}\n"
+        f"- Excluded behaviors:\n{excluded}\n"
+        "## Entanglement Context\n\n"
+        f"- Level: {entanglement.get('level', '')}\n"
+        f"- Types:\n{entanglement_types}\n"
+        f"- Description: {entanglement.get('description', '')}\n"
+        f"- Signals:\n{entanglement_signals}\n"
+        "## Required Output API\n\n"
+        f"- Module: `{module_path}`\n"
+        f"- Package directory: `submission/featurelifted/`\n"
+        f"- Package name: `{output.get('package', 'featurelifted')}`\n"
+        f"- Import: `{output.get('import', '')}`\n"
+        f"- Symbols:\n{symbols}\n\n"
+        "## Constraints\n\n"
+        "- The final answer must be files under `submission/`.\n"
+        "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
+        "- Do not import from the original source module or rely on the original repo path at runtime.\n"
+        "- Do not use `replace` to point at `repo/`, the workspace, hidden paths, or host paths.\n"
+        "- Do not create `go.work`.\n"
+        "- Keep only behavior-relevant code and dependencies needed for the target feature.\n"
+        "- The evaluator runs with `GOWORK=off`, `GOPROXY=off`, `CGO_ENABLED=0`, and hidden tests.\n"
+        f"- Allowed modules:\n{allowed_modules}\n"
+        f"- Forbidden modules:\n{forbidden_modules}\n"
+        f"- Forbidden imports:\n{forbidden_imports}\n\n"
+        "When finished, run:\n\n"
+        "```bash\n"
+        "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
+        "```\n"
+    )
+
+
+def build_task_prompt(metadata: dict[str, Any]) -> str:
+    """Build the task prompt given to the agent."""
+
+    if metadata.get("language") == "go":
+        return build_go_task_prompt(metadata)
+    return _build_python_task_prompt(metadata)
+
+
+def _write_go_public_test_runner(workspace_path: Path, metadata: dict[str, Any]) -> None:
+    timeout = 30
+    environment = metadata.get("environment")
+    if isinstance(environment, dict) and isinstance(environment.get("timeout_seconds"), int):
+        timeout = int(environment["timeout_seconds"])
+    script = workspace_path / "run_public_tests.sh"
+    script.write_text(
+        "#!/usr/bin/env sh\n"
+        "set -eu\n"
+        'ROOT="$(cd "$(dirname "$0")" && pwd)"\n'
+        'TMP="${TMPDIR:-/tmp}/flb-go-public-$$"\n'
+        'rm -rf "$TMP"\n'
+        'mkdir -p "$TMP"\n'
+        'trap \'rm -rf "$TMP"\' EXIT INT TERM\n'
+        'cp -R "$ROOT/submission/." "$TMP/"\n'
+        'find "$ROOT/public_tests" -type f -name "*_test.go" | sort | while IFS= read -r test_file; do\n'
+        '  cp "$test_file" "$TMP/public_$(basename "$test_file")"\n'
+        "done\n"
+        'cd "$TMP"\n'
+        "export GOWORK=off\n"
+        "export GOPROXY=off\n"
+        "export GONOSUMDB='*'\n"
+        "export GOFLAGS=-mod=mod\n"
+        "export CGO_ENABLED=0\n"
+        "export GOMAXPROCS=2\n"
+        f"go test ./... -count=1 -timeout={timeout}s\n",
+        encoding="utf-8",
+    )
+    script.chmod(0o755)
 
 
 def _copy_path(src: Path, dst: Path) -> None:
@@ -1519,16 +1697,103 @@ def _parse_mini_trajectory_usage(path: Path) -> dict[str, Any]:
 
 def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any]:
     usage: dict[str, Any] = {"available": True, "source": str(source)}
+    schema_version = data.get("schema_version")
+    if isinstance(schema_version, str):
+        usage["schema_version"] = schema_version
+    agent_name = data.get("agent_name")
+    if isinstance(agent_name, str):
+        usage["agent_name"] = agent_name
+    model = data.get("model")
+    if isinstance(model, str):
+        usage["model"] = model
     for key in USAGE_SUM_FIELDS:
         value = _int_metric(data.get(key))
         if value is not None:
             usage[key] = value
+    context_audit = data.get("context_audit")
+    if isinstance(context_audit, dict):
+        usage["context_audit"] = _sanitize_context_audit(context_audit)
+    tool_summary = data.get("tool_summary")
+    if isinstance(tool_summary, dict):
+        usage["tool_summary"] = _sanitize_tool_summary(tool_summary)
     exit_status = data.get("exit_status")
     if isinstance(exit_status, str):
         usage["exit_status"] = exit_status
     if len(usage) <= 2:
         return _unavailable_agent_usage(source, "usage.json did not contain usage metrics")
     return usage
+
+
+def _sanitize_context_audit(data: dict[str, Any]) -> dict[str, Any]:
+    audit: dict[str, Any] = {}
+    for key in (
+        "available",
+        "context_violation",
+        "usage_unverified",
+    ):
+        value = data.get(key)
+        if isinstance(value, bool):
+            audit[key] = value
+    for key in (
+        "context_window_tokens",
+        "reserved_output_tokens",
+        "max_allowed_prompt_tokens",
+        "max_prompt_tokens_per_call",
+        "max_total_tokens_per_call",
+    ):
+        value = _int_metric(data.get(key))
+        if value is not None:
+            audit[key] = value
+    for key in (
+        "history_policy",
+        "over_context_behavior",
+        "token_source",
+        "runtime",
+    ):
+        value = data.get(key)
+        if isinstance(value, str):
+            audit[key] = value
+    return audit
+
+
+def _sanitize_tool_summary(data: dict[str, Any]) -> dict[str, Any]:
+    summary: dict[str, Any] = {}
+    for key in (
+        "available",
+        "actions_enabled",
+    ):
+        value = data.get(key)
+        if isinstance(value, bool):
+            summary[key] = value
+    for key in (
+        "total_actions",
+        "success_actions",
+        "failed_actions",
+        "blocked_actions",
+        "timeout_actions",
+        "error_actions",
+    ):
+        value = _int_metric(data.get(key))
+        if value is not None:
+            summary[key] = value
+    for key in (
+        "final_check_status",
+        "public_tests_status",
+    ):
+        value = data.get(key)
+        if isinstance(value, str):
+            summary[key] = value
+    action_types = data.get("action_types")
+    if isinstance(action_types, dict):
+        clean_action_types = {
+            str(name): value
+            for name, raw_value in action_types.items()
+            if isinstance(name, str)
+            and (value := _int_metric(raw_value)) is not None
+        }
+        if clean_action_types:
+            summary["action_types"] = dict(sorted(clean_action_types.items()))
+    return summary
 
 
 def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1546,6 +1811,85 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
     for key in USAGE_SUM_FIELDS:
         totals[key] = sum(
             value for usage in usages if isinstance((value := usage.get(key)), int)
+        )
+    audits = [
+        audit
+        for usage in usages
+        if isinstance((audit := usage.get("context_audit")), dict)
+        and audit.get("available") is True
+    ]
+    if audits:
+        totals["context_audit"] = _sum_context_audits(audits, total_runs=len(runs))
+    tool_summaries = [
+        summary
+        for usage in usages
+        if isinstance((summary := usage.get("tool_summary")), dict)
+        and summary.get("available") is True
+    ]
+    if tool_summaries:
+        totals["tool_summary"] = _sum_tool_summaries(tool_summaries, total_runs=len(runs))
+    return totals
+
+
+def _sum_context_audits(audits: list[dict[str, Any]], *, total_runs: int) -> dict[str, Any]:
+    max_prompt_values = [
+        value
+        for audit in audits
+        if isinstance((value := audit.get("max_prompt_tokens_per_call")), int)
+    ]
+    max_total_values = [
+        value
+        for audit in audits
+        if isinstance((value := audit.get("max_total_tokens_per_call")), int)
+    ]
+    summary: dict[str, Any] = {
+        "available_runs": len(audits),
+        "missing_runs": total_runs - len(audits),
+        "context_violation_runs": sum(
+            1 for audit in audits if audit.get("context_violation") is True
+        ),
+        "usage_unverified_runs": sum(
+            1 for audit in audits if audit.get("usage_unverified") is True
+        ),
+    }
+    if max_prompt_values:
+        summary["max_prompt_tokens_per_call"] = max(max_prompt_values)
+    if max_total_values:
+        summary["max_total_tokens_per_call"] = max(max_total_values)
+    return summary
+
+
+def _sum_tool_summaries(summaries: list[dict[str, Any]], *, total_runs: int) -> dict[str, Any]:
+    totals: dict[str, Any] = {
+        "available_runs": len(summaries),
+        "missing_runs": total_runs - len(summaries),
+        "actions_enabled_runs": sum(1 for summary in summaries if summary.get("actions_enabled") is True),
+        "runs_with_failed_actions": sum(
+            1
+            for summary in summaries
+            if any(
+                isinstance((value := summary.get(key)), int) and value > 0
+                for key in ("failed_actions", "blocked_actions", "timeout_actions", "error_actions")
+            )
+        ),
+        "final_check_failed_runs": sum(
+            1
+            for summary in summaries
+            if summary.get("final_check_status") not in {"", "success", None}
+        ),
+    }
+    for key in (
+        "total_actions",
+        "success_actions",
+        "failed_actions",
+        "blocked_actions",
+        "timeout_actions",
+        "error_actions",
+    ):
+        totals[key] = sum(
+            value
+            for summary in summaries
+            if isinstance((value := summary.get(key)), int)
         )
     return totals
 

@@ -99,6 +99,40 @@ class AgentDockerTests(unittest.TestCase):
             self.assertEqual(invocation.env["HOME"], "/tmp/flb-home")
             self.assertEqual(invocation.env["PYTHONUNBUFFERED"], "1")
 
+    def test_openhands_agent_docker_uses_harness_wrapper(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            agent_output.mkdir()
+            context = AgentRunContext(
+                workspace_dir=workspace,
+                task_file=workspace / "TASK.md",
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                task_text="Solve this task",
+            )
+            config = AgentRunConfig(
+                agent="openhands-agent",
+                model="deepseek/deepseek-v4-flash",
+                command="openhands run --prompt-file {prompt_file}",
+            )
+
+            invocation = build_agent_docker_invocation(
+                context,
+                config,
+                image="featureliftbench-agent:test",
+            )
+
+            joined = " ".join(invocation.command)
+            self.assertIn("python -m featureliftbench.openhands_runner", joined)
+            self.assertIn("--workspace /flb/workspace", joined)
+            self.assertIn("--submission-dir /flb/workspace/submission", joined)
+            self.assertIn("--agent-output-dir /flb/agent", joined)
+            self.assertIn("deepseek/deepseek-v4-flash", joined)
+            self.assertIn("openhands run --prompt-file {prompt_file}", joined)
+
     def test_agent_docker_env_overrides_resource_defaults(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

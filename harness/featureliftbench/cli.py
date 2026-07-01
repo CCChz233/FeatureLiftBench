@@ -11,6 +11,7 @@ from pathlib import Path
 from .agent_adapters import SUPPORTED_AGENTS
 from .agent_docker import DEFAULT_AGENT_IMAGE
 from .docker_eval import DEFAULT_EVAL_IMAGE
+from .docker_eval import DEFAULT_GO_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .paths import DEFAULT_AGENT_CONFIG
@@ -38,7 +39,10 @@ def main(argv: list[str] | None = None) -> int:
     eval_parser.add_argument(
         "--docker-image",
         default=DEFAULT_EVAL_IMAGE,
-        help=f"Docker image for --docker (default: {DEFAULT_EVAL_IMAGE})",
+        help=(
+            f"Docker image for --docker "
+            f"(default: {DEFAULT_EVAL_IMAGE}; Go tasks auto-use {DEFAULT_GO_EVAL_IMAGE})"
+        ),
     )
 
     score_parser = subparsers.add_parser("score", help="print scores from a result file")
@@ -89,8 +93,9 @@ def main(argv: list[str] | None = None) -> int:
     run_agent_parser.add_argument(
         "--agent-command",
         help=(
-            "command template for --agent command; placeholders: "
-            "{workspace}, {task_file}, {submission_dir}, {agent_output_dir}"
+            "command template. --agent command placeholders: {workspace}, {task_file}, "
+            "{submission_dir}, {agent_output_dir}. --agent openhands-agent additionally "
+            "supports: {prompt_file}, {model}, {python}"
         ),
     )
     run_agent_parser.add_argument(
@@ -160,7 +165,10 @@ def main(argv: list[str] | None = None) -> int:
     run_agent_parser.add_argument(
         "--eval-docker-image",
         default=DEFAULT_EVAL_IMAGE,
-        help=f"Docker image for --eval-docker (default: {DEFAULT_EVAL_IMAGE})",
+        help=(
+            f"Docker image for --eval-docker "
+            f"(default: {DEFAULT_EVAL_IMAGE}; Go tasks auto-use {DEFAULT_GO_EVAL_IMAGE})"
+        ),
     )
     run_agent_parser.add_argument(
         "--agent-docker",

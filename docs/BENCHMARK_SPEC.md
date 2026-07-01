@@ -162,7 +162,7 @@ Anyone reproducing a published number should follow:
 See [SETUP.md](SETUP.md). Minimum:
 
 - Python **3.11+** (3.12 recommended)
-- `./setup.sh` → `.venv`, `mini-swe-agent`, `agents.toml` template
+- `./setup.sh` → `.venv`, harness dependencies, `agents.toml` template
 - API or vLLM credentials in `.env`
 
 ### 4.2 Run agent (suite)
@@ -327,7 +327,7 @@ Minimum for a credible model row:
 
 | Requirement | Detail |
 | --- | --- |
-| Agent harness | `mini-swe-agent` + documented profile (`agents.toml`) |
+| Agent harness | documented adapter/profile (`agents.toml`); current main agent track is `openhands-agent` |
 | Task set | Full main leaderboard unless ablation stated |
 | Workers | `NUM_WORKERS=1` for official numbers |
 | Resource boundary | `FEATURELIFTBENCH_EVAL_DOCKER=1`; agent Docker recommended for long/shared runs ([SETUP.md](SETUP.md) §4) |
@@ -390,6 +390,12 @@ Planned extensions **without changing task semantics**:
 | Unified spec doc | This file remains canonical; TASK_FORMAT gains per-language annex |
 | Harness | Go evaluator parallel to Python venv path |
 | Curation | Same [EXPANSION.md](EXPANSION.md) reuse principles; Go OSS libraries |
+
+Go v2 should start with a 5-task pilot, not a direct 100-task expansion. The working draft is split into:
+
+- [GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md) for the overall Go strategy;
+- [GO_V2_MINI_SPEC.md](GO_V2_MINI_SPEC.md) for the Go task/evaluator/Docker contract;
+- [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) for the first 5 tasks and acceptance gates.
 
 v2 development should **freeze Python v1 baselines** before retroactive relabeling of published numbers.
 

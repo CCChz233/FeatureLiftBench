@@ -21,6 +21,44 @@ def count_python_loc(root: str | Path) -> int:
     return total
 
 
+def count_go_loc(root: str | Path) -> int:
+    """Count non-empty, non-comment Go LOC under ``root``.
+
+    Test files, vendor trees, and standard generated files are excluded.
+    """
+
+    total = 0
+    root_path = Path(root)
+    for path in root_path.rglob("*.go"):
+        if not path.is_file():
+            continue
+        relative = path.relative_to(root_path)
+        if path.name.endswith("_test.go") or "vendor" in relative.parts:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if _is_generated_go_file(text):
+            continue
+        in_block_comment = False
+        for line in text.splitlines():
+            stripped = line.strip()
+            if in_block_comment:
+                if "*/" in stripped:
+                    stripped = stripped.split("*/", 1)[1].strip()
+                    in_block_comment = False
+                else:
+                    continue
+            while stripped.startswith("/*"):
+                if "*/" in stripped:
+                    stripped = stripped.split("*/", 1)[1].strip()
+                else:
+                    in_block_comment = True
+                    stripped = ""
+                    break
+            if stripped and not stripped.startswith("//"):
+                total += 1
+    return total
+
+
 def count_files(root: str | Path) -> int:
     """Count files under ``root``."""
 
@@ -118,3 +156,8 @@ def _dependency_name(requirement: str) -> str:
     if not match:
         return ""
     return re.sub(r"[-_.]+", "-", match.group(1)).lower()
+
+
+def _is_generated_go_file(text: str) -> bool:
+    head = "\n".join(text.splitlines()[:5])
+    return "Code generated" in head and "DO NOT EDIT" in head

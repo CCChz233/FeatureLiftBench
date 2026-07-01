@@ -11,6 +11,7 @@ from unittest import mock
 
 from featureliftbench.evaluator import CommandResult
 from featureliftbench.evaluator import _ensure_eval_tooling
+from featureliftbench.evaluator import _install_submission
 from featureliftbench.evaluator import _run_command
 from featureliftbench.evaluator import _write_command_logs
 from featureliftbench.evaluator import evaluate_submission
@@ -60,7 +61,11 @@ class EvaluatorTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            result = evaluate_submission(task_dir, submission_dir, root / "output")
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_EVAL_FORCE_EDITABLE": "1"},
+            ):
+                result = evaluate_submission(task_dir, submission_dir, root / "output")
 
             self.assertEqual(result["status"], "passed")
             self.assertEqual(result["environment"]["install_mode"], "editable")
@@ -114,12 +119,44 @@ class EvaluatorTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            result = evaluate_submission(task_dir, submission_dir, root / "output")
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_EVAL_FORCE_EDITABLE": "1"},
+            ):
+                result = evaluate_submission(task_dir, submission_dir, root / "output")
 
             self.assertEqual(result["status"], "passed")
             self.assertEqual(result["environment"]["install_mode"], "path-fallback")
             self.assertTrue(result["submission_install"]["passed"])
             self.assertFalse(result["submission_install"]["skipped"])
+
+    def test_install_submission_skips_bad_pyproject_when_direct_package_exists(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (submission_dir / "pyproject.toml").write_text(
+                "[build-system]\n"
+                "requires = ['setuptools']\n"
+                "build-backend = 'setuptools.backends._legacy:_Backend'\n",
+                encoding="utf-8",
+            )
+
+            with mock.patch("featureliftbench.evaluator._run_command") as run_command:
+                result, mode = _install_submission(
+                    venv_python=root / ".venv" / "bin" / "python",
+                    submission_path=submission_dir,
+                    output_package="featurelifted",
+                    cwd=root,
+                    env={},
+                    timeout_seconds=1,
+                )
+
+            run_command.assert_not_called()
+            self.assertEqual(mode, "path-fallback")
+            self.assertTrue(result.skipped)
 
     def test_evaluate_submission_fails_for_forbidden_import(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

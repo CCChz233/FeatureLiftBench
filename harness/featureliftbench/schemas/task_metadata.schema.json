@@ -15,7 +15,7 @@
   ],
   "properties": {
     "task_id": { "type": "string", "minLength": 1 },
-    "language": { "type": "string", "const": "python" },
+    "language": { "type": "string", "enum": ["python", "go"] },
     "difficulty": {
       "type": "string",
       "enum": ["easy", "medium", "hard"]
@@ -32,7 +32,8 @@
         "name": { "type": "string", "minLength": 1 },
         "url": { "type": "string", "minLength": 1 },
         "commit": { "type": "string", "minLength": 1 },
-        "license": { "type": "string", "minLength": 1 }
+        "license": { "type": "string", "minLength": 1 },
+        "module_path": { "type": "string", "minLength": 1 }
       }
     },
     "feature": {
@@ -79,11 +80,13 @@
             "enum": [
               "framework_coupling",
               "config_environment_coupling",
+              "concurrency_coupling",
               "global_state_registry_coupling",
               "resource_coupling",
               "implicit_dependency_coupling",
               "parser_state_coupling",
               "data_model_coupling",
+              "reflection_tag_coupling",
               "third_party_dependency_coupling",
               "legacy_vibe_clutter"
             ]
@@ -94,9 +97,11 @@
           "enum": [
             "framework_coupling",
             "config_environment_coupling",
+            "concurrency_coupling",
             "parser_state_coupling",
             "resource_coupling",
             "data_model_coupling",
+            "reflection_tag_coupling",
             "third_party_dependency_coupling",
             "legacy_vibe_clutter"
           ]
@@ -111,28 +116,24 @@
     "output": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["package", "import", "callable", "signature"],
       "properties": {
+        "module": { "type": "string", "minLength": 1 },
         "package": { "type": "string", "minLength": 1 },
         "import": { "type": "string", "minLength": 1 },
         "callable": { "type": "string", "minLength": 1 },
-        "signature": { "type": "string", "minLength": 1 }
+        "signature": { "type": "string", "minLength": 1 },
+        "symbols": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
       }
     },
     "environment": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "python",
-        "network",
-        "timeout_seconds",
-        "dependency_lock",
-        "allowed_dependencies",
-        "forbidden_dependencies",
-        "forbidden_imports"
-      ],
       "properties": {
         "python": { "type": "string", "minLength": 1 },
+        "go": { "type": "string", "minLength": 1 },
         "network": { "type": "boolean" },
         "timeout_seconds": { "type": "integer", "minimum": 1 },
         "dependency_lock": { "type": "string", "minLength": 1 },
@@ -141,6 +142,14 @@
           "items": { "type": "string" }
         },
         "forbidden_dependencies": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "allowed_modules": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "forbidden_modules": {
           "type": "array",
           "items": { "type": "string" }
         },
@@ -158,6 +167,16 @@
         "public": { "type": "string", "minLength": 1 },
         "hidden": { "type": "string", "minLength": 1 },
         "command": { "type": "string", "minLength": 1 }
+      }
+    },
+    "concurrency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "race_test": { "type": "boolean" },
+        "stress_count": { "type": "integer", "minimum": 1 },
+        "timeout_seconds": { "type": "integer", "minimum": 1 }
       }
     },
     "scoring_reference": {
@@ -178,5 +197,51 @@
         "oracle_dependency_count": { "type": "number", "minimum": 0 }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "language": { "const": "python" } } },
+      "then": {
+        "properties": {
+          "output": {
+            "required": ["package", "import", "callable", "signature"]
+          },
+          "environment": {
+            "required": [
+              "python",
+              "network",
+              "timeout_seconds",
+              "dependency_lock",
+              "allowed_dependencies",
+              "forbidden_dependencies",
+              "forbidden_imports"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "language": { "const": "go" } } },
+      "then": {
+        "properties": {
+          "source": {
+            "required": ["name", "url", "commit", "license", "module_path"]
+          },
+          "output": {
+            "required": ["module", "package", "import", "symbols"]
+          },
+          "environment": {
+            "required": [
+              "go",
+              "network",
+              "timeout_seconds",
+              "allowed_modules",
+              "forbidden_modules",
+              "forbidden_imports"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

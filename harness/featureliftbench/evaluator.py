@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .dependency_install import install_dependency_lock
 from .eval_config import EVAL_PYTEST_VERSION
 from .checks import find_forbidden_dependencies
 from .checks import find_forbidden_imports
@@ -58,6 +59,20 @@ class CommandResult:
 
 
 def evaluate_submission(
+    task_dir: str | Path,
+    submission_dir: str | Path,
+    output_dir: str | Path,
+) -> dict[str, Any]:
+    """Evaluate a submission and write ``result.json`` under ``output_dir``."""
+
+    if _task_language(task_dir) == "go":
+        from .go_evaluator import evaluate_go_submission
+
+        return evaluate_go_submission(task_dir, submission_dir, output_dir)
+    return _evaluate_python_submission(task_dir, submission_dir, output_dir)
+
+
+def _evaluate_python_submission(
     task_dir: str | Path,
     submission_dir: str | Path,
     output_dir: str | Path,
@@ -306,6 +321,15 @@ def _load_forbidden_names(task_path: Path, metadata: dict[str, Any]) -> list[str
         if name not in deduped:
             deduped.append(name)
     return deduped
+
+
+def _task_language(task_dir: str | Path) -> str:
+    try:
+        metadata = load_metadata(task_dir).data
+    except Exception:
+        return "python"
+    language = metadata.get("language")
+    return language if isinstance(language, str) else "python"
 
 
 def _forbidden_dependency_names(metadata: dict[str, Any]) -> list[str]:
@@ -581,37 +605,34 @@ def _install_dependency_lock(
     env: dict[str, str],
     timeout_seconds: int,
 ) -> CommandResult:
-    lock_path = _dependency_lock_path(task_path, metadata)
-    if lock_path is None or not lock_path.exists():
-        return _failed_command_result(f"dependency lock file not found: {lock_path}")
-
-    dependencies = _dependency_names_from_lock(lock_path)
-    if not dependencies:
-        return _skipped_command_result("dependency lock is empty")
-
-    allowed = set(_allowed_dependency_names(metadata))
-    forbidden = set(_forbidden_dependency_names_normalized(metadata))
-    not_allowed = sorted(name for name in dependencies if name not in allowed)
-    forbidden_used = sorted(set(dependencies) & forbidden)
-    validation_errors: list[str] = []
-    if not_allowed:
-        validation_errors.append(
-            "dependency lock contains dependencies that are not allowed: "
-            + ", ".join(not_allowed)
-        )
-    if forbidden_used:
-        validation_errors.append(
-            "dependency lock contains forbidden dependencies: "
-            + ", ".join(forbidden_used)
-        )
-    if validation_errors:
-        return _failed_command_result("; ".join(validation_errors))
-
-    return _run_command(
-        [str(venv_python), "-B", "-m", "pip", "install", "--no-index", "--no-deps", "-r", str(lock_path)],
+    result = install_dependency_lock(
+        venv_python=venv_python,
+        task_path=task_path,
+        metadata=metadata,
         cwd=cwd,
         env=env,
         timeout_seconds=timeout_seconds,
+    )
+    if result.skipped:
+        return _skipped_command_result(result.reason)
+    if result.passed:
+        return CommandResult(
+            returncode=0,
+            duration_seconds=0.0,
+            stdout=result.stdout,
+            stderr=result.stderr,
+            reason=result.reason,
+        )
+    reason = result.reason or "dependency install failed"
+    if result.stderr.strip():
+        reason = f"{reason}: {result.stderr.strip()}"
+    return CommandResult(
+        returncode=result.returncode if result.returncode is not None else 1,
+        duration_seconds=0.0,
+        stdout=result.stdout,
+        stderr=result.stderr,
+        timed_out=result.returncode is None,
+        reason=reason,
     )
 
 
@@ -626,6 +647,14 @@ def _install_submission(
 ) -> tuple[CommandResult, str]:
     if not (submission_path / "pyproject.toml").is_file():
         return _skipped_command_result("submission has no pyproject.toml; using PYTHONPATH"), "path"
+
+    if _has_direct_output_package(submission_path, output_package) and not _force_editable_install(env):
+        return (
+            _skipped_command_result(
+                "submission has direct output package; skipped editable install and using PYTHONPATH"
+            ),
+            "path-fallback",
+        )
 
     result = _run_command(
         [
@@ -658,49 +687,17 @@ def _install_submission(
     return result, "editable"
 
 
+def _force_editable_install(env: dict[str, str]) -> bool:
+    value = env.get("FEATURELIFTBENCH_EVAL_FORCE_EDITABLE", "")
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _has_direct_output_package(submission_path: Path, output_package: str) -> bool:
     top_level = output_package.split(".", 1)[0]
     return (
         (submission_path / top_level / "__init__.py").is_file()
         or (submission_path / f"{top_level}.py").is_file()
     )
-
-
-def _dependency_lock_path(task_path: Path, metadata: dict[str, Any]) -> Path | None:
-    environment = metadata.get("environment")
-    if not isinstance(environment, dict):
-        return None
-    lock_file = environment.get("dependency_lock")
-    if not isinstance(lock_file, str) or not lock_file:
-        return None
-    return task_path / lock_file
-
-
-def _dependency_names_from_lock(lock_path: Path) -> list[str]:
-    names: list[str] = []
-    for line in lock_path.read_text(encoding="utf-8", errors="ignore").splitlines():
-        name = dependency_name(line)
-        if name:
-            names.append(name)
-    return names
-
-
-def _allowed_dependency_names(metadata: dict[str, Any]) -> list[str]:
-    environment = metadata.get("environment")
-    if not isinstance(environment, dict):
-        return []
-    allowed = environment.get("allowed_dependencies")
-    if not isinstance(allowed, list):
-        return []
-    return [dependency_name(item) for item in allowed if isinstance(item, str) and dependency_name(item)]
-
-
-def _forbidden_dependency_names_normalized(metadata: dict[str, Any]) -> list[str]:
-    return [
-        dependency_name(item)
-        for item in _forbidden_dependency_names(metadata)
-        if dependency_name(item)
-    ]
 
 
 def _run_import_check(

@@ -1,6 +1,8 @@
 # FeatureLiftBench 实验运行速查
 
-服务器部署清单见 [docs/SERVER_DEPLOY.md](docs/SERVER_DEPLOY.md)。
+服务器部署清单见 [docs/SERVER_DEPLOY.md](docs/SERVER_DEPLOY.md)。如果当前目标是用
+OpenHands 跑 FeatureLiftBench，优先按
+[docs/OPENHANDS_SERVER_RUNBOOK.md](docs/OPENHANDS_SERVER_RUNBOOK.md) 执行。
 
 当前正式实验口径：**Agent 用可选 Docker 边界跑题，Eval 默认用独立 Docker 容器评分**。Docker 的目的不是维护 100 套环境，而是限制 submission/eval 的内存、进程数、日志和网络，并防止 agent 改到宿主 benchmark 仓库或读取 hidden tests。
 
@@ -13,6 +15,9 @@ nano .env
 
 docker/build_agent_image.sh featureliftbench-agent:latest
 docker/build_eval_image.sh featureliftbench-eval:latest
+
+# Required for sanity tasks with locked dependencies (e.g. slugify / text-unidecode):
+PYTHONPATH=harness python harness/scripts/bootstrap_vendor_wheels.py
 ```
 
 `.env` 至少要有你使用的 profile 对应 API key/base URL。Docker build 默认使用 `python:3.11-slim`；如必须改 base image：
@@ -45,6 +50,132 @@ PYTHONPATH=harness .venv/bin/python -B -m featureliftbench.cli run-agent \
 - `run.json` 里 `eval_backend == "docker"`
 - `evaluation.result_json` 指向 `eval/result.json`
 - 失败也必须是结构化失败，不能卡死或打爆机器
+
+## 1b. OpenHands smoke（当前主线）
+
+OpenHands 作为当前主测 agent 通过 `--agent openhands-agent` 接入。
+Profile `openhands_deepseek_v4_flash` 已内置 headless 命令模板（含 `--json`
+事件日志）；也可通过 `FEATURELIFTBENCH_OPENHANDS_COMMAND` 或
+`--agent-command` 覆盖。
+
+服务器长跑的完整步骤见
+[docs/OPENHANDS_SERVER_RUNBOOK.md](docs/OPENHANDS_SERVER_RUNBOOK.md)。不要跳过
+`preflight -> 1题 smoke -> pilot5 -> 固定小切片` 这条顺序。
+
+**OpenHands 需要 Python 3.12+**。Docker agent 镜像需单独构建（OpenHands 与 mini-swe-agent
+不能共存于同一镜像，OpenHands 构建会替换 mini）：
+
+```bash
+FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim \
+FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \
+./docker/build_agent_image.sh featureliftbench-agent:latest
+```
+
+本机开发可选安装：
+
+```bash
+INSTALL_OPENHANDS=1 ./setup.sh   # 需 Python 3.12+
+```
+
+一键跑 3 题 sanity suite（推荐）：
+
+```bash
+FEATURELIFTBENCH_AGENT_DOCKER=1 \
+FEATURELIFTBENCH_EVAL_DOCKER=1 \
+AGENT_PROFILE=openhands_deepseek_v4_flash \
+NUM_WORKERS=1 \
+./run_openhands.sh
+```
+
+单题 Docker smoke：
+
+```bash
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
+./run_openhands.sh benchmark/sanity/iniconfig__parse_config__001 \
+  experiments/openhands-agent/smoke-iniconfig-$(date +%Y%m%d-%H%M%S)
+```
+
+等价 CLI：
+
+```bash
+PYTHONPATH=harness .venv/bin/python -B -m featureliftbench.cli run-agent \
+  benchmark/sanity/iniconfig__parse_config__001 \
+  --agent openhands-agent \
+  --agent-config harness/config/agents.toml \
+  --agent-profile openhands_deepseek_v4_flash \
+  --env-file .env \
+  --agent-docker \
+  --eval-docker \
+  --output experiments/openhands-agent/smoke-iniconfig-$(date +%Y%m%d-%H%M%S)
+```
+
+Harness 会自动将 `OPENAI_*` / `FEATURELIFTBENCH_*` 映射为 OpenHands 的
+`LLM_API_KEY`、`LLM_BASE_URL`、`LLM_MODEL`（DeepSeek 模型名会自动去掉
+`deepseek/` 前缀）。
+
+Suite 进度条按 agent 分派：OpenHands 显示 JSONL **event 数**（如 `Event 12 · file_editor`），
+不是 mini 的 token 计数；token 尚不可验证时主栏会显示 `events` 而非 `0 toks`。
+
+通过标准：
+
+- `run.json` 里 `agent.name` 含 `openhands-agent`
+- 每题存在 `agent/usage.json` 与 `agent/openhands_task.md`
+- 若 JSONL 能解析出 token，`usage.context_audit.usage_unverified == false`
+- 否则标为 pilot（`usage_unverified=true`）
+
+## 1c. FeatureLiftAgent sanity suite（协议/对照）
+
+FeatureLiftAgent 使用专用 profile `featurelift_v4_flash`，会自动启用
+`--enable-llm` 与 `--execute-actions`，无需手写 `--agent-arg`。
+
+先跑单题 Docker smoke：
+
+```bash
+PYTHONPATH=harness .venv/bin/python -B -m featureliftbench.cli run-agent \
+  benchmark/sanity/iniconfig__parse_config__001 \
+  --agent featurelift-agent \
+  --agent-config harness/config/agents.toml \
+  --agent-profile featurelift_v4_flash \
+  --env-file .env \
+  --agent-docker \
+  --eval-docker \
+  --output experiments/featurelift-agent/smoke-iniconfig-$(date +%Y%m%d-%H%M%S)
+```
+
+跑 3 题 sanity suite（推荐）：
+
+```bash
+FEATURELIFTBENCH_AGENT_DOCKER=1 \
+FEATURELIFTBENCH_EVAL_DOCKER=1 \
+AGENT_PROFILE=featurelift_v4_flash \
+NUM_WORKERS=1 \
+RETRY_RATE_LIMIT=5 \
+RUN_ID=featurelift-sanity-$(date +%Y%m%d-%H%M%S) \
+./run_featurelift.sh
+```
+
+输出目录：`experiments/featurelift-agent/<RUN_ID>/`。脚本会自动生成
+`featurelift-analysis.json` / `.md`，并调用常规 suite 分析脚本。
+
+续跑同一 suite：
+
+```bash
+RESUME_DIR=experiments/featurelift-agent/<RUN_ID> ./run_featurelift.sh
+```
+
+仅重评已有 submission：
+
+```bash
+PYTHONPATH=harness python harness/scripts/reeval_suite.py \
+  experiments/featurelift-agent/<RUN_ID> --docker --workers 1
+```
+
+通过标准：
+
+- `run.json` 里 `agent_backend == "docker"`、`eval_backend == "docker"`
+- 每题存在 `agent/usage.json` 与 `agent/context_audit.jsonl`
+- `usage.context_audit.context_violation == false`（128k-fair track）
+- slugify 依赖题需先执行 `bootstrap_vendor_wheels.py`
 
 ## 2. 跑正式 suite
 

@@ -15,7 +15,7 @@
 | 用量 / token | `run.json` / `suite.json` 从 `trajectory.json` messages 聚合 prompt/completion | SiliconFlow 上 cost 常为 0（`MSWEA_COST_TRACKING=ignore_errors`） |
 | 不记录 dollar cost | litellm 对多数 API 模型无定价表 | 只记录 token、API call、step；API 费用需按平台单价自行估算 |
 | 环境强依赖本机路径 | `agents.toml` / `.env` 不进 Git；`./setup.sh` 会生成并 patch `agent_bin` | 见 [SETUP.md](SETUP.md) |
-| 仅内置 `mini-swe-agent` 与 `command` | 无通用 SDK 接入层 | 换 Agent 需写 adapter 或 shell 模板 |
+| Agent 接入仍需逐个验证 | 已内置 `mini-swe-agent`、`featurelift-agent`、`openhands-agent`、`command` | OpenHands 真实 headless 命令和逐调用 token 审计仍需按所选 runtime 验证；无法验证时标 `usage_unverified=true` |
 | mini batch 必须 `--yolo` | 默认 confirm 模式会在 `Execute?` 处阻塞非交互 subprocess | `run-agent` 须加 `--yolo` 或改 mini 配置 |
 
 ## 2. Evaluator
@@ -23,7 +23,7 @@
 | 缺陷 | 现状 | 影响 |
 | --- | --- | --- |
 | 未做容器级网络隔离 | 依赖安装使用 `pip install --no-index`，但运行时没有防火墙/容器隔离 | submission 理论上仍可 `requests` 等出站；反投机靠 forbidden import 与测试，不靠防火墙 |
-| 依赖本机 pip cache | 非空 `requirements.lock` 用 `--no-index` 安装 | 干净机器/Docker 若未预置 wheel（如 `text-unidecode`）会装依赖失败 |
+| 依赖本机 pip cache | 非空 `requirements.lock` 用 `--no-index` 安装；`benchmark/vendor-wheels/` + `bootstrap_vendor_wheels.py` 提供离线 wheel | 干净机器/Docker 需先 bootstrap vendor wheels 并 rebuild eval/agent 镜像 |
 | venv 复用宿主机 site-packages | `venv --system-site-packages`；**pytest 已改为显式安装**（`pytest==7.4.4`） | 任务依赖仍可能走 system-site-packages；Docker eval 镜像更干净 |
 | 临时 venv 路径 | 每次 eval 在 `/tmp/featureliftbench-eval-*` 建 venv | 正常但不可复现调试同一 venv；日志里只有路径快照 |
 | 历史 suite 可能含 eval flake | 修复前并行 eval 偶发 `No module named pytest` | 用 `reeval_suite.py` 重算；`analyze_benchmark_suite.py` 标 `eval_flake` |

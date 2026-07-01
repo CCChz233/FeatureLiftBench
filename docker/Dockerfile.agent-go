@@ -1,0 +1,27 @@
+ARG GO_BASE=golang:1.22-bookworm
+FROM ${GO_BASE}
+
+WORKDIR /flb
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/flb/harness \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --break-system-packages \
+    "pytest==7.4.4" \
+    "rich" \
+    "mini-swe-agent==1.17.3"
+
+RUN printf '%s\n' \
+    '#!/usr/bin/env sh' \
+    'set -eu' \
+    'mkdir -p "${HOME:-/tmp/flb-home}"' \
+    'exec "$@"' \
+    > /usr/local/bin/flb-agent-entrypoint \
+    && chmod +x /usr/local/bin/flb-agent-entrypoint
+
+ENTRYPOINT ["flb-agent-entrypoint"]

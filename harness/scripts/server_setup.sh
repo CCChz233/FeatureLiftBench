@@ -74,6 +74,15 @@ if [[ "${SKIP_MINI:-0}" != "1" ]]; then
   python -m pip install mini-swe-agent
 fi
 
+PY_MINOR="$("$PYTHON" -c 'import sys; print(sys.version_info.minor)')"
+if [[ "${INSTALL_OPENHANDS:-0}" == "1" && "$PY_MINOR" -ge 12 ]]; then
+  echo "Installing openhands CLI via uv (Python 3.12+)..."
+  python -m pip install "uv>=0.11.6"
+  uv tool install "openhands==${OPENHANDS_VERSION:-1.16.0}" --python "$PYTHON" --force
+elif [[ "${INSTALL_OPENHANDS:-0}" == "1" ]]; then
+  echo "WARNING: INSTALL_OPENHANDS=1 requires Python 3.12+; skipping openhands install." >&2
+fi
+
 if [[ -n "${MINI_BIN:-}" ]]; then
   MINI="$MINI_BIN"
 elif [[ -x "$VENV_DIR/bin/mini" ]]; then

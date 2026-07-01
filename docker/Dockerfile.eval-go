@@ -1,0 +1,22 @@
+ARG GO_BASE=golang:1.22-bookworm
+FROM ${GO_BASE}
+
+WORKDIR /workspace
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/workspace/harness \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --break-system-packages \
+    "pytest==7.4.4" \
+    "idna==3.7" \
+    "multidict==6.0.4" \
+    "propcache==0.4.1"
+
+COPY harness /workspace/harness
+
+ENTRYPOINT ["python3", "-B", "-m", "featureliftbench.cli"]

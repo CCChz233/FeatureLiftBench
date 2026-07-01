@@ -21,6 +21,7 @@ from .resource_limits import command_output_limit_bytes
 from .resource_limits import detect_resource_limited
 
 DEFAULT_AGENT_IMAGE = "featureliftbench-agent:latest"
+DEFAULT_GO_AGENT_IMAGE = "featureliftbench-agent-go:latest"
 DEFAULT_AGENT_DOCKER_MEMORY = "8g"
 DEFAULT_AGENT_DOCKER_CPUS = "2"
 DEFAULT_AGENT_DOCKER_PIDS = "512"
@@ -233,6 +234,16 @@ def _normalize_inner_command(command: list[str]) -> list[str]:
     if len(command) >= 3 and command[0] == sys.executable and command[1:3] == [
         "-m",
         "featureliftbench.mini_live_runner",
+    ]:
+        return ["python", *command[1:]]
+    if len(command) >= 3 and command[0] == sys.executable and command[1:3] == [
+        "-m",
+        "featureliftbench.featurelift_agent",
+    ]:
+        return ["python", *command[1:]]
+    if len(command) >= 3 and command[0] == sys.executable and command[1:3] == [
+        "-m",
+        "featureliftbench.openhands_runner",
     ]:
         return ["python", *command[1:]]
     return command

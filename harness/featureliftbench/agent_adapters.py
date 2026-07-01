@@ -362,6 +362,68 @@ class CommandAgentAdapter(AgentAdapter):
         return command
 
 
+class FeatureLiftAgentAdapter(AgentAdapter):
+    """Adapter for the FeatureLiftBench-native extraction agent controller."""
+
+    name = "featurelift-agent"
+
+    def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
+        command = _featurelift_agent_base_command(config.agent_bin)
+        command.extend(
+            [
+                "run",
+                "--workspace",
+                str(context.workspace_dir),
+                "--task-file",
+                str(context.task_file),
+                "--submission-dir",
+                str(context.submission_dir),
+                "--agent-output-dir",
+                str(context.agent_output_dir),
+            ]
+        )
+        if config.model:
+            command.extend(["--model", config.model])
+        command.extend(config.extra_args)
+        return command
+
+
+class OpenHandsAgentAdapter(AgentAdapter):
+    """Adapter for running OpenHands as the evaluated FeatureLiftBench agent."""
+
+    name = "openhands-agent"
+
+    def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
+        command = [
+            sys.executable,
+            "-m",
+            "featureliftbench.openhands_runner",
+            "run",
+            "--workspace",
+            str(context.workspace_dir),
+            "--task-file",
+            str(context.task_file),
+            "--submission-dir",
+            str(context.submission_dir),
+            "--agent-output-dir",
+            str(context.agent_output_dir),
+            "--timeout-seconds",
+            str(max(1, int(config.timeout_seconds) - 10)),
+        ]
+        if config.model:
+            command.extend(["--model", config.model])
+        if config.command:
+            command.extend(["--openhands-command", config.command])
+        command.extend(config.extra_args)
+        return command
+
+
+def _featurelift_agent_base_command(agent_bin: str | None) -> list[str]:
+    if agent_bin:
+        return [agent_bin]
+    return [sys.executable, "-m", "featureliftbench.featurelift_agent"]
+
+
 def _use_live_trajectory_runner(agent_bin: str) -> bool:
     """Use in-process mini runner that snapshots trajectory.json after each step."""
 
@@ -382,9 +444,13 @@ def get_agent_adapter(name: str) -> AgentAdapter:
     normalized = name.strip().lower().replace("_", "-")
     if normalized in {"mini", "mini-swe-agent", "minisweagent"}:
         return MiniSweAgentAdapter()
+    if normalized in {"featurelift-agent", "featureliftagent", "featurelift"}:
+        return FeatureLiftAgentAdapter()
+    if normalized in {"openhands", "openhands-agent", "openhandsagent"}:
+        return OpenHandsAgentAdapter()
     if normalized in {"command", "custom"}:
         return CommandAgentAdapter()
     raise ValueError(f"unsupported agent: {name}")
 
 
-SUPPORTED_AGENTS = ("mini-swe-agent", "command")
+SUPPORTED_AGENTS = ("mini-swe-agent", "featurelift-agent", "openhands-agent", "command")

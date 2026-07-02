@@ -49,7 +49,7 @@ def evaluate_submission_docker(
     task_path = Path(task_dir).resolve()
     submission_path = Path(submission_dir).resolve()
     output_path = Path(output_dir).resolve()
-    output_path.mkdir(parents=True, exist_ok=True)
+    _prepare_docker_eval_output(output_path)
     image = _select_eval_image(task_path, image)
     harness_root = (REPO_ROOT / "harness").resolve()
     container_name = _eval_container_name(task_path.name)
@@ -87,6 +87,8 @@ def evaluate_submission_docker(
         "no-new-privileges",
         "--ulimit",
         _env_default("FEATURELIFTBENCH_DOCKER_ULIMIT_NOFILE", DEFAULT_DOCKER_ULIMIT_NOFILE),
+        "--user",
+        f"{os.getuid()}:{os.getgid()}",
     ]
     for key in _forwarded_eval_env_keys():
         command.extend(["--env", key])
@@ -167,6 +169,21 @@ def evaluate_submission_docker(
 
 def repo_root() -> Path:
     return REPO_ROOT
+
+
+def _prepare_docker_eval_output(output_path: Path) -> None:
+    """Prepare host output mounts for hardened eval containers.
+
+    Eval containers use ``--read-only`` and ``--cap-drop ALL``, which prevents
+    creating new directories or writing files on bind mounts that are not
+    world-writable from inside the container. Pre-create and chmod the output
+    tree on the host instead.
+    """
+    output_path.mkdir(parents=True, exist_ok=True)
+    output_path.chmod(0o777)
+    logs_path = output_path / "logs"
+    logs_path.mkdir(parents=True, exist_ok=True)
+    logs_path.chmod(0o777)
 
 
 def _run_docker_eval(

@@ -9,6 +9,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from featureliftbench.docker_eval import _prepare_docker_eval_output
 from featureliftbench.docker_eval import evaluate_submission_docker
 
 
@@ -38,6 +39,17 @@ class _FakeDockerEvalProcess:
 
 
 class DockerEvalTests(unittest.TestCase):
+    def test_prepare_docker_eval_output_creates_writable_logs(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output_dir = Path(tmp) / "eval"
+            _prepare_docker_eval_output(output_dir)
+
+            self.assertTrue(output_dir.is_dir())
+            self.assertEqual(output_dir.stat().st_mode & 0o777, 0o777)
+            logs_dir = output_dir / "logs"
+            self.assertTrue(logs_dir.is_dir())
+            self.assertEqual(logs_dir.stat().st_mode & 0o777, 0o777)
+
     def test_evaluate_submission_docker_delegates_locally_when_disabled(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -83,6 +95,7 @@ class DockerEvalTests(unittest.TestCase):
                     use_docker=True,
                 )
 
+            self.assertTrue((output_dir / "logs").is_dir())
             command = captured["command"]
             self.assertEqual(command[0], "docker")
             self.assertIn("--name", command)
@@ -104,6 +117,8 @@ class DockerEvalTests(unittest.TestCase):
             self.assertIn("ALL", command)
             self.assertIn("--security-opt", command)
             self.assertIn("no-new-privileges", command)
+            self.assertIn("--user", command)
+            self.assertIn(f"{os.getuid()}:{os.getgid()}", command)
             joined = " ".join(command)
             self.assertIn("/workspace/tasks/", joined)
             self.assertIn("/workspace/harness", joined)

@@ -1,41 +1,29 @@
 # FeatureLiftBench TODO
 
-Current objective: make OpenHands runs credible enough for fixed slices and then a full Python main-suite experiment.
+当前目标：用 **OpenHands + `featureliftbench` CLI** 跑通 pilot5 与 main 全量，基础设施干净后再写论文级结果。
 
-## P0: Validate Current OpenHands Path
+## P0：当前路径验证
 
-- [ ] Re-run `run_openhands_pilot5.sh` after the latest script fixes.
-- [ ] Confirm `pilot5-summary.json.summary.total == 5`.
-- [ ] Confirm no `agent_setup_failed`, `rate_limited`, `eval_infra_failed`, or `agent_step_limited`.
-- [ ] Confirm `assistant_steps` is nonzero on real OpenHands events.
-- [ ] Confirm token/context audit is verified for DeepSeek Flash.
+- [ ] `featureliftbench setup` 通过（含本地 vLLM 或云端 API）
+- [ ] `featureliftbench smoke` 通过 `check_openhands_smoke`
+- [ ] `featureliftbench run --suite pilot5` → `docker_sandbox_failures==0`
+- [ ] `featureliftbench run --suite main` 在 tmux 中可 resume
 
-## P1: Small Slice Before Full Run
+## P1：全量前
 
-- [ ] Define a fixed 5-10 task slice from `benchmark/tasks/`.
-- [ ] Run OpenHands with `NUM_WORKERS=1`.
-- [ ] Check `suite.json.summary.failure_classes`.
-- [ ] Inspect token cost per task and max prompt tokens.
-- [ ] Decide whether `FEATURELIFTBENCH_OPENHANDS_MAX_STEPS=120` is enough or should be raised.
+- [ ] `audit_task_dependencies.py` → 100 ok
+- [ ] `infra-summary.json` → `infra_clean=true`（pilot 或 smoke 切片）
+- [ ] 确认 `max_steps=180`、token/context audit 可验证
 
-## P2: Full Main-Suite Run
+## P2：文档与债务
 
-- [ ] Run `./run_openhands.sh benchmark/tasks "$OUT"` only after pilot and slice are infrastructure-clean.
-- [ ] Keep agent/eval Docker enabled.
-- [ ] Keep context audit enabled.
-- [ ] Separate infrastructure failures from `model_failed` in all reporting.
+- [x] `flb.local.toml` + CLI（`setup` / `run` / `smoke` / `resume`）
+- [x] smoke 与 main 分离
+- [ ] 全量跑完后更新 `docs/EXPERIMENT_RESULTS.md`（若需要）
 
-## P3: Remaining Harness Improvements
+## 参考
 
-- [ ] Add suite-level RPM/TPM throttling.
-- [ ] Add post-run compact report for failure classes, token totals, max prompt, and step counts.
-- [ ] Add resume validation for incomplete pilot directories.
-- [ ] Consider tighter OpenHands tool restrictions if logs show harmful tool usage.
-- [ ] Consider mini-swe-agent + context compression as a controlled ablation, not the mainline.
-
-## Reference Backlogs
-
-- OpenHands details: [docs/OPENHANDS_BENCHMARK_TODO.md](docs/OPENHANDS_BENCHMARK_TODO.md)
-- Known limitations: [docs/limitations.md](docs/limitations.md)
-- Task expansion workflow: [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)
-- Go exploration: [GO_FEATURELIFTBENCH_DESIGN.md](GO_FEATURELIFTBENCH_DESIGN.md)
+- 命令：[RUN.md](RUN.md)
+- 架构：[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- OpenHands 加固：[docs/OPENHANDS_BENCHMARK_TODO.md](docs/OPENHANDS_BENCHMARK_TODO.md)
+- 出题：[BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)

@@ -1,18 +1,16 @@
 #!/usr/bin/env bash
-# OpenHands sanity suite: 3 smoke tasks under benchmark/sanity/.
+# Thin wrapper around featureliftbench run (see flb.local.toml.example).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
-export FEATURELIFTBENCH_AGENT_DOCKER="${FEATURELIFTBENCH_AGENT_DOCKER:-1}"
-export FEATURELIFTBENCH_EVAL_DOCKER="${FEATURELIFTBENCH_EVAL_DOCKER:-1}"
+echo "Note: run_openhands.sh is deprecated; prefer: featureliftbench run" >&2
+
 export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
 
 if [[ -n "${PYTHON:-}" ]]; then
   :
-elif [[ -n "${CONDA_PREFIX:-}" && -x "${CONDA_PREFIX}/bin/python" ]]; then
-  PYTHON="${CONDA_PREFIX}/bin/python"
 elif [[ -x "$ROOT/.venv/bin/python" ]]; then
   PYTHON="$ROOT/.venv/bin/python"
 elif command -v python3.12 >/dev/null 2>&1; then
@@ -21,146 +19,29 @@ else
   PYTHON=python3
 fi
 
-export PATH="$ROOT/.venv/bin:${PATH}"
+SUITE="${FLB_SUITE:-sanity}"
+OUTPUT_ARGS=()
+RESUME_ARGS=()
 
-export EVAL_MEMORY_MB="${EVAL_MEMORY_MB:-4096}"
-export AGENT_MEMORY_MB="${AGENT_MEMORY_MB:-8192}"
-export NUM_WORKERS="${NUM_WORKERS:-1}"
-
-AGENT_PROFILE="${AGENT_PROFILE:-openhands_deepseek_v4_flash}"
-RESUME_FLAG=()
 if [[ $# -ge 1 && "${1:-}" != "" ]]; then
-  TASK_ROOT="$1"
-else
-  TASK_ROOT="${TASK_ROOT:-benchmark/sanity}"
-fi
-if [[ $# -ge 2 ]]; then
-  OUTPUT="$2"
-else
-  if [[ -n "${RESUME_DIR:-}" ]]; then
-    OUTPUT="${RESUME_DIR}"
-    RESUME_FLAG=(--resume)
-  else
-    RUN_ID="${RUN_ID:-openhands-sanity-$(date +%Y%m%d-%H%M%S)}"
-    OUTPUT="experiments/openhands-agent/${RUN_ID}"
-  fi
+  case "$1" in
+    benchmark/sanity) SUITE=sanity ;;
+    benchmark/tasks) SUITE=main ;;
+    *)
+      echo "Unsupported task root: $1; set [run].suite in flb.local.toml or use FLB_SUITE" >&2
+      exit 2
+      ;;
+  esac
 fi
 
-mkdir -p "$OUTPUT"
-
-PREFLIGHT_ARGS=(
-  --bootstrap
-  --agent openhands-agent
-  --agent-profile "$AGENT_PROFILE"
-  --output-dir "$OUTPUT"
-  --llm-health-check
-)
-if [[ "${FEATURELIFTBENCH_SKIP_LLM_HEALTH_CHECK:-0}" == "1" ]]; then
-  PREFLIGHT_ARGS+=(--skip-llm-health-check)
-fi
-if [[ "${FEATURELIFTBENCH_PREFLIGHT_STRICT:-}" == "1" || "$TASK_ROOT" == "benchmark/tasks" ]]; then
-  PREFLIGHT_ARGS+=(--strict)
-fi
-if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" || -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
-  PREFLIGHT_ARGS+=(--docker-suite)
-fi
-"$PYTHON" "$ROOT/harness/scripts/preflight.py" "${PREFLIGHT_ARGS[@]}"
-
-# shellcheck source=harness/scripts/run_lock.sh
-source "$ROOT/harness/scripts/run_lock.sh"
-acquire_run_lock "$OUTPUT"
-
-EXTRA_AGENT_PASSES="${EXTRA_AGENT_PASSES:-0}"
-RETRY_RATE_LIMIT="${RETRY_RATE_LIMIT:-5}"
-
-echo "Agent:   openhands-agent"
-echo "Profile: ${AGENT_PROFILE}"
-echo "Tasks:   ${TASK_ROOT}"
-echo "Output:  ${OUTPUT}"
-echo "Python:  $PYTHON"
-echo "Workers: ${NUM_WORKERS}"
-echo "Eval memory MB: ${EVAL_MEMORY_MB}"
-echo "Agent memory MB: ${AGENT_MEMORY_MB}"
-if [[ "${#RESUME_FLAG[@]}" -gt 0 ]]; then
-  echo "Resume:  yes"
-  VALIDATE_ARGS=("${OUTPUT}")
-  if [[ -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
-    VALIDATE_ARGS+=(--require-docker-eval)
-  fi
-  "$PYTHON" "$ROOT/harness/scripts/validate_suite_resume.py" "${VALIDATE_ARGS[@]}"
-fi
-if [[ "${EXTRA_AGENT_PASSES}" != "0" ]]; then
-  echo "Extra agent passes: ${EXTRA_AGENT_PASSES}"
-fi
-if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" ]]; then
-  echo "Note: OpenHands Docker runs require a 3.12 agent image with openhands installed:"
-  echo "  FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim FEATURELIFTBENCH_INSTALL_OPENHANDS=1 ./docker/build_agent_image.sh"
+if [[ $# -ge 2 && "${2:-}" != "" ]]; then
+  OUTPUT_ARGS=(--output "$2")
+elif [[ -n "${RESUME_DIR:-}" ]]; then
+  RESUME_ARGS=(resume "${RESUME_DIR}")
 fi
 
-AGENT_DOCKER_FLAG=()
-EVAL_DOCKER_FLAG=()
-if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" ]]; then
-  AGENT_DOCKER_FLAG=(--agent-docker)
-fi
-if [[ -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
-  EVAL_DOCKER_FLAG=(--eval-docker)
+if [[ ${#RESUME_ARGS[@]} -gt 0 ]]; then
+  exec "$PYTHON" -B -m featureliftbench.cli "${RESUME_ARGS[@]}"
 fi
 
-if [[ "$TASK_ROOT" == "benchmark/tasks" && "${FEATURELIFTBENCH_SKIP_SMOKE_FIRST:-0}" != "1" ]]; then
-  SMOKE_OUTPUT="$OUTPUT/.smoke-first"
-  echo "Smoke-first: benchmark/sanity/iniconfig__parse_config__001"
-  set +e
-  $PYTHON -B -m featureliftbench.cli run-agent benchmark/sanity/iniconfig__parse_config__001 \
-    --agent openhands-agent \
-    --agent-config harness/config/agents.toml \
-    --agent-profile "${AGENT_PROFILE}" \
-    --env-file .env \
-    --num-workers 1 \
-    --retry-rate-limit 1 \
-    ${NO_PROGRESS:+--no-progress} \
-    ${AGENT_DOCKER_FLAG[@]+"${AGENT_DOCKER_FLAG[@]}"} \
-    ${EVAL_DOCKER_FLAG[@]+"${EVAL_DOCKER_FLAG[@]}"} \
-    --output "${SMOKE_OUTPUT}"
-  SMOKE_STATUS=$?
-  set -e
-  if [[ "${SMOKE_STATUS}" -ge 2 ]]; then
-    echo "smoke-first failed before completing (exit ${SMOKE_STATUS}); aborting main suite" >&2
-    exit "${SMOKE_STATUS}"
-  fi
-  "$PYTHON" harness/scripts/check_openhands_smoke.py "$SMOKE_OUTPUT"
-fi
-
-set +e
-$PYTHON -B -m featureliftbench.cli run-agent "$TASK_ROOT" \
-  --agent openhands-agent \
-  --agent-config harness/config/agents.toml \
-  --agent-profile "${AGENT_PROFILE}" \
-  --env-file .env \
-  --num-workers "${NUM_WORKERS}" \
-  --retry-rate-limit "${RETRY_RATE_LIMIT}" \
-  --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
-  ${NO_PROGRESS:+--no-progress} \
-  ${AGENT_DOCKER_FLAG[@]+"${AGENT_DOCKER_FLAG[@]}"} \
-  ${EVAL_DOCKER_FLAG[@]+"${EVAL_DOCKER_FLAG[@]}"} \
-  --output "${OUTPUT}" \
-  ${RESUME_FLAG[@]+"${RESUME_FLAG[@]}"}
-RUN_AGENT_STATUS=$?
-set -e
-
-if [[ "${RUN_AGENT_STATUS}" -ge 2 ]]; then
-  echo "run-agent failed before completing the suite (exit ${RUN_AGENT_STATUS}); skipping analysis" >&2
-  exit "${RUN_AGENT_STATUS}"
-fi
-
-if [[ -f "${OUTPUT}/suite.json" ]]; then
-  $PYTHON harness/scripts/analyze_featurelift_suite.py "${OUTPUT}"
-  $PYTHON harness/scripts/analyze_benchmark_suite.py "${OUTPUT}"
-  $PYTHON harness/scripts/summarize_suite_infra.py "${OUTPUT}" || true
-  $PYTHON harness/scripts/report_entanglement_coverage.py --suite-dir "${OUTPUT}"
-fi
-
-if [[ "${RUN_AGENT_STATUS}" -eq 1 ]]; then
-  echo "Suite completed with benchmark failures; analysis was generated." >&2
-fi
-echo "Done: ${OUTPUT}"
-echo "Inspect per-task: agent/openhands_task.md agent/openhands_stdout.log agent/usage.json run.json"
+exec "$PYTHON" -B -m featureliftbench.cli run --suite "$SUITE" "${OUTPUT_ARGS[@]}"

@@ -15,6 +15,7 @@ from .docker_eval import DEFAULT_GO_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .paths import DEFAULT_AGENT_CONFIG
+from .paths import DEFAULT_LOCAL_CONFIG
 from .paths import resolve_task_input
 from .validate import validate_task
 
@@ -181,6 +182,89 @@ def main(argv: list[str] | None = None) -> int:
         help=f"Docker image for --agent-docker (default: {DEFAULT_AGENT_IMAGE})",
     )
 
+    setup_parser = subparsers.add_parser(
+        "setup",
+        help="validate flb.local.toml, Docker images, and LLM connectivity",
+    )
+    setup_parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_LOCAL_CONFIG,
+        help="local experiment config (default: flb.local.toml)",
+    )
+    setup_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print resolved runtime policy without running checks",
+    )
+
+    run_parser = subparsers.add_parser(
+        "run",
+        help="run a suite from flb.local.toml (preflight, agent, eval, analysis)",
+    )
+    run_parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_LOCAL_CONFIG,
+        help="local experiment config (default: flb.local.toml)",
+    )
+    run_parser.add_argument(
+        "--suite",
+        choices=["sanity", "smoke", "pilot5", "main", "custom"],
+        help="override [run].suite from config",
+    )
+    run_parser.add_argument("--max-steps", type=int, help="override [agent].max_steps")
+    run_parser.add_argument("--workers", type=int, help="override [run].workers")
+    run_parser.add_argument("--output", type=Path, help="override output directory")
+    run_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print resolved plan without running",
+    )
+
+    resume_parser = subparsers.add_parser(
+        "resume",
+        help="resume a previous featureliftbench run output directory",
+    )
+    resume_parser.add_argument("output_dir", type=Path)
+    resume_parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_LOCAL_CONFIG,
+        help="local experiment config (default: flb.local.toml)",
+    )
+    resume_parser.add_argument(
+        "--suite",
+        choices=["sanity", "smoke", "pilot5", "main", "custom"],
+        help="override [run].suite from config",
+    )
+    resume_parser.add_argument("--max-steps", type=int, help="override [agent].max_steps")
+    resume_parser.add_argument("--workers", type=int, help="override [run].workers")
+    resume_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print resolved plan without running",
+    )
+
+    smoke_parser = subparsers.add_parser(
+        "smoke",
+        help="run smoke suite (1-task OpenHands + eval gate)",
+    )
+    smoke_parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_LOCAL_CONFIG,
+        help="local experiment config (default: flb.local.toml)",
+    )
+    smoke_parser.add_argument("--max-steps", type=int, help="override [agent].max_steps")
+    smoke_parser.add_argument("--workers", type=int, help="override [run].workers")
+    smoke_parser.add_argument("--output", type=Path, help="override output directory")
+    smoke_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="print resolved plan without running",
+    )
+
     args = parser.parse_args(argv)
 
     if args.command == "validate-task":
@@ -191,6 +275,14 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_score(args)
     if args.command == "run-agent":
         return _cmd_run_agent(args)
+    if args.command == "setup":
+        return _cmd_setup(args)
+    if args.command == "run":
+        return _cmd_run(args)
+    if args.command == "resume":
+        return _cmd_resume(args)
+    if args.command == "smoke":
+        return _cmd_smoke(args)
 
     parser.error(f"unknown command: {args.command}")
     return 2
@@ -330,6 +422,79 @@ def _resolve_resume_args(args: argparse.Namespace) -> tuple[Path | None, bool]:
             return args.output.resolve(), True
         return Path(args.resume).resolve(), True
     return None, False
+
+
+def _cmd_setup(args: argparse.Namespace) -> int:
+    from .run_workflow import cmd_setup
+
+    try:
+        return cmd_setup(config_path=args.config, dry_run=args.dry_run)
+    except (ValueError, RuntimeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+
+def _cmd_run(args: argparse.Namespace) -> int:
+    from .run_workflow import cmd_run
+
+    try:
+        result = cmd_run(
+            config_path=args.config,
+            suite=args.suite,
+            max_steps=args.max_steps,
+            workers=args.workers,
+            output_dir=str(args.output) if args.output else None,
+            dry_run=args.dry_run,
+        )
+    except (ValueError, RuntimeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    if not result.dry_run:
+        print(f"Done: {result.output_dir}", file=sys.stderr)
+    return result.exit_code
+
+
+def _cmd_resume(args: argparse.Namespace) -> int:
+    from .run_workflow import cmd_run
+
+    try:
+        result = cmd_run(
+            config_path=args.config,
+            resume_dir=args.output_dir.resolve(),
+            suite=args.suite,
+            max_steps=args.max_steps,
+            workers=args.workers,
+            dry_run=args.dry_run,
+        )
+    except (ValueError, RuntimeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    if not result.dry_run:
+        print(f"Done: {result.output_dir}", file=sys.stderr)
+    return result.exit_code
+
+
+def _cmd_smoke(args: argparse.Namespace) -> int:
+    from .run_workflow import cmd_run
+
+    try:
+        result = cmd_run(
+            config_path=args.config,
+            suite="smoke",
+            max_steps=args.max_steps,
+            workers=args.workers,
+            output_dir=str(args.output) if args.output else None,
+            dry_run=args.dry_run,
+        )
+    except (ValueError, RuntimeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    if not result.dry_run:
+        print(f"Done: {result.output_dir}", file=sys.stderr)
+    return result.exit_code
 
 
 if __name__ == "__main__":

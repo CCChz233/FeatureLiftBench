@@ -1,6 +1,6 @@
 # OpenHands Benchmark TODO
 
-This is the current implementation checklist for the OpenHands mainline. The run procedure lives in [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md).
+This is the OpenHands implementation checklist. **Run commands:** [RUN.md](../RUN.md). **Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Done
 
@@ -20,13 +20,14 @@ openhands --headless --override-with-envs --exit-without-confirmation -f {prompt
 - Local OpenAI-compatible usage proxy records provider usage into `agent/context_audit.jsonl`.
 - Context window and reserved output tokens come from profile/env.
 - `suite.json` includes `failure_class` counts.
-- `run_openhands.sh` performs preflight and smoke-first before main `benchmark/tasks`.
-- `run_openhands_pilot5.sh` writes `sanity3/`, `batch2/`, and merged pilot summaries.
+- `featureliftbench` CLI: `setup`, `run`, `smoke`, `resume` + `flb.local.toml` local config.
+- Smoke and main are **separate** suites (`smoke` vs `main`); no embedded smoke-first in main.
+- `run_openhands.sh` / `run_openhands_pilot5.sh` thin-wrap the CLI.
 - `FEATURELIFTBENCH_OPENHANDS_MAX_STEPS` caps OpenHands action steps.
 
 ## Remaining P1
 
-- Run a fresh server pilot5 after the latest script fixes and confirm:
+- Run pilot5: `featureliftbench run --suite pilot5` and confirm:
   - `summary.total == 5`
   - `agent_failures == 0`
   - `docker_sandbox_failures == 0`

@@ -23,6 +23,8 @@ from featureliftbench.agent_config import load_agent_run_config  # noqa: E402
 from featureliftbench.agent_adapters import AgentRunConfig  # noqa: E402
 from featureliftbench.dependency_install import sanity_vendor_wheels_ready  # noqa: E402
 from featureliftbench.llm_env import normalize_api_model_name  # noqa: E402
+from featureliftbench.local_config import load_local_agent_config  # noqa: E402
+from featureliftbench.local_config import load_local_config  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG_EXAMPLE  # noqa: E402
 
@@ -348,8 +350,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--agent-profile",
-        default="deepseek_v4_pro",
-        help="profile to validate (default: deepseek_v4_pro)",
+        default="",
+        help="profile to validate (default: deepseek_v4_pro, or flb.local when --local-config is set)",
+    )
+    parser.add_argument(
+        "--local-config",
+        type=Path,
+        default=None,
+        help="validate using flb.local.toml instead of an agents.toml profile name",
     )
     parser.add_argument(
         "--bootstrap",
@@ -416,12 +424,24 @@ def main(argv: list[str] | None = None) -> int:
         return _fail("pytest not found; run ./setup.sh")
 
     try:
-        loaded = load_agent_run_config(
-            base_config=AgentRunConfig(agent=args.agent, yolo=not featurelift_agent),
-            config_path=DEFAULT_AGENT_CONFIG,
-            profile_name=args.agent_profile,
-            env_file=_REPO_ROOT / ".env",
-        )
+        if args.local_config is not None:
+            local_config = load_local_config(args.local_config)
+            if args.agent and args.agent != local_config.agent.kind:
+                return _fail(
+                    f"--agent {args.agent} does not match flb.local.toml agent.kind "
+                    f"{local_config.agent.kind}"
+                )
+            loaded = load_local_agent_config(local_config)
+            profile_label = local_config.llm.profile or "flb.local"
+        else:
+            profile_name = args.agent_profile or "deepseek_v4_pro"
+            loaded = load_agent_run_config(
+                base_config=AgentRunConfig(agent=args.agent, yolo=not featurelift_agent),
+                config_path=DEFAULT_AGENT_CONFIG,
+                profile_name=profile_name,
+                env_file=_REPO_ROOT / ".env",
+            )
+            profile_label = profile_name
     except ValueError as exc:
         return _fail(str(exc))
 
@@ -429,11 +449,11 @@ def main(argv: list[str] | None = None) -> int:
     if not summary.get("api_key_present"):
         key_env = summary.get("api_key_env", "FEATURELIFTBENCH_API_KEY")
         return _fail(
-            f"{key_env} is empty in .env for profile {args.agent_profile}; "
+            f"{key_env} is empty in .env for profile {profile_label}; "
             "add your API key before running suites"
         )
     if not summary.get("api_base"):
-        return _fail(f"API base URL missing for profile {args.agent_profile}")
+        return _fail(f"API base URL missing for profile {profile_label}")
     api_key_env = str(summary.get("api_key_env", "FEATURELIFTBENCH_API_KEY"))
     api_key = loaded.run_config.env.get(api_key_env, "")
     api_base = str(summary.get("api_base", ""))
@@ -463,18 +483,18 @@ def main(argv: list[str] | None = None) -> int:
         extra_args = loaded.run_config.extra_args
         if "--enable-llm" not in extra_args:
             return _fail(
-                f"profile {args.agent_profile} must enable featurelift LLM "
+                f"profile {profile_label} must enable featurelift LLM "
                 "(featurelift_enable_llm=true or --agent-arg --enable-llm)"
             )
         if "--execute-actions" not in extra_args:
             return _fail(
-                f"profile {args.agent_profile} must enable featurelift actions "
+                f"profile {profile_label} must enable featurelift actions "
                 "(featurelift_execute_actions=true or --agent-arg --execute-actions)"
             )
     elif openhands_agent:
         if not loaded.run_config.command:
             return _fail(
-                f"openhands command not configured for profile {args.agent_profile}; "
+                f"openhands command not configured for profile {profile_label}; "
                 "set openhands_command in agents.toml or FEATURELIFTBENCH_OPENHANDS_COMMAND"
             )
         if args.docker_suite:
@@ -498,12 +518,12 @@ def main(argv: list[str] | None = None) -> int:
         )
         if health_error:
             return _fail(
-                f"{health_error}; profile={args.agent_profile} model={summary.get('model', '')} "
+                f"{health_error}; profile={profile_label} model={summary.get('model', '')} "
                 f"api_base={api_base}"
             )
         print(
             "preflight: llm health check ok "
-            f"profile={args.agent_profile} model={summary.get('model', '')} api_base={api_base}",
+            f"profile={profile_label} model={summary.get('model', '')} api_base={api_base}",
             file=sys.stderr,
         )
 
@@ -517,7 +537,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             "preflight: ok "
             f"agent={args.agent} "
-            f"profile={args.agent_profile} "
+            f"profile={profile_label} "
             f"model={summary.get('model', '')}",
             file=sys.stderr,
         )
@@ -525,7 +545,7 @@ def main(argv: list[str] | None = None) -> int:
         print(
             "preflight: ok "
             f"agent={args.agent} "
-            f"profile={args.agent_profile} "
+            f"profile={profile_label} "
             f"model={summary.get('model', '')} "
             f"openhands_command={'set' if summary.get('openhands_command_configured') else 'missing'}",
             file=sys.stderr,
@@ -534,7 +554,7 @@ def main(argv: list[str] | None = None) -> int:
         agent_bin = summary.get("agent_bin") or mini_bin
         print(
             "preflight: ok "
-            f"profile={args.agent_profile} "
+            f"profile={profile_label} "
             f"model={summary.get('model', '')} "
             f"mini={agent_bin}",
             file=sys.stderr,

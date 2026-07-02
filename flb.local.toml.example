@@ -1,0 +1,33 @@
+# Copy to flb.local.toml and edit for local experiments.
+# Secrets (API keys) belong in .env only; reference them via api_key_env.
+
+[llm]
+# Match vLLM --served-model-name. Bare names get an openai/ prefix for LiteLLM.
+model = "Qwen3-Coder-30B-A3B-Instruct"
+base_url = "http://127.0.0.1:8008/v1"
+api_key_env = "VLLM_QWEN3_CODER_30B_API_KEY"
+native_tool_calling = true
+context_window_tokens = 204800
+# Optional: use a named profile from harness/config/agents.toml instead of synthesis.
+# profile = "openhands_qwen3_coder_30b_vllm"
+
+[agent]
+kind = "openhands-agent"
+max_steps = 180
+timeout_seconds = 3600
+
+[run]
+# sanity | smoke | pilot5 | main | custom
+# Run smoke and main as separate commands (see RUN.md).
+suite = "pilot5"
+workers = 1
+output_dir = ""
+agent_docker = true
+eval_docker = true
+extra_agent_passes = 0
+retry_rate_limit = 5
+task_cooldown_seconds = 0
+
+[run.custom]
+task_root = "benchmark/tasks"
+task_ids = []

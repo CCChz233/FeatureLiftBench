@@ -16,6 +16,15 @@ class LlmEnvTests(unittest.TestCase):
             "deepseek-v4-flash",
         )
 
+    def test_normalize_local_vllm_model(self) -> None:
+        self.assertEqual(
+            normalize_api_model_name(
+                "openai/Qwen3-Coder-30B-A3B-Instruct",
+                "http://127.0.0.1:8008/v1",
+            ),
+            "Qwen3-Coder-30B-A3B-Instruct",
+        )
+
     def test_apply_openhands_llm_env_maps_values(self) -> None:
         env = apply_openhands_llm_env(
             {

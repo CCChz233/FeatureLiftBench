@@ -45,5 +45,5 @@ This file records current limitations that affect interpretation of FeatureLiftB
 
 - API keys live in `.env`; never commit it.
 - The selected profile key/base is forwarded to agent Docker; unrelated provider secrets are filtered out by current config loading.
-- If using local vLLM with `127.0.0.1`/`localhost`, agent Docker needs `FEATURELIFTBENCH_AGENT_DOCKER_NETWORK=host`.
+- 本地 vLLM：`featureliftbench setup` 自动设置 `AGENT_DOCKER_NETWORK=host`（见 `local_config.resolve_runtime_policy`）。
 - Large runs can be expensive. Start with pilot5 and fixed 5-10 task slices.

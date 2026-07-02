@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from urllib.parse import urlsplit
+
 
 def normalize_api_model_name(model: str, api_base: str = "") -> str:
     """Return the provider-facing model id for OpenAI-compatible APIs."""
@@ -9,7 +11,23 @@ def normalize_api_model_name(model: str, api_base: str = "") -> str:
         return ""
     if "api.deepseek.com" in api_base and model.startswith("deepseek/"):
         return model.split("/", 1)[1]
+    if _is_local_openai_compatible_base(api_base) and model.startswith("openai/"):
+        return model.split("/", 1)[1]
     return model
+
+
+def _is_local_openai_compatible_base(api_base: str) -> bool:
+    if not api_base:
+        return False
+    try:
+        parsed = urlsplit(api_base)
+    except ValueError:
+        return False
+    host = (parsed.hostname or "").lower()
+    if host not in {"127.0.0.1", "localhost", "::1"}:
+        return False
+    path = (parsed.path or "").rstrip("/")
+    return not path or path.endswith("/v1")
 
 
 def _first_non_empty(*values: str | None) -> str:

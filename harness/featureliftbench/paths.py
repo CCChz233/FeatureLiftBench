@@ -18,6 +18,8 @@ SCRIPTS_DIR = HARNESS_ROOT / "scripts"
 DOCS_DIR = REPO_ROOT / "docs"
 DEFAULT_AGENT_CONFIG = CONFIG_DIR / "agents.toml"
 DEFAULT_AGENT_CONFIG_EXAMPLE = CONFIG_DIR / "agents.example.toml"
+DEFAULT_LOCAL_CONFIG = REPO_ROOT / "flb.local.toml"
+DEFAULT_LOCAL_CONFIG_EXAMPLE = REPO_ROOT / "flb.local.toml.example"
 
 
 def resolve_task_input(path: str | Path) -> Path:

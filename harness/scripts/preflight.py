@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
+from urllib.parse import urlsplit
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _HARNESS_ROOT = _REPO_ROOT / "harness"
@@ -18,11 +22,23 @@ if str(_HARNESS_ROOT) not in sys.path:
 from featureliftbench.agent_config import load_agent_run_config  # noqa: E402
 from featureliftbench.agent_adapters import AgentRunConfig  # noqa: E402
 from featureliftbench.dependency_install import sanity_vendor_wheels_ready  # noqa: E402
+from featureliftbench.llm_env import normalize_api_model_name  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG  # noqa: E402
 from featureliftbench.paths import DEFAULT_AGENT_CONFIG_EXAMPLE  # noqa: E402
 
 DEFAULT_AGENT_IMAGE = "featureliftbench-agent:latest"
 DEFAULT_EVAL_IMAGE = "featureliftbench-eval:latest"
+PLACEHOLDER_API_KEYS = {
+    "你的key",
+    "your-key",
+    "your_api_key",
+    "your-api-key",
+    "changeme",
+    "change-me",
+    "sk-...",
+    "sk-your-key",
+    "sk-your_api_key",
+}
 
 
 def _fail(message: str) -> int:
@@ -248,6 +264,81 @@ def _check_docker_suite(*, output_dir: Path | None) -> int:
     return 0
 
 
+def _is_local_vllm_base(api_base: str) -> bool:
+    try:
+        parsed = urlsplit(api_base)
+    except ValueError:
+        return False
+    host = (parsed.hostname or "").lower()
+    return host in {"127.0.0.1", "localhost", "::1"}
+
+
+def _is_placeholder_api_key(api_key: str, api_base: str) -> bool:
+    text = api_key.strip()
+    if not text:
+        return False
+    lowered = text.lower()
+    if _is_local_vllm_base(api_base) and lowered in {"dummy", "sk-dummy"}:
+        return False
+    if lowered in PLACEHOLDER_API_KEYS:
+        return True
+    return "你的" in text or "your key" in lowered
+
+
+def _check_agent_docker_network_for_api_base(api_base: str) -> str | None:
+    if not _is_local_vllm_base(api_base):
+        return None
+    network = os.environ.get("FEATURELIFTBENCH_AGENT_DOCKER_NETWORK", "bridge").strip().lower()
+    if network == "host":
+        return None
+    return (
+        "API base points at local host but agent Docker network is not host; "
+        "set FEATURELIFTBENCH_AGENT_DOCKER_NETWORK=host for local vLLM"
+    )
+
+
+def _llm_health_check(
+    *,
+    api_base: str,
+    api_key: str,
+    model: str,
+    timeout_seconds: int = 30,
+) -> str | None:
+    provider_model = normalize_api_model_name(model, api_base)
+    url = api_base.rstrip("/")
+    if not url.endswith("/chat/completions"):
+        url = f"{url}/chat/completions"
+    body = json.dumps(
+        {
+            "model": provider_model,
+            "messages": [{"role": "user", "content": "ping"}],
+            "max_tokens": 1,
+        }
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        url,
+        data=body,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+            if int(response.status) >= 400:
+                return f"LLM health check failed with HTTP {response.status}"
+            response.read()
+            return None
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")[:500]
+        return f"LLM health check failed with HTTP {exc.code}: {detail}"
+    except urllib.error.URLError as exc:
+        return f"LLM health check failed: {exc.reason}"
+    except TimeoutError:
+        return f"LLM health check timed out after {timeout_seconds}s"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="FeatureLiftBench run preflight checks")
     parser.add_argument(
@@ -280,17 +371,25 @@ def main(argv: list[str] | None = None) -> int:
         default="",
         help="suite output directory (used with --docker-suite for lock checks)",
     )
+    parser.add_argument(
+        "--llm-health-check",
+        action="store_true",
+        help="send one minimal OpenAI-compatible chat request for the selected profile",
+    )
+    parser.add_argument(
+        "--skip-llm-health-check",
+        action="store_true",
+        help="skip the LLM health check even when wrappers enable it by default",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="treat risky environment overrides as preflight failures",
+    )
     args = parser.parse_args(argv)
 
     if sys.version_info < (3, 11):
         return _fail(f"Python 3.11+ required, got {sys.version.split()[0]}")
-
-    for message in (
-        _ensure_agent_config(bootstrap=args.bootstrap),
-        _ensure_env_file(bootstrap=args.bootstrap),
-    ):
-        if message:
-            return _fail(message)
 
     for message in (
         _ensure_agent_config(bootstrap=args.bootstrap),
@@ -335,6 +434,26 @@ def main(argv: list[str] | None = None) -> int:
         )
     if not summary.get("api_base"):
         return _fail(f"API base URL missing for profile {args.agent_profile}")
+    api_key_env = str(summary.get("api_key_env", "FEATURELIFTBENCH_API_KEY"))
+    api_key = loaded.run_config.env.get(api_key_env, "")
+    api_base = str(summary.get("api_base", ""))
+    if _is_placeholder_api_key(api_key, api_base):
+        return _fail(f"{api_key_env} looks like a placeholder value; fix .env or shell env")
+
+    for env_name, summary_key in (
+        (api_key_env, "api_key_environment_overrides_env_file"),
+        (str(summary.get("api_base_env", "FEATURELIFTBENCH_API_BASE")), "api_base_environment_overrides_env_file"),
+    ):
+        if summary.get(summary_key):
+            message = f"{env_name} from shell environment overrides a different .env value"
+            if args.strict:
+                return _fail(message)
+            print(f"preflight: warning {message}", file=sys.stderr)
+
+    if args.docker_suite:
+        network_message = _check_agent_docker_network_for_api_base(api_base)
+        if network_message:
+            return _fail(network_message)
 
     if not featurelift_agent and not openhands_agent:
         agent_bin = summary.get("agent_bin") or mini_bin
@@ -370,6 +489,23 @@ def main(argv: list[str] | None = None) -> int:
                 "openhands CLI not found on PATH; pip install openhands (Python 3.12+) "
                 "or set FEATURELIFTBENCH_AGENT_DOCKER=1 for Docker agent runs"
             )
+
+    if args.llm_health_check and not args.skip_llm_health_check:
+        health_error = _llm_health_check(
+            api_base=api_base,
+            api_key=api_key,
+            model=str(summary.get("model", "")),
+        )
+        if health_error:
+            return _fail(
+                f"{health_error}; profile={args.agent_profile} model={summary.get('model', '')} "
+                f"api_base={api_base}"
+            )
+        print(
+            "preflight: llm health check ok "
+            f"profile={args.agent_profile} model={summary.get('model', '')} api_base={api_base}",
+            file=sys.stderr,
+        )
 
     if args.docker_suite:
         output_dir = Path(args.output_dir).resolve() if args.output_dir else None

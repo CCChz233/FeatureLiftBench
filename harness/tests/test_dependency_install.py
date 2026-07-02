@@ -49,7 +49,24 @@ class DependencyInstallTests(unittest.TestCase):
             self.assertTrue(ready)
             self.assertEqual(missing, [])
 
-    def test_install_dependency_lock_skips_empty_lock(self) -> None:
+    def test_vendor_wheel_present_ignores_macos_only_wheels(self) -> None:
+        from featureliftbench.dependency_install import vendor_wheel_present
+
+        with tempfile.TemporaryDirectory() as tmp:
+            wheels = Path(tmp)
+            (wheels / "markupsafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl").write_text(
+                "wheel",
+                encoding="utf-8",
+            )
+            with mock.patch("featureliftbench.dependency_install.VENDOR_WHEELS_DIR", wheels):
+                self.assertFalse(vendor_wheel_present("markupsafe"))
+
+            (wheels / "markupsafe-2.1.5-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl").write_text(
+                "wheel",
+                encoding="utf-8",
+            )
+            with mock.patch("featureliftbench.dependency_install.VENDOR_WHEELS_DIR", wheels):
+                self.assertTrue(vendor_wheel_present("markupsafe"))
         with tempfile.TemporaryDirectory() as tmp:
             task_dir = Path(tmp)
             (task_dir / "requirements.lock").write_text("\n", encoding="utf-8")

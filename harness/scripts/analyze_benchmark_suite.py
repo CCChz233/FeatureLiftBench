@@ -15,7 +15,6 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
-from featureliftbench.paths import EXPERIMENTS_DIR
 from featureliftbench.suite_utils import detect_eval_flake
 
 
@@ -152,19 +151,20 @@ def main() -> int:
         "--output",
         type=Path,
         default=None,
-        help="suite-comparison.json path (default: experiments/mini-swe-agent/<suite>-comparison.json)",
+        help="suite-comparison.json path (default: <suite-parent>/<suite>-comparison.json)",
     )
     parser.add_argument(
         "--analysis-prefix",
         type=Path,
         default=None,
-        help="Analysis output prefix without suffix (default: experiments/mini-swe-agent/<suite>-analysis)",
+        help="Analysis output prefix without suffix (default: <suite-parent>/<suite>-analysis)",
     )
     args = parser.parse_args()
 
     if args.aggregate:
-        aggregate = aggregate_suite_summaries([path.resolve() for path in args.aggregate])
-        aggregate_path = args.output or EXPERIMENTS_DIR / "mini-swe-agent" / "suite-aggregate.json"
+        aggregate_dirs = [path.resolve() for path in args.aggregate]
+        aggregate = aggregate_suite_summaries(aggregate_dirs)
+        aggregate_path = args.output or aggregate_dirs[0].parent / "suite-aggregate.json"
         aggregate_path.parent.mkdir(parents=True, exist_ok=True)
         with aggregate_path.open("w", encoding="utf-8") as handle:
             json.dump(
@@ -200,8 +200,8 @@ def main() -> int:
     runs = [enrich_run(run, suite_dir) for run in suite.get("runs") or []]
     eval_flake_count = sum(1 for run in runs if run.get("eval_flake"))
 
-    comparison_path = args.output or EXPERIMENTS_DIR / "mini-swe-agent" / f"{suite_name}-comparison.json"
-    analysis_prefix = args.analysis_prefix or EXPERIMENTS_DIR / "mini-swe-agent" / f"{suite_name}-analysis"
+    comparison_path = args.output or suite_dir.parent / f"{suite_name}-comparison.json"
+    analysis_prefix = args.analysis_prefix or suite_dir.parent / f"{suite_name}-analysis"
 
     comparison = {
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),

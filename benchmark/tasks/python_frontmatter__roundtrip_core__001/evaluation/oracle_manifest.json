@@ -7,7 +7,7 @@
     "frontmatter/py.typed"
   ],
   "runtime_dependencies": [
-    "PyYAML via allowed_dependencies; empty requirements.lock expects system-site-packages"
+    "PyYAML"
   ],
-  "notes": "Oracle copies YAML front matter runtime only; excludes conftest, upstream tests, examples, and docs."
+  "notes": "Oracle copies YAML front matter runtime only; PyYAML is pinned in requirements.lock for Docker eval."
 }

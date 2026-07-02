@@ -53,7 +53,14 @@ PREFLIGHT_ARGS=(
   --agent openhands-agent
   --agent-profile "$AGENT_PROFILE"
   --output-dir "$OUTPUT"
+  --llm-health-check
 )
+if [[ "${FEATURELIFTBENCH_SKIP_LLM_HEALTH_CHECK:-0}" == "1" ]]; then
+  PREFLIGHT_ARGS+=(--skip-llm-health-check)
+fi
+if [[ "${FEATURELIFTBENCH_PREFLIGHT_STRICT:-}" == "1" || "$TASK_ROOT" == "benchmark/tasks" ]]; then
+  PREFLIGHT_ARGS+=(--strict)
+fi
 if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" || -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
   PREFLIGHT_ARGS+=(--docker-suite)
 fi
@@ -76,6 +83,11 @@ echo "Eval memory MB: ${EVAL_MEMORY_MB}"
 echo "Agent memory MB: ${AGENT_MEMORY_MB}"
 if [[ "${#RESUME_FLAG[@]}" -gt 0 ]]; then
   echo "Resume:  yes"
+  VALIDATE_ARGS=("${OUTPUT}")
+  if [[ -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
+    VALIDATE_ARGS+=(--require-docker-eval)
+  fi
+  "$PYTHON" "$ROOT/harness/scripts/validate_suite_resume.py" "${VALIDATE_ARGS[@]}"
 fi
 if [[ "${EXTRA_AGENT_PASSES}" != "0" ]]; then
   echo "Extra agent passes: ${EXTRA_AGENT_PASSES}"
@@ -92,6 +104,30 @@ if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" ]]; then
 fi
 if [[ -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
   EVAL_DOCKER_FLAG=(--eval-docker)
+fi
+
+if [[ "$TASK_ROOT" == "benchmark/tasks" && "${FEATURELIFTBENCH_SKIP_SMOKE_FIRST:-0}" != "1" ]]; then
+  SMOKE_OUTPUT="$OUTPUT/.smoke-first"
+  echo "Smoke-first: benchmark/sanity/iniconfig__parse_config__001"
+  set +e
+  $PYTHON -B -m featureliftbench.cli run-agent benchmark/sanity/iniconfig__parse_config__001 \
+    --agent openhands-agent \
+    --agent-config harness/config/agents.toml \
+    --agent-profile "${AGENT_PROFILE}" \
+    --env-file .env \
+    --num-workers 1 \
+    --retry-rate-limit 1 \
+    ${NO_PROGRESS:+--no-progress} \
+    ${AGENT_DOCKER_FLAG[@]+"${AGENT_DOCKER_FLAG[@]}"} \
+    ${EVAL_DOCKER_FLAG[@]+"${EVAL_DOCKER_FLAG[@]}"} \
+    --output "${SMOKE_OUTPUT}"
+  SMOKE_STATUS=$?
+  set -e
+  if [[ "${SMOKE_STATUS}" -ge 2 ]]; then
+    echo "smoke-first failed before completing (exit ${SMOKE_STATUS}); aborting main suite" >&2
+    exit "${SMOKE_STATUS}"
+  fi
+  "$PYTHON" harness/scripts/check_openhands_smoke.py "$SMOKE_OUTPUT"
 fi
 
 set +e
@@ -119,6 +155,7 @@ fi
 if [[ -f "${OUTPUT}/suite.json" ]]; then
   $PYTHON harness/scripts/analyze_featurelift_suite.py "${OUTPUT}"
   $PYTHON harness/scripts/analyze_benchmark_suite.py "${OUTPUT}"
+  $PYTHON harness/scripts/summarize_suite_infra.py "${OUTPUT}" || true
   $PYTHON harness/scripts/report_entanglement_coverage.py --suite-dir "${OUTPUT}"
 fi
 

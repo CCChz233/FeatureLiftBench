@@ -53,6 +53,48 @@ class ValidateTaskTests(unittest.TestCase):
                 result.errors,
             )
 
+    def test_allowed_dependencies_must_match_requirements_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = _make_task(Path(tmp), "sample_task")
+            metadata = _valid_metadata("sample_task")
+            metadata["environment"]["allowed_dependencies"] = ["python-dateutil"]
+            (task_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+
+            result = validate_task(task_dir)
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("allowed_dependencies is non-empty but requirements.lock is empty" in err for err in result.errors),
+                result.errors,
+            )
+
+    def test_requirements_lock_must_match_allowed_dependencies(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = _make_task(Path(tmp), "sample_task")
+            metadata = _valid_metadata("sample_task")
+            (task_dir / "requirements.lock").write_text("python-dateutil==2.9.0.post0\n", encoding="utf-8")
+            (task_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+
+            result = validate_task(task_dir)
+
+            self.assertFalse(result.valid)
+            self.assertTrue(
+                any("requirements.lock lists dependencies but allowed_dependencies is empty" in err for err in result.errors),
+                result.errors,
+            )
+
+    def test_matching_allowed_and_lock_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = _make_task(Path(tmp), "sample_task")
+            metadata = _valid_metadata("sample_task")
+            metadata["environment"]["allowed_dependencies"] = ["python-dateutil"]
+            (task_dir / "requirements.lock").write_text("python-dateutil==2.9.0.post0\n", encoding="utf-8")
+            (task_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+
+            result = validate_task(task_dir)
+
+            self.assertTrue(result.valid, result.errors)
+
 
 def _make_task(root: Path, dirname: str, metadata_task_id: str | None = None) -> Path:
     task_dir = root / dirname

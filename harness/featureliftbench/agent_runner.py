@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-import re
+import os
 import shutil
 import sys
 import time
@@ -33,6 +33,7 @@ from .suite_utils import ALL_RUN_STATUSES
 from .suite_utils import DEFAULT_RETRY_ONLY_STATUSES
 from .suite_utils import compact_suite_run_entry
 from .suite_utils import evaluation_payload as _evaluation_payload
+from .suite_utils import is_rate_limit_failure as _suite_is_rate_limit_failure
 from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
 from .suite_utils import run_status as _run_status
@@ -52,20 +53,29 @@ USAGE_SUM_FIELDS = (
     "billed_tokens",
 )
 
-RATE_LIMIT_PATTERNS = tuple(
-    re.compile(pattern, re.IGNORECASE)
-    for pattern in (
-        r"rate limit",
-        r"ratelimit",
-        r"too many requests",
-        r"\b429\b",
-        r"quota exceeded",
-        r"tpm limit",
-    )
-)
-
 # SiliconFlow TPM limits use a rolling 60s window; wait long enough to clear it.
 RATE_LIMIT_RETRY_WAIT_SECONDS = 65.0
+
+
+def _suite_task_cooldown_seconds() -> float:
+    raw = os.environ.get("FEATURELIFTBENCH_SUITE_TASK_COOLDOWN_SECONDS", "0")
+    try:
+        value = float(raw)
+    except ValueError:
+        return 0.0
+    return max(0.0, value)
+
+
+def _maybe_suite_task_cooldown(run: dict[str, Any]) -> None:
+    seconds = _suite_task_cooldown_seconds()
+    if seconds <= 0:
+        return
+    agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}
+    usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
+    api_calls = usage.get("api_calls")
+    if not (isinstance(api_calls, int) and api_calls > 0):
+        return
+    time.sleep(seconds)
 
 
 @dataclass(frozen=True)
@@ -305,6 +315,7 @@ def run_agent_on_suite(
         "eval_backend": "docker" if eval_docker else "local",
         "eval_docker_image": eval_docker_image if eval_docker else "",
         "retry_rate_limit": max(1, int(retry_rate_limit)),
+        "task_cooldown_seconds": _suite_task_cooldown_seconds(),
         "retry_only_statuses": sorted(retry_only_statuses),
         "extra_agent_passes": extra_passes,
         "max_task_attempts": max_task_attempts,
@@ -669,23 +680,24 @@ def _execute_suite_tasks(
         runs = []
         try:
             for index, task_dir in enumerate(task_dirs, start=1):
-                runs.append(
-                    _run_suite_task_safely(
-                        index=index,
-                        total=total,
-                        task_dir=task_dir,
-                        output_path=output_path,
-                        config=config,
-                        agent_config_summary=agent_config_summary,
-                        progress=progress and progress_manager is None,
-                        progress_manager=progress_manager,
-                        retry_rate_limit=retry_rate_limit,
-                        eval_docker=eval_docker,
-                        eval_docker_image=eval_docker_image,
-                        agent_docker=agent_docker,
-                        agent_docker_image=agent_docker_image,
-                    )
+                run = _run_suite_task_safely(
+                    index=index,
+                    total=total,
+                    task_dir=task_dir,
+                    output_path=output_path,
+                    config=config,
+                    agent_config_summary=agent_config_summary,
+                    progress=progress and progress_manager is None,
+                    progress_manager=progress_manager,
+                    retry_rate_limit=retry_rate_limit,
+                    eval_docker=eval_docker,
+                    eval_docker_image=eval_docker_image,
+                    agent_docker=agent_docker,
+                    agent_docker_image=agent_docker_image,
                 )
+                runs.append(run)
+                if index < total:
+                    _maybe_suite_task_cooldown(run)
                 if checkpoint_ctx is not None:
                     _write_suite_checkpoint(checkpoint_ctx, runs)
         except KeyboardInterrupt:
@@ -1131,29 +1143,7 @@ def _run_suite_task_with_retries(
 
 
 def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
-    chunks: list[str] = []
-    agent = result.get("agent")
-    if isinstance(agent, dict):
-        usage = agent.get("usage")
-        if isinstance(usage, dict):
-            exit_status = usage.get("exit_status")
-            if isinstance(exit_status, str) and exit_status:
-                chunks.append(exit_status)
-        for key in ("reason",):
-            value = agent.get(key)
-            if isinstance(value, str):
-                chunks.append(value)
-        for log_key in ("stderr_log", "stdout_log"):
-            log_path = agent.get(log_key)
-            if isinstance(log_path, str):
-                path = Path(log_path)
-                if path.is_file():
-                    chunks.append(path.read_text(encoding="utf-8", errors="replace"))
-    errors = result.get("errors")
-    if isinstance(errors, list):
-        chunks.extend(str(item) for item in errors)
-    text = "\n".join(chunks)
-    return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
+    return _suite_is_rate_limit_failure(result)
 
 
 def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, metadata: dict[str, Any]) -> Path:

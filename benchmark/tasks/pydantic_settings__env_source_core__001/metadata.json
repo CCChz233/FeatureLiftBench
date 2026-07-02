@@ -63,7 +63,11 @@
     "timeout_seconds": 60,
     "dependency_lock": "requirements.lock",
     "allowed_dependencies": [
-      "pydantic"
+      "annotated-types",
+      "pydantic",
+      "pydantic-core",
+      "typing-extensions",
+      "typing-inspection"
     ],
     "forbidden_dependencies": [
       "pydantic_settings"

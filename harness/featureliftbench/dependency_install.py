@@ -42,6 +42,17 @@ def dependency_names_from_lock(lock_path: Path) -> list[str]:
     return names
 
 
+from .benchmark_wheels import load_benchmark_wheel_aliases
+
+
+def _dependency_alias(name: str) -> str:
+    normalized = dependency_name(name)
+    if not normalized:
+        return ""
+    aliases = load_benchmark_wheel_aliases()
+    return aliases.get(normalized, normalized)
+
+
 def allowed_dependency_names(metadata: dict[str, Any]) -> list[str]:
     environment = metadata.get("environment")
     if not isinstance(environment, dict):
@@ -50,7 +61,7 @@ def allowed_dependency_names(metadata: dict[str, Any]) -> list[str]:
     if not isinstance(allowed, list):
         return []
     return [
-        dependency_name(item)
+        _dependency_alias(item)
         for item in allowed
         if isinstance(item, str) and dependency_name(item)
     ]
@@ -193,6 +204,17 @@ def install_dependency_lock(
     )
 
 
+def _wheel_is_docker_compatible(filename: str) -> bool:
+    lowered = filename.lower().replace("_", "-")
+    if not lowered.endswith(".whl"):
+        return False
+    if "py3-none-any" in lowered or lowered.endswith("-any.whl"):
+        return True
+    if "manylinux" in lowered or "linux_" in lowered:
+        return True
+    return False
+
+
 def vendor_wheel_present(package_name: str) -> bool:
     if not VENDOR_WHEELS_DIR.is_dir():
         return False
@@ -201,7 +223,7 @@ def vendor_wheel_present(package_name: str) -> bool:
         if not path.is_file():
             continue
         stem = path.name.lower().replace("_", "-")
-        if stem.startswith(normalized + "-"):
+        if stem.startswith(normalized + "-") and _wheel_is_docker_compatible(path.name):
             return True
     return False
 

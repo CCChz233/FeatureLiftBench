@@ -7,6 +7,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .dependency_audit import validate_lock_allowed_consistency
 from .metadata import MetadataError, load_metadata, validate_metadata_shape
 
 
@@ -85,6 +86,7 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
 
         errors.extend(_validate_dependency_sets(metadata.data))
         errors.extend(_validate_lock_file_name(metadata.data, root))
+        errors.extend(validate_lock_allowed_consistency(metadata.data, root))
 
     oracle_manifest = root / "evaluation" / "oracle_manifest.json"
     if oracle_manifest.exists():

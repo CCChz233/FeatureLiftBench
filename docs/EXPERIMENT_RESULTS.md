@@ -1,5 +1,11 @@
 # FeatureLiftBench 实验结果汇总
 
+> Legacy note: this file records historical mini-swe-agent / vLLM / API experiments.
+> Because early mini-swe-agent runs used append-only histories and did not reliably
+> record context truncation evidence, do not treat these numbers as the current
+> long-context main result. Current runs should use OpenHands plus verified
+> `agent/usage.json.context_audit`.
+
 本文档集中记录历史 **batch-0 50 hard** agent 实验结果。当前主榜已经扩到 **100 hard**；正式论文/模型对比需要按 [RUN.md](../RUN.md) 的 agent Docker + eval Docker 流程重新跑 100 题。官方历史 DeepSeek baseline 见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)；评分定义见 [CONCEPTS.md](CONCEPTS.md) 第 6 节。
 
 **最后更新：** 2026-06-27（题目策展 [EXPANSION.md](EXPANSION.md)；MiniMax OOM 记录）

@@ -18,6 +18,8 @@ from typing import Any
 
 from .llm_env import apply_openhands_llm_env
 from .llm_usage_proxy import maybe_start_openhands_usage_proxy
+from .openhands_usage import looks_like_openhands_step
+from .openhands_usage import openhands_context_limits
 from .openhands_usage import resolve_events_path
 from .openhands_usage import write_usage_from_events
 from .resource_limits import command_output_limit_bytes
@@ -44,8 +46,10 @@ class _RunCommandResult:
     returncode: int
     timed_out: bool = False
     log_limit_exceeded: bool = False
+    step_limit_exceeded: bool = False
     stdout_truncated: bool = False
     stderr_truncated: bool = False
+    assistant_steps: int = 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -199,6 +203,8 @@ def run(config: OpenHandsRunnerConfig) -> int:
     exit_status = "passed" if returncode == 0 else "openhands_failed"
     if command_result.log_limit_exceeded:
         exit_status = "log_limit_exceeded"
+    elif command_result.step_limit_exceeded:
+        exit_status = "step_limit_exceeded"
     elif returncode == 124:
         exit_status = "timeout"
     elif returncode == 127:
@@ -209,6 +215,7 @@ def run(config: OpenHandsRunnerConfig) -> int:
         returncode=returncode,
         duration_seconds=duration_seconds,
         raw_usage=raw_usage,
+        assistant_steps=command_result.assistant_steps,
     )
     print(f"OpenHands wrapper finished with return code {returncode}.")
     return returncode
@@ -419,10 +426,16 @@ def _run_command(
     stderr_log.parent.mkdir(parents=True, exist_ok=True)
     events_log.parent.mkdir(parents=True, exist_ok=True)
     limiter = _OutputLimiter(command_output_limit_bytes(env))
-    stdout_capture = _OpenHandsStdoutCapture(stdout_log, events_log, limiter)
+    stdout_capture = _OpenHandsStdoutCapture(
+        stdout_log,
+        events_log,
+        limiter,
+        max_steps=_openhands_max_steps(env),
+    )
     stderr_capture = _StreamLogCapture(stderr_log, limiter)
     process: subprocess.Popen[bytes] | None = None
     log_limit_event = threading.Event()
+    step_limit_event = threading.Event()
     try:
         try:
             process = subprocess.Popen(
@@ -448,6 +461,7 @@ def _run_command(
                     stream=process.stdout,
                     capture=stdout_capture,
                     log_limit_event=log_limit_event,
+                    step_limit_event=step_limit_event,
                 )
             finally:
                 stdout_capture.flush()
@@ -459,6 +473,7 @@ def _run_command(
                 stream=process.stderr,
                 capture=stderr_capture,
                 log_limit_event=log_limit_event,
+                step_limit_event=step_limit_event,
             )
 
         threads = [
@@ -472,6 +487,9 @@ def _run_command(
         deadline = time.monotonic() + max(1, timeout_seconds)
         while process.poll() is None:
             if log_limit_event.is_set():
+                _kill_process_group(process)
+                break
+            if step_limit_event.is_set():
                 _kill_process_group(process)
                 break
             if time.monotonic() >= deadline:
@@ -498,10 +516,30 @@ def _run_command(
                 log_limit_exceeded=True,
                 stdout_truncated=stdout_capture.truncated,
                 stderr_truncated=stderr_capture.truncated,
+                assistant_steps=stdout_capture.assistant_steps,
+            )
+        if step_limit_event.is_set():
+            stderr_capture.write_text(
+                "\nFeatureLiftBench: OpenHands step limit exceeded "
+                f"after {stdout_capture.assistant_steps} step(s); process group was terminated.\n"
+            )
+            return _RunCommandResult(
+                returncode=123,
+                step_limit_exceeded=True,
+                stdout_truncated=stdout_capture.truncated,
+                stderr_truncated=stderr_capture.truncated,
+                assistant_steps=stdout_capture.assistant_steps,
             )
         if timed_out:
-            return _RunCommandResult(returncode=124, timed_out=True)
-        return _RunCommandResult(returncode=int(process.returncode or 0))
+            return _RunCommandResult(
+                returncode=124,
+                timed_out=True,
+                assistant_steps=stdout_capture.assistant_steps,
+            )
+        return _RunCommandResult(
+            returncode=int(process.returncode or 0),
+            assistant_steps=stdout_capture.assistant_steps,
+        )
     finally:
         stdout_capture.close()
         stderr_capture.close()
@@ -513,6 +551,7 @@ def _pump_stream(
     stream: Any,
     capture: "_StreamCapture",
     log_limit_event: threading.Event,
+    step_limit_event: threading.Event,
 ) -> None:
     try:
         while True:
@@ -520,6 +559,14 @@ def _pump_stream(
             if not chunk:
                 return
             exceeded = capture.append(chunk)
+            if (
+                isinstance(capture, _OpenHandsStdoutCapture)
+                and capture.step_limit_exceeded
+                and not step_limit_event.is_set()
+            ):
+                step_limit_event.set()
+                _kill_process_group(process)
+                return
             if exceeded and not log_limit_event.is_set():
                 log_limit_event.set()
                 _kill_process_group(process)
@@ -582,12 +629,16 @@ class _OpenHandsStdoutCapture(_StreamCapture):
         stdout_log: Path,
         events_log: Path,
         limiter: _OutputLimiter,
+        max_steps: int | None = None,
     ) -> None:
         self._limiter = limiter
+        self._max_steps = max_steps
         self._stdout_handle = stdout_log.open("w", encoding="utf-8")
         self._events_handle = events_log.open("w", encoding="utf-8")
         self._buffer = bytearray()
         self.truncated = False
+        self.assistant_steps = 0
+        self.step_limit_exceeded = False
 
     def append(self, chunk: bytes) -> bool:
         retained, exceeded = self._limiter.retain(chunk)
@@ -614,11 +665,16 @@ class _OpenHandsStdoutCapture(_StreamCapture):
 
     def _write_line(self, line: bytes) -> None:
         text = line.decode("utf-8", errors="replace")
-        if _is_json_object_line(text):
+        payload = _json_object_line(text)
+        if payload is not None:
             self._events_handle.write(text)
             if not text.endswith("\n"):
                 self._events_handle.write("\n")
             self._events_handle.flush()
+            if looks_like_openhands_step(payload):
+                self.assistant_steps += 1
+                if self._max_steps is not None and self.assistant_steps > self._max_steps:
+                    self.step_limit_exceeded = True
             return
         self._stdout_handle.write(text)
         if not text.endswith("\n"):
@@ -631,15 +687,26 @@ class _OpenHandsStdoutCapture(_StreamCapture):
         self._events_handle.close()
 
 
-def _is_json_object_line(text: str) -> bool:
+def _json_object_line(text: str) -> dict[str, Any] | None:
     stripped = text.strip()
     if not stripped.startswith("{"):
-        return False
+        return None
     try:
         payload = json.loads(stripped)
     except json.JSONDecodeError:
-        return False
-    return isinstance(payload, dict)
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _openhands_max_steps(env: dict[str, str]) -> int | None:
+    raw = env.get("FEATURELIFTBENCH_OPENHANDS_MAX_STEPS", "120").strip()
+    if not raw:
+        return 120
+    try:
+        parsed = int(raw)
+    except ValueError:
+        return 120
+    return parsed if parsed > 0 else None
 
 
 def _kill_process_group(process: subprocess.Popen[str]) -> None:
@@ -710,8 +777,11 @@ def _write_usage(
     returncode: int,
     duration_seconds: float,
     raw_usage: dict[str, Any] | None,
+    assistant_steps: int = 0,
 ) -> None:
     metrics = _usage_metrics(raw_usage)
+    if assistant_steps > metrics.get("assistant_steps", 0):
+        metrics["assistant_steps"] = assistant_steps
     context_audit = _usage_context_audit(raw_usage)
     payload: dict[str, Any] = {
         "schema_version": USAGE_SCHEMA_VERSION,
@@ -772,6 +842,7 @@ def _usage_context_audit(raw_usage: dict[str, Any] | None) -> dict[str, Any]:
         raw_context = raw_usage["context_audit"]
     raw_available = raw_context.get("available")
     context_available = raw_available if isinstance(raw_available, bool) else bool(raw_context)
+    limits = openhands_context_limits()
 
     audit: dict[str, Any] = {
         "available": context_available,
@@ -786,6 +857,9 @@ def _usage_context_audit(raw_usage: dict[str, Any] | None) -> dict[str, Any]:
         "runtime": str(raw_context.get("runtime") or "openhands"),
         "context_violation": bool(raw_context.get("context_violation", False)),
         "usage_unverified": bool(raw_context.get("usage_unverified", True)),
+        "context_window_tokens": limits.context_window_tokens,
+        "reserved_output_tokens": limits.reserved_output_tokens,
+        "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
     }
     for key in (
         "context_window_tokens",

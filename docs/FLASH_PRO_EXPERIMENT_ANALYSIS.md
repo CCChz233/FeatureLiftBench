@@ -1,5 +1,9 @@
 # Flash/Pro Experiment Analysis
 
+> Legacy note: this analysis predates the current OpenHands mainline. It is useful
+> for historical comparison, but current long-context claims should be based on
+> OpenHands runs with verified context audit.
+
 **Date:** 2026-06-28
 
 This document analyzes only the experiment data currently present on this machine:

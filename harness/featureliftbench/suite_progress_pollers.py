@@ -38,6 +38,8 @@ class MiniProgressPoller:
     def poll(self, agent_dir: Path) -> TaskProgressSnapshot | None:
         step_status = parse_mini_progress_from_log(agent_dir / "stdout.log")
         if step_status is None:
+            step_status = _parse_mini_step_from_trajectory(agent_dir / "trajectory.json")
+        if step_status is None:
             return None
         tokens = parse_mini_token_total_from_trajectory(agent_dir / "trajectory.json")
         status, tokens = format_mini_task_status(step_status=step_status, tokens=tokens)
@@ -46,6 +48,23 @@ class MiniProgressPoller:
             metric_value=tokens,
             metric_kind="tokens" if tokens is not None else "steps",
         )
+
+
+def _parse_mini_step_from_trajectory(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    steps = sum(
+        1
+        for message in data.get("messages") or []
+        if isinstance(message, dict) and message.get("role") == "assistant"
+    )
+    return f"Step {steps}" if steps > 0 else None
 
 
 @dataclass(frozen=True)

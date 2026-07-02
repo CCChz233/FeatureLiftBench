@@ -1,5 +1,8 @@
 # FeatureLiftAgent TODO
 
+> Status: this is a control-scaffold backlog. It is not the current OpenHands
+> execution plan. See [OPENHANDS_BENCHMARK_TODO.md](OPENHANDS_BENCHMARK_TODO.md).
+
 This checklist now tracks the **reference/control** FeatureLiftBench-native
 agent. The active main line for the current benchmark experiments is
 [OPENHANDS_BENCHMARK_TODO.md](OPENHANDS_BENCHMARK_TODO.md): use OpenHands as

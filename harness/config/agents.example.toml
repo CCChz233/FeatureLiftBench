@@ -29,6 +29,8 @@ api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
 call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
 openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
 
 # --- Local vLLM (OpenAI-compatible; key can be dummy) ---
@@ -48,6 +50,24 @@ api_key_env = "VLLM_QWEN3_CODER_30B_API_KEY"
 api_base_env = "VLLM_QWEN3_CODER_30B_API_BASE"
 cost_limit = "0"
 call_limit = "0"
+
+[profiles.openhands_qwen3_next_80b_vllm]
+model = "openai/Qwen3-Next-80B-A3B-Instruct"
+api_key_env = "VLLM_QWEN3_NEXT_80B_API_KEY"
+api_base_env = "VLLM_QWEN3_NEXT_80B_API_BASE"
+native_tool_calling = false
+context_window_tokens = 1048576
+reserved_output_tokens = 8192
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+[profiles.openhands_qwen3_coder_30b_vllm]
+model = "openai/Qwen3-Coder-30B-A3B-Instruct"
+api_key_env = "VLLM_QWEN3_CODER_30B_API_KEY"
+api_base_env = "VLLM_QWEN3_CODER_30B_API_BASE"
+native_tool_calling = true
+context_window_tokens = 262144
+reserved_output_tokens = 8192
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
 
 # --- SiliconFlow API ---
 

@@ -1807,6 +1807,50 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertEqual(usage["exit_status"], "log_limit_exceeded")
             self.assertLessEqual((agent_output / "openhands_stdout.log").stat().st_size, 1200)
 
+    def test_openhands_runner_kills_command_when_step_limit_is_exceeded(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import json\n"
+                "import time\n"
+                "for i in range(3):\n"
+                "    print(json.dumps({'type': 'assistant_message', 'message': str(i)}), flush=True)\n"
+                "time.sleep(10)\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {
+                    "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS": "2",
+                    "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0",
+                },
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="deepseek/deepseek-v4-flash",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            self.assertEqual(code, 123)
+            self.assertEqual(usage["exit_status"], "step_limit_exceeded")
+            self.assertEqual(usage["assistant_steps"], 3)
+
 
 def _make_task(task_dir: Path) -> Path:
     (task_dir / "repo").mkdir(parents=True)

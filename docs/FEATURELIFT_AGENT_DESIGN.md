@@ -1,5 +1,9 @@
 # FeatureLiftAgent Design
 
+> Status: `featurelift-agent` is a protocol/control scaffold, not the current main
+> evaluated agent. The current mainline is OpenHands; see
+> [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md).
+
 FeatureLiftBench should not rely on a generic SWE-style append-only agent as its
 main experimental protocol. The benchmark asks for behavior-preserving feature
 extraction into a standalone package, while the current mini-swe-agent baseline

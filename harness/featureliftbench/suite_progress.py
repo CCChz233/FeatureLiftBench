@@ -25,6 +25,9 @@ from rich.progress import (
 )
 from rich.table import Table
 
+from .suite_progress_mini import format_mini_task_status
+from .suite_progress_mini import parse_mini_progress_from_log
+from .suite_progress_mini import parse_mini_token_total_from_trajectory
 from .suite_progress_mini import format_token_count
 from .suite_progress_pollers import MetricKind
 from .suite_progress_pollers import resolve_progress_poller
@@ -49,6 +52,39 @@ def resolve_agent_log_dir(
     if layout == "flat":
         return output_dir / "agent"
     return output_dir / task_id / "agent"
+
+
+def parse_mini_step_from_trajectory(path: Path) -> str | None:
+    """Extract a coarse mini-swe-agent step count from trajectory messages."""
+
+    if not path.is_file():
+        return None
+    try:
+        import json
+
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    steps = sum(
+        1
+        for message in data.get("messages") or []
+        if isinstance(message, dict) and message.get("role") == "assistant"
+    )
+    return f"Step {steps}" if steps > 0 else None
+
+
+def poll_agent_task_status(agent_dir: Path) -> tuple[str, int | None] | None:
+    """Return the latest mini-swe-agent status and token total for legacy callers."""
+
+    step_status = parse_mini_progress_from_log(agent_dir / "stdout.log")
+    if step_status is None:
+        step_status = parse_mini_step_from_trajectory(agent_dir / "trajectory.json")
+    if step_status is None:
+        return None
+    tokens = parse_mini_token_total_from_trajectory(agent_dir / "trajectory.json")
+    return format_mini_task_status(step_status=step_status, tokens=tokens)
 
 
 class SuiteBatchProgressManager:

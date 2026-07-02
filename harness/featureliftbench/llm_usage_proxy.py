@@ -15,9 +15,7 @@ from typing import Any
 from urllib.parse import urlsplit
 from urllib.parse import urlunsplit
 
-from .openhands_usage import CONTEXT_WINDOW_TOKENS
-from .openhands_usage import MAX_ALLOWED_PROMPT_TOKENS
-from .openhands_usage import RESERVED_OUTPUT_TOKENS
+from .openhands_usage import openhands_context_limits
 
 
 PROXY_DISABLE_ENV = "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY"
@@ -128,6 +126,7 @@ class LLMUsageProxy:
         handler.wfile.write(response_body)
 
     def write_usage_summary(self) -> None:
+        limits = openhands_context_limits()
         with self._lock:
             api_calls = self._api_calls
             if api_calls <= 0:
@@ -152,9 +151,9 @@ class LLMUsageProxy:
                 "history_policy": "external_openhands",
                 "token_source": token_source,
                 "usage_unverified": not saw_verified,
-                "context_window_tokens": CONTEXT_WINDOW_TOKENS,
-                "reserved_output_tokens": RESERVED_OUTPUT_TOKENS,
-                "max_allowed_prompt_tokens": MAX_ALLOWED_PROMPT_TOKENS,
+                "context_window_tokens": limits.context_window_tokens,
+                "reserved_output_tokens": limits.reserved_output_tokens,
+                "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
                 "max_prompt_tokens_per_call": max_prompt,
                 "max_total_tokens_per_call": max_total,
                 "context_violation": context_violation,
@@ -214,7 +213,8 @@ class LLMUsageProxy:
         prompt_value = prompt or 0
         completion_value = completion or 0
         total_value = total or (prompt_value + completion_value)
-        context_violation = verified and prompt_value > MAX_ALLOWED_PROMPT_TOKENS
+        limits = openhands_context_limits()
+        context_violation = verified and prompt_value > limits.max_allowed_prompt_tokens
         record = {
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "runtime": "openhands",
@@ -227,8 +227,8 @@ class LLMUsageProxy:
             "prompt_tokens": prompt,
             "completion_tokens": completion,
             "total_tokens": total,
-            "context_window_tokens": CONTEXT_WINDOW_TOKENS,
-            "max_allowed_prompt_tokens": MAX_ALLOWED_PROMPT_TOKENS,
+            "context_window_tokens": limits.context_window_tokens,
+            "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "context_violation": context_violation,
         }
         with self._lock:

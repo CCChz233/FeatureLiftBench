@@ -1,5 +1,9 @@
 # 环境与部署
 
+> Current path: for running the benchmark with OpenHands, use
+> [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md) and [../RUN.md](../RUN.md).
+> This file remains the broader environment reference.
+
 本文档说明在**本机或 Linux 服务器**上跑 FeatureLiftBench agent suite 所需的环境、配置与常用命令。
 
 相关：[limitations.md](limitations.md) · [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)（续跑与重试）
@@ -311,14 +315,16 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/reeval_suite.py \
 
 Harness 评测每题时会：
 
-1. 在 `/tmp/featureliftbench-eval-*` 建临时 venv
+1. 在 `/tmp/featureliftbench-eval-*` 建临时 venv（`--system-site-packages`）
 2. 显式安装 **pytest==7.4.4**
-3. 若 `requirements.lock` 非空，用 `pip install --no-index` 装 submission 依赖
+3. 若 `requirements.lock` 非空，用 `pip install --no-index --no-deps -r requirements.lock` 装 submission 依赖（wheel 来自 `benchmark/vendor-wheels/`）
 
 因此：
 
-- **多数题** `requirements.lock` 为空，eval 只依赖 harness 已装的 pytest
-- **少数题** 有第三方依赖；正式 Docker eval 镜像应预装这些依赖，避免依赖本机 pip cache
+- **`allowed_dependencies` 与 `requirements.lock` 必须一致**；非空 lock 的每个包需有离线 wheel（见 `harness/scripts/bootstrap_vendor_wheels.py`）
+- **pure-python 题** 保持 `allowed_dependencies: []` 且空 lock
+- **Docker eval 镜像** 预装 `harness/config/benchmark_requirements.lock`，避免运行时缺 wheel；改 lock 后需重建 `featureliftbench-eval:latest`
+- 维护者审计：`python harness/scripts/audit_task_dependencies.py`
 - 修复 eval 基础设施问题用 [`harness/scripts/reeval_suite.py`](../harness/scripts/reeval_suite.py)（**不重跑 agent**）
 - 资源与并发见上文 §4；Docker eval 会记录 `resource_limited`、`log_limit_exceeded`、`docker_sandbox_error`
 - local eval 只用于开发调试，不作为论文 official baseline
@@ -327,48 +333,55 @@ Harness 评测每题时会：
 
 ## 6. 服务器部署清单
 
+OpenHands 主线路见 [SERVER_DEPLOY.md](SERVER_DEPLOY.md) 与 [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md)。简要步骤：
+
 ```bash
 # 1. 克隆 / 更新
 git clone git@github.com:CCChz233/FeatureLiftBench.git
 cd FeatureLiftBench
-# 或: git pull origin main
+git pull origin main
 
-# 2. 环境（首次或换机器）
-./setup.sh
+# 2. 环境
+PYTHON=python3.12 ./setup.sh
+source .venv/bin/activate
+export PYTHONPATH=$PWD/harness
 
-# 3. 密钥（必做）
+# 3. 密钥
+cp .env.example .env
 nano .env
 
-# 4. 预检（Docker 长跑）
-PYTHONPATH=harness .venv/bin/python harness/scripts/preflight.py \
-  --bootstrap \
-  --agent-profile deepseek_v4_flash \
-  --docker-suite \
-  --output-dir experiments/mini-swe-agent/preflight-check
+# 4. vendor wheels + Docker 镜像（每台机器 / 每次依赖变更后）
+PYTHONPATH=harness python harness/scripts/bootstrap_vendor_wheels.py
+FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim \
+FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \
+./docker/build_agent_image.sh featureliftbench-agent:latest
+./docker/build_eval_image.sh featureliftbench-eval:latest
 
-# 5. 构建 Docker 镜像
-docker/build_agent_image.sh featureliftbench-agent:latest
-docker/build_eval_image.sh featureliftbench-eval:latest
+# 5. 预检
+PYTHONPATH=harness python harness/scripts/preflight.py \
+  --bootstrap --agent openhands-agent \
+  --agent-profile openhands_deepseek_v4_flash \
+  --docker-suite --llm-health-check --strict \
+  --output-dir experiments/openhands-agent/preflight-$(date +%Y%m%d)
 
-# 6A. 长跑：完整主榜
-tmux new -s flb
-FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 ./run.sh
+# 6. 依赖门禁（100 题主跑前）
+PYTHONPATH=harness python harness/scripts/audit_task_dependencies.py
+
+# 7. 100 题主跑（tmux）
+tmux new -s flb-main100
+OUT=experiments/openhands-agent/main-$(date +%Y%m%d-%H%M%S)
+FEATURELIFTBENCH_AGENT_DOCKER=1 FEATURELIFTBENCH_EVAL_DOCKER=1 \
+AGENT_PROFILE=openhands_deepseek_v4_flash NUM_WORKERS=1 \
+RETRY_RATE_LIMIT=5 FEATURELIFTBENCH_OPENHANDS_MAX_STEPS=180 \
+FEATURELIFTBENCH_SUITE_TASK_COOLDOWN_SECONDS=15 \
+./run_openhands.sh benchmark/tasks "$OUT" 2>&1 | tee "$OUT/run.log"
 # Ctrl-B D 脱离
 
-# 6B. 长跑：只跑 batch-1 Docker Flash
-tmux new -s flb-batch1
-./run-batch1-docker-flash.sh
-# Ctrl-B D 脱离
+# 8. 验收
+PYTHONPATH=harness python harness/scripts/summarize_suite_infra.py "$OUT"
 ```
 
-```bash
-# 7. 分析
-python harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/<run_id>
-
-# 跨多 run 汇总（failure taxonomy + 按 source 分组）
-python harness/scripts/summarize_experiment_runs.py experiments/mini-swe-agent/<run_id> ... \
-  --output experiments/mini-swe-agent/formal-main-6run-summary.json
-```
+legacy mini-swe-agent 流程（`run.sh` / `run-batch1-docker-flash.sh`）仅作历史对照，见 [RUN.md](../RUN.md) §6。
 
 实验结果汇总表见 [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)。
 

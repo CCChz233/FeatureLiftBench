@@ -1,55 +1,75 @@
 # Documentation Index
 
-**FeatureLiftBench** — repository-level **feature decoupling** benchmark (not issue/patch repair).
+This index separates **current operating docs** from historical/reference material. If two docs disagree, prefer the current operating docs below.
 
-当前主榜：**100 Python hard**（batch-0 五十题冻结 + batch-1 新增五十题）。实际数量以 `benchmark/tasks/` 为准。
+## Current Docs
 
----
-
-## 我该读哪一份？
-
-| 你想… | 读这个 |
+| Need | Canonical doc |
 | --- | --- |
-| **第一次了解项目在测什么** | [CONCEPTS.md](CONCEPTS.md) |
-| **跑实验 / 部署服务器** | [SERVER_DEPLOY.md](SERVER_DEPLOY.md) · [SETUP.md](SETUP.md) · 速查 [RUN.md](../RUN.md) |
-| **Docker / 安全边界 / 验收** | [SECURITY_HARDENING_TODO.md](SECURITY_HARDENING_TODO.md) · [SECURITY_ACCEPTANCE.md](SECURITY_ACCEPTANCE.md) |
-| **写论文 / 复现指标与流程** | [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) · [PAPER_OUTLINE.md](PAPER_OUTLINE.md) |
-| **用 OpenHands 跑 benchmark / 上服务器** | [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md) · [OPENHANDS_RUN_PITFALLS.md](OPENHANDS_RUN_PITFALLS.md) · [OPENHANDS_BENCHMARK_TODO.md](OPENHANDS_BENCHMARK_TODO.md) · [FEATURELIFT_AGENT_DESIGN.md](FEATURELIFT_AGENT_DESIGN.md) · [FEATURELIFT_AGENT_TODO.md](FEATURELIFT_AGENT_TODO.md) |
-| **加题、扩到 100** | [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md)（七步执行标准）· [BATCH1_REPO_SELECTION.md](BATCH1_REPO_SELECTION.md)（仓库池）· [BATCH1_QUALITY_RUBRIC.md](BATCH1_QUALITY_RUBRIC.md)（质量评审）· [EXPANSION.md](EXPANSION.md) · 台账 [candidate_backlog.md](candidate_backlog.md) |
-| **规划 Go v2 benchmark** | [GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md)（总体设计）· [GO_V2_MINI_SPEC.md](GO_V2_MINI_SPEC.md)（任务/eval 契约）· [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md)（5 题 pilot 执行）· 模板 [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) |
-| **单题文件长什么样** | [TASK_FORMAT.md](TASK_FORMAT.md) · 笔记 [task_designs/TEMPLATE.md](task_designs/TEMPLATE.md) |
-| **查题目列表与 CLI** | [benchmark_tasks.md](benchmark_tasks.md) |
-| **看 baseline、缺口、优先级** | [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) |
-| **看已跑实验数字** | [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) |
-| **已知 bug / 局限** | [limitations.md](limitations.md) |
-| **仓库目录与 harness** | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Project overview | [../README.md](../README.md) |
+| What the benchmark measures | [CONCEPTS.md](CONCEPTS.md) |
+| Reproducible benchmark contract | [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) |
+| Current commands | [../RUN.md](../RUN.md) |
+| OpenHands server runs | [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md) |
+| Environment and Docker setup | [SETUP.md](SETUP.md) |
+| Task directory and metadata format | [TASK_FORMAT.md](TASK_FORMAT.md) |
+| Task catalog | [benchmark_tasks.md](benchmark_tasks.md) |
+| Architecture and paths | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| Known limitations | [limitations.md](limitations.md) |
 
-工程 backlog（非文档导航）：根目录 [TODO.md](../TODO.md) · 扩题执行 [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md)。
+## Current Experiment Direction
 
----
-
-## 文档分层（避免重复读）
+The active evaluation path is:
 
 ```text
-概念层     CONCEPTS          测什么、怎么评分（人读）
-契约层     BENCHMARK_SPEC    复现协议、指标、论文口径
-格式层     TASK_FORMAT       metadata + 目录（出题用）
-运营层     SETUP + RUN + SERVER_DEPLOY   环境、跑 suite、服务器清单
-Agent层    OPENHANDS_SERVER_RUNBOOK + OPENHANDS_BENCHMARK_TODO + FEATURELIFT_AGENT_DESIGN + FEATURELIFT_AGENT_TODO      OpenHands 主测 agent、服务器执行、上下文审计、FeatureLiftAgent 对照协议
-安全层     SECURITY_*        Docker eval/agent 边界与验收
-数据层     benchmark_tasks   题目清单
-状态层     BENCHMARK_STATUS  baseline + 待办优先级
-实验层     EXPERIMENT_RESULTS  run 结果表
-扩题层     BATCH1_PLAYBOOK + BATCH1_REPO_SELECTION + BATCH1_QUALITY_RUBRIC + EXPANSION   50→100 执行 + 仓库池 + 质量评审 + 政策
-Go v2层    GO_FEATURELIFTBENCH_DESIGN + GO_V2_MINI_SPEC + GO_PILOT_PLAYBOOK + go_task_designs/TEMPLATE   Go 方向设计 + pilot 契约 + 5 题执行 + 单题模板
-参考层     ARCHITECTURE      目录与脚本
-缺陷层     limitations
+OpenHands agent
+  -> agent Docker
+  -> FeatureLiftBench workspace
+  -> submission/featurelifted
+  -> eval Docker
+  -> run.json / suite.json / context audit
 ```
 
-**不要**把 `BENCHMARK_STATUS` 和 `EXPERIMENT_RESULTS` 当入门文档；**不要**把 `task_designs/*.md`（50+ 单题笔记）当导航入口。
+OpenHands is the main agent because it has built-in context management. The harness records prompt-token evidence through the local OpenAI-compatible proxy when the provider returns usage fields.
 
----
+`mini-swe-agent` remains useful as a legacy baseline, but append-only history runs are not sufficient for long-context claims unless rerun with verified context handling.
 
-## `task_designs/` 目录
+## Reference Docs
 
-每道正式题的**人类设计笔记**（可 speculative）。机器规范以 [TASK_FORMAT.md](TASK_FORMAT.md) 为准。新题用 [TEMPLATE.md](task_designs/TEMPLATE.md)。
+These docs are still useful, but they are not the main run path:
+
+| Doc | Status |
+| --- | --- |
+| [OPENHANDS_BENCHMARK_TODO.md](OPENHANDS_BENCHMARK_TODO.md) | Current OpenHands implementation checklist and remaining hardening items |
+| [OPENHANDS_RUN_PITFALLS.md](OPENHANDS_RUN_PITFALLS.md) | Condensed lessons from server failures |
+| [SERVER_DEPLOY.md](SERVER_DEPLOY.md) | Server checklist for OpenHands 100-task main suite |
+| [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) | Historical mini-swe-agent/vLLM/SiliconFlow results; not current long-context main claim |
+| [FLASH_PRO_EXPERIMENT_ANALYSIS.md](FLASH_PRO_EXPERIMENT_ANALYSIS.md) | Historical Flash/Pro analysis under earlier protocols |
+| [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) | Older benchmark status notes |
+| [FEATURELIFT_AGENT_DESIGN.md](FEATURELIFT_AGENT_DESIGN.md) | Design of in-repo control scaffold |
+| [FEATURELIFT_AGENT_TODO.md](FEATURELIFT_AGENT_TODO.md) | Control-scaffold backlog |
+
+## Dataset Curation Docs
+
+| Doc | Use |
+| --- | --- |
+| [../BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md) | Batch-1 task authoring workflow |
+| [BATCH1_REPO_SELECTION.md](BATCH1_REPO_SELECTION.md) | Repository selection policy |
+| [BATCH1_QUALITY_RUBRIC.md](BATCH1_QUALITY_RUBRIC.md) | Task quality review gates |
+| [EXPANSION.md](EXPANSION.md) | Expansion notes |
+| [candidate_backlog.md](candidate_backlog.md) | Candidate repository backlog |
+
+## Go Exploration Docs
+
+Go support is exploratory and not part of the current Python OpenHands mainline.
+
+| Doc | Use |
+| --- | --- |
+| [../GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md) | Go benchmark design |
+| [GO_V2_MINI_SPEC.md](GO_V2_MINI_SPEC.md) | Go pilot task/eval contract |
+| [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) | Go pilot execution notes |
+| [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) | Go task design template |
+
+## Task Design Notes
+
+`docs/task_designs/*.md` are human design notes for individual tasks. They are not the machine-readable source of truth. The executable task contract is the task directory plus [TASK_FORMAT.md](TASK_FORMAT.md).

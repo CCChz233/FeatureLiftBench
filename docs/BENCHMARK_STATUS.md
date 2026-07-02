@@ -1,5 +1,9 @@
 # Benchmark 现状与待修问题
 
+> Legacy/status note: this file contains older benchmark and mini-swe-agent status
+> notes. For current run commands use [../RUN.md](../RUN.md); for OpenHands server
+> runs use [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md).
+
 本文档记录 **batch-0 五十题 + 3 smoke** 的健康度、**官方 DeepSeek baseline**、评分口径与维护优先级。
 
 **非官方实验**（本地 vLLM、SiliconFlow API）→ [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md)

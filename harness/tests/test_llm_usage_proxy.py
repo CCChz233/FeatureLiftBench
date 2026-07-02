@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import threading
 import unittest
@@ -8,6 +9,7 @@ import urllib.request
 from http.server import BaseHTTPRequestHandler
 from http.server import ThreadingHTTPServer
 from pathlib import Path
+from unittest import mock
 
 from featureliftbench.llm_usage_proxy import LLMUsageProxy
 from featureliftbench.llm_usage_proxy import LLMUsageProxyConfig
@@ -69,6 +71,60 @@ class LLMUsageProxyTests(unittest.TestCase):
             self.assertEqual(usage["completion_tokens"], 45)
             self.assertFalse(usage["context_audit"]["usage_unverified"])
             self.assertEqual(usage["context_audit"]["token_source"], "openhands_proxy")
+            self.assertEqual(usage["context_audit"]["context_window_tokens"], 131072)
+        finally:
+            upstream.close()
+
+    def test_proxy_uses_configured_context_window(self) -> None:
+        try:
+            upstream = _FakeUpstreamServer()
+        except PermissionError as exc:
+            self.skipTest(f"local loopback sockets are unavailable: {exc}")
+        upstream.start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "200",
+                        "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS": "50",
+                    },
+                    clear=False,
+                ):
+                    proxy = LLMUsageProxy(
+                        LLMUsageProxyConfig(
+                            target_base_url=upstream.base_url + "/v1",
+                            api_key="sk-real",
+                            audit_path=root / "context_audit.jsonl",
+                            usage_path=root / "openhands_usage.json",
+                            model="deepseek-v4-flash",
+                        )
+                    ).start()
+                    try:
+                        body = json.dumps(
+                            {
+                                "model": "deepseek-v4-flash",
+                                "messages": [{"role": "user", "content": "hello"}],
+                            }
+                        ).encode("utf-8")
+                        request = urllib.request.Request(
+                            proxy.base_url + "/chat/completions",
+                            data=body,
+                            headers={"Content-Type": "application/json"},
+                            method="POST",
+                        )
+                        with urllib.request.urlopen(request, timeout=10) as response:
+                            response.read()
+                    finally:
+                        proxy.close()
+
+                usage = json.loads((root / "openhands_usage.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(usage["context_audit"]["context_window_tokens"], 200)
+            self.assertEqual(usage["context_audit"]["reserved_output_tokens"], 50)
+            self.assertEqual(usage["context_audit"]["max_allowed_prompt_tokens"], 150)
+            self.assertFalse(usage["context_audit"]["context_violation"])
         finally:
             upstream.close()
 

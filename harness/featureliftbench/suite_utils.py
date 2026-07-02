@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -14,6 +15,30 @@ ALL_RUN_STATUSES = frozenset(
     {"passed", "failed", "missing_submission", "not_evaluated", "invalid_task"}
 )
 DEFAULT_RETRY_ONLY_STATUSES = frozenset({"missing_submission", "failed", "not_evaluated"})
+RATE_LIMIT_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"rate limit",
+        r"ratelimit",
+        r"too many requests",
+        r"\b429\b",
+        r"quota exceeded",
+        r"tpm limit",
+    )
+)
+
+FAILURE_CLASSES = frozenset(
+    {
+        "passed",
+        "agent_setup_failed",
+        "rate_limited",
+        "missing_submission",
+        "eval_infra_failed",
+        "model_failed",
+        "invalid_task",
+        "agent_step_limited",
+    }
+)
 
 
 def parse_retry_only_statuses(value: str | None) -> frozenset[str]:
@@ -139,6 +164,61 @@ def run_status(
     return "failed"
 
 
+def run_failure_class(run: dict[str, Any]) -> str:
+    """Classify a run by root outcome for suite-level interpretation."""
+
+    status = run.get("status")
+    if status == "passed":
+        return "passed"
+    if status == "invalid_task":
+        return "invalid_task"
+    if _agent_result_has_step_limit(run):
+        return "agent_step_limited"
+    if is_rate_limit_failure(run):
+        return "rate_limited"
+
+    agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}
+    submission = run.get("submission") if isinstance(run.get("submission"), dict) else {}
+    evaluation = run.get("evaluation") if isinstance(run.get("evaluation"), dict) else {}
+    if _agent_had_zero_api_calls(run) and (
+        not submission.get("exists", False) or not agent.get("passed", False)
+    ):
+        return "agent_setup_failed"
+    if not submission.get("exists", False):
+        return "missing_submission"
+    if evaluation.get("docker_sandbox_error") is True:
+        return "eval_infra_failed"
+    if evaluation.get("status") in {"not-run", "not_evaluated"}:
+        return "eval_infra_failed"
+    return "model_failed"
+
+
+def is_rate_limit_failure(result: dict[str, Any]) -> bool:
+    chunks: list[str] = []
+    agent = result.get("agent")
+    if isinstance(agent, dict):
+        usage = agent.get("usage")
+        if isinstance(usage, dict):
+            exit_status = usage.get("exit_status")
+            if isinstance(exit_status, str) and exit_status:
+                chunks.append(exit_status)
+        for key in ("reason",):
+            value = agent.get(key)
+            if isinstance(value, str):
+                chunks.append(value)
+        for log_key in ("stderr_log", "stdout_log"):
+            log_path = agent.get(log_key)
+            if isinstance(log_path, str):
+                path = Path(log_path)
+                if path.is_file():
+                    chunks.append(path.read_text(encoding="utf-8", errors="replace"))
+    errors = result.get("errors")
+    if isinstance(errors, list):
+        chunks.extend(str(item) for item in errors)
+    text = "\n".join(chunks)
+    return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -190,6 +270,16 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
             tasks_by_status.setdefault(status, []).append(task_id)
     for task_ids in tasks_by_status.values():
         task_ids.sort()
+    failure_classes: dict[str, int] = {}
+    tasks_by_failure_class: dict[str, list[str]] = {}
+    for run in runs:
+        failure_class = run_failure_class(run)
+        failure_classes[failure_class] = failure_classes.get(failure_class, 0) + 1
+        task_id = run.get("task_id")
+        if isinstance(task_id, str) and task_id:
+            tasks_by_failure_class.setdefault(failure_class, []).append(task_id)
+    for task_ids in tasks_by_failure_class.values():
+        task_ids.sort()
     return {
         "total": len(runs),
         "passed": sum(1 for run in runs if run.get("status") == "passed"),
@@ -218,6 +308,8 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         ),
         "by_status": by_status,
         "tasks_by_status": tasks_by_status,
+        "failure_classes": failure_classes,
+        "tasks_by_failure_class": tasks_by_failure_class,
     }
 
 
@@ -301,6 +393,7 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
     entry: dict[str, Any] = {
         "task_id": run.get("task_id", ""),
         "status": run.get("status", "failed"),
+        "failure_class": run_failure_class(run),
         "run_json": run.get("run_json", ""),
         "result_json": evaluation.get("result_json", ""),
         "final_score": scores.get("final_score", 0.0),
@@ -344,3 +437,24 @@ def _agent_result_has_log_limit(run: dict[str, Any]) -> bool:
     if not isinstance(usage, dict):
         return False
     return usage.get("exit_status") == "log_limit_exceeded"
+
+
+def _agent_result_has_step_limit(run: dict[str, Any]) -> bool:
+    agent = run.get("agent")
+    if not isinstance(agent, dict):
+        return False
+    usage = agent.get("usage")
+    if not isinstance(usage, dict):
+        return False
+    return usage.get("exit_status") == "step_limit_exceeded"
+
+
+def _agent_had_zero_api_calls(run: dict[str, Any]) -> bool:
+    agent = run.get("agent")
+    if not isinstance(agent, dict):
+        return False
+    usage = agent.get("usage")
+    if not isinstance(usage, dict) or usage.get("available") is not True:
+        return False
+    api_calls = usage.get("api_calls")
+    return isinstance(api_calls, int) and api_calls <= 0

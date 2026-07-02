@@ -39,7 +39,7 @@ def load_agent_run_config(
     """Load shared agent config and merge it into a run config.
 
     Precedence is:
-    CLI options > profile in config file > environment file > process env.
+    CLI options > process env > environment file > profile defaults.
     """
 
     data = _read_toml(config_path)
@@ -54,13 +54,18 @@ def load_agent_run_config(
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
     api_base_env = _string_value(profile.get("api_base_env")) or DEFAULT_API_BASE_ENV
-    api_key = _first_non_empty(os.environ.get(api_key_env), env_values.get(api_key_env))
-    api_base = _first_non_empty(
-        os.environ.get(api_base_env),
-        env_values.get(api_base_env),
-        _string_value(profile.get("api_base")),
-        _string_value(profile.get("base_url")),
+    api_key, api_key_source = _first_non_empty_with_source(
+        ("environment", os.environ.get(api_key_env)),
+        (".env", env_values.get(api_key_env)),
     )
+    api_base, api_base_source = _first_non_empty_with_source(
+        ("environment", os.environ.get(api_base_env)),
+        (".env", env_values.get(api_base_env)),
+        ("profile", _string_value(profile.get("api_base"))),
+        ("profile", _string_value(profile.get("base_url"))),
+    )
+    api_key_env_conflict = _has_env_file_conflict(api_key_env, env_values)
+    api_base_env_conflict = _has_env_file_conflict(api_base_env, env_values)
     model = _first_non_empty(base_config.model, _string_value(profile.get("model")))
     profile_agent_bin = _string_value(profile.get("agent_bin"))
     if _ignores_profile_agent_bin(base_config.agent):
@@ -95,6 +100,13 @@ def load_agent_run_config(
         env.setdefault("MSWEA_GLOBAL_CALL_LIMIT", call_limit)
     if cost_tracking:
         env.setdefault("MSWEA_COST_TRACKING", cost_tracking)
+
+    context_window_tokens = _positive_int_value(profile.get("context_window_tokens"))
+    reserved_output_tokens = _positive_int_value(profile.get("reserved_output_tokens"))
+    if context_window_tokens is not None:
+        env.setdefault("FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS", str(context_window_tokens))
+    if reserved_output_tokens is not None:
+        env.setdefault("FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS", str(reserved_output_tokens))
 
     native_tool_calling = profile.get("native_tool_calling")
     if _is_openhands_agent(base_config.agent) and native_tool_calling is not None:
@@ -132,11 +144,18 @@ def load_agent_run_config(
         "model": model or "",
         "agent_bin": agent_bin or "",
         "api_key_env": api_key_env,
+        "api_base_env": api_base_env,
         "api_key_present": bool(api_key),
+        "api_key_source": api_key_source,
+        "api_key_environment_overrides_env_file": api_key_env_conflict,
         "api_base": api_base or "",
+        "api_base_source": api_base_source,
+        "api_base_environment_overrides_env_file": api_base_env_conflict,
         "cost_limit": cost_limit or "",
         "call_limit": call_limit or "",
         "cost_tracking": cost_tracking or "",
+        "context_window_tokens": context_window_tokens or "",
+        "reserved_output_tokens": reserved_output_tokens or "",
         "openhands_command": openhands_command if _is_openhands_agent(base_config.agent) else "",
         "openhands_command_configured": bool(openhands_command)
         if _is_openhands_agent(base_config.agent)
@@ -244,6 +263,33 @@ def _first_non_empty(*values: str | None) -> str:
         if value:
             return value
     return ""
+
+
+def _first_non_empty_with_source(*values: tuple[str, str | None]) -> tuple[str, str]:
+    for source, value in values:
+        if value:
+            return value, source
+    return "", "missing"
+
+
+def _has_env_file_conflict(key: str, env_values: dict[str, str]) -> bool:
+    process_value = os.environ.get(key)
+    file_value = env_values.get(key)
+    return bool(process_value and file_value and process_value != file_value)
+
+
+def _positive_int_value(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if value > 0 else None
+    if isinstance(value, str) and value.strip():
+        try:
+            parsed = int(value.strip())
+        except ValueError:
+            return None
+        return parsed if parsed > 0 else None
+    return None
 
 
 def _is_featurelift_agent(agent: str) -> bool:

@@ -22,6 +22,7 @@ from featureliftbench.suite_utils import load_retained_runs
 from featureliftbench.suite_utils import parse_retry_only_statuses
 from featureliftbench.suite_utils import rebuild_suite_summary
 from featureliftbench.suite_utils import evaluation_payload
+from featureliftbench.suite_utils import run_failure_class
 
 try:
     from harness.tests import test_agent_runner
@@ -238,6 +239,73 @@ class SuiteResumeTests(unittest.TestCase):
         self.assertEqual(summary["resource_limited_failures"], 1)
         self.assertEqual(summary["log_limit_failures"], 1)
         self.assertEqual(summary["docker_sandbox_failures"], 1)
+
+    def test_rebuild_suite_summary_counts_failure_classes(self) -> None:
+        runs = [
+            {
+                "task_id": "passed",
+                "status": "passed",
+                "agent": {"passed": True, "usage": {"available": True, "api_calls": 2}},
+                "submission": {"exists": True},
+                "evaluation": {"status": "passed"},
+            },
+            {
+                "task_id": "setup",
+                "status": "missing_submission",
+                "agent": {"passed": False, "usage": {"available": True, "api_calls": 0}},
+                "submission": {"exists": False},
+            },
+            {
+                "task_id": "rate",
+                "status": "failed",
+                "agent": {
+                    "passed": False,
+                    "reason": "429 too many requests",
+                    "usage": {"available": True, "api_calls": 1},
+                },
+                "submission": {"exists": False},
+            },
+            {
+                "task_id": "missing",
+                "status": "missing_submission",
+                "agent": {"passed": True, "usage": {"available": True, "api_calls": 3}},
+                "submission": {"exists": False},
+            },
+            {
+                "task_id": "eval",
+                "status": "failed",
+                "agent": {"passed": True, "usage": {"available": True, "api_calls": 3}},
+                "submission": {"exists": True},
+                "evaluation": {"docker_sandbox_error": True},
+            },
+            {
+                "task_id": "model",
+                "status": "failed",
+                "agent": {"passed": True, "usage": {"available": True, "api_calls": 3}},
+                "submission": {"exists": True},
+                "evaluation": {"status": "failed", "docker_sandbox_error": False},
+            },
+            {
+                "task_id": "step",
+                "status": "failed",
+                "agent": {
+                    "passed": False,
+                    "usage": {"available": True, "api_calls": 3, "exit_status": "step_limit_exceeded"},
+                },
+                "submission": {"exists": False},
+            },
+        ]
+
+        summary = rebuild_suite_summary(runs)
+
+        self.assertEqual(summary["failure_classes"]["passed"], 1)
+        self.assertEqual(summary["failure_classes"]["agent_setup_failed"], 1)
+        self.assertEqual(summary["failure_classes"]["rate_limited"], 1)
+        self.assertEqual(summary["failure_classes"]["missing_submission"], 1)
+        self.assertEqual(summary["failure_classes"]["eval_infra_failed"], 1)
+        self.assertEqual(summary["failure_classes"]["model_failed"], 1)
+        self.assertEqual(summary["failure_classes"]["agent_step_limited"], 1)
+        self.assertEqual(run_failure_class(runs[-1]), "agent_step_limited")
 
     def test_evaluation_payload_lifts_eval_sandbox_flags(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

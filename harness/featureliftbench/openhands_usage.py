@@ -3,13 +3,17 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 CONTEXT_WINDOW_TOKENS = 131_072
 RESERVED_OUTPUT_TOKENS = 8192
-MAX_ALLOWED_PROMPT_TOKENS = 122_880
+MAX_ALLOWED_PROMPT_TOKENS = CONTEXT_WINDOW_TOKENS - RESERVED_OUTPUT_TOKENS
+
+CONTEXT_WINDOW_ENV = "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS"
+RESERVED_OUTPUT_ENV = "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS"
 
 DEFAULT_EVENTS_FILENAME = "openhands_events.jsonl"
 DEFAULT_USAGE_FILENAME = "openhands_usage.json"
@@ -21,6 +25,25 @@ class OpenHandsProgressSnapshot:
     status: str
     event_count: int
     total_tokens: int | None
+
+
+@dataclass(frozen=True)
+class OpenHandsContextLimits:
+    context_window_tokens: int
+    reserved_output_tokens: int
+    max_allowed_prompt_tokens: int
+
+
+def openhands_context_limits(env: dict[str, str] | None = None) -> OpenHandsContextLimits:
+    source = os.environ if env is None else env
+    context_window = _positive_int_env(source, CONTEXT_WINDOW_ENV, CONTEXT_WINDOW_TOKENS)
+    reserved_output = _positive_int_env(source, RESERVED_OUTPUT_ENV, RESERVED_OUTPUT_TOKENS)
+    max_allowed = max(0, context_window - reserved_output)
+    return OpenHandsContextLimits(
+        context_window_tokens=context_window,
+        reserved_output_tokens=reserved_output,
+        max_allowed_prompt_tokens=max_allowed,
+    )
 
 
 def parse_openhands_progress_snapshot(log_path: Path) -> OpenHandsProgressSnapshot | None:
@@ -98,8 +121,9 @@ def resolve_events_path(
 
 def parse_events_jsonl(path: Path) -> dict[str, Any]:
     """Aggregate token usage from an OpenHands --json JSONL file."""
+    limits = openhands_context_limits()
     if not path.is_file():
-        return _empty_usage(unverified=True, reason="events_file_missing")
+        return _empty_usage(unverified=True, reason="events_file_missing", limits=limits)
 
     prompt_tokens = 0
     completion_tokens = 0
@@ -132,17 +156,17 @@ def parse_events_jsonl(path: Path) -> dict[str, Any]:
             if _looks_like_assistant_step(event):
                 assistant_steps += 1
     except OSError:
-        return _empty_usage(unverified=True, reason="events_file_unreadable")
+        return _empty_usage(unverified=True, reason="events_file_unreadable", limits=limits)
 
     if not saw_usage:
-        return _empty_usage(unverified=True, reason="no_usage_in_events")
+        return _empty_usage(unverified=True, reason="no_usage_in_events", limits=limits)
 
     if max_prompt_tokens_per_call == 0 and prompt_tokens > 0:
         max_prompt_tokens_per_call = prompt_tokens
     if max_total_tokens_per_call == 0:
         max_total_tokens_per_call = prompt_tokens + completion_tokens
 
-    context_violation = max_prompt_tokens_per_call > MAX_ALLOWED_PROMPT_TOKENS
+    context_violation = max_prompt_tokens_per_call > limits.max_allowed_prompt_tokens
     return {
         "assistant_steps": assistant_steps,
         "api_calls": api_calls,
@@ -155,9 +179,9 @@ def parse_events_jsonl(path: Path) -> dict[str, Any]:
             "history_policy": "external_openhands",
             "token_source": "openhands_jsonl",
             "usage_unverified": False,
-            "context_window_tokens": CONTEXT_WINDOW_TOKENS,
-            "reserved_output_tokens": RESERVED_OUTPUT_TOKENS,
-            "max_allowed_prompt_tokens": MAX_ALLOWED_PROMPT_TOKENS,
+            "context_window_tokens": limits.context_window_tokens,
+            "reserved_output_tokens": limits.reserved_output_tokens,
+            "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "max_prompt_tokens_per_call": max_prompt_tokens_per_call,
             "max_total_tokens_per_call": max_total_tokens_per_call,
             "context_violation": context_violation,
@@ -182,7 +206,13 @@ def write_usage_from_events(
     return usage
 
 
-def _empty_usage(*, unverified: bool, reason: str) -> dict[str, Any]:
+def _empty_usage(
+    *,
+    unverified: bool,
+    reason: str,
+    limits: OpenHandsContextLimits | None = None,
+) -> dict[str, Any]:
+    limits = limits or openhands_context_limits()
     return {
         "assistant_steps": 0,
         "api_calls": 0,
@@ -195,12 +225,23 @@ def _empty_usage(*, unverified: bool, reason: str) -> dict[str, Any]:
             "history_policy": "external_openhands",
             "token_source": reason,
             "usage_unverified": unverified,
-            "context_window_tokens": CONTEXT_WINDOW_TOKENS,
-            "reserved_output_tokens": RESERVED_OUTPUT_TOKENS,
-            "max_allowed_prompt_tokens": MAX_ALLOWED_PROMPT_TOKENS,
+            "context_window_tokens": limits.context_window_tokens,
+            "reserved_output_tokens": limits.reserved_output_tokens,
+            "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "over_context_behavior": "managed_by_openhands",
         },
     }
+
+
+def _positive_int_env(source: dict[str, str], name: str, default: int) -> int:
+    raw = source.get(name)
+    if raw is None:
+        return default
+    try:
+        parsed = int(str(raw).strip())
+    except ValueError:
+        return default
+    return parsed if parsed > 0 else default
 
 
 def _iter_json_events(path: Path):
@@ -250,10 +291,19 @@ def _has_token_fields(record: dict[str, Any]) -> bool:
 
 def _looks_like_assistant_step(event: dict[str, Any]) -> bool:
     event_type = str(event.get("type") or event.get("event") or "").lower()
+    source = str(event.get("source") or "").lower()
     role = str(event.get("role") or "").lower()
     if role == "assistant":
         return True
+    if source == "agent" and isinstance(event.get("action"), dict):
+        return True
     return any(marker in event_type for marker in ("assistant", "agent", "action", "message"))
+
+
+def looks_like_openhands_step(event: dict[str, Any]) -> bool:
+    """Return whether an OpenHands JSON event should count as an agent step."""
+
+    return _looks_like_assistant_step(event)
 
 
 def _int_metric(value: Any) -> int | None:

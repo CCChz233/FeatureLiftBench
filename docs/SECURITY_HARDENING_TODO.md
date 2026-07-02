@@ -1,5 +1,9 @@
 # FeatureLiftBench 安全与稳定性加固 TODO
 
+> Status note: much of the original Docker/eval hardening has already landed.
+> Current run safety is documented in [OPENHANDS_SERVER_RUNBOOK.md](OPENHANDS_SERVER_RUNBOOK.md)
+> and current remaining work is tracked in [../TODO.md](../TODO.md).
+
 最后更新：2026-06-29
 
 本文档给出 FeatureLiftBench 的安全与稳定性落地计划。目标不是一开始做成公开多租户平台，而是先让正式实验的 eval 可复现、相对隔离、不会被异常 submission 打爆机器，同时给 agent 跑题建立清晰边界。

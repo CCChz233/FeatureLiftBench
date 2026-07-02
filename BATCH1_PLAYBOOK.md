@@ -249,11 +249,13 @@ Hidden 断言优先用 `type` / `loc` / 结构，避免绑定完整 error messag
 
 **依赖（`requirements.lock`）：**
 
-评测器用 `pip install --no-index`（见 [docs/limitations.md](docs/limitations.md)）。策略：
+评测器用 `pip install --no-index --no-deps -r requirements.lock`（见 [docs/limitations.md](docs/limitations.md)）。Docker 正式路径下 **不能** 依赖宿主机 `system-site-packages`。策略：
 
-1. **优先空 lock**：第三方依赖可由 venv `--system-site-packages` 满足时，lock 留空
-2. **必须 pin 时**：把 wheel 放进 `benchmark/vendor-wheels/`，或在 design note 记录离线安装策略
-3. `allowed_dependencies` 与 lock 内容一致
+1. **`allowed_dependencies` 非空 ⇒ `requirements.lock` 必须 pin 同一集合**（含传递依赖；见 `harness/config/benchmark_wheels.toml` 的 `[transitive]`）
+2. **`allowed_dependencies` 为空 ⇒ `requirements.lock` 必须为空**（pure-python 题）
+3. **每个 lock 包必须有离线 wheel**：放进 `benchmark/vendor-wheels/`（`bootstrap_vendor_wheels.py` 下载 manylinux x86_64 + aarch64），并进入 eval 镜像（`docker/Dockerfile.eval` 预装 `harness/config/benchmark_requirements.lock`）
+4. 维护者门禁：`python harness/scripts/audit_task_dependencies.py` 与 `featureliftbench validate-task`
+5. 同步 lock/metadata：`python harness/scripts/sync_task_locks.py --staging`
 
 ---
 

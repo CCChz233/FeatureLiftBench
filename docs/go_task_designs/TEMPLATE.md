@@ -1,168 +1,128 @@
-# `<task_id>` Go Task Design
+# Task Design: `<task_id>` (Go)
 
-**Status:** draft
-**Language:** Go
-**Spec:** [../GO_V2_MINI_SPEC.md](../GO_V2_MINI_SPEC.md)
+> Machine-readable spec: [GO_TASK_FORMAT.md](../GO_TASK_FORMAT.md). Human design note for Go track.
 
-## 1. Source
+Status: draft | oracle-verified | agent-calibrated
 
-- Repo:
-- URL:
-- Commit:
-- License:
-- Go module path:
-- Source entrypoints:
+## Why This Task
 
-## 2. Practical Reuse
+为何属于 FeatureLiftBench Go track；functional vs decoupling 判别点是什么。
 
-Describe the standalone module a user would actually want after extraction.
+## Practical reuse（必填）
 
-Good:
+1. **Reuse module** — 解耦成功后 `featurelifted` 代表什么真实模块？（如 semver 比较、HTML sanitize policy）
+2. **Who imports it** — 哪类下游会单独依赖此包？（CLI 工具、微服务、库）
+3. **Why not copy-all** — 为何紧凑闭包比 vendor 整仓更现实？
 
-- "A semver constraint checker usable without the rest of the upstream CLI."
-- "A bounded worker pool usable inside a service without importing the original app."
+## Source
 
-Bad:
+| Field | Value |
+| --- | --- |
+| Source repo | `<url>` |
+| Commit | `<hash>` |
+| License | `<SPDX>` |
+| Language | **Go** |
+| Difficulty | hard |
+| Tags | multi-package, `<discriminator-tag>` |
 
-- "Copy the package."
-- "Make tests pass."
-- "Expose the whole upstream library."
+## Entanglement
 
-## 3. Feature Boundary
+```json
+{
+  "level": "high",
+  "types": ["internal_packages", "global_registry"],
+  "description": "...",
+  "signals": ["..."]
+}
+```
 
-Included behavior:
+Go 常见 types：`internal_packages`, `init_side_effects`, `global_registry`, `build_tags`, `reflection_coupling`, `error_chain`.
 
--
+## Target Feature
 
-Excluded behavior:
+### Source entrypoints
 
--
+- `repo/...`
 
-Expected public API:
+### Output API
 
 ```go
-// Fill exact symbols the extracted package must expose.
+import "example.com/featurelifted"
+
+featurelifted.<Callable>(...)
 ```
 
-## 4. Entanglement
+### Module path
 
-Primary entanglement:
+- Submission `go.mod` module: `example.com/featurelifted`（或题目约定）
 
--
+## Included Behaviors
 
-Secondary Go tags:
+- ...
 
--
+## Excluded Behaviors
 
-Why this is hard:
+- CLI / main
+- 原仓库 `go test` 全集
+- 网络、DB、cgo
+- 原 module path runtime import
 
--
+## Environment
 
-## 5. Tests
-
-Public tests should check:
-
--
-
-Hidden tests should check:
-
--
-
-Concurrency/stress/race checks, if any:
-
--
-
-Flake risks and mitigations:
-
--
-
-## 6. Forbidden Rules
-
-Forbidden imports:
-
-```text
-
+```json
+{
+  "go": "1.22",
+  "network": false,
+  "timeout_seconds": 120,
+  "cgo_enabled": false
+}
 ```
 
-Forbidden modules:
+## Test Plan
 
-```text
+### Public
 
-```
+- 主路径 happy path
+- 1–2 个常见错误
 
-Allowed external modules:
+### Hidden
 
-```text
+- 边界组合（不与 public 重复断言）
+- 错误类型 / 顺序 / 空值
+- 至少 3 个 module probe 映射点
 
-```
+### Determinism
 
-Special `replace` or vendor policy:
+- 无 `time.Now()` 断言；fixture 在 repo 内
 
--
+## Baseline Expectations
 
-## 7. Baselines
+| Variant | Public | Hidden | Extraction |
+| --- | --- | --- | --- |
+| oracle | pass | pass | 0.20–0.60 |
+| naive | pass | **fail** | ≤0.10 |
+| copy_all | pass | pass | ≥0.85, Δ≥0.25 vs oracle |
 
-Oracle strategy:
+## Oracle Closure Estimate
 
--
+- 约 N 个 `.go` 文件，约 M LOC
+- 主要抽取自：`repo/...`
 
-Naive baseline:
+## Agent Calibration（promote 前填）
 
--
+| Model | Public | Hidden | Extraction | Final | Tier |
+| --- | --- | --- | --- | --- | --- |
+| deepseek_v4_flash | | | | | A/B/C |
 
-Expected naive failure:
+## Go/No-Go（入榜决策）
 
-- public fail
-- hidden fail
-- forbidden import/module fail
-- build fail
+- [ ] Reuse 成立
+- [ ] G0–G4 证据就绪
+- [ ] Flash tier 已记录
 
-Copy-all baseline:
+Decision: promote | redesign | drop
 
--
+## References
 
-Expected extraction relationship:
-
-```text
-oracle_extraction_ratio < copy_all_extraction_ratio
-```
-
-## 8. Docker / Offline Notes
-
-- Expected Go version:
-- Needs cgo:
-- Needs race detector:
-- Needs external modules:
-- Should pass with `GOPROXY=off`:
-
-## 9. Agent Calibration Notes
-
-Expected difficulty label:
-
-- A-tier: strong agent fails functional gate
-- B-tier: strong agent passes but may be copy-heavy
-- C-tier: too easy or too small; replace unless it has strong diagnostic value
-
-What would count as a useful failure:
-
--
-
-What would make this task too easy:
-
--
-
-## 10. Decision
-
-Decision:
-
-- promote
-- hold
-- reject
-
-Required fixes before promote:
-
--
-
-Exceptions:
-
--
+- [GO_PILOT_PLAYBOOK.md](../GO_PILOT_PLAYBOOK.md)
+- [GO_QUALITY_RUBRIC.md](../GO_QUALITY_RUBRIC.md)

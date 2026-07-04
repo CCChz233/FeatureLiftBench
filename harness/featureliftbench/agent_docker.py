@@ -223,10 +223,16 @@ def build_agent_docker_invocation(
     ]
     command.extend(_docker_add_hosts(config))
     for key in sorted(env_keys):
-        command.extend(["--env", key])
+        command.extend(["-e", f"{key}={process_env[key]}"])
     command.extend([image, *inner_command])
 
     report_command = list(command[: len(command) - len(inner_command)])
+    for secret in _redaction_values(config.env):
+        if not secret:
+            continue
+        for index, arg in enumerate(report_command):
+            if secret in arg:
+                report_command[index] = arg.replace(secret, "[REDACTED]")
     report_command.extend(report_inner_command)
     return AgentDockerInvocation(
         command=command,

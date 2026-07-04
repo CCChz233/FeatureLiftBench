@@ -53,6 +53,22 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertIn("final_score = functional_gate", prompt)
         self.assertIn("pytest public_tests/", prompt)
 
+    def test_build_task_prompt_go_uses_go_test_and_submission_module(self) -> None:
+        task_dir = (
+            Path(__file__).resolve().parents[2]
+            / "benchmark"
+            / "go"
+            / "tasks"
+            / "humanize__bytes_format_core__001"
+        )
+        metadata = load_metadata(task_dir).data
+        prompt = build_task_prompt(metadata)
+
+        self.assertIn("go test ./public_tests/", prompt)
+        self.assertIn("submission/go.mod", prompt)
+        self.assertNotIn("submission/featurelifted/", prompt)
+        self.assertNotIn("pytest public_tests/", prompt)
+
     def test_discover_task_dirs_can_filter_by_task_id(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

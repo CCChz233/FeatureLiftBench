@@ -7,7 +7,6 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .dependency_audit import validate_lock_allowed_consistency
 from .metadata import MetadataError, load_metadata, validate_metadata_shape
 
 
@@ -42,9 +41,8 @@ GO_REQUIRED_PATHS = (
     "hidden_tests",
     "evaluation",
     "evaluation/forbidden_imports.txt",
-    "evaluation/forbidden_modules.txt",
-    "evaluation/allowed_modules.txt",
-    "evaluation/oracle_manifest.json",
+    "environment",
+    "environment/go.mod",
 )
 
 
@@ -60,44 +58,75 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
         return ValidationResult(task_dir=root, task_id="", errors=[f"task path is not a directory: {root}"])
 
     metadata = None
+    language = "python"
     try:
         metadata = load_metadata(root)
+        language = str(metadata.data.get("language", "python"))
     except MetadataError as exc:
         errors.append(str(exc))
 
-    task_id = ""
-    language = "python"
-    if metadata is not None:
-        task_id = metadata.task_id
-        raw_language = metadata.data.get("language")
-        if isinstance(raw_language, str):
-            language = raw_language
-
-    for relative_path in _required_paths_for_language(language):
+    required_paths = GO_REQUIRED_PATHS if language == "go" else PYTHON_REQUIRED_PATHS
+    for relative_path in required_paths:
         path = root / relative_path
         if not path.exists():
             errors.append(f"missing required path: {relative_path}")
 
+    task_id = ""
     if metadata is not None:
+        task_id = metadata.task_id
         errors.extend(validate_metadata_shape(metadata.data))
 
         if task_id and task_id != root.name:
             errors.append(f"task_id must match directory name: {task_id} != {root.name}")
 
-        errors.extend(_validate_dependency_sets(metadata.data))
-        errors.extend(_validate_lock_file_name(metadata.data, root))
-        errors.extend(validate_lock_allowed_consistency(metadata.data, root))
+        if language == "go":
+            errors.extend(_validate_go_tests(root))
+            errors.extend(_validate_go_environment(metadata.data, root))
+        else:
+            errors.extend(_validate_dependency_sets(metadata.data))
+            errors.extend(_validate_lock_file_name(metadata.data, root))
 
-    oracle_manifest = root / "evaluation" / "oracle_manifest.json"
-    if oracle_manifest.exists():
-        try:
-            json.loads(oracle_manifest.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            errors.append(f"invalid JSON: evaluation/oracle_manifest.json: {exc}")
-        except OSError as exc:
-            errors.append(f"cannot read evaluation/oracle_manifest.json: {exc}")
+    if language != "go":
+        oracle_manifest = root / "evaluation" / "oracle_manifest.json"
+        if oracle_manifest.exists():
+            try:
+                json.loads(oracle_manifest.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                errors.append(f"invalid JSON: evaluation/oracle_manifest.json: {exc}")
+            except OSError as exc:
+                errors.append(f"cannot read evaluation/oracle_manifest.json: {exc}")
 
     return ValidationResult(task_dir=root, task_id=task_id, errors=errors)
+
+
+def _validate_go_tests(root: Path) -> list[str]:
+    errors: list[str] = []
+    for label, rel in (("public", "public_tests"), ("hidden", "hidden_tests")):
+        test_dir = root / rel
+        if not test_dir.is_dir():
+            continue
+        go_tests = list(test_dir.glob("*_test.go"))
+        if not go_tests:
+            errors.append(f"{label} tests must include at least one *_test.go file under {rel}/")
+    return errors
+
+
+def _validate_go_environment(metadata: dict, task_dir: Path) -> list[str]:
+    environment = metadata.get("environment")
+    if not isinstance(environment, dict):
+        return []
+
+    go_mod = task_dir / "environment" / "go.mod"
+    if go_mod.is_file():
+        text = go_mod.read_text(encoding="utf-8")
+        if "module " not in text:
+            errors.append("environment/go.mod must declare a module path")
+
+    cgo = environment.get("cgo_enabled", False)
+    if cgo is True:
+        errors.append("Go tasks must set environment.cgo_enabled to false for pilot track")
+
+    return []
 
 
 def _validate_dependency_sets(metadata: dict) -> list[str]:
@@ -105,18 +134,13 @@ def _validate_dependency_sets(metadata: dict) -> list[str]:
     if not isinstance(environment, dict):
         return []
 
-    if metadata.get("language") == "go":
-        allowed = environment.get("allowed_modules", [])
-        forbidden = environment.get("forbidden_modules", [])
-    else:
-        allowed = environment.get("allowed_dependencies", [])
-        forbidden = environment.get("forbidden_dependencies", [])
+    allowed = environment.get("allowed_dependencies", [])
+    forbidden = environment.get("forbidden_dependencies", [])
     if not isinstance(allowed, list) or not isinstance(forbidden, list):
         return []
 
-    normalizer = _normalize_go_module if metadata.get("language") == "go" else _normalize_distribution_name
-    allowed_names = {normalizer(item) for item in allowed if isinstance(item, str)}
-    forbidden_names = {normalizer(item) for item in forbidden if isinstance(item, str)}
+    allowed_names = {_normalize_distribution_name(item) for item in allowed if isinstance(item, str)}
+    forbidden_names = {_normalize_distribution_name(item) for item in forbidden if isinstance(item, str)}
     conflicts = sorted(allowed_names & forbidden_names)
     if not conflicts:
         return []
@@ -144,13 +168,3 @@ def _validate_lock_file_name(metadata: dict, task_dir: Path) -> list[str]:
 
 def _normalize_distribution_name(name: str) -> str:
     return re.sub(r"[-_.]+", "-", name).lower()
-
-
-def _normalize_go_module(name: str) -> str:
-    return name.strip().rstrip("/").lower()
-
-
-def _required_paths_for_language(language: str) -> tuple[str, ...]:
-    if language == "go":
-        return GO_REQUIRED_PATHS
-    return PYTHON_REQUIRED_PATHS

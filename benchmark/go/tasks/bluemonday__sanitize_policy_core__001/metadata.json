@@ -1,0 +1,63 @@
+{
+  "task_id": "bluemonday__sanitize_policy_core__001",
+  "language": "go",
+  "difficulty": "hard",
+  "tags": [
+    "go",
+    "gold",
+    "pilot"
+  ],
+  "source": {
+    "name": "bluemonday",
+    "url": "https://github.com/microcosm-cc/bluemonday",
+    "commit": "v1.0.26",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "bluemonday core feature",
+    "description": "Extract reusable core from bluemonday.",
+    "source_entrypoints": [
+      "sample.Add"
+    ],
+    "included_behaviors": [
+      "add two integers",
+      "propagate sign correctly"
+    ],
+    "excluded_behaviors": [
+      "CLI entrypoints",
+      "network access"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "types": [
+      "implicit_dependency_coupling"
+    ],
+    "description": "Harness smoke task with a small decoupled helper.",
+    "signals": [
+      "single helper API",
+      "no external imports"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "featurelifted",
+    "callable": "featurelifted.Add",
+    "signature": "Add(a, b int) int"
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 60,
+    "cgo_enabled": false,
+    "module_path": "featurelifted",
+    "forbidden_imports": [
+      "originalpkg"
+    ]
+  },
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
+  }
+}

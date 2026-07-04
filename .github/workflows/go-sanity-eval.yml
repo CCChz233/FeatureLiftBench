@@ -1,0 +1,43 @@
+name: Go sanity eval
+
+on:
+  push:
+    paths:
+      - 'benchmark/go/**'
+      - 'harness/featureliftbench/go_eval.py'
+      - 'harness/featureliftbench/evaluator.py'
+      - 'harness/featureliftbench/validate.py'
+      - 'docker/Dockerfile.eval'
+  pull_request:
+    paths:
+      - 'benchmark/go/**'
+      - 'harness/**'
+      - 'docker/Dockerfile.eval'
+
+jobs:
+  go-sanity-oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit tests
+        run: |
+          export PYTHONPATH=harness
+          python -m unittest harness.tests.test_go_eval -v
+      - name: Validate Go sanity task
+        run: |
+          export PYTHONPATH=harness
+          python -m featureliftbench.cli validate-task benchmark/go/sanity/hello_featurelifted__001
+      - name: Eval Go sanity oracle
+        run: |
+          export PYTHONPATH=harness
+          python -m featureliftbench.cli eval \
+            benchmark/go/sanity/hello_featurelifted__001 \
+            benchmark/submissions/hello_featurelifted__001/oracle \
+            --output /tmp/go-sanity-oracle
+          python -c "import json; d=json.load(open('/tmp/go-sanity-oracle/result.json')); assert d['status']=='passed', d"

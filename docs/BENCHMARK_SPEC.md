@@ -55,7 +55,7 @@ Do **not** describe tasks as “fixing bugs” or “resolving issues.” Use **
 | --- | --- | --- | --- | --- |
 | **v1.0** | **Implemented** | Python | **50 hard** (batch-0) + 3 smoke | Frozen batch-0; see [EXPANSION.md](EXPANSION.md) |
 | **v1.1** | **Implemented** | Python | **100 hard** (batch-0 + batch-1) | +50 via `benchmark/staging/`; [EXPANSION.md](EXPANSION.md) §2 |
-| **v2.0** | Planned | Python + Go | Target **100 + 100** (same task type) | After Python 100; Go harness TBD |
+| **v2.0** | **Planned** | Python + Go | Python **100** + Go **10 gold → 100** | Go：见 [GO_EXPANSION.md](GO_EXPANSION.md)；harness [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
 
 **v1.0 policy:** **batch-0** fifty tasks in `benchmark/tasks/` are **frozen** (no edits for expansion). **batch-1** adds fifty new tasks via staging ([EXPANSION.md](EXPANSION.md)).
 
@@ -162,7 +162,7 @@ Anyone reproducing a published number should follow:
 See [SETUP.md](SETUP.md). Minimum:
 
 - Python **3.11+** (3.12 recommended)
-- `./setup.sh` → `.venv`, harness dependencies, `agents.toml` template
+- `./setup.sh` → `.venv`, `mini-swe-agent`, `agents.toml` template
 - API or vLLM credentials in `.env`
 
 ### 4.2 Run agent (suite)
@@ -327,7 +327,7 @@ Minimum for a credible model row:
 
 | Requirement | Detail |
 | --- | --- |
-| Agent harness | documented adapter/profile (`agents.toml`); current main agent track is `openhands-agent` |
+| Agent harness | `mini-swe-agent` + documented profile (`agents.toml`) |
 | Task set | Full main leaderboard unless ablation stated |
 | Workers | `NUM_WORKERS=1` for official numbers |
 | Resource boundary | `FEATURELIFTBENCH_EVAL_DOCKER=1`; agent Docker recommended for long/shared runs ([SETUP.md](SETUP.md) §4) |
@@ -379,25 +379,25 @@ Avoid:
 
 ---
 
-## 11. v2 roadmap (spec only; not implemented)
+## 11. v2 roadmap (Go track — harness implemented, 3/10 true gold)
 
-Planned extensions **without changing task semantics**:
+Go track **harness is implemented** (`go_eval.py`, Docker eval with Go 1.22, `validate-task`). **10 tasks** exist under `benchmark/go/tasks/`; **3** are true gold-quality as of 2026-07-04 (semver, humanize, mapstructure). Agent experiments use **OpenHands** and report separately from Python — see [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md).
 
-| Item | Plan |
-| --- | --- |
-| Languages | Python 100 + Go 100 decoupling tasks |
-| `language` field | `go` tasks with `go test`, Go module layout, Go forbidden-import rules |
-| Unified spec doc | This file remains canonical; TASK_FORMAT gains per-language annex |
-| Harness | Go evaluator parallel to Python venv path |
-| Curation | Same [EXPANSION.md](EXPANSION.md) reuse principles; Go OSS libraries |
+| Item | Plan | Document |
+| --- | --- | --- |
+| Phasing | **10 gold-quality Go tasks first**, then scale to 100 | [GO_EXPANSION.md](GO_EXPANSION.md) |
+| Languages | Python 100 (v1.1) + Go partition reported separately | §2 table |
+| `language` field | `"go"` with `go test`, `go.mod`, `forbidden_imports.txt` | [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) |
+| Playbook | Seven-step flow, gates, evidence packet | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) |
+| Harness | Go evaluator + Docker eval image | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
+| Agent experiments | OpenHands + `experiments/go-openhands/` | [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) |
+| Curation | Go OSS libraries; reuse principles aligned with [EXPANSION.md](EXPANSION.md) | [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) · [go_candidate_backlog.md](go_candidate_backlog.md) |
+| Quality | Mechanical gates G0–G6 + scorecard | [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) |
+| Acceptance | 10 gold summary for paper | [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
 
-Go v2 should start with a 5-task pilot, not a direct 100-task expansion. The working draft is split into:
+**Directories:** `benchmark/go/staging/` → promote → `benchmark/go/tasks/`. Submissions share `benchmark/submissions/<task_id>/` with Python.
 
-- [GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md) for the overall Go strategy;
-- [GO_V2_MINI_SPEC.md](GO_V2_MINI_SPEC.md) for the Go task/evaluator/Docker contract;
-- [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) for the first 5 tasks and acceptance gates.
-
-v2 development should **freeze Python v1 baselines** before retroactive relabeling of published numbers.
+v2 development should **freeze Python v1 baselines** before retroactive relabeling of published numbers. **Do not mix** Python and Go leaderboard tables in papers without explicit partitioning.
 
 ---
 
@@ -406,8 +406,9 @@ v2 development should **freeze Python v1 baselines** before retroactive relabeli
 | Question | Document |
 | --- | --- |
 | What are we measuring? | [CONCEPTS.md](CONCEPTS.md) §1 |
-| Exact file formats? | [TASK_FORMAT.md](TASK_FORMAT.md) |
-| How to pick tasks? | [EXPANSION.md](EXPANSION.md) |
+| Exact file formats? | Python [TASK_FORMAT.md](TASK_FORMAT.md) · Go [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) |
+| How to pick tasks? | Python [EXPANSION.md](EXPANSION.md) · Go [GO_EXPANSION.md](GO_EXPANSION.md) |
+| Go pilot execution? | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) |
 | Current baselines & gaps? | [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) |
 | Experiment results? | [EXPERIMENT_RESULTS.md](EXPERIMENT_RESULTS.md) |
 | Architecture? | [ARCHITECTURE.md](ARCHITECTURE.md) |

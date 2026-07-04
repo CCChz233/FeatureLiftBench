@@ -184,12 +184,30 @@ reuse 不成立、oracle 做不出、与 batch-0 重复、validate 过不了 →
 
 ### 不在本计划内
 
-Go 100、修改 batch-0、替换 batch-0 弱题。
+修改 batch-0、替换 batch-0 弱题。
+
+**Go track** 单独规划，见 [GO_EXPANSION.md](GO_EXPANSION.md)（10 gold → 100，与 Python 分区报告）。
 
 ---
 
-## 4. 相关文档
+## 5. Go track（独立扩题线）
 
-- [TASK_FORMAT.md](TASK_FORMAT.md) — `metadata.json` 与目录
-- [task_designs/TEMPLATE.md](task_designs/TEMPLATE.md) — 设计笔记模板
+Python 主榜已满 **100 hard**（batch-0 + batch-1）。Go 不修改任何 Python 题。
+
+| 阶段 | 目标 | 文档 |
+| --- | --- | --- |
+| Phase 0 | Harness MVP | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
+| Phase 1 | 1 pilot 题 | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) |
+| Phase 2 | **10 gold** | [GO_EXPANSION.md](GO_EXPANSION.md) · [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
+| Phase 3 | 扩至 100 | 同上 playbook |
+
+选题台账：[go_candidate_backlog.md](go_candidate_backlog.md)。格式：[GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。
+
+---
+
+## 6. 相关文档
+
+- [TASK_FORMAT.md](TASK_FORMAT.md) — Python `metadata.json` 与目录
+- [task_designs/TEMPLATE.md](task_designs/TEMPLATE.md) — Python 设计笔记模板
+- [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) · [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) — Go track
 - [benchmark_tasks.md](benchmark_tasks.md) — 主榜目录

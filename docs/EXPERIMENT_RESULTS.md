@@ -8,11 +8,11 @@
 
 本文档集中记录历史 **batch-0 50 hard** agent 实验结果。当前主榜已经扩到 **100 hard**；正式论文/模型对比需要按 [RUN.md](../RUN.md) 的 agent Docker + eval Docker 流程重新跑 100 题。官方历史 DeepSeek baseline 见 [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md)；评分定义见 [CONCEPTS.md](CONCEPTS.md) 第 6 节。
 
-**最后更新：** 2026-06-27（题目策展 [EXPANSION.md](EXPANSION.md)；MiniMax OOM 记录）
+**最后更新：** 2026-07-04（Go track 分区见文末 §Go）
 
 ---
 
-## 1. 评价指标
+## 1. 评价指标（Python 主榜）
 
 单题 `FunctionalGate`、`ExtractionRatio`、`final_score` 定义见 **[CONCEPTS.md](CONCEPTS.md) 第 6 节**。下文只列 **suite 汇总与多轮分析** 口径。
 
@@ -301,4 +301,34 @@ python3 -c "
 import json; from pathlib import Path
 p=Path('experiments/mini-swe-agent/<run_id>/suite.json')
 s=json.loads(p.read_text()); print(s['summary']); print(s.get('agent_usage_totals'))"
+```
+
+---
+
+## Go track（独立分区，勿与 Python 混表）
+
+| 项 | 说明 |
+| --- | --- |
+| 数据集 | `benchmark/go/tasks/`（10 目录，**3 真 gold**：semver、humanize、mapstructure） |
+| Agent | **OpenHands** headless（非 mini-swe-agent） |
+| 输出 | `experiments/go-openhands/<run_id>/` |
+| 协议 | [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) |
+| 出题 gate | `experiments/go-pilot/<task_id>/review/` |
+
+机械 oracle/naive/copy_all gate 已在 semver、humanize、mapstructure 上 Docker 验证。
+
+**Agent 闭环状态（2026-07-04）：**
+
+| 类型 | 状态 |
+| --- | --- |
+| PIPELINE_SMOKE（harness 验证） | semver、humanize 已跑；public ✓ hidden ✗ |
+| 真 OpenHands LLM run | **待跑**（需 WSL `openhands` CLI 或确认 Windows 入口） |
+
+```bash
+# 真 OpenHands（WSL）
+export LLM_MODEL=deepseek/deepseek-v4-flash
+bash harness/scripts/run_go_openhands.sh semver__version_parse_core__001
+
+# 仅验证 harness（无 LLM）
+PIPELINE_SMOKE=1 bash harness/scripts/run_go_openhands.sh semver__version_parse_core__001
 ```

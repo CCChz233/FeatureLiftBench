@@ -1,0 +1,19 @@
+{
+  "probes": [
+    {
+      "id": "decode_struct",
+      "remove_path": "decode_struct.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestWeaklyTypedInput"
+    },
+    {
+      "id": "decode_hooks",
+      "remove_path": "decode_hooks.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestStringToSliceHook"
+    },
+    {
+      "id": "decoder_core",
+      "remove_path": "decoder.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestSquashEmbeddedStruct"
+    }
+  ]
+}

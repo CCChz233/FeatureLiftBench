@@ -1,0 +1,22 @@
+{
+  "probes": [
+    {
+      "id": "negative_addition",
+      "import": "featurelifted",
+      "call": "Add(-1, 5)",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestNegativeAddition"
+    },
+    {
+      "id": "zero_addition",
+      "import": "featurelifted",
+      "call": "Add(0, 0)",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestZeroAddition"
+    },
+    {
+      "id": "mixed_sign",
+      "import": "featurelifted",
+      "call": "Add(-3, -2)",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestMixedNegative"
+    }
+  ]
+}

@@ -1,11 +1,22 @@
 ARG PYTHON_BASE=python:3.11-slim
+ARG GO_VERSION=1.22.5
 FROM ${PYTHON_BASE}
+
+ARG GO_VERSION=1.22.5
 
 WORKDIR /workspace
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/workspace/harness \
-    PIP_NO_CACHE_DIR=1
+    PIP_NO_CACHE_DIR=1 \
+    CGO_ENABLED=0 \
+    PATH=/usr/local/go/bin:${PATH}
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates \
+    && curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" \
+       | tar -C /usr/local -xz \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install \
     "pytest==7.4.4" \

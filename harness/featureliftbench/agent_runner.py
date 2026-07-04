@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-import os
+import re
 import shutil
 import sys
 import time
@@ -21,10 +21,8 @@ from .agent_adapters import AgentRunConfig
 from .agent_adapters import AgentRunContext
 from .agent_adapters import get_agent_adapter
 from .agent_docker import DEFAULT_AGENT_IMAGE
-from .agent_docker import DEFAULT_GO_AGENT_IMAGE
 from .agent_docker import run_agent_in_docker
 from .docker_eval import DEFAULT_EVAL_IMAGE
-from .docker_eval import DEFAULT_GO_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
@@ -33,7 +31,6 @@ from .suite_utils import ALL_RUN_STATUSES
 from .suite_utils import DEFAULT_RETRY_ONLY_STATUSES
 from .suite_utils import compact_suite_run_entry
 from .suite_utils import evaluation_payload as _evaluation_payload
-from .suite_utils import is_rate_limit_failure as _suite_is_rate_limit_failure
 from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
 from .suite_utils import run_status as _run_status
@@ -53,29 +50,20 @@ USAGE_SUM_FIELDS = (
     "billed_tokens",
 )
 
+RATE_LIMIT_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"rate limit",
+        r"ratelimit",
+        r"too many requests",
+        r"\b429\b",
+        r"quota exceeded",
+        r"tpm limit",
+    )
+)
+
 # SiliconFlow TPM limits use a rolling 60s window; wait long enough to clear it.
 RATE_LIMIT_RETRY_WAIT_SECONDS = 65.0
-
-
-def _suite_task_cooldown_seconds() -> float:
-    raw = os.environ.get("FEATURELIFTBENCH_SUITE_TASK_COOLDOWN_SECONDS", "0")
-    try:
-        value = float(raw)
-    except ValueError:
-        return 0.0
-    return max(0.0, value)
-
-
-def _maybe_suite_task_cooldown(run: dict[str, Any]) -> None:
-    seconds = _suite_task_cooldown_seconds()
-    if seconds <= 0:
-        return
-    agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}
-    usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
-    api_calls = usage.get("api_calls")
-    if not (isinstance(api_calls, int) and api_calls > 0):
-        return
-    time.sleep(seconds)
 
 
 @dataclass(frozen=True)
@@ -132,7 +120,6 @@ def run_agent_on_path(
             output_path,
             config,
             agent_config_summary=agent_config_summary,
-            progress=progress,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -315,7 +302,6 @@ def run_agent_on_suite(
         "eval_backend": "docker" if eval_docker else "local",
         "eval_docker_image": eval_docker_image if eval_docker else "",
         "retry_rate_limit": max(1, int(retry_rate_limit)),
-        "task_cooldown_seconds": _suite_task_cooldown_seconds(),
         "retry_only_statuses": sorted(retry_only_statuses),
         "extra_agent_passes": extra_passes,
         "max_task_attempts": max_task_attempts,
@@ -344,69 +330,12 @@ def run_agent_on_task(
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None = None,
     *,
-    progress: bool = False,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
     agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
     """Run an agent on a single task, collect its submission, and evaluate it."""
-
-    use_live_progress = progress and sys.stderr.isatty()
-    if use_live_progress:
-        task_path = Path(task_dir).resolve()
-        output_path = Path(output_dir).resolve()
-        validation = validate_task(task_path)
-        task_id = validation.task_id
-        if validation.valid:
-            metadata = load_metadata(task_path).data
-            task_id = metadata.get("task_id", task_id)
-        with live_suite_progress(
-            num_tasks=1,
-            output_dir=output_path,
-            agent=config.agent,
-            layout="flat",
-        ) as progress_manager:
-            progress_manager.on_task_start(task_id)
-            progress_manager.update_task_status(task_id, "preparing workspace")
-            result = _run_agent_on_task_body(
-                task_dir=task_dir,
-                output_dir=output_dir,
-                config=config,
-                agent_config_summary=agent_config_summary,
-                eval_docker=eval_docker,
-                eval_docker_image=eval_docker_image,
-                agent_docker=agent_docker,
-                agent_docker_image=agent_docker_image,
-            )
-            progress_manager.on_task_end(task_id, result.get("status"))
-            return result
-
-    return _run_agent_on_task_body(
-        task_dir=task_dir,
-        output_dir=output_dir,
-        config=config,
-        agent_config_summary=agent_config_summary,
-        eval_docker=eval_docker,
-        eval_docker_image=eval_docker_image,
-        agent_docker=agent_docker,
-        agent_docker_image=agent_docker_image,
-        progress=progress,
-    )
-
-
-def _run_agent_on_task_body(
-    task_dir: str | Path,
-    output_dir: str | Path,
-    config: AgentRunConfig,
-    agent_config_summary: dict[str, Any] | None = None,
-    *,
-    progress: bool = False,
-    eval_docker: bool = False,
-    eval_docker_image: str = DEFAULT_EVAL_IMAGE,
-    agent_docker: bool = False,
-    agent_docker_image: str = DEFAULT_AGENT_IMAGE,
-) -> dict[str, Any]:
 
     task_path = Path(task_dir).resolve()
     output_path = Path(output_dir).resolve()
@@ -430,11 +359,6 @@ def _run_agent_on_task_body(
     else:
         metadata = load_metadata(task_path).data
         task_id = metadata.get("task_id", task_id)
-    selected_agent_docker_image = _select_agent_docker_image(metadata, agent_docker_image)
-    selected_eval_docker_image = _select_eval_docker_image(metadata, eval_docker_image)
-
-    if progress:
-        _progress(True, f"started {task_id}")
 
     agent_result = None
     eval_result = None
@@ -460,7 +384,7 @@ def _run_agent_on_task_body(
                 agent_result = run_agent_in_docker(
                     context,
                     config,
-                    image=selected_agent_docker_image,
+                    image=agent_docker_image,
                     stdout_log=stdout_log,
                     stderr_log=stderr_log,
                 )
@@ -484,7 +408,7 @@ def _run_agent_on_task_body(
                 collected_submission_dir=collected_submission_dir,
                 eval_output_dir=eval_output_dir,
                 eval_docker=eval_docker,
-                eval_docker_image=selected_eval_docker_image,
+                eval_docker_image=eval_docker_image,
             )
         else:
             recovery_info = _recover_misplaced_submission(workspace_dir, workspace_submission_dir)
@@ -497,7 +421,7 @@ def _run_agent_on_task_body(
                     collected_submission_dir=collected_submission_dir,
                     eval_output_dir=eval_output_dir,
                     eval_docker=eval_docker,
-                    eval_docker_image=selected_eval_docker_image,
+                    eval_docker_image=eval_docker_image,
                 )
             else:
                 errors.append("agent did not create any files under workspace/submission")
@@ -549,7 +473,7 @@ def _run_agent_on_task_body(
         "attempt": next_attempt,
         "agent": agent_payload,
         "agent_backend": "docker" if agent_docker else "local",
-        "agent_docker_image": selected_agent_docker_image if agent_docker else "",
+        "agent_docker_image": agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
         "workspace": {
             "dir": str(workspace_dir),
@@ -558,15 +482,13 @@ def _run_agent_on_task_body(
         "submission": submission_payload,
         "evaluation": evaluation_payload,
         "eval_backend": "docker" if eval_docker else "local",
-        "eval_docker_image": selected_eval_docker_image if eval_docker else "",
+        "eval_docker_image": eval_docker_image if eval_docker else "",
         "errors": errors,
         "run_json": str(run_json_path),
     }
     if previous_attempt_json is not None:
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
-    if progress:
-        _progress(True, f"finished {task_id}: {status}")
     return result
 
 
@@ -589,18 +511,6 @@ def _evaluate_collected_submission(
     return evaluate_submission(task_path, collected_submission_dir, eval_output_dir)
 
 
-def _select_agent_docker_image(metadata: dict[str, Any], image: str) -> str:
-    if image != DEFAULT_AGENT_IMAGE:
-        return image
-    return DEFAULT_GO_AGENT_IMAGE if metadata.get("language") == "go" else image
-
-
-def _select_eval_docker_image(metadata: dict[str, Any], image: str) -> str:
-    if image != DEFAULT_EVAL_IMAGE:
-        return image
-    return DEFAULT_GO_EVAL_IMAGE if metadata.get("language") == "go" else image
-
-
 def _run_suite_tasks(
     *,
     task_dirs: list[Path],
@@ -617,14 +527,10 @@ def _run_suite_tasks(
     checkpoint_ctx: _SuiteCheckpointContext | None = None,
 ) -> list[dict[str, Any]]:
     total = len(task_dirs)
-    use_live_progress = progress and sys.stderr.isatty() and total >= 1
+    use_live_progress = progress and sys.stderr.isatty() and total > 1
 
     if use_live_progress:
-        with live_suite_progress(
-            num_tasks=total,
-            output_dir=output_path,
-            agent=config.agent,
-        ) as progress_manager:
+        with live_suite_progress(num_tasks=total, output_dir=output_path) as progress_manager:
             return _execute_suite_tasks(
                 task_dirs=task_dirs,
                 output_path=output_path,
@@ -680,24 +586,23 @@ def _execute_suite_tasks(
         runs = []
         try:
             for index, task_dir in enumerate(task_dirs, start=1):
-                run = _run_suite_task_safely(
-                    index=index,
-                    total=total,
-                    task_dir=task_dir,
-                    output_path=output_path,
-                    config=config,
-                    agent_config_summary=agent_config_summary,
-                    progress=progress and progress_manager is None,
-                    progress_manager=progress_manager,
-                    retry_rate_limit=retry_rate_limit,
-                    eval_docker=eval_docker,
-                    eval_docker_image=eval_docker_image,
-                    agent_docker=agent_docker,
-                    agent_docker_image=agent_docker_image,
+                runs.append(
+                    _run_suite_task_safely(
+                        index=index,
+                        total=total,
+                        task_dir=task_dir,
+                        output_path=output_path,
+                        config=config,
+                        agent_config_summary=agent_config_summary,
+                        progress=progress and progress_manager is None,
+                        progress_manager=progress_manager,
+                        retry_rate_limit=retry_rate_limit,
+                        eval_docker=eval_docker,
+                        eval_docker_image=eval_docker_image,
+                        agent_docker=agent_docker,
+                        agent_docker_image=agent_docker_image,
+                    )
                 )
-                runs.append(run)
-                if index < total:
-                    _maybe_suite_task_cooldown(run)
                 if checkpoint_ctx is not None:
                     _write_suite_checkpoint(checkpoint_ctx, runs)
         except KeyboardInterrupt:
@@ -787,8 +692,6 @@ def _run_suite_task_safely(
 
     run_output = output_path / task_id
     try:
-        if progress_manager is not None:
-            progress_manager.update_task_status(task_id, "running agent")
         result = _run_suite_task_with_retries(
             task_dir=task_dir,
             run_output=run_output,
@@ -1143,7 +1046,29 @@ def _run_suite_task_with_retries(
 
 
 def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
-    return _suite_is_rate_limit_failure(result)
+    chunks: list[str] = []
+    agent = result.get("agent")
+    if isinstance(agent, dict):
+        usage = agent.get("usage")
+        if isinstance(usage, dict):
+            exit_status = usage.get("exit_status")
+            if isinstance(exit_status, str) and exit_status:
+                chunks.append(exit_status)
+        for key in ("reason",):
+            value = agent.get(key)
+            if isinstance(value, str):
+                chunks.append(value)
+        for log_key in ("stderr_log", "stdout_log"):
+            log_path = agent.get(log_key)
+            if isinstance(log_path, str):
+                path = Path(log_path)
+                if path.is_file():
+                    chunks.append(path.read_text(encoding="utf-8", errors="replace"))
+    errors = result.get("errors")
+    if isinstance(errors, list):
+        chunks.extend(str(item) for item in errors)
+    text = "\n".join(chunks)
+    return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
 
 
 def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, metadata: dict[str, Any]) -> Path:
@@ -1155,8 +1080,14 @@ def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, met
 
     _copy_path(task_path / "repo", workspace_path / "repo")
     _copy_path(task_path / _test_path(metadata, "public", "public_tests/"), workspace_path / "public_tests")
-    if metadata.get("language") == "go":
-        _write_go_public_test_runner(workspace_path, metadata)
+    language = str(metadata.get("language", "python"))
+    if language == "go":
+        go_mod = task_path / "environment" / "go.mod"
+        if go_mod.is_file():
+            shutil.copy2(go_mod, workspace_path / "go.mod")
+        go_sum = task_path / "environment" / "go.sum"
+        if go_sum.is_file():
+            shutil.copy2(go_sum, workspace_path / "go.sum")
     else:
         lock_path = task_path / _dependency_lock(metadata)
         if lock_path.exists():
@@ -1180,57 +1111,55 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
 
     environment = metadata.get("environment") if isinstance(metadata.get("environment"), dict) else {}
     tests = metadata.get("tests") if isinstance(metadata.get("tests"), dict) else {}
-    if metadata.get("language") == "go":
-        return {
-            "task_id": metadata.get("task_id", ""),
-            "language": metadata.get("language", ""),
-            "difficulty": metadata.get("difficulty", ""),
-            "tags": metadata.get("tags", []),
-            "source": metadata.get("source", {}),
-            "feature": metadata.get("feature", {}),
-            "entanglement": metadata.get("entanglement", {}),
-            "output": metadata.get("output", {}),
-            "environment": {
+    language = str(metadata.get("language", "python"))
+    environment_payload: dict[str, Any] = {
+        "network": environment.get("network", False),
+        "timeout_seconds": environment.get("timeout_seconds", 0),
+        "forbidden_imports": environment.get("forbidden_imports", []),
+    }
+    if language == "go":
+        environment_payload.update(
+            {
                 "go": environment.get("go", ""),
-                "network": environment.get("network", False),
-                "timeout_seconds": environment.get("timeout_seconds", 0),
-                "allowed_modules": environment.get("allowed_modules", []),
-                "forbidden_modules": environment.get("forbidden_modules", []),
-                "forbidden_imports": environment.get("forbidden_imports", []),
-            },
-            "tests": {
-                "public": "public_tests/",
-                "command": tests.get("command", "go test ./..."),
-            },
-        }
+                "cgo_enabled": environment.get("cgo_enabled", False),
+                "module_path": environment.get("module_path", "featurelifted"),
+            }
+        )
+    else:
+        environment_payload.update(
+            {
+                "python": environment.get("python", ""),
+                "dependency_lock": environment.get("dependency_lock", "requirements.lock"),
+                "allowed_dependencies": environment.get("allowed_dependencies", []),
+                "forbidden_dependencies": environment.get("forbidden_dependencies", []),
+            }
+        )
     return {
         "task_id": metadata.get("task_id", ""),
-        "language": metadata.get("language", ""),
+        "language": language,
         "difficulty": metadata.get("difficulty", ""),
         "tags": metadata.get("tags", []),
         "source": metadata.get("source", {}),
         "feature": metadata.get("feature", {}),
         "entanglement": metadata.get("entanglement", {}),
         "output": metadata.get("output", {}),
-        "environment": {
-            "python": environment.get("python", ""),
-            "network": environment.get("network", False),
-            "timeout_seconds": environment.get("timeout_seconds", 0),
-            "dependency_lock": environment.get("dependency_lock", "requirements.lock"),
-            "allowed_dependencies": environment.get("allowed_dependencies", []),
-            "forbidden_dependencies": environment.get("forbidden_dependencies", []),
-            "forbidden_imports": environment.get("forbidden_imports", []),
-        },
+        "environment": environment_payload,
         "tests": {
             "public": "public_tests/",
-            "command": tests.get("command", "pytest"),
+            "command": tests.get("command", "pytest" if language != "go" else "go test"),
         },
     }
 
 
-def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
-    """Build the Python task prompt given to the agent."""
+def build_task_prompt(metadata: dict[str, Any]) -> str:
+    """Build the task prompt given to the agent."""
 
+    if str(metadata.get("language", "python")) == "go":
+        return _build_go_task_prompt(metadata)
+    return _build_python_task_prompt(metadata)
+
+
+def _shared_task_prompt_sections(metadata: dict[str, Any]) -> dict[str, str]:
     feature = metadata.get("feature", {}) if isinstance(metadata.get("feature"), dict) else {}
     output = metadata.get("output", {}) if isinstance(metadata.get("output"), dict) else {}
     entanglement = (
@@ -1240,24 +1169,123 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
     )
     source = metadata.get("source", {}) if isinstance(metadata.get("source"), dict) else {}
-    tags = _format_list(metadata.get("tags", []))
-    entanglement_types = _format_list(entanglement.get("types", []))
-    entanglement_signals = _format_list(entanglement.get("signals", []))
-    included = _format_list(feature.get("included_behaviors", []))
-    excluded = _format_list(feature.get("excluded_behaviors", []))
-    entrypoints = _format_list(feature.get("source_entrypoints", []))
-    allowed_dependencies = _format_list(environment.get("allowed_dependencies", []))
-    forbidden_dependencies = _format_list(environment.get("forbidden_dependencies", []))
-    forbidden_imports = _format_list(environment.get("forbidden_imports", []))
     forbidden_import_names = [
         item.strip("- ").strip()
         for item in (environment.get("forbidden_imports") or [])
         if isinstance(item, str) and item.strip()
     ]
     forbidden_grep = " ".join(forbidden_import_names[:5]) or "original package names"
+    return {
+        "task_id": str(metadata.get("task_id", "")),
+        "tags": _format_list(metadata.get("tags", [])),
+        "entanglement_types": _format_list(entanglement.get("types", [])),
+        "entanglement_signals": _format_list(entanglement.get("signals", [])),
+        "included": _format_list(feature.get("included_behaviors", [])),
+        "excluded": _format_list(feature.get("excluded_behaviors", [])),
+        "entrypoints": _format_list(feature.get("source_entrypoints", [])),
+        "forbidden_imports": _format_list(environment.get("forbidden_imports", [])),
+        "forbidden_grep": forbidden_grep,
+        "feature_name": str(feature.get("name", "")),
+        "feature_description": str(feature.get("description", "")),
+        "difficulty": str(metadata.get("difficulty", "")),
+        "entanglement_level": str(entanglement.get("level", "")),
+        "entanglement_description": str(entanglement.get("description", "")),
+        "output_package": str(output.get("package", "featurelifted")),
+        "output_import": str(output.get("import", "")),
+        "output_callable": str(output.get("callable", "")),
+        "output_signature": str(output.get("signature", "")),
+        "source_name": str(source.get("name", "")),
+        "source_url": str(source.get("url", "")),
+        "source_commit": str(source.get("commit", "")),
+        "source_license": str(source.get("license", "")),
+    }
 
+
+def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
+    sections = _shared_task_prompt_sections(metadata)
+    environment = (
+        metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
+    )
+    module_path = str(environment.get("module_path", "featurelifted"))
+    go_version = str(environment.get("go", "1.22"))
     return (
-        f"# FeatureLiftBench Task: {metadata.get('task_id', '')}\n\n"
+        f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
+        "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
+        f"`repo/` into a standalone Go module under `submission/` (package `{module_path}`).\n\n"
+        "## How to work\n\n"
+        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
+        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        f"into `submission/` as package `{module_path}`.\n"
+        f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
+        f"4. Rewrite package names/imports so runtime code uses `{module_path}` only — "
+        "never the original module path.\n"
+        f"5. Before submitting, grep your submission for forbidden imports, e.g. "
+        f"`grep -R '\"' submission/*.go | grep -E '({sections['forbidden_grep']})'` — "
+        "any match fails evaluation.\n"
+        "6. Run `go test ./public_tests/...` in the workspace (with replace in go.mod) "
+        "and fix failures.\n"
+        "7. **Public tests passing does not mean you are done.** Hidden tests and extraction "
+        "scoring apply after submit.\n"
+        "8. Write all deliverables under `submission/` only (`*.go` + `go.mod`).\n"
+        "9. When confident, submit with the command at the bottom.\n\n"
+        "## Workspace\n\n"
+        "- `repo/`: source repository snapshot for the fixed commit.\n"
+        "- `public_tests/`: tests you may run while developing.\n"
+        "- `go.mod`: eval harness module (add `replace` for your submission).\n"
+        "- `metadata.json`: redacted task metadata. Hidden tests are not present.\n"
+        "- `submission/`: write your final Go module here.\n\n"
+        "## Closure Discipline\n\n"
+        "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
+        "- Start from source entrypoints, follow helpers, constants, tables, and error handling "
+        "needed for included behaviors, then trim unrelated package areas.\n"
+        "- Remove tests, CLI, and unrelated subsystems unless the feature spec needs them.\n\n"
+        "## Source\n\n"
+        f"- Name: {sections['source_name']}\n"
+        f"- URL: {sections['source_url']}\n"
+        f"- Commit: {sections['source_commit']}\n"
+        f"- License: {sections['source_license']}\n\n"
+        "## Target Feature\n\n"
+        f"- Name: {sections['feature_name']}\n"
+        f"- Difficulty: {sections['difficulty']}\n"
+        f"- Tags:\n{sections['tags']}\n"
+        f"- Description: {sections['feature_description']}\n"
+        f"- Source entrypoints:\n{sections['entrypoints']}\n"
+        f"- Included behaviors:\n{sections['included']}\n"
+        f"- Excluded behaviors:\n{sections['excluded']}\n"
+        "## Entanglement Context\n\n"
+        f"- Level: {sections['entanglement_level']}\n"
+        f"- Types:\n{sections['entanglement_types']}\n"
+        f"- Description: {sections['entanglement_description']}\n"
+        f"- Signals:\n{sections['entanglement_signals']}\n"
+        "## Required Output API\n\n"
+        f"- Package: `{sections['output_package']}`\n"
+        f"- Import: `{sections['output_import']}`\n"
+        f"- Callable: `{sections['output_callable']}`\n"
+        f"- Signature: `{sections['output_signature']}`\n\n"
+        "## Constraints\n\n"
+        "- The final answer must be files under `submission/`.\n"
+        "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
+        "- Do not import the original source module at runtime.\n"
+        "- **Forbidden imports are a hard gate.**\n"
+        "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "
+        "Whole-repo copy scores near zero.\n"
+        f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
+        "When finished, run:\n\n"
+        "```bash\n"
+        "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
+        "```\n"
+    )
+
+
+def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
+    sections = _shared_task_prompt_sections(metadata)
+    environment = (
+        metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
+    )
+    allowed_dependencies = _format_list(environment.get("allowed_dependencies", []))
+    forbidden_dependencies = _format_list(environment.get("forbidden_dependencies", []))
+    return (
+        f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
         "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
         "`repo/` into a standalone, installable Python package under `submission/`.\n\n"
         "## How to work\n\n"
@@ -1267,7 +1295,7 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         "into `submission/featurelifted/`.\n"
         "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
         f"4. Before submitting, grep your submission for forbidden imports, e.g. "
-        f"`grep -R \"import \" submission/ | grep -E '({forbidden_grep})'` — any match fails evaluation.\n"
+        f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'` — any match fails evaluation.\n"
         "5. Run `pytest public_tests/` in the workspace and fix failures.\n"
         "6. **Public tests passing does not mean you are done.** The evaluator also runs hidden tests "
         "and stricter checks you cannot see here.\n"
@@ -1294,28 +1322,28 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         "- If public tests pass with a shallow rewrite, still inspect included behaviors and "
         "hidden-risk edge cases before submitting.\n\n"
         "## Source\n\n"
-        f"- Name: {source.get('name', '')}\n"
-        f"- URL: {source.get('url', '')}\n"
-        f"- Commit: {source.get('commit', '')}\n"
-        f"- License: {source.get('license', '')}\n\n"
+        f"- Name: {sections['source_name']}\n"
+        f"- URL: {sections['source_url']}\n"
+        f"- Commit: {sections['source_commit']}\n"
+        f"- License: {sections['source_license']}\n\n"
         "## Target Feature\n\n"
-        f"- Name: {feature.get('name', '')}\n"
-        f"- Difficulty: {metadata.get('difficulty', '')}\n"
-        f"- Tags:\n{tags}\n"
-        f"- Description: {feature.get('description', '')}\n"
-        f"- Source entrypoints:\n{entrypoints}\n"
-        f"- Included behaviors:\n{included}\n"
-        f"- Excluded behaviors:\n{excluded}\n"
+        f"- Name: {sections['feature_name']}\n"
+        f"- Difficulty: {sections['difficulty']}\n"
+        f"- Tags:\n{sections['tags']}\n"
+        f"- Description: {sections['feature_description']}\n"
+        f"- Source entrypoints:\n{sections['entrypoints']}\n"
+        f"- Included behaviors:\n{sections['included']}\n"
+        f"- Excluded behaviors:\n{sections['excluded']}\n"
         "## Entanglement Context\n\n"
-        f"- Level: {entanglement.get('level', '')}\n"
-        f"- Types:\n{entanglement_types}\n"
-        f"- Description: {entanglement.get('description', '')}\n"
-        f"- Signals:\n{entanglement_signals}\n"
+        f"- Level: {sections['entanglement_level']}\n"
+        f"- Types:\n{sections['entanglement_types']}\n"
+        f"- Description: {sections['entanglement_description']}\n"
+        f"- Signals:\n{sections['entanglement_signals']}\n"
         "## Required Output API\n\n"
-        f"- Package: `{output.get('package', 'featurelifted')}`\n"
-        f"- Import: `{output.get('import', '')}`\n"
-        f"- Callable: `{output.get('callable', '')}`\n"
-        f"- Signature: `{output.get('signature', '')}`\n"
+        f"- Package: `{sections['output_package']}`\n"
+        f"- Import: `{sections['output_import']}`\n"
+        f"- Callable: `{sections['output_callable']}`\n"
+        f"- Signature: `{sections['output_signature']}`\n"
         "- Implementation scope: use **Source entrypoints** above to locate code in `repo/`; "
         "the import line lists the public surface your package must expose.\n\n"
         "## Constraints\n\n"
@@ -1331,138 +1359,13 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         "Passing with a whole-repo copy scores near zero — extract only what the feature needs.\n"
         f"- Allowed dependencies:\n{allowed_dependencies}\n"
         f"- Forbidden dependencies:\n{forbidden_dependencies}\n"
-        f"- Forbidden imports:\n{forbidden_imports}\n\n"
+        f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
         "You may run the public tests during development. The evaluator will later run public and "
         "hidden tests in a clean environment. When finished, run:\n\n"
         "```bash\n"
         "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
         "```\n"
     )
-
-
-def build_go_task_prompt(metadata: dict[str, Any]) -> str:
-    """Build the Go task prompt given to the agent."""
-
-    feature = metadata.get("feature", {}) if isinstance(metadata.get("feature"), dict) else {}
-    output = metadata.get("output", {}) if isinstance(metadata.get("output"), dict) else {}
-    entanglement = (
-        metadata.get("entanglement", {}) if isinstance(metadata.get("entanglement"), dict) else {}
-    )
-    environment = (
-        metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
-    )
-    source = metadata.get("source", {}) if isinstance(metadata.get("source"), dict) else {}
-    tags = _format_list(metadata.get("tags", []))
-    entanglement_types = _format_list(entanglement.get("types", []))
-    entanglement_signals = _format_list(entanglement.get("signals", []))
-    included = _format_list(feature.get("included_behaviors", []))
-    excluded = _format_list(feature.get("excluded_behaviors", []))
-    entrypoints = _format_list(feature.get("source_entrypoints", []))
-    symbols = _format_list(output.get("symbols", []))
-    allowed_modules = _format_list(environment.get("allowed_modules", []))
-    forbidden_modules = _format_list(environment.get("forbidden_modules", []))
-    forbidden_imports = _format_list(environment.get("forbidden_imports", []))
-    module_path = output.get("module") or f"featurelifted.local/{metadata.get('task_id', '')}"
-
-    return (
-        f"# FeatureLiftBench Go Task: {metadata.get('task_id', '')}\n\n"
-        "You are in a FeatureLiftBench agent workspace. Decouple the requested Go feature from "
-        "`repo/` into a standalone Go module under `submission/`.\n\n"
-        "## How to work\n\n"
-        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
-        "2. Copy the smallest behavior-complete implementation closure from `repo/` into "
-        "`submission/featurelifted/`.\n"
-        f"3. Create `submission/go.mod` with exactly `module {module_path}`.\n"
-        "4. Rewrite imports so runtime code does not import or require the original module.\n"
-        "5. Run `./run_public_tests.sh` from the workspace and fix failures.\n"
-        "6. Public tests passing does not mean you are done; hidden tests and module gates also run.\n"
-        "7. Do not write the package at workspace root; only `submission/` is collected.\n\n"
-        "## Workspace\n\n"
-        "- `repo/`: source repository snapshot for the fixed commit.\n"
-        "- `public_tests/`: Go tests you may run while developing.\n"
-        "- `run_public_tests.sh`: copies `submission/` to a temp module, injects public tests, and runs `go test` offline.\n"
-        "- `metadata.json`: redacted task metadata. Hidden tests and evaluator internals are not present.\n"
-        "- `submission/`: write your final Go module here.\n\n"
-        "## Source\n\n"
-        f"- Name: {source.get('name', '')}\n"
-        f"- URL: {source.get('url', '')}\n"
-        f"- Commit: {source.get('commit', '')}\n"
-        f"- License: {source.get('license', '')}\n"
-        f"- Original Go module: `{source.get('module_path', '')}`\n\n"
-        "## Target Feature\n\n"
-        f"- Name: {feature.get('name', '')}\n"
-        f"- Difficulty: {metadata.get('difficulty', '')}\n"
-        f"- Tags:\n{tags}\n"
-        f"- Description: {feature.get('description', '')}\n"
-        f"- Source entrypoints:\n{entrypoints}\n"
-        f"- Included behaviors:\n{included}\n"
-        f"- Excluded behaviors:\n{excluded}\n"
-        "## Entanglement Context\n\n"
-        f"- Level: {entanglement.get('level', '')}\n"
-        f"- Types:\n{entanglement_types}\n"
-        f"- Description: {entanglement.get('description', '')}\n"
-        f"- Signals:\n{entanglement_signals}\n"
-        "## Required Output API\n\n"
-        f"- Module: `{module_path}`\n"
-        f"- Package directory: `submission/featurelifted/`\n"
-        f"- Package name: `{output.get('package', 'featurelifted')}`\n"
-        f"- Import: `{output.get('import', '')}`\n"
-        f"- Symbols:\n{symbols}\n\n"
-        "## Constraints\n\n"
-        "- The final answer must be files under `submission/`.\n"
-        "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
-        "- Do not import from the original source module or rely on the original repo path at runtime.\n"
-        "- Do not use `replace` to point at `repo/`, the workspace, hidden paths, or host paths.\n"
-        "- Do not create `go.work`.\n"
-        "- Keep only behavior-relevant code and dependencies needed for the target feature.\n"
-        "- The evaluator runs with `GOWORK=off`, `GOPROXY=off`, `CGO_ENABLED=0`, and hidden tests.\n"
-        f"- Allowed modules:\n{allowed_modules}\n"
-        f"- Forbidden modules:\n{forbidden_modules}\n"
-        f"- Forbidden imports:\n{forbidden_imports}\n\n"
-        "When finished, run:\n\n"
-        "```bash\n"
-        "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
-        "```\n"
-    )
-
-
-def build_task_prompt(metadata: dict[str, Any]) -> str:
-    """Build the task prompt given to the agent."""
-
-    if metadata.get("language") == "go":
-        return build_go_task_prompt(metadata)
-    return _build_python_task_prompt(metadata)
-
-
-def _write_go_public_test_runner(workspace_path: Path, metadata: dict[str, Any]) -> None:
-    timeout = 30
-    environment = metadata.get("environment")
-    if isinstance(environment, dict) and isinstance(environment.get("timeout_seconds"), int):
-        timeout = int(environment["timeout_seconds"])
-    script = workspace_path / "run_public_tests.sh"
-    script.write_text(
-        "#!/usr/bin/env sh\n"
-        "set -eu\n"
-        'ROOT="$(cd "$(dirname "$0")" && pwd)"\n'
-        'TMP="${TMPDIR:-/tmp}/flb-go-public-$$"\n'
-        'rm -rf "$TMP"\n'
-        'mkdir -p "$TMP"\n'
-        'trap \'rm -rf "$TMP"\' EXIT INT TERM\n'
-        'cp -R "$ROOT/submission/." "$TMP/"\n'
-        'find "$ROOT/public_tests" -type f -name "*_test.go" | sort | while IFS= read -r test_file; do\n'
-        '  cp "$test_file" "$TMP/public_$(basename "$test_file")"\n'
-        "done\n"
-        'cd "$TMP"\n'
-        "export GOWORK=off\n"
-        "export GOPROXY=off\n"
-        "export GONOSUMDB='*'\n"
-        "export GOFLAGS=-mod=mod\n"
-        "export CGO_ENABLED=0\n"
-        "export GOMAXPROCS=2\n"
-        f"go test ./... -count=1 -timeout={timeout}s\n",
-        encoding="utf-8",
-    )
-    script.chmod(0o755)
 
 
 def _copy_path(src: Path, dst: Path) -> None:
@@ -1526,6 +1429,19 @@ def _recover_misplaced_submission(workspace_dir: Path, submission_dir: Path) -> 
             submission_dir.mkdir(parents=True, exist_ok=True)
             shutil.copy2(pyproject_root, submission_dir / "pyproject.toml")
             recovery_sources.append("workspace/pyproject.toml")
+
+        go_files = [path for path in workspace_dir.glob("*.go") if path.is_file()]
+        workspace_go_mod = workspace_dir / "go.mod"
+        if go_files or workspace_go_mod.is_file():
+            submission_dir.mkdir(parents=True, exist_ok=True)
+            for path in go_files:
+                dest = submission_dir / path.name
+                if not dest.is_file():
+                    shutil.copy2(path, dest)
+                    recovery_sources.append(f"workspace/{path.name}")
+            if workspace_go_mod.is_file() and not (submission_dir / "go.mod").is_file():
+                shutil.copy2(workspace_go_mod, submission_dir / "go.mod")
+                recovery_sources.append("workspace/go.mod")
     except OSError as exc:
         return {
             "recovered": False,
@@ -1551,6 +1467,11 @@ def _missing_submission_diagnostic(workspace_dir: Path) -> str:
     if _package_has_python_files(workspace_dir / "featurelifted"):
         return (
             "workspace/featurelifted exists but submission recovery did not populate "
+            "workspace/submission"
+        )
+    if any(workspace_dir.glob("*.go")):
+        return (
+            "workspace/*.go exists but submission recovery did not populate "
             "workspace/submission"
         )
     return "no submission files and no recoverable misplaced paths found under workspace/"
@@ -1687,103 +1608,16 @@ def _parse_mini_trajectory_usage(path: Path) -> dict[str, Any]:
 
 def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any]:
     usage: dict[str, Any] = {"available": True, "source": str(source)}
-    schema_version = data.get("schema_version")
-    if isinstance(schema_version, str):
-        usage["schema_version"] = schema_version
-    agent_name = data.get("agent_name")
-    if isinstance(agent_name, str):
-        usage["agent_name"] = agent_name
-    model = data.get("model")
-    if isinstance(model, str):
-        usage["model"] = model
     for key in USAGE_SUM_FIELDS:
         value = _int_metric(data.get(key))
         if value is not None:
             usage[key] = value
-    context_audit = data.get("context_audit")
-    if isinstance(context_audit, dict):
-        usage["context_audit"] = _sanitize_context_audit(context_audit)
-    tool_summary = data.get("tool_summary")
-    if isinstance(tool_summary, dict):
-        usage["tool_summary"] = _sanitize_tool_summary(tool_summary)
     exit_status = data.get("exit_status")
     if isinstance(exit_status, str):
         usage["exit_status"] = exit_status
     if len(usage) <= 2:
         return _unavailable_agent_usage(source, "usage.json did not contain usage metrics")
     return usage
-
-
-def _sanitize_context_audit(data: dict[str, Any]) -> dict[str, Any]:
-    audit: dict[str, Any] = {}
-    for key in (
-        "available",
-        "context_violation",
-        "usage_unverified",
-    ):
-        value = data.get(key)
-        if isinstance(value, bool):
-            audit[key] = value
-    for key in (
-        "context_window_tokens",
-        "reserved_output_tokens",
-        "max_allowed_prompt_tokens",
-        "max_prompt_tokens_per_call",
-        "max_total_tokens_per_call",
-    ):
-        value = _int_metric(data.get(key))
-        if value is not None:
-            audit[key] = value
-    for key in (
-        "history_policy",
-        "over_context_behavior",
-        "token_source",
-        "runtime",
-    ):
-        value = data.get(key)
-        if isinstance(value, str):
-            audit[key] = value
-    return audit
-
-
-def _sanitize_tool_summary(data: dict[str, Any]) -> dict[str, Any]:
-    summary: dict[str, Any] = {}
-    for key in (
-        "available",
-        "actions_enabled",
-    ):
-        value = data.get(key)
-        if isinstance(value, bool):
-            summary[key] = value
-    for key in (
-        "total_actions",
-        "success_actions",
-        "failed_actions",
-        "blocked_actions",
-        "timeout_actions",
-        "error_actions",
-    ):
-        value = _int_metric(data.get(key))
-        if value is not None:
-            summary[key] = value
-    for key in (
-        "final_check_status",
-        "public_tests_status",
-    ):
-        value = data.get(key)
-        if isinstance(value, str):
-            summary[key] = value
-    action_types = data.get("action_types")
-    if isinstance(action_types, dict):
-        clean_action_types = {
-            str(name): value
-            for name, raw_value in action_types.items()
-            if isinstance(name, str)
-            and (value := _int_metric(raw_value)) is not None
-        }
-        if clean_action_types:
-            summary["action_types"] = dict(sorted(clean_action_types.items()))
-    return summary
 
 
 def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1801,85 +1635,6 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
     for key in USAGE_SUM_FIELDS:
         totals[key] = sum(
             value for usage in usages if isinstance((value := usage.get(key)), int)
-        )
-    audits = [
-        audit
-        for usage in usages
-        if isinstance((audit := usage.get("context_audit")), dict)
-        and audit.get("available") is True
-    ]
-    if audits:
-        totals["context_audit"] = _sum_context_audits(audits, total_runs=len(runs))
-    tool_summaries = [
-        summary
-        for usage in usages
-        if isinstance((summary := usage.get("tool_summary")), dict)
-        and summary.get("available") is True
-    ]
-    if tool_summaries:
-        totals["tool_summary"] = _sum_tool_summaries(tool_summaries, total_runs=len(runs))
-    return totals
-
-
-def _sum_context_audits(audits: list[dict[str, Any]], *, total_runs: int) -> dict[str, Any]:
-    max_prompt_values = [
-        value
-        for audit in audits
-        if isinstance((value := audit.get("max_prompt_tokens_per_call")), int)
-    ]
-    max_total_values = [
-        value
-        for audit in audits
-        if isinstance((value := audit.get("max_total_tokens_per_call")), int)
-    ]
-    summary: dict[str, Any] = {
-        "available_runs": len(audits),
-        "missing_runs": total_runs - len(audits),
-        "context_violation_runs": sum(
-            1 for audit in audits if audit.get("context_violation") is True
-        ),
-        "usage_unverified_runs": sum(
-            1 for audit in audits if audit.get("usage_unverified") is True
-        ),
-    }
-    if max_prompt_values:
-        summary["max_prompt_tokens_per_call"] = max(max_prompt_values)
-    if max_total_values:
-        summary["max_total_tokens_per_call"] = max(max_total_values)
-    return summary
-
-
-def _sum_tool_summaries(summaries: list[dict[str, Any]], *, total_runs: int) -> dict[str, Any]:
-    totals: dict[str, Any] = {
-        "available_runs": len(summaries),
-        "missing_runs": total_runs - len(summaries),
-        "actions_enabled_runs": sum(1 for summary in summaries if summary.get("actions_enabled") is True),
-        "runs_with_failed_actions": sum(
-            1
-            for summary in summaries
-            if any(
-                isinstance((value := summary.get(key)), int) and value > 0
-                for key in ("failed_actions", "blocked_actions", "timeout_actions", "error_actions")
-            )
-        ),
-        "final_check_failed_runs": sum(
-            1
-            for summary in summaries
-            if summary.get("final_check_status") not in {"", "success", None}
-        ),
-    }
-    for key in (
-        "total_actions",
-        "success_actions",
-        "failed_actions",
-        "blocked_actions",
-        "timeout_actions",
-        "error_actions",
-    ):
-        totals[key] = sum(
-            value
-            for summary in summaries
-            if isinstance((value := summary.get(key)), int)
         )
     return totals
 

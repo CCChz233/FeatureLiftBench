@@ -1,0 +1,71 @@
+{
+  "task_id": "humanize__bytes_format_core__001",
+  "language": "go",
+  "difficulty": "hard",
+  "tags": [
+    "go",
+    "gold",
+    "formatter",
+    "pilot"
+  ],
+  "source": {
+    "name": "go-humanize",
+    "url": "https://github.com/dustin/go-humanize",
+    "commit": "v1.0.1",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Byte size format and parse",
+    "description": "Extract SI/IEC byte formatting and parsing from dustin/go-humanize.",
+    "source_entrypoints": [
+      "humanize.Bytes",
+      "humanize.IBytes",
+      "humanize.ParseBytes"
+    ],
+    "included_behaviors": [
+      "format uint64 as SI byte sizes",
+      "format uint64 as IEC byte sizes",
+      "parse human-readable byte strings"
+    ],
+    "excluded_behaviors": [
+      "relative time formatting",
+      "comma number formatting",
+      "CLI entrypoints",
+      "original module import"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling"
+    ],
+    "description": "Formatting and parsing share suffix tables, rounding rules, and unit constants.",
+    "signals": [
+      "bytesSizeTable",
+      "humanateBytes rounding",
+      "comma stripping in ParseBytes"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted",
+    "callable": "featurelifted.Bytes",
+    "signature": "Bytes(s uint64) string"
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 120,
+    "cgo_enabled": false,
+    "module_path": "featurelifted",
+    "forbidden_imports": [
+      "github.com/dustin/go-humanize"
+    ]
+  },
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
+  }
+}

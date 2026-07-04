@@ -16,6 +16,7 @@ from typing import Any
 from .active_agent_processes import register_process
 from .active_agent_processes import terminate_active_agent_processes
 from .active_agent_processes import unregister_process
+from .paths import HARNESS_ROOT
 from .resource_limits import apply_agent_memory_limit
 
 
@@ -119,6 +120,9 @@ class AgentAdapter:
                 "FEATURELIFTBENCH_TASK_FILE": str(context.task_file),
                 "FEATURELIFTBENCH_SUBMISSION_DIR": str(context.submission_dir),
                 "FEATURELIFTBENCH_AGENT_OUTPUT_DIR": str(context.agent_output_dir),
+                "PYTHONPATH": os.pathsep.join(
+                    p for p in (env.get("PYTHONPATH", ""), str(HARNESS_ROOT)) if p
+                ),
                 "PYTHONDONTWRITEBYTECODE": "1",
             }
         )

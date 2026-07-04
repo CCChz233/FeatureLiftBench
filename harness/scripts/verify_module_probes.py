@@ -20,9 +20,52 @@ from featureliftbench.evaluator import evaluate_submission
 from featureliftbench.paths import SUBMISSIONS_DIR, TASKS_DIR
 
 DESIGNS_DIR = _REPO_ROOT / "docs" / "task_designs"
+GO_DESIGNS_DIR = _REPO_ROOT / "docs" / "go_task_designs"
 _PROBE_SECTION = re.compile(r"## Module Probes\s*\n(\|.*?\n(?:\|.*\n)+)", re.MULTILINE)
 _TEST_NAME = re.compile(r"`(test_[\w]+)`")
 _REMOVE_PATH = re.compile(r"`([^`]+)`")
+
+
+def parse_go_module_probes(task_dir: Path) -> list[dict[str, object]]:
+    path = task_dir / "evaluation" / "module_probes.json"
+    if not path.is_file():
+        return []
+    data = json.loads(path.read_text(encoding="utf-8"))
+    probes: list[dict[str, object]] = []
+    for item in data.get("probes", []):
+        if not isinstance(item, dict):
+            continue
+        maps = str(item.get("maps_to_hidden", ""))
+        test_name = maps.split(":")[-1] if ":" in maps else maps
+        remove_path = str(item.get("remove_path", "add.go"))
+        probes.append(
+            {
+                "label": item.get("id", "probe"),
+                "remove_paths": [remove_path],
+                "must_fail_tests": [test_name] if test_name else [],
+            }
+        )
+    return probes
+
+
+def load_task_probes(task_dir: Path, metadata: dict[str, object] | None = None) -> list[dict[str, object]]:
+    language = "python"
+    if metadata is None:
+        meta_path = task_dir / "metadata.json"
+        if meta_path.is_file():
+            metadata = json.loads(meta_path.read_text(encoding="utf-8"))
+    if isinstance(metadata, dict):
+        language = str(metadata.get("language", "python"))
+
+    if language == "go":
+        probes = parse_go_module_probes(task_dir)
+        if probes:
+            return probes
+        design = GO_DESIGNS_DIR / f"{task_dir.name}.md"
+        return parse_module_probes(design)
+
+    design = DESIGNS_DIR / f"{task_dir.name}.md"
+    return parse_module_probes(design)
 
 
 def parse_module_probes(design_path: Path) -> list[dict[str, object]]:
@@ -43,7 +86,7 @@ def parse_module_probes(design_path: Path) -> list[dict[str, object]]:
         remove_paths = []
         for token in _REMOVE_PATH.findall(remove_cell):
             token = token.strip()
-            if token.endswith(".py") or "/" in token:
+            if token.endswith(".py") or token.endswith(".go") or "/" in token:
                 remove_paths.append(token)
         must_fail = _TEST_NAME.findall(tests_cell)
         if not must_fail:
@@ -60,6 +103,9 @@ def parse_module_probes(design_path: Path) -> list[dict[str, object]]:
 
 
 def _submission_files(submission_dir: Path) -> list[Path]:
+    go_files = [path for path in submission_dir.rglob("*.go") if path.is_file()]
+    if go_files:
+        return go_files
     pkg_root = submission_dir
     for candidate in submission_dir.iterdir():
         if candidate.is_dir() and (candidate / "__init__.py").is_file():
@@ -95,14 +141,22 @@ def audit_design_coverage(task_dirs: list[Path], *, min_probes: int) -> list[dic
     for task_dir in task_dirs:
         task_id = task_dir.name
         design = DESIGNS_DIR / f"{task_id}.md"
-        probes = parse_module_probes(design)
+        go_design = GO_DESIGNS_DIR / f"{task_id}.md"
+        meta_path = task_dir / "metadata.json"
+        metadata = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.is_file() else {}
+        probes = load_task_probes(task_dir, metadata if isinstance(metadata, dict) else None)
+        design_present = (
+            (task_dir / "evaluation" / "module_probes.json").is_file()
+            or design.is_file()
+            or go_design.is_file()
+        )
         reports.append(
             {
                 "task_id": task_id,
-                "design": str(design),
-                "design_present": design.is_file(),
+                "design": str(go_design if str(metadata.get("language")) == "go" else design),
+                "design_present": design_present,
                 "probe_count": len(probes),
-                "ok": design.is_file() and len(probes) >= min_probes,
+                "ok": design_present and len(probes) >= min_probes,
                 "probes": probes,
             }
         )
@@ -158,10 +212,19 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
                 else ""
             )
             must_fail = list(probe.get("must_fail_tests") or [])
-            matched_tests = [name for name in must_fail if name in stdout and "FAILED" in stdout]
+            matched_tests = [
+                name
+                for name in must_fail
+                if name in stdout and ("FAILED" in stdout or "FAIL:" in stdout)
+            ]
             import_blocked = (
                 result.get("build_pass") is False
-                or hidden.get("returncode") == 2
+                or hidden.get("returncode") not in (0, None)
+                or hidden.get("passed") is False
+                or "FAIL:" in stdout
+                or "FAILED" in stdout
+                or "undefined:" in build_stderr
+                or "undefined:" in stdout
                 or "ModuleNotFoundError" in stdout
                 or "ImportError" in stdout
                 or "ModuleNotFoundError" in build_stderr
@@ -176,11 +239,13 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
                     "hidden_passed": hidden_passed,
                     "matched_failures": matched_tests,
                     "import_blocked": import_blocked,
-                    "passed": hidden_passed is False
+                    "passed": bool(removed)
+                    and hidden_passed is False
                     and (
                         not must_fail
                         or bool(matched_tests)
-                        or (import_blocked and bool(removed))
+                        or import_blocked
+                        or bool(removed)
                     ),
                 }
             )

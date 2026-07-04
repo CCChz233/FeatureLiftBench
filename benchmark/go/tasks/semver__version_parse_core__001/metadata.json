@@ -1,0 +1,70 @@
+{
+  "task_id": "semver__version_parse_core__001",
+  "language": "go",
+  "difficulty": "hard",
+  "tags": [
+    "go",
+    "gold",
+    "parser",
+    "pilot"
+  ],
+  "source": {
+    "name": "semver",
+    "url": "https://github.com/Masterminds/semver",
+    "commit": "v3.2.1",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Semantic version parse and compare",
+    "description": "Extract semver parse/compare core from Masterminds/semver.",
+    "source_entrypoints": [
+      "semver.Parse",
+      "semver.Compare"
+    ],
+    "included_behaviors": [
+      "parse major.minor.patch",
+      "compare numeric versions",
+      "handle prerelease ordering"
+    ],
+    "excluded_behaviors": [
+      "CLI",
+      "network",
+      "constraints module",
+      "original module import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "description": "Version parsing spans normalize helpers and comparison rules.",
+    "signals": [
+      "parser",
+      "prerelease",
+      "internal normalize"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted",
+    "callable": "featurelifted.Compare",
+    "signature": "Compare(a, b string) (int, error)"
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 120,
+    "cgo_enabled": false,
+    "module_path": "featurelifted",
+    "forbidden_imports": [
+      "github.com/Masterminds/semver"
+    ]
+  },
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
+  }
+}

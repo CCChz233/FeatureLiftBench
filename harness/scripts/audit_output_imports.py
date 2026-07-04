@@ -47,7 +47,30 @@ def _collect_imports_from_file(path: Path) -> set[str]:
     return found
 
 
+def _collect_go_test_imports(task_dir: Path) -> set[str]:
+    imports: set[str] = set()
+    import_re = re.compile(r'"([^"]+)"')
+    for subdir in ("public_tests", "hidden_tests"):
+        tests_root = task_dir / subdir
+        if not tests_root.is_dir():
+            continue
+        for path in tests_root.rglob("*_test.go"):
+            text = path.read_text(encoding="utf-8")
+            if "featurelifted" in text:
+                imports.add("featurelifted")
+            for match in import_re.finditer(text):
+                module = match.group(1)
+                if module == "featurelifted" or module.startswith("featurelifted/"):
+                    imports.add(module.split("/")[0])
+    return imports
+
+
 def _collect_test_imports(task_dir: Path) -> set[str]:
+    metadata_path = task_dir / "metadata.json"
+    if metadata_path.is_file():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        if metadata.get("language") == "go":
+            return _collect_go_test_imports(task_dir)
     imports: set[str] = set()
     for subdir in ("public_tests", "hidden_tests"):
         tests_root = task_dir / subdir
@@ -68,11 +91,11 @@ def _parse_output_import(import_line: str) -> set[str]:
         part = part.strip()
         if not part:
             continue
-        if part.startswith("import featurelifted"):
-            match_as = re.match(r"^import featurelifted(?:\s+as\s+(\w+))?", part)
+        if part == "featurelifted":
             symbols.add("featurelifted")
-            if match_as and match_as.group(1):
-                symbols.add(match_as.group(1))
+            continue
+        if part.startswith("import featurelifted") or part.startswith('import "featurelifted"'):
+            symbols.add("featurelifted")
             continue
         match = re.match(r"^from\s+(featurelifted(?:\.[\w.]+)?)\s+import\s+(.+)$", part)
         if not match:
@@ -179,6 +202,9 @@ def main() -> None:
 
     if args.fail_on_gap and gaps:
         raise SystemExit(len(gaps))
+
+    if not gaps and reports:
+        print("[OK] audit ok")
 
 
 if __name__ == "__main__":

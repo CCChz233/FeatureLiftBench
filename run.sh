@@ -5,6 +5,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 
+if grep -qi microsoft /proc/version 2>/dev/null && [[ -f "$ROOT/harness/scripts/wsl_docker_setup.sh" ]]; then
+  # shellcheck source=harness/scripts/wsl_docker_setup.sh
+  source "$ROOT/harness/scripts/wsl_docker_setup.sh"
+fi
+
 export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
 
 if [[ -n "${PYTHON:-}" ]]; then
@@ -70,6 +75,14 @@ if [[ "${EXTRA_AGENT_PASSES}" != "0" ]]; then
   echo "Extra agent passes: ${EXTRA_AGENT_PASSES}"
 fi
 
+DOCKER_FLAGS=()
+if [[ -n "${FEATURELIFTBENCH_AGENT_DOCKER:-}" ]]; then
+  DOCKER_FLAGS+=(--agent-docker)
+fi
+if [[ -n "${FEATURELIFTBENCH_EVAL_DOCKER:-}" ]]; then
+  DOCKER_FLAGS+=(--eval-docker)
+fi
+
 set +e
 $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --agent mini-swe-agent \
@@ -82,6 +95,7 @@ $PYTHON -B -m featureliftbench.cli run-agent benchmark/tasks \
   --extra-agent-passes "${EXTRA_AGENT_PASSES}" \
   ${NO_PROGRESS:+--no-progress} \
   --output "${OUTPUT}" \
+  "${DOCKER_FLAGS[@]}" \
   "${RESUME_FLAG[@]}"
 RUN_AGENT_STATUS=$?
 set -e

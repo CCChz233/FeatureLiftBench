@@ -1,0 +1,19 @@
+{
+  "probes": [
+    {
+      "id": "parse_core",
+      "remove_path": "bytes_parse.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestParseBytesComma"
+    },
+    {
+      "id": "format_core",
+      "remove_path": "bytes_format.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestBytesKiloRounding"
+    },
+    {
+      "id": "suffix_table",
+      "remove_path": "bytes_common.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestParseBytesCompactIEC"
+    }
+  ]
+}

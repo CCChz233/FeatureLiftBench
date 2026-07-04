@@ -1,355 +1,260 @@
-# Go Pilot Playbook
+# Go Pilot 出题标准流程（Playbook）
 
-**Purpose:** make the first 5 Go tasks objectively runnable before expanding to 20 or 100.
-**Spec:** [GO_V2_MINI_SPEC.md](GO_V2_MINI_SPEC.md)
-**Design:** [GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md)
+**最后更新：** 2026-07-03
 
-## 0. Operating Rule
+Go track **10 gold** 阶段的唯一执行标准。政策见 [GO_EXPANSION.md](GO_EXPANSION.md)；格式见 [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。
 
-Do not start mass-producing Go tasks until the first 5 tasks pass the full evidence loop:
+| 层级 | 文档 | 作用 |
+| --- | --- | --- |
+| **执行（本文）** | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) | 七步流程、gate、命令、promote |
+| 政策 | [GO_EXPANSION.md](GO_EXPANSION.md) | 10 gold → 100、论文骨架 |
+| Harness | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) | Phase 0 工程清单 |
+| 仓库池 | [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) | Go repo 接受标准与浓度 |
+| 质量评审 | [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) | 入榜客观标准 |
+| 候选台账 | [go_candidate_backlog.md](go_candidate_backlog.md) | shortlist 与状态 |
+| 设计 | [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) | 单题设计笔记 |
+| 格式 | [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) | metadata、目录、测试 |
+| 契约 | [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) §11 | 论文/复现 |
 
-```text
-task shape -> oracle -> naive -> copy_all -> Docker eval -> stability -> agent calibration -> acceptance
-```
+**硬性约束：**
 
-The pilot is an evaluator and process validation phase. A runnable but uncalibrated task is not accepted.
+- Python `benchmark/tasks/` **冻结**，Go 题只进 `benchmark/go/`
+- 无 oracle 不进 `benchmark/go/tasks/`
+- Phase 1：**一次一题**；Phase 2：每批最多 3 题，每题独立 evidence
+- **functional pass 不是 promote 充分条件**；必须 oracle/naive/copy_all/probe/Flash 分层
+- Phase 0 harness DoD 未完成前，不得 promote
 
-## 1. Phase Plan
+---
 
-### Phase A: Harness Skeleton
-
-Implement the minimum Go path without changing Python v1 behavior:
-
-- add `metadata.language == "go"` validation;
-- add Go evaluator dispatch;
-- add Go local evaluator unit tests;
-- add Go Docker eval image;
-- add Go agent Docker image or Go-enabled agent image;
-- add language grouping in suite summaries;
-- keep Python `benchmark/tasks/` untouched.
-
-Acceptance:
-
-- existing Python tests still pass;
-- a dummy Go task can be evaluated locally and in Docker;
-- Docker eval uses `--network none`, resource limits, read-only mounts, and structured sandbox errors.
-
-### Phase B: Five Pilot Tasks
-
-Create exactly 5 pilot tasks first:
-
-| Priority | Task id | Source | Type | Why this is in pilot |
-| --- | --- | --- | --- | --- |
-| P0 | `semver__constraint_core__001` | `Masterminds/semver` | parser / data model | small, stable, good first module-path test |
-| P0 | `doublestar__glob_match_core__001` | `bmatcuk/doublestar` | matcher / path | hidden tests can separate shallow matching from real glob behavior |
-| P0 | `mapstructure__decode_hook_core__001` | `mitchellh/mapstructure` | reflection / tags | Go-specific reflection closure |
-| P0 | `singleflight__group_core__001` | `golang/sync` | concurrency | compact but real synchronization semantics |
-| P0 | `go_vibe_app__pubsub_core__001` | curated | channel lifecycle | controlled concurrency task for close/cancel/leak cases |
-
-Acceptance:
-
-- each task has public and hidden tests;
-- each task has a human design note;
-- each task has oracle, naive, and copy-all submissions;
-- each task has a gate report and decision file.
-
-### Phase C: Evidence Packets
-
-For each task, collect:
+## 总览：七步流程
 
 ```text
-evaluation/gate_report.json
-evaluation/decision.md
-oracle eval result
-naive eval result
-copy_all eval result
-module/import probe result
-stability result
-agent calibration result
+Step 0  选 Go 仓库 / shortlist（GO_REPO_SELECTION + go_candidate_backlog）
+Step 1  Design spike（docs/go_task_designs/<task_id>.md）
+Step 2  创建 staging（benchmark/go/staging/<task_id>/）
+Step 3  Oracle closure（benchmark/submissions/<task_id>/oracle/）
+Step 4  Naive + copy_all baseline
+Step 5  本地验证（validate / audit / eval / probes）
+Step 6  Flash 单题校准（deepseek_v4_flash）
+Step 7  Promote / Redesign / Drop → benchmark/go/tasks/
 ```
 
-Acceptance:
+---
 
-- 5/5 oracle pass in Docker;
-- 5/5 forbidden original import/module probes work;
-- 5/5 copy-all pass or has a documented reason why copy-all is not meaningful;
-- 5/5 naive fail hidden or forbidden gate;
-- 0 undocumented gate mismatch.
+## Agent 接管模式
 
-### Phase D: Stability and Calibration
+```text
+while gold_count < 10:
+  1. 取 go_candidate_backlog 下一项 shortlist
+  2. 写/更新 go_task_designs/<task_id>.md
+  3. 生成 staging + oracle/naive/copy_all
+  4. 跑全部 gate → gate_report.json
+  5. decision.md
+  6. promote → 更新 catalog；否则 redesign（≤2 轮）或 drop
+```
 
-For every pilot task:
+**Evidence Packet：**
+
+```text
+experiments/go-pilot/<task_id>/review/
+  gate_report.json
+  decision.md
+  validate-task.log
+  audit-output-imports.log
+  module-probes.log
+  oracle/result.json
+  naive/result.json
+  copy_all/result.json
+  flash/run.json
+```
+
+`gate_report.json` 格式与 Python batch-1 相同（见 [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md)），`experiments/batch1/` 改为 `experiments/go-pilot/`。
+
+---
+
+## 客观 Gate 常量
+
+| Gate | 客观条件 |
+| --- | --- |
+| G0 task shape | `validate-task` exit 0；`audit_output_imports.py --fail-on-gap` exit 0 |
+| G1 oracle | `status=passed`；public+hidden pass；`functional_gate=1.0`；`0.20 <= extraction_ratio <= 0.60` |
+| G2 naive | public pass；hidden fail；`functional_gate=0.0`；`extraction_ratio <= 0.10` |
+| G3 copy_all | pass；`extraction_ratio >= 0.85`；delta vs oracle `>= 0.25` |
+| G4 probes | `verify_module_probes.py --verify-oracle`；≥3 probe |
+| G5 Flash | 至少一次 `deepseek_v4_flash`；记录 A/B/C |
+| G6 docs | design note、backlog、Go catalog 一致 |
+
+Metric exceptions 同 Python：`low_oracle_extraction_A_tier_exception`、`copy_all_metric_exception`（登记在 `gate_report.json`）。
+
+---
+
+## Step 0 — 选题
+
+1. 读 [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) — repo 是否值得占用 Go 名额
+2. 读 [go_candidate_backlog.md](go_candidate_backlog.md) — 取 `status=shortlist` 项
+3. **先选 repo，再切 feature slice**
+
+**Repo gate：**
+
+| 维度 | 要求 |
+| --- | --- |
+| 真实使用 | 知名 Go OSS；`go.mod` 可 pin；license 清晰 |
+| 可切片 | 存在可独立复用的 API（非仅 CLI） |
+| 缠绕 | 多 package / internal / init / 全局状态至少其一 |
+| 体量 | 非单文件工具；oracle 不必 vendor 整仓 |
+| 离线测试 | 可无网络写 table-driven tests |
+| 不重复 | 不与已有 Go/Python 题同源同 API |
+
+**Pilot 首题建议：** backlog 中 `priority=P0` 且 harness 风险低（纯 stdlib 测试、无 cgo）。
+
+---
+
+## Step 1 — Design spike
+
+复制 [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) → `docs/go_task_designs/<task_id>.md`。
+
+必填：Why、Practical reuse、Source、Entanglement、Target API、Included/Excluded、Test plan、Go/No-Go（入榜决策，非 Go 语言）。
+
+**Design gate：** 另一人（或 Agent 第二遍）能仅凭 design note 说出 oracle 大约多少 `.go` 文件、naive 会漏什么 hidden。
+
+---
+
+## Step 2 — 创建 staging
 
 ```bash
-go test ./... -count=20 -timeout=120s
+mkdir -p benchmark/go/staging/<task_id>/{repo,evaluation/public_tests,evaluation/hidden_tests,environment}
+cp docs/go_task_designs/<task_id>.md  # 人类参考，不进 staging
 ```
 
-For race-marked tasks:
+填写 `metadata.json`、`TASK.md`、`environment/go.mod`（harness module）。
+
+---
+
+## Step 3 — Oracle
 
 ```bash
-CGO_ENABLED=1 go test ./... -race -count=1 -timeout=120s
+PYTHONPATH=harness python harness/scripts/build_oracle_submission.py \
+  --task benchmark/go/staging/<task_id> \
+  --output benchmark/submissions/<task_id>/oracle
 ```
 
-For agent calibration:
+手工调整至 G1 预期；**禁止** submission import 原 module path。
 
-- run one strong agent profile once across all 5 tasks;
-- assign A/B/C labels;
-- keep B-tier tasks if they are useful and extraction quality remains informative;
-- do not claim the pilot mostly defeats the strong agent unless the numbers support it.
+---
 
-## 2. Task Authoring Checklist
+## Step 4 — Baselines
 
-For each task:
+| 变体 | 意图 |
+| --- | --- |
+| naive | 只看 public 的浅实现；public 过、hidden 挂 |
+| copy_all | 大段复制/重导出；functional 可能过但 extraction 高 |
 
-- pin upstream commit and license;
-- define practical reuse story;
-- identify exact source entrypoints;
-- define included and excluded behaviors;
-- write public tests for basic API shape;
-- write hidden tests for behavior closure;
-- define forbidden imports and forbidden modules;
-- ensure no live network, DB, service, or host-specific path;
-- design oracle before writing agent prompt;
-- design naive baseline to expose hidden-test value;
-- design copy-all baseline to measure extraction pressure;
-- run Docker eval before promoting.
-
-## 3. Pilot Task Templates
-
-### `semver__constraint_core__001`
-
-Goal:
-
-Extract semantic version parsing and constraint checking into a standalone Go package.
-
-Expected symbols:
-
-- `Version`
-- `NewVersion`
-- `Constraint`
-- `NewConstraint`
-- `Check`
-
-Hidden tests should cover:
-
-- prerelease ordering;
-- build metadata handling;
-- constraint ranges;
-- invalid input errors;
-- sorting/comparison edge cases.
-
-Risk:
-
-- if scope is too broad, oracle becomes copy-heavy. Keep the feature slice to parsing, comparison, and constraint evaluation.
-
-### `doublestar__glob_match_core__001`
-
-Goal:
-
-Extract `**`-aware glob matching for slash-separated paths.
-
-Expected symbols:
-
-- `Match`
-- `PathMatch`
-- `ValidatePattern`
-
-Hidden tests should cover:
-
-- `**` across zero or more path segments;
-- escaped metacharacters;
-- character classes;
-- invalid patterns;
-- path separator normalization.
-
-Risk:
-
-- avoid filesystem walking in the first task. Keep this to matching semantics.
-
-### `mapstructure__decode_hook_core__001`
-
-Goal:
-
-Extract map-to-struct decoding with selected decode hooks.
-
-Expected symbols:
-
-- `DecoderConfig`
-- `Decoder`
-- `NewDecoder`
-- `Decode`
-- selected hook helpers
-
-Hidden tests should cover:
-
-- struct tags;
-- weak typing behavior if included;
-- decode hook ordering;
-- embedded structs;
-- error paths with field names.
-
-Risk:
-
-- reflection scope can balloon. Exclude unrelated metadata, squash edge cases, or unused hook helpers unless tests require them.
-
-### `singleflight__group_core__001`
-
-Goal:
-
-Extract duplicate suppression for concurrent calls with the same key.
-
-Expected symbols:
-
-- `Group`
-- `Result`
-- `Do`
-- `DoChan`
-- `Forget`
-
-Hidden tests should cover:
-
-- many concurrent callers share one execution;
-- distinct keys do not block each other;
-- `Forget` forces a later call to re-execute;
-- panic/error behavior if included;
-- no goroutine leak after `DoChan`.
-
-Risk:
-
-- race detector support requires cgo. Keep ordinary functional tests deterministic and make race check an extra diagnostic.
-
-### `go_vibe_app__pubsub_core__001`
-
-Goal:
-
-Extract a small in-memory pub/sub broker from intentionally messy app code.
-
-Expected symbols:
-
-- `Broker`
-- `Subscribe`
-- `Publish`
-- `Unsubscribe`
-- `Close`
-
-Hidden tests should cover:
-
-- slow subscriber does not block all publishers forever;
-- unsubscribe closes only the right channel;
-- publish after close returns a defined error;
-- concurrent subscribe/unsubscribe/publish;
-- no send-on-closed-channel panic.
-
-Risk:
-
-- curated tasks can become artificial. The repo must include realistic surrounding clutter, not just the clean broker implementation.
-
-## 4. Gate Report Shape
-
-Each task should write `evaluation/gate_report.json`:
-
-```json
-{
-  "task_id": "singleflight__group_core__001",
-  "language": "go",
-  "decision": "promote",
-  "gates": {
-    "shape": "pass",
-    "oracle": "pass",
-    "naive": "pass",
-    "copy_all": "pass",
-    "forbidden": "pass",
-    "offline": "pass",
-    "stability": "pass",
-    "agent_calibration": "pass"
-  },
-  "metrics": {
-    "oracle_extraction_ratio": 0.0,
-    "copy_all_extraction_ratio": 0.0,
-    "naive_hidden_pass": false,
-    "stability_runs": 20
-  },
-  "exceptions": []
-}
+```bash
+# 模板生成后人工裁剪
+cp -r benchmark/submissions/<task_id>/oracle benchmark/submissions/<task_id>/naive
+# 删减至 naive 策略...
 ```
 
-If exceptions are needed, they must be named and justified. Do not use exceptions to hide flaky tests.
+---
 
-## 5. Acceptance Document Shape
-
-The pilot acceptance report should answer:
-
-- Are all 5 tasks runnable in Docker eval?
-- Are all 5 oracle submissions passing?
-- Are all 5 naive baselines failing the intended gate?
-- Does copy-all demonstrate extraction pressure?
-- Are concurrency tests deterministic?
-- Did any task require a metric exception?
-- What did the first strong agent run solve, fail, or copy heavily?
-- Should we expand to Go alpha 20?
-
-Recommended decision labels:
-
-```text
-accept_go_alpha_20
-hold_fix_evaluator
-hold_replace_task
-reject_go_track_for_now
-```
-
-## 6. Commands After Harness Exists
-
-Go evaluator dispatch uses the existing `eval` command. The evaluator chooses Python or Go from `metadata.language`.
+## Step 5 — 本地验证
 
 ```bash
 export PYTHONPATH=harness
 
-python -B -m featureliftbench.cli validate-task benchmark/go_pilot/<task_id>/
-python -B -m featureliftbench.cli eval \
-  benchmark/go_pilot/<task_id>/ \
+python -m featureliftbench.cli validate-task benchmark/go/staging/<task_id>
+
+python -m featureliftbench.cli audit_output_imports benchmark/go/staging/<task_id> \
+  benchmark/submissions/<task_id>/oracle --fail-on-gap
+
+python -m featureliftbench.cli eval benchmark/go/staging/<task_id> \
   benchmark/submissions/<task_id>/oracle \
-  --output /tmp/flb-go-eval \
-  --docker
-python -B harness/scripts/verify_go_oracles.py --task-root benchmark/go_pilot
-python -B harness/scripts/verify_go_module_probes.py --task-root benchmark/go_pilot --min-probes 3
-python -B harness/scripts/run_go_stability.py --task-root benchmark/go_pilot --count 20
+  --output experiments/go-pilot/<task_id>/review/oracle --docker
+
+python -m featureliftbench.cli eval benchmark/go/staging/<task_id> \
+  benchmark/submissions/<task_id>/naive \
+  --output experiments/go-pilot/<task_id>/review/naive --docker
+
+python -m featureliftbench.cli eval benchmark/go/staging/<task_id> \
+  benchmark/submissions/<task_id>/copy_all \
+  --output experiments/go-pilot/<task_id>/review/copy_all --docker
+
+python harness/scripts/verify_module_probes.py \
+  --task benchmark/go/staging/<task_id> \
+  --submission benchmark/submissions/<task_id>/oracle \
+  --verify-oracle
 ```
 
-Do not add these commands to `run.sh` until the Go path is implemented and isolated.
+> **注意：** Phase 0 完成前，上述 `eval` 可能失败——先完成 [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md)。
 
-Current harness smoke:
+---
+
+## Step 6 — Flash 校准
 
 ```bash
-docker/build_go_eval_image.sh featureliftbench-eval-go:latest
-docker/build_go_agent_image.sh featureliftbench-agent-go:latest
-PYTHONPATH=harness python -B -m featureliftbench.cli eval \
-  benchmark/go_pilot/go_dummy__adder_core__001 \
-  benchmark/submissions/go_dummy__adder_core__001/oracle \
-  --output /tmp/flb-go-dummy-eval \
+PYTHONPATH=harness python -m featureliftbench.cli run-agent benchmark/go/staging/<task_id> \
+  --model deepseek_v4_flash \
+  --output experiments/go-pilot/<task_id>/flash \
   --docker
 ```
 
-## 7. Stop Conditions
+| Tier | 含义 |
+| --- | --- |
+| A | public 过、hidden 挂，或靠大闭包低 final |
+| B | 近 oracle extraction 仍 pass |
+| C | 低 extraction 或 public 硬编码过 hidden → redesign/drop |
 
-Stop expansion and fix the process if:
+---
 
-- Docker eval cannot run offline;
-- any oracle only passes on the host but not in Docker;
-- concurrency tests flake across 20 runs;
-- forbidden module checks miss an original repo dependency;
-- agent Docker requires mounting benchmark root, hidden tests, host home, or Docker socket;
-- more than one pilot task needs a metric exception;
-- the pilot cannot produce a clear oracle vs copy-all extraction gap.
+## Step 7 — Promote / Redesign / Drop
 
-## 8. Expansion Rule
+**Promote：**
 
-Only expand to Go alpha 20 after:
+```bash
+git mv benchmark/go/staging/<task_id> benchmark/go/tasks/<task_id>
+```
 
-- 5/5 pilot tasks accepted;
-- Go evaluator has unit tests;
-- Go Docker eval smoke tests pass;
-- Go agent Docker smoke tests pass;
-- pilot acceptance report is written;
-- Python v1 run scripts remain unchanged for official Python experiments.
+更新：
 
-For alpha 20, keep repository selection conservative: one task per repo first, then add second tasks only after the first passes all gates.
+- `docs/go_candidate_backlog.md` → `accepted`
+- `docs/benchmark_tasks.md` Go 分区
+- `experiments/go-pilot/<task_id>/review/decision.md`
+
+**Redesign：** ≤2 轮；记录 blocking_gates。
+
+**Drop：** reuse 不成立或 G3 拉不开；backlog 标 `dropped` 并写原因。
+
+---
+
+## 10 Gold 完成检查单
+
+Phase 2 收尾时，确认：
+
+- [ ] `benchmark/go/tasks/` 恰好 **10** 题（或文档登记例外）
+- [ ] 每题有 `experiments/go-pilot/<task_id>/review/gate_report.json` 且 `decision=promote`
+- [ ] ≥ **8** 个唯一 source repo（10 题中）
+- [ ] Flash A/B/C 分布写入 `docs/go_pilot_acceptance_report.md`（可新建）
+- [ ] 无题依赖 cgo / 网络
+- [ ] [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) DoD 全勾
+- [ ] 论文方法节可引用 10 题案例表
+
+---
+
+## 扩到 100（Phase 3 预告）
+
+10 gold  playbook 稳定后：
+
+1. 将 `go_candidate_backlog` 扩至 60+ repo 候选
+2. 允许 Agent 并行 staging，但 **promote 仍逐题 gate**
+3. 浓度限制见 [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md)
+4. 不修改本 playbook 的 G0–G4 常量
+
+---
+
+## 命令速查
+
+| 动作 | 命令 |
+| --- | --- |
+| 健康检查（未来） | `bash harness/scripts/check_run_health.sh experiments/go-pilot/<run_id>` |
+| 单题 oracle | 见 Step 5 |
+| Windows | 在 WSL 内执行；见 [WINDOWS.md](WINDOWS.md) |

@@ -80,6 +80,15 @@ def _evaluate_python_submission(
     """Evaluate a submission and write ``result.json`` under ``output_dir``."""
 
     task_path = Path(task_dir).resolve()
+    try:
+        language = load_metadata(task_path).data.get("language", "python")
+    except Exception:
+        language = "python"
+    if language == "go":
+        from .go_eval import evaluate_go_submission
+
+        return evaluate_go_submission(task_dir, submission_dir, output_dir)
+
     submission_path = Path(submission_dir).resolve()
     output_path = Path(output_dir).resolve()
     logs_path = output_path / "logs"

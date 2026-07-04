@@ -1,0 +1,71 @@
+{
+  "task_id": "mapstructure__decode_core__001",
+  "language": "go",
+  "difficulty": "hard",
+  "tags": [
+    "go",
+    "gold",
+    "reflection",
+    "pilot"
+  ],
+  "source": {
+    "name": "mapstructure",
+    "url": "https://github.com/go-viper/mapstructure",
+    "commit": "v2.2.1",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Map to struct decode",
+    "description": "Extract mapstructure decode core from go-viper/mapstructure.",
+    "source_entrypoints": [
+      "mapstructure.Decode",
+      "mapstructure.NewDecoder"
+    ],
+    "included_behaviors": [
+      "decode map into struct via tags",
+      "weakly typed input coercion",
+      "squash embedded structs",
+      "decode hooks"
+    ],
+    "excluded_behaviors": [
+      "unrelated cache helpers",
+      "CLI entrypoints",
+      "original module import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "reflection_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "Struct decoding spans reflection helpers, hooks, and metadata paths.",
+    "signals": [
+      "reflect.Value",
+      "DecodeHook",
+      "squash tag"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted",
+    "callable": "featurelifted.Decode",
+    "signature": "Decode(input, output interface{}) error"
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 120,
+    "cgo_enabled": false,
+    "module_path": "featurelifted",
+    "forbidden_imports": [
+      "github.com/go-viper/mapstructure",
+      "github.com/go-viper/mapstructure/v2"
+    ]
+  },
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
+  }
+}

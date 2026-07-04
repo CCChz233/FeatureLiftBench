@@ -1,0 +1,19 @@
+{
+  "probes": [
+    {
+      "id": "prerelease_compare",
+      "remove_path": "compare.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestPrereleaseOrdering"
+    },
+    {
+      "id": "parse_core",
+      "remove_path": "version.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestInvalidVersion"
+    },
+    {
+      "id": "normalize_helper",
+      "remove_path": "normalize.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestBuildMetadataIgnored"
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -145,6 +146,63 @@ def _match_forbidden(module: str, forbidden: list[str]) -> str | None:
 
 def _normalize_distribution_name(name: str) -> str:
     return dependency_name(name)
+
+
+def find_forbidden_go_imports(
+    root: str | Path,
+    forbidden_imports: list[str],
+) -> list[ForbiddenImportIssue]:
+    """Statically scan Go source for forbidden import paths."""
+
+    root_path = Path(root)
+    forbidden = [name for name in forbidden_imports if name]
+    issues: list[ForbiddenImportIssue] = []
+
+    import_block_re = re.compile(r"import\s+\(([^)]*)\)", re.MULTILINE | re.DOTALL)
+    import_single_re = re.compile(r'import\s+"([^"]+)"')
+    quoted_re = re.compile(r'"([^"]+)"')
+
+    for path in sorted(root_path.rglob("*.go")):
+        if not path.is_file():
+            continue
+        if _skip_go_import_scan(path, root_path):
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            issues.append(
+                ForbiddenImportIssue(path=path, message="cannot decode Go file as UTF-8")
+            )
+            continue
+
+        modules: list[str] = []
+        for match in import_single_re.finditer(source):
+            modules.append(match.group(1))
+        for match in import_block_re.finditer(source):
+            for imp_match in quoted_re.finditer(match.group(1)):
+                modules.append(imp_match.group(1))
+
+        for module in modules:
+            matched = _match_forbidden(module, forbidden)
+            if matched is not None:
+                issues.append(
+                    ForbiddenImportIssue(
+                        path=path,
+                        message=f"imports forbidden module {matched!r}",
+                    )
+                )
+
+    return issues
+
+
+def _skip_go_import_scan(path: Path, root: Path) -> bool:
+    try:
+        relative = path.relative_to(root)
+    except ValueError:
+        return False
+    if relative.name.endswith("_test.go"):
+        return True
+    return bool(set(relative.parts) & {"vendor", ".git"})
 
 
 def _skip_static_import_scan(path: Path, root: Path) -> bool:

@@ -13,36 +13,23 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
-from featureliftbench.docker_eval import evaluate_submission_docker
 from featureliftbench.evaluator import evaluate_submission
-from featureliftbench.paths import SUBMISSIONS_DIR, TASKS_DIR
+from featureliftbench.paths import GO_TASKS_DIR, SUBMISSIONS_DIR, TASKS_DIR
 
 
-def list_task_dirs(task_ids: list[str] | None = None) -> list[Path]:
+def list_task_dirs(task_ids: list[str] | None = None, *, go_tasks: bool = False) -> list[Path]:
+    root = GO_TASKS_DIR if go_tasks else TASKS_DIR
     if task_ids:
-        return [TASKS_DIR / task_id for task_id in task_ids]
+        return [root / task_id for task_id in task_ids]
     return sorted(
-        path for path in TASKS_DIR.iterdir() if path.is_dir() and (path / "metadata.json").is_file()
+        path for path in root.iterdir() if path.is_dir() and (path / "metadata.json").is_file()
     )
-
-
-def evaluate_oracle(
-    task_dir: Path,
-    oracle_dir: Path,
-    eval_output: Path,
-    *,
-    use_docker: bool,
-) -> dict[str, object]:
-    if use_docker:
-        return evaluate_submission_docker(task_dir, oracle_dir, eval_output, use_docker=True)
-    return evaluate_submission(task_dir, oracle_dir, eval_output)
 
 
 def verify_oracles(
     task_dirs: list[Path],
     *,
     require_present: bool = True,
-    use_docker: bool = False,
 ) -> list[dict[str, object]]:
     reports: list[dict[str, object]] = []
     with tempfile.TemporaryDirectory(prefix="flb-oracle-verify-") as tmp:
@@ -66,12 +53,7 @@ def verify_oracles(
             eval_output = output_root / task_id
             eval_output.mkdir(parents=True, exist_ok=True)
             try:
-                result = evaluate_oracle(
-                    task_dir,
-                    oracle_dir,
-                    eval_output,
-                    use_docker=use_docker,
-                )
+                result = evaluate_submission(task_dir, oracle_dir, eval_output)
             except Exception as exc:  # noqa: BLE001 - aggregate failures for script output
                 report["status"] = "error"
                 report["passed"] = False
@@ -106,18 +88,14 @@ def main() -> None:
         help="Do not count missing oracle directories as failures",
     )
     parser.add_argument(
-        "--docker",
+        "--go-tasks",
         action="store_true",
-        help="evaluate oracles inside the featureliftbench-eval Docker image",
+        help="Verify oracles under benchmark/go/tasks/ instead of Python tasks",
     )
     args = parser.parse_args()
 
-    task_dirs = list_task_dirs(args.task_ids)
-    reports = verify_oracles(
-        task_dirs,
-        require_present=not args.allow_missing,
-        use_docker=args.docker,
-    )
+    task_dirs = list_task_dirs(args.task_ids, go_tasks=args.go_tasks)
+    reports = verify_oracles(task_dirs, require_present=not args.allow_missing)
 
     passed = [report for report in reports if report.get("passed")]
     missing = [report for report in reports if report.get("status") == "missing"]

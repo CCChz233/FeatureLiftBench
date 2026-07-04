@@ -7,6 +7,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BENCHMARK_ROOT = REPO_ROOT / "benchmark"
 TASKS_DIR = BENCHMARK_ROOT / "tasks"
+GO_TASKS_DIR = BENCHMARK_ROOT / "go" / "tasks"
+GO_STAGING_DIR = BENCHMARK_ROOT / "go" / "staging"
+GO_SANITY_TASKS_DIR = BENCHMARK_ROOT / "go" / "sanity"
 SANITY_TASKS_DIR = BENCHMARK_ROOT / "sanity"
 SUBMISSIONS_DIR = BENCHMARK_ROOT / "submissions"
 SOURCES_DIR = BENCHMARK_ROOT / "sources"
@@ -28,7 +31,20 @@ def resolve_task_input(path: str | Path) -> Path:
     resolved = Path(path).resolve()
     if resolved in {BENCHMARK_ROOT, TASKS_DIR}:
         return TASKS_DIR
+    if resolved.name == "go" and (BENCHMARK_ROOT / "go" / "tasks").is_dir():
+        return BENCHMARK_ROOT / "go" / "tasks"
     legacy_tasks = REPO_ROOT / "tasks"
     if resolved == legacy_tasks and TASKS_DIR.is_dir():
         return TASKS_DIR
     return resolved
+
+
+def task_language(task_dir: str | Path) -> str:
+    """Return task language from metadata, defaulting to python."""
+
+    from .metadata import load_metadata
+
+    try:
+        return str(load_metadata(task_dir).data.get("language", "python"))
+    except Exception:
+        return "python"

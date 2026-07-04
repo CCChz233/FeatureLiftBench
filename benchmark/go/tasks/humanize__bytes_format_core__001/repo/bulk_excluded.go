@@ -1,0 +1,39 @@
+package humanize
+
+func ExcludedA() int  { return 1 }
+func ExcludedB() int  { return 2 }
+func ExcludedC() int  { return 3 }
+func ExcludedD() int  { return 4 }
+func ExcludedE() int  { return 5 }
+func ExcludedF() int  { return 6 }
+func ExcludedG() int  { return 7 }
+func ExcludedH() int  { return 8 }
+func ExcludedI() int  { return 9 }
+func ExcludedJ() int  { return 10 }
+func ExcludedK() int  { return 11 }
+func ExcludedL() int  { return 12 }
+func ExcludedM() int  { return 13 }
+func ExcludedN() int  { return 14 }
+func ExcludedO() int  { return 15 }
+func ExcludedP() int  { return 16 }
+func ExcludedQ() int  { return 17 }
+func ExcludedR() int  { return 18 }
+func ExcludedS() int  { return 19 }
+func ExcludedT() int  { return 20 }
+func ExcludedU() int  { return 21 }
+func ExcludedV() int  { return 22 }
+func ExcludedW() int  { return 23 }
+func ExcludedX() int  { return 24 }
+func ExcludedY() int  { return 25 }
+func ExcludedZ() int  { return 26 }
+
+func ExcludedAA() int { return 27 }
+func ExcludedAB() int { return 28 }
+func ExcludedAC() int { return 29 }
+func ExcludedAD() int { return 30 }
+func ExcludedAE() int { return 31 }
+func ExcludedAF() int { return 32 }
+func ExcludedAG() int { return 33 }
+func ExcludedAH() int { return 34 }
+func ExcludedAI() int { return 35 }
+func ExcludedAJ() int { return 36 }

@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import os
-import resource
 import signal
 import subprocess
 import sys
+
+try:
+    import resource
+except ImportError:  # Windows and other non-POSIX hosts
+    resource = None  # type: ignore[assignment]
 import threading
 import time
 from dataclasses import dataclass
@@ -27,7 +31,7 @@ def memory_limit_supported() -> bool:
     global _MEMORY_LIMIT_SUPPORTED
     if _MEMORY_LIMIT_SUPPORTED is not None:
         return _MEMORY_LIMIT_SUPPORTED
-    if sys.platform == "darwin":
+    if resource is None or sys.platform in ("darwin", "win32"):
         _MEMORY_LIMIT_SUPPORTED = False
         return False
     probe_mb = 64
@@ -111,10 +115,18 @@ def apply_agent_memory_limit(command: list[str], env: dict[str, str]) -> list[st
 
 
 def terminate_process_group(pid: int) -> None:
+    if sys.platform == "win32":
+        subprocess.run(
+            ["taskkill", "/F", "/T", "/PID", str(pid)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return
     try:
         os.killpg(pid, signal.SIGKILL)
-    except ProcessLookupError:
-        return
+    except (AttributeError, ProcessLookupError):
+        pass
     except (PermissionError, OSError):
         try:
             os.kill(pid, signal.SIGKILL)
@@ -158,14 +170,17 @@ def run_captured_command(
     if limit is not None and limit <= 0:
         limit = None
     start = time.monotonic()
-    process = subprocess.Popen(
-        wrapped,
-        cwd=cwd,
-        env=env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        start_new_session=True,
-    )
+    popen_kwargs: dict[str, Any] = {
+        "cwd": cwd,
+        "env": env,
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.PIPE,
+    }
+    if sys.platform == "win32":
+        popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else:
+        popen_kwargs["start_new_session"] = True
+    process = subprocess.Popen(wrapped, **popen_kwargs)
     stdout_buffer = _LimitedOutputBuffer(limit)
     stderr_buffer = _LimitedOutputBuffer(limit)
     log_limit_event = threading.Event()

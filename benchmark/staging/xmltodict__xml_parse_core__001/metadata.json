@@ -1,0 +1,93 @@
+{
+  "task_id": "xmltodict__xml_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "xml",
+    "parser",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "xmltodict",
+    "url": "https://github.com/martinblech/xmltodict",
+    "commit": "966b903e4441f27816cd39ecf3305727b294a9c5",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "XML parse and unparse core",
+    "description": "Extract xmltodict SAX-to-ordered-dict parsing and dict-to-XML unparsing with namespace, attribute prefix, and mixed-content handling without importing xmltodict.",
+    "source_entrypoints": [
+      "xmltodict.parse",
+      "xmltodict.unparse",
+      "xmltodict.ParsingInterrupted",
+      "xmltodict._DictSAXHandler",
+      "xmltodict._emit",
+      "xmltodict._process_namespace"
+    ],
+    "included_behaviors": [
+      "parse XML strings into ordered dicts with @ attribute prefix",
+      "unparse dicts back to XML with matching attr_prefix and cdata_key",
+      "duplicate sibling elements become lists",
+      "process_namespaces with optional namespace URI collapse map",
+      "mixed content via #text alongside child elements",
+      "custom attr_prefix and cdata_key options"
+    ],
+    "excluded_behaviors": [
+      "streaming item_depth callbacks and ParsingInterrupted control flow",
+      "postprocessor hooks and force_list / force_cdata selectors",
+      "process_comments and comment_key emission",
+      "CLI marshal streaming entrypoint",
+      "original xmltodict import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "xmltodict couples expat SAX handler stack state, namespace declaration tracking, attribute prefix conventions, and symmetric unparse emission with validation.",
+    "signals": [
+      "_DictSAXHandler path/stack tracks nested items and mixed content",
+      "namespace_declarations merged into @xmlns on element open",
+      "_process_namespace rewrites keys for unparse with URI maps",
+      "push_data promotes duplicate keys to lists and applies force_list"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import parse, unparse, ParsingInterrupted",
+    "callable": "featurelifted.parse",
+    "signature": "parse(xml_input, encoding=None, process_namespaces=False, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "xmltodict"
+    ],
+    "forbidden_imports": [
+      "xmltodict"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "oracle_loc": 566,
+    "oracle_bytes": 23502,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 1593,
+    "copy_all_bytes": 65244
+  }
+}

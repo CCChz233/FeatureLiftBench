@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import argparse
-import json
+import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
+if str(REPO / "harness") not in sys.path:
+    sys.path.insert(0, str(REPO / "harness"))
+
+from build_go_oracle_submission import build_go_submission
 
 
 def sync_task(task_id: str, *, task_dir: Path | None = None) -> None:
@@ -22,15 +26,7 @@ def sync_task(task_id: str, *, task_dir: Path | None = None) -> None:
     if task_dir is None:
         raise SystemExit(f"task dir not found for {task_id}")
 
-    repo_dir = task_dir / "repo"
-    out_dir = REPO / "benchmark/submissions" / task_id / "copy_all"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    for path in repo_dir.glob("*.go"):
-        text = path.read_text(encoding="utf-8")
-        for src_pkg in ("package originalpkg", "package semver", "package humanize", "package mapstructure"):
-            text = text.replace(src_pkg, "package featurelifted")
-        (out_dir / path.name).write_text(text, encoding="utf-8")
-    (out_dir / "go.mod").write_text("module featurelifted\n\ngo 1.22\n", encoding="utf-8")
+    out_dir = build_go_submission(task_dir.resolve(), variant="copy_all")
     print(f"synced {task_id}: {len(list(out_dir.glob('*.go')))} go files")
 
 

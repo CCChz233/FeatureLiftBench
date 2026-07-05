@@ -16,6 +16,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
+from featureliftbench.docker_eval import DEFAULT_EVAL_IMAGE
+from featureliftbench.docker_eval import evaluate_submission_docker
 from featureliftbench.evaluator import evaluate_submission
 from featureliftbench.paths import SUBMISSIONS_DIR, TASKS_DIR
 
@@ -163,7 +165,13 @@ def audit_design_coverage(task_dirs: list[Path], *, min_probes: int) -> list[dic
     return reports
 
 
-def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dict[str, object]:
+def verify_oracle_probes(
+    task_dir: Path,
+    probes: list[dict[str, object]],
+    *,
+    use_docker: bool = False,
+    docker_image: str = DEFAULT_EVAL_IMAGE,
+) -> dict[str, object]:
     task_id = task_dir.name
     oracle_dir = SUBMISSIONS_DIR / task_id / "oracle"
     report: dict[str, object] = {
@@ -181,7 +189,13 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
         output_root = Path(tmp)
         baseline_out = output_root / "baseline"
         baseline_out.mkdir()
-        baseline = evaluate_submission(task_dir, oracle_dir, baseline_out)
+        baseline = _evaluate_probe_submission(
+            task_dir,
+            oracle_dir,
+            baseline_out,
+            use_docker=use_docker,
+            docker_image=docker_image,
+        )
         report["baseline_passed"] = baseline.get("status") == "passed"
         if not report["baseline_passed"]:
             report["status"] = "failed"
@@ -200,7 +214,13 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
             )
             eval_out = probe_out / "eval"
             eval_out.mkdir()
-            result = evaluate_submission(task_dir, submission_copy, eval_out)
+            result = _evaluate_probe_submission(
+                task_dir,
+                submission_copy,
+                eval_out,
+                use_docker=use_docker,
+                docker_image=docker_image,
+            )
             hidden = result.get("hidden_tests") or {}
             hidden_passed = hidden.get("passed")
             stdout_path = eval_out / "logs" / "hidden.stdout"
@@ -255,6 +275,25 @@ def verify_oracle_probes(task_dir: Path, probes: list[dict[str, object]]) -> dic
         return report
 
 
+def _evaluate_probe_submission(
+    task_dir: Path,
+    submission_dir: Path,
+    output_dir: Path,
+    *,
+    use_docker: bool,
+    docker_image: str,
+) -> dict[str, object]:
+    if use_docker:
+        return evaluate_submission_docker(
+            task_dir,
+            submission_dir,
+            output_dir,
+            image=docker_image,
+            use_docker=True,
+        )
+    return evaluate_submission(task_dir, submission_dir, output_dir)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task_dirs", nargs="*", type=Path, help="Task directories")
@@ -263,6 +302,12 @@ def main() -> None:
         "--verify-oracle",
         action="store_true",
         help="Run oracle baseline + probe removal checks (requires local oracle submissions)",
+    )
+    parser.add_argument("--docker", action="store_true", help="Run probe verification evals in Docker")
+    parser.add_argument(
+        "--docker-image",
+        default=DEFAULT_EVAL_IMAGE,
+        help="Docker image for --docker; Go tasks auto-use the Go eval image",
     )
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
@@ -285,7 +330,14 @@ def main() -> None:
             task_dir = task_dir_map.get(task_id, TASKS_DIR / task_id)
             probes = list(item.get("probes") or [])
             if probes:
-                oracle_reports.append(verify_oracle_probes(task_dir, probes))
+                oracle_reports.append(
+                    verify_oracle_probes(
+                        task_dir,
+                        probes,
+                        use_docker=args.docker,
+                        docker_image=args.docker_image,
+                    )
+                )
 
     payload = {"audit": audit, "oracle_verification": oracle_reports}
     if args.json:

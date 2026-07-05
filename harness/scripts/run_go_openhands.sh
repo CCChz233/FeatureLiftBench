@@ -4,7 +4,7 @@
 # Prerequisites (WSL):
 #   - openhands CLI installed and configured (or LLM_* env vars)
 #   - .env with API keys if using --override-with-envs
-#   - featureliftbench-eval:latest image
+#   - featureliftbench-eval-go:latest image
 #
 # Usage:
 #   ./harness/scripts/run_go_openhands.sh semver__version_parse_core__001
@@ -30,7 +30,7 @@ RUN_ID="${2:-go-openhands-${TASK_ID}-$(date +%Y%m%d-%H%M%S)}"
 
 if [[ -z "$TASK_ID" ]]; then
   echo "Usage: $0 <task_id> [run_id]" >&2
-  echo "Gold-ready now: semver__version_parse_core__001, humanize__bytes_format_core__001" >&2
+  echo "Gold-ready now: semver__version_parse_core__001, humanize__bytes_format_core__001, mapstructure__decode_core__001" >&2
   exit 1
 fi
 
@@ -102,6 +102,9 @@ print("agent passed:", agent.get("passed"))
 sub = data.get("submission", {})
 print("submission exists:", sub.get("exists"))
 ev = data.get("evaluation") or {}
+result_json = ev.get("result_json")
+if result_json and Path(result_json).is_file():
+    ev = json.loads(Path(result_json).read_text())
 scores = ev.get("scores") or {}
 pub = (ev.get("public_tests") or {}).get("passed")
 hid = (ev.get("hidden_tests") or {}).get("passed")

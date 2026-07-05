@@ -1,0 +1,92 @@
+{
+  "task_id": "email_validator__validate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "email-validator",
+    "parser_state_coupling",
+    "functional-discriminator",
+    "third_party_dependency_coupling"
+  ],
+  "source": {
+    "name": "email-validator",
+    "url": "https://github.com/JoshData/python-email-validator",
+    "commit": "b73d010bb3db70547199f39fd85d2286a7f6f476",
+    "license": "Unlicense"
+  },
+  "feature": {
+    "name": "Email syntax validation core",
+    "description": "Extract validate_email with ValidatedEmail normalization and typed EmailNotValidError hierarchy for offline syntax validation without DNS deliverability checks.",
+    "source_entrypoints": [
+      "email_validator.validate_email",
+      "email_validator.ValidatedEmail",
+      "email_validator.EmailNotValidError",
+      "email_validator.EmailSyntaxError",
+      "email_validator.syntax",
+      "email_validator.rfc_constants"
+    ],
+    "included_behaviors": [
+      "validate_email returns ValidatedEmail with normalized/local_part/domain fields",
+      "EmailSyntaxError and EmailNotValidError for invalid addresses",
+      "IDNA domain encoding and internationalized local parts (SMTPUTF8)",
+      "quoted local part parsing and de-quoting when allowed",
+      "display name angle-bracket parsing when allowed",
+      "reserved/special-use domain rejection and test_environment bypass",
+      "case-insensitive mailbox names (e.g. POSTMASTER)",
+      "Unicode NFC normalization of local parts"
+    ],
+    "excluded_behaviors": [
+      "DNS deliverability checks and caching_resolver",
+      "CLI entry point (__main__)",
+      "original email_validator import at runtime",
+      "network access"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "third_party_dependency_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "validate_email orchestrates split_email quoting state, IDNA via idna, RFC length tables, reserved-domain policy, and ValidatedEmail field assembly across syntax/rfc_constants modules.",
+    "signals": [
+      "split_email tracks quote/escape state for display names and quoted locals",
+      "validate_email_local_part and validate_email_domain_name share strict/UTF8 flags",
+      "SPECIAL_USE_DOMAIN_NAMES and CASE_INSENSITIVE_MAILBOX_NAMES drive post-parse policy",
+      "ValidatedEmail aggregates ascii vs Unicode domain/local representations"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import validate_email, ValidatedEmail, EmailNotValidError, EmailSyntaxError, EmailUndeliverableError",
+    "callable": "featurelifted.validate_email",
+    "signature": "validate_email(email, /, *, check_deliverability=False, **options) -> ValidatedEmail"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "idna"
+    ],
+    "forbidden_dependencies": [
+      "email-validator",
+      "email_validator",
+      "dnspython"
+    ],
+    "forbidden_imports": [
+      "email_validator",
+      "emailvalidator",
+      "dns"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

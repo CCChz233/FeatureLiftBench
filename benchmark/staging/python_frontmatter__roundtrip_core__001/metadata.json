@@ -1,0 +1,90 @@
+{
+  "task_id": "python_frontmatter__roundtrip_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "python-frontmatter",
+    "markdown",
+    "yaml",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "python-frontmatter",
+    "url": "https://github.com/eyeseast/python-frontmatter",
+    "commit": "dc7c0af5466b104e0ba01ae3c5b2cd77edc27292",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "YAML front matter round-trip",
+    "description": "Extract parse/load/dump of markdown with YAML front matter, preserving body text and metadata across round-trip without importing frontmatter.",
+    "source_entrypoints": [
+      "frontmatter.parse",
+      "frontmatter.load",
+      "frontmatter.loads",
+      "frontmatter.dump",
+      "frontmatter.dumps",
+      "frontmatter.checks",
+      "frontmatter.Post",
+      "frontmatter.default_handlers.YAMLHandler"
+    ],
+    "included_behaviors": [
+      "parse and loads YAML front matter delimited by --- lines",
+      "dump and dumps serialize Post metadata and markdown body",
+      "detect delimiter lines with optional trailing whitespace",
+      "normalize CRLF input and merge parse defaults",
+      "Post dict-like metadata access and to_dict export"
+    ],
+    "excluded_behaviors": [
+      "TOML and JSON handler round-trips",
+      "CLI, Sphinx docs, examples, and upstream test suite",
+      "original frontmatter import at runtime",
+      "pyaml pretty-dump integration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "config_environment_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Front matter parsing couples handler boundary regexes, YAML load/export, unicode normalization, and Post metadata/content coupling.",
+    "signals": [
+      "YAMLHandler detect/split/load/export pipeline",
+      "util.u CRLF and bytes decoding",
+      "parse merges defaults before handler metadata",
+      "dumps respects handler and custom delimiters"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Post, parse, load, loads, dump, dumps, checks",
+    "callable": "featurelifted.loads",
+    "signature": "loads(text, encoding='utf-8', handler=None, **defaults) -> Post"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "PyYAML"
+    ],
+    "forbidden_dependencies": [
+      "python-frontmatter",
+      "frontmatter"
+    ],
+    "forbidden_imports": [
+      "frontmatter"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

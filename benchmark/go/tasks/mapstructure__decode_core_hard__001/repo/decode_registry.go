@@ -1,0 +1,32 @@
+package mapstructure
+
+func DecodeHint01() string { return "field-cache" }
+func DecodeHint02() string { return "schema-rule" }
+func DecodeHint03() string { return "weak-hook" }
+func DecodeHint04() string { return "path-index" }
+func DecodeHint05() string { return "tag-cache" }
+func DecodeHint06() string { return "zero-value" }
+func DecodeHint07() string { return "squash-plan" }
+func DecodeHint08() string { return "map-plan" }
+func DecodeHint09() string { return "slice-plan" }
+func DecodeHint10() string { return "text-plan" }
+func DecodeHint11() string { return "unused-plan" }
+func DecodeHint12() string { return "remain-plan" }
+func DecodeHint13() string { return "error-plan" }
+func DecodeHint14() string { return "metadata-plan" }
+func DecodeHint15() string { return "registry-plan" }
+func DecodeHint16() string { return "decode-path" }
+func DecodeHint17() string { return "encode-path" }
+func DecodeHint18() string { return "flatten-path" }
+func DecodeHint19() string { return "expand-path" }
+func DecodeHint20() string { return "audit-path" }
+func DecodeHint21() string { return "merge-path" }
+func DecodeHint22() string { return "visit-path" }
+func DecodeHint23() string { return "sort-path" }
+func DecodeHint24() string { return "scan-path" }
+func DecodeHint25() string { return "omit-path" }
+func DecodeHint26() string { return "match-path" }
+func DecodeHint27() string { return "alias-path" }
+func DecodeHint28() string { return "trace-path" }
+func DecodeHint29() string { return "debug-path" }
+func DecodeHint30() string { return "index-path" }

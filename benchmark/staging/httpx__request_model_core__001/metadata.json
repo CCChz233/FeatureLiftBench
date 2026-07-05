@@ -1,0 +1,94 @@
+{
+  "task_id": "httpx__request_model_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "request-model",
+    "hard-first",
+    "functional-discriminator",
+    "no-network",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "httpx",
+    "url": "https://github.com/encode/httpx",
+    "commit": "326b9431c761e1ef1e00b9f760d1f654c8db48c6",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "HTTP request model and offline request builder",
+    "description": "Extract HTTPX request data model (URL, QueryParams, Headers, Cookies, Request) and client/default merge semantics for building requests without network I/O.",
+    "source_entrypoints": [
+      "httpx.URL",
+      "httpx.QueryParams",
+      "httpx.Headers",
+      "httpx.Cookies",
+      "httpx.Request",
+      "httpx.Client.build_request",
+      "httpx._client.BaseClient._merge_url",
+      "httpx._client.BaseClient._merge_headers",
+      "httpx._client.BaseClient._merge_cookies",
+      "httpx._client.BaseClient._merge_queryparams"
+    ],
+    "included_behaviors": [
+      "construct and join URL objects with base URL and query parameters",
+      "preserve query parameter ordering and duplicate keys in QueryParams",
+      "case-insensitive header lookup with raw header preservation",
+      "merge default and per-request headers, query params, and cookies",
+      "build Request objects with content, data, and json body helpers",
+      "raise compatible errors for invalid URL and request input"
+    ],
+    "excluded_behaviors": [
+      "network I/O, transports, connection pools, proxies, redirects",
+      "Client.send, AsyncClient, response parsing and streaming",
+      "authentication flows beyond request header construction",
+      "original httpx package import at runtime",
+      "CLI, docs, CI, and original tests"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "HTTP request model behavior is spread across model containers, URL parsing, client defaults, request construction, and content helpers. The reusable slice must preserve request semantics while excluding transports and network execution.",
+    "signals": [
+      "URL, QueryParams, Headers, Cookies, and Request interact rather than acting as isolated helpers",
+      "client-level defaults are merged into per-request values",
+      "case-insensitive header behavior must preserve raw/canonical forms",
+      "query parameter ordering, duplicate keys, escaping, and removal semantics matter",
+      "the source package contains large unrelated sync/async transport and response machinery"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import URL, QueryParams, Headers, Cookies, Request, build_request, InvalidURL",
+    "callable": "featurelifted.build_request",
+    "signature": "build_request(method, url, *, base_url='', params=None, headers=None, cookies=None, default_params=None, default_headers=None, default_cookies=None, content=None, data=None, json=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "idna"
+    ],
+    "forbidden_dependencies": [
+      "httpx"
+    ],
+    "forbidden_imports": [
+      "httpx"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

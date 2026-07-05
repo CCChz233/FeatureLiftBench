@@ -1,6 +1,6 @@
 # Go 任务格式（GO_TASK_FORMAT）
 
-**最后更新：** 2026-07-03
+**最后更新：** 2026-07-05
 
 Go track 的机器可读契约。Python 任务见 [TASK_FORMAT.md](TASK_FORMAT.md)。论文口径见 [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) §11。
 
@@ -16,17 +16,17 @@ benchmark/go/tasks/<task_id>/       # promote 后
   metadata.json
   TASK.md
   repo/                             # 只读源快照（与 Python 相同政策）
+  public_tests/
+    *_test.go                       # agent 可见
+  hidden_tests/
+    *_test.go                       # eval 阶段使用；agent 不可见
   evaluation/
-    public_tests/
-      *_test.go
-    hidden_tests/                   # eval 阶段才挂载；agent 不可见
-      *_test.go
-    scoring_reference.json          # 可选；agent 不可见
     forbidden_imports.txt           # 原模块 import 路径，每行一个
     module_probes.json              # 至少 3 个 probe
+    scoring_reference.json          # 可选；agent 不可见
   environment/
     go.mod                          # 测试 harness module（可 import featurelifted）
-    go.sum
+    go.sum                          # 可选
 ```
 
 Submission（oracle / naive / copy_all）：
@@ -34,8 +34,7 @@ Submission（oracle / naive / copy_all）：
 ```text
 benchmark/submissions/<task_id>/<variant>/
   go.mod                            # module 名建议 featurelifted 或题目约定
-  featurelifted/
-    *.go
+  *.go                              # package featurelifted
 ```
 
 ---
@@ -49,7 +48,8 @@ benchmark/submissions/<task_id>/<variant>/
   "version": "1.0",
   "difficulty": "hard",
   "source": {
-    "repo_url": "https://github.com/Masterminds/semver",
+    "name": "semver",
+    "url": "https://github.com/Masterminds/semver",
     "commit": "<40-char-sha>",
     "license": "MIT"
   },
@@ -59,10 +59,10 @@ benchmark/submissions/<task_id>/<variant>/
     "timeout_seconds": 120,
     "cgo_enabled": false
   },
-  "evaluation": {
-    "public_test_package": "./evaluation/public_tests",
-    "hidden_test_package": "./evaluation/hidden_tests",
-    "forbidden_imports_file": "evaluation/forbidden_imports.txt"
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
   },
   "tags": ["multi-package", "parser"],
   "entanglement": {
@@ -79,7 +79,28 @@ benchmark/submissions/<task_id>/<variant>/
 | `language` | 必须为 `"go"` |
 | `environment.go` | 最低 Go 版本 |
 | `environment.cgo_enabled` | 默认 `false` |
-| `evaluation.public_test_package` | `go test` 包路径 |
+| `environment.module_path` | submission module path，通常为 `featurelifted` |
+| `tests.public` / `tests.hidden` | public/hidden test 目录 |
+
+---
+
+## 2.5 Hard Boundary Contract
+
+Go hard 任务必须以 **symbol / behavior** 为边界，而不是 `.go` 文件为边界。
+
+禁止：
+
+- `oracle == 从 repo 复制若干完整 .go 文件 + 改 package name`
+- 文件名或注释出现 `excluded`、`noise`、`non-target` 等提示
+- TASK 或 public tests 暗示目标文件名
+- hidden 只验证 public happy path 的重复行为
+
+要求：
+
+- 至少两个源文件同时包含 target 和 non-target symbols。
+- oracle 需要裁剪、重组或改写函数/类型/方法依赖。
+- copy_all pass，但 extraction 明显高于 oracle。
+- `docs/go_task_designs/<task_id>.md` 必须填写 Boundary Plan。
 
 ---
 
@@ -89,8 +110,9 @@ benchmark/submissions/<task_id>/<variant>/
 
 - 输出包路径：`import "featurelifted"` 或 `metadata` 中声明的 module path
 - 明确 **禁止** `import` 原仓库 module path（列在 `forbidden_imports.txt`）
-- 说明 public tests 如何运行：`go test ./evaluation/public_tests/...`
+- 说明 public tests 如何运行：`go test`
 - 不要求 agent 实现 hidden tests
+- 不透露目标文件名、hidden 覆盖点或 oracle 文件列表
 
 ---
 
@@ -135,15 +157,14 @@ github.com/Masterminds/semver/v3
   "probes": [
     {
       "id": "prerelease_ordering",
-      "import": "featurelifted",
-      "call": "Compare(\"1.0.0-alpha\", \"1.0.0\")",
+      "remove_path": "version_prerelease.go",
       "maps_to_hidden": "hidden_tests/prerelease_test.go:TestPrereleaseOrdering"
     }
   ]
 }
 ```
 
-至少 3 个 probe；oracle 必须通过；naive/copy_all 在 probe 上应反映 hidden 分层。
+至少 3 个 probe；oracle 必须通过；每个 probe 必须映射到具体 hidden failure。对 hard 题，probe 应优先删 symbol-level 文件或 package piece；如果 probe 只是证明某个明显目标文件存在，设计需要重新审查。
 
 ---
 
@@ -178,13 +199,13 @@ PYTHONPATH=harness python -m featureliftbench.cli audit_output_imports benchmark
   benchmark/submissions/<task_id>/oracle --fail-on-gap
 ```
 
-Promote 时：
+Hard paper-ready promote 时：
 
 ```bash
 git mv benchmark/go/staging/<task_id> benchmark/go/tasks/<task_id>
 ```
 
-并更新 `docs/go_candidate_backlog.md`、`docs/benchmark_tasks.md`（Go 分区）。
+并更新 `docs/go_candidate_backlog.md`、`docs/benchmark_tasks.md`（Go 分区）。`promote_calibration` 只保留 evidence，不进入 hard 主表。
 
 ---
 
@@ -193,7 +214,7 @@ git mv benchmark/go/staging/<task_id> benchmark/go/tasks/<task_id>
 | 项 | Python | Go |
 | --- | --- | --- |
 | 测试运行 | `pytest` | `go test` |
-| 包布局 | `featurelifted/` + `pyproject.toml` | `featurelifted/` + `go.mod` |
+| 包布局 | `featurelifted/` + `pyproject.toml` | submission 根目录 `*.go` package `featurelifted` + `go.mod` |
 | 依赖锁 | `requirements.lock` | `go.sum` |
 | 禁止依赖 | `forbidden_dependencies` in metadata | `forbidden_imports.txt` |
 | Eval 镜像 | Python 3.11 | + Go toolchain |

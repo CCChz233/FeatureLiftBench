@@ -17,7 +17,7 @@
 | **Docker / 安全边界 / 验收** | [SECURITY_HARDENING_TODO.md](SECURITY_HARDENING_TODO.md) · [SECURITY_ACCEPTANCE.md](SECURITY_ACCEPTANCE.md) |
 | **写论文 / 复现指标与流程** | [BENCHMARK_SPEC.md](BENCHMARK_SPEC.md) |
 | **Python 加题（batch-1，已满 100）** | [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md) · [BATCH1_REPO_SELECTION.md](BATCH1_REPO_SELECTION.md) · [BATCH1_QUALITY_RUBRIC.md](BATCH1_QUALITY_RUBRIC.md) · [EXPANSION.md](EXPANSION.md) · [candidate_backlog.md](candidate_backlog.md) |
-| **Go track（10 gold → 100）** | [GO_BENCHMARK_TODO.md](GO_BENCHMARK_TODO.md) · [GO_EXPANSION.md](GO_EXPANSION.md) · [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) · [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) · [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) · [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) · [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) · [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) · [go_candidate_backlog.md](go_candidate_backlog.md) |
+| **Go track（10 hard gold → 100）** | [GO_BENCHMARK_TODO.md](GO_BENCHMARK_TODO.md) · [GO_EXPANSION.md](GO_EXPANSION.md) · [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) · [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) · [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) · [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) · [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) · [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) · [go_candidate_backlog.md](go_candidate_backlog.md) |
 | **单题文件长什么样** | Python：[TASK_FORMAT.md](TASK_FORMAT.md) · [task_designs/TEMPLATE.md](task_designs/TEMPLATE.md) · Go：[GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) · [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) |
 | **查题目列表与 CLI** | [benchmark_tasks.md](benchmark_tasks.md) |
 | **看 baseline、缺口、优先级** | [BENCHMARK_STATUS.md](BENCHMARK_STATUS.md) |
@@ -40,7 +40,7 @@
 数据层     benchmark_tasks   题目清单
 状态层     BENCHMARK_STATUS  baseline + 待办优先级
 实验层     EXPERIMENT_RESULTS  run 结果表
-扩题层     Python: BATCH1_* + EXPANSION (100 hard)  |  Go: GO_* + go_candidate_backlog (10 gold → 100)
+扩题层     Python: BATCH1_* + EXPANSION (100 hard)  |  Go: GO_* + go_candidate_backlog (10 hard gold → 100)
 参考层     ARCHITECTURE      目录与脚本
 缺陷层     limitations
 ```
@@ -53,4 +53,4 @@
 
 每道正式题的**人类设计笔记**（可 speculative）。机器规范：Python [TASK_FORMAT.md](TASK_FORMAT.md)、Go [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。新题模板见各目录 `TEMPLATE.md`。
 
-Go 正式题目录：`benchmark/go/tasks/`（**10 目录 / 3 真 gold**，见 [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md)）。Agent 实验：`experiments/go-openhands/`（[GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md)）。
+Go 正式题目录：`benchmark/go/tasks/`（**10 原候选 + 1 hardening attempt；4 calibration/easy-B，0 hard paper-ready**，见 [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md)）。Agent 实验：`experiments/go-openhands/`（[GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md)）。

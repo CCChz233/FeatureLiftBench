@@ -1,0 +1,80 @@
+{
+  "task_id": "mapstructure__decode_core_hard__001",
+  "language": "go",
+  "difficulty": "medium",
+  "tags": [
+    "go",
+    "gold_verified_calibration",
+    "easy-b",
+    "reflection",
+    "hardening-attempt"
+  ],
+  "source": {
+    "name": "mapstructure",
+    "url": "https://github.com/go-viper/mapstructure",
+    "commit": "v2.2.1-hard-slice",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Map to struct decode hard slice",
+    "description": "Extract a mapstructure decode core with reflection, hooks, pointers, collections, and TextUnmarshaler behavior.",
+    "source_entrypoints": [
+      "mapstructure.Decode",
+      "mapstructure.NewDecoder"
+    ],
+    "included_behaviors": [
+      "decode map into struct via tags",
+      "metadata and unused-key tracking",
+      "weakly typed input coercion",
+      "squashed embedded structs",
+      "decode hook composition",
+      "nested pointers, slices, maps, and TextUnmarshaler values"
+    ],
+    "excluded_behaviors": [
+      "schema registry helpers",
+      "field cache helpers",
+      "CLI entrypoints",
+      "original module import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "reflection_coupling",
+      "data_model_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "description": "The reusable decode behavior spans reflection dispatch, hook composition, text unmarshalling, weak conversions, and metadata accounting while nearby source files contain plausible non-target helpers.",
+    "signals": [
+      "reflect.Value",
+      "DecodeHook",
+      "encoding.TextUnmarshaler",
+      "squash tag",
+      "Metadata.Unused"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "module": "featurelifted",
+    "import": "import featurelifted",
+    "callable": "featurelifted.Decode",
+    "signature": "Decode(input, output interface{}) error"
+  },
+  "environment": {
+    "go": "1.22",
+    "network": false,
+    "timeout_seconds": 120,
+    "cgo_enabled": false,
+    "module_path": "featurelifted",
+    "forbidden_imports": [
+      "github.com/go-viper/mapstructure",
+      "github.com/go-viper/mapstructure/v2"
+    ]
+  },
+  "tests": {
+    "public": "public_tests",
+    "hidden": "hidden_tests",
+    "command": "go test"
+  }
+}

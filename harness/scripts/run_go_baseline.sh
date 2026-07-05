@@ -84,16 +84,20 @@ case "$BASELINE" in
   if [[ "$BASELINE" == "strong" ]]; then
     EXTRA+=(--yolo)
   fi
+  TASK_ARGS=()
+  for tid in "${TASK_IDS[@]}"; do
+    TASK_ARGS+=(--task-id "$tid")
+  done
   echo "Profile: $PROFILE | tasks: ${TASK_IDS[*]} | max steps: 120"
   "$PY" -B -m featureliftbench.cli run-agent benchmark/go/tasks \
     --agent mini-swe-agent \
     --agent-config harness/config/agents.toml \
     --agent-profile "$PROFILE" \
     --env-file .env \
-    --docker \
+    --eval-docker \
     --num-workers "${NUM_WORKERS:-1}" \
     --output "$OUT" \
-    --task-id "${TASK_IDS[@]}" \
+    "${TASK_ARGS[@]}" \
     "${EXTRA[@]}"
   if [[ -f harness/scripts/analyze_benchmark_suite.py ]]; then
     "$PY" harness/scripts/analyze_benchmark_suite.py "$OUT" || true

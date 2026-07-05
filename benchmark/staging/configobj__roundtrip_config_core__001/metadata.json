@@ -1,0 +1,78 @@
+{
+  "task_id": "configobj__roundtrip_config_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "config",
+    "hard-first",
+    "functional-discriminator",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "name": "configobj",
+    "url": "https://github.com/DiffSK/configobj",
+    "commit": "b7707c94c0317b8f89b704a01525a68eb6c72521",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "INI-like config round-trip and configspec validation",
+    "description": "Extract ConfigObj parsing/writing with comment preservation and Validator configspec checks without original configobj import.",
+    "source_entrypoints": [
+      "configobj.ConfigObj",
+      "configobj.validate.Validator",
+      "configobj.flatten_errors",
+      "configobj.get_extra_values"
+    ],
+    "included_behaviors": [
+      "parse INI-like config from strings with nested sections",
+      "write configs preserving comments and key order metadata",
+      "validate values against configspec via Validator",
+      "report validation failures with flatten_errors",
+      "detect duplicate sections and parse errors"
+    ],
+    "excluded_behaviors": [
+      "original configobj import at runtime",
+      "project tests and packaging"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "config_environment_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "ConfigObj couples line parsing, ordered section trees, interpolation engines, and configspec validation.",
+    "signals": [
+      "Section/ConfigObj ordered dict semantics",
+      "write() round-trip comment handling",
+      "Validator type coercion and bounds checks",
+      "configspec-driven validate() traversal"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import ConfigObj, DuplicateError, flatten_errors, get_extra_values; from featurelifted.validate import Validator, VdtValueTooSmallError",
+    "callable": "featurelifted.ConfigObj",
+    "signature": "ConfigObj(infile=None, ...)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "configobj"
+    ],
+    "forbidden_imports": [
+      "configobj"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

@@ -1,6 +1,6 @@
 # Task Design: humanize__bytes_format_core__001 (Go)
 
-Status: promote
+Status: gold_verified_calibration
 
 ## Why This Task
 
@@ -20,7 +20,7 @@ Byte-size formatting is a reusable utility embedded in dustin/go-humanize alongs
 | Commit | v1.0.1 |
 | License | MIT |
 | Language | **Go** |
-| Difficulty | hard |
+| Difficulty | medium / calibration |
 | Tags | formatter, parser |
 
 ## Entanglement
@@ -84,7 +84,11 @@ featurelifted.ParseBytes("42 MB")   // 42000000, nil
 
 ## Go/No-Go
 
-Decision: promote (gate 2026-07-04)
+Decision: promote_calibration (OpenHands + `deepseek/deepseek-v4-flash`, 2026-07-05).
+
+Flash passed public+hidden with the same extraction footprint as the oracle
+(`0.323944`), so this remains useful as Go pipeline calibration but is not
+hard paper-ready evidence.
 
 ## References
 

@@ -1,0 +1,92 @@
+{
+  "task_id": "intervaltree__interval_tree_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "intervaltree",
+    "data-structures",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "intervaltree",
+    "url": "https://github.com/chaimleib/intervaltree",
+    "commit": "1bc406e1f441577c4e421fc51aba2ab67fbd97fb",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "IntervalTree core",
+    "description": "Extract IntervalTree add/remove/overlap/chop operations with Interval value semantics without importing intervaltree.",
+    "source_entrypoints": [
+      "intervaltree.Interval",
+      "intervaltree.IntervalTree",
+      "intervaltree.IntervalTree.add",
+      "intervaltree.IntervalTree.remove",
+      "intervaltree.IntervalTree.discard",
+      "intervaltree.IntervalTree.remove_overlap",
+      "intervaltree.IntervalTree.remove_envelop",
+      "intervaltree.IntervalTree.chop",
+      "intervaltree.IntervalTree.overlap",
+      "intervaltree.IntervalTree.overlaps",
+      "intervaltree.IntervalTree.at",
+      "intervaltree.IntervalTree.envelop",
+      "intervaltree.node.Node"
+    ],
+    "included_behaviors": [
+      "add/remove/discard intervals with set semantics and distinct data fields",
+      "point and range overlap queries via at/overlap/overlaps",
+      "remove_overlap and remove_envelop bulk deletion",
+      "chop trims overhanging intervals and optional datafunc relabeling",
+      "self-balancing tree queries through Node search helpers"
+    ],
+    "excluded_behaviors": [
+      "upstream test harness, benchmarks, and packaging metadata",
+      "original intervaltree import at runtime",
+      "CLI and documentation tooling"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "IntervalTree couples Interval half-open semantics, SortedDict boundary indexing, and Node rebalancing with overlap/envelop/chop mutation paths.",
+    "signals": [
+      "boundary_table SortedDict keys drive overlap/envelop scans",
+      "Node split/merge maintains center and search_point/search_overlap invariants",
+      "chop/remove_envelop combine set updates with partial interval trimming",
+      "Interval data field distinguishes otherwise identical ranges in the set"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Interval, IntervalTree",
+    "callable": "featurelifted.IntervalTree",
+    "signature": "IntervalTree(intervals=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "sortedcontainers"
+    ],
+    "forbidden_dependencies": [
+      "intervaltree"
+    ],
+    "forbidden_imports": [
+      "intervaltree"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

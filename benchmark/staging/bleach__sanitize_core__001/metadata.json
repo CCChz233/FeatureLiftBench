@@ -1,0 +1,76 @@
+{
+  "task_id": "bleach__sanitize_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "bleach",
+    "html-sanitizer",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "bleach",
+    "url": "https://github.com/mozilla/bleach",
+    "commit": "4.1.0-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "HTML sanitizer clean core",
+    "description": "Extract bleach clean/Cleaner HTML sanitization without importing bleach.",
+    "source_entrypoints": [
+      "bleach.clean",
+      "bleach.sanitizer.Cleaner"
+    ],
+    "included_behaviors": [
+      "XSS tag stripping",
+      "allowed attributes and protocols",
+      "strip and strip_comments modes",
+      "callable attribute filters"
+    ],
+    "excluded_behaviors": [
+      "linkify",
+      "upstream packaging",
+      "original bleach import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Sanitizer couples html5lib tokenizer, attribute policy, and Cleaner state.",
+    "signals": [
+      "html5lib parser per Cleaner",
+      "protocol validation on href",
+      "strip vs escape modes"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import clean, Cleaner, ALLOWED_TAGS, ALLOWED_ATTRIBUTES, ALLOWED_PROTOCOLS",
+    "callable": "featurelifted.clean",
+    "signature": "clean(text, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES, styles=ALLOWED_STYLES, protocols=ALLOWED_PROTOCOLS, strip=False, strip_comments=True) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "bleach"
+    ],
+    "forbidden_imports": [
+      "bleach"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

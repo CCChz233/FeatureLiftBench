@@ -1,0 +1,92 @@
+{
+  "task_id": "mako__lexer_expression_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "template-engine",
+    "functional-discriminator",
+    "parser_state_coupling",
+    "multi-module"
+  ],
+  "source": {
+    "name": "mako",
+    "url": "https://github.com/sqlalchemy/mako",
+    "commit": "d58a9208fd62a816e9609a35be55aa6d3c5b14e7",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Mako template lexer and expression parse core",
+    "description": "Extract Mako template lexing into a parse tree plus Python expression/control fragment analysis without original mako import or template runtime rendering.",
+    "source_entrypoints": [
+      "mako.lexer.Lexer",
+      "mako.lexer.Lexer.parse",
+      "mako.parsetree",
+      "mako.ast.PythonCode",
+      "mako.ast.PythonFragment",
+      "mako.ast.FunctionDecl",
+      "mako.pyparser.parse"
+    ],
+    "included_behaviors": [
+      "lex template source into parsetree nodes (text, expression, control, tags)",
+      "parse ${...} expressions and % control lines",
+      "analyze Python fragments for declared and undeclared identifiers",
+      "report SyntaxException and CompileException with line positions"
+    ],
+    "excluded_behaviors": [
+      "template compilation, codegen, and runtime rendering",
+      "TemplateLookup, caching, and filesystem loading",
+      "CLI, extensions, babel/beaker plugins",
+      "original mako import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Mako lexer couples nested tag/control stacks, parsetree node construction, and AST-based Python fragment analysis shared with codegen paths.",
+    "signals": [
+      "lexer tag and control_line stacks with ternary elif/except handling",
+      "parsetree nodes invoke ast.PythonFragment for partial control lines",
+      "pyparser FindIdentifiers walks _ast_util parse trees for identifier sets",
+      "expression nodes merge filter escape builtins with code undeclared sets"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Lexer, parsetree, PythonCode, PythonFragment, SyntaxException, CompileException",
+    "callable": "featurelifted.Lexer.parse",
+    "signature": "Lexer(text: str, filename: str | None = None).parse() -> parsetree.TemplateNode"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "MarkupSafe"
+    ],
+    "forbidden_dependencies": [
+      "mako"
+    ],
+    "forbidden_imports": [
+      "mako"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "oracle_loc": 2782,
+    "oracle_bytes": 206035,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 6137,
+    "copy_all_bytes": 253525
+  }
+}

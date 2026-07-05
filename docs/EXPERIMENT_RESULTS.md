@@ -309,23 +309,23 @@ s=json.loads(p.read_text()); print(s['summary']); print(s.get('agent_usage_total
 
 | 项 | 说明 |
 | --- | --- |
-| 数据集 | `benchmark/go/tasks/`（10 目录，**3 真 gold**：semver、humanize、mapstructure） |
+| 数据集 | `benchmark/go/tasks/`（10 原候选 + 1 hardening attempt；**4 calibration/easy-B，0 hard paper-ready**） |
 | Agent | **OpenHands** headless（非 mini-swe-agent） |
 | 输出 | `experiments/go-openhands/<run_id>/` |
 | 协议 | [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) |
 | 出题 gate | `experiments/go-pilot/<task_id>/review/` |
 
-机械 oracle/naive/copy_all gate 已在 semver、humanize、mapstructure 上 Docker 验证。
+机械 oracle/naive/copy_all gate 已在 semver、humanize、mapstructure 和 `mapstructure__decode_core_hard__001` 上 Docker 验证；OpenHands + Flash 均为 oracle-footprint hidden pass，因此只计 calibration。
 
-**Agent 闭环状态（2026-07-04）：**
+**Agent 闭环状态（2026-07-05）：**
 
 | 类型 | 状态 |
 | --- | --- |
-| PIPELINE_SMOKE（harness 验证） | semver、humanize 已跑；public ✓ hidden ✗ |
-| 真 OpenHands LLM run | **待跑**（需 WSL `openhands` CLI 或确认 Windows 入口） |
+| PIPELINE_SMOKE（harness 验证） | 不计入难度证据 |
+| 真 OpenHands LLM run | semver、humanize、mapstructure、mapstructure hardening attempt 均已跑；全部 hidden pass 且 oracle footprint |
 
 ```bash
-# 真 OpenHands（WSL）
+# 真 OpenHands
 export LLM_MODEL=deepseek/deepseek-v4-flash
 bash harness/scripts/run_go_openhands.sh semver__version_parse_core__001
 

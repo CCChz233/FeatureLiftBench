@@ -1,10 +1,11 @@
 {
   "task_id": "mapstructure__decode_core__001",
   "language": "go",
-  "difficulty": "hard",
+  "difficulty": "medium",
   "tags": [
     "go",
-    "gold",
+    "gold_verified_calibration",
+    "easy-b",
     "reflection",
     "pilot"
   ],
@@ -48,6 +49,7 @@
   },
   "output": {
     "package": "featurelifted",
+    "module": "featurelifted",
     "import": "import featurelifted",
     "callable": "featurelifted.Decode",
     "signature": "Decode(input, output interface{}) error"

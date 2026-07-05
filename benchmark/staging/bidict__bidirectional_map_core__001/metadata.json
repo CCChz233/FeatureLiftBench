@@ -1,0 +1,81 @@
+{
+  "task_id": "bidict__bidirectional_map_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "bidict",
+    "data-structures",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "bidict",
+    "url": "https://github.com/jab/bidict",
+    "commit": "393bcfdc8edb861514d23aae55839272b5bd52f8",
+    "license": "MPL-2.0"
+  },
+  "feature": {
+    "name": "Bidirectional mapping core",
+    "description": "Extract bidict mutable/frozen/ordered bidirectional mappings with inverse views, duplicate policies, and ordered move_to_end without importing bidict.",
+    "source_entrypoints": [
+      "bidict.bidict",
+      "bidict.frozenbidict",
+      "bidict.OrderedBidict",
+      "bidict.ON_DUP_RAISE",
+      "bidict.ValueDuplicationError",
+      "bidict.inverted"
+    ],
+    "included_behaviors": [
+      "forward and inverse lookups on bidict and frozenbidict",
+      "inverse view reflects live updates on mutable bidicts",
+      "ON_DUP_RAISE duplicate value/key policies with typed errors",
+      "OrderedBidict preserves insertion order and move_to_end",
+      "inverted() iterator helper for value-key pairs"
+    ],
+    "excluded_behaviors": [
+      "upstream benchmarks, docs, and test suite",
+      "original bidict import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Bidict couples forward/inverse backing dicts, duplicate-action policies, weakref-linked inverse views, and ordered linked-list nodes for OrderedBidict.",
+    "signals": [
+      "_fwdm/_invm weakref pairs keep inverse in sync on mutation",
+      "OnDup policies branch raises vs drop-old across key/value collisions",
+      "OrderedBidictBase maintains sentinel doubly-linked list for order",
+      "GeneratedBidictInverse proxies mutations back to parent bidict"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import bidict, frozenbidict, OrderedBidict, ON_DUP_RAISE, ValueDuplicationError, KeyAndValueDuplicationError, inverted",
+    "callable": "featurelifted.bidict",
+    "signature": "bidict(arg=(), /, **kw)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "bidict"
+    ],
+    "forbidden_imports": [
+      "bidict"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

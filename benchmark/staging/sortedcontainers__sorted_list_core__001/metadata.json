@@ -1,0 +1,86 @@
+{
+  "task_id": "sortedcontainers__sorted_list_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "sortedcontainers",
+    "data-structures",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "sortedcontainers",
+    "url": "https://github.com/grantjenks/python-sortedcontainers",
+    "commit": "a1f52d6713dd2c2713a881d4f4d86ed68ff71cab",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "SortedList core",
+    "description": "Extract SortedList with add/remove/bisect, positional indexing, range iterators, and sublist invariants without importing sortedcontainers.",
+    "source_entrypoints": [
+      "sortedcontainers.SortedList",
+      "sortedcontainers.SortedList.add",
+      "sortedcontainers.SortedList.discard",
+      "sortedcontainers.SortedList.remove",
+      "sortedcontainers.SortedList.bisect_left",
+      "sortedcontainers.SortedList.bisect_right",
+      "sortedcontainers.SortedList.irange",
+      "sortedcontainers.SortedList.islice",
+      "sortedcontainers.SortedList._check",
+      "sortedcontainers.SortedList._reset"
+    ],
+    "included_behaviors": [
+      "maintain sorted order with add/update and duplicate values",
+      "bisect_left/bisect_right and count/index on duplicate-heavy lists",
+      "positional indexing and slice reads with small load factors",
+      "irange/islice inclusive bounds and reverse iteration",
+      "sublist merge/delete invariants validated via _check after _reset"
+    ],
+    "excluded_behaviors": [
+      "SortedKeyList, SortedDict, SortedSet, and key-function variants",
+      "benchmarks, upstream tests, docs, and packaging metadata",
+      "original sortedcontainers import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "SortedList couples sublist splitting, fenwick-style index trees, positional mapping, and delete-merge invariants inside one performance-oriented data structure.",
+    "signals": [
+      "_reset/load factor drives sublist splits and merge behavior on delete",
+      "_pos/_loc/_build_index share a segment tree over sublist lengths",
+      "irange/islice reuse bisect + positional mapping rather than materializing",
+      "_check validates cross-sublist ordering and load-factor invariants"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import SortedList",
+    "callable": "featurelifted.SortedList",
+    "signature": "SortedList(iterable=None, key=None)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "sortedcontainers"
+    ],
+    "forbidden_imports": [
+      "sortedcontainers"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

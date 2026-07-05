@@ -1,0 +1,82 @@
+{
+  "task_id": "referencing__json_schema_refs_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "referencing",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "referencing",
+    "url": "https://github.com/python-jsonschema/referencing",
+    "commit": "0.30.2-installed-snapshot",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "JSON Schema $ref resolution",
+    "description": "Extract referencing Registry/Resolver $ref, anchor, and fragment resolution for JSON Schema dialects without jsonschema validator implementations.",
+    "source_entrypoints": [
+      "referencing.Registry",
+      "referencing.Registry.resolver",
+      "referencing.jsonschema.DRAFT202012",
+      "referencing.jsonschema.lookup_recursive_ref"
+    ],
+    "included_behaviors": [
+      "Registry resource registration and base URI resolution",
+      "$ref pointer and external URI chaining",
+      "$anchor and JSON Schema dialect specifications",
+      "typed unresolvable and unknown dialect errors"
+    ],
+    "excluded_behaviors": [
+      "jsonschema validation keyword implementations",
+      "network retrieval of remote schemas",
+      "referencing test suite and original package import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Ref resolution couples immutable Registry graphs, Specification dialect hooks, fragment pointer walks, and rpds-backed resolver stacks.",
+    "signals": [
+      "Specification objects vary anchor and id extraction across draft versions",
+      "Resolver maintains dynamic scope for recursive refs",
+      "Registry merges resources with URI normalization",
+      "repo includes upstream tests for copy-all penalty"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Registry, Resource; from featurelifted.jsonschema import DRAFT202012, DRAFT7, UnknownDialect; from featurelifted.exceptions import Unresolvable, NoSuchAnchor",
+    "callable": "featurelifted.Registry.resolver",
+    "signature": "Registry.resolver(base_uri: str) -> Resolver"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "attrs",
+      "rpds"
+    ],
+    "forbidden_dependencies": [
+      "referencing"
+    ],
+    "forbidden_imports": [
+      "referencing"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

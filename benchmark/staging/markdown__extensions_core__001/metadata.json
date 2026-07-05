@@ -1,0 +1,75 @@
+{
+  "task_id": "markdown__extensions_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "markdown",
+    "extensions",
+    "hard-first",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "Markdown",
+    "url": "https://github.com/Python-Markdown/markdown",
+    "commit": "3.7-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Markdown tables and footnotes extensions",
+    "description": "Extract python-markdown core with tables and footnotes extensions.",
+    "source_entrypoints": [
+      "markdown.markdown",
+      "markdown.extensions.tables.TableExtension",
+      "markdown.extensions.footnotes.FootnoteExtension"
+    ],
+    "included_behaviors": [
+      "pipe table rendering",
+      "footnote reference and backlink HTML",
+      "extension registration on Markdown class"
+    ],
+    "excluded_behaviors": [
+      "unrelated extensions",
+      "CLI __main__",
+      "original markdown import"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "framework_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Extensions hook block/tree processors and share Markdown instance registry state.",
+    "signals": [
+      "TableProcessor block regex",
+      "FootnoteExtension footnote order",
+      "build_block_parser registration"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import markdown, Markdown",
+    "callable": "featurelifted.markdown",
+    "signature": "markdown(text, extensions=None, extension_configs=None) -> str"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "markdown"
+    ],
+    "forbidden_imports": [
+      "markdown"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

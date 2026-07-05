@@ -2,7 +2,7 @@
 
 > Machine-readable spec: [GO_TASK_FORMAT.md](../GO_TASK_FORMAT.md). Human design note for Go track.
 
-Status: draft | oracle-verified | agent-calibrated
+Status: draft | design-approved | oracle-verified | agent-calibrated | calibration | paper_ready_hard | redesign | dropped
 
 ## Why This Task
 
@@ -13,6 +13,8 @@ Status: draft | oracle-verified | agent-calibrated
 1. **Reuse module** — 解耦成功后 `featurelifted` 代表什么真实模块？（如 semver 比较、HTML sanitize policy）
 2. **Who imports it** — 哪类下游会单独依赖此包？（CLI 工具、微服务、库）
 3. **Why not copy-all** — 为何紧凑闭包比 vendor 整仓更现实？
+
+如果三问无法用具体下游场景回答，本题应停止在 design spike，不进入 staging。
 
 ## Source
 
@@ -67,6 +69,40 @@ featurelifted.<Callable>(...)
 - 网络、DB、cgo
 - 原 module path runtime import
 
+## Boundary Plan（hard 题必填）
+
+Go hard 题必须是 **symbol / behavior boundary**，不是文件边界。这里必须说明 agent 为什么不能靠复制一组完整 `.go` 文件过关。
+
+### Target symbols
+
+列出需要进入 oracle 的函数、方法、类型、常量或接口：
+
+- `...`
+
+### Non-target symbols sharing source files
+
+至少两个源文件应同时包含 target 和 non-target 代码：
+
+| Source file | Target symbols | Non-target symbols in same file | 为什么 copy 整文件会过宽 |
+| --- | --- | --- | --- |
+| `repo/...go` | `...` | `...` | ... |
+
+### Oracle transformation
+
+说明 oracle 需要做什么重组，而不是整文件复制：
+
+- 裁剪哪些 non-target symbols
+- 合并/拆分哪些 helpers
+- 改写哪些 package/module/import 依赖
+- 保留哪些错误类型、状态或注册逻辑
+
+### File-boundary rejection check
+
+- [ ] oracle 不是从 `repo/` 复制一组完整 `.go` 文件得到的
+- [ ] public tests / TASK 不透露目标文件名
+- [ ] 文件名和注释不标记 `excluded` / `noise` / `non-target`
+- [ ] copy_all pass 但 extraction 显著高于 oracle
+
 ## Environment
 
 ```json
@@ -103,10 +139,13 @@ featurelifted.<Callable>(...)
 | naive | pass | **fail** | ≤0.10 |
 | copy_all | pass | pass | ≥0.85, Δ≥0.25 vs oracle |
 
+若 Flash hidden pass 且 extraction 等于 oracle，或接近 copy_all，本题只能是 calibration。
+
 ## Oracle Closure Estimate
 
-- 约 N 个 `.go` 文件，约 M LOC
+- 约 N 个 target symbols，约 M LOC
 - 主要抽取自：`repo/...`
+- 涉及文件数可写，但不能把文件列表当作 oracle 边界
 
 ## Agent Calibration（promote 前填）
 
@@ -117,10 +156,12 @@ featurelifted.<Callable>(...)
 ## Go/No-Go（入榜决策）
 
 - [ ] Reuse 成立
+- [ ] Boundary Plan 证明不是文件边界抽取
 - [ ] G0–G4 证据就绪
 - [ ] Flash tier 已记录
+- [ ] Hard readiness 已记录
 
-Decision: promote | redesign | drop
+Decision: promote_calibration | paper_ready_hard | redesign | drop
 
 ## References
 

@@ -4,6 +4,7 @@
 
 acquire_run_lock() {
   local output_dir="${1:?output directory required}"
+  mkdir -p "$output_dir"
   RUN_LOCK_DIR="${output_dir}/.run.lock"
   if ! mkdir "$RUN_LOCK_DIR" 2>/dev/null; then
     echo "ERROR: another suite run holds ${RUN_LOCK_DIR}" >&2

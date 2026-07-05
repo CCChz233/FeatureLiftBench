@@ -1,13 +1,13 @@
 # Go Pilot 出题标准流程（Playbook）
 
-**最后更新：** 2026-07-03
+**最后更新：** 2026-07-05
 
-Go track **10 gold** 阶段的唯一执行标准。政策见 [GO_EXPANSION.md](GO_EXPANSION.md)；格式见 [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。
+Go track **10 hard gold** 阶段的唯一执行标准。政策见 [GO_EXPANSION.md](GO_EXPANSION.md)；格式见 [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。
 
 | 层级 | 文档 | 作用 |
 | --- | --- | --- |
-| **执行（本文）** | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) | 七步流程、gate、命令、promote |
-| 政策 | [GO_EXPANSION.md](GO_EXPANSION.md) | 10 gold → 100、论文骨架 |
+| **执行（本文）** | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) | 七步流程、gate、命令、入榜决策 |
+| 政策 | [GO_EXPANSION.md](GO_EXPANSION.md) | 10 hard gold → 100、论文骨架 |
 | Harness | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) | Phase 0 工程清单 |
 | 仓库池 | [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) | Go repo 接受标准与浓度 |
 | 质量评审 | [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) | 入榜客观标准 |
@@ -19,9 +19,11 @@ Go track **10 gold** 阶段的唯一执行标准。政策见 [GO_EXPANSION.md](G
 **硬性约束：**
 
 - Python `benchmark/tasks/` **冻结**，Go 题只进 `benchmark/go/`
-- 无 oracle 不进 `benchmark/go/tasks/`
+- 无 design spike 不建 task；无 oracle 不进 `benchmark/go/tasks/`
 - Phase 1：**一次一题**；Phase 2：每批最多 3 题，每题独立 evidence
 - **functional pass 不是 promote 充分条件**；必须 oracle/naive/copy_all/probe/Flash 分层
+- hard 题必须是 **symbol / behavior boundary**；文件边界抽取只能算 calibration
+- `promote_calibration` 不等于 `paper_ready_hard`
 - Phase 0 harness DoD 未完成前，不得 promote
 
 ---
@@ -36,7 +38,7 @@ Step 3  Oracle closure（benchmark/submissions/<task_id>/oracle/）
 Step 4  Naive + copy_all baseline
 Step 5  本地验证（validate / audit / eval / probes）
 Step 6  Flash 单题校准（deepseek_v4_flash）
-Step 7  Promote / Redesign / Drop → benchmark/go/tasks/
+Step 7  Promote calibration / Paper-ready hard / Redesign / Drop
 ```
 
 ---
@@ -47,10 +49,10 @@ Step 7  Promote / Redesign / Drop → benchmark/go/tasks/
 while gold_count < 10:
   1. 取 go_candidate_backlog 下一项 shortlist
   2. 写/更新 go_task_designs/<task_id>.md
-  3. 生成 staging + oracle/naive/copy_all
+  3. design gate 通过后，生成 staging + oracle/naive/copy_all
   4. 跑全部 gate → gate_report.json
   5. decision.md
-  6. promote → 更新 catalog；否则 redesign（≤2 轮）或 drop
+  6. paper_ready_hard → 更新 catalog；否则 calibration/redesign/drop
 ```
 
 **Evidence Packet：**
@@ -77,14 +79,18 @@ experiments/go-pilot/<task_id>/review/
 | Gate | 客观条件 |
 | --- | --- |
 | G0 task shape | `validate-task` exit 0；`audit_output_imports.py --fail-on-gap` exit 0 |
-| G1 oracle | `status=passed`；public+hidden pass；`functional_gate=1.0`；`0.20 <= extraction_ratio <= 0.60` |
-| G2 naive | public pass；hidden fail；`functional_gate=0.0`；`extraction_ratio <= 0.10` |
-| G3 copy_all | pass；`extraction_ratio >= 0.85`；delta vs oracle `>= 0.25` |
+| G1 oracle | `status=passed`；public+hidden pass；`functional_gate=1.0`；Go 默认 `0.09 <= extraction_ratio <= 0.60`，hard task 应优先落在 0.20–0.60 |
+| G2 naive | public pass；hidden fail；`functional_gate=0.0`；`extraction_ratio <= 0.11` |
+| G3 copy_all | pass；`extraction_ratio >= 0.85` 或登记 trim exception；delta vs oracle `>= 0.20` |
 | G4 probes | `verify_module_probes.py --verify-oracle`；≥3 probe |
 | G5 Flash | 至少一次 `deepseek_v4_flash`；记录 A/B/C |
 | G6 docs | design note、backlog、Go catalog 一致 |
+| G7 evidence freshness | `gate_report.json` 从当前 task/submission/result 生成；suite summary 与 per-task run 一致 |
+| G8 hard readiness | Flash hidden fail，或 hidden pass 但 footprint compact、非 oracle、明显低于 copy_all；否则只 `promote_calibration` |
 
 Metric exceptions 同 Python：`low_oracle_extraction_A_tier_exception`、`copy_all_metric_exception`（登记在 `gate_report.json`）。
+
+`gate_report.json` 是机械事实来源；`decision.md` 只能解释，不能覆盖 blocking gate。
 
 ---
 
@@ -107,22 +113,30 @@ Metric exceptions 同 Python：`low_oracle_extraction_A_tier_exception`、`copy_
 
 **Pilot 首题建议：** backlog 中 `priority=P0` 且 harness 风险低（纯 stdlib 测试、无 cgo）。
 
+**立项前三问：**
+
+1. `featurelifted` 是什么现实可复用模块？
+2. 谁会单独 import 它？
+3. 为什么 compact closure 比 copy-all 更合理？
+
 ---
 
 ## Step 1 — Design spike
 
 复制 [go_task_designs/TEMPLATE.md](go_task_designs/TEMPLATE.md) → `docs/go_task_designs/<task_id>.md`。
 
-必填：Why、Practical reuse、Source、Entanglement、Target API、Included/Excluded、Test plan、Go/No-Go（入榜决策，非 Go 语言）。
+必填：Why、Practical reuse、Source、Entanglement、Target API、Included/Excluded、Boundary Plan、Test plan、Go/No-Go（入榜决策，非 Go 语言）。
 
 **Design gate：** 另一人（或 Agent 第二遍）能仅凭 design note 说出 oracle 大约多少 `.go` 文件、naive 会漏什么 hidden。
+
+**Hard boundary gate：** 另一人必须能仅凭 design note 说出 target symbol/function/type 边界，而不是目标文件列表。若 oracle 只是“复制这些文件”，design spike 不通过。
 
 ---
 
 ## Step 2 — 创建 staging
 
 ```bash
-mkdir -p benchmark/go/staging/<task_id>/{repo,evaluation/public_tests,evaluation/hidden_tests,environment}
+mkdir -p benchmark/go/staging/<task_id>/{repo,public_tests,hidden_tests,evaluation,environment}
 cp docs/go_task_designs/<task_id>.md  # 人类参考，不进 staging
 ```
 
@@ -133,12 +147,12 @@ cp docs/go_task_designs/<task_id>.md  # 人类参考，不进 staging
 ## Step 3 — Oracle
 
 ```bash
-PYTHONPATH=harness python harness/scripts/build_oracle_submission.py \
+PYTHONPATH=harness python harness/scripts/build_go_oracle_submission.py \
   --task benchmark/go/staging/<task_id> \
-  --output benchmark/submissions/<task_id>/oracle
+  --variant oracle
 ```
 
-手工调整至 G1 预期；**禁止** submission import 原 module path。
+手工调整至 G1 预期；**禁止** submission import 原 module path。hard task 的 oracle 应做 symbol-level 裁剪/重组，不能只是整文件 copy。
 
 ---
 
@@ -147,7 +161,7 @@ PYTHONPATH=harness python harness/scripts/build_oracle_submission.py \
 | 变体 | 意图 |
 | --- | --- |
 | naive | 只看 public 的浅实现；public 过、hidden 挂 |
-| copy_all | 大段复制/重导出；functional 可能过但 extraction 高 |
+| copy_all | 整文件/大段复制；functional 可能过但 extraction 高 |
 
 ```bash
 # 模板生成后人工裁剪
@@ -192,23 +206,21 @@ python harness/scripts/verify_module_probes.py \
 ## Step 6 — Flash 校准
 
 ```bash
-PYTHONPATH=harness python -m featureliftbench.cli run-agent benchmark/go/staging/<task_id> \
-  --model deepseek_v4_flash \
-  --output experiments/go-pilot/<task_id>/flash \
-  --docker
+bash harness/scripts/run_go_openhands.sh <task_id>
 ```
 
 | Tier | 含义 |
 | --- | --- |
-| A | public 过、hidden 挂，或靠大闭包低 final |
-| B | 近 oracle extraction 仍 pass |
+| A | public 过、hidden 挂 |
+| B-hard | hidden pass，但 footprint compact、非 oracle、明显低于 copy_all |
+| B-calibration | hidden pass 且 oracle footprint，或 hidden pass 且接近 copy_all |
 | C | 低 extraction 或 public 硬编码过 hidden → redesign/drop |
 
 ---
 
-## Step 7 — Promote / Redesign / Drop
+## Step 7 — Promote Calibration / Paper-Ready Hard / Redesign / Drop
 
-**Promote：**
+**`paper_ready_hard`：**
 
 ```bash
 git mv benchmark/go/staging/<task_id> benchmark/go/tasks/<task_id>
@@ -216,22 +228,25 @@ git mv benchmark/go/staging/<task_id> benchmark/go/tasks/<task_id>
 
 更新：
 
-- `docs/go_candidate_backlog.md` → `accepted`
+- `docs/go_candidate_backlog.md` → `paper_ready_hard`
 - `docs/benchmark_tasks.md` Go 分区
 - `experiments/go-pilot/<task_id>/review/decision.md`
 
-**Redesign：** ≤2 轮；记录 blocking_gates。
+**`promote_calibration`：** 机械流程通过但 hard readiness 不足。保留 evidence 和 design note，文档标 calibration/easy-B，不进入 hard 主表。
+
+**Redesign：** ≤2 轮；记录 blocking_gates 或 hard-readiness 失败原因。
 
 **Drop：** reuse 不成立或 G3 拉不开；backlog 标 `dropped` 并写原因。
 
 ---
 
-## 10 Gold 完成检查单
+## 10 Hard Gold 完成检查单
 
 Phase 2 收尾时，确认：
 
-- [ ] `benchmark/go/tasks/` 恰好 **10** 题（或文档登记例外）
-- [ ] 每题有 `experiments/go-pilot/<task_id>/review/gate_report.json` 且 `decision=promote`
+- [ ] `benchmark/go/tasks/` 恰好 **10 hard** 题（calibration/easy-B 单独列）
+- [ ] 每题有 `experiments/go-pilot/<task_id>/review/gate_report.json` 且 `decision=paper_ready_hard`
+- [ ] 每题通过 hard boundary review：不是文件边界抽取
 - [ ] ≥ **8** 个唯一 source repo（10 题中）
 - [ ] Flash A/B/C 分布写入 `docs/go_pilot_acceptance_report.md`（可新建）
 - [ ] 无题依赖 cgo / 网络
@@ -242,7 +257,7 @@ Phase 2 收尾时，确认：
 
 ## 扩到 100（Phase 3 预告）
 
-10 gold  playbook 稳定后：
+10 hard gold playbook 稳定后：
 
 1. 将 `go_candidate_backlog` 扩至 60+ repo 候选
 2. 允许 Agent 并行 staging，但 **promote 仍逐题 gate**

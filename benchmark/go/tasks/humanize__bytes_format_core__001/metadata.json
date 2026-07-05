@@ -1,10 +1,11 @@
 {
   "task_id": "humanize__bytes_format_core__001",
   "language": "go",
-  "difficulty": "hard",
+  "difficulty": "medium",
   "tags": [
     "go",
-    "gold",
+    "gold_verified_calibration",
+    "easy-b",
     "formatter",
     "pilot"
   ],
@@ -49,6 +50,7 @@
   },
   "output": {
     "package": "featurelifted",
+    "module": "featurelifted",
     "import": "import featurelifted",
     "callable": "featurelifted.Bytes",
     "signature": "Bytes(s uint64) string"

@@ -1,0 +1,85 @@
+{
+  "task_id": "voluptuous__schema_validate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "voluptuous",
+    "validation",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "voluptuous",
+    "url": "https://github.com/alecthomas/voluptuous",
+    "commit": "87825d6dbdab8830fcc6d559ecb3b88bdf68af6d",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Schema validation core",
+    "description": "Extract Voluptuous Schema declaration, Required/Optional markers, composed validators, and error aggregation without original voluptuous import.",
+    "source_entrypoints": [
+      "voluptuous.Schema",
+      "voluptuous.Required",
+      "voluptuous.Optional",
+      "voluptuous.validators.All",
+      "voluptuous.validators.Any",
+      "voluptuous.validators.In",
+      "voluptuous.validators.Coerce",
+      "voluptuous.error.MultipleInvalid"
+    ],
+    "included_behaviors": [
+      "declare Schema with Required and Optional markers",
+      "validate dict payloads with type and nested schema matching",
+      "compose All, Any, and In validators with Coerce",
+      "aggregate validation failures as MultipleInvalid with error paths"
+    ],
+    "excluded_behaviors": [
+      "humanize_error and CLI helpers",
+      "Email, Url, File, and other heavyweight validators",
+      "original voluptuous import at runtime",
+      "upstream packaging and bin scripts"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Voluptuous couples schema compilation, marker semantics, sub-validator composition, and Invalid path aggregation.",
+    "signals": [
+      "Schema._compile builds callable validators from dict/list graphs",
+      "Required/Optional markers drive key presence and defaults",
+      "All/Any compile sub-schemas via __voluptuous_compile__",
+      "MultipleInvalid collects nested Invalid paths"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Schema, Required, Optional, All, Any, In, Coerce, Invalid, MultipleInvalid, SchemaError",
+    "callable": "featurelifted.Schema",
+    "signature": "Schema(schema, required=False, extra=PREVENT_EXTRA)(data)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "voluptuous"
+    ],
+    "forbidden_imports": [
+      "voluptuous"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

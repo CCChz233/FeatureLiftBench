@@ -55,7 +55,7 @@ Do **not** describe tasks as “fixing bugs” or “resolving issues.” Use **
 | --- | --- | --- | --- | --- |
 | **v1.0** | **Implemented** | Python | **50 hard** (batch-0) + 3 smoke | Frozen batch-0; see [EXPANSION.md](EXPANSION.md) |
 | **v1.1** | **Implemented** | Python | **100 hard** (batch-0 + batch-1) | +50 via `benchmark/staging/`; [EXPANSION.md](EXPANSION.md) §2 |
-| **v2.0** | **Planned** | Python + Go | Python **100** + Go **10 gold → 100** | Go：见 [GO_EXPANSION.md](GO_EXPANSION.md)；harness [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
+| **v2.0** | **Planned** | Python + Go | Python **100** + Go **10 hard gold → 100** | Go：见 [GO_EXPANSION.md](GO_EXPANSION.md)；harness [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
 
 **v1.0 policy:** **batch-0** fifty tasks in `benchmark/tasks/` are **frozen** (no edits for expansion). **batch-1** adds fifty new tasks via staging ([EXPANSION.md](EXPANSION.md)).
 
@@ -379,21 +379,21 @@ Avoid:
 
 ---
 
-## 11. v2 roadmap (Go track — harness implemented, 3/10 true gold)
+## 11. v2 roadmap (Go track — harness implemented, hard set not ready)
 
-Go track **harness is implemented** (`go_eval.py`, Docker eval with Go 1.22, `validate-task`). **10 tasks** exist under `benchmark/go/tasks/`; **3** are true gold-quality as of 2026-07-04 (semver, humanize, mapstructure). Agent experiments use **OpenHands** and report separately from Python — see [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md).
+Go track **harness is implemented** (`go_eval.py`, Docker eval with Go 1.22, `validate-task`). **10 original tasks** exist under `benchmark/go/tasks/`, plus one hardening attempt. As of 2026-07-05 there are **4 calibration/easy-B tasks** and **0 hard paper-ready Go tasks**: OpenHands + Flash passes hidden tests with an oracle-sized footprint. Agent experiments use **OpenHands** and report separately from Python — see [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md).
 
 | Item | Plan | Document |
 | --- | --- | --- |
-| Phasing | **10 gold-quality Go tasks first**, then scale to 100 | [GO_EXPANSION.md](GO_EXPANSION.md) |
+| Phasing | **10 hard paper-ready Go tasks first**, then scale to 100 | [GO_EXPANSION.md](GO_EXPANSION.md) |
 | Languages | Python 100 (v1.1) + Go partition reported separately | §2 table |
 | `language` field | `"go"` with `go test`, `go.mod`, `forbidden_imports.txt` | [GO_TASK_FORMAT.md](GO_TASK_FORMAT.md) |
 | Playbook | Seven-step flow, gates, evidence packet | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) |
 | Harness | Go evaluator + Docker eval image | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
 | Agent experiments | OpenHands + `experiments/go-openhands/` | [GO_EXPERIMENT_PROTOCOL.md](GO_EXPERIMENT_PROTOCOL.md) |
 | Curation | Go OSS libraries; reuse principles aligned with [EXPANSION.md](EXPANSION.md) | [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md) · [go_candidate_backlog.md](go_candidate_backlog.md) |
-| Quality | Mechanical gates G0–G6 + scorecard | [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) |
-| Acceptance | 10 gold summary for paper | [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
+| Quality | Mechanical gates G0–G8 + scorecard + hard-readiness | [GO_QUALITY_RUBRIC.md](GO_QUALITY_RUBRIC.md) |
+| Acceptance | 10 hard gold summary for paper | [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
 
 **Directories:** `benchmark/go/staging/` → promote → `benchmark/go/tasks/`. Submissions share `benchmark/submissions/<task_id>/` with Python.
 

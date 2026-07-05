@@ -1,6 +1,6 @@
 # Go Harness 实现计划
 
-**最后更新：** 2026-07-03
+**最后更新：** 2026-07-05
 
 Go track 的**工程阻塞项**。在 Phase 0 完成前，不要 promote 任何 Go staging 题到 `benchmark/go/tasks/`。
 
@@ -13,7 +13,7 @@ Go track 的**工程阻塞项**。在 Phase 0 完成前，不要 promote 任何 
 让 `featureliftbench eval` / `run-agent` 对 `metadata.language == "go"` 的题目：
 
 1. 在隔离环境（优先 Docker eval）中 `go test` public + hidden
-2. 安装 submission 为独立 Go module（`featurelifted/`）
+2. 安装 submission 为独立 Go module（根目录 `*.go` + `go.mod`）
 3. 检查 forbidden import（原模块路径）
 4. 计算与 Python 相同的 footprint / `extraction_ratio` / `final_score`
 5. 产出结构化 `result.json`（与 Python 字段对齐）
@@ -62,7 +62,7 @@ PYTHONPATH=harness python -m featureliftbench.cli eval benchmark/go/staging/<tas
 
 | 脚本 | 用途 |
 | --- | --- |
-| `build_oracle_submission.py` | 支持 Go（从 `repo/` 抽取到 `featurelifted/`） |
+| `build_go_oracle_submission.py` | 构建 Go oracle/naive/copy_all submissions |
 | `verify_module_probes.py` | Go import 探针 |
 | `verify_all_oracles.py` | 批量 oracle |
 | staging gate 脚本 | `experiments/go-pilot/<task_id>/review/` 生成 `gate_report.json` |

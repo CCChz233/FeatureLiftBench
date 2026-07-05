@@ -1,0 +1,79 @@
+{
+  "task_id": "rfc3986__uri_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "rfc3986",
+    "uri",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "rfc3986",
+    "url": "https://github.com/python-hyper/rfc3986",
+    "commit": "2.0.0-installed-snapshot",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "RFC3986 URI parse, build, and validate subset",
+    "description": "Extract rfc3986 URIReference parsing, normalization, and URIBuilder without importing rfc3986.",
+    "source_entrypoints": [
+      "rfc3986.uri_reference",
+      "rfc3986.normalize_uri",
+      "rfc3986.is_valid_uri",
+      "rfc3986.builder.URIBuilder"
+    ],
+    "included_behaviors": [
+      "parse URI components and authority subcomponents",
+      "normalize scheme/host/path",
+      "URIBuilder compose and finalize",
+      "is_valid_uri convenience check"
+    ],
+    "excluded_behaviors": [
+      "IRI full unicode normalization",
+      "validators beyond basic is_valid_uri",
+      "original rfc3986 import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "URI parsing couples ABNF regex groups, namedtuple URIReference, normalizers, and builder mutation.",
+    "signals": [
+      "authority splits userinfo/host/port",
+      "normalize_uri lowercases scheme/host",
+      "URIBuilder finalize rebuilds components",
+      "ParseResult urlparse compatibility"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import URIBuilder, URIReference, is_valid_uri, normalize_uri, uri_reference",
+    "callable": "featurelifted.uri_reference",
+    "signature": "uri_reference(uri, encoding='utf-8') -> URIReference"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "rfc3986"
+    ],
+    "forbidden_imports": [
+      "rfc3986"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

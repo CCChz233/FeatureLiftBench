@@ -488,10 +488,12 @@ def _copy_runtime_with_tests(base_runtime: Path, test_dir: Path, target_runtime:
     shutil.copytree(base_runtime, target_runtime, symlinks=True)
     if not test_dir.exists():
         return
+    target_test_dir = target_runtime / f"flb_{prefix}_tests"
+    target_test_dir.mkdir(parents=True, exist_ok=True)
     for index, test_file in enumerate(sorted(test_dir.rglob("*_test.go"))):
         if not test_file.is_file():
             continue
-        target = target_runtime / f"{prefix}_{index}_{test_file.name}"
+        target = target_test_dir / f"{index}_{test_file.name}"
         shutil.copy2(test_file, target)
 
 
@@ -524,6 +526,10 @@ def _go_env() -> dict[str, str]:
             "GOFLAGS": "-mod=mod",
             "CGO_ENABLED": "0",
             "GOMAXPROCS": "2",
+            "HOME": "/tmp/featureliftbench-home",
+            "GOCACHE": "/tmp/featureliftbench-go-build",
+            "GOMODCACHE": "/tmp/featureliftbench-go-mod",
+            "TMPDIR": "/tmp",
         }
     )
     return env

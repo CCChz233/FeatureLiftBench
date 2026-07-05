@@ -1,10 +1,10 @@
 # Go Candidate Backlog
 
-**最后更新：** 2026-07-03
+**最后更新：** 2026-07-05
 
 Go track 选题台账。Repo 级政策见 [GO_REPO_SELECTION.md](GO_REPO_SELECTION.md)；执行见 [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md)。
 
-**状态：** `idea` → `shortlist` → `staging` → `accepted` | `dropped` | `redesign`
+**状态：** `idea` → `shortlist` → `seed` → `staging` → `mechanical_valid` → `gold_candidate` → `gold_verified` → `gold_verified_calibration` → `paper_ready_hard` | `dropped` | `redesign`
 
 ---
 
@@ -12,9 +12,11 @@ Go track 选题台账。Repo 级政策见 [GO_REPO_SELECTION.md](GO_REPO_SELECTI
 
 | 指标 | 目标 | 当前 |
 | --- | ---: | ---: |
-| Gold tasks | 10 | **10** |
-| Staging | — | 0 |
-| Shortlist | 5（pilot 队列） | 5（已 promote） |
+| Directory candidates | 10 | **10 原候选 + 1 hardening attempt** |
+| Calibration-verified | - | **4** |
+| Active hard design candidates | 1 now / 10 eventual | **1** |
+| Hard paper-ready | 10 | **0** |
+| Seed/template tasks | 0 | **7** |
 
 ---
 
@@ -22,11 +24,13 @@ Go track 选题台账。Repo 级政策见 [GO_REPO_SELECTION.md](GO_REPO_SELECTI
 
 | task_id（拟） | Repo | Feature slice | Entanglement | 状态 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| `semver__version_parse_core__001` | [Masterminds/semver](https://github.com/Masterminds/semver) | 版本解析与比较 | parser + internal normalize | **accepted** | pilot 深度参考题 |
-| `humanize__bytes_format_core__001` | [dustin/go-humanize](https://github.com/dustin/go-humanize) | 字节/时间人性化格式化 | 多文件 format + locale tables | **accepted** | gold |
-| `bluemonday__sanitize_policy_core__001` | [microcosm-cc/bluemonday](https://github.com/microcosm-cc/bluemonday) | HTML sanitize 策略核心 | policy registry + parser | **accepted** | gold |
-| `gojsonschema__validate_core__001` | [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema) | JSON Schema 校验子集 | reference resolver + types | **accepted** | gold |
-| `mapstructure__decode_core__001` | [go-viper/mapstructure](https://github.com/go-viper/mapstructure) | struct map 解码 | hooks + tag reflection | **accepted** | gold |
+| `mapstructure__decode_symbol_core__002` | [go-viper/mapstructure](https://github.com/go-viper/mapstructure) | symbol-level decode core redesign | target/non-target mixed files + hooks + reflection + metadata | **shortlist** | 下一版 hard 设计；必须先写 Boundary Plan，oracle 不能是整文件子集 |
+| `mapstructure__decode_core_hard__001` | [go-viper/mapstructure](https://github.com/go-viper/mapstructure) | hard struct map 解码 attempt | nested pointers + slices/maps + hooks + TextUnmarshaler + squash/metadata | **gold_verified_calibration** | Flash B，hidden pass，ext=oracle=0.571253；hard-readiness failed，下一版需非文件边界抽取 |
+| `semver__version_parse_core__001` | [Masterminds/semver](https://github.com/Masterminds/semver) | 版本解析与比较 | parser + internal normalize | **gold_verified_calibration** | OpenHands/Flash B，hidden pass，ext=oracle=0.574468；不进 hard 主表 |
+| `humanize__bytes_format_core__001` | [dustin/go-humanize](https://github.com/dustin/go-humanize) | 字节/时间人性化格式化 | 多文件 format + locale tables | **gold_verified_calibration** | OpenHands/Flash B，hidden pass，ext=oracle=0.323944；不进 hard 主表 |
+| `mapstructure__decode_core__001` | [go-viper/mapstructure](https://github.com/go-viper/mapstructure) | struct map 解码 | hooks + tag reflection | **gold_verified_calibration** | OpenHands/Flash B，hidden pass，ext=oracle=0.597633；hard follow-up 见上 |
+| `bluemonday__sanitize_policy_core__001` | [microcosm-cc/bluemonday](https://github.com/microcosm-cc/bluemonday) | HTML sanitize 策略核心 | policy registry + parser | **seed** | 当前仍是 hello/add.go 模板 |
+| `gojsonschema__validate_core__001` | [xeipuuv/gojsonschema](https://github.com/xeipuuv/gojsonschema) | JSON Schema 校验子集 | reference resolver + types | **seed** | 当前仍是 hello/add.go 模板 |
 
 ---
 
@@ -34,11 +38,11 @@ Go track 选题台账。Repo 级政策见 [GO_REPO_SELECTION.md](GO_REPO_SELECTI
 
 | task_id（拟） | Repo | Feature slice | 状态 |
 | --- | --- | --- | --- |
-| `validator__struct_validate_core__001` | [go-playground/validator](https://github.com/go-playground/validator) | 结构体 tag 校验 | **accepted** |
-| `copier__deep_copy_core__001` | [jinzhu/copier](https://github.com/jinzhu/copier) | 深拷贝 | **accepted** |
-| `expr__eval_core__001` | [expr-lang/expr](https://github.com/expr-lang/expr) | 表达式求值 | **accepted** |
-| `doublestar__glob_match_core__001` | [bmatcuk/doublestar](https://github.com/bmatcuk/doublestar) | glob 匹配 | **accepted** |
-| `uuid__parse_format_core__001` | [google/uuid](https://github.com/google/uuid) | UUID 解析/格式化 | **accepted** |
+| `validator__struct_validate_core__001` | [go-playground/validator](https://github.com/go-playground/validator) | 结构体 tag 校验 | **seed** |
+| `copier__deep_copy_core__001` | [jinzhu/copier](https://github.com/jinzhu/copier) | 深拷贝 | **seed** |
+| `expr__eval_core__001` | [expr-lang/expr](https://github.com/expr-lang/expr) | 表达式求值 | **seed** |
+| `doublestar__glob_match_core__001` | [bmatcuk/doublestar](https://github.com/bmatcuk/doublestar) | glob 匹配 | **seed** |
+| `uuid__parse_format_core__001` | [google/uuid](https://github.com/google/uuid) | UUID 解析/格式化 | **seed** |
 | `blackfriday__markdown_inline_core__001` | [russross/blackfriday/v2](https://github.com/russross/blackfriday) | inline markdown | idea |
 | `yaml__unmarshal_subset__001` | [go-yaml/yaml](https://github.com/go-yaml/yaml) | 解析子集 | idea |
 | `uuid__parse_format_core__001` | [google/uuid](https://github.com/google/uuid) | UUID 解析/格式化 | idea |
@@ -130,9 +134,12 @@ Go track 选题台账。Repo 级政策见 [GO_REPO_SELECTION.md](GO_REPO_SELECTI
 
 ## 更新规则
 
-1. promote 后：`status=accepted`，填入正式 `task_id` 与 commit
-2. drop 后：写 **原因** 一行，避免重复尝试
-3. redesign：保留行，增加 `attempt` 备注
+1. 进入 `shortlist` 前：必须过 repo gate，并能回答 Practical reuse 三问。
+2. 进入 `staging` 前：必须有 design note，且 Boundary Plan 证明不是文件边界抽取。
+3. hard paper-ready 后：`status=paper_ready_hard`，填入正式 `task_id`、commit 与 evidence 路径。
+4. calibration 后：`status=gold_verified_calibration`，记录 Flash footprint 为什么不足以 hard。
+5. drop 后：写 **原因** 一行，避免重复尝试。
+6. redesign：保留行，增加 `attempt` 备注。
 
 ---
 

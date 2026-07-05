@@ -1,0 +1,95 @@
+{
+  "task_id": "msgpack__pack_unpack_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "msgpack",
+    "serialization",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling",
+    "data_model_coupling"
+  ],
+  "source": {
+    "name": "msgpack-python",
+    "url": "https://github.com/msgpack/msgpack-python",
+    "commit": "2de627311fb17b1a942d052447c3777cd58b162d",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "MessagePack pack/unpack core",
+    "description": "Extract msgpack packb/unpackb, Packer/Unpacker streaming, ExtType/Timestamp extension types, and exception surface using the pure-Python fallback implementation without importing msgpack or compiled Cython extensions.",
+    "source_entrypoints": [
+      "msgpack.packb",
+      "msgpack.unpackb",
+      "msgpack.Packer",
+      "msgpack.Unpacker",
+      "msgpack.ext.ExtType",
+      "msgpack.ext.Timestamp",
+      "msgpack.fallback",
+      "msgpack.exceptions"
+    ],
+    "included_behaviors": [
+      "packb/unpackb roundtrip for nil, bool, int, float, str, bytes, list, tuple, dict",
+      "Packer options: use_bin_type, use_single_float, default hook, datetime timestamps",
+      "Unpacker streaming feed/unpack, strict_map_key, raw/bin decoding, ext_hook",
+      "Timestamp extension type pack/unpack (32/64/96-bit encodings)",
+      "ExtType custom extension payloads",
+      "ExtraData, FormatError, StackError, OutOfData exception semantics"
+    ],
+    "excluded_behaviors": [
+      "Cython _cmsgpack accelerated path and .pyx/.h build artifacts",
+      "benchmark suite, docker images, docs, and upstream test harness",
+      "original msgpack import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Packer and Unpacker couple byte-buffer cursor state, msgpack format header tables, extension timestamp codecs, hook dispatch, and strict type checking across nested container recursion.",
+    "signals": [
+      "Unpacker _buffer/_buff_i checkpoint rollback on OutOfData",
+      "_MSGPACK_HEADERS drives typed bin/ext/array/map branches in _unpack",
+      "Timestamp.to_bytes/from_bytes selects 32/64/96 wire formats",
+      "Packer _pack recurses with nest_limit and default hook fallback",
+      "strict_map_key and ext_hook alter map key and extension construction"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import packb, unpackb, pack, unpack, dumps, loads, Packer, Unpacker, ExtType, Timestamp, ExtraData, FormatError",
+    "callable": "featurelifted.packb",
+    "signature": "packb(o, **kwargs) -> bytes"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "msgpack"
+    ],
+    "forbidden_imports": [
+      "msgpack"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "scoring_reference": {
+    "oracle_loc": 1019,
+    "oracle_bytes": 40901,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 2466,
+    "copy_all_bytes": 104123
+  }
+}

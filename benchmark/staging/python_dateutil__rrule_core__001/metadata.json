@@ -1,0 +1,82 @@
+{
+  "task_id": "python_dateutil__rrule_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "recurrence",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "python-dateutil",
+    "url": "https://github.com/dateutil/dateutil",
+    "commit": "1ae807774053c071acc9e7d3d27778fba0a7773e",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "iCalendar recurrence (rrule) core",
+    "description": "Extract python-dateutil rrule/rruleset/rrulestr recurrence iteration for naive datetimes without timezone, general parser, or relativedelta machinery.",
+    "source_entrypoints": [
+      "dateutil.rrule.rrule",
+      "dateutil.rrule.rruleset",
+      "dateutil.rrule.rrulestr",
+      "dateutil.rrule.weekday",
+      "dateutil.easter.easter"
+    ],
+    "included_behaviors": [
+      "rrule iteration with freq, interval, count, until, and BY* filters",
+      "rruleset include rules with EXDATE/RDATE (naive)",
+      "rrulestr for RRULE lines with naive iCalendar date values",
+      "BYEASTER offsets via easter helper",
+      "weekday constants MO..SU and freq constants"
+    ],
+    "excluded_behaviors": [
+      "dateutil.tz, TZID, zoneinfo, tzwin",
+      "relativedelta and general dateutil.parser",
+      "original dateutil package import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Recurrence couples RFC grammar parsing, calendar bitmask state, leap years, setpos/weekday interactions, generator caching, and rruleset merging.",
+    "signals": [
+      "rrulestr maps RFC tokens to constructor kwargs",
+      "BYSETPOS interacts with BYDAY monthly masks",
+      "BYEASTER needs separate holiday algorithm",
+      "rruleset exdate/rdate override iteration order"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import rrule, rruleset, rrulestr, YEARLY, MONTHLY, WEEKLY, DAILY, MO, TU, WE, TH, FR, SA, SU",
+    "callable": "featurelifted.rrule",
+    "signature": "rrule(freq, dtstart=None, interval=1, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "python-dateutil",
+      "dateutil"
+    ],
+    "forbidden_imports": [
+      "dateutil"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

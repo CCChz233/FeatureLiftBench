@@ -1,6 +1,6 @@
 # Task Design: semver__version_parse_core__001 (Go)
 
-Status: oracle-verified
+Status: gold_verified_calibration
 
 ## Why This Task
 
@@ -21,4 +21,8 @@ featurelifted.Compare("1.0.0", "1.0.1")
 
 ## Go/No-Go
 
-Decision: promote (pending Flash)
+Decision: promote_calibration (OpenHands + `deepseek/deepseek-v4-flash`, 2026-07-05).
+
+Flash passed public+hidden with the same extraction footprint as the oracle
+(`0.574468`), so this remains useful as Go pipeline calibration but is not
+hard paper-ready evidence.

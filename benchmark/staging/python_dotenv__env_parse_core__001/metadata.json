@@ -1,0 +1,84 @@
+{
+  "task_id": "python_dotenv__env_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "python-dotenv",
+    "functional-discriminator",
+    "config_environment_coupling",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "python-dotenv",
+    "url": "https://github.com/theskumar/python-dotenv",
+    "commit": "751f8c148222e58aa173c83c4e5e6cfccb2cc124",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Dotenv parse and set_key core",
+    "description": "Extract .env file parsing with quote/escape handling, POSIX variable expansion, and set_key file mutation without importing dotenv.",
+    "source_entrypoints": [
+      "dotenv.dotenv_values",
+      "dotenv.set_key",
+      "dotenv.get_key",
+      "dotenv.parser.parse_stream",
+      "dotenv.variables.parse_variables",
+      "dotenv.main.DotEnv"
+    ],
+    "included_behaviors": [
+      "parse key=value pairs from stream with export prefix and comments",
+      "single- and double-quoted values with escape sequences",
+      "UTF-8 BOM stripping at file start",
+      "POSIX ${VAR} and ${VAR:-default} variable interpolation",
+      "set_key creates or updates keys with auto-quoting"
+    ],
+    "excluded_behaviors": [
+      "CLI and IPython extension entrypoints",
+      "load_dotenv os.environ side effects in hidden tests",
+      "upstream test suite and docs",
+      "original dotenv import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Dotenv parsing couples regex-driven lexer state, quote escape tables, ordered variable resolution against prior bindings, and atomic file rewrite for set_key.",
+    "signals": [
+      "parse_stream Reader position tracks multiline quoted values",
+      "resolve_variables merges os.environ with parsed order",
+      "parse_variables splits ${name:-default} atoms",
+      "set_key rewrites file preserving unrelated lines and newlines"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import dotenv_values, set_key, get_key",
+    "callable": "featurelifted.dotenv_values",
+    "signature": "dotenv_values(stream=..., interpolate=True, encoding='utf-8')"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "python-dotenv",
+      "dotenv"
+    ],
+    "forbidden_imports": [
+      "dotenv"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

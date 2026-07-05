@@ -1,6 +1,6 @@
 # Task Design: mapstructure__decode_core__001 (Go)
 
-Status: oracle-verified
+Status: gold_verified_calibration
 
 ## Why This Task
 
@@ -21,4 +21,9 @@ featurelifted.NewDecoder(&featurelifted.DecoderConfig{...})
 
 ## Go/No-Go
 
-Decision: promote (pending gate)
+Decision: promote_calibration (OpenHands + `deepseek/deepseek-v4-flash`, 2026-07-05).
+
+Flash passed public+hidden with the same extraction footprint as the oracle
+(`0.597633`), so this remains useful as Go pipeline calibration but is not
+hard paper-ready evidence. The hard follow-up is
+`mapstructure__decode_core_hard__001`.

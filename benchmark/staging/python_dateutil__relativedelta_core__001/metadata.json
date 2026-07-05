@@ -1,0 +1,82 @@
+{
+  "task_id": "python_dateutil__relativedelta_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "date-arithmetic",
+    "hard-first",
+    "functional-discriminator",
+    "data_model_coupling",
+    "multi-task-repo"
+  ],
+  "source": {
+    "name": "python-dateutil",
+    "url": "https://github.com/dateutil/dateutil",
+    "commit": "1ae807774053c071acc9e7d3d27778fba0a7773e",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "relativedelta arithmetic core",
+    "description": "Extract python-dateutil relativedelta relative/absolute date arithmetic, normalization, and weekday helpers for naive datetime/date without rrule, parser, or timezone machinery.",
+    "source_entrypoints": [
+      "dateutil.relativedelta.relativedelta",
+      "dateutil.relativedelta.weekday",
+      "dateutil._common.weekday"
+    ],
+    "included_behaviors": [
+      "relativedelta construction with relative and absolute fields",
+      "datetime/date addition and subtraction with month/year rollover",
+      "weekday nth helpers MO..SU with setpos semantics",
+      "normalized() for fractional day/hour cascading",
+      "relativedelta(dt1, dt2) difference mode",
+      "yearday/nlyearday and leapdays adjustments"
+    ],
+    "excluded_behaviors": [
+      "dateutil.rrule, rrulestr, rruleset",
+      "dateutil.parser and general string date parsing",
+      "dateutil.tz, zoneinfo, tzwin",
+      "original dateutil package import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Relative date arithmetic couples absolute vs relative field ordering, month-end clamping, weekday setpos jumps, fractional normalization cascades, and two-date diff iteration.",
+    "signals": [
+      "absolute day/month/year replace before relative add",
+      "weekday MO(n) jumps after day replacement",
+      "normalized() cascades fractional units through _fix",
+      "diff mode iterates months until timedelta remainder fits"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import relativedelta, MO, TU, WE, TH, FR, SA, SU",
+    "callable": "featurelifted.relativedelta",
+    "signature": "relativedelta(dt1=None, dt2=None, years=0, months=0, days=0, **kwargs)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "python-dateutil",
+      "dateutil"
+    ],
+    "forbidden_imports": [
+      "dateutil"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

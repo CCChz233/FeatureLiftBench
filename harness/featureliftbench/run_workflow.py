@@ -57,6 +57,7 @@ def _env_overlay(updates: dict[str, str]) -> Iterator[None]:
 
 @contextmanager
 def _run_lock(output_dir: Path) -> Iterator[None]:
+    output_dir.mkdir(parents=True, exist_ok=True)
     lock_dir = output_dir / ".run.lock"
     try:
         lock_dir.mkdir(exist_ok=False)

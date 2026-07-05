@@ -1,0 +1,78 @@
+{
+  "task_id": "isodate__duration_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "isodate",
+    "duration",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "isodate",
+    "url": "https://github.com/gweis/isodate",
+    "commit": "0.7.2-installed-snapshot",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "ISO8601 duration parse and format",
+    "description": "Extract isodate Duration parsing and isoformat helpers without importing isodate.",
+    "source_entrypoints": [
+      "isodate.parse_duration",
+      "isodate.duration_isoformat",
+      "isodate.duration.Duration"
+    ],
+    "included_behaviors": [
+      "parse P-period durations to timedelta or Duration",
+      "duration_isoformat for Duration and timedelta",
+      "decimal comma fractions in components",
+      "ISO8601Error on invalid input"
+    ],
+    "excluded_behaviors": [
+      "full date/time/tz parsing surface",
+      "strftime locale tables beyond duration chain",
+      "original isodate import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Duration parsing couples regex capture groups, Decimal year/month handling, and Duration vs timedelta selection.",
+    "signals": [
+      "years/months force Duration object",
+      "comma decimals normalized in regex groups",
+      "alternative datetime duration delegates to parse_datetime",
+      "duration_isoformat routes through strftime tokens"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import Duration, ISO8601Error, duration_isoformat, parse_duration; from featurelifted.isodates import parse_date",
+    "callable": "featurelifted.parse_duration",
+    "signature": "parse_duration(datestring, as_timedelta_if_possible=True)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "isodate"
+    ],
+    "forbidden_imports": [
+      "isodate"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

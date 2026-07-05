@@ -1,0 +1,24 @@
+{
+  "probes": [
+    {
+      "id": "decode_collections",
+      "remove_path": "decode_kinds.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestNestedPointersSlicesAndMaps"
+    },
+    {
+      "id": "decode_text",
+      "remove_path": "text.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestTextUnmarshaler"
+    },
+    {
+      "id": "decode_hooks",
+      "remove_path": "decode_hooks.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestComposeHookOrder"
+    },
+    {
+      "id": "decode_struct_state",
+      "remove_path": "decode_struct.go",
+      "maps_to_hidden": "hidden_tests/hidden_test.go:TestSquashConflictAndUnusedMetadata"
+    }
+  ]
+}

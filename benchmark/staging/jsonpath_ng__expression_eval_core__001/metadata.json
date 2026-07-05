@@ -1,0 +1,83 @@
+{
+  "task_id": "jsonpath_ng__expression_eval_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-1",
+    "jsonpath",
+    "hard-first",
+    "functional-discriminator",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "name": "jsonpath-ng",
+    "url": "https://github.com/h2non/jsonpath-ng",
+    "commit": "e59ead334ac47618e6d844ad758114b3bfafcc8a",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "JSONPath parse, find, and update core",
+    "description": "Extract jsonpath-ng expression parsing and evaluation (including filter expressions) without CLI or original package import.",
+    "source_entrypoints": [
+      "jsonpath_ng.ext.parse",
+      "jsonpath_ng.jsonpath.JSONPath.find",
+      "jsonpath_ng.jsonpath.JSONPath.update",
+      "jsonpath_ng.parser.JsonPathParser",
+      "jsonpath_ng.lexer.JsonPathLexer"
+    ],
+    "included_behaviors": [
+      "parse JSONPath strings into expression objects",
+      "find matching values in dict/list document trees",
+      "update values at matching paths in place",
+      "filter expressions with comparison operators",
+      "array slices and wildcard/index segments"
+    ],
+    "excluded_behaviors": [
+      "CLI bin/jsonpath.py",
+      "original jsonpath_ng import at runtime"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "JSONPath couples lexer/parser grammar, AST node types, tree walking, filter evaluation, and in-place update semantics.",
+    "signals": [
+      "PLY lexer/parser builds AST from path strings",
+      "Child/Index/Slice nodes compose navigation",
+      "ext filter parser adds comparison and @ context",
+      "update mutates nested dict/list structure"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted; from featurelifted import parse; from featurelifted.jsonpath import JSONPath; from featurelifted.exceptions import JsonPathLexerError, JsonPathParserError",
+    "callable": "featurelifted.parse",
+    "signature": "parse(path_string)"
+  },
+  "environment": {
+    "python": "3.11",
+    "network": false,
+    "timeout_seconds": 60,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "ply"
+    ],
+    "forbidden_dependencies": [
+      "jsonpath-ng",
+      "jsonpath_ng"
+    ],
+    "forbidden_imports": [
+      "jsonpath_ng"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  }
+}

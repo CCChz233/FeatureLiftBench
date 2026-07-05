@@ -1,6 +1,6 @@
 # Go Track 实验协议（与 Python 分离）
 
-**最后更新：** 2026-07-04
+**最后更新：** 2026-07-05
 
 Go v2 gold track 的 **agent 实验**与 Python v1.1 主榜**分开目录、分开 agent、分开报告**。decoupling 语义与打分公式与 Python 相同。
 
@@ -10,9 +10,9 @@ Go v2 gold track 的 **agent 实验**与 Python v1.1 主榜**分开目录、分�
 
 ## 1. 与 Python 主榜对比
 
-| 维度 | Python v1.1 | Go v2 gold |
+| 维度 | Python v1.1 | Go v2 hard gold |
 | --- | --- | --- |
-| 数据集 | `benchmark/tasks/`（100 hard） | `benchmark/go/tasks/`（10 gold） |
+| 数据集 | `benchmark/tasks/`（100 hard） | `benchmark/go/tasks/`（目标 10 hard gold；calibration 单独列） |
 | Agent | **mini-swe-agent** | **OpenHands** headless |
 | 模型（当前） | `deepseek/deepseek-v4-flash` 等 | `deepseek/deepseek-v4-flash` |
 | 步数上限 | `MSWEA_GLOBAL_CALL_LIMIT`（profile） | OpenHands `max_iterations` **≤120** |
@@ -101,11 +101,12 @@ experiments/go-pilot/<task_id>/review/
 
 | Tier | 条件 | 含义 |
 | --- | --- | --- |
-| **A** | public ✓、hidden ✗ | 理想：hidden 有判别力 |
-| **B** | 全过、extraction 中等 | 可能偏易或 agent 较强 |
-| **C** | 全过、低 extraction 或硬编码过 hidden | redesign |
+| **A** | public ✓、hidden ✗ | 理想 hard 信号：hidden 有判别力 |
+| **B-hard** | hidden ✓，但 footprint compact、非 oracle、明显低于 copy_all | 可进 hard review，需披露 |
+| **B-calibration** | hidden ✓ 且 oracle footprint，或 hidden ✓ 且接近 copy_all | 只计 calibration |
+| **C** | 低 extraction、硬编码或流程失败 | redesign/drop |
 
-对照：`naive` baseline 应为 public ✓、hidden ✗（见 `go-pilot` gate）。
+对照：`naive` baseline 应为 public ✓、hidden ✗（见 `go-pilot` gate）。`PIPELINE_SMOKE=1` 只验证 harness，不计入 Flash tier。
 
 ---
 

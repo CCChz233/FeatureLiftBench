@@ -59,7 +59,7 @@ echo "=== $TASK_ID: eval oracle ==="
 $PY -B -m featureliftbench.cli eval "$TASK_DIR" "$SUBMISSIONS/oracle" --output "$REVIEW_DIR/oracle" "${DOCKER_FLAG[@]}"
 
 echo "=== $TASK_ID: verify_module_probes ==="
-$PY harness/scripts/verify_module_probes.py "$TASK_DIR" --verify-oracle > "$REVIEW_DIR/module-probes.log" 2>&1 || true
+$PY harness/scripts/verify_module_probes.py "$TASK_DIR" --verify-oracle "${DOCKER_FLAG[@]}" > "$REVIEW_DIR/module-probes.log" 2>&1 || true
 
 echo "=== $TASK_ID: eval naive ==="
 $PY -B -m featureliftbench.cli eval "$TASK_DIR" "$SUBMISSIONS/naive" --output "$REVIEW_DIR/naive" "${DOCKER_FLAG[@]}" || true

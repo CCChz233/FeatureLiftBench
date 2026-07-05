@@ -186,7 +186,7 @@ reuse 不成立、oracle 做不出、与 batch-0 重复、validate 过不了 →
 
 修改 batch-0、替换 batch-0 弱题。
 
-**Go track** 单独规划，见 [GO_EXPANSION.md](GO_EXPANSION.md)（10 gold → 100，与 Python 分区报告）。
+**Go track** 单独规划，见 [GO_EXPANSION.md](GO_EXPANSION.md)（10 hard gold → 100，与 Python 分区报告）。
 
 ---
 
@@ -198,7 +198,7 @@ Python 主榜已满 **100 hard**（batch-0 + batch-1）。Go 不修改任何 Pyt
 | --- | --- | --- |
 | Phase 0 | Harness MVP | [GO_HARNESS_PLAN.md](GO_HARNESS_PLAN.md) |
 | Phase 1 | 1 pilot 题 | [GO_PILOT_PLAYBOOK.md](GO_PILOT_PLAYBOOK.md) |
-| Phase 2 | **10 gold** | [GO_EXPANSION.md](GO_EXPANSION.md) · [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
+| Phase 2 | **10 hard gold** | [GO_EXPANSION.md](GO_EXPANSION.md) · [go_pilot_acceptance_report.md](go_pilot_acceptance_report.md) |
 | Phase 3 | 扩至 100 | 同上 playbook |
 
 选题台账：[go_candidate_backlog.md](go_candidate_backlog.md)。格式：[GO_TASK_FORMAT.md](GO_TASK_FORMAT.md)。

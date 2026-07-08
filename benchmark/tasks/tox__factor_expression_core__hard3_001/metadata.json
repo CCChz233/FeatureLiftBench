@@ -1,0 +1,79 @@
+{
+  "task_id": "tox__factor_expression_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "commit": "5458a28f15a36c0d7ad2e7166cce4dac0a9cd7cf",
+    "license": "MIT",
+    "name": "tox",
+    "url": "https://github.com/tox-dev/tox.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped environment factor expression and ini filtering into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "virtualenv creation",
+      "subprocess execution"
+    ],
+    "included_behaviors": [
+      "brace factor expansion",
+      "negated factors",
+      "env list discovery",
+      "factor-filtered ini lines"
+    ],
+    "name": "Environment factor expression and ini filtering",
+    "source_entrypoints": [
+      "tox.config.loader.ini.factor.filter_for_env"
+    ]
+  },
+  "entanglement": {
+    "description": "Factor expressions, negation, envlist discovery, and factor-filtered ini lines interact through parser state.",
+    "level": "high",
+    "primary": "parser_state_coupling",
+    "signals": [
+      "factor negation excludes matching lines",
+      "envlist expansion from brace groups",
+      "env_factors filter selects factor-conditioned lines",
+      "continuation lines respect pending skip state"
+    ],
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "filter_for_env",
+    "import": "from featurelifted import expand_factors, find_envs, filter_for_env",
+    "package": "featurelifted",
+    "signature": "filter_for_env(value: str, env_name: str | None = None, env_factors: set[str] | None = None)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "tox"
+    ],
+    "forbidden_imports": [
+      "tox"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "tox/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

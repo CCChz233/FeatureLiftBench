@@ -1,0 +1,78 @@
+{
+  "task_id": "apscheduler__cron_trigger_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "commit": "4de063392ff59f4df6ec0f4e3e2020539d79fdc9",
+    "license": "MIT",
+    "name": "apscheduler",
+    "url": "https://github.com/agronholm/apscheduler.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped cron trigger next-fire-time state into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "scheduler stores/executors",
+      "subprocess"
+    ],
+    "included_behaviors": [
+      "cron field parsing subset",
+      "next fire time iteration",
+      "end_time boundary"
+    ],
+    "name": "Cron trigger next-fire-time state",
+    "source_entrypoints": [
+      "apscheduler.triggers.cron.CronTrigger"
+    ]
+  },
+  "entanglement": {
+    "description": "Trigger fields, previous fire time, and boundary behavior require stateful iteration.",
+    "level": "high",
+    "primary": "parser_state_coupling",
+    "signals": [
+      "step expressions like */15",
+      "hour ranges",
+      "end date boundary",
+      "start_time lower bound"
+    ],
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "CronTrigger",
+    "import": "from featurelifted import CronTrigger",
+    "package": "featurelifted",
+    "signature": "CronTrigger(minute='*', hour='*', day='*', start_time=None, end_time=None)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "apscheduler"
+    ],
+    "forbidden_imports": [
+      "apscheduler"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "apscheduler/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

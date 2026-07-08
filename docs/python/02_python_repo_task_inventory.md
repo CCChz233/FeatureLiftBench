@@ -18,9 +18,9 @@ Status enum:
 
 Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-08:
 
-- Tasks: 102.
-- Unique source names: 77.
-- Metadata difficulty: 100 `hard`.
+- Tasks: 108.
+- Unique source names: 83.
+- Metadata difficulty: 108 `hard`.
 - `Ref LOC`: populated only when `metadata.scoring_reference.oracle_loc` exists; otherwise `TBD`.
 - `Files`: count from `evaluation/oracle_manifest.json.required_source_files` when available; otherwise `TBD`.
 
@@ -42,6 +42,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 
 | Task ID | Repo | Commit | Feature | Type | Difficulty | Ref LOC | Files | Status | Notes |
 |---|---|---|---|---|---|---:|---:|---|---|
+| apscheduler__cron_trigger_core__hard3_001 | apscheduler | 4de063392ff5 | Cron trigger next-fire-time state | parser_state_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | arrow__parse_format_core__001 | arrow | 1.2.3-installed-snapshot | Arrow parse, format, and humanize subset | parser_state_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
 | astroid__nodes_core__001 | astroid | 2.14.2-installed-snapshot | Astroid parse and nodes subset | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | attrs__validators_core__001 | attrs | 23.1.0 | attrs field validators | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
@@ -49,8 +50,10 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | bidict__bidirectional_map_core__001 | bidict | 393bcfdc8edb | Bidirectional mapping core | data_model_coupling | hard | TBD | 11 | valid | current `benchmark/tasks` metadata |
 | bleach__sanitize_core__001 | bleach | 4.1.0-installed-snapshot | HTML sanitizer clean core | parser_state_coupling | hard | TBD | 5 | valid | current `benchmark/tasks` metadata |
 | boltons__iterutils_core__001 | boltons | 23.0.0-installed-snapshot | Iterutils iterator toolkit | data_model_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
+| build__pyproject_backend_core__hard3_001 | build | 6c03264d186c | PEP 517 build-system table validation | data_model_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | cachetools__cache_eviction_core__001 | cachetools | 48284d73d0a8 | Cache eviction core | data_model_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |
 | cattrs__structure_core__001 | cattrs | 5dc43b3f3887 | Structure/unstructure core | data_model_coupling | hard | TBD | 13 | valid | current `benchmark/tasks` metadata |
+| celery__signal_dispatch_core__hard3_001 | celery | 201573a11fb8 | Signal registry and receiver dispatch | framework_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | cerberus__schema_validate_core__001 | cerberus | f2221c5a901b | Schema validation core | data_model_coupling | hard | TBD | 6 | valid | current `benchmark/tasks` metadata |
 | chameleon__template_compile_core__001 | chameleon | 4.6.0-installed-snapshot | ZPT template compile and render | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | click__option_parser__001 | click | 8.1.7-installed-snapshot | Command line option parsing and invocation | framework_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
@@ -91,6 +94,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | markdown_it__commonmark_render__001 | markdown-it-py | 2.2.0-installed-snapshot | CommonMark block/inline parsing and HTML rendering | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | marshmallow__schema_core__001 | marshmallow | 4.3.0-installed-snapshot | Schema load and dump | data_model_coupling | hard | TBD | 15 | valid | current `benchmark/tasks` metadata |
 | msgpack__pack_unpack_core__001 | msgpack-python | 2de627311fb1 | MessagePack pack/unpack core | parser_state_coupling | hard | 1019 | 4 | valid | current `benchmark/tasks` metadata |
+| multidict__multidict_mutation_core__hard3_001 | multidict | 2aed5c21c349 | Case-insensitive multidict mutation and proxy behavior | data_model_coupling | hard | TBD | 4 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | networkx__dag_topo_core__001 | networkx | 3.3-curated-dag-snapshot | DAG topological sorting | data_model_coupling | hard | TBD | 26 | valid | current `benchmark/tasks` metadata |
 | packaging__requirement_marker_specifier__001 | packaging | 24.1-installed-snapshot | Python package requirement, marker, specifier, and version semantics | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | parso__python_parse_core__001 | parso | 0.8.3-installed-snapshot | Python parser grammar core | parser_state_coupling | hard | TBD | 26 | valid | current `benchmark/tasks` metadata |
@@ -121,6 +125,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | rich__markup_parse_core__001 | rich | 13.7.1-installed-snapshot | Console markup parsing | parser_state_coupling | hard | TBD | 79 | valid | current `benchmark/tasks` metadata |
 | ruamel_yaml__roundtrip_core__001 | ruamel.yaml | 0.18.6-installed-snapshot | YAML roundtrip with comments | parser_state_coupling | hard | TBD | 29 | valid | current `benchmark/tasks` metadata |
 | sortedcontainers__sorted_list_core__001 | sortedcontainers | a1f52d6713dd | SortedList core | data_model_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
+| sqlalchemy__event_dispatch_core__hard3_001 | sqlalchemy | d59159ca08cd | Event registry dispatch core | framework_coupling | hard | TBD | 3 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | sqlparse__format_filters_core__001 | sqlparse | f80af6a4007f | SQL format and filters core | parser_state_coupling | hard | TBD | 19 | valid | current `benchmark/tasks` metadata |
 | sqlparse__parse_format_core__001 | sqlparse | f80af6a4007f | SQL parse, split, and format core | parser_state_coupling | hard | 2930 | TBD | valid | current `benchmark/tasks` metadata |
 | sqlparse__parse_split_core__001 | sqlparse | f80af6a4007f | SQL parse and split core | parser_state_coupling | hard | TBD | 12 | valid | current `benchmark/tasks` metadata |
@@ -129,6 +134,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | tabulate__table_format_core__001 | tabulate | 268615a5c27d | Table formatting core | data_model_coupling | hard | 2311 | 1 | valid | current `benchmark/tasks` metadata |
 | tenacity__retry_state_core__hard3_001 | tenacity | b2cd0274c67610d615019ab4745f521504a0576d | Retry state machine with stop/wait/retry predicates | data_model_coupling | hard | TBD | 5 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | tomlkit__roundtrip_document__001 | tomlkit | 9ac3f98214db | TOML document parse and round-trip editing | data_model_coupling | hard | 4528 | 12 | valid | current `benchmark/tasks` metadata |
+| tox__factor_expression_core__hard3_001 | tox | 5458a28f15a3 | Environment factor expression and ini filtering | parser_state_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | typer__command_parser_core__001 | typer | 0.20.0-installed-snapshot | Typer command parser and CLI runner | framework_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | urllib3__retry_backoff_core__001 | urllib3 | 2f68c5363ef6 | Retry backoff policy core | config_environment_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |
 | vibe_app__csv_transform_core__001 | vibe_app | curated | CSV transform pipeline | legacy_vibe_clutter | hard | TBD | 14 | valid | current `benchmark/tasks` metadata |

@@ -1,0 +1,82 @@
+{
+  "task_id": "multidict__multidict_mutation_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "2aed5c21c349f355063b08355b7322c14075acc3",
+    "license": "Apache-2.0",
+    "name": "multidict",
+    "url": "https://github.com/aio-libs/multidict.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped case-insensitive multidict mutation and proxy behavior into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "C extension implementation",
+      "typing-only modules"
+    ],
+    "included_behaviors": [
+      "MultiDict and CIMultiDict mutation semantics",
+      "getall, getone, popone, popall",
+      "MultiDictProxy and CIMultiDictProxy view mutation",
+      "case-insensitive key folding for CIMultiDict"
+    ],
+    "name": "Case-insensitive multidict mutation and proxy behavior",
+    "source_entrypoints": [
+      "multidict.MultiDict",
+      "multidict.CIMultiDict",
+      "multidict.MultiDictProxy"
+    ]
+  },
+  "entanglement": {
+    "description": "Mutation order, proxy views, case folding, and repeated keys must match library behavior.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "duplicate keys preserve insertion order in getall",
+      "popone removes the most recent value for a key",
+      "popall removes every value for a key",
+      "CIMultiDictProxy mutations reflect in the base mapping"
+    ],
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "MultiDict",
+    "import": "from featurelifted import MultiDict, CIMultiDict, MultiDictProxy, CIMultiDictProxy",
+    "package": "featurelifted",
+    "signature": "MultiDict(*args, **kwargs)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "multidict"
+    ],
+    "forbidden_imports": [
+      "multidict"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "multidict/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

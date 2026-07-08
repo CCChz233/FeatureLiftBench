@@ -1,0 +1,80 @@
+{
+  "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "copy-heavy trap tasks",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "d59159ca08cdf661f97d19d2966071a1b1d3df80",
+    "license": "MIT",
+    "name": "sqlalchemy",
+    "url": "https://github.com/sqlalchemy/sqlalchemy.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped event registry dispatch core into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "ORM/engine/database access"
+    ],
+    "included_behaviors": [
+      "listener registration/removal",
+      "dispatch ordering",
+      "once semantics",
+      "subclass propagation",
+      "named kwargs"
+    ],
+    "name": "Event registry dispatch core",
+    "source_entrypoints": [
+      "sqlalchemy.event.listen",
+      "sqlalchemy.event.remove"
+    ]
+  },
+  "entanglement": {
+    "description": "Listener registration, once=True semantics, propagation, and target resolution are stateful and transitive.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "listener remove during dispatch deactivates without breaking iteration",
+      "once listener runs only one time",
+      "subclass propagation registers on child targets",
+      "named kwargs dispatch passes kwargs by name"
+    ],
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling"
+    ]
+  },
+  "output": {
+    "callable": "listen",
+    "import": "from featurelifted import listen, remove, dispatch, EventTarget",
+    "package": "featurelifted",
+    "signature": "listen(target, identifier, fn, once=False, propagate=False, named=False)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "sqlalchemy"
+    ],
+    "forbidden_imports": [
+      "sqlalchemy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "sqlalchemy/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

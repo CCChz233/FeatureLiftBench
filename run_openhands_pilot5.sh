@@ -12,11 +12,11 @@ PYTHON="${PYTHON:-python3.12}"
 
 OUTPUT_ARGS=()
 if [[ -n "${RUN_ID:-}" ]]; then
-  OUTPUT_ARGS=(--output "experiments/openhands-agent/${RUN_ID}")
+  OUTPUT_ARGS=(--output "experiments/smoke/${RUN_ID}")
 fi
 
 if [[ "${RESUME:-0}" == "1" && -n "${RUN_ID:-}" ]]; then
-  exec "$PYTHON" -B -m featureliftbench.cli resume "experiments/openhands-agent/${RUN_ID}"
+  exec "$PYTHON" -B -m featureliftbench.cli resume "experiments/smoke/${RUN_ID}"
 fi
 
 exec "$PYTHON" -B -m featureliftbench.cli run --suite pilot5 "${OUTPUT_ARGS[@]}"

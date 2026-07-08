@@ -38,11 +38,11 @@ Quality score: pending manual scorecard
 
 ## Evidence
 
-- gate report: experiments/batch1/{task_id}/review/gate_report.json
-- oracle: experiments/batch1/{task_id}/review/oracle/result.json
-- naive: experiments/batch1/{task_id}/review/naive/result.json
-- copy_all: experiments/batch1/{task_id}/review/copy_all/result.json
-- flash: experiments/batch1/{task_id}/review/flash/run.json
+- gate report: evidence/python/batch1/{task_id}/review/gate_report.json
+- oracle: evidence/python/batch1/{task_id}/review/oracle/result.json
+- naive: evidence/python/batch1/{task_id}/review/naive/result.json
+- copy_all: evidence/python/batch1/{task_id}/review/copy_all/result.json
+- flash: evidence/python/batch1/{task_id}/review/flash/run.json
 
 ## Metrics
 
@@ -72,7 +72,7 @@ def main() -> int:
 
     task_ids = list_batch1_task_ids() if (args.all_batch1 or not args.task_ids) else args.task_ids
     for task_id in task_ids:
-        gate_path = _REPO / "experiments" / "batch1" / task_id / "review" / "gate_report.json"
+        gate_path = _REPO / "evidence" / "python" / "batch1" / task_id / "review" / "gate_report.json"
         if not gate_path.is_file():
             print(f"SKIP {task_id}: no gate_report.json")
             continue

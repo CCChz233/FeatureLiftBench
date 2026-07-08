@@ -35,10 +35,11 @@ from .paths import (
     DEFAULT_AGENT_CONFIG,
     DEFAULT_LOCAL_CONFIG,
     DEFAULT_LOCAL_CONFIG_EXAMPLE,
-    EXPERIMENTS_DIR,
+    EXPERIMENTS_SMOKE_DIR,
     REPO_ROOT,
     SANITY_TASKS_DIR,
     TASKS_DIR,
+    resolve_openhands_run_dir,
 )
 
 SUITE_NAMES = frozenset({"sanity", "smoke", "pilot5", "main", "custom"})
@@ -498,7 +499,14 @@ def resolve_output_dir(
     if local_config.run.output_dir:
         return Path(local_config.run.output_dir).resolve()
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    return (EXPERIMENTS_DIR / "openhands-agent" / f"{suite_preset.name}-{timestamp}").resolve()
+    run_name = f"{suite_preset.name}-{timestamp}"
+    model = local_config.llm.model or "unknown-model"
+    return resolve_openhands_run_dir(
+        track="python",
+        model=model,
+        suite_name=suite_preset.name,
+        run_name=run_name,
+    )
 
 
 def local_config_fingerprint(local_config: LocalConfig) -> str:

@@ -18,18 +18,18 @@ from generate_gate_report import list_batch1_task_ids, generate_gate_report
 
 def import_flash(task_id: str) -> bool:
     candidates = [
-        _REPO / "experiments" / "mini-swe-agent" / f"{task_id}-flash-001" / "run.json",
-        _REPO / "experiments" / "mini-swe-agent" / f"{task_id}-flash-001" / "result.json",
-        _REPO / "experiments" / "batch1" / task_id / "review" / "flash" / "result.json",
+        _REPO / "archive" / "mini-swe-agent" / f"{task_id}-flash-001" / "run.json",
+        _REPO / "archive" / "mini-swe-agent" / f"{task_id}-flash-001" / "result.json",
+        _REPO / "evidence" / "python" / "batch1" / task_id / "review" / "flash" / "result.json",
     ]
     src = next((p for p in candidates if p.is_file()), None)
     if src is None:
         return False
-    dest_dir = _REPO / "experiments" / "batch1" / task_id / "review" / "flash"
+    dest_dir = _REPO / "evidence" / "python" / "batch1" / task_id / "review" / "flash"
     dest_dir.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dest_dir / "run.json")
     report = generate_gate_report(task_id)
-    out = _REPO / "experiments" / "batch1" / task_id / "review" / "gate_report.json"
+    out = _REPO / "evidence" / "python" / "batch1" / task_id / "review" / "gate_report.json"
     out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(f"{task_id}: imported flash tier={report['flash_tier']} decision={report['decision']}")
     return True

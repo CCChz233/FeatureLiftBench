@@ -40,7 +40,7 @@ if [[ -z "$TASK_DIR" ]]; then
   fi
 fi
 
-REVIEW_DIR="experiments/go-pilot/$TASK_ID/review"
+REVIEW_DIR="evidence/go/go-pilot/$TASK_ID/review"
 SUBMISSIONS="benchmark/submissions/$TASK_ID"
 
 mkdir -p "$REVIEW_DIR/oracle" "$REVIEW_DIR/naive" "$REVIEW_DIR/copy_all"
@@ -74,7 +74,7 @@ $PY - <<PY
 import json
 from pathlib import Path
 rid = "$TASK_ID"
-review = Path("experiments/go-pilot") / rid / "review"
+review = Path("evidence/go/go-pilot") / rid / "review"
 for label in ("oracle", "naive", "copy_all"):
     p = review / label / "result.json"
     if p.exists():

@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "generated_note": "Public split registry for FeatureLiftBench task workspaces. Counts are from filesystem scan unless marked TODO.",
+  "scanned_at": "2026-07-07",
+  "exclude_task_ids": {
+    "python_main_candidate": [
+      "iniconfig__parse_config__001"
+    ],
+    "notes": "Legacy empty directory without metadata.json; excluded from main candidate counts and lifecycle checks."
+  },
+  "splits": {
+    "python_main_candidate": {
+      "root": "benchmark/tasks",
+      "language": "python",
+      "paper_use": "main_leaderboard_candidate",
+      "lifecycle_status": "main",
+      "task_dir_count": 101,
+      "metadata_json_count": 100,
+      "excluded_dir_count": 1,
+      "notes": "Current Python main candidate pool. 100 tasks with metadata.json; 1 legacy empty directory (iniconfig__parse_config__001) listed in exclude_task_ids. Legacy tasks may omit metadata.status; split membership implies main. Local staging and batch pilot workspaces are intentionally excluded from the public registry."
+    },
+    "python_sanity": {
+      "root": "benchmark/sanity",
+      "language": "python",
+      "paper_use": "smoke_only",
+      "lifecycle_status": "sanity",
+      "task_dir_count": 3,
+      "metadata_json_count": 3,
+      "notes": "Harness smoke tasks. Excluded from main leaderboard."
+    },
+    "go_candidate": {
+      "root": "benchmark/go/tasks",
+      "language": "go",
+      "paper_use": "calibration_candidate",
+      "lifecycle_status": "validated_candidate",
+      "task_dir_count": 12,
+      "metadata_json_count": 12,
+      "notes": "Go calibration and seed tasks. Not paper-ready hard split. Per-repo scoring and hard promotion TODO."
+    },
+    "go_sanity": {
+      "root": "benchmark/go/sanity",
+      "language": "go",
+      "paper_use": "smoke_only",
+      "lifecycle_status": "sanity",
+      "task_dir_count": 1,
+      "metadata_json_count": 1,
+      "notes": "Go harness smoke (hello_featurelifted)."
+    },
+    "go_legacy_pilot": {
+      "root": "benchmark/go_pilot",
+      "language": "go",
+      "paper_use": "legacy_pilot",
+      "lifecycle_status": "archived",
+      "task_dir_count": 1,
+      "metadata_json_count": 1,
+      "notes": "Legacy Go pilot workspace. Prefer benchmark/go/tasks for new Go work."
+    }
+  }
+}

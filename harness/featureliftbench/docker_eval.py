@@ -13,7 +13,7 @@ from typing import Any
 
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
-from .paths import REPO_ROOT
+from .paths import REPO_ROOT, VENDOR_WHEELS_DIR
 
 DEFAULT_EVAL_IMAGE = "featureliftbench-eval:latest"
 DEFAULT_GO_EVAL_IMAGE = "featureliftbench-eval-go:latest"
@@ -52,6 +52,7 @@ def evaluate_submission_docker(
     _prepare_docker_eval_output(output_path)
     image = _select_eval_image(task_path, image)
     harness_root = (REPO_ROOT / "harness").resolve()
+    vendor_wheels = VENDOR_WHEELS_DIR.resolve()
     container_name = _eval_container_name(task_path.name)
 
     # Task validation requires the mount basename to match metadata task_id.
@@ -96,6 +97,8 @@ def evaluate_submission_docker(
         [
             "-v",
             f"{harness_root}:/workspace/harness:ro",
+            "-v",
+            f"{vendor_wheels}:/workspace/benchmark/vendor-wheels:ro",
             "-v",
             f"{task_path}:{container_task}:ro",
             "-v",

@@ -41,8 +41,9 @@ if [[ ! -d "$TASK_DIR" ]]; then
 fi
 
 OPENHANDS_BIN="${OPENHANDS_BIN:-openhands}"
-OUTPUT="experiments/go-openhands/${RUN_ID}"
 MODEL="${LLM_MODEL:-deepseek/deepseek-v4-flash}"
+MODEL_SLUG="$("$PY" -c "from featureliftbench.paths import model_experiment_slug; print(model_experiment_slug('${MODEL}'))")"
+OUTPUT="experiments/GO/openhands/${MODEL_SLUG}/${RUN_ID}"
 PIPELINE_SMOKE="${PIPELINE_SMOKE:-0}"
 
 if [[ -f .env ]]; then

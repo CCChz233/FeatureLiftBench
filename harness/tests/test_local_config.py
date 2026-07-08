@@ -90,6 +90,7 @@ class LocalConfigTests(unittest.TestCase):
             preset = resolve_suite_preset(config)
             output = resolve_output_dir(config, suite_preset=preset)
             self.assertIn("smoke-", output.name)
+            self.assertIn("/smoke/", output.as_posix())
 
     def test_runtime_policy_sets_host_network(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

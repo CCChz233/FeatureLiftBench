@@ -112,7 +112,7 @@ class DockerEvalTests(unittest.TestCase):
             self.assertIn("256", command)
             self.assertIn("--read-only", command)
             self.assertIn("--tmpfs", command)
-            self.assertIn("/tmp:rw,nosuid,nodev,size=2g", command)
+            self.assertIn("/tmp:rw,nosuid,nodev,exec,size=2g", command)
             self.assertIn("--cap-drop", command)
             self.assertIn("ALL", command)
             self.assertIn("--security-opt", command)
@@ -122,6 +122,7 @@ class DockerEvalTests(unittest.TestCase):
             joined = " ".join(command)
             self.assertIn("/workspace/tasks/", joined)
             self.assertIn("/workspace/harness", joined)
+            self.assertIn("/workspace/benchmark/vendor-wheels:ro", joined)
             self.assertIn(f"{output_dir.resolve()}:/workspace/output:rw", joined)
             self.assertEqual(result["sandbox"]["backend"], "docker")
 

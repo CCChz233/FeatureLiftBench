@@ -26,7 +26,24 @@ harness/config/agents.local.toml
 
 experiments/*
 !experiments/.gitkeep
+!experiments/README.md
+!experiments/smoke/README.md
+!experiments/python/openhands/README.md
+!experiments/GO/openhands/README.md
 
+evidence/*
+!evidence/.gitkeep
+!evidence/README.md
+
+archive/*
+!archive/README.md
+
+reports/
+scripts/*
+!scripts/check_task_lifecycle.py
+
+benchmark/staging/
+benchmark/batch3_pilot/
 benchmark/submissions/*
 !benchmark/submissions/.gitkeep
 !benchmark/submissions/go_dummy__adder_core__001/

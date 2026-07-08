@@ -21,7 +21,7 @@ CALIBRATION_EXT_EPSILON = 0.03
 
 
 def generate_go_gate_report(task_id: str, *, attempt: int = 1) -> dict[str, Any]:
-    review = _REPO_ROOT / "experiments" / "go-pilot" / task_id / "review"
+    review = _REPO_ROOT / "evidence" / "go" / "go-pilot" / task_id / "review"
     return _generate_with_review(task_id, review, attempt=attempt)
 
 
@@ -150,7 +150,7 @@ def _generate_with_review(task_id: str, review: Path, *, attempt: int = 1) -> di
     if decision in {"promote_calibration", "paper_ready_hard"}:
         blocking = [b for b in blocking if b not in ("G5_flash_not_run",)]
 
-    review_prefix = f"experiments/go-pilot/{task_id}/review"
+    review_prefix = f"evidence/go/go-pilot/{task_id}/review"
 
     return {
         "task_id": task_id,
@@ -281,8 +281,8 @@ def main() -> int:
     args = parser.parse_args()
 
     for task_id in args.task_ids:
-        report = _generate_with_review(task_id, _REPO_ROOT / "experiments" / "go-pilot" / task_id / "review")
-        out = _REPO_ROOT / "experiments" / "go-pilot" / task_id / "review" / "gate_report.json"
+        report = _generate_with_review(task_id, _REPO_ROOT / "evidence" / "go" / "go-pilot" / task_id / "review")
+        out = _REPO_ROOT / "evidence" / "go" / "go-pilot" / task_id / "review" / "gate_report.json"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(

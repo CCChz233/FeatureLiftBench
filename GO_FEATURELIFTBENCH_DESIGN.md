@@ -6,8 +6,9 @@ Go 方向值得做，但不建议直接开工 100 题。当前 Python v1 已经�
 
 配套执行文档：
 
-- [docs/GO_V2_MINI_SPEC.md](docs/GO_V2_MINI_SPEC.md)：Go task、submission、evaluator、Docker、gate 的最低契约；
-- [docs/GO_PILOT_PLAYBOOK.md](docs/GO_PILOT_PLAYBOOK.md)：第一批 5 题 pilot 的任务清单、证据包和验收流程。
+- [docs/06_task_schema.md](docs/06_task_schema.md)：共享 task、submission、evaluator 契约；
+- [docs/go/02_go_task_inventory.md](docs/go/02_go_task_inventory.md)：Go 任务清单与当前状态；
+- [docs/go/03_go_difficulty_rubric.md](docs/go/03_go_difficulty_rubric.md)：Go 难度与 gate 口径。
 
 推荐路线：
 

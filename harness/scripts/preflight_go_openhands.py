@@ -121,7 +121,7 @@ def main() -> int:
     if os.environ.get("SKIP_GATE", "").strip() in {"1", "true", "yes"}:
         _warn("SKIP_GATE=1: skipping semver gate spot-check")
     elif docker:
-        review = REPO / "experiments" / "go-pilot" / "semver__version_parse_core__001" / "review"
+        review = REPO / "evidence" / "go" / "go-pilot" / "semver__version_parse_core__001" / "review"
         gate = review / "gate_report.json"
         if gate.is_file():
             data = json.loads(gate.read_text(encoding="utf-8"))

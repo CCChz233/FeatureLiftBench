@@ -11,6 +11,7 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 def sync_flash(task_id: str, run_dir: Path) -> Path:
+    run_dir = run_dir.resolve()
     run_json = run_dir / "run.json"
     if not run_json.is_file():
         raise SystemExit(f"missing {run_json}")
@@ -40,9 +41,7 @@ def sync_flash(task_id: str, run_dir: Path) -> Path:
             },
             "public_tests": {"passed": public.get("passed")},
             "hidden_tests": {"passed": hidden.get("passed")},
-            "result_json": str(
-                (REPO / "experiments" / "go-openhands" / run_dir.name / "eval" / "result.json").as_posix()
-            ),
+            "result_json": str(eval_result_path.as_posix()),
         },
         "agent_run": {
             "passed": agent.get("passed"),
@@ -51,7 +50,7 @@ def sync_flash(task_id: str, run_dir: Path) -> Path:
         "source_run": str(run_dir.relative_to(REPO).as_posix()),
     }
 
-    out_dir = REPO / "experiments" / "go-pilot" / task_id / "review" / "flash"
+    out_dir = REPO / "evidence" / "go" / "go-pilot" / task_id / "review" / "flash"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / "run.json"
     out_path.write_text(json.dumps(flash, indent=2) + "\n", encoding="utf-8")
@@ -69,7 +68,7 @@ def sync_flash(task_id: str, run_dir: Path) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task_id")
-    parser.add_argument("run_dir", type=Path, help="experiments/go-openhands/<run_id>")
+    parser.add_argument("run_dir", type=Path, help="experiments/GO/openhands/<model>/<run_id>")
     args = parser.parse_args()
     run_dir = args.run_dir if args.run_dir.is_absolute() else REPO / args.run_dir
     out = sync_flash(args.task_id, run_dir.resolve())

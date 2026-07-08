@@ -1,8 +1,8 @@
 # FeatureLiftBench 实验运行速查
 
-服务器部署清单见 [docs/SERVER_DEPLOY.md](docs/SERVER_DEPLOY.md)。
+服务器部署和本地运行都按本文命令执行；先 `./setup.sh`，再配置 `.env`，最后运行 smoke 或 main suite。
 
-**Windows 用户**：请在 WSL2（Ubuntu）+ Docker Desktop 内按本文命令执行；日志路径与 Linux 相同，后台跑时终端无 Rich 进度条。详见 [docs/WINDOWS.md](docs/WINDOWS.md)。
+**Windows 用户**：请在 WSL2（Ubuntu）+ Docker Desktop 内按本文命令执行；日志路径与 Linux 相同，后台跑时终端无 Rich 进度条。
 
 当前正式实验口径：**Agent 用可选 Docker 边界跑题，Eval 默认用独立 Docker 容器评分**。Docker 的目的不是维护 100 套环境，而是限制 submission/eval 的内存、进程数、日志和网络，并防止 agent 改到宿主 benchmark 仓库或读取 hidden tests。
 
@@ -203,7 +203,7 @@ nohup bash run.sh > experiments/mini-swe-agent/<run_id>-resume.log 2>&1 &
 
 也可用根目录 `resume_run.sh`（把其中的 `RESUME_DIR` 改成你的 run 目录）。
 
-**Windows**：见 [docs/WINDOWS.md](docs/WINDOWS.md) §4.3。
+**Windows**：在 WSL2 里使用同一条续跑命令，确保 Docker Desktop 已开启 WSL integration。
 
 ### 4.3 续跑前检查
 
@@ -264,7 +264,7 @@ experiments/mini-swe-agent/<run_id>/
 bash harness/scripts/check_run_health.sh experiments/mini-swe-agent/<run_id>
 ```
 
-后台启动（`start_run.sh`）时另有总日志 `experiments/mini-swe-agent/<run_id>.log`。Windows 上可在资源管理器打开 `experiments\...` 查看各题 `agent/stdout.log`；详见 [docs/WINDOWS.md](docs/WINDOWS.md) §5。
+后台启动（`start_run.sh`）时另有总日志 `experiments/mini-swe-agent/<run_id>.log`。Windows 上可在资源管理器打开 `experiments\...` 查看各题 `agent/stdout.log`。
 
 常用分析：
 

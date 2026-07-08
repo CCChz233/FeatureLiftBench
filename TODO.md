@@ -4,17 +4,17 @@
 
 | 主题 | 文档 |
 | --- | --- |
-| Python 扩题（100 已满） | [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md) · [docs/EXPANSION.md](docs/EXPANSION.md) · [docs/candidate_backlog.md](docs/candidate_backlog.md) |
-| **Go track（10 gold → 100）** | [docs/GO_BENCHMARK_TODO.md](docs/GO_BENCHMARK_TODO.md) · [docs/GO_EXPANSION.md](docs/GO_EXPANSION.md) · [docs/GO_PILOT_PLAYBOOK.md](docs/GO_PILOT_PLAYBOOK.md) · [docs/GO_HARNESS_PLAN.md](docs/GO_HARNESS_PLAN.md) · [docs/go_candidate_backlog.md](docs/go_candidate_backlog.md) |
-| 官方 baseline | [docs/BENCHMARK_STATUS.md](docs/BENCHMARK_STATUS.md) |
-| vLLM / API 实验 | [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md) · [RUN.md](RUN.md) |
-| 已知局限 | [docs/limitations.md](docs/limitations.md) |
+| Python 扩题（100 已满） | [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md) · [docs/python/](docs/python/) · [docs/07_incremental_task_rules.md](docs/07_incremental_task_rules.md) |
+| **Go track** | [GO_FEATURELIFTBENCH_DESIGN.md](GO_FEATURELIFTBENCH_DESIGN.md) · [docs/go/](docs/go/) |
+| 官方 baseline / 实验协议 | [docs/04_experiment_protocol.md](docs/04_experiment_protocol.md) |
+| vLLM / API 实验 | [RUN.md](RUN.md) |
+| 评测与局限 | [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) |
 
 **当前状态（2026-06-28）：** batch-0 **50 hard** 冻结（grandfather） · batch-1 **50/50 入榜** · 主榜 **100/100 hard** · Oracle **100/100** · batch-1 质量验收 **进行中**（G0–G4 evidence 50/50，Flash 运行中）
 
 ## 现在照这个做
 
-**当前唯一主线：** batch-1 **质量验收** — evidence + Flash + gate promote（见 [docs/BENCHMARK_ACCEPTANCE_2026-06-28.md](docs/BENCHMARK_ACCEPTANCE_2026-06-28.md)）
+**当前唯一主线：** batch-1 **质量验收** — evidence + Flash + gate promote（见 [docs/07_incremental_task_rules.md](docs/07_incremental_task_rules.md)）
 
 **当前正在做的题：** Flash 校准（`experiments/run-batch1-flash-missing.sh`）
 
@@ -137,7 +137,7 @@ Request / URL / Headers / QueryParams / Cookies
 3. `jsonpath_ng__expression_eval_core__001`
 4. `configobj__roundtrip_config_core__001`
 
-完整扩题规则见 [docs/EXPANSION.md](docs/EXPANSION.md)，**七步执行标准**见 [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)，候选池见 [docs/candidate_backlog.md](docs/candidate_backlog.md)。
+完整扩题规则见 [docs/07_incremental_task_rules.md](docs/07_incremental_task_rules.md)，**七步执行标准**见 [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md)，Python 选题口径见 [docs/python/01_python_repo_selection_criteria.md](docs/python/01_python_repo_selection_criteria.md)。
 
 ---
 
@@ -153,7 +153,7 @@ Agent 能否在保持目标功能行为正确的前提下，
 
 现实意义：评估 Agent 能否把 vibe coding 和 legacy code 中常见的“能跑但混乱”的仓库整理成更模块化、可维护、可复用的软件资产。
 
-前 10 条任务属于早期 **clean OSS pilot**；主榜现已 **50 hard**，entanglement 七类已标满。题源与缠绕分布见 [benchmark_tasks.md](docs/benchmark_tasks.md)。
+前 10 条任务属于早期 **clean OSS pilot**；主榜现已 **100 hard**，entanglement 七类已标满。题源与缠绕分布见 [docs/python/02_python_repo_task_inventory.md](docs/python/02_python_repo_task_inventory.md)。
 
 ## 核心关系
 
@@ -184,9 +184,9 @@ experiments/              # 成绩单
 | Medium | Oracle closure 通常为 4-10 个运行时文件，约 500-2500 LOC；允许 0-1 个小型白名单依赖；功能跨多个 helper/module；涉及 unicode、路径、转义、排序、错误类型、文件遍历或多参数组合。 | `python-slugify`、`python-pathspec`，候选 `tabulate`、`xmltodict`、`python-frontmatter` |
 | Hard | Oracle closure 通常超过 10 个运行时文件或 2500 LOC；存在 lexer/parser 状态机、插件/注册机制、round-trip 保真、复杂配置继承、数据文件或多依赖交互；hidden tests 覆盖组合行为和错误恢复。 | `tomlkit`、`packaging`、`pluggy`、`click`、`markdown-it-py`、`PyYAML`、`jsonschema` |
 
-当前 benchmark：**主榜 50 hard**（`benchmark/tasks/`）+ **3 smoke**（`benchmark/sanity/`）。完整列表见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)。
+当前 benchmark：**主榜 100 hard**（`benchmark/tasks/`）+ **3 smoke**（`benchmark/sanity/`）。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
 
-历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。**当前主 baseline：Flash-50** `benchmark-50-hard-flash-001` → **41/50 (82%)** functional；Pro-50 re-eval **42/50 (84%)**。本地 vLLM 与 SiliconFlow 实验见 [docs/EXPERIMENT_RESULTS.md](docs/EXPERIMENT_RESULTS.md)。
+历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。后续 main runs 见本地 `experiments/`，实验协议见 [docs/04_experiment_protocol.md](docs/04_experiment_protocol.md)。
 
 ## 已完成 sprint：50 hard 扩榜（2026-06-25）
 
@@ -215,12 +215,12 @@ experiments/              # 成绩单
 
 | 操作 | 步骤 |
 | --- | --- |
-| 新增 | 见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md) + design note + Oracle |
+| 新增 | 见 [`docs/06_task_schema.md`](docs/06_task_schema.md) + design note + Oracle |
 | 删除 | 移除 `benchmark/tasks/<task_id>/` 与对应 design note |
 | 清单 | `python3 harness/scripts/list_tasks.py` |
 | 分析 | `python3 harness/scripts/analyze_benchmark_suite.py experiments/.../<run_id>` |
 
-单题 design note 模板：[`docs/task_designs/TEMPLATE.md`](docs/task_designs/TEMPLATE.md)。机器可读格式：[`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。
+单题 design note 模板：[`docs/task_designs/TEMPLATE.md`](docs/task_designs/TEMPLATE.md)。机器可读格式：[`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 目标（hard 子集校准）：强 Agent suite 功能通过率 **35–45%**；通过者 `extraction_ratio` 标准差 **> 0.15**。
 
@@ -233,7 +233,7 @@ experiments/              # 成绩单
 
 ## 目录结构
 
-架构与目录见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)；题目格式见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。
+架构与目录见 [`docs/06_task_schema.md`](docs/06_task_schema.md)；题目格式见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 ```text
 docs/           # 文档
@@ -552,7 +552,7 @@ Harness **已实现**（Phase 0 DoD）。**3/10 真 gold**（semver、humanize�
 | OpenHands 闭环 | harness 验证 + 真 LLM | pipeline smoke ✓；真 OpenHands 待跑 |
 | `go_pilot_acceptance_report.md` | 终版 | 进行中 |
 
-**下一步：** WSL 真跑 `run_go_openhands.sh`（semver/humanize）；深化 gojsonschema（见 [GO_PILOT_PLAYBOOK.md](docs/GO_PILOT_PLAYBOOK.md)）。
+**下一步：** WSL 真跑 `run_go_openhands.sh`（semver/humanize）；深化 gojsonschema（见 [docs/go/02_go_task_inventory.md](docs/go/02_go_task_inventory.md)）。
 
 ---
 
@@ -567,7 +567,7 @@ Harness **已实现**（Phase 0 DoD）。**3/10 真 gold**（semver、humanize�
 * 更复杂的多 Agent leaderboard/report；
 * 复杂 RelevanceScore；
 * Docker eval 官方流程固化与 Agent 容器化；
-* Go v2 harness 实现（文档见 [docs/GO_HARNESS_PLAN.md](docs/GO_HARNESS_PLAN.md)；**非**「暂不做」，但排在 Python 主榜实验与 batch-1 验收之后）；
+* Go v2 harness（MVP 已完成；见 [docs/go/00_go_design_principles.md](docs/go/00_go_design_principles.md)）；
 
 等 evaluator 或 checks 模块继续膨胀时再拆子包。
 

@@ -99,7 +99,7 @@ def cmd_setup(
         code = _run_preflight(
             local_config,
             suite_preset,
-            output_dir=REPO_ROOT / "experiments" / "openhands-agent" / "preflight",
+            output_dir=REPO_ROOT / "experiments" / "smoke" / "preflight",
             llm_health_check=True,
         )
     if code == 0:

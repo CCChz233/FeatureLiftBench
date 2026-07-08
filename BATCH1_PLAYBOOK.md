@@ -7,14 +7,14 @@
 | 层级 | 文档 | 作用 |
 | --- | --- | --- |
 | **执行（本文）** | [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md) | 七步流程、gate、命令、promote 决策 |
-| 仓库池 | [docs/BATCH1_REPO_SELECTION.md](docs/BATCH1_REPO_SELECTION.md) | 已接受 repo、待选 repo 数量目标、同仓上限 |
-| 质量评审 | [docs/BATCH1_QUALITY_RUBRIC.md](docs/BATCH1_QUALITY_RUBRIC.md) | Cursor/Agent 生成题后的客观入榜标准 |
+| 仓库池 | [docs/python/01_python_repo_selection_criteria.md](docs/python/01_python_repo_selection_criteria.md) | 已接受 repo、待选 repo 数量目标、同仓上限 |
+| 质量评审 | [docs/python/03_python_difficulty_rubric.md](docs/python/03_python_difficulty_rubric.md) | Cursor/Agent 生成题后的客观入榜标准 |
 | 工程 backlog | [TODO.md](TODO.md) | 当前 sprint、进度表、优先级 |
 | 政策 | [docs/EXPANSION.md](docs/EXPANSION.md) | 选题原则、staging 政策、进度表 |
-| 格式 | [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md) | `metadata.json`、目录布局、评分公式 |
+| 格式 | [docs/06_task_schema.md](docs/06_task_schema.md) | `metadata.json`、目录布局、评分公式 |
 | 设计 | [docs/task_designs/TEMPLATE.md](docs/task_designs/TEMPLATE.md) | 单题人类设计笔记模板 |
-| 契约 | [docs/BENCHMARK_SPEC.md](docs/BENCHMARK_SPEC.md) | 论文/复现口径 |
-| 台账 | [docs/candidate_backlog.md](docs/candidate_backlog.md) | 候选池与 shortlist 队列 |
+| 契约 | [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) | 论文/复现口径 |
+| 台账 | [docs/python/02_python_repo_task_inventory.md](docs/python/02_python_repo_task_inventory.md) | 当前 Python 任务清单 |
 
 **硬性约束（全程遵守）：**
 
@@ -29,7 +29,7 @@
 ## 总览：七步流程
 
 ```text
-Step 0  选仓库 / shortlist（docs/BATCH1_REPO_SELECTION.md + docs/candidate_backlog.md）
+Step 0  选仓库 / shortlist（docs/python/01_python_repo_selection_criteria.md + docs/python/02_python_repo_task_inventory.md）
 Step 1  Design spike（docs/task_designs/<task_id>.md）
 Step 2  创建 staging 目录（benchmark/staging/<task_id>/）
 Step 3  构建 oracle closure（benchmark/submissions/<task_id>/oracle/）
@@ -152,7 +152,7 @@ Redesign 最多两轮。超过两轮仍不过，就把原因写入 `decision.md`
 
 ## Step 0 — 选题
 
-先从 [docs/BATCH1_REPO_SELECTION.md](docs/BATCH1_REPO_SELECTION.md) 确认 repo 仍值得占用 batch-1 名额，再从 [docs/candidate_backlog.md](docs/candidate_backlog.md) shortlist 取具体功能切片。
+先从 [docs/python/01_python_repo_selection_criteria.md](docs/python/01_python_repo_selection_criteria.md) 确认 repo 仍值得占用名额，再参考 [docs/python/02_python_repo_task_inventory.md](docs/python/02_python_repo_task_inventory.md) 避免重复切片。
 
 **先选 repo，再切题。** batch-1 不追求覆盖所有热门库；宁可少做，也不要把弱 repo 勉强切成题。
 
@@ -236,7 +236,7 @@ benchmark/staging/<task_id>/
 - `tags`: 含 `batch-1`
 - `environment.network`: `false`
 - `output.import`: 覆盖 public tests 用到的全部符号
-- `entanglement.primary`: 七选一（见 [docs/TASK_FORMAT.md](docs/TASK_FORMAT.md)）
+- `entanglement.primary`: 七选一（见 [docs/06_task_schema.md](docs/06_task_schema.md)）
 
 **测试设计原则：**
 
@@ -249,7 +249,7 @@ Hidden 断言优先用 `type` / `loc` / 结构，避免绑定完整 error messag
 
 **依赖（`requirements.lock`）：**
 
-评测器用 `pip install --no-index --no-deps -r requirements.lock`（见 [docs/limitations.md](docs/limitations.md)）。Docker 正式路径下 **不能** 依赖宿主机 `system-site-packages`。策略：
+评测器用 `pip install --no-index --no-deps -r requirements.lock`（见 [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md)）。Docker 正式路径下 **不能** 依赖宿主机 `system-site-packages`。策略：
 
 1. **`allowed_dependencies` 非空 ⇒ `requirements.lock` 必须 pin 同一集合**（含传递依赖；见 `harness/config/benchmark_wheels.toml` 的 `[transitive]`）
 2. **`allowed_dependencies` 为空 ⇒ `requirements.lock` 必须为空**（pure-python 题）
@@ -457,10 +457,10 @@ python3 harness/scripts/verify_all_oracles.py --task-id <task_id>
 
 **文档更新（checklist）：**
 
-- [ ] `docs/benchmark_tasks.md` — 加一行，更新主榜计数
+- [ ] `docs/python/02_python_repo_task_inventory.md` — 加一行，更新主榜计数
 - [ ] `docs/EXPANSION.md` — 进度表
-- [ ] `docs/BATCH1_REPO_SELECTION.md` — 更新 repo 状态与同仓计数
-- [ ] `docs/candidate_backlog.md` — 标 `promoted`，变更日志
+- [ ] `docs/python/01_python_repo_selection_criteria.md` — 更新 repo 状态与同仓计数
+- [ ] `docs/07_incremental_task_rules.md` — 如流程变化，更新生命周期规则
 - [ ] `docs/task_designs/<task_id>.md` — 填 Result 表 + Agent Calibration
 - [ ] `TODO.md` — 当前题指针移到下一道 shortlist
 

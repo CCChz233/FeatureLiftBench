@@ -103,7 +103,7 @@ def _flash_tier(flash: dict[str, Any] | None) -> str:
 
 
 def generate_gate_report(task_id: str, *, attempt: int = 1) -> dict[str, Any]:
-    review = _REPO_ROOT / "experiments" / "batch1" / task_id / "review"
+    review = _REPO_ROOT / "evidence" / "python" / "batch1" / task_id / "review"
     oracle = _eval_gate(_load_result(review / "oracle" / "result.json"))
     naive = _eval_gate(_load_result(review / "naive" / "result.json"))
     copy_all = _eval_gate(_load_result(review / "copy_all" / "result.json"))
@@ -221,11 +221,11 @@ def generate_gate_report(task_id: str, *, attempt: int = 1) -> dict[str, Any]:
             "flash_final": flash_metrics.get("final_score"),
         },
         "evidence": {
-            "oracle_result": f"experiments/batch1/{task_id}/review/oracle/result.json",
-            "naive_result": f"experiments/batch1/{task_id}/review/naive/result.json",
-            "copy_all_result": f"experiments/batch1/{task_id}/review/copy_all/result.json",
+            "oracle_result": f"evidence/python/batch1/{task_id}/review/oracle/result.json",
+            "naive_result": f"evidence/python/batch1/{task_id}/review/naive/result.json",
+            "copy_all_result": f"evidence/python/batch1/{task_id}/review/copy_all/result.json",
             "flash_run": (
-                f"experiments/batch1/{task_id}/review/flash/run.json"
+                f"evidence/python/batch1/{task_id}/review/flash/run.json"
                 if flash_path.is_file()
                 else None
             ),
@@ -263,7 +263,7 @@ def main() -> int:
 
     for task_id in task_ids:
         report = generate_gate_report(task_id)
-        out = _REPO_ROOT / "experiments" / "batch1" / task_id / "review" / "gate_report.json"
+        out = _REPO_ROOT / "evidence" / "python" / "batch1" / task_id / "review" / "gate_report.json"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(

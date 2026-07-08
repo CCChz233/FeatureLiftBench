@@ -26,7 +26,7 @@ done
 
 [[ -n "$TASK_ID" ]] || usage
 [[ -n "$TASK_DIR" ]] || TASK_DIR="benchmark/tasks/$TASK_ID"
-REVIEW_DIR="experiments/batch1/$TASK_ID/review"
+REVIEW_DIR="evidence/python/batch1/$TASK_ID/review"
 SUBMISSIONS="benchmark/submissions/$TASK_ID"
 
 mkdir -p "$REVIEW_DIR/oracle" "$REVIEW_DIR/naive" "$REVIEW_DIR/copy_all"
@@ -67,7 +67,7 @@ $PY - <<PY
 import json
 from pathlib import Path
 rid = "$TASK_ID"
-review = Path("experiments/batch1") / rid / "review"
+review = Path("evidence/python/batch1") / rid / "review"
 for label in ("oracle", "naive", "copy_all"):
     p = review / label / "result.json"
     if p.exists():

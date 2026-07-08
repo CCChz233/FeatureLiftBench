@@ -5,7 +5,7 @@ export PYTHONPATH=harness
 PY=/Users/chz/anaconda3/bin/python3
 TASK_ID="$1"
 TASK_DIR="benchmark/staging/$TASK_ID"
-REVIEW_DIR="experiments/batch1/$TASK_ID/review"
+REVIEW_DIR="evidence/python/batch1/$TASK_ID/review"
 mkdir -p "$REVIEW_DIR/oracle" "$REVIEW_DIR/naive" "$REVIEW_DIR/copy_all"
 
 echo "=== $TASK_ID: validate-task ==="
@@ -36,7 +36,7 @@ $PY - <<PY
 import json
 from pathlib import Path
 rid = "$TASK_ID"
-review = Path("experiments/batch1") / rid / "review"
+review = Path("evidence/python/batch1") / rid / "review"
 for label in ("oracle", "naive", "copy_all"):
     p = review / label / "result.json"
     if p.exists():

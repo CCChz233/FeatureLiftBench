@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-**文档索引：** [docs/README.md](docs/README.md) · **概念：** [docs/CONCEPTS.md](docs/CONCEPTS.md) · **规格：** [docs/BENCHMARK_SPEC.md](docs/BENCHMARK_SPEC.md) · **部署：** [docs/SERVER_DEPLOY.md](docs/SERVER_DEPLOY.md) · [docs/SETUP.md](docs/SETUP.md) · **Windows：** [docs/WINDOWS.md](docs/WINDOWS.md) · **Python 扩题：** [BATCH1_PLAYBOOK.md](BATCH1_PLAYBOOK.md) · **Go track：** [docs/GO_PILOT_PLAYBOOK.md](docs/GO_PILOT_PLAYBOOK.md) · [docs/GO_EXPANSION.md](docs/GO_EXPANSION.md) · **运行：** [RUN.md](RUN.md)
+**文档索引：** [docs/README.md](docs/README.md) · **概览：** [docs/00_overview.md](docs/00_overview.md) · **任务定义：** [docs/01_task_definition.md](docs/01_task_definition.md) · **评测评分：** [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) · **任务格式：** [docs/06_task_schema.md](docs/06_task_schema.md) · **Python split：** [docs/python/](docs/python/) · **Go split：** [docs/go/](docs/go/) · **运行：** [RUN.md](RUN.md)
 
 **FeatureLiftBench: Can Code Agents Decouple Features from Entangled Repositories?**
 
@@ -62,7 +62,7 @@ FeatureLiftBench 的现实意义在于评估代码智能体能否把“能跑但
 * **Implicit dependency coupling**：跨模块 import 链长，必要依赖和无关依赖混在一起；
 * **Legacy/vibe-coded clutter**：重复代码、历史兼容层、未使用模块、命名混乱、文档缺失。
 
-当前 benchmark **主榜 100 道 hard**（batch-0 五十题冻结 + batch-1 新增五十题；`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；架构说明见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
+当前 benchmark **主榜 100 道 hard**（`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。任务清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；任务目录规范见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 演进方式：**新增或删除** `benchmark/tasks/` 下的题目，不另建第二套 benchmark 或 harness。
 
@@ -238,7 +238,7 @@ jq '.info.model_stats' experiments/mini-swe-agent/<suite_run_id>/<task_id>/agent
 
 推荐运行 CLI 时使用 **Python 3.11+**（例如 `python3.12`）。系统自带的 `python3` 若为 3.9/3.10，会因缺少 `tomllib` 无法启动。
 
-**首次部署**（本机或服务器）：见 **[docs/SETUP.md](docs/SETUP.md)** — `./setup.sh` → 编辑 `.env` → `./run.sh`。
+**首次部署**（本机或服务器）：`./setup.sh` → 编辑 `.env` → `./run.sh`。更完整的运行说明见 [RUN.md](RUN.md)。
 
 `hidden_tests/`、`evaluation/` 和未公开评测规则不会进入 agent workspace。Agent 只能看到源仓库、public tests、锁定依赖和裁剪后的任务说明。
 
@@ -263,7 +263,7 @@ harness/config/agents.toml   # 非敏感配置：model、profile、cost limit
 .env                         # 敏感配置：API key、可选 base URL
 ```
 
-一键生成上述文件：`./setup.sh`（从 example 复制并安装 `.venv`）。详见 [docs/SETUP.md](docs/SETUP.md)。
+一键生成上述文件：`./setup.sh`（从 example 复制并安装 `.venv`）。详见 [RUN.md](RUN.md)。
 
 手动复制模板：
 
@@ -348,7 +348,7 @@ python3 -B -m featureliftbench.cli run-agent \
 
 ## Benchmark 目录结构
 
-每个任务样例的标准结构见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。摘要：
+每个任务样例的标准结构见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。摘要：
 
 ```text
 benchmark/tasks/<task_id>/
@@ -364,7 +364,7 @@ benchmark/tasks/<task_id>/
 
 `repo/` 是任务输入的一部分，Agent 可以读取它。`hidden_tests/` 在正式评测时不可见。Agent 在 `submission/featurelifted/` 下写出解耦后的 package（包名固定为 `featurelifted`）。
 
-当前 benchmark **主榜 50 hard** + **3 smoke**。完整列表与 **Flash-50 / Pro baseline** 见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md) 与 [`docs/BENCHMARK_STATUS.md`](docs/BENCHMARK_STATUS.md)。
+当前 benchmark **主榜 100 hard** + **3 smoke**。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
 
 早期 10 题示例：
 
@@ -382,7 +382,7 @@ benchmark/tasks/<task_id>/
 
 ## Metadata Schema
 
-完整字段说明、校验规则和示例见 [`docs/TASK_FORMAT.md`](docs/TASK_FORMAT.md)。JSON Schema：[`harness/featureliftbench/schemas/task_metadata.schema.json`](harness/featureliftbench/schemas/task_metadata.schema.json)。
+完整字段说明、校验规则和示例见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。JSON Schema：[`harness/featureliftbench/schemas/task_metadata.schema.json`](harness/featureliftbench/schemas/task_metadata.schema.json)。
 
 一个任务的 `metadata.json` 核心字段包括：
 
@@ -488,7 +488,7 @@ benchmark/tasks/<task_id>/
 8. 统计 submission Python LOC 和原始 repo Python LOC；
 9. 输出功能是否通过和提取比例。
 
-当前 evaluator 还没有容器级运行时断网；已知实现限制见 [docs/limitations.md](docs/limitations.md)。
+本地 evaluator 使用干净 venv；正式 Docker eval 额外启用禁网和只读挂载。评测口径见 [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md)。
 
 如果 Build Pass、Test Pass 或 Original Import Check 失败，该任务视为未通过。功能通过后，主要看提取后的代码占原始仓库代码的比例。
 
@@ -686,7 +686,7 @@ FeatureLiftBench 主要关注以下问题：
 
 ## 当前状态
 
-FeatureLiftBench **统一 benchmark** 已落地：主榜 **50 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/benchmark_tasks.md`](docs/benchmark_tasks.md)；仓库结构见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
+FeatureLiftBench **统一 benchmark** 已落地：Python 主榜 **100 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；仓库结构见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 演进方式：在 `benchmark/tasks/` 下**新增或删除**题目，不另建第二套 collection。
 
@@ -705,7 +705,7 @@ FeatureLiftBench **统一 benchmark** 已落地：主榜 **50 hard** + smoke **3
 * hidden tests 是否应该包含 property-style tests，以及如何保证稳定性；
 * entangled / hard-plus 任务应该优先来自真实 legacy/vibe-coded 项目，还是从成熟 OSS 中人为选择高度耦合的局部功能？
 
-已知实现缺口、评测局限与当前实验口径问题见 [docs/limitations.md](docs/limitations.md)。
+评测与实验协议见 [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) 和 [docs/04_experiment_protocol.md](docs/04_experiment_protocol.md)。
 
 ## 引用
 

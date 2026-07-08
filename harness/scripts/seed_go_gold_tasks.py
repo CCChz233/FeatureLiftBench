@@ -42,7 +42,7 @@ def seed(task_id: str, source_name: str, url: str, commit: str) -> None:
     if not sub_dest.exists():
         shutil.copytree(TEMPLATE_SUB, sub_dest)
 
-    flash = REPO / "experiments/go-pilot" / task_id / "review/flash/run.json"
+    flash = REPO / "evidence/go/go-pilot" / task_id / "review/flash/run.json"
     flash.parent.mkdir(parents=True, exist_ok=True)
     flash.write_text(
         json.dumps(

@@ -18,9 +18,9 @@ Status enum:
 
 Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-08:
 
-- Tasks: 116.
-- Unique source names: 91.
-- Metadata difficulty: 116 `hard`.
+- Tasks: 124.
+- Unique source names: 98.
+- Metadata difficulty: 124 `hard`.
 - `Ref LOC`: populated only when `metadata.scoring_reference.oracle_loc` exists; otherwise `TBD`.
 - `Files`: count from `evaluation/oracle_manifest.json.required_source_files` when available; otherwise `TBD`.
 
@@ -42,6 +42,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 
 | Task ID | Repo | Commit | Feature | Type | Difficulty | Ref LOC | Files | Status | Notes |
 |---|---|---|---|---|---|---:|---:|---|---|
+| aiohttp__url_params_core__hard3_001 | aiohttp | 649887ca8604 | build_url normalize_headers | data_model_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | alembic__revision_map_core__hard3_001 | alembic | c88fa5afaf2b | RevisionMap graph, branch labels, and head resolution | data_model_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | apscheduler__cron_trigger_core__hard3_001 | apscheduler | 4de063392ff5 | Cron trigger next-fire-time state | parser_state_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | arrow__parse_format_core__001 | arrow | 1.2.3-installed-snapshot | Arrow parse, format, and humanize subset | parser_state_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
@@ -57,8 +58,10 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | celery__signal_dispatch_core__hard3_001 | celery | 201573a11fb8 | Signal registry and receiver dispatch | framework_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | cerberus__schema_validate_core__001 | cerberus | f2221c5a901b | Schema validation core | data_model_coupling | hard | TBD | 6 | valid | current `benchmark/tasks` metadata |
 | chameleon__template_compile_core__001 | chameleon | 4.6.0-installed-snapshot | ZPT template compile and render | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| click__lazy_command_core__hard3_001 | click | 16fc00e2f4a2 | LazyCommandCollection | framework_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | click__option_parser__001 | click | 8.1.7-installed-snapshot | Command line option parsing and invocation | framework_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | configobj__roundtrip_config_core__001 | configobj | b7707c94c031 | INI-like config round-trip and configspec validation | config_environment_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |
+| cookiecutter__repo_finder_core__hard3_001 | cookiecutter | c88fbe921c97 | RepoFinder | resource_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | coverage__config_merge_core__001 | coveragepy | f0dcf65f4712 | Run-section config merge | config_environment_coupling | hard | TBD | 6 | valid | current `benchmark/tasks` metadata |
 | coverage__glob_matcher_core__001 | coveragepy | f0dcf65f4712 | Glob matcher core | resource_coupling | hard | TBD | 5 | valid | current `benchmark/tasks` metadata |
 | coverage__path_remap_core__001 | coveragepy | f0dcf65f4712 | Combine path remap | resource_coupling | hard | TBD | 5 | valid | current `benchmark/tasks` metadata |
@@ -66,13 +69,18 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | coverage__source_selection_core__001 | coveragepy | f0dcf65f4712 | Source/include/omit selection | config_environment_coupling | hard | TBD | 9 | valid | current `benchmark/tasks` metadata |
 | croniter__cron_parse_core__001 | croniter | dc04395e2291 | Cron expression parse and next/prev iteration | parser_state_coupling | hard | TBD | 2 | valid | current `benchmark/tasks` metadata |
 | dataclasses_json__serde_core__001 | dataclasses-json | dc63902eeb5e | Dataclass JSON serde core | data_model_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
+| dateutil__zone_resolver_core__hard3_001 | dateutil | 48bd1af97e71 | ZoneResolver | resource_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | deepdiff__deep_compare_core__001 | deepdiff | 9.1.0-installed-snapshot | DeepDiff path and exclude subset | data_model_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
+| diskcache__eviction_policy_core__hard3_001 | diskcache | ebfa37cd99d7 | EvictionPolicyPlanner | resource_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | dynaconf__settings_merge_core__001 | dynaconf | 3.3.1-installed-snapshot | Layered settings merge | config_environment_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | email_validator__validate_core__001 | email-validator | b73d010bb3db | Email syntax validation core | parser_state_coupling | hard | TBD | 5 | valid | current `benchmark/tasks` metadata |
 | environs__typed_env_core__001 | environs | 97f9b7065c75 | Typed environment variable parsing | config_environment_coupling | hard | TBD | 4 | valid | current `benchmark/tasks` metadata |
 | faker__provider_core__001 | Faker | 40.23.0-installed-snapshot | Single-locale Faker providers | resource_coupling | hard | TBD | 24 | valid | current `benchmark/tasks` metadata |
+| fs__url_opener_core__hard3_001 | fs | 77a8562785fc | parse_fs_url FSOpenerRegistry | resource_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
+| fsspec__url_chain_core__hard3_001 | fsspec | 0907962e6b94 | url_to_fs | resource_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | h11__message_parse_core__001 | h11 | 0.14.0-installed-snapshot | HTTP/1.1 message parse and state machine | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | h2__frame_parse_core__001 | h2 | 4.3.0-installed-snapshot | HTTP/2 frame parse and buffer | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| hatch__project_metadata_core__hard3_001 | hatch | 19ced89249f2 | normalize_project_metadata select_environment | data_model_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | httpx__request_model_core__001 | httpx | 326b9431c761 | HTTP request model and offline request builder | data_model_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
 | humanize__naturaltime_core__001 | humanize | 4.15.0-installed-snapshot | Humanize natural time and delta formatting | data_model_coupling | hard | TBD | 4 | valid | current `benchmark/tasks` metadata |
 | importlib_metadata__entry_points_core__001 | importlib_metadata | 7.0.1-installed-snapshot | Entry point discovery and selection | config_environment_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |

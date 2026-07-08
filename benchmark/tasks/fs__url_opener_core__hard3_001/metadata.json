@@ -1,0 +1,79 @@
+{
+  "task_id": "fs__url_opener_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "77a8562785fc37cb2e30bdcd39c133097ba62dce",
+    "license": "MIT",
+    "name": "fs",
+    "url": "https://github.com/PyFilesystem/pyfilesystem2.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped parse_fs_url fsopenerregistry into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "real filesystem backends",
+      "OS mount operations"
+    ],
+    "included_behaviors": [
+      "FS URL parsing",
+      "opener registry",
+      "path normalization"
+    ],
+    "name": "parse_fs_url FSOpenerRegistry",
+    "source_entrypoints": [
+      "fs.opener.parse.parse_fs_url",
+      "fs.opener.registry.FSOpenerRegistry"
+    ]
+  },
+  "entanglement": {
+    "description": "URL parsing, opener registry, path normalization, and error classes require dynamic registry closure.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "query params parsed from resource",
+      "unknown opener UnsupportedProtocolError",
+      "invalid path control characters",
+      "default protocol injection"
+    ],
+    "types": [
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "FSOpenerRegistry",
+    "import": "from featurelifted import parse_fs_url, FSOpenerRegistry, ParseError, UnsupportedProtocolError",
+    "package": "featurelifted",
+    "signature": "FSOpenerRegistry(default_protocol='osfs')"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "fs"
+    ],
+    "forbidden_imports": [
+      "fs"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "fs/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

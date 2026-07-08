@@ -1,0 +1,78 @@
+{
+  "task_id": "cookiecutter__repo_finder_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "c88fbe921c97c58b65f1883ba90a0ab53cc91b34",
+    "license": "BSD-3-Clause",
+    "name": "cookiecutter",
+    "url": "https://github.com/cookiecutter/cookiecutter.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped repofinder into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "git download",
+      "template rendering"
+    ],
+    "included_behaviors": [
+      "abbreviation expansion",
+      "replay override",
+      "safe path join"
+    ],
+    "name": "RepoFinder",
+    "source_entrypoints": [
+      "cookiecutter.repository.RepoFinder"
+    ]
+  },
+  "entanglement": {
+    "description": "Requires config defaults, abbreviations, replay paths, nested template detection, and path safety.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "abbreviation expansion",
+      "replay override",
+      "nested template detection",
+      "invalid path traversal rejected"
+    ],
+    "types": [
+      "resource_coupling",
+      "config_environment_coupling"
+    ]
+  },
+  "output": {
+    "callable": "RepoFinder",
+    "import": "from featurelifted import RepoFinder, expand_abbreviation, safe_join",
+    "package": "featurelifted",
+    "signature": "RepoFinder(abbreviations=None, template_root='/templates')"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "cookiecutter"
+    ],
+    "forbidden_imports": [
+      "cookiecutter"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cookiecutter/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "task_id": "click__lazy_command_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "16fc00e2f4a2717a521084f193709a6058afc693",
+    "license": "BSD-3-Clause",
+    "name": "click",
+    "url": "https://github.com/pallets/click.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped lazycommandcollection into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "shell completion",
+      "full CLI runner"
+    ],
+    "included_behaviors": [
+      "lazy command loading",
+      "context defaults",
+      "command resolution"
+    ],
+    "name": "LazyCommandCollection",
+    "source_entrypoints": [
+      "click.core.LazyCommandCollection"
+    ]
+  },
+  "entanglement": {
+    "description": "Lazy command resolution, callback invocation, context defaults, and envvar default maps span several helpers.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "lazy command cache",
+      "envvar default map JSON parsing",
+      "missing command UsageError",
+      "context default inheritance"
+    ],
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "LazyCommandCollection",
+    "import": "from featurelifted import LazyCommandCollection, Command, UsageError",
+    "package": "featurelifted",
+    "signature": "LazyCommandCollection(sources, envvar=None)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "click"
+    ],
+    "forbidden_imports": [
+      "click"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "click/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

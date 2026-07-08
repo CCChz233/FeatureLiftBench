@@ -1,0 +1,78 @@
+{
+  "task_id": "diskcache__eviction_policy_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "ebfa37cd99d7ef716ec452ad8af4b4276a8e2233",
+    "license": "Apache-2.0",
+    "name": "diskcache",
+    "url": "https://github.com/grantjenks/python-diskcache.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped evictionpolicyplanner into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "sqlite disk backend",
+      "file I/O"
+    ],
+    "included_behaviors": [
+      "LRU eviction planning",
+      "tag filtering",
+      "expiration purge"
+    ],
+    "name": "EvictionPolicyPlanner",
+    "source_entrypoints": [
+      "diskcache.core.EvictionPolicyPlanner"
+    ]
+  },
+  "entanglement": {
+    "description": "Eviction policies, tag metadata, expiration order, and size accounting require stateful reasoning while excluding disk backend.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "least-recently-used tie breaking",
+      "tag-filtered eviction",
+      "expire order by timestamp",
+      "touch updates access order"
+    ],
+    "types": [
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "EvictionPolicyPlanner",
+    "import": "from featurelifted import EvictionPolicyPlanner",
+    "package": "featurelifted",
+    "signature": "EvictionPolicyPlanner()"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "diskcache"
+    ],
+    "forbidden_imports": [
+      "diskcache"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "diskcache/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "task_id": "mkdocs__plugin_config_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "copy-heavy trap tasks",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "2862536793b3c67d9d83c33e0dd6d50a791928f8",
+    "license": "BSD-2-Clause",
+    "name": "mkdocs",
+    "url": "https://github.com/mkdocs/mkdocs.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped plugin config loading and event dispatch plan into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "build/render pipeline",
+      "site generation"
+    ],
+    "included_behaviors": [
+      "plugin config validation",
+      "event dispatch ordering",
+      "disabled plugin handling"
+    ],
+    "name": "Plugin config loading and event dispatch plan",
+    "source_entrypoints": [
+      "mkdocs.plugins.BasePlugin",
+      "mkdocs.plugins.PluginCollection"
+    ]
+  },
+  "entanglement": {
+    "description": "Requires plugin entry points, config validation, event ordering, and disabled plugin handling.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "event priority order",
+      "config schema errors",
+      "disabled plugins excluded from collection",
+      "plugin collection mutation on load"
+    ],
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling"
+    ]
+  },
+  "output": {
+    "callable": "PluginCollection",
+    "import": "from featurelifted import PluginConfig, PluginCollection, validate_plugin_config",
+    "package": "featurelifted",
+    "signature": "PluginCollection()"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "mkdocs"
+    ],
+    "forbidden_imports": [
+      "mkdocs"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "mkdocs/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

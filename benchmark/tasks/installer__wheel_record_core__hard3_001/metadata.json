@@ -1,0 +1,78 @@
+{
+  "task_id": "installer__wheel_record_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "metadata extraction / package discovery",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "c18863d235a9d927f48d1831cbf738b0274ac59e",
+    "license": "MIT",
+    "name": "installer",
+    "url": "https://github.com/pypa/installer.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped parse_wheel_record find_dist_info into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "filesystem install destinations",
+      "subprocess"
+    ],
+    "included_behaviors": [
+      "RECORD CSV parsing",
+      "dist-info discovery",
+      "script name extraction"
+    ],
+    "name": "parse_wheel_record find_dist_info",
+    "source_entrypoints": [
+      "installer.records.parse_wheel_record"
+    ]
+  },
+  "entanglement": {
+    "description": "Wheel RECORD parsing, dist-info detection, and script name planning interact across archive metadata helpers.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "multiple dist-info error",
+      "RECORD path normalization",
+      "entry point script names",
+      "missing hash/size columns"
+    ],
+    "types": [
+      "resource_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "output": {
+    "callable": "parse_wheel_record",
+    "import": "from featurelifted import parse_wheel_record, find_dist_info, script_name",
+    "package": "featurelifted",
+    "signature": "parse_wheel_record(content: str)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "installer"
+    ],
+    "forbidden_imports": [
+      "installer"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "installer/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

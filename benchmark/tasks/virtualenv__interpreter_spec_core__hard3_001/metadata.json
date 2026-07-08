@@ -1,0 +1,78 @@
+{
+  "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "57c8dc69a9080c3cd5741355aa756ce5a3b8ab15",
+    "license": "MIT",
+    "name": "virtualenv",
+    "url": "https://github.com/pypa/virtualenv.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped parse_spec match_version into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "environment creation",
+      "process spawning"
+    ],
+    "included_behaviors": [
+      "interpreter spec parsing",
+      "version matching",
+      "path discovery"
+    ],
+    "name": "parse_spec match_version",
+    "source_entrypoints": [
+      "virtualenv.discovery.py_info.parse_spec"
+    ]
+  },
+  "entanglement": {
+    "description": "Version spec parsing, path lookup ordering, and candidate filtering interact across discovery helpers.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "exact and compatible version constraints",
+      "path glob candidate filtering",
+      "duplicate candidate deduplication",
+      "invalid spec InvalidInterpreterSpec"
+    ],
+    "types": [
+      "resource_coupling",
+      "config_environment_coupling"
+    ]
+  },
+  "output": {
+    "callable": "parse_spec",
+    "import": "from featurelifted import parse_spec, match_version, discover_paths, InvalidInterpreterSpec",
+    "package": "featurelifted",
+    "signature": "parse_spec(spec: str)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "virtualenv"
+    ],
+    "forbidden_imports": [
+      "virtualenv"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "virtualenv/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

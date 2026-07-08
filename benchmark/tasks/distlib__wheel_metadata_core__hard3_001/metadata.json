@@ -1,0 +1,79 @@
+{
+  "task_id": "distlib__wheel_metadata_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "454a87c64f0b545138dc4798aa833a4ff8ac2377",
+    "license": "PSF-2.0",
+    "name": "distlib",
+    "url": "https://github.com/pypa/distlib.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped resource finder and wheel record path normalization into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "installers/locators",
+      "script generation"
+    ],
+    "included_behaviors": [
+      "RECORD parsing",
+      "path normalization",
+      "hash validation"
+    ],
+    "name": "Resource finder and wheel RECORD path normalization",
+    "source_entrypoints": [
+      "distlib.wheel",
+      "distlib.resources"
+    ]
+  },
+  "entanglement": {
+    "description": "Package resources, zip/local path resolution, and RECORD hash path rules require careful closure.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "zip resource path normalization via to_posix",
+      "escaped RECORD path normalization",
+      "normalized RECORD row parsing",
+      "hash validation edge for sha256 digests"
+    ],
+    "types": [
+      "resource_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "output": {
+    "callable": "parse_record",
+    "import": "from featurelifted import to_posix, normalize_record_path, parse_record, validate_record_hash",
+    "package": "featurelifted",
+    "signature": "parse_record(content: str)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "distlib"
+    ],
+    "forbidden_imports": [
+      "distlib"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "distlib/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

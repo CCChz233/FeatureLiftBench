@@ -1,0 +1,77 @@
+{
+  "task_id": "schema__nested_validate_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "310a1239b62f500284ce3bd91b7dabf70467f23e",
+    "license": "MIT",
+    "name": "schema",
+    "url": "https://github.com/keleshev/schema.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped schema optional or and into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "full package surface"
+    ],
+    "included_behaviors": [
+      "nested dict validation",
+      "Optional defaults",
+      "Or/And composition"
+    ],
+    "name": "Schema Optional Or And",
+    "source_entrypoints": [
+      "schema.Schema"
+    ]
+  },
+  "entanglement": {
+    "description": "Rule composition, optional keys, callable validators, error aggregation, and defaults must be preserved.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "Optional default values",
+      "forbidden extra keys",
+      "Or/And composition",
+      "callable validator errors"
+    ],
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling"
+    ]
+  },
+  "output": {
+    "callable": "Schema",
+    "import": "from featurelifted import Schema, Optional, Or, And, SchemaError",
+    "package": "featurelifted",
+    "signature": "Schema(schema)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "schema"
+    ],
+    "forbidden_imports": [
+      "schema"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "schema/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

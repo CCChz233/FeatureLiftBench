@@ -1,0 +1,79 @@
+{
+  "task_id": "scrapy__item_loader_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "dd10cb8e9a982fe3d311078d6e1207596e272717",
+    "license": "BSD-3-Clause",
+    "name": "scrapy",
+    "url": "https://github.com/scrapy/scrapy.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped item loader processor registry into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "selector/response extraction",
+      "downloader/crawler code"
+    ],
+    "included_behaviors": [
+      "Item/Field metadata",
+      "ItemLoader processor pipeline",
+      "nested loaders"
+    ],
+    "name": "Item loader processor registry",
+    "source_entrypoints": [
+      "scrapy.loader.ItemLoader",
+      "scrapy.item.Item"
+    ]
+  },
+  "entanglement": {
+    "description": "Declarative processors, field metadata, nested loaders, and default processor resolution interact dynamically.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "input and output processor composition",
+      "nested item loader inherits parent defaults",
+      "default processor overrides per field",
+      "missing field add_value raises KeyError"
+    ],
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "output": {
+    "callable": "ItemLoader",
+    "import": "from featurelifted import Item, Field, ItemLoader, Compose, TakeFirst, Identity",
+    "package": "featurelifted",
+    "signature": "ItemLoader(item=None, parent=None, **context)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "scrapy"
+    ],
+    "forbidden_imports": [
+      "scrapy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "scrapy/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

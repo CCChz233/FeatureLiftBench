@@ -1,0 +1,99 @@
+{
+  "task_id": "requests_cache__cache_key_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "third_party_dependency_coupling"
+  ],
+  "source": {
+    "commit": "df44b695a31401c617fa4725d189578c1d603ae1",
+    "license": "BSD-2-Clause",
+    "name": "requests_cache",
+    "url": "https://github.com/requests-cache/requests-cache.git"
+  },
+  "feature": {
+    "description": "Extract task-scoped HTTP request cache key normalization and cache expiration policy.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "HTTP sessions",
+      "cache backends",
+      "serializers",
+      "Redis/MongoDB/SQLite/filesystem storage"
+    ],
+    "included_behaviors": [
+      "create_key",
+      "create_cache_key compatibility helper",
+      "normalize_url",
+      "normalize_params",
+      "normalize_headers",
+      "normalize_body",
+      "get_matched_headers",
+      "CachePolicy.from_headers",
+      "get_expiration",
+      "Cache-Control no-store and max-age",
+      "Expires and default expiration"
+    ],
+    "name": "HTTP request cache key and expiration policy",
+    "source_entrypoints": [
+      "requests_cache.cache_keys.create_key",
+      "requests_cache.cache_keys.normalize_url",
+      "requests_cache.cache_keys.normalize_body",
+      "requests_cache.policy.expiration.get_expiration_datetime",
+      "requests_cache.policy.directives.CacheDirectives"
+    ]
+  },
+  "entanglement": {
+    "description": "Cache matching depends on normalized URL/query params, redacted ignored parameters, request body encoding, selected headers, and response/request cache-control semantics.",
+    "level": "high",
+    "primary": "third_party_dependency_coupling",
+    "signals": [
+      "Query parameter order should not change cache identity.",
+      "Ignored parameter values should be redacted rather than leaked.",
+      "Only selected headers should affect cache keys unless all headers are matched.",
+      "Cache-Control no-store and max-age alter storage and expiration behavior."
+    ],
+    "types": [
+      "third_party_dependency_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "create_key",
+    "import": "from featurelifted import CachePolicy, create_key, get_expiration",
+    "package": "featurelifted",
+    "signature": "create_key(method, url, params=None, headers=None, body=None, ignored_parameters=None, match_headers=False) -> str"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "requests_cache",
+      "requests",
+      "url_normalize"
+    ],
+    "forbidden_imports": [
+      "requests_cache",
+      "requests",
+      "url_normalize"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "requests_cache/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

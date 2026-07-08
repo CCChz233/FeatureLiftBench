@@ -1,0 +1,95 @@
+{
+  "task_id": "isort__settings_resolver_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "copy-heavy trap tasks",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "commit": "fd8bd075176d074af69aa6acae7ed89a6a89bb05",
+    "license": "MIT",
+    "name": "isort",
+    "url": "https://github.com/PyCQA/isort.git"
+  },
+  "feature": {
+    "description": "Extract task-scoped isort settings/profile resolution and skip matching.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "import sorting",
+      "formatter internals",
+      "CLI",
+      "git ls-files integration",
+      "entry point plugins"
+    ],
+    "included_behaviors": [
+      "resolve_settings",
+      "resolve_from_path",
+      "find_config",
+      "should_skip",
+      "Settings.is_skipped",
+      "black/django/google profiles",
+      "pyproject/setup.cfg/tox.ini/.isort.cfg/.editorconfig parsing",
+      "runtime overrides",
+      "src_paths expansion",
+      "skip and skip_glob merging"
+    ],
+    "name": "Settings/profile resolution and skip matching",
+    "source_entrypoints": [
+      "isort.settings.Config",
+      "isort.settings._get_config_data",
+      "isort.settings._find_config",
+      "isort.settings.Config.is_skipped",
+      "isort.profiles.profiles"
+    ]
+  },
+  "entanglement": {
+    "description": "Settings resolution depends on profile defaults, TOML/INI/editorconfig sections, runtime overrides, project root paths, and skip glob matching.",
+    "level": "high",
+    "primary": "config_environment_coupling",
+    "signals": [
+      "Profile settings are lower priority than config files and runtime overrides.",
+      "pyproject.toml, setup.cfg, .isort.cfg, tox.ini, and .editorconfig use different sections.",
+      "src_paths are resolved relative to the config directory.",
+      "skip and extend_skip_glob are merged at runtime for path filtering."
+    ],
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "resolve_settings",
+    "import": "from featurelifted import resolve_settings, resolve_from_path, should_skip",
+    "package": "featurelifted",
+    "signature": "resolve_settings(config_files=(), profile=None, overrides=None) -> Settings"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "isort"
+    ],
+    "forbidden_imports": [
+      "isort"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "isort/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

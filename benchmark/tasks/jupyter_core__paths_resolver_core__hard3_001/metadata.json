@@ -1,0 +1,88 @@
+{
+  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "commit": "ad6b4aea233a9634ffcd6ad553ecd63129ab5f6e",
+    "license": "BSD-3-Clause",
+    "name": "jupyter_core",
+    "tag": "v5.8.1",
+    "url": "https://github.com/jupyter/jupyter_core"
+  },
+  "feature": {
+    "description": "Extract deterministic Jupyter config/data/runtime path resolution without importing jupyter_core or platformdirs.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "filesystem ownership probing",
+      "platformdirs integration",
+      "Jupyter CLI, migration, application, and troubleshoot modules"
+    ],
+    "included_behaviors": [
+      "JUPYTER_CONFIG_PATH and JUPYTER_PATH precedence",
+      "JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, and JUPYTER_RUNTIME_DIR overrides",
+      "Linux, macOS, and Windows path defaults",
+      "JUPYTER_NO_CONFIG isolated config behavior",
+      "JUPYTER_PREFER_ENV_PATH ordering"
+    ],
+    "name": "Jupyter config/data/runtime path resolution",
+    "source_entrypoints": [
+      "jupyter_core.paths.jupyter_config_dir",
+      "jupyter_core.paths.jupyter_data_dir",
+      "jupyter_core.paths.jupyter_runtime_dir",
+      "jupyter_core.paths.jupyter_path",
+      "jupyter_core.paths.jupyter_config_path"
+    ]
+  },
+  "entanglement": {
+    "description": "environment, path resolver, platform state",
+    "level": "high",
+    "primary": "config_environment_coupling",
+    "signals": [
+      "Jupyter path precedence depends on environment variables, platform, sys.prefix, and user site paths.",
+      "The surrounding upstream repo contains unrelated CLI, migration, application, and troubleshooting modules."
+    ],
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "jupyter_config_path",
+    "import": "from featurelifted import jupyter_config_dir, jupyter_config_path, jupyter_data_dir, jupyter_path, jupyter_runtime_dir",
+    "package": "featurelifted",
+    "signature": "jupyter_config_path(env=None, home=None, platform='linux', sys_prefix='/usr', user_site_base=None, enable_user_site=True) -> list[str]"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "jupyter_core",
+      "platformdirs"
+    ],
+    "forbidden_imports": [
+      "jupyter_core",
+      "platformdirs"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "jupyter_core/paths.py"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

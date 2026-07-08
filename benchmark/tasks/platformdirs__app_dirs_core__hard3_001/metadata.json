@@ -1,0 +1,87 @@
+{
+  "task_id": "platformdirs__app_dirs_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "config_environment_coupling"
+  ],
+  "source": {
+    "commit": "4bd7bb307292ae7c46fabef7cb58951825d0dd68",
+    "license": "MIT",
+    "name": "platformdirs",
+    "url": "https://github.com/tox-dev/platformdirs.git"
+  },
+  "feature": {
+    "description": "Extract deterministic user data/config/cache path resolution for Linux, macOS, and Windows without importing platformdirs.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "Android path resolution",
+      "site directories",
+      "media directory helpers",
+      "filesystem creation"
+    ],
+    "included_behaviors": [
+      "Linux XDG_DATA_HOME, XDG_CONFIG_HOME, and XDG_CACHE_HOME precedence",
+      "Linux default ~/.local/share, ~/.config, and ~/.cache fallbacks",
+      "macOS Application Support and Caches defaults",
+      "macOS XDG override precedence",
+      "Windows LocalAppData vs AppData roaming behavior",
+      "Windows appauthor, appauthor=False, version, and cache opinion semantics"
+    ],
+    "name": "User/cache/config/data path resolver",
+    "source_entrypoints": [
+      "platformdirs.user_data_dir",
+      "platformdirs.user_config_dir",
+      "platformdirs.user_cache_dir"
+    ]
+  },
+  "entanglement": {
+    "description": "Platform path resolution depends on environment variables, OS-specific base directories, app author conventions, version suffixing, and cache opinion semantics.",
+    "level": "high",
+    "primary": "config_environment_coupling",
+    "signals": [
+      "Linux and macOS honor XDG overrides before platform defaults.",
+      "Windows data/config paths depend on roaming, appauthor, appname, and version.",
+      "Windows cache path inserts Cache before version only when opinion=True."
+    ],
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "user_data_dir",
+    "import": "from featurelifted import user_cache_dir, user_config_dir, user_data_dir",
+    "package": "featurelifted",
+    "signature": "user_data_dir(appname=None, appauthor=None, version=None, roaming=False, platform=\"linux\", env=None, home=None) -> str"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "platformdirs"
+    ],
+    "forbidden_imports": [
+      "platformdirs"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "src/platformdirs/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

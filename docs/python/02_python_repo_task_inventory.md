@@ -18,9 +18,9 @@ Status enum:
 
 Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-08:
 
-- Tasks: 108.
-- Unique source names: 83.
-- Metadata difficulty: 108 `hard`.
+- Tasks: 116.
+- Unique source names: 91.
+- Metadata difficulty: 116 `hard`.
 - `Ref LOC`: populated only when `metadata.scoring_reference.oracle_loc` exists; otherwise `TBD`.
 - `Files`: count from `evaluation/oracle_manifest.json.required_source_files` when available; otherwise `TBD`.
 
@@ -42,6 +42,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 
 | Task ID | Repo | Commit | Feature | Type | Difficulty | Ref LOC | Files | Status | Notes |
 |---|---|---|---|---|---|---:|---:|---|---|
+| alembic__revision_map_core__hard3_001 | alembic | c88fa5afaf2b | RevisionMap graph, branch labels, and head resolution | data_model_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | apscheduler__cron_trigger_core__hard3_001 | apscheduler | 4de063392ff5 | Cron trigger next-fire-time state | parser_state_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | arrow__parse_format_core__001 | arrow | 1.2.3-installed-snapshot | Arrow parse, format, and humanize subset | parser_state_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
 | astroid__nodes_core__001 | astroid | 2.14.2-installed-snapshot | Astroid parse and nodes subset | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
@@ -75,8 +76,10 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | httpx__request_model_core__001 | httpx | 326b9431c761 | HTTP request model and offline request builder | data_model_coupling | hard | TBD | 8 | valid | current `benchmark/tasks` metadata |
 | humanize__naturaltime_core__001 | humanize | 4.15.0-installed-snapshot | Humanize natural time and delta formatting | data_model_coupling | hard | TBD | 4 | valid | current `benchmark/tasks` metadata |
 | importlib_metadata__entry_points_core__001 | importlib_metadata | 7.0.1-installed-snapshot | Entry point discovery and selection | config_environment_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| importlib_resources__traversable_tree_core__hard3_001 | importlib_resources | 1d554758b0cb | Traversable resource tree and text/binary reader | resource_coupling | hard | TBD | 7 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | intervaltree__interval_tree_core__001 | intervaltree | 1bc406e1f441 | IntervalTree core | data_model_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |
 | isodate__duration_parse_core__001 | isodate | 0.7.2-installed-snapshot | ISO8601 duration parse and format | parser_state_coupling | hard | TBD | 9 | valid | current `benchmark/tasks` metadata |
+| isort__settings_resolver_core__hard3_001 | isort | fd8bd075176d | Settings/profile resolution and skip matching | config_environment_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | jinja2__compile_render_core__001 | jinja2 | 15206881c006 | Jinja2 compile and render core | framework_coupling | hard | TBD | 17 | valid | current `benchmark/tasks` metadata |
 | jinja2__extensions_core__001 | jinja2 | 15206881c006 | Jinja2 extension loading | framework_coupling | hard | TBD | 18 | valid | current `benchmark/tasks` metadata |
 | jinja2__filters_tests_core__001 | jinja2 | 15206881c006 | Jinja2 filters and tests core | framework_coupling | hard | TBD | 5 | valid | current `benchmark/tasks` metadata |
@@ -86,9 +89,12 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | jsonpath_ng__expression_eval_core__001 | jsonpath-ng | e59ead334ac4 | JSONPath parse, find, and update core | parser_state_coupling | hard | TBD | 9 | valid | current `benchmark/tasks` metadata |
 | jsonpointer__resolve_core__001 | jsonpointer | 5998f951dcc5 | JSON Pointer resolve and set | parser_state_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
 | jsonschema__validator_core__001 | jsonschema | 4.23.0-installed-snapshot | JSON Schema Draft 2020-12 validation core | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| jupyter_core__paths_resolver_core__hard3_001 | jupyter_core | ad6b4aea233a | Jupyter config/data/runtime path resolution | config_environment_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
+| keyring__backend_select_core__hard3_001 | keyring | 7603e7cadc25 | Backend discovery, priority sorting, and failover selection | framework_coupling | hard | TBD | 7 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | lark__grammar_loader_core__001 | lark | 1.3.1-installed-snapshot | Grammar file loading | resource_coupling | hard | TBD | 34 | valid | current `benchmark/tasks` metadata |
 | lark__parse_tree_core__001 | lark | 1.2.2 | LALR parse tree core | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | lark__visitor_transform_core__001 | lark | 1.2.2 | Parse tree visitor and transformer | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| license_expression__policy_core__hard3_001 | license_expression | 2efada20a058 | License expression parse and policy evaluation | parser_state_coupling | hard | TBD | 4 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | mako__lexer_expression_core__001 | mako | d58a9208fd62 | Mako template lexer and expression parse core | parser_state_coupling | hard | 2782 | 10 | valid | current `benchmark/tasks` metadata |
 | markdown__extensions_core__001 | Markdown | 3.7-installed-snapshot | Markdown tables and footnotes extensions | parser_state_coupling | hard | TBD | 15 | valid | current `benchmark/tasks` metadata |
 | markdown_it__commonmark_render__001 | markdown-it-py | 2.2.0-installed-snapshot | CommonMark block/inline parsing and HTML rendering | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
@@ -102,6 +108,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | pathvalidate__sanitize_core__001 | pathvalidate | 1ca0a50fce51 | Filename and filepath sanitization core | config_environment_coupling | hard | TBD | 9 | valid | current `benchmark/tasks` metadata |
 | pendulum__parse_format_core__001 | pendulum | b99bd1468b55 | Datetime parse, format, and duration core | parser_state_coupling | hard | 4976 | 28 | valid | current `benchmark/tasks` metadata |
 | phonenumbers__parse_format_core__001 | phonenumbers | 9.0.33-installed-snapshot | Phone number parse and format | resource_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| platformdirs__app_dirs_core__hard3_001 | platformdirs | 4bd7bb307292 | User/cache/config/data path resolver | config_environment_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | pluggy__hook_call_order__001 | pluggy | 1.0.0-installed-snapshot | Hook specification, registration, and call ordering | framework_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | pluggy__hook_specs_core__001 | pluggy | 1.0.0-installed-snapshot | Hook specification validation and discovery | framework_coupling | hard | TBD | 7 | valid | current `benchmark/tasks` metadata |
 | pydantic_settings__env_source_core__001 | pydantic-settings | 2.14.2-installed-snapshot | Environment settings source | config_environment_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
@@ -121,6 +128,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | pyyaml__safe_load_dump__001 | PyYAML | 6.0.1-installed-snapshot | Safe YAML load and dump | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | redis__resp_parser_core__001 | redis | 8.0.1-installed-snapshot | RESP2/RESP3 wire parser | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | referencing__json_schema_refs_core__001 | referencing | 0.30.2-installed-snapshot | JSON Schema $ref resolution | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| requests_cache__cache_key_core__hard3_001 | requests_cache | df44b695a314 | HTTP request cache key and expiration policy | third_party_dependency_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | rfc3986__uri_parse_core__001 | rfc3986 | 2.0.0-installed-snapshot | RFC3986 URI parse, build, and validate subset | parser_state_coupling | hard | TBD | 10 | valid | current `benchmark/tasks` metadata |
 | rich__markup_parse_core__001 | rich | 13.7.1-installed-snapshot | Console markup parsing | parser_state_coupling | hard | TBD | 79 | valid | current `benchmark/tasks` metadata |
 | ruamel_yaml__roundtrip_core__001 | ruamel.yaml | 0.18.6-installed-snapshot | YAML roundtrip with comments | parser_state_coupling | hard | TBD | 29 | valid | current `benchmark/tasks` metadata |

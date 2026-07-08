@@ -1,0 +1,94 @@
+{
+  "task_id": "license_expression__policy_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "parser_state_coupling"
+  ],
+  "source": {
+    "commit": "2efada20a05837dd573fa6852fbc0974939f2b14",
+    "license": "Apache-2.0",
+    "name": "license_expression",
+    "url": "https://github.com/aboutcode-org/license-expression.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped license expression parser and policy evaluator.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "ScanCode license database",
+      "SPDX bundled datasets",
+      "boolean.py dependency",
+      "HTML rendering templates"
+    ],
+    "included_behaviors": [
+      "LicenseSymbol aliases and exception marker",
+      "Licensing.parse",
+      "Licensing.validate",
+      "Licensing.license_symbols",
+      "Licensing.evaluate_policy",
+      "AND/OR/WITH parsing",
+      "parentheses",
+      "alias normalization",
+      "unknown symbol and exception placement errors"
+    ],
+    "name": "License expression parse and policy evaluation",
+    "source_entrypoints": [
+      "license_expression.Licensing",
+      "license_expression.LicenseSymbol",
+      "license_expression.ExpressionInfo",
+      "license_expression.ExpressionParseError"
+    ]
+  },
+  "entanglement": {
+    "description": "License expression behavior depends on parser state, symbol registry aliases, exception symbols, boolean precedence, and policy classification.",
+    "level": "high",
+    "primary": "parser_state_coupling",
+    "signals": [
+      "AND binds tighter than OR unless parentheses override it.",
+      "WITH is only valid with exception symbols.",
+      "Aliases normalize to canonical license keys.",
+      "Unknown symbols are collected by validation and affect policy decisions."
+    ],
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "Licensing",
+    "import": "from featurelifted import LicenseSymbol, Licensing",
+    "package": "featurelifted",
+    "signature": "Licensing(symbols=()).parse(expression, validate=False, strict=False)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "license_expression",
+      "boolean"
+    ],
+    "forbidden_imports": [
+      "license_expression",
+      "boolean"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "src/license_expression/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

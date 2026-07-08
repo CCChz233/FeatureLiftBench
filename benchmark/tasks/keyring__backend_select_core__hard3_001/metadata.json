@@ -1,0 +1,95 @@
+{
+  "task_id": "keyring__backend_select_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "7603e7cadc254b4c6e3fc2b2f0916a005e78087d",
+    "license": "MIT",
+    "license_source": "repo/pyproject.toml",
+    "name": "keyring",
+    "url": "https://github.com/jaraco/keyring.git"
+  },
+  "feature": {
+    "description": "Extract task-scoped keyring backend discovery, priority sorting, and failover behavior.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "macOS Keychain",
+      "Windows credential vault",
+      "SecretService",
+      "KWallet",
+      "CLI and config file writes"
+    ],
+    "included_behaviors": [
+      "Backend base API",
+      "MemoryBackend for deterministic storage",
+      "FailBackend",
+      "ErrorBackend for failure-path tests",
+      "ChainerBackend priority sorting and fallback",
+      "select_backend priority selection",
+      "PYTHON_KEYRING_BACKEND override",
+      "Credential and password set/delete errors"
+    ],
+    "name": "Backend discovery, priority sorting, and failover selection",
+    "source_entrypoints": [
+      "keyring.backend.KeyringBackend",
+      "keyring.core.get_keyring",
+      "keyring.core.load_env",
+      "keyring.core._detect_backend",
+      "keyring.backends.chainer.ChainerBackend",
+      "keyring.backends.fail.Keyring"
+    ]
+  },
+  "entanglement": {
+    "description": "Backend behavior depends on runtime discovery, priority filtering, environment override selection, and chained fallback semantics.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "Negative priority backends are excluded from automatic selection.",
+      "PYTHON_KEYRING_BACKEND can override priority selection.",
+      "ChainerBackend should skip failing backends and continue to viable backends.",
+      "Credential lookup can recover a username when backend storage supports it."
+    ],
+    "types": [
+      "framework_coupling",
+      "third_party_dependency_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "output": {
+    "callable": "select_backend",
+    "import": "from featurelifted import ChainerBackend, MemoryBackend, select_backend",
+    "package": "featurelifted",
+    "signature": "select_backend(backends, env=None) -> Backend"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "keyring"
+    ],
+    "forbidden_imports": [
+      "keyring"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "keyring/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

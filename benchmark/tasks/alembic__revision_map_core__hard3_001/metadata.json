@@ -1,0 +1,92 @@
+{
+  "task_id": "alembic__revision_map_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "c88fa5afaf2b9783a58a918f3fc73abc44daa0a9",
+    "license": "MIT",
+    "name": "alembic",
+    "url": "https://github.com/sqlalchemy/alembic.git"
+  },
+  "feature": {
+    "description": "Extract task-scoped Alembic Revision and RevisionMap graph behavior.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "SQLAlchemy engine integration",
+      "migration environment loading",
+      "filesystem script directory scanning"
+    ],
+    "included_behaviors": [
+      "Revision object normalization",
+      "RevisionMap graph construction",
+      "versioned head and base calculation",
+      "branch label resolution and propagation",
+      "dependency-aware ancestry",
+      "symbolic head/base lookup",
+      "missing revision, multiple head, and cycle errors"
+    ],
+    "name": "RevisionMap graph, branch labels, and head resolution",
+    "source_entrypoints": [
+      "alembic.script.revision.Revision",
+      "alembic.script.revision.RevisionMap",
+      "alembic.script.revision.MultipleHeads",
+      "alembic.script.revision.CycleDetected",
+      "alembic.script.revision.ResolutionError"
+    ]
+  },
+  "entanglement": {
+    "description": "Revision behavior depends on a graph of down revisions, dependency revisions, branch labels, symbolic identifiers, and error semantics.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "Revision heads are computed from versioned edges, not dependency-only edges.",
+      "Branch labels resolve to revisions and propagate along descendant chains.",
+      "Dependency revisions participate in ancestry without becoming down_revision edges.",
+      "Multiple heads, missing revisions, and cycles raise task-specific exceptions."
+    ],
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "RevisionMap",
+    "import": "from featurelifted import Revision, RevisionMap",
+    "package": "featurelifted",
+    "signature": "RevisionMap(revisions)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "alembic",
+      "sqlalchemy"
+    ],
+    "forbidden_imports": [
+      "alembic",
+      "sqlalchemy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "alembic/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

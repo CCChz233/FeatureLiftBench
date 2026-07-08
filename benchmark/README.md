@@ -27,7 +27,7 @@ Local development workspaces such as `benchmark/staging/` and `benchmark/batch3_
 
 ### `benchmark/tasks/` — Python main candidate pool
 
-- Current **Python main split** used for paper-scale runs (108 tasks with `metadata.json` as of 2026-07-08 scan).
+- Current **Python main split** used for paper-scale runs (116 tasks with `metadata.json` as of 2026-07-08 scan).
 - Treat every directory here as **main lifecycle** by split membership, even when legacy tasks omit a `status` field in `metadata.json`.
 - **New tasks must not be created here directly.** Promote from local staging or pilot workspaces only after all promotion gates pass.
 

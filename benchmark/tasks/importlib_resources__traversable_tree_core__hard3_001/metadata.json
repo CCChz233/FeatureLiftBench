@@ -1,0 +1,90 @@
+{
+  "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "source": {
+    "commit": "1d554758b0cb1a030bf3acb131a276da8a3ebb1e",
+    "license": "Apache-2.0",
+    "license_source": "repo/pyproject.toml",
+    "name": "importlib_resources",
+    "url": "https://github.com/python/importlib_resources.git"
+  },
+  "feature": {
+    "description": "Extract a Traversable package resource tree and text/binary readers without importing importlib_resources.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "zip importer adapters",
+      "as_file temporary extraction",
+      "deprecated contents/path helpers"
+    ],
+    "included_behaviors": [
+      "module object and string anchor resolution",
+      "filesystem-backed Traversable root",
+      "MemoryTraversable test tree",
+      "iterdir, is_file, is_dir, name, open, read_bytes, read_text",
+      "joinpath and / traversal",
+      "read_text and read_binary helpers",
+      "TraversalError for parent traversal and missing resources"
+    ],
+    "name": "Traversable resource tree and text/binary reader",
+    "source_entrypoints": [
+      "importlib_resources.files",
+      "importlib_resources.read_text",
+      "importlib_resources.read_binary",
+      "importlib_resources.abc.Traversable"
+    ]
+  },
+  "entanglement": {
+    "description": "Resource access depends on package anchor resolution, Traversable path semantics, nested resource traversal, and text/binary mode behavior.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "files(anchor) resolves module objects and string module names.",
+      "joinpath accepts multiple segments and slash-separated nested paths.",
+      "read_text and read_binary preserve text encoding and byte payload behavior.",
+      "parent traversal must be rejected to avoid path leakage."
+    ],
+    "types": [
+      "resource_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "files",
+    "import": "from featurelifted import TraversalError, files, read_binary, read_text",
+    "package": "featurelifted",
+    "signature": "files(anchor) -> Traversable"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "importlib_resources"
+    ],
+    "forbidden_imports": [
+      "importlib_resources"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "importlib_resources/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

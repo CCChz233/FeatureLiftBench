@@ -16,10 +16,10 @@ Status enum:
 
 ## Current Metadata Snapshot
 
-Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-06:
+Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-08:
 
-- Tasks: 100.
-- Unique source names: 75.
+- Tasks: 102.
+- Unique source names: 77.
 - Metadata difficulty: 100 `hard`.
 - `Ref LOC`: populated only when `metadata.scoring_reference.oracle_loc` exists; otherwise `TBD`.
 - `Files`: count from `evaluation/oracle_manifest.json.required_source_files` when available; otherwise `TBD`.
@@ -125,7 +125,9 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | sqlparse__parse_format_core__001 | sqlparse | f80af6a4007f | SQL parse, split, and format core | parser_state_coupling | hard | 2930 | TBD | valid | current `benchmark/tasks` metadata |
 | sqlparse__parse_split_core__001 | sqlparse | f80af6a4007f | SQL parse and split core | parser_state_coupling | hard | TBD | 12 | valid | current `benchmark/tasks` metadata |
 | sqlparse__token_tree_core__001 | sqlparse | f80af6a4007f | SQL token tree navigation core | parser_state_coupling | hard | TBD | 12 | valid | current `benchmark/tasks` metadata |
+| stevedore__extension_manager_core__hard3_001 | stevedore | 8550c66a2e774f97e2f8459265ed3ea8017603f1 | ExtensionManager entry point discovery and loading | framework_coupling | hard | TBD | 5 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | tabulate__table_format_core__001 | tabulate | 268615a5c27d | Table formatting core | data_model_coupling | hard | 2311 | 1 | valid | current `benchmark/tasks` metadata |
+| tenacity__retry_state_core__hard3_001 | tenacity | b2cd0274c67610d615019ab4745f521504a0576d | Retry state machine with stop/wait/retry predicates | data_model_coupling | hard | TBD | 5 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | tomlkit__roundtrip_document__001 | tomlkit | 9ac3f98214db | TOML document parse and round-trip editing | data_model_coupling | hard | 4528 | 12 | valid | current `benchmark/tasks` metadata |
 | typer__command_parser_core__001 | typer | 0.20.0-installed-snapshot | Typer command parser and CLI runner | framework_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | urllib3__retry_backoff_core__001 | urllib3 | 2f68c5363ef6 | Retry backoff policy core | config_environment_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |

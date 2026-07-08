@@ -1,0 +1,93 @@
+{
+  "task_id": "tenacity__retry_state_core__hard3_001",
+  "language": "python",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "b2cd0274c67610d615019ab4745f521504a0576d",
+    "license": "Apache-2.0",
+    "name": "tenacity",
+    "url": "https://github.com/jd/tenacity.git"
+  },
+  "feature": {
+    "description": "Extract a synchronous Tenacity-style retry state machine with stop, wait, and retry strategy composition.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime",
+      "source repo path access",
+      "asyncio retrying",
+      "tornado retrying",
+      "decorator overloads",
+      "logging callbacks"
+    ],
+    "included_behaviors": [
+      "Retrying callable execution loop",
+      "RetryCallState with attempt number, outcome, idle_for, and upcoming_sleep",
+      "RetryError and reraise behavior",
+      "retry_if_exception_type and retry_if_result",
+      "retry_any/retry_all composition via | and &",
+      "stop_after_attempt, stop_after_delay, stop_before_delay",
+      "wait_fixed, wait_none, wait_chain, wait_combine, wait_exponential",
+      "before_sleep and retry_error_callback"
+    ],
+    "name": "Retry state machine with stop/wait/retry predicates",
+    "source_entrypoints": [
+      "tenacity.Retrying",
+      "tenacity.RetryCallState",
+      "tenacity.retry.retry_if_exception_type",
+      "tenacity.retry.retry_if_result",
+      "tenacity.stop.stop_after_attempt",
+      "tenacity.wait.wait_fixed",
+      "tenacity.wait.wait_chain"
+    ]
+  },
+  "entanglement": {
+    "description": "Retry behavior depends on mutable call state, result/exception outcomes, composable predicates, stop/wait strategies, and callback ordering.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "RetryCallState must be updated between attempts.",
+      "Retry predicates inspect either exceptions or returned results.",
+      "Stop policies run after wait calculation so stop_before_delay can inspect upcoming_sleep.",
+      "before_sleep sees state before idle_for is incremented."
+    ],
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "Retrying",
+    "import": "from featurelifted import Retrying, RetryError, retry_if_exception_type, retry_if_result, stop_after_attempt, wait_fixed, wait_chain, wait_exponential",
+    "package": "featurelifted",
+    "signature": "Retrying(stop=None, wait=None, retry=None, sleep=None, before_sleep=None, reraise=False, retry_error_callback=None).__call__(fn, *args, **kwargs)"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "tenacity"
+    ],
+    "forbidden_imports": [
+      "tenacity"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "tenacity/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

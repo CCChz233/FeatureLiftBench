@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_note": "Public split registry for FeatureLiftBench task workspaces. Counts are from filesystem scan unless marked TODO.",
-  "scanned_at": "2026-07-07",
+  "scanned_at": "2026-07-08",
   "exclude_task_ids": {
     "python_main_candidate": [
       "iniconfig__parse_config__001"
@@ -14,10 +14,10 @@
       "language": "python",
       "paper_use": "main_leaderboard_candidate",
       "lifecycle_status": "main",
-      "task_dir_count": 101,
-      "metadata_json_count": 100,
+      "task_dir_count": 103,
+      "metadata_json_count": 102,
       "excluded_dir_count": 1,
-      "notes": "Current Python main candidate pool. 100 tasks with metadata.json; 1 legacy empty directory (iniconfig__parse_config__001) listed in exclude_task_ids. Legacy tasks may omit metadata.status; split membership implies main. Local staging and batch pilot workspaces are intentionally excluded from the public registry."
+      "notes": "Current Python main candidate pool. 102 tasks with metadata.json; 1 legacy empty directory (iniconfig__parse_config__001) listed in exclude_task_ids. Includes 2 tasks promoted from batch3_pilot on 2026-07-08. Legacy tasks may omit metadata.status; split membership implies main. Local staging and batch pilot workspaces are intentionally excluded from the public registry."
     },
     "python_sanity": {
       "root": "benchmark/sanity",

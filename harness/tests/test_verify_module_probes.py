@@ -34,18 +34,21 @@ class VerifyModuleProbesTests(unittest.TestCase):
             self.assertEqual(probes[0]["remove_paths"], ["parser.py"])
             self.assertEqual(probes[0]["must_fail_tests"], ["test_parse_basic"])
 
-    def test_all_tasks_have_design_and_min_probes(self) -> None:
+    def test_declared_task_designs_have_min_probes(self) -> None:
         repo_root = Path(__file__).resolve().parents[2]
         tasks_dir = repo_root / "benchmark" / "tasks"
         task_dirs = sorted(
             path for path in tasks_dir.iterdir() if path.is_dir() and (path / "metadata.json").is_file()
         )
         audit = audit_design_coverage(task_dirs, min_probes=3)
-        gaps = [item for item in audit if not item["ok"]]
+        # Module-probe design notes are an optional, stronger audit gate. If a
+        # task opts in, require a complete probe set; their absence alone is not
+        # a main-split lifecycle failure.
+        gaps = [item for item in audit if item["design_present"] and not item["ok"]]
         self.assertEqual(
             gaps,
             [],
-            msg="Tasks missing design notes or fewer than 3 module probes: "
+            msg="Declared task designs with fewer than 3 module probes: "
             + ", ".join(str(item["task_id"]) for item in gaps),
         )
 

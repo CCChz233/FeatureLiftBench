@@ -22,13 +22,23 @@ def count_python_loc(root: str | Path) -> int:
 
 
 def count_go_loc(root: str | Path) -> int:
-    """Count non-empty, non-comment lines in Go files under ``root``."""
+    """Count authored Go LOC, excluding tests, vendored code, and generated files."""
 
     total = 0
-    for path in Path(root).rglob("*.go"):
+    root_path = Path(root)
+    for path in root_path.rglob("*.go"):
         if not path.is_file():
             continue
-        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        relative = path.relative_to(root_path)
+        if path.name.endswith("_test.go") or "vendor" in relative.parts:
+            continue
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        if any(
+            line.startswith("// Code generated ") and line.endswith(" DO NOT EDIT.")
+            for line in lines[:20]
+        ):
+            continue
+        for line in lines:
             stripped = line.strip()
             if stripped and not stripped.startswith("//"):
                 total += 1

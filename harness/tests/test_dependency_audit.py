@@ -57,7 +57,10 @@ class DependencyAuditTests(unittest.TestCase):
             (task_dir / "hidden_tests").mkdir()
             (task_dir / "evaluation").mkdir()
             (task_dir / "evaluation" / "oracle_manifest.json").write_text("{}", encoding="utf-8")
-            (task_dir / "requirements.lock").write_text("python-dateutil==2.9.0.post0\n", encoding="utf-8")
+            missing_package = "featureliftbench-missing-wheel-fixture"
+            (task_dir / "requirements.lock").write_text(
+                f"{missing_package}==1.0.0\n", encoding="utf-8"
+            )
             (task_dir / "metadata.json").write_text(
                 json.dumps(
                     {
@@ -65,7 +68,7 @@ class DependencyAuditTests(unittest.TestCase):
                         "language": "python",
                         "environment": {
                             "dependency_lock": "requirements.lock",
-                            "allowed_dependencies": ["python-dateutil"],
+                            "allowed_dependencies": [missing_package],
                         },
                     }
                 ),

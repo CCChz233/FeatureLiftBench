@@ -170,8 +170,20 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
 
     output = metadata.get("output")
     if isinstance(output, dict):
-        for key in ("package", "import", "callable", "signature"):
-            _require_type(metadata, f"output.{key}", str, errors)
+        if language == "go":
+            for key in ("package", "import"):
+                _require_type(metadata, f"output.{key}", str, errors)
+            if "module" in output or "symbols" in output:
+                _require_type(metadata, "output.module", str, errors)
+                _require_string_list(metadata, "output.symbols", errors)
+            else:
+                # Keep the original Go pilot schema valid while accepting the
+                # stronger module/symbols contract used by newer tasks.
+                for key in ("callable", "signature"):
+                    _require_type(metadata, f"output.{key}", str, errors)
+        else:
+            for key in ("package", "import", "callable", "signature"):
+                _require_type(metadata, f"output.{key}", str, errors)
 
     environment = metadata.get("environment")
     if isinstance(environment, dict):

@@ -223,7 +223,9 @@ def build_agent_docker_invocation(
     ]
     command.extend(_docker_add_hosts(config))
     for key in sorted(env_keys):
-        command.extend(["-e", f"{key}={process_env[key]}"])
+        # Let Docker inherit the value from the child process environment so
+        # credentials never appear in argv, process listings, or run reports.
+        command.extend(["--env", key])
     command.extend([image, *inner_command])
 
     report_command = list(command[: len(command) - len(inner_command)])

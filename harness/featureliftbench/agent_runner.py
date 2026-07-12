@@ -120,6 +120,7 @@ def run_agent_on_path(
             output_path,
             config,
             agent_config_summary=agent_config_summary,
+            progress=progress,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -329,6 +330,7 @@ def run_agent_on_task(
     output_dir: str | Path,
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None = None,
+    progress: bool = False,
     *,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
@@ -340,6 +342,35 @@ def run_agent_on_task(
     task_path = Path(task_dir).resolve()
     output_path = Path(output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
+
+    if progress and sys.stderr.isatty():
+        task_id = task_path.name
+        with live_suite_progress(
+            num_tasks=1,
+            output_dir=output_path,
+            agent=config.agent,
+            layout="flat",
+        ) as progress_manager:
+            progress_manager.on_task_start(task_id)
+            progress_manager.update_task_status(task_id, "running")
+            try:
+                result = run_agent_on_task(
+                    task_path,
+                    output_path,
+                    config,
+                    agent_config_summary=agent_config_summary,
+                    progress=False,
+                    eval_docker=eval_docker,
+                    eval_docker_image=eval_docker_image,
+                    agent_docker=agent_docker,
+                    agent_docker_image=agent_docker_image,
+                )
+            except BaseException:
+                progress_manager.on_task_end(task_id, "error")
+                raise
+            progress_manager.update_task_status(task_id, str(result.get("status", "finished")))
+            progress_manager.on_task_end(task_id, str(result.get("status", "unknown")))
+            return result
 
     next_attempt, previous_attempt_json = _archive_previous_run(output_path)
 
@@ -1088,6 +1119,20 @@ def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, met
         go_sum = task_path / "environment" / "go.sum"
         if go_sum.is_file():
             shutil.copy2(go_sum, workspace_path / "go.sum")
+        public_runner = workspace_path / "run_public_tests.sh"
+        public_runner.write_text(
+            "#!/bin/sh\n"
+            "set -eu\n"
+            "test -f submission/go.mod || { echo 'missing submission/go.mod' >&2; exit 2; }\n"
+            "tmp_dir=$(mktemp -d)\n"
+            "trap 'rm -rf \"$tmp_dir\"' EXIT INT TERM\n"
+            "cp -R submission/. \"$tmp_dir/\"\n"
+            "cp public_tests/*_test.go \"$tmp_dir/\"\n"
+            "cd \"$tmp_dir\"\n"
+            "CGO_ENABLED=0 GOPROXY=off GOSUMDB=off go test ./...\n",
+            encoding="utf-8",
+        )
+        public_runner.chmod(0o755)
     else:
         lock_path = task_path / _dependency_lock(metadata)
         if lock_path.exists():
@@ -1206,23 +1251,27 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
     environment = (
         metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
     )
-    module_path = str(environment.get("module_path", "featurelifted"))
+    output = metadata.get("output", {}) if isinstance(metadata.get("output"), dict) else {}
+    module_path = str(output.get("module") or environment.get("module_path", "featurelifted"))
+    package_name = sections["output_package"]
+    symbols = _format_list(output.get("symbols", []))
     go_version = str(environment.get("go", "1.22"))
     return (
-        f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
+        f"# FeatureLiftBench Go Task: {sections['task_id']}\n\n"
         "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
-        f"`repo/` into a standalone Go module under `submission/` (package `{module_path}`).\n\n"
+        f"`repo/` into a standalone Go module under `submission/` (package `{package_name}`).\n\n"
         "## How to work\n\n"
         "1. Read `source entrypoints` and the full **Required Output API** below.\n"
         "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
-        f"into `submission/` as package `{module_path}`.\n"
+        f"into `submission/` as package `{package_name}`.\n"
         f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
-        f"4. Rewrite package names/imports so runtime code uses `{module_path}` only — "
+        f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "
         "never the original module path.\n"
         f"5. Before submitting, grep your submission for forbidden imports, e.g. "
         f"`grep -R '\"' submission/*.go | grep -E '({sections['forbidden_grep']})'` — "
         "any match fails evaluation.\n"
-        "6. Run `go test ./public_tests/...` in the workspace (with replace in go.mod) "
+        "6. Run `./run_public_tests.sh` in the workspace (the isolated equivalent of "
+        "`go test ./public_tests/...`) "
         "and fix failures.\n"
         "7. **Public tests passing does not mean you are done.** Hidden tests and extraction "
         "scoring apply after submit.\n"
@@ -1232,6 +1281,7 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
         "- `repo/`: source repository snapshot for the fixed commit.\n"
         "- `public_tests/`: tests you may run while developing.\n"
         "- `go.mod`: eval harness module (add `replace` for your submission).\n"
+        "- `run_public_tests.sh`: isolated public-test runner for your submission.\n"
         "- `metadata.json`: redacted task metadata. Hidden tests are not present.\n"
         "- `submission/`: write your final Go module here.\n\n"
         "## Closure Discipline\n\n"
@@ -1260,8 +1310,14 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
         "## Required Output API\n\n"
         f"- Package: `{sections['output_package']}`\n"
         f"- Import: `{sections['output_import']}`\n"
-        f"- Callable: `{sections['output_callable']}`\n"
-        f"- Signature: `{sections['output_signature']}`\n\n"
+        f"- Symbols:\n{symbols}\n"
+        + (
+            f"- Callable: `{sections['output_callable']}`\n"
+            f"- Signature: `{sections['output_signature']}`\n"
+            if sections["output_callable"] or sections["output_signature"]
+            else ""
+        )
+        + "\n"
         "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
         "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
@@ -1608,6 +1664,10 @@ def _parse_mini_trajectory_usage(path: Path) -> dict[str, Any]:
 
 def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any]:
     usage: dict[str, Any] = {"available": True, "source": str(source)}
+    for key in ("schema_version", "agent_name", "model"):
+        value = data.get(key)
+        if isinstance(value, str):
+            usage[key] = value
     for key in USAGE_SUM_FIELDS:
         value = _int_metric(data.get(key))
         if value is not None:
@@ -1615,6 +1675,12 @@ def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any
     exit_status = data.get("exit_status")
     if isinstance(exit_status, str):
         usage["exit_status"] = exit_status
+    context_audit = data.get("context_audit")
+    if isinstance(context_audit, dict):
+        usage["context_audit"] = dict(context_audit)
+    tool_summary = data.get("tool_summary")
+    if isinstance(tool_summary, dict):
+        usage["tool_summary"] = dict(tool_summary)
     if len(usage) <= 2:
         return _unavailable_agent_usage(source, "usage.json did not contain usage metrics")
     return usage
@@ -1636,6 +1702,62 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
         totals[key] = sum(
             value for usage in usages if isinstance((value := usage.get(key)), int)
         )
+    context_audits = [
+        audit
+        for usage in usages
+        if isinstance((audit := usage.get("context_audit")), dict)
+        and audit.get("available") is True
+    ]
+    if context_audits:
+        totals["context_audit"] = {
+            "available_runs": len(context_audits),
+            "context_violation_runs": sum(
+                audit.get("context_violation") is True for audit in context_audits
+            ),
+            "usage_unverified_runs": sum(
+                audit.get("usage_unverified") is True for audit in context_audits
+            ),
+            "max_prompt_tokens_per_call": max(
+                (_int_metric(audit.get("max_prompt_tokens_per_call")) or 0)
+                for audit in context_audits
+            ),
+            "max_total_tokens_per_call": max(
+                (_int_metric(audit.get("max_total_tokens_per_call")) or 0)
+                for audit in context_audits
+            ),
+        }
+    tool_summaries = [
+        summary
+        for usage in usages
+        if isinstance((summary := usage.get("tool_summary")), dict)
+        and summary.get("available") is True
+    ]
+    if tool_summaries:
+        summed_fields = (
+            "total_actions",
+            "success_actions",
+            "failed_actions",
+            "blocked_actions",
+            "timeout_actions",
+            "error_actions",
+        )
+        totals["tool_summary"] = {
+            "available_runs": len(tool_summaries),
+            "actions_enabled_runs": sum(
+                summary.get("actions_enabled") is True for summary in tool_summaries
+            ),
+            "runs_with_failed_actions": sum(
+                (_int_metric(summary.get("failed_actions")) or 0) > 0
+                for summary in tool_summaries
+            ),
+            "final_check_failed_runs": sum(
+                summary.get("final_check_status") == "failed" for summary in tool_summaries
+            ),
+            **{
+                key: sum((_int_metric(summary.get(key)) or 0) for summary in tool_summaries)
+                for key in summed_fields
+            },
+        }
     return totals
 
 

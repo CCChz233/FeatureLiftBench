@@ -203,7 +203,7 @@ def main() -> None:
     if args.fail_on_gap and gaps:
         raise SystemExit(len(gaps))
 
-    if not gaps and reports:
+    if not args.json and not gaps and reports:
         print("[OK] audit ok")
 
 

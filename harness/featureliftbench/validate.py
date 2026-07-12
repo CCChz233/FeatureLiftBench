@@ -7,6 +7,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .dependency_audit import validate_lock_allowed_consistency
 from .metadata import MetadataError, load_metadata, validate_metadata_shape
 
 
@@ -85,6 +86,7 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
         else:
             errors.extend(_validate_dependency_sets(metadata.data))
             errors.extend(_validate_lock_file_name(metadata.data, root))
+            errors.extend(validate_lock_allowed_consistency(metadata.data, root))
 
     if language != "go":
         oracle_manifest = root / "evaluation" / "oracle_manifest.json"
@@ -112,6 +114,7 @@ def _validate_go_tests(root: Path) -> list[str]:
 
 
 def _validate_go_environment(metadata: dict, task_dir: Path) -> list[str]:
+    errors: list[str] = []
     environment = metadata.get("environment")
     if not isinstance(environment, dict):
         return []
@@ -126,7 +129,16 @@ def _validate_go_environment(metadata: dict, task_dir: Path) -> list[str]:
     if cgo is True:
         errors.append("Go tasks must set environment.cgo_enabled to false for pilot track")
 
-    return []
+    for metadata_key, filename in (
+        ("allowed_modules", "allowed_modules.txt"),
+        ("forbidden_modules", "forbidden_modules.txt"),
+    ):
+        if isinstance(environment.get(metadata_key), list):
+            relative_path = f"evaluation/{filename}"
+            if not (task_dir / relative_path).is_file():
+                errors.append(f"missing required path: {relative_path}")
+
+    return errors
 
 
 def _validate_dependency_sets(metadata: dict) -> list[str]:

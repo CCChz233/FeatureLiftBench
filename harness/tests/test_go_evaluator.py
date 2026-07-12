@@ -166,10 +166,15 @@ def _make_go_task(task_dir: Path) -> Path:
     (task_dir / "public_tests").mkdir()
     (task_dir / "hidden_tests").mkdir()
     (task_dir / "evaluation").mkdir()
+    (task_dir / "environment").mkdir()
     metadata = _go_metadata(task_dir.name)
     (task_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
     (task_dir / "repo" / "go.mod").write_text(
         "module example.com/featureliftbench/go-dummy-adder\n\ngo 1.22\n",
+        encoding="utf-8",
+    )
+    (task_dir / "environment" / "go.mod").write_text(
+        f"module featurelifted.local/{task_dir.name}\n\ngo 1.22\n",
         encoding="utf-8",
     )
     (task_dir / "repo" / "adder" / "adder.go").write_text(

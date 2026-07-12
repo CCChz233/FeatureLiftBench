@@ -105,7 +105,10 @@ def _evaluate_python_submission(
     elif not submission_path.is_dir():
         errors.append(f"submission path is not a directory: {submission_path}")
 
-    metadata = load_metadata(task_path).data if not errors else {}
+    try:
+        metadata = load_metadata(task_path).data
+    except Exception:
+        metadata = {}
     task_id = metadata.get("task_id", validation.task_id) if isinstance(metadata, dict) else validation.task_id
     submission_name = submission_path.name
 

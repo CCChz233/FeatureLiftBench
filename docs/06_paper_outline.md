@@ -9,7 +9,7 @@
 
 Current code-agent benchmarks focus heavily on code generation, code completion, or issue repair inside an existing repository. Real software reuse often requires a different capability: extracting a reusable feature from an entangled codebase into a standalone package while preserving behavior and avoiding unnecessary copying. FeatureLiftBench evaluates this capability with source repository snapshots, feature specifications, public and hidden tests, forbidden import checks, and compactness-aware scoring. The benchmark is organized as language splits under one task definition, with Python as the current mature split and Go as an in-progress split designed to stress static type and package-boundary closure.
 
-TODO: add verified headline results only after the official run protocol is frozen.
+On the frozen Python-150 split with OpenHands, DeepSeek-V4-Flash achieves 91/150 functional passes (60.7%) with average final score 0.359. On the shared core-100 comparison subset, it achieves 83/100 functional passes (83%) with average final score 0.520; open models range from 24/100 to 54/100. The hard 50-task extension yields only 8/50 Flash passes, indicating substantial headroom on entangled repository features. Compactness scoring separates copy-heavy functional passes from compact extractions.
 
 ## 1. Introduction
 
@@ -66,23 +66,23 @@ Describe:
 
 ### RQ1: Overall Performance
 
-Report whether current agents can perform FeatureLift. Use one table per stable language split or a split column if both are mature.
+DeepSeek-V4-Flash: 91/150 on the full split; 83/100 on the shared cross-model subset. See `docs/paper_tables.md` Table 1.
 
 ### RQ2: Failure Analysis
 
-Report failure taxonomy distribution and representative case studies.
+Flash 100-hard mechanical failure distribution: {'passed': 83, 'build_fail': 2, 'public_only_fail': 11, 'missing_submission': 2, 'other_fail': 2}. Representative case studies in `reports/paper_analysis/case_studies/`.
 
 ### RQ3: Localization Ablation
 
-Compare standard, hint, and oracle-locate settings.
+Full hint/oracle-locate ablation is not yet implemented in the harness. We report gate-oracle extraction ratios as a localization upper bound and defer full RQ3 to future work. Optional 10-task hint pilot is listed as follow-up.
 
 ### RQ4: Compactness
 
-Compare pass rate with final score and copy-all baseline. Show that functional tests alone overestimate extraction quality.
+See `reports/paper_analysis/rq4_compactness.json` and Table 4 in `docs/paper_tables.md`.
 
 ### RQ5: Task Difficulty
 
-Analyze performance against task properties such as files, dependency depth, feature type, dynamic behavior, global state, package boundaries, and type closure.
+See `reports/paper_analysis/rq5_slices.json` — entanglement, difficulty, and hard3 slices.
 
 ## 6. Related Work
 
@@ -113,6 +113,6 @@ FeatureLiftBench introduces a repository-level feature extraction benchmark for 
 ## TODO
 
 - Insert official dataset table after Python and Go split status is frozen.
-- Replace abstract TODO with verified results.
+- Abstract updated with frozen Python-150 headline numbers (2026-07-12).
 - Add examples only from audited task designs and experiment artifacts.
 - Align paper scoring notation with the evaluator version used for official runs.

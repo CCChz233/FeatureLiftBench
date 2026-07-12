@@ -9,35 +9,35 @@ Each failed or low-quality submission should receive one primary failure label a
 - Definition: the agent does not find the source files, symbols, or behavior region that implements the target feature.
 - Typical symptoms: irrelevant files copied, target API stubbed from scratch, public tests fail on basic behavior, trajectory searches unrelated modules.
 - How to detect: trajectory review, missing expected source entrypoints, oracle-locate improvement.
-- Example placeholder: TODO: add example from experiments.
+- Example: `h2__frame_parse_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=missing_submission, extraction=None, final_score=0.0. See `reports/paper_analysis/case_studies/h2__frame_parse_core__001.md`.
 
 ## 2. Dependency Closure Failure
 
 - Definition: the agent finds the main entrypoint but misses required helpers, constants, resources, runtime registration, types, interfaces, or transitive dependencies.
 - Typical symptoms: import errors, missing attributes, partial behavior, hidden-only failures, Go compile errors for undefined types.
 - How to detect: stack traces, missing closure files, public pass plus hidden fail, module probes.
-- Example placeholder: TODO: add example from experiments.
+- Example: `alembic__revision_map_core__hard3_001` — Flash run `experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104`; mechanical=public_only_fail, extraction=0.501692, final_score=0.0. See `reports/paper_analysis/case_studies/alembic__revision_map_core__hard3_001.md`.
 
 ## 3. Packaging Failure
 
 - Definition: the submitted package cannot be installed, imported, built, or called through the required target API.
 - Typical symptoms: missing `pyproject.toml`, wrong package name, wrong Go module path, invalid `go.mod`, bad import path, missing exported symbol.
 - How to detect: install/build logs and target API import checks.
-- Example placeholder: TODO: add example from experiments.
+- Example: `bleach__sanitize_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=build_fail, extraction=0.506234, final_score=0.0. See `reports/paper_analysis/case_studies/bleach__sanitize_core__001.md`.
 
 ## 4. Behavior Drift
 
 - Definition: the submission implements a similar but not behavior-preserving version of the feature.
 - Typical symptoms: public tests pass but hidden tests fail on edge cases, exception types, ordering, parser state, formatting, global state, or interface semantics.
 - How to detect: public-hidden gap, hidden failure diff, targeted behavior probes.
-- Example placeholder: TODO: add example from experiments.
+- Example: `coverage__config_merge_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=public_only_fail, extraction=1.0, final_score=0.0. See `reports/paper_analysis/case_studies/coverage__config_merge_core__001.md`.
 
 ## 5. Over-Copy
 
 - Definition: the submission passes functional gates by copying a large amount of unrelated source code.
 - Typical symptoms: high extraction ratio, broad package copy, many unused files, final score near zero despite passing tests.
 - How to detect: LOC metrics, copied file audit, copy-all baseline comparison.
-- Example placeholder: TODO: add example from experiments.
+- Example: `coverage__glob_matcher_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=passed, extraction=1.0, final_score=0.0. See `reports/paper_analysis/case_studies/coverage__glob_matcher_core__001.md`.
 
 ## 6. Forbidden Import
 
@@ -45,6 +45,8 @@ Each failed or low-quality submission should receive one primary failure label a
 - Typical symptoms: `import original_package`, dependency on upstream package in `pyproject.toml` or `go.mod`, `replace` directive pointing to original module.
 - How to detect: static forbidden import/dependency/module checks and build logs.
 - Example placeholder: TODO: add example from experiments.
+
+No failures with `original_import_pass=false` were observed in the frozen Flash 100-hard run; this label is included for cross-model and future-run completeness.
 
 ## 7. Path Leakage
 

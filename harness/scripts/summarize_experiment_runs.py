@@ -126,10 +126,19 @@ def enrich_task_run(suite_dir: Path, task_id: str, suite_entry: dict[str, Any]) 
 
 
 def _model_family(suite_name: str) -> str:
-    if "gpt-oss" in suite_name:
+    name = suite_name.lower()
+    if "gpt-oss" in name:
         return "GPT-OSS-120B"
-    if "qwen" in suite_name:
+    if "deepseek-v4-flash" in name or name.startswith("main-flash") or "batch3-flash" in name:
+        return "DeepSeek-V4-Flash"
+    if "qwen3.6-27b" in name or "qwen36-27b" in name:
+        return "Qwen3.6-27B-FP8"
+    if "qwen3.6-35b" in name or "qwen36-35b" in name:
+        return "Qwen3.6-35B-A3B-FP8"
+    if "qwen3-coder-30b" in name or "main-20260702" in name:
         return "Qwen3-Coder-30B"
+    if "qwen" in name:
+        return "Qwen"
     return "unknown"
 
 

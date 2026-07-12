@@ -276,6 +276,14 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/report_entanglement_coverage
   --suite-dir experiments/mini-swe-agent/<run_id>
 ```
 
+论文结果一键汇总（冻结 run 见 `docs/paper_runs_frozen.md`）：
+
+```bash
+PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
+```
+
+输出目录：`reports/paper_analysis/`。
+
 ## 7. 资源与安全默认值
 
 Eval Docker 默认：

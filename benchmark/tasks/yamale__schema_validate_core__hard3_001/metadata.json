@@ -1,0 +1,82 @@
+{
+  "task_id": "yamale__schema_validate_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "c203d14bface6f35693874a8e4ee39079bcb9094",
+    "license": "Apache-2.0",
+    "name": "yamale",
+    "url": "https://github.com/23andMe/Yamale.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped yaml schema rule validation core into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "CLI",
+      "filesystem loading"
+    ],
+    "included_behaviors": [
+      "in-memory YAML schema parsing",
+      "map/list validators",
+      "include documents",
+      "strict validation"
+    ],
+    "name": "YAML schema rule validation core",
+    "source_entrypoints": [
+      "yamale.make_schema",
+      "yamale.validate"
+    ]
+  },
+  "entanglement": {
+    "description": "Schema parser, validators, include rules, and error reporting require transitive closure.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "include recursion via additional schema documents",
+      "list and map validators",
+      "strict mode rejects unexpected keys",
+      "bool coercion in non-strict mode"
+    ],
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "validate",
+    "import": "from featurelifted import make_schema, validate, ValidationResult, YamaleError",
+    "package": "featurelifted",
+    "signature": "validate(schema, data, strict=True, _raise_error=True)"
+  },
+  "environment": {
+    "allowed_dependencies": [
+      "PyYAML"
+    ],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "yamale"
+    ],
+    "forbidden_imports": [
+      "yamale"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "yamale/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

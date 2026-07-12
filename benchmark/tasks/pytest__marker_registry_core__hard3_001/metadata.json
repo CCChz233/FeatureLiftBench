@@ -1,0 +1,81 @@
+{
+  "task_id": "pytest__marker_registry_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "83b022078855ea64c5c53bc50bd9299a5a1f1dc0",
+    "license": "MIT",
+    "name": "pytest",
+    "url": "https://github.com/pytest-dev/pytest.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped markerregistry into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "test collection",
+      "plugin loading"
+    ],
+    "included_behaviors": [
+      "marker registration",
+      "ini merge",
+      "unknown marker warnings"
+    ],
+    "name": "MarkerRegistry",
+    "source_entrypoints": [
+      "_pytest.mark.structures.Mark"
+    ]
+  },
+  "entanglement": {
+    "description": "Plugin-provided config, marker normalization, and warnings require runtime registry behavior.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "duplicate markers ignored without overwrite",
+      "unknown marker warning",
+      "plugin marker merge order",
+      "strict unknown marker KeyError"
+    ],
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling"
+    ]
+  },
+  "output": {
+    "callable": "MarkerRegistry",
+    "import": "from featurelifted import MarkerRegistry, Marker, UnknownMarkerWarning",
+    "package": "featurelifted",
+    "signature": "MarkerRegistry()"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "pytest",
+      "_pytest"
+    ],
+    "forbidden_imports": [
+      "pytest",
+      "_pytest"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pytest/",
+      "_pytest/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

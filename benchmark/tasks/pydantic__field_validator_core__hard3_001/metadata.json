@@ -1,0 +1,78 @@
+{
+  "task_id": "pydantic__field_validator_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "data_model_coupling"
+  ],
+  "source": {
+    "commit": "652a61ce4f9d7d76eaada31535807a485ece0e21",
+    "license": "MIT",
+    "name": "pydantic",
+    "url": "https://github.com/pydantic/pydantic.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped field_validator before/after into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "full pydantic v2 type system",
+      "JSON schema export"
+    ],
+    "included_behaviors": [
+      "field_validator decorator",
+      "before/after modes",
+      "ValidationError aggregation"
+    ],
+    "name": "field_validator before/after",
+    "source_entrypoints": [
+      "pydantic.functional_validators.field_validator"
+    ]
+  },
+  "entanglement": {
+    "description": "Decorators, class namespace inspection, validator order, and error wrappers require dynamic runtime behavior.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "before validators run first",
+      "after validators run post-init",
+      "inherited validators from bases",
+      "ValidationError aggregates field errors"
+    ],
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "field_validator",
+    "import": "from featurelifted import field_validator, BaseModel, ValidationError",
+    "package": "featurelifted",
+    "signature": "field_validator(*fields, mode='after')"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "pydantic"
+    ],
+    "forbidden_imports": [
+      "pydantic"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pydantic/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

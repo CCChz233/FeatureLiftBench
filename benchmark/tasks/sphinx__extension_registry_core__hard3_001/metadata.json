@@ -1,0 +1,78 @@
+{
+  "task_id": "sphinx__extension_registry_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "copy-heavy trap tasks",
+    "framework_coupling"
+  ],
+  "source": {
+    "commit": "c1b618c559e6de70e5198ed6876f5b9fab88face",
+    "license": "BSD-2-Clause",
+    "name": "sphinx",
+    "url": "https://github.com/sphinx-doc/sphinx.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped directive/role registry and extension setup loader into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "builder pipeline",
+      "full application startup"
+    ],
+    "included_behaviors": [
+      "directive/role registry",
+      "extension setup loader",
+      "duplicate registration errors"
+    ],
+    "name": "Directive/role registry and extension setup loader",
+    "source_entrypoints": [
+      "sphinx.registry.SphinxComponentRegistry"
+    ]
+  },
+  "entanglement": {
+    "description": "Requires extension import, setup return metadata, registry mutation, and warning/error semantics.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "parallel safety metadata returned from setup",
+      "duplicate directives raise ExtensionError without override",
+      "extension setup errors wrapped as ExtensionError",
+      "role override order honors override flag"
+    ],
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "output": {
+    "callable": "ComponentRegistry",
+    "import": "from featurelifted import ComponentRegistry, ExtensionMetadata, ExtensionError",
+    "package": "featurelifted",
+    "signature": "ComponentRegistry()"
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "sphinx"
+    ],
+    "forbidden_imports": [
+      "sphinx"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "sphinx/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

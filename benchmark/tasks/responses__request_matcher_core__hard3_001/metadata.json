@@ -1,0 +1,86 @@
+{
+  "task_id": "responses__request_matcher_core__hard3_001",
+  "language": "python",
+  "status": "main",
+  "difficulty": "hard",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "third_party_dependency_coupling"
+  ],
+  "source": {
+    "commit": "983a4975c969432d468c35085b613a3bec0edc46",
+    "license": "Apache-2.0",
+    "name": "responses",
+    "url": "https://github.com/getsentry/responses.git"
+  },
+  "feature": {
+    "description": "Extract a task-scoped request matcher registry and call history into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "socket patching",
+      "HTTP adapter interception"
+    ],
+    "included_behaviors": [
+      "PreparedRequest matching",
+      "matcher helpers",
+      "registry find/add/reset",
+      "call history"
+    ],
+    "name": "Request matcher registry and call history",
+    "source_entrypoints": [
+      "responses.matchers",
+      "responses.registries.FirstMatchRegistry"
+    ]
+  },
+  "entanglement": {
+    "description": "Requests PreparedRequest matching, matcher ordering, call state, and exception messages require requests coupling.",
+    "level": "high",
+    "primary": "third_party_dependency_coupling",
+    "signals": [
+      "query param matcher compares parsed query strings",
+      "header matcher validates request headers",
+      "once responses are removed after first match",
+      "call history reset clears registered responses and history"
+    ],
+    "types": [
+      "third_party_dependency_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "output": {
+    "callable": "MockResponseRegistry",
+    "import": "from featurelifted import MockResponseRegistry, MockResponse, query_string_matcher, header_matcher",
+    "package": "featurelifted",
+    "signature": "MockResponseRegistry()"
+  },
+  "environment": {
+    "allowed_dependencies": [
+      "certifi",
+      "charset-normalizer",
+      "idna",
+      "requests",
+      "urllib3"
+    ],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "responses"
+    ],
+    "forbidden_imports": [
+      "responses"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "responses/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

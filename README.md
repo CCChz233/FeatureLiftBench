@@ -62,7 +62,7 @@ FeatureLiftBench 的现实意义在于评估代码智能体能否把“能跑但
 * **Implicit dependency coupling**：跨模块 import 链长，必要依赖和无关依赖混在一起；
 * **Legacy/vibe-coded clutter**：重复代码、历史兼容层、未使用模块、命名混乱、文档缺失。
 
-当前 benchmark **主榜 144 道 hard**（`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。任务清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；任务目录规范见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
+当前 benchmark **主榜 150 道 hard**（`benchmark/tasks/`），另有 **3 道 smoke**（`benchmark/sanity/`）。均在统一 schema、evaluator 与评分规则下；题目之间主要差别是 **`difficulty`**、**`entanglement`** 和 **功能范围**。任务清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；任务目录规范见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 演进方式：**新增或删除** `benchmark/tasks/` 下的题目，不另建第二套 benchmark 或 harness。
 
@@ -364,7 +364,7 @@ benchmark/tasks/<task_id>/
 
 `repo/` 是任务输入的一部分，Agent 可以读取它。`hidden_tests/` 在正式评测时不可见。Agent 在 `submission/featurelifted/` 下写出解耦后的 package（包名固定为 `featurelifted`）。
 
-当前 benchmark **主榜 144 hard** + **3 smoke**。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
+当前 benchmark **主榜 150 hard** + **3 smoke**。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
 
 早期 10 题示例：
 
@@ -686,7 +686,7 @@ FeatureLiftBench 主要关注以下问题：
 
 ## 当前状态
 
-FeatureLiftBench **统一 benchmark** 已落地：Python 主榜 **144 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；仓库结构见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
+FeatureLiftBench **统一 benchmark** 已落地：Python 主榜 **150 hard** + smoke **3**，共用同一 schema、evaluator 与评分。完整清单见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)；仓库结构见 [`docs/06_task_schema.md`](docs/06_task_schema.md)。
 
 演进方式：在 `benchmark/tasks/` 下**新增或删除**题目，不另建第二套 collection。
 

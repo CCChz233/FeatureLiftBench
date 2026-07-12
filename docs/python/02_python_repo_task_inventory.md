@@ -16,11 +16,11 @@ Status enum:
 
 ## Current Metadata Snapshot
 
-Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-08:
+Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-11:
 
-- Tasks: 144.
-- Unique source names: 117.
-- Metadata difficulty: 144 `hard`.
+- Tasks: 150.
+- Unique source names: 121.
+- Metadata difficulty: 150 `hard`.
 - `Ref LOC`: populated only when `metadata.scoring_reference.oracle_loc` exists; otherwise `TBD`.
 - `Files`: count from `evaluation/oracle_manifest.json.required_source_files` when available; otherwise `TBD`.
 
@@ -129,6 +129,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | pluggy__hook_wrapper_core__hard3_001 | pluggy | 6b0f3293895e | HookCaller historic wrapper ordering | framework_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | pluggy__hook_specs_core__001 | pluggy | 1.0.0-installed-snapshot | Hook specification validation and discovery | framework_coupling | hard | TBD | 7 | valid | current `benchmark/tasks` metadata |
 | poetry_core__dependency_groups_core__hard3_001 | poetry_core | 5de24118d23a | PEP 621 metadata and dependency group resolver | data_model_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
+| pydantic__field_validator_core__hard3_001 | pydantic | 652a61ce4f9d | field_validator before/after and structured ValidationError behavior | data_model_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; Flash rerun public-pass/hidden-fail on structured error field metadata, extraction ratio 0.148390 |
 | pydantic_settings__env_source_core__001 | pydantic-settings | 2.14.2-installed-snapshot | Environment settings source | config_environment_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | pydantic_v1__validation_error_core__001 | pydantic | 5ebcdc13b83f | BaseModel validation and structured ValidationError core | framework_coupling | hard | TBD | 15 | valid | current `benchmark/tasks` metadata |
 | pyramid__configurator_action_core__hard3_001 | pyramid | 5b13e4a61b47 | Configurator action conflict resolver | framework_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
@@ -136,6 +137,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | pygments__lexer_core__001 | pygments | 2.15.1 | Regex lexer core | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | pytest__fixture_resolve_core__001 | pytest | b55ab2aabb68 | pytest fixture name resolution | framework_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
 | pytest__ini_markers_core__001 | pytest | b55ab2aabb68 | pytest ini markers parsing | config_environment_coupling | hard | TBD | 2 | valid | current `benchmark/tasks` metadata |
+| pytest__marker_registry_core__hard3_001 | pytest | 83b022078855 | Marker registry configuration and plugin marker merge | framework_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; Flash public-pass/hidden-fail on documented `merge_plugin_markers` behavior |
 | pytest__mark_expression_core__001 | pytest | b55ab2aabb68 | pytest mark expression evaluator | parser_state_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
 | pytest__skipif_eval_core__001 | pytest | b55ab2aabb68 | pytest skipif condition evaluator | framework_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
 | python_box__config_box_core__001 | python-box | 7.4.1-installed-snapshot | ConfigBox dot-access config transforms | data_model_coupling | hard | TBD | 3 | valid | current `benchmark/tasks` metadata |
@@ -145,9 +147,11 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | python_frontmatter__roundtrip_core__001 | python-frontmatter | dc7c0af5466b | YAML front matter round-trip | parser_state_coupling | hard | TBD | 4 | valid | current `benchmark/tasks` metadata |
 | python_multipart__form_parse_core__001 | python-multipart | 98080c5de45b | Multipart form-data parse core | parser_state_coupling | hard | 1218 | 4 | valid | current `benchmark/tasks` metadata |
 | pyyaml__safe_load_dump__001 | PyYAML | 6.0.1-installed-snapshot | Safe YAML load and dump | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
+| readme_renderer__content_type_core__hard3_001 | readme_renderer | 84183e882684 | Content-type parsing and renderer selection | data_model_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; Flash packaging/over-copy failure from undeclared `nh3` dependency |
 | redis__resp_parser_core__001 | redis | 8.0.1-installed-snapshot | RESP2/RESP3 wire parser | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | referencing__json_schema_refs_core__001 | referencing | 0.30.2-installed-snapshot | JSON Schema $ref resolution | data_model_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | requests_cache__cache_key_core__hard3_001 | requests_cache | df44b695a314 | HTTP request cache key and expiration policy | third_party_dependency_coupling | hard | TBD | 6 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
+| responses__request_matcher_core__hard3_001 | responses | 983a4975c969 | Request matcher registry and call history | third_party_dependency_coupling | hard | TBD | 3 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; saved Flash submission public-pass/hidden-fail on documented `once=True` consumption behavior |
 | returns__result_pipeline_core__hard3_001 | returns | b158f518a6a3 | Result Success Failure safe | data_model_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | rfc3986__uri_parse_core__001 | rfc3986 | 2.0.0-installed-snapshot | RFC3986 URI parse, build, and validate subset | parser_state_coupling | hard | TBD | 10 | valid | current `benchmark/tasks` metadata |
 | rich__markup_parse_core__001 | rich | 13.7.1-installed-snapshot | Console markup parsing | parser_state_coupling | hard | TBD | 79 | valid | current `benchmark/tasks` metadata |
@@ -156,6 +160,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | scrapy__item_loader_core__hard3_001 | scrapy | dd10cb8e9a98 | Item loader processor registry | framework_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | setuptools_scm__version_normalize_core__hard3_001 | setuptools_scm | 5b91e2faf007 | version_from_scm | data_model_coupling | hard | TBD | 1 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | sortedcontainers__sorted_list_core__001 | sortedcontainers | a1f52d6713dd | SortedList core | data_model_coupling | hard | TBD | 1 | valid | current `benchmark/tasks` metadata |
+| sphinx__extension_registry_core__hard3_001 | sphinx | c1b618c559e6 | Directive/role registry and extension setup loader | framework_coupling | hard | TBD | 3 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; Flash Python 3.11 packaging failure from Python 3.12-only type alias syntax |
 | sqlalchemy__event_dispatch_core__hard3_001 | sqlalchemy | d59159ca08cd | Event registry dispatch core | framework_coupling | hard | TBD | 3 | valid | promoted from batch3_pilot 2026-07-08; Flash B-tier |
 | starlette__route_matching_core__hard3_001 | starlette | 5174d4c8358a | Route matching and URL path convertor registry | framework_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | sqlparse__format_filters_core__001 | sqlparse | f80af6a4007f | SQL format and filters core | parser_state_coupling | hard | TBD | 19 | valid | current `benchmark/tasks` metadata |
@@ -185,6 +190,7 @@ TODO: expand this repository pool into one row per source with LOC and repositor
 | wheel__metadata_normalize_core__hard3_001 | wheel | 197012dcb8a9 | Wheel metadata normalization helpers | data_model_coupling | hard | TBD | 2 | valid | promoted from batch3_pilot 2026-07-08; Flash public-only hard calibration |
 | wsproto__frame_parse_core__001 | wsproto | 1.3.2-installed-snapshot | WebSocket frame protocol | parser_state_coupling | hard | TBD | TBD | valid | current `benchmark/tasks` metadata |
 | xmltodict__xml_parse_core__001 | xmltodict | 966b903e4441 | XML parse and unparse core | parser_state_coupling | hard | 566 | 1 | valid | current `benchmark/tasks` metadata |
+| yamale__schema_validate_core__hard3_001 | yamale | c203d14bface | YAML schema rule validation core | data_model_coupling | hard | TBD | 4 | valid | promoted from batch3_pilot 2026-07-11; Docker reference pass; saved Flash submission public-pass/hidden-fail on non-strict bool coercion with extraction ratio 1.298456 |
 | yarl__url_model_core__001 | yarl | b0d27e478c54 | URL parse, join, query, and path model | parser_state_coupling | hard | TBD | 7 | valid | current `benchmark/tasks` metadata |
 
 ## TODO

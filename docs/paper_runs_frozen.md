@@ -61,3 +61,21 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
 ```
 
 Outputs land in `reports/paper_analysis/`.
+
+## Missing Matched Runs
+
+DeepSeek-V4-Flash covers all 150 tasks. The following models still need the same hard-extension-50 before they can be compared on the full split:
+
+| Profile | Missing tasks | Planned output family |
+| --- | ---: | --- |
+| `openhands_qwen3_6_27b_fp8_paper` | 50 | `experiments/python/openhands/qwen3.6-27b-fp8/` |
+| `openhands_qwen3_6_35b_a3b_fp8_paper` | 50 | `experiments/python/openhands/qwen3.6-35b-a3b-fp8/` |
+| `openhands_qwen3_coder_30b_paper` | 50 | `experiments/python/openhands/qwen3-coder-30b-a3b-instruct/` |
+
+Preview a run without calling an API:
+
+```bash
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper
+```
+
+The script requires an explicit `--execute` argument to start external model calls. Run only after approving transmission of all 50 tasks' instructions, public snapshots, and prompts to the configured provider.

@@ -7,7 +7,8 @@
 | 我想… | 从这里开始 |
 | --- | --- |
 | 了解 benchmark 是什么 | [00_overview.md](00_overview.md) → [01_task_definition.md](01_task_definition.md) |
-| 跑实验 | 根目录 [RUN.md](../RUN.md) · [04_experiment_protocol.md](04_experiment_protocol.md) |
+| 跑实验 / 补齐 Python-150 | [../RUN.md](../RUN.md) §6.1 · [EXPERIMENTS.md](EXPERIMENTS.md) |
+| 看已有结果与缺口 | [EXPERIMENTS.md](EXPERIMENTS.md) · [FINDINGS.md](FINDINGS.md) |
 | 看出题 / promote 规则 | [07_incremental_task_rules.md](07_incremental_task_rules.md) · [.agents/skills/](../.agents/skills/) |
 | 查 Python 150 题清单 | [python/02_python_repo_task_inventory.md](python/02_python_repo_task_inventory.md) |
 | 查论文 / v1.1 门禁 | [research_analysis/](research_analysis/) · [06_paper_outline.md](06_paper_outline.md) |
@@ -30,6 +31,9 @@
 | [06_paper_outline.md](06_paper_outline.md) | Paper outline |
 | [limitations.md](limitations.md) | Known benchmark and evaluator limitations |
 | [STATUS.md](STATUS.md) | Current project status (living summary) |
+| [EXPERIMENTS.md](EXPERIMENTS.md) | Completed runs, gaps, how to finish Python-150 |
+| [FINDINGS.md](FINDINGS.md) | What current results say about agents/LLMs |
+| [REPORTS_INDEX.md](REPORTS_INDEX.md) | Index into local `reports/` (gitignored) |
 
 ## Language Splits
 
@@ -50,7 +54,10 @@ Python 与 Go 是 FeatureLiftBench 的 language split，共享同一 task 语义
 - [research_analysis/](research_analysis/) — v1.1 硬化协议、Pilot、ECSM、taxonomy、Oracle 报告
 - [paper_runs_frozen.md](paper_runs_frozen.md) — 冻结 formal run ID 与 leaderboard 口径
 - [paper_tables.md](paper_tables.md) — 论文表格草稿
-- [../reports/paper_analysis/](../reports/paper_analysis/) — 分析工件与 case studies
+- [EXPERIMENTS.md](EXPERIMENTS.md) — 实验完成度与服务器补跑说明
+- [FINDINGS.md](FINDINGS.md) — 当前结果解读（能力与缺陷）
+- [REPORTS_INDEX.md](REPORTS_INDEX.md) — 本地 `reports/` 索引（该目录 gitignore）
+- 本地分析工件：`reports/paper_analysis/`（见 REPORTS_INDEX）
 
 生成型 audit JSON/CSV 在 `artifacts/research_analysis/`；人类可读摘要优先放在 `docs/research_analysis/`。
 
@@ -58,7 +65,8 @@ Python 与 Go 是 FeatureLiftBench 的 language split，共享同一 task 语义
 
 | Location | Purpose |
 | --- | --- |
-| [../RUN.md](../RUN.md) | 实验运行速查（Docker、suite、env） |
+| [../RUN.md](../RUN.md) | 实验运行速查（Docker、suite、env、§6.1 Python-150） |
+| [../experiments/README.md](../experiments/README.md) | 实验结果目录约定 |
 | [../.agents/skills/](../.agents/skills/) | Cursor agent：create / validate / promote / run-eval |
 
 ## Historical Engineering Docs（根目录）
@@ -75,7 +83,8 @@ Python 与 Go 是 FeatureLiftBench 的 language split，共享同一 task 语义
 
 | Location | Purpose |
 | --- | --- |
-| [../reports/](../reports/) | Sprint 报告、batch3 材料化、task audit（时间点快照） |
+| [REPORTS_INDEX.md](REPORTS_INDEX.md) | 可提交的 reports 索引 |
+| 本地 `reports/` | Sprint 报告、paper_analysis（gitignore） |
 | [../evidence/](../evidence/) | batch-1 promote 验收证据（只读） |
 | [../experiments/](../experiments/) | 运行输出（非文档源） |
 

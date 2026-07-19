@@ -45,6 +45,10 @@ v1.1 硬化、Pilot、taxonomy 与论文门禁相关文档。生成型 JSON/CSV 
 | [../06_paper_outline.md](../06_paper_outline.md) | Paper outline |
 | [../paper_runs_frozen.md](../paper_runs_frozen.md) | Frozen run IDs |
 | [../paper_tables.md](../paper_tables.md) | Table drafts |
+| [../EXPERIMENTS.md](../EXPERIMENTS.md) | Experiment inventory and gaps |
+| [../FINDINGS.md](../FINDINGS.md) | Result interpretation |
+| [../REPORTS_INDEX.md](../REPORTS_INDEX.md) | Local reports index |
+| [expert_review/](expert_review/) | Expert AI adjudication (not human gold) |
 
 ## Regenerate key artifacts
 

@@ -1,8 +1,10 @@
 # FeatureLiftBench 当前状态
 
-**最后更新：** 2026-07-19
+**最后更新：** 2026-07-20
 
 本文是手写状态摘要。详细 gate 表格由脚本生成，见 [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md)（`python tools/research_analysis/build_v11_audit_status.py`）。
+
+**实验完成度与缺口：** [EXPERIMENTS.md](EXPERIMENTS.md) · **结果解读：** [FINDINGS.md](FINDINGS.md) · **怎么跑：** [RUN.md](../RUN.md) §6.1
 
 ## Benchmark 规模
 
@@ -29,7 +31,18 @@
 | Freeze 指针 | `artifacts/research_analysis/v1_1/current_oracle_freeze.json` |
 | Oracle 报告 | [research_analysis/ORACLE_REVALIDATION_REPORT.md](research_analysis/ORACLE_REVALIDATION_REPORT.md) |
 
-Engineering 实验（reference / Docker eval）可在 Oracle 稳定后运行；aggregate 计分应使用当前 main split 与 freeze 口径。
+Engineering 实验可开跑。正式 aggregate 用当前 main split + 本 freeze。
+
+## Agent 实验（摘要）
+
+| 范围 | 状态 |
+| --- | --- |
+| 四模型 core-100 | ✅ 已冻结 |
+| Flash Python-150 | ✅ 91/150 |
+| 另三模型 hard50 | ❌ **待跑**（补齐即可做完整 150 对比） |
+| ECSM Pilot | ❌ 0/70 cells |
+
+详见 [EXPERIMENTS.md](EXPERIMENTS.md) · [paper_runs_frozen.md](paper_runs_frozen.md)
 
 ## v1.1 论文门禁（摘要）
 
@@ -37,23 +50,20 @@ Engineering 实验（reference / Docker eval）可在 Oracle 稳定后运行；a
 | --- | --- |
 | Behavior contracts（映射完整） | 150/150 mapped；**独立人工 gold：0/150** |
 | Diagnostic-40 closure | file scope 40/40（AI-assisted）；**独立裁决：0/40** |
-| Taxonomy | 15 rows 仍待人工 adjudication |
+| Taxonomy | 15 rows 仍待真人 adjudication（专家包已审） |
 | Paper release gates | **8/13** — `paper_release_ready: false` |
 | Engineering Pilot freeze | revision 5 / `c94764ed110992a6` |
 | Pilot Stage A 执行 | 0/14 cells（待外部导出授权） |
 
-下一步执行清单：[research_analysis/NEXT_WEEK_ACTIONS.md](research_analysis/NEXT_WEEK_ACTIONS.md)
-
-### 专家审阅包（2026-07-19）
-
-工程质检文档已写入 [research_analysis/expert_review/](research_analysis/expert_review/)：taxonomy 15、近重复 8、Pilot-10 behavior、Diagnostic-40 均已给出专家裁决意见。  
-**这不替代**独立人工双审；`paper_release_ready` 仍为 false。
+下一步：[research_analysis/NEXT_WEEK_ACTIONS.md](research_analysis/NEXT_WEEK_ACTIONS.md)  
+专家审阅包：[research_analysis/expert_review/](research_analysis/expert_review/)（**不替代**独立人工双审）
 
 ## 实验与复现
 
-- 运行命令：根目录 [RUN.md](../RUN.md)
+- 运行命令：根目录 [RUN.md](../RUN.md)（§6.1 补齐 Python-150）
 - 协议：[04_experiment_protocol.md](04_experiment_protocol.md)
-- 冻结 formal runs / leaderboard：[paper_runs_frozen.md](paper_runs_frozen.md)
+- 冻结 formal runs：[paper_runs_frozen.md](paper_runs_frozen.md)
+- 报告索引：[REPORTS_INDEX.md](REPORTS_INDEX.md)
 
 ## 历史里程碑
 
@@ -61,5 +71,5 @@ Engineering 实验（reference / Docker eval）可在 Oracle 稳定后运行；a
 | --- | --- | --- |
 | batch-0 | 50 hard grandfather | [07_incremental_task_rules.md](07_incremental_task_rules.md) |
 | batch-1 | +50 → 100 hard | [../BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md)（归档） |
-| batch-3 | +50 → 150 hard | [../reports/python_hard_batch3_sprint_summary.md](../reports/python_hard_batch3_sprint_summary.md) |
+| batch-3 | +50 → 150 hard | 本地 `reports/python_hard_batch3_sprint_summary.md` |
 | v1.1 repair | 13 quarantine → 0 | [research_analysis/ORACLE_REVALIDATION_REPORT.md](research_analysis/ORACLE_REVALIDATION_REPORT.md) |

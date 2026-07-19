@@ -1,10 +1,10 @@
 # experiments/
 
-OpenHands **跑分结果**目录。顶层只有三个文件夹：
+OpenHands **跑分结果**目录（默认 gitignore，不进仓库）。
 
 ```text
 experiments/
-  smoke/                          # 烟囱 / pilot / 调试（乱七八糟）
+  smoke/                          # 烟囱 / pilot / 调试
   python/
     openhands/
       <model>/                    # 按模型分
@@ -13,9 +13,13 @@ experiments/
     openhands/
       <model>/
         <run_id>/
+  v1_1_* / batch3-* / ecsm_pilot/ # 基建、材料化、Pilot（非主榜 leaderboard）
 ```
 
-出题 gate 在 `evidence/`（不是实验结果）。
+出题 gate 在 `evidence/`（不是实验结果）。  
+**正式实验清单与缺口：** [docs/EXPERIMENTS.md](../docs/EXPERIMENTS.md)  
+**冻结 run ID：** [docs/paper_runs_frozen.md](../docs/paper_runs_frozen.md)  
+**怎么跑：** [RUN.md](../RUN.md) §6.1
 
 ---
 
@@ -23,19 +27,17 @@ experiments/
 
 | 路径 | 放什么 |
 | --- | --- |
-| `smoke/` | `--suite smoke`、pilot5、sanity、未完成 main 等调试 run |
-| `python/openhands/<model>/` | Python **100 题正式榜**（`--suite main`） |
+| `smoke/` | smoke / pilot / 调试 run |
+| `python/openhands/<model>/` | Python 正式 OpenHands run（core-100、hard50、或 python150） |
 | `GO/openhands/<model>/` | Go track OpenHands run |
 
-`<model>` 由模型名自动生成，例如：
-- `deepseek/deepseek-v4-flash` → `deepseek-v4-flash`
-- `openai/Qwen3.6-27B-FP8` → `qwen3.6-27b-fp8`
+`<model>` 示例：`deepseek-v4-flash`、`qwen3.6-27b-fp8`。
 
 ---
 
-## 当前正式结果
+## 当前正式结果（摘要）
 
-### Python 100-hard（`python/openhands/`）
+### Python core-100
 
 | 模型目录 | run_id | 成绩 |
 | --- | --- | ---: |
@@ -44,22 +46,28 @@ experiments/
 | `qwen3.6-35b-a3b-fp8/` | `qwen36-35b-a3b-fp8-main-20260704-001313` | 49/100 |
 | `qwen3-coder-30b-a3b-instruct/` | `main-20260702-212731` | 24/100 |
 
-mini-swe-agent + Flash 满榜（66/100）在 `archive/mini-swe-agent/benchmark-main-flash-20260703-122657/`。
+### Python-150 / hard50
 
-### Go（`GO/openhands/`）
-
-| 模型目录 | run_id |
+| 模型 | 状态 |
 | --- | --- |
-| `deepseek-v4-flash/` | `go-openhands-deepseek-v4-flash-20260705-001`（3 题 suite） |
-| `deepseek-v4-pro/` | hard mapstructure 调试 run ×2 |
+| Flash | ✅ 全 150（core-100 + hard50 合并）→ **91/150** |
+| 另三模型 | ❌ 缺 hard50；用 `run_python_hard50_paper.sh` 补齐 |
+
+### Go
+
+| 模型目录 | 说明 |
+| --- | --- |
+| `deepseek-v4-flash/` 等 | pilot / calibration，非 paper main |
 
 ---
 
-## 怎么跑
+## 怎么跑（服务器）
 
-| 命令 | 输出路径 |
+| 目标 | 命令 |
 | --- | --- |
-| `featureliftbench run --suite main` | `experiments/python/openhands/<model>/main-<时间>/` |
-| `featureliftbench run --suite smoke` | `experiments/smoke/smoke-<时间>/` |
-| `featureliftbench run --suite pilot5` | `experiments/smoke/pilot5-<时间>/` |
-| `bash harness/scripts/run_go_openhands.sh <task>` | `experiments/GO/openhands/<model>/<run_id>/` |
+| 补 hard50（推荐） | `./harness/scripts/run_python_hard50_paper.sh <paper-profile> --execute` |
+| 整榜 150 | `./harness/scripts/run_python150_paper.sh <profile> --execute` |
+| 分析 suite | `PYTHONPATH=harness python harness/scripts/analyze_benchmark_suite.py <suite_dir>` |
+| 论文表重建 | `PYTHONPATH=harness python harness/scripts/generate_paper_analysis.py` |
+
+Paper profiles 见 `harness/config/agents.example.toml`（`openhands_qwen3_*_paper`、`openhands_deepseek_v4_flash`）。

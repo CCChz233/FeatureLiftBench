@@ -81,8 +81,15 @@ For each official run:
 - Keep public tests strong enough to specify the API but weak enough that hidden tests remain meaningful.
 - Report retries and failed infrastructure attempts explicitly.
 
+## Operational pointers
+
+- Living experiment inventory and gaps: [EXPERIMENTS.md](EXPERIMENTS.md)
+- Frozen paper run IDs: [paper_runs_frozen.md](paper_runs_frozen.md)
+- Server commands for hard50 / Python-150: [RUN.md](../RUN.md) §6.1
+- Result interpretation: [FINDINGS.md](FINDINGS.md)
+
 ## TODO
 
-- Freeze official run directories for paper results.
-- Decide official maximum steps, timeout, and Docker memory limits per language split.
-- Define how many seeds or repeated runs are required for stochastic agents.
+- Complete matched hard-extension-50 for the three non-Flash models (see EXPERIMENTS.md).
+- Decide whether additional seeds/repeats are required beyond Pass@1 for paper tables.
+- Mark RQ3 Hint / Oracle-Locate as implemented only after harness settings exist and Pilot/ablation runs land.

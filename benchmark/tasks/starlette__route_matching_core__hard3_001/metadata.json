@@ -1,19 +1,36 @@
 {
-  "task_id": "starlette__route_matching_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "third-party dependency coupling",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "5174d4c8358a6f06aa8056bafd14c2272dab8dd1",
-    "license": "BSD-3-Clause",
-    "name": "starlette",
-    "url": "https://github.com/encode/starlette.git"
+  "entanglement": {
+    "description": "Routing depends on path convertors, mount prefixes, URL building, and ASGI-ish data structures.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "mounted routes match under prefix",
+      "URL reversing via url_path_for",
+      "typed path params via convertors",
+      "method mismatch returns no match"
+    ],
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "starlette"
+    ],
+    "forbidden_imports": [
+      "starlette"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "starlette/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped route matching and url path convertor registry into featurelifted.",
@@ -34,44 +51,28 @@
       "starlette.routing.Router"
     ]
   },
-  "entanglement": {
-    "description": "Routing depends on path convertors, mount prefixes, URL building, and ASGI-ish data structures.",
-    "level": "high",
-    "primary": "framework_coupling",
-    "signals": [
-      "mounted routes match under prefix",
-      "URL reversing via url_path_for",
-      "typed path params via convertors",
-      "method mismatch returns no match"
-    ],
-    "types": [
-      "framework_coupling",
-      "data_model_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "Router",
     "import": "from featurelifted import compile_path, Route, Mount, Router, Match",
     "package": "featurelifted",
     "signature": "Router(routes=None)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "starlette"
-    ],
-    "forbidden_imports": [
-      "starlette"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "starlette/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "5174d4c8358a6f06aa8056bafd14c2272dab8dd1",
+    "license": "BSD-3-Clause",
+    "name": "starlette",
+    "url": "https://github.com/encode/starlette.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "framework_coupling"
+  ],
+  "task_id": "starlette__route_matching_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

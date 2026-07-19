@@ -5,6 +5,7 @@ import os
 import tempfile
 import threading
 import unittest
+import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler
 from http.server import ThreadingHTTPServer
@@ -128,6 +129,58 @@ class LLMUsageProxyTests(unittest.TestCase):
         finally:
             upstream.close()
 
+    def test_proxy_stops_forwarding_after_total_token_budget(self) -> None:
+        try:
+            upstream = _FakeUpstreamServer()
+        except PermissionError as exc:
+            self.skipTest(f"local loopback sockets are unavailable: {exc}")
+        upstream.start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                proxy = LLMUsageProxy(
+                    LLMUsageProxyConfig(
+                        target_base_url=upstream.base_url + "/v1",
+                        api_key="sk-real",
+                        audit_path=root / "context_audit.jsonl",
+                        usage_path=root / "openhands_usage.json",
+                        model="deepseek-v4-flash",
+                        total_token_limit=100,
+                    )
+                ).start()
+                try:
+                    body = json.dumps(
+                        {"model": "deepseek-v4-flash", "messages": [{"role": "user", "content": "hello"}]}
+                    ).encode("utf-8")
+                    first = urllib.request.Request(
+                        proxy.base_url + "/chat/completions",
+                        data=body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(first, timeout=10) as response:
+                        response.read()
+                    second = urllib.request.Request(
+                        proxy.base_url + "/chat/completions",
+                        data=body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with self.assertRaises(urllib.error.HTTPError) as caught:
+                        urllib.request.urlopen(second, timeout=10)
+                    self.assertEqual(caught.exception.code, 400)
+                finally:
+                    proxy.close()
+
+                usage = json.loads((root / "openhands_usage.json").read_text(encoding="utf-8"))
+
+            self.assertEqual(upstream.request_count, 1)
+            self.assertTrue(usage["token_budget_exhausted"])
+            self.assertEqual(usage["budget_rejections"], 1)
+            self.assertEqual(usage["total_token_limit"], 100)
+        finally:
+            upstream.close()
+
 
 class _FakeUpstreamServer:
     def __init__(self) -> None:
@@ -136,6 +189,7 @@ class _FakeUpstreamServer:
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.last_path = ""
         self.last_authorization = ""
+        self.request_count = 0
 
     @property
     def base_url(self) -> str:
@@ -158,6 +212,7 @@ class _FakeUpstreamHandler(BaseHTTPRequestHandler):
         owner = self.server.owner  # type: ignore[attr-defined]
         owner.last_path = self.path
         owner.last_authorization = self.headers.get("Authorization", "")
+        owner.request_count += 1
         length = int(self.headers.get("Content-Length", "0"))
         self.rfile.read(length)
         body = json.dumps(

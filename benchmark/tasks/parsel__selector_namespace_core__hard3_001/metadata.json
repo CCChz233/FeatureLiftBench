@@ -1,37 +1,5 @@
 {
-  "task_id": "parsel__selector_namespace_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "third-party dependency coupling",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "05b3d37bf292d012f3d0b71fb7f0697d03af113e",
-    "license": "BSD-3-Clause",
-    "name": "parsel",
-    "url": "https://github.com/scrapy/parsel.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped selector namespaces into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "lxml/cssselect dependencies",
-      "full scrapy stack"
-    ],
-    "included_behaviors": [
-      "CSS/XPath subset",
-      "namespace registry",
-      "text extraction"
-    ],
-    "name": "Selector namespaces",
-    "source_entrypoints": [
-      "parsel.selector.Selector"
-    ]
-  },
   "entanglement": {
     "description": "Depends on selector state, namespace registry, and extraction defaults over a lightweight element tree.",
     "level": "high",
@@ -46,12 +14,6 @@
       "data_model_coupling",
       "third_party_dependency_coupling"
     ]
-  },
-  "output": {
-    "callable": "Selector",
-    "import": "from featurelifted import Selector, FakeElement, extract_text",
-    "package": "featurelifted",
-    "signature": "Selector(root)"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped selector namespaces into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "lxml/cssselect dependencies",
+      "full scrapy stack"
+    ],
+    "included_behaviors": [
+      "CSS/XPath subset",
+      "namespace registry",
+      "text extraction"
+    ],
+    "name": "Selector namespaces",
+    "source_entrypoints": [
+      "parsel.selector.Selector"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "Selector",
+    "import": "from featurelifted import Selector, FakeElement, extract_text",
+    "package": "featurelifted",
+    "signature": "Selector(root)"
+  },
+  "source": {
+    "commit": "05b3d37bf292d012f3d0b71fb7f0697d03af113e",
+    "license": "BSD-3-Clause",
+    "name": "parsel",
+    "url": "https://github.com/scrapy/parsel.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "data_model_coupling"
+  ],
+  "task_id": "parsel__selector_namespace_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

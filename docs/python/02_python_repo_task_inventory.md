@@ -16,7 +16,7 @@ Status enum:
 
 ## Current Metadata Snapshot
 
-Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-11:
+Scanned from `benchmark/tasks/*/metadata.json` on 2026-07-19:
 
 - Tasks: 150.
 - Unique source names: 121.

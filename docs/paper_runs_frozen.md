@@ -76,6 +76,7 @@ Preview a run without calling an API:
 
 ```bash
 ./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper
+./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper
 ```
 
-The script requires an explicit `--execute` argument to start external model calls. Run only after approving transmission of all 50 tasks' instructions, public snapshots, and prompts to the configured provider.
+The scripts require an explicit `--execute` argument to start external model calls. Run only after approving transmission of task instructions, public snapshots, and prompts to the configured provider. Server steps: see `RUN.md` §6.1.

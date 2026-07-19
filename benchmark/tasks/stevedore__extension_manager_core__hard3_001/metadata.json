@@ -1,19 +1,37 @@
 {
-  "task_id": "stevedore__extension_manager_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "dynamic dependency recovery",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "8550c66a2e774f97e2f8459265ed3ea8017603f1",
-    "license": "Apache-2.0",
-    "name": "stevedore",
-    "url": "https://github.com/openstack/stevedore.git"
+  "entanglement": {
+    "description": "Extension loading depends on importlib metadata entry points, plugin load failures, duplicate names, lazy name lookup, and callback semantics.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "Entry points are filtered by namespace before loading.",
+      "Load failures are swallowed only after invoking the failure callback.",
+      "Duplicate names are resolved lazily by a conflict resolver.",
+      "map can either ignore or propagate extension callback exceptions."
+    ],
+    "types": [
+      "framework_coupling",
+      "third_party_dependency_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "stevedore"
+    ],
+    "forbidden_imports": [
+      "stevedore"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "stevedore/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped Stevedore-style ExtensionManager for dynamic entry point discovery and loading.",
@@ -46,45 +64,28 @@
       "stevedore.named.NamedExtensionManager"
     ]
   },
-  "entanglement": {
-    "description": "Extension loading depends on importlib metadata entry points, plugin load failures, duplicate names, lazy name lookup, and callback semantics.",
-    "level": "high",
-    "primary": "framework_coupling",
-    "signals": [
-      "Entry points are filtered by namespace before loading.",
-      "Load failures are swallowed only after invoking the failure callback.",
-      "Duplicate names are resolved lazily by a conflict resolver.",
-      "map can either ignore or propagate extension callback exceptions."
-    ],
-    "types": [
-      "framework_coupling",
-      "third_party_dependency_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "ExtensionManager",
     "import": "from featurelifted import EntryPointSpec, ExtensionManager, NamedExtensionManager, NoMatches, MultipleMatches, error_on_conflict, ignore_conflicts",
     "package": "featurelifted",
     "signature": "ExtensionManager(namespace, entry_points=None, invoke_on_load=False, invoke_args=None, invoke_kwds=None, propagate_map_exceptions=False, on_load_failure_callback=None)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "stevedore"
-    ],
-    "forbidden_imports": [
-      "stevedore"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "stevedore/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "8550c66a2e774f97e2f8459265ed3ea8017603f1",
+    "license": "Apache-2.0",
+    "name": "stevedore",
+    "url": "https://github.com/openstack/stevedore.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "task_id": "stevedore__extension_manager_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

@@ -50,3 +50,21 @@ Required behavior:
 
 Public tests cover highest-priority selection, environment override, and basic chained password lookup.
 Hidden tests cover negative priority exclusion, non-viable override rejection, backend error fallback, set-password fallback/failure, and credential username discovery.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — Backend base API
+- **B002** — MemoryBackend for deterministic storage
+- **B003** — FailBackend
+- **B004** — ErrorBackend for failure-path tests
+- **B005** — ChainerBackend priority sorting and fallback
+- **B006** — select_backend priority selection
+- **B007** — PYTHON_KEYRING_BACKEND override
+- **B008** — Credential and password set/delete errors
+- **B009** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B010** — the submitted package does not import forbidden upstream packages: keyring
+<!-- featureliftbench:behavior-clauses:end -->

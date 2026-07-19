@@ -1,5 +1,7 @@
 # FeatureLiftBench 实验运行速查
 
+**Benchmark 状态：** [docs/STATUS.md](docs/STATUS.md)（150 hard + 3 smoke）· **文档索引：** [docs/README.md](docs/README.md)
+
 服务器部署和本地运行都按本文命令执行；先 `./setup.sh`，再配置 `.env`，最后运行 smoke 或 main suite。
 
 **Windows 用户**：请在 WSL2（Ubuntu）+ Docker Desktop 内按本文命令执行；日志路径与 Linux 相同，后台跑时终端无 Rich 进度条。
@@ -283,6 +285,39 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
 ```
 
 输出目录：`reports/paper_analysis/`。
+
+## 6.1 补齐 Python-150 正式实验（服务器）
+
+**现状：** 主榜 150 题 + Oracle 已齐，可跑。Flash 已有完整 150；另外三个模型只缺 **hard-extension-50**（core-100 已冻结）。
+
+**推荐（省成本，对齐论文口径）：** 只补三模型的 hard50，再与各自已有 core-100 拼成 Python-150。
+
+```bash
+# 服务器上
+git pull
+./setup.sh                    # 如需；会从 agents.example.toml 生成 agents.toml
+# 确认 .env 里有对应 API key / base；agents.toml 含 paper profiles
+
+# 先 dry-run（不调 API）
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_35b_a3b_fp8_paper
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper
+
+# 确认选中 50 题后执行（会外发公开 TASK/源码/prompt）
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper --execute
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_35b_a3b_fp8_paper --execute
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper --execute
+```
+
+**可选：整榜重跑 150 题**（更贵；Flash 一般不必重跑）：
+
+```bash
+./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper
+./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper --execute
+# 同理：openhands_qwen3_6_35b_a3b_fp8_paper / openhands_qwen3_coder_30b_paper / openhands_deepseek_v4_flash
+```
+
+中断后续跑：对同一 `--output` 目录加 `--resume`（见上文 `run-agent`）。跑完后更新 `docs/paper_runs_frozen.md` 并 regenerate paper analysis。
 
 ## 7. 资源与安全默认值
 

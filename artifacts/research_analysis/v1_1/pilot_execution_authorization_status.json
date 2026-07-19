@@ -1,0 +1,47 @@
+{
+  "schema_version": "featureliftbench.pilot_execution_authorization_status.v1",
+  "pilot_freeze_id": "c94764ed110992a6",
+  "pilot_revision": 5,
+  "stage_a_planned_cell_count": 14,
+  "stage_a_launched_cell_count": 0,
+  "external_data_sent_by_stage_a_attempt": false,
+  "status": "blocked_pending_explicit_external_export_authorization",
+  "existing_explicit_authorization_scope": [
+    "pydantic benchmark task description",
+    "pydantic public source snapshot",
+    "pydantic prompt"
+  ],
+  "additional_scope_required": {
+    "task_ids": [
+      "pluggy__hook_specs_core__001",
+      "pydantic_v1__validation_error_core__001",
+      "coverage__config_merge_core__001",
+      "lark__grammar_loader_core__001",
+      "websockets__handshake_parse_core__001",
+      "boltons__iterutils_core__001",
+      "schema__nested_validate_core__hard3_001",
+      "requests_cache__cache_key_core__hard3_001",
+      "sqlparse__format_filters_core__001",
+      "celery__signal_dispatch_core__hard3_001"
+    ],
+    "assets": [
+      "public TASK.md and metadata",
+      "public source snapshot",
+      "public tests",
+      "condition prompts and generated non-hidden Oracle hints"
+    ],
+    "excluded_assets": [
+      "hidden tests",
+      "hidden test nodeids",
+      "behavior_contract.json",
+      "hidden inputs, examples, and assertions"
+    ],
+    "maximum_cells": 70,
+    "providers": [
+      "configured DeepSeek API",
+      "configured OpenHands execution service"
+    ]
+  },
+  "exact_authorization_text": "我明确同意将 FeatureLiftBench Pilot-10 的公开 TASK.md、metadata、公开源码 snapshot、public tests，以及七组 condition prompt 和非 hidden Oracle hints 发送到已配置的 DeepSeek/OpenHands API，用于 Stage A/B/C 最多 70 cells 的实验；不得发送 hidden tests、hidden nodeids、behavior_contract 或任何具体 hidden 输入与断言。",
+  "next_action_after_authorization": "execute Stage A only; analyze all 14 cells before deciding whether to start Stage B"
+}

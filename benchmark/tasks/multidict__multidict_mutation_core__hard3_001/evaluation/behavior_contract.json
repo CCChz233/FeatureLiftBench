@@ -1,0 +1,172 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "0ad8cf663efab6370cecde3240b6410b2659fdb505152943285fb615676ea2e7"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_case_insensitive_lookup_and_equality",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B004"
+        ],
+        "pass_2_ast_mapping": [
+          "B004"
+        ],
+        "test_source_sha256": "180ce8d99dfc649ff6ceb5f0ff761ea3028695c57fc0a8d8cf05a84dda02cb65"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base",
+      "public_clause_ids": [
+        "B001",
+        "B004"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B004"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B004"
+        ],
+        "test_source_sha256": "edf411ceadd326d1a26d86643da2e78e7d65a699f6dfc8e267e0455b777a0bb5"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "MultiDict and CIMultiDict mutation semantics"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "getall, getone, popone, popall"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "MultiDictProxy and CIMultiDictProxy view mutation"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
+      "text": "case-insensitive key folding for CIMultiDict"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: multidict"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_multidict_duplicate_keys_and_getall",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002",
+          "B004"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B002"
+        ],
+        "test_source_sha256": "df7002af9c0391a8a18f5cfb0ef82ededa1f029ed7a63179cdceba1fa09b17ce"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_proxy_reflects_base_mutations",
+      "public_clause_ids": [
+        "B001",
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B003"
+        ],
+        "test_source_sha256": "367f692596e88533c82a6dc40a0a11d870fc145340b0f6da2ad48b1fa1c20f93"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 1,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "data_model_coupling",
+    "implicit_dependency_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "bd6a821ad72bea71d090276a729466a775c371c8f959851da36280ad596d8a6e",
+  "task_id": "multidict__multidict_mutation_core__hard3_001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

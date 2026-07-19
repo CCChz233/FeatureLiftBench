@@ -1,19 +1,39 @@
 {
-  "task_id": "alembic__revision_map_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "stateful runtime behavior",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "c88fa5afaf2b9783a58a918f3fc73abc44daa0a9",
-    "license": "MIT",
-    "name": "alembic",
-    "url": "https://github.com/sqlalchemy/alembic.git"
+  "entanglement": {
+    "description": "Revision behavior depends on a graph of down revisions, dependency revisions, branch labels, symbolic identifiers, and error semantics.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "Revision heads are computed from versioned edges, not dependency-only edges.",
+      "Branch labels resolve to revisions and propagate along descendant chains.",
+      "Dependency revisions participate in ancestry without becoming down_revision edges.",
+      "Multiple heads, missing revisions, and cycles raise task-specific exceptions."
+    ],
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "alembic",
+      "sqlalchemy"
+    ],
+    "forbidden_imports": [
+      "alembic",
+      "sqlalchemy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "alembic/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract task-scoped Alembic Revision and RevisionMap graph behavior.",
@@ -43,47 +63,28 @@
       "alembic.script.revision.ResolutionError"
     ]
   },
-  "entanglement": {
-    "description": "Revision behavior depends on a graph of down revisions, dependency revisions, branch labels, symbolic identifiers, and error semantics.",
-    "level": "high",
-    "primary": "data_model_coupling",
-    "signals": [
-      "Revision heads are computed from versioned edges, not dependency-only edges.",
-      "Branch labels resolve to revisions and propagate along descendant chains.",
-      "Dependency revisions participate in ancestry without becoming down_revision edges.",
-      "Multiple heads, missing revisions, and cycles raise task-specific exceptions."
-    ],
-    "types": [
-      "data_model_coupling",
-      "parser_state_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "RevisionMap",
     "import": "from featurelifted import Revision, RevisionMap",
     "package": "featurelifted",
     "signature": "RevisionMap(revisions)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "alembic",
-      "sqlalchemy"
-    ],
-    "forbidden_imports": [
-      "alembic",
-      "sqlalchemy"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "alembic/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "c88fa5afaf2b9783a58a918f3fc73abc44daa0a9",
+    "license": "MIT",
+    "name": "alembic",
+    "url": "https://github.com/sqlalchemy/alembic.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "data_model_coupling"
+  ],
+  "task_id": "alembic__revision_map_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

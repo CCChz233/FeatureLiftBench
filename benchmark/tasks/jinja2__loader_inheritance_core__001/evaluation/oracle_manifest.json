@@ -8,5 +8,9 @@
     "src/jinja2/lexer.py",
     "src/jinja2/nodes.py"
   ],
-  "notes": "Loader + inheritance closure includes compile/render stack and DictLoader."
+  "notes": "Loader + inheritance closure includes compile/render stack and DictLoader.",
+  "v1_1_repair": {
+    "type": "generated_import_namespace_adapter",
+    "evidence": "compiler and deferred loader utilities import featurelifted rather than forbidden jinja2"
+  }
 }

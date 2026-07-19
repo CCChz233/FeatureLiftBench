@@ -1,37 +1,5 @@
 {
-  "task_id": "pluggy__hook_wrapper_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "dynamic dependency recovery",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "6b0f3293895e9a3dc5b5e5d4bcad5b1649e19c21",
-    "license": "MIT",
-    "name": "pluggy",
-    "url": "https://github.com/pytest-dev/pluggy.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped hookcaller historic wrapper ordering into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "plugin manager discovery",
-      "entry point loading"
-    ],
-    "included_behaviors": [
-      "historic hook replay",
-      "hookwrapper ordering",
-      "multicall result aggregation"
-    ],
-    "name": "HookCaller historic wrapper ordering",
-    "source_entrypoints": [
-      "pluggy._hooks.HookCaller"
-    ]
-  },
   "entanglement": {
     "description": "Hook wrappers, historic replay, call ordering, and result forcing require registry behavior and transitive helper closure.",
     "level": "high",
@@ -46,12 +14,6 @@
       "framework_coupling",
       "implicit_dependency_coupling"
     ]
-  },
-  "output": {
-    "callable": "HookCaller",
-    "import": "from featurelifted import HookCaller",
-    "package": "featurelifted",
-    "signature": "HookCaller(name, historic=False, firstresult=False)"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped hookcaller historic wrapper ordering into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "plugin manager discovery",
+      "entry point loading"
+    ],
+    "included_behaviors": [
+      "historic hook replay",
+      "hookwrapper ordering",
+      "multicall result aggregation"
+    ],
+    "name": "HookCaller historic wrapper ordering",
+    "source_entrypoints": [
+      "pluggy._hooks.HookCaller"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "HookCaller",
+    "import": "from featurelifted import HookCaller",
+    "package": "featurelifted",
+    "signature": "HookCaller(name, historic=False, firstresult=False)"
+  },
+  "source": {
+    "commit": "6b0f3293895e9a3dc5b5e5d4bcad5b1649e19c21",
+    "license": "MIT",
+    "name": "pluggy",
+    "url": "https://github.com/pytest-dev/pluggy.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "task_id": "pluggy__hook_wrapper_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

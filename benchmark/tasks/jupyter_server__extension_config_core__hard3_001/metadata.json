@@ -1,37 +1,5 @@
 {
-  "task_id": "jupyter_server__extension_config_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "dynamic dependency recovery",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "c8bbb1a77a1d482816bac0dfe5c14c08d37b59ac",
-    "license": "BSD-3-Clause",
-    "name": "jupyter_server",
-    "url": "https://github.com/jupyter-server/jupyter_server.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped server extension discovery and enable/disable config merge into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "server process",
-      "Tornado handlers"
-    ],
-    "included_behaviors": [
-      "extension config merge",
-      "enable/disable",
-      "entry point filtering"
-    ],
-    "name": "Server extension discovery and enable/disable config merge",
-    "source_entrypoints": [
-      "jupyter_server.extension.config.ExtensionConfigManager"
-    ]
-  },
   "entanglement": {
     "description": "Requires package metadata, config merge, extension points, and stateful enablement without starting a server.",
     "level": "high",
@@ -46,12 +14,6 @@
       "framework_coupling",
       "config_environment_coupling"
     ]
-  },
-  "output": {
-    "callable": "ExtensionConfigStore",
-    "import": "from featurelifted import ExtensionConfigStore, merge_extension_configs, filter_enabled_extensions, recursive_update",
-    "package": "featurelifted",
-    "signature": "ExtensionConfigStore(config_dir)"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped server extension discovery and enable/disable config merge into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "server process",
+      "Tornado handlers"
+    ],
+    "included_behaviors": [
+      "extension config merge",
+      "enable/disable",
+      "entry point filtering"
+    ],
+    "name": "Server extension discovery and enable/disable config merge",
+    "source_entrypoints": [
+      "jupyter_server.extension.config.ExtensionConfigManager"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "ExtensionConfigStore",
+    "import": "from featurelifted import ExtensionConfigStore, merge_extension_configs, filter_enabled_extensions, recursive_update",
+    "package": "featurelifted",
+    "signature": "ExtensionConfigStore(config_dir)"
+  },
+  "source": {
+    "commit": "c8bbb1a77a1d482816bac0dfe5c14c08d37b59ac",
+    "license": "BSD-3-Clause",
+    "name": "jupyter_server",
+    "url": "https://github.com/jupyter-server/jupyter_server.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "task_id": "jupyter_server__extension_config_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

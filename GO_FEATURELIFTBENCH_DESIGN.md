@@ -1,8 +1,10 @@
 # Go FeatureLiftBench 设计文档
 
+> **说明：** 本文是 Go v2 language split 的早期路线文档。现行 Go 规范见 [docs/go/](docs/go/)；Python 主榜现状见 [docs/STATUS.md](docs/STATUS.md)（**150 hard**）。
+
 ## 0. 结论
 
-Go 方向值得做，但不建议直接开工 100 题。当前 Python v1 已经有 100 题、Docker eval、agent Docker 和一套验收口径；Go 应作为 **v2 language partition** 进入，而不是临时复制一套不兼容流程。
+Go 方向值得做，但不建议直接开工 100 题。当前 Python v1 已经有 **150** 题、Docker eval、agent Docker 和一套验收口径；Go 应作为 **v2 language partition** 进入，而不是临时复制一套不兼容流程。
 
 配套执行文档：
 

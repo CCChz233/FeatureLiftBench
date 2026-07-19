@@ -1,19 +1,36 @@
 {
-  "task_id": "glom__spec_eval_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "rule / policy engine",
-    "parser_state_coupling"
-  ],
-  "source": {
-    "commit": "6fd41340f30519ddc64a546ad2703dfe53f12356",
-    "license": "BSD-3-Clause",
-    "name": "glom",
-    "url": "https://github.com/mahmoud/glom.git"
+  "entanglement": {
+    "description": "Spec interpreter, path state, exception tree, and registry-like modes span multiple helpers.",
+    "level": "high",
+    "primary": "parser_state_coupling",
+    "signals": [
+      "Coalesce returns first successful spec or default",
+      "T returns the target itself",
+      "nested path errors raise PathAccessError",
+      "default argument to glom catches path errors"
+    ],
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "glom"
+    ],
+    "forbidden_imports": [
+      "glom"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "glom/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped spec evaluation with coalesce, t, and error paths into featurelifted.",
@@ -35,44 +52,28 @@
       "glom.Coalesce"
     ]
   },
-  "entanglement": {
-    "description": "Spec interpreter, path state, exception tree, and registry-like modes span multiple helpers.",
-    "level": "high",
-    "primary": "parser_state_coupling",
-    "signals": [
-      "Coalesce returns first successful spec or default",
-      "T returns the target itself",
-      "nested path errors raise PathAccessError",
-      "default argument to glom catches path errors"
-    ],
-    "types": [
-      "parser_state_coupling",
-      "data_model_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "glom",
     "import": "from featurelifted import glom, T, Coalesce, PathAccessError",
     "package": "featurelifted",
     "signature": "glom(target, spec, default=None)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "glom"
-    ],
-    "forbidden_imports": [
-      "glom"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "glom/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "6fd41340f30519ddc64a546ad2703dfe53f12356",
+    "license": "BSD-3-Clause",
+    "name": "glom",
+    "url": "https://github.com/mahmoud/glom.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "parser_state_coupling"
+  ],
+  "task_id": "glom__spec_eval_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

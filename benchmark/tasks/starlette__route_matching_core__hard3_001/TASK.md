@@ -18,3 +18,17 @@ from featurelifted import compile_path, Route, Mount, Router, Match
 
 - Forbidden imports: `starlette`.
 - No ASGI server or middleware.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — path compile/match
+- **B002** — convertor registry
+- **B003** — mount prefix matching
+- **B004** — url reversing
+- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B006** — the submitted package does not import forbidden upstream packages: starlette
+<!-- featureliftbench:behavior-clauses:end -->

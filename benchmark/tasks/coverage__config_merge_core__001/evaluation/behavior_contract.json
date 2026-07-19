@@ -1,0 +1,184 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_from_setup_cfg",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "3ca6f0d07d8f1e811710374f10b3b181ef3e08e0e10b1524a8db9062d89b3f29"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_env_data_file",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "priority_semantic_override",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B002"
+        ],
+        "test_source_sha256": "f6da60e8fdc95fc6ec71c879dedfb239b89710b631c94ea74b8aba2ed41081cb"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_multiline_lists",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "priority_semantic_override",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "21bc24bc45b70693fb5761fada695223961b5b4bef896040bc4a9792c004d412"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_relative_files_section",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "priority_semantic_override",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "90d534c5d73210c5c22a69d69e02b7a7257e5079fd5adf90da0a617e8022d106"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "read .coveragerc and prefixed sections from setup.cfg or tox.ini"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "parse run include, omit, source, branch, and related list options"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "merge constructor kwargs and COVERAGE_* environment overrides"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
+      "text": "apply post-processing such as user path expansion"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: coverage"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_read_run_config_from_coveragerc",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "a83c39a5cbb858c3d454f86864dda8c209bc6768bef48b9fb3287e3aaade678c"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_read_run_config_kwargs_override",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B003"
+        ],
+        "test_source_sha256": "07ff9b349c08ae89114e0754f24f6f5187189535d10e726590e37e194491ae83"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 0,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "config_environment_coupling",
+    "framework_coupling",
+    "implicit_dependency_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "81c2fc059efcd8a4ebad5545a4eff7c363a42381a5c9c94490be0b327be02357",
+  "task_id": "coverage__config_merge_core__001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

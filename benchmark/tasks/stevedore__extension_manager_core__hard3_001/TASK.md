@@ -49,3 +49,22 @@ Required manager behavior:
 
 Public tests cover namespace filtering, plugin loading, invoke-on-load, `map_method`, and empty-manager errors.
 Hidden tests cover load failure callbacks, duplicate-name conflict semantics, map exception propagation, and named manager filtering/order/missing behavior.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — EntryPointSpec test entry points
+- **B002** — Extension bookkeeping
+- **B003** — ExtensionManager namespace filtering and loading
+- **B004** — invoke_on_load and invoke_args/invoke_kwds
+- **B005** — on_load_failure_callback
+- **B006** — names, items, iteration, containment, getitem
+- **B007** — map and map_method
+- **B008** — duplicate-name conflict resolvers
+- **B009** — NamedExtensionManager filtering, missing callback, and requested order
+- **B010** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B011** — the submitted package does not import forbidden upstream packages: stevedore
+<!-- featureliftbench:behavior-clauses:end -->

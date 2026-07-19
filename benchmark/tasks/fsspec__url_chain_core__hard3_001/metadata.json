@@ -1,37 +1,5 @@
 {
-  "task_id": "fsspec__url_chain_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "copy-heavy trap tasks",
-    "resource_coupling"
-  ],
-  "source": {
-    "commit": "0907962e6b94eea3b4ba86a6cc20b36ddb29f2dd",
-    "license": "BSD-3-Clause",
-    "name": "fsspec",
-    "url": "https://github.com/fsspec/filesystem_spec.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped url_to_fs into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "remote filesystem implementations",
-      "async code"
-    ],
-    "included_behaviors": [
-      "protocol registry",
-      "chained URL unwrapping",
-      "storage_options parsing"
-    ],
-    "name": "url_to_fs",
-    "source_entrypoints": [
-      "fsspec.core.url_to_fs"
-    ]
-  },
   "entanglement": {
     "description": "Protocol parsing, chained URLs, registry lookup, and option splitting interact across modules.",
     "level": "high",
@@ -46,12 +14,6 @@
       "resource_coupling",
       "implicit_dependency_coupling"
     ]
-  },
-  "output": {
-    "callable": "url_to_fs",
-    "import": "from featurelifted import ProtocolRegistry, url_to_fs, UnknownProtocolError",
-    "package": "featurelifted",
-    "signature": "url_to_fs(url, registry)"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped url_to_fs into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "remote filesystem implementations",
+      "async code"
+    ],
+    "included_behaviors": [
+      "protocol registry",
+      "chained URL unwrapping",
+      "storage_options parsing"
+    ],
+    "name": "url_to_fs",
+    "source_entrypoints": [
+      "fsspec.core.url_to_fs"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "url_to_fs",
+    "import": "from featurelifted import ProtocolRegistry, url_to_fs, UnknownProtocolError",
+    "package": "featurelifted",
+    "signature": "url_to_fs(url, registry)"
+  },
+  "source": {
+    "commit": "0907962e6b94eea3b4ba86a6cc20b36ddb29f2dd",
+    "license": "BSD-3-Clause",
+    "name": "fsspec",
+    "url": "https://github.com/fsspec/filesystem_spec.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "copy-heavy trap tasks",
+    "resource_coupling"
+  ],
+  "task_id": "fsspec__url_chain_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

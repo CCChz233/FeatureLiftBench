@@ -1,19 +1,41 @@
 {
-  "task_id": "requests_cache__cache_key_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "third-party dependency coupling",
-    "third_party_dependency_coupling"
-  ],
-  "source": {
-    "commit": "df44b695a31401c617fa4725d189578c1d603ae1",
-    "license": "BSD-2-Clause",
-    "name": "requests_cache",
-    "url": "https://github.com/requests-cache/requests-cache.git"
+  "entanglement": {
+    "description": "Cache matching depends on normalized URL/query params, redacted ignored parameters, request body encoding, selected headers, and response/request cache-control semantics.",
+    "level": "high",
+    "primary": "third_party_dependency_coupling",
+    "signals": [
+      "Query parameter order should not change cache identity.",
+      "Ignored parameter values should be redacted rather than leaked.",
+      "Only selected headers should affect cache keys unless all headers are matched.",
+      "Cache-Control no-store and max-age alter storage and expiration behavior."
+    ],
+    "types": [
+      "third_party_dependency_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "requests_cache",
+      "requests",
+      "url_normalize"
+    ],
+    "forbidden_imports": [
+      "requests_cache",
+      "requests",
+      "url_normalize"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "requests_cache/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract task-scoped HTTP request cache key normalization and cache expiration policy.",
@@ -48,49 +70,28 @@
       "requests_cache.policy.directives.CacheDirectives"
     ]
   },
-  "entanglement": {
-    "description": "Cache matching depends on normalized URL/query params, redacted ignored parameters, request body encoding, selected headers, and response/request cache-control semantics.",
-    "level": "high",
-    "primary": "third_party_dependency_coupling",
-    "signals": [
-      "Query parameter order should not change cache identity.",
-      "Ignored parameter values should be redacted rather than leaked.",
-      "Only selected headers should affect cache keys unless all headers are matched.",
-      "Cache-Control no-store and max-age alter storage and expiration behavior."
-    ],
-    "types": [
-      "third_party_dependency_coupling",
-      "data_model_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "create_key",
     "import": "from featurelifted import CachePolicy, create_key, get_expiration",
     "package": "featurelifted",
     "signature": "create_key(method, url, params=None, headers=None, body=None, ignored_parameters=None, match_headers=False) -> str"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "requests_cache",
-      "requests",
-      "url_normalize"
-    ],
-    "forbidden_imports": [
-      "requests_cache",
-      "requests",
-      "url_normalize"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "requests_cache/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "df44b695a31401c617fa4725d189578c1d603ae1",
+    "license": "BSD-2-Clause",
+    "name": "requests_cache",
+    "url": "https://github.com/requests-cache/requests-cache.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "third_party_dependency_coupling"
+  ],
+  "task_id": "requests_cache__cache_key_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

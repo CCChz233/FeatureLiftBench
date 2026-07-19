@@ -20,3 +20,18 @@ from featurelifted import listen, remove, dispatch, EventTarget
 
 - Forbidden imports: `sqlalchemy`.
 - No database or ORM runtime required.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — listener registration/removal
+- **B002** — dispatch ordering
+- **B003** — once semantics
+- **B004** — subclass propagation
+- **B005** — named kwargs
+- **B006** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B007** — the submitted package does not import forbidden upstream packages: sqlalchemy
+<!-- featureliftbench:behavior-clauses:end -->

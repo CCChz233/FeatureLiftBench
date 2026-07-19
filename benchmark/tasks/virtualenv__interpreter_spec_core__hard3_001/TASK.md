@@ -18,3 +18,16 @@ from featurelifted import parse_spec, match_version, discover_paths, InvalidInte
 
 - Forbidden imports: `virtualenv`.
 - No process spawning or environment creation.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — interpreter spec parsing
+- **B002** — version matching
+- **B003** — path discovery
+- **B004** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B005** — the submitted package does not import forbidden upstream packages: virtualenv
+<!-- featureliftbench:behavior-clauses:end -->

@@ -1,19 +1,36 @@
 {
-  "task_id": "celery__signal_dispatch_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "stateful runtime behavior",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "201573a11fb8c6cf8f712deea3b23142146b2cbb",
-    "license": "BSD-3-Clause",
-    "name": "celery",
-    "url": "https://github.com/celery/celery.git"
+  "entanglement": {
+    "description": "Signal receiver registration, weak refs, sender filtering, and robust dispatch are stateful.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "weak receiver cleanup after sender deletion",
+      "sender filtering limits dispatch",
+      "exception capture in send responses",
+      "duplicate receiver ids via dispatch_uid"
+    ],
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "celery"
+    ],
+    "forbidden_imports": [
+      "celery"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "celery/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped signal registry and receiver dispatch into featurelifted.",
@@ -33,44 +50,28 @@
       "celery.utils.dispatch.signal.Signal"
     ]
   },
-  "entanglement": {
-    "description": "Signal receiver registration, weak refs, sender filtering, and robust dispatch are stateful.",
-    "level": "high",
-    "primary": "framework_coupling",
-    "signals": [
-      "weak receiver cleanup after sender deletion",
-      "sender filtering limits dispatch",
-      "exception capture in send responses",
-      "duplicate receiver ids via dispatch_uid"
-    ],
-    "types": [
-      "framework_coupling",
-      "global_state_registry_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "Signal",
     "import": "from featurelifted import Signal",
     "package": "featurelifted",
     "signature": "Signal(name='signal')"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "celery"
-    ],
-    "forbidden_imports": [
-      "celery"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "celery/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "201573a11fb8c6cf8f712deea3b23142146b2cbb",
+    "license": "BSD-3-Clause",
+    "name": "celery",
+    "url": "https://github.com/celery/celery.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "framework_coupling"
+  ],
+  "task_id": "celery__signal_dispatch_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

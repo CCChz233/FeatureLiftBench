@@ -1,5 +1,7 @@
 # FeatureLiftBench TODO
 
+> **归档说明（2026-07-19）：** 本文档记录 **2026-06 batch-1 扩题（50→100）** 时期的工程 backlog，保留作历史台账。**当前项目状态**见 [docs/STATUS.md](docs/STATUS.md)；文档索引见 [docs/README.md](docs/README.md)。Python 主榜现为 **150 hard**（batch-3 已完成）；Oracle **150/150** stable（freeze `5f9012f6dc748c90`）。
+
 工程 backlog（非文档导航）。文档入口 → [docs/README.md](docs/README.md)
 
 | 主题 | 文档 |
@@ -10,7 +12,9 @@
 | vLLM / API 实验 | [RUN.md](RUN.md) |
 | 评测与局限 | [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) |
 
-**当前状态（2026-06-28）：** batch-0 **50 hard** 冻结（grandfather） · batch-1 **50/50 入榜** · 主榜 **100/100 hard** · Oracle **100/100** · batch-1 质量验收 **进行中**（G0–G4 evidence 50/50，Flash 运行中）
+**当前状态（归档快照 2026-06-28）：** batch-0 **50 hard** 冻结 · batch-1 **50/50 入榜** · 当时主榜 **100/100 hard** · 当时 Oracle **100/100** · batch-1 质量验收 **进行中**
+
+**2026-07-19 现行状态：** 主榜 **150 hard** + **3 smoke** · Oracle **150/150** · quarantine **0** → [docs/STATUS.md](docs/STATUS.md)
 
 ## 现在照这个做
 
@@ -153,7 +157,7 @@ Agent 能否在保持目标功能行为正确的前提下，
 
 现实意义：评估 Agent 能否把 vibe coding 和 legacy code 中常见的“能跑但混乱”的仓库整理成更模块化、可维护、可复用的软件资产。
 
-前 10 条任务属于早期 **clean OSS pilot**；主榜现已 **100 hard**，entanglement 七类已标满。题源与缠绕分布见 [docs/python/02_python_repo_task_inventory.md](docs/python/02_python_repo_task_inventory.md)。
+前 10 条任务属于早期 **clean OSS pilot**；下文描述 **batch-1 时代 100 hard** 状态（已 supersede）。现行 150 题与 entanglement 分布见 [docs/python/02_python_repo_task_inventory.md](docs/python/02_python_repo_task_inventory.md) 与 [docs/STATUS.md](docs/STATUS.md)。
 
 ## 核心关系
 
@@ -184,7 +188,7 @@ experiments/              # 成绩单
 | Medium | Oracle closure 通常为 4-10 个运行时文件，约 500-2500 LOC；允许 0-1 个小型白名单依赖；功能跨多个 helper/module；涉及 unicode、路径、转义、排序、错误类型、文件遍历或多参数组合。 | `python-slugify`、`python-pathspec`，候选 `tabulate`、`xmltodict`、`python-frontmatter` |
 | Hard | Oracle closure 通常超过 10 个运行时文件或 2500 LOC；存在 lexer/parser 状态机、插件/注册机制、round-trip 保真、复杂配置继承、数据文件或多依赖交互；hidden tests 覆盖组合行为和错误恢复。 | `tomlkit`、`packaging`、`pluggy`、`click`、`markdown-it-py`、`PyYAML`、`jsonschema` |
 
-当前 benchmark：**主榜 100 hard**（`benchmark/tasks/`）+ **3 smoke**（`benchmark/sanity/`）。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
+**batch-1 时代 benchmark（归档）：** 主榜 100 hard（`benchmark/tasks/`）+ 3 smoke（`benchmark/sanity/`）。**现行：** 150 hard — 见 [docs/STATUS.md](docs/STATUS.md) 与 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
 
 历史 28 题 Flash baseline：**19/28 passed**（`benchmark-28-deepseek-flash-003`）。后续 main runs 见本地 `experiments/`，实验协议见 [docs/04_experiment_protocol.md](docs/04_experiment_protocol.md)。
 

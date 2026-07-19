@@ -1,6 +1,6 @@
 # Task Design: `<task_id>`
 
-> Machine-readable task spec: [TASK_FORMAT.md](../TASK_FORMAT.md). This file is the human design note.
+> Machine-readable task spec: [01_task_definition.md](../01_task_definition.md) · [06_task_schema.md](../06_task_schema.md). This file is the human design note.
 
 Status: draft | oracle-verified | agent-calibrated
 
@@ -10,7 +10,7 @@ Explain why this task belongs in FeatureLiftBench and what discrimination it pro
 
 ## Practical reuse（必填）
 
-Answer in plain language (see [EXPANSION.md](../EXPANSION.md)):
+Answer in plain language (see [07_incremental_task_rules.md](../07_incremental_task_rules.md)):
 
 1. **Reuse module** — If decoupling succeeds, what real-world module does `featurelifted` represent? (e.g. SQL parse/format core, config bootstrap, plugin registry API)
 2. **Who imports it** — In what downstream scenario would a team install or copy this package alone?
@@ -131,14 +131,14 @@ featurelifted/
 | --- | --- | --- | --- | --- | --- |
 | | | | | | |
 
-Target pass rate for strong agents: **35–55%** per hard task is a historical calibration guide; **leaderboard functional pass may be re-evaluated** (see [EXPANSION.md](../EXPANSION.md)).
+Target pass rate for strong agents: **35–55%** per hard task is a historical calibration guide; **leaderboard functional pass may be re-evaluated** (see [07_incremental_task_rules.md](../07_incremental_task_rules.md)).
 
 ## Go / No-Go Criteria
 
 - **Practical reuse** section completed; reuse story is credible for a hard-task maintainer review.
 - Oracle and Copy-All are clearly separated on ExtractionRatio.
 - At least three module probes verified.
-- Adds entanglement or discrimination not covered by existing tasks (prefer **replace** over growing past 50 hard — [EXPANSION.md](../EXPANSION.md)).
+- Adds entanglement or discrimination not covered by existing tasks (see [07_incremental_task_rules.md](../07_incremental_task_rules.md) for promotion policy).
 - Agent pass rate > 70% with copy-heavy submissions → strengthen hidden tests or narrow public hints before accepting the task.
 - Agent pass rate < 20% → widen public guidance or reduce closure scope; confirm the task is still a fair reuse slice.
 

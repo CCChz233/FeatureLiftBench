@@ -49,3 +49,23 @@ Required behavior:
 
 Public tests cover profile + pyproject merging, runtime override precedence, skip names, and config discovery from a path.
 Hidden tests cover extend skip globs, existing-file non-skip behavior, src path resolution, config-file precedence, invalid profile, unsupported setting, and `.editorconfig` line length mapping.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — resolve_settings
+- **B002** — resolve_from_path
+- **B003** — find_config
+- **B004** — should_skip
+- **B005** — Settings.is_skipped
+- **B006** — black/django/google profiles
+- **B007** — pyproject/setup.cfg/tox.ini/.isort.cfg/.editorconfig parsing
+- **B008** — runtime overrides
+- **B009** — src_paths expansion
+- **B010** — skip and skip_glob merging
+- **B011** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B012** — the submitted package does not import forbidden upstream packages: isort
+<!-- featureliftbench:behavior-clauses:end -->

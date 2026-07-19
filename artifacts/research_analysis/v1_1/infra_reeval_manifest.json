@@ -1,0 +1,724 @@
+{
+  "run_count": 62,
+  "schema_version": "featureliftbench.infra_reeval_manifest.v1",
+  "selection_rule": "evaluator_environment_error_count > 0",
+  "source_records": "artifacts/research_analysis/trajectory_records.csv",
+  "suite_count": 4,
+  "suites": [
+    {
+      "output_suffix": "batch3-flash-20260707-wave2wave4",
+      "runs": [
+        {
+          "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001",
+          "run_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001/submission",
+          "task_id": "responses__request_matcher_core__hard3_001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001/eval/result.json",
+          "failure_flags": "[\"high_extraction_ratio_proxy\",\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001",
+          "run_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001/submission",
+          "task_id": "yamale__schema_validate_core__hard3_001"
+        }
+      ],
+      "source_suite": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4",
+      "task_ids": [
+        "responses__request_matcher_core__hard3_001",
+        "yamale__schema_validate_core__hard3_001"
+      ]
+    },
+    {
+      "output_suffix": "main-20260702-212731",
+      "runs": [
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/arrow__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/arrow__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/arrow__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/arrow__parse_format_core__001/submission",
+          "task_id": "arrow__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/astroid__nodes_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/astroid__nodes_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/astroid__nodes_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/astroid__nodes_core__001/submission",
+          "task_id": "astroid__nodes_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/cattrs__structure_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/cattrs__structure_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/cattrs__structure_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/cattrs__structure_core__001/submission",
+          "task_id": "cattrs__structure_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/croniter__cron_parse_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/croniter__cron_parse_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/croniter__cron_parse_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/croniter__cron_parse_core__001/submission",
+          "task_id": "croniter__cron_parse_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/dataclasses_json__serde_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/dataclasses_json__serde_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/dataclasses_json__serde_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/dataclasses_json__serde_core__001/submission",
+          "task_id": "dataclasses_json__serde_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/environs__typed_env_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/environs__typed_env_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/environs__typed_env_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/environs__typed_env_core__001/submission",
+          "task_id": "environs__typed_env_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/intervaltree__interval_tree_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/intervaltree__interval_tree_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/intervaltree__interval_tree_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/intervaltree__interval_tree_core__001/submission",
+          "task_id": "intervaltree__interval_tree_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__compile_render_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__compile_render_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__compile_render_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__compile_render_core__001/submission",
+          "task_id": "jinja2__compile_render_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__extensions_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__extensions_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__extensions_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__extensions_core__001/submission",
+          "task_id": "jinja2__extensions_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__filters_tests_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__filters_tests_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__filters_tests_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__filters_tests_core__001/submission",
+          "task_id": "jinja2__filters_tests_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__lexer_parser_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__lexer_parser_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__lexer_parser_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__lexer_parser_core__001/submission",
+          "task_id": "jinja2__lexer_parser_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__loader_inheritance_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__loader_inheritance_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__loader_inheritance_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jinja2__loader_inheritance_core__001/submission",
+          "task_id": "jinja2__loader_inheritance_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonpath_ng__expression_eval_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonpath_ng__expression_eval_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonpath_ng__expression_eval_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonpath_ng__expression_eval_core__001/submission",
+          "task_id": "jsonpath_ng__expression_eval_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonschema__validator_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonschema__validator_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonschema__validator_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/jsonschema__validator_core__001/submission",
+          "task_id": "jsonschema__validator_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/mako__lexer_expression_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/mako__lexer_expression_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/mako__lexer_expression_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/mako__lexer_expression_core__001/submission",
+          "task_id": "mako__lexer_expression_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/markdown_it__commonmark_render__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/markdown_it__commonmark_render__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/markdown_it__commonmark_render__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/markdown_it__commonmark_render__001/submission",
+          "task_id": "markdown_it__commonmark_render__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pendulum__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pendulum__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pendulum__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pendulum__parse_format_core__001/submission",
+          "task_id": "pendulum__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_settings__env_source_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_settings__env_source_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_settings__env_source_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_settings__env_source_core__001/submission",
+          "task_id": "pydantic_settings__env_source_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_v1__validation_error_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_v1__validation_error_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_v1__validation_error_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pydantic_v1__validation_error_core__001/submission",
+          "task_id": "pydantic_v1__validation_error_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/python_frontmatter__roundtrip_core__001/eval/result.json",
+          "failure_flags": "[\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/python_frontmatter__roundtrip_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/python_frontmatter__roundtrip_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/python_frontmatter__roundtrip_core__001/submission",
+          "task_id": "python_frontmatter__roundtrip_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/referencing__json_schema_refs_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/referencing__json_schema_refs_core__001",
+          "run_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/referencing__json_schema_refs_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/referencing__json_schema_refs_core__001/submission",
+          "task_id": "referencing__json_schema_refs_core__001"
+        }
+      ],
+      "source_suite": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731",
+      "task_ids": [
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "cattrs__structure_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "environs__typed_env_core__001",
+        "intervaltree__interval_tree_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jsonpath_ng__expression_eval_core__001",
+        "jsonschema__validator_core__001",
+        "mako__lexer_expression_core__001",
+        "markdown_it__commonmark_render__001",
+        "pendulum__parse_format_core__001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "referencing__json_schema_refs_core__001"
+      ]
+    },
+    {
+      "output_suffix": "qwen36-27b-fp8-main-20260704-001328",
+      "runs": [
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/arrow__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/arrow__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/arrow__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/arrow__parse_format_core__001/submission",
+          "task_id": "arrow__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/astroid__nodes_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/astroid__nodes_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/astroid__nodes_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/astroid__nodes_core__001/submission",
+          "task_id": "astroid__nodes_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/cattrs__structure_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/cattrs__structure_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/cattrs__structure_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/cattrs__structure_core__001/submission",
+          "task_id": "cattrs__structure_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/croniter__cron_parse_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/croniter__cron_parse_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/croniter__cron_parse_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/croniter__cron_parse_core__001/submission",
+          "task_id": "croniter__cron_parse_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/dataclasses_json__serde_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/dataclasses_json__serde_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/dataclasses_json__serde_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/dataclasses_json__serde_core__001/submission",
+          "task_id": "dataclasses_json__serde_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/environs__typed_env_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/environs__typed_env_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/environs__typed_env_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/environs__typed_env_core__001/submission",
+          "task_id": "environs__typed_env_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/intervaltree__interval_tree_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/intervaltree__interval_tree_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/intervaltree__interval_tree_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/intervaltree__interval_tree_core__001/submission",
+          "task_id": "intervaltree__interval_tree_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__compile_render_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__compile_render_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__compile_render_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__compile_render_core__001/submission",
+          "task_id": "jinja2__compile_render_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__extensions_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__extensions_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__extensions_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__extensions_core__001/submission",
+          "task_id": "jinja2__extensions_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__filters_tests_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__filters_tests_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__filters_tests_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__filters_tests_core__001/submission",
+          "task_id": "jinja2__filters_tests_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__lexer_parser_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__lexer_parser_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__lexer_parser_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__lexer_parser_core__001/submission",
+          "task_id": "jinja2__lexer_parser_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__loader_inheritance_core__001/eval/result.json",
+          "failure_flags": "[\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__loader_inheritance_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__loader_inheritance_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jinja2__loader_inheritance_core__001/submission",
+          "task_id": "jinja2__loader_inheritance_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonpath_ng__expression_eval_core__001/eval/result.json",
+          "failure_flags": "[\"high_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonpath_ng__expression_eval_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonpath_ng__expression_eval_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonpath_ng__expression_eval_core__001/submission",
+          "task_id": "jsonpath_ng__expression_eval_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonschema__validator_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonschema__validator_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonschema__validator_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/jsonschema__validator_core__001/submission",
+          "task_id": "jsonschema__validator_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/mako__lexer_expression_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/mako__lexer_expression_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/mako__lexer_expression_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/mako__lexer_expression_core__001/submission",
+          "task_id": "mako__lexer_expression_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/markdown_it__commonmark_render__001/eval/result.json",
+          "failure_flags": "[\"high_extraction_ratio_proxy\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/markdown_it__commonmark_render__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/markdown_it__commonmark_render__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/markdown_it__commonmark_render__001/submission",
+          "task_id": "markdown_it__commonmark_render__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pendulum__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pendulum__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pendulum__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pendulum__parse_format_core__001/submission",
+          "task_id": "pendulum__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_settings__env_source_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_settings__env_source_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_settings__env_source_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_settings__env_source_core__001/submission",
+          "task_id": "pydantic_settings__env_source_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_v1__validation_error_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"agent_step_limit\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_v1__validation_error_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_v1__validation_error_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/pydantic_v1__validation_error_core__001/submission",
+          "task_id": "pydantic_v1__validation_error_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/python_frontmatter__roundtrip_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/python_frontmatter__roundtrip_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/python_frontmatter__roundtrip_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/python_frontmatter__roundtrip_core__001/submission",
+          "task_id": "python_frontmatter__roundtrip_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/referencing__json_schema_refs_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/referencing__json_schema_refs_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/referencing__json_schema_refs_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328/referencing__json_schema_refs_core__001/submission",
+          "task_id": "referencing__json_schema_refs_core__001"
+        }
+      ],
+      "source_suite": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328",
+      "task_ids": [
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "cattrs__structure_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "environs__typed_env_core__001",
+        "intervaltree__interval_tree_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jsonpath_ng__expression_eval_core__001",
+        "jsonschema__validator_core__001",
+        "mako__lexer_expression_core__001",
+        "markdown_it__commonmark_render__001",
+        "pendulum__parse_format_core__001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "referencing__json_schema_refs_core__001"
+      ]
+    },
+    {
+      "output_suffix": "qwen36-35b-a3b-fp8-main-20260704-001313",
+      "runs": [
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/arrow__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/arrow__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/arrow__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/arrow__parse_format_core__001/submission",
+          "task_id": "arrow__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/astroid__nodes_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/astroid__nodes_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/astroid__nodes_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/astroid__nodes_core__001/submission",
+          "task_id": "astroid__nodes_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/cattrs__structure_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/cattrs__structure_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/cattrs__structure_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/cattrs__structure_core__001/submission",
+          "task_id": "cattrs__structure_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/croniter__cron_parse_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/croniter__cron_parse_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/croniter__cron_parse_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/croniter__cron_parse_core__001/submission",
+          "task_id": "croniter__cron_parse_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/dataclasses_json__serde_core__001/eval/result.json",
+          "failure_flags": "[\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/dataclasses_json__serde_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/dataclasses_json__serde_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/dataclasses_json__serde_core__001/submission",
+          "task_id": "dataclasses_json__serde_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/environs__typed_env_core__001/eval/result.json",
+          "failure_flags": "[\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/environs__typed_env_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/environs__typed_env_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/environs__typed_env_core__001/submission",
+          "task_id": "environs__typed_env_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/intervaltree__interval_tree_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/intervaltree__interval_tree_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/intervaltree__interval_tree_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/intervaltree__interval_tree_core__001/submission",
+          "task_id": "intervaltree__interval_tree_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__compile_render_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__compile_render_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__compile_render_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__compile_render_core__001/submission",
+          "task_id": "jinja2__compile_render_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__extensions_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__extensions_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__extensions_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__extensions_core__001/submission",
+          "task_id": "jinja2__extensions_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__lexer_parser_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__lexer_parser_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__lexer_parser_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__lexer_parser_core__001/submission",
+          "task_id": "jinja2__lexer_parser_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__loader_inheritance_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__loader_inheritance_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__loader_inheritance_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jinja2__loader_inheritance_core__001/submission",
+          "task_id": "jinja2__loader_inheritance_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jsonschema__validator_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jsonschema__validator_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jsonschema__validator_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/jsonschema__validator_core__001/submission",
+          "task_id": "jsonschema__validator_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/mako__lexer_expression_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/mako__lexer_expression_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/mako__lexer_expression_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/mako__lexer_expression_core__001/submission",
+          "task_id": "mako__lexer_expression_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/markdown_it__commonmark_render__001/eval/result.json",
+          "failure_flags": "[\"high_extraction_ratio_proxy\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/markdown_it__commonmark_render__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/markdown_it__commonmark_render__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/markdown_it__commonmark_render__001/submission",
+          "task_id": "markdown_it__commonmark_render__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pendulum__parse_format_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pendulum__parse_format_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pendulum__parse_format_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pendulum__parse_format_core__001/submission",
+          "task_id": "pendulum__parse_format_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_settings__env_source_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_settings__env_source_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_settings__env_source_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_settings__env_source_core__001/submission",
+          "task_id": "pydantic_settings__env_source_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_v1__validation_error_core__001/eval/result.json",
+          "failure_flags": "[\"repeated_exploration\",\"tool_execution_errors\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_v1__validation_error_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_v1__validation_error_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/pydantic_v1__validation_error_core__001/submission",
+          "task_id": "pydantic_v1__validation_error_core__001"
+        },
+        {
+          "evaluation_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/python_frontmatter__roundtrip_core__001/eval/result.json",
+          "failure_flags": "[\"low_extraction_ratio_proxy\",\"harness_format_errors\",\"dependency_install_failed\"]",
+          "run_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/python_frontmatter__roundtrip_core__001",
+          "run_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/python_frontmatter__roundtrip_core__001/run.json",
+          "source_run_exists": true,
+          "source_submission_exists": true,
+          "submission_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313/python_frontmatter__roundtrip_core__001/submission",
+          "task_id": "python_frontmatter__roundtrip_core__001"
+        }
+      ],
+      "source_suite": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "task_ids": [
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "cattrs__structure_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "environs__typed_env_core__001",
+        "intervaltree__interval_tree_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jsonschema__validator_core__001",
+        "mako__lexer_expression_core__001",
+        "markdown_it__commonmark_render__001",
+        "pendulum__parse_format_core__001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "python_frontmatter__roundtrip_core__001"
+      ]
+    }
+  ],
+  "unique_task_count": 23
+}

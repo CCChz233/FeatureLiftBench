@@ -19,6 +19,7 @@ from .openhands_usage import openhands_context_limits
 
 
 PROXY_DISABLE_ENV = "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY"
+TOTAL_TOKEN_LIMIT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,7 @@ class LLMUsageProxyConfig:
     audit_path: Path
     usage_path: Path
     model: str = ""
+    total_token_limit: int | None = None
 
 
 class LLMUsageProxy:
@@ -45,6 +47,8 @@ class LLMUsageProxy:
         self._max_total_tokens_per_call = 0
         self._saw_verified_usage = False
         self._context_violation = False
+        self._token_budget_exhausted = False
+        self._budget_rejections = 0
 
     @property
     def base_url(self) -> str:
@@ -78,6 +82,9 @@ class LLMUsageProxy:
         self.close()
 
     def forward(self, handler: BaseHTTPRequestHandler) -> None:
+        if self._token_limit_reached():
+            self._reject_for_token_budget(handler)
+            return
         content_length = _safe_int(handler.headers.get("Content-Length"))
         body = handler.rfile.read(content_length if content_length is not None else 0)
         request_payload = _json_object(body)
@@ -137,6 +144,8 @@ class LLMUsageProxy:
             max_total = self._max_total_tokens_per_call
             saw_verified = self._saw_verified_usage
             context_violation = self._context_violation
+            token_budget_exhausted = self._token_budget_exhausted
+            budget_rejections = self._budget_rejections
 
         token_source = "openhands_proxy" if saw_verified else "openhands_proxy_no_provider_usage"
         usage = {
@@ -145,6 +154,9 @@ class LLMUsageProxy:
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
             "total_tokens": prompt_tokens + completion_tokens,
+            "total_token_limit": self.config.total_token_limit,
+            "token_budget_exhausted": token_budget_exhausted,
+            "budget_rejections": budget_rejections,
             "context_audit": {
                 "available": saw_verified,
                 "runtime": "openhands",
@@ -245,8 +257,53 @@ class LLMUsageProxy:
             )
             self._saw_verified_usage = self._saw_verified_usage or verified
             self._context_violation = self._context_violation or bool(context_violation)
+            if (
+                self.config.total_token_limit is not None
+                and self._prompt_tokens + self._completion_tokens >= self.config.total_token_limit
+            ):
+                self._token_budget_exhausted = True
             with self.config.audit_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, sort_keys=True) + "\n")
+
+    def _token_limit_reached(self) -> bool:
+        limit = self.config.total_token_limit
+        if limit is None:
+            return False
+        with self._lock:
+            return self._prompt_tokens + self._completion_tokens >= limit
+
+    def _reject_for_token_budget(self, handler: BaseHTTPRequestHandler) -> None:
+        body = json.dumps(
+            {
+                "error": {
+                    "code": "featureliftbench_token_budget_exhausted",
+                    "message": (
+                        "FeatureLiftBench per-instance token budget exhausted; "
+                        "the experiment runner will not forward another model call"
+                    ),
+                }
+            },
+            sort_keys=True,
+        ).encode("utf-8")
+        with self._lock:
+            self._token_budget_exhausted = True
+            self._budget_rejections += 1
+            record = {
+                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "runtime": "openhands",
+                "phase": "token_budget_guard",
+                "path": handler.path,
+                "status": 400,
+                "total_token_limit": self.config.total_token_limit,
+                "tokens_observed": self._prompt_tokens + self._completion_tokens,
+            }
+            with self.config.audit_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(record, sort_keys=True) + "\n")
+        handler.send_response(400)
+        handler.send_header("Content-Type", "application/json")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.end_headers()
+        handler.wfile.write(body)
 
 
 class _ProxyServer(ThreadingHTTPServer):
@@ -302,6 +359,7 @@ def maybe_start_openhands_usage_proxy(
             audit_path=agent_output_dir / "context_audit.jsonl",
             usage_path=agent_output_dir / "openhands_usage.json",
             model=env.get("LLM_MODEL") or env.get("FEATURELIFTBENCH_MODEL", ""),
+            total_token_limit=_positive_int(env.get(TOTAL_TOKEN_LIMIT_ENV)),
         )
     )
 
@@ -330,6 +388,11 @@ def _safe_int(value: str | None) -> int | None:
     except ValueError:
         return None
     return parsed if parsed >= 0 else None
+
+
+def _positive_int(value: str | None) -> int | None:
+    parsed = _safe_int(value)
+    return parsed if parsed is not None and parsed > 0 else None
 
 
 def _int_metric(value: Any) -> int | None:

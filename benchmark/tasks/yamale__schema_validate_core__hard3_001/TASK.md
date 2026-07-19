@@ -20,3 +20,17 @@ from featurelifted import make_schema, validate, ValidationResult, YamaleError
 - Forbidden imports: `yamale`.
 - Allowed dependency: `PyYAML` from `requirements.lock`.
 - Use in-memory YAML strings only.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — in-memory YAML schema parsing
+- **B002** — map/list validators
+- **B003** — include documents
+- **B004** — strict validation
+- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B006** — the submitted package does not import forbidden upstream packages: yamale
+<!-- featureliftbench:behavior-clauses:end -->

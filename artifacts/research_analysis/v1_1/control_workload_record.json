@@ -1,0 +1,112 @@
+{
+  "engineering_scope_decision": {
+    "batch_size": 2,
+    "completed_task_ids": [
+      "boltons__iterutils_core__001",
+      "pluggy__hook_specs_core__001"
+    ],
+    "mandatory_variants": [
+      "alternative_v11",
+      "copy_heavy_v11",
+      "narrow_v11"
+    ],
+    "paper_claim_boundary": "The two-task functional feasibility result is usable; no labor-cost claim is allowed until the prospective log is complete.",
+    "remaining_task_ids": [
+      "pydantic_v1__validation_error_core__001",
+      "coverage__config_merge_core__001",
+      "lark__grammar_loader_core__001",
+      "websockets__handshake_parse_core__001",
+      "schema__nested_validate_core__hard3_001",
+      "requests_cache__cache_key_core__hard3_001",
+      "sqlparse__format_filters_core__001",
+      "celery__signal_dispatch_core__hard3_001"
+    ],
+    "status": "proceed_staged_with_prospective_logging",
+    "stop_conditions": [
+      "any submission exceeds two non-environment repair rounds",
+      "prospective total projects above ten person-days",
+      "alternative cannot pass three isolated Oracle-equivalent evaluations"
+    ]
+  },
+  "formal_workload_gate": {
+    "maximum_non_environment_rework_rounds_per_submission": 2,
+    "maximum_total_person_hours": 16,
+    "status": "unverified_missing_prospective_human_log"
+  },
+  "instrumentation": {
+    "evaluator_run_count": 10,
+    "first_result_utc": "2026-07-14T09:12:03.083194+00:00",
+    "last_result_utc": "2026-07-14T09:12:48.065582+00:00",
+    "limitation": "File timestamps bound evaluator activity only. They are not authoring time and are never converted into person-hours.",
+    "observed_non_environment_rework_rounds": null,
+    "observed_person_hours": null,
+    "retrospective_human_timer_available": false
+  },
+  "schema_version": "featureliftbench.control_workload_record.v1",
+  "variant_records": [
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 3,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-1/result.json",
+        "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-2/result.json",
+        "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-3/result.json"
+      ],
+      "task_id": "boltons__iterutils_core__001",
+      "variant": "alternative_v11"
+    },
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 1,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/boltons__iterutils_core__001/copy_heavy_v11/rep-1/result.json"
+      ],
+      "task_id": "boltons__iterutils_core__001",
+      "variant": "copy_heavy_v11"
+    },
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 1,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/boltons__iterutils_core__001/narrow_v11/rep-1/result.json"
+      ],
+      "task_id": "boltons__iterutils_core__001",
+      "variant": "narrow_v11"
+    },
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 3,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-1/result.json",
+        "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-2/result.json",
+        "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-3/result.json"
+      ],
+      "task_id": "pluggy__hook_specs_core__001",
+      "variant": "alternative_v11"
+    },
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 1,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/copy_heavy_v11/rep-1/result.json"
+      ],
+      "task_id": "pluggy__hook_specs_core__001",
+      "variant": "copy_heavy_v11"
+    },
+    {
+      "authoring_person_hours": null,
+      "evaluator_run_count": 1,
+      "non_environment_rework_rounds": null,
+      "result_paths": [
+        "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/narrow_v11/rep-1/result.json"
+      ],
+      "task_id": "pluggy__hook_specs_core__001",
+      "variant": "narrow_v11"
+    }
+  ]
+}

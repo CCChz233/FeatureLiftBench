@@ -10,6 +10,7 @@ from pathlib import Path
 from unittest import mock
 
 from featureliftbench.evaluator import CommandResult
+from featureliftbench.evaluator import _base_evaluation_env
 from featureliftbench.evaluator import _ensure_eval_tooling
 from featureliftbench.evaluator import _install_submission
 from featureliftbench.evaluator import _run_command
@@ -18,6 +19,21 @@ from featureliftbench.evaluator import evaluate_submission
 
 
 class EvaluatorTests(unittest.TestCase):
+    def test_base_environment_is_deterministic(self) -> None:
+        with mock.patch.dict(
+            os.environ,
+            {"PYTHONPATH": "/leaky/path", "PYTHONHASHSEED": "random", "TZ": "local"},
+            clear=False,
+        ):
+            env = _base_evaluation_env()
+
+        self.assertNotIn("PYTHONPATH", env)
+        self.assertEqual(env["PYTHONHASHSEED"], "0")
+        self.assertEqual(env["TZ"], "UTC")
+        self.assertEqual(env["LC_ALL"], "C.UTF-8")
+        self.assertEqual(env["LANG"], "C.UTF-8")
+        self.assertEqual(env["PYTHONDONTWRITEBYTECODE"], "1")
+
     def test_evaluate_submission_passes_minimal_task(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

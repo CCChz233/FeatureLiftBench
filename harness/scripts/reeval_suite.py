@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
@@ -18,6 +19,7 @@ if str(_REPO_ROOT / "harness") not in sys.path:
 from featureliftbench.agent_runner import _has_submission_files  # noqa: E402
 from featureliftbench.docker_eval import evaluate_submission_docker  # noqa: E402
 from featureliftbench.evaluator import evaluate_submission  # noqa: E402
+from featureliftbench.freeze import file_manifest, manifest_digest  # noqa: E402
 from featureliftbench.paths import TASKS_DIR  # noqa: E402
 from featureliftbench.suite_utils import compact_suite_run_entry  # noqa: E402
 from featureliftbench.suite_utils import evaluation_payload  # noqa: E402
@@ -32,6 +34,44 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def clone_suite_for_immutable_reeval(
+    source: Path,
+    destination: Path,
+    task_ids: list[str],
+) -> Path:
+    """Copy only immutable inputs needed for re-evaluation into a new suite."""
+
+    if destination.exists() and any(destination.iterdir()):
+        raise FileExistsError(f"re-eval output already exists and is not empty: {destination}")
+    destination.mkdir(parents=True, exist_ok=True)
+    source_manifest = file_manifest([source / "suite.json"], root=source)
+    shutil.copy2(source / "suite.json", destination / "suite.json")
+    copied: list[str] = []
+    for task_id in task_ids:
+        source_task = source / task_id
+        target_task = destination / task_id
+        run_path = source_task / "run.json"
+        submission = source_task / "submission"
+        if not run_path.is_file() or not submission.is_dir():
+            raise FileNotFoundError(f"missing run/submission for immutable re-eval: {source_task}")
+        target_task.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(run_path, target_task / "run.json")
+        shutil.copytree(submission, target_task / "submission")
+        copied.append(task_id)
+    write_json(
+        destination / "reeval_source.json",
+        {
+            "schema_version": "featureliftbench.immutable_reeval_source.v1",
+            "source_suite": str(source),
+            "source_suite_manifest": source_manifest,
+            "source_suite_digest": manifest_digest({"files": source_manifest}),
+            "task_ids": copied,
+            "source_mutable": False,
+        },
+    )
+    return destination
 
 
 def resolve_task_dir(task_id: str, tasks_root: Path | None) -> Path:
@@ -136,6 +176,16 @@ def update_suite_json(suite_dir: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("suite_dir", type=Path, help="Existing run-agent suite directory")
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Required immutable re-eval destination unless --in-place is explicitly used",
+    )
+    parser.add_argument(
+        "--in-place",
+        action="store_true",
+        help="Legacy destructive mode; explicitly allow modifying the source suite",
+    )
     parser.add_argument("--tasks-root", type=Path, default=None, help="Override benchmark tasks root")
     parser.add_argument("--workers", type=int, default=4, help="Parallel re-eval workers")
     parser.add_argument("--task-id", action="append", dest="task_ids", help="Limit to specific task IDs")
@@ -148,8 +198,8 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    suite_dir = args.suite_dir.resolve()
-    suite_path = suite_dir / "suite.json"
+    source_suite_dir = args.suite_dir.resolve()
+    suite_path = source_suite_dir / "suite.json"
     if not suite_path.is_file():
         raise SystemExit(f"missing suite.json: {suite_path}")
 
@@ -158,6 +208,21 @@ def main() -> int:
     task_ids = [task_id for task_id in task_ids if isinstance(task_id, str) and task_id]
     if not task_ids:
         raise SystemExit("no tasks to re-evaluate")
+
+    if args.in_place and args.output_dir is not None:
+        raise SystemExit("choose either --in-place or --output-dir, not both")
+    if not args.in_place and args.output_dir is None and not args.dry_run:
+        raise SystemExit("immutable re-evaluation requires --output-dir (or explicit --in-place)")
+    if args.dry_run:
+        suite_dir = source_suite_dir
+    elif args.in_place:
+        suite_dir = source_suite_dir
+    else:
+        suite_dir = clone_suite_for_immutable_reeval(
+            source_suite_dir,
+            args.output_dir.resolve(),
+            task_ids,
+        )
 
     results: list[dict[str, Any]] = []
     worker_count = max(1, int(args.workers))

@@ -1,0 +1,247 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_negative_priority_is_excluded_and_fail_backend_is_default",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B006"
+        ],
+        "pass_2_ast_mapping": [
+          "B006"
+        ],
+        "test_source_sha256": "95309ad678b8ffa356e327cf87b4a424b3ad079455f270c3278229ad146718de"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_skips_backend_errors_on_get_password",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B008"
+        ],
+        "pass_2_ast_mapping": [
+          "B008"
+        ],
+        "test_source_sha256": "061a17c36d883b2491b095fe319e1895ffbe3c0b17f34c5ab5b6cb2b82bf8a6c"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_set_password_falls_back_after_failure",
+      "public_clause_ids": [
+        "B004",
+        "B008"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B008"
+        ],
+        "pass_2_ast_mapping": [
+          "B004",
+          "B008"
+        ],
+        "test_source_sha256": "e78935e39a19b89c196e5f5dad2d49d8f78755478a05282457dd88ee4484c5af"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_set_password_raises_when_all_backends_fail",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B008"
+        ],
+        "pass_2_ast_mapping": [
+          "B008"
+        ],
+        "test_source_sha256": "74bcd6d909ebdcee4ae36f82a5a90e1e5296634e5a8ffc369405a3aa922767fa"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_get_credential_can_discover_username",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B008"
+        ],
+        "pass_2_ast_mapping": [
+          "B008"
+        ],
+        "test_source_sha256": "4264c097ee2c21c5b9e0f1a0c5acb4d12a7f419cbeb7b64ebf75c495f372a56c"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "Backend base API"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "MemoryBackend for deterministic storage"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "FailBackend"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
+      "text": "ErrorBackend for failure-path tests"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
+      "text": "ChainerBackend priority sorting and fallback"
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
+      "text": "select_backend priority selection"
+    },
+    {
+      "behavior_id": "B007",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
+      "text": "PYTHON_KEYRING_BACKEND override"
+    },
+    {
+      "behavior_id": "B008",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/7",
+      "text": "Credential and password set/delete errors"
+    },
+    {
+      "behavior_id": "B009",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B010",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: keyring"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_select_highest_priority_backend",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B006"
+        ],
+        "pass_2_ast_mapping": [
+          "B006"
+        ],
+        "test_source_sha256": "9f8ac7c22ef94ac1ac735a21a8949d733601c41645c7475fe150cf88a0059818"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_env_override_selects_named_backend",
+      "public_clause_ids": [
+        "B006",
+        "B007"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B006",
+          "B007"
+        ],
+        "pass_2_ast_mapping": [
+          "B006",
+          "B007"
+        ],
+        "test_source_sha256": "dec103d02214e026828d2ca18296137c3d22e0545f29eb88b2c937bf84933c0b"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_chainer_get_password_uses_first_backend_with_value",
+      "public_clause_ids": [
+        "B006",
+        "B008"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B007",
+          "B008"
+        ],
+        "pass_2_ast_mapping": [
+          "B006",
+          "B008"
+        ],
+        "test_source_sha256": "f3be52958d7df13d9813a08ba44ad5e26e41d7888e3fd76160ddc38ba5d46ece"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 2,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "framework_coupling",
+    "third_party_dependency_coupling",
+    "data_model_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "a944092ca89cbf1390cbef6ad3c7b556a910d8cbe354833645e76258821fa459",
+  "task_id": "keyring__backend_select_core__hard3_001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

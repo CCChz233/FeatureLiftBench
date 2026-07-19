@@ -46,3 +46,19 @@ user_cache_dir(appname=None, appauthor=None, version=None, opinion=True, platfor
 
 Public tests cover Linux defaults, Linux XDG overrides, and basic Windows roaming/cache layout.
 Hidden tests cover macOS defaults and XDG precedence, blank XDG fallback, Windows `appauthor=False`, Windows `opinion=False`, and no-appname base directory behavior.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — Linux XDG_DATA_HOME, XDG_CONFIG_HOME, and XDG_CACHE_HOME precedence
+- **B002** — Linux default ~/.local/share, ~/.config, and ~/.cache fallbacks
+- **B003** — macOS Application Support and Caches defaults
+- **B004** — macOS XDG override precedence
+- **B005** — Windows LocalAppData vs AppData roaming behavior
+- **B006** — Windows appauthor, appauthor=False, version, and cache opinion semantics
+- **B007** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B008** — the submitted package does not import forbidden upstream packages: platformdirs
+<!-- featureliftbench:behavior-clauses:end -->

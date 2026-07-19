@@ -49,6 +49,21 @@ class MetadataTests(unittest.TestCase):
 
         self.assertIn("field difficulty must be one of: easy, medium, hard", errors)
 
+    def test_validate_metadata_shape_accepts_mechanism_challenging_split_role(self) -> None:
+        metadata = _valid_metadata("sample_task")
+        metadata["split_role"] = "mechanism_challenging"
+
+        self.assertEqual(validate_metadata_shape(metadata), [])
+
+    def test_validate_metadata_shape_rejects_unknown_split_role(self) -> None:
+        metadata = _valid_metadata("sample_task")
+        metadata["split_role"] = "harder"
+
+        self.assertIn(
+            "field split_role must be: mechanism_challenging",
+            validate_metadata_shape(metadata),
+        )
+
     def test_validate_metadata_shape_rejects_unknown_entanglement_type(self) -> None:
         metadata = _valid_metadata("sample_task")
         metadata["entanglement"]["types"] = ["mystery_coupling"]

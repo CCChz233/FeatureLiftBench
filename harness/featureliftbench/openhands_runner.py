@@ -27,6 +27,7 @@ from .resource_limits import command_output_limit_bytes
 
 USAGE_SCHEMA_VERSION = "featureliftbench.agent_usage.v1"
 DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
+PROMPT_APPEND_FILE_ENV = "FEATURELIFTBENCH_OPENHANDS_PROMPT_APPEND_FILE"
 RAW_USAGE_FILENAMES = ("openhands_usage.json", "usage.json")
 
 
@@ -355,7 +356,7 @@ def _resolve_openhands_python(command: list[str]) -> str | None:
 
 def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
     task_text = config.task_file.read_text(encoding="utf-8")
-    return (
+    prompt = (
         "# FeatureLiftBench Task for OpenHands\n\n"
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
         "## Workspace Contract\n\n"
@@ -385,6 +386,23 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "```\n\n"
         "## Task\n\n"
         f"{task_text}\n"
+    )
+    append_path_text = os.environ.get(PROMPT_APPEND_FILE_ENV, "").strip()
+    if not append_path_text:
+        return prompt
+    append_path = Path(append_path_text)
+    if not append_path.is_file():
+        raise FileNotFoundError(
+            f"{PROMPT_APPEND_FILE_ENV} does not point to a file: {append_path}"
+        )
+    appendix = append_path.read_text(encoding="utf-8")
+    return (
+        prompt
+        + "\n## Registered Experimental Condition\n\n"
+        + "The following condition text is recorded by the experiment runner. "
+        + "It does not grant access to hidden tests or evaluation files.\n\n"
+        + appendix.rstrip()
+        + "\n"
     )
 
 

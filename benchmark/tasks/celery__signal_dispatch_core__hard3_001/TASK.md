@@ -18,3 +18,17 @@ from featurelifted import Signal
 
 - Forbidden imports: `celery`.
 - No broker or task execution.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — receiver registration
+- **B002** — sender filtering
+- **B003** — dispatch responses
+- **B004** — weak receiver cleanup
+- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B006** — the submitted package does not import forbidden upstream packages: celery
+<!-- featureliftbench:behavior-clauses:end -->

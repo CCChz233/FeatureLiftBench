@@ -40,3 +40,22 @@ Parsed expression nodes must expose `render()`.
 
 Public tests cover alias normalization, AND/OR precedence, WITH exception normalization, and allowed policy decisions.
 Hidden tests cover parentheses precedence, invalid WITH usage, exception-as-license rejection, unknown-symbol validation, denied policy decisions, and unbalanced parentheses.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — LicenseSymbol aliases and exception marker
+- **B002** — Licensing.parse
+- **B003** — Licensing.validate
+- **B004** — Licensing.license_symbols
+- **B005** — Licensing.evaluate_policy
+- **B006** — AND/OR/WITH parsing
+- **B007** — parentheses
+- **B008** — alias normalization
+- **B009** — unknown symbol and exception placement errors
+- **B010** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B011** — the submitted package does not import forbidden upstream packages: license_expression, boolean
+<!-- featureliftbench:behavior-clauses:end -->

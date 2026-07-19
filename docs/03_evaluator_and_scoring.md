@@ -124,6 +124,8 @@ Exact field names should be read from current evaluator output before paper tabl
 - Hidden tests are part of functional success, not a separate bonus.
 - Compactness should penalize copy-heavy success without rewarding tiny incorrect submissions.
 
+Known limitations: [limitations.md](limitations.md). Current benchmark status: [STATUS.md](STATUS.md).
+
 ## TODO
 
 - Audit current Python and Go evaluator output fields and align table-generation scripts with this document.

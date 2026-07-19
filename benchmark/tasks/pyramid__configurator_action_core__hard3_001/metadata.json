@@ -1,19 +1,36 @@
 {
-  "task_id": "pyramid__configurator_action_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "stateful runtime behavior",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "5b13e4a61b479be17c1d97ab504154595813a8f8",
-    "license": "BSD-2-Clause",
-    "name": "pyramid",
-    "url": "https://github.com/Pylons/pyramid.git"
+  "entanglement": {
+    "description": "Action ordering, discriminators, conflict detection, and introspection state require multiple interacting helpers.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "conflict with same discriminator",
+      "order ties execute in registration order after sort",
+      "introspection categories filter committed actions",
+      "None discriminator never conflicts"
+    ],
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "pyramid"
+    ],
+    "forbidden_imports": [
+      "pyramid"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pyramid/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped configurator action conflict resolver into featurelifted.",
@@ -33,44 +50,28 @@
       "pyramid.config.actions.ActionConfiguratorMixin"
     ]
   },
-  "entanglement": {
-    "description": "Action ordering, discriminators, conflict detection, and introspection state require multiple interacting helpers.",
-    "level": "high",
-    "primary": "framework_coupling",
-    "signals": [
-      "conflict with same discriminator",
-      "order ties execute in registration order after sort",
-      "introspection categories filter committed actions",
-      "None discriminator never conflicts"
-    ],
-    "types": [
-      "framework_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "ActionRegistry",
     "import": "from featurelifted import ActionRegistry, ConfigurationConflictError",
     "package": "featurelifted",
     "signature": "ActionRegistry()"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "pyramid"
-    ],
-    "forbidden_imports": [
-      "pyramid"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "pyramid/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "5b13e4a61b479be17c1d97ab504154595813a8f8",
+    "license": "BSD-2-Clause",
+    "name": "pyramid",
+    "url": "https://github.com/Pylons/pyramid.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "stateful runtime behavior",
+    "framework_coupling"
+  ],
+  "task_id": "pyramid__configurator_action_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

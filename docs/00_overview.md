@@ -24,7 +24,7 @@ FeatureLiftBench is not a bug-fixing benchmark, code completion benchmark, or gr
 
 FeatureLiftBench is one benchmark with multiple language splits. Python and Go are language splits, not independent benchmarks, and they share the same task semantics, research questions, evaluator philosophy, and reporting concepts.
 
-- Python split: current implemented main split. Local metadata scan on 2026-07-06 finds 100 tasks in `benchmark/tasks/`, 75 unique sources, all marked `hard`.
+- Python split: current implemented main split. Metadata scan on 2026-07-19 finds **150** tasks in `benchmark/tasks/`, **121** unique sources, all marked `hard`, plus **3** smoke tasks in `benchmark/sanity/`. See [STATUS.md](STATUS.md) and [python/02_python_repo_task_inventory.md](python/02_python_repo_task_inventory.md).
 - Go split: work in progress. The repo contains Go smoke, seed, and calibration task directories under `benchmark/go/`, but current Go planning docs still distinguish calibration or seed tasks from paper-ready hard gold tasks.
 - Future splits should reuse the same core task definition instead of creating separate RQ, scoring, or experiment protocols.
 
@@ -60,11 +60,11 @@ FeatureLiftBench evaluates two axes together:
 
 Public tests guide the visible API and common behaviors. Hidden tests check behavior preservation, edge cases, dynamic dependency recovery, and overfitting. Compactness prevents a copy-all strategy from being scored as a high-quality feature extraction.
 
-## Current Status / TODO
+## Current Status
 
-- Canonical core docs are now organized as `docs/00_*` through `docs/06_*`.
-- Python-specific design docs live under `docs/python/`.
-- Go-specific design docs live under `docs/go/`.
-- Legacy documents remain in `docs/` for implementation details, historical notes, and runbooks.
-- TODO: decide whether older root-level docs should be cross-linked from `docs/README.md` to this canonical structure.
-- TODO: keep result claims out of paper-facing docs until the exact run protocol, model versions, and harness commit are frozen.
+Living summary: [STATUS.md](STATUS.md). Generated v1.1 gates: [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md).
+
+- Canonical core docs: `docs/00_*` through `docs/07_*`, indexed in [README.md](README.md).
+- Python design: [python/](python/). Go design: [go/](go/).
+- Run experiments: root [RUN.md](../RUN.md). Frozen formal runs: [paper_runs_frozen.md](paper_runs_frozen.md).
+- Historical engineering backlog (batch-1 era): root [TODO.md](../TODO.md), [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md) — not current sprint truth.

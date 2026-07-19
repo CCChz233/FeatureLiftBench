@@ -29,3 +29,17 @@ from featurelifted import MultiDict, CIMultiDict, MultiDictProxy, CIMultiDictPro
 
 Public tests cover basic mutation, duplicate keys, and proxy writes.
 Hidden tests cover `popone`/`popall`, case-insensitive lookup/equality, and proxy reflection semantics.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — MultiDict and CIMultiDict mutation semantics
+- **B002** — getall, getone, popone, popall
+- **B003** — MultiDictProxy and CIMultiDictProxy view mutation
+- **B004** — case-insensitive key folding for CIMultiDict
+- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B006** — the submitted package does not import forbidden upstream packages: multidict
+<!-- featureliftbench:behavior-clauses:end -->

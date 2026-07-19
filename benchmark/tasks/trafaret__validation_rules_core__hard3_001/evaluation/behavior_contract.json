@@ -1,0 +1,132 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_or_composition",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "priority_semantic_override",
+        "pass_1_nodeid_mapping": [],
+        "pass_2_ast_mapping": [],
+        "test_source_sha256": "1ffc9c3151976ae59de52eba3a5779b1d4376ac61abc50321b756cb31c4f1d83"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_key_optional_and_dataerror_path",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "d3fb8205ccbd989ec834fbd797ddfc97c1832d0b064498d3eaf06c727e035888"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_forward_recursion",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B003"
+        ],
+        "test_source_sha256": "53faaaf2a668e9fd2a409647b330a5829aeff4de624fa0cf4460fccf0fb94ad6"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "composable validators"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "DataError paths"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "Forward references"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: trafaret"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_contract.py::test_dict_validates_schema",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "priority_semantic_override",
+        "pass_1_nodeid_mapping": [],
+        "pass_2_ast_mapping": [],
+        "test_source_sha256": "4780083198c69cecea02c8f0be2d2a8efc71eb96c71b3576128391def34657c0"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 0,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "data_model_coupling",
+    "implicit_dependency_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "d5b027593bccab9638a946f9fc9ca4ba13f526580592c056a0d71825f6ac8c11",
+  "task_id": "trafaret__validation_rules_core__hard3_001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

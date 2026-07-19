@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from .dependency_audit import validate_lock_allowed_consistency
+from .closure_gold import load_closure_gold
 from .metadata import MetadataError, load_metadata, validate_metadata_shape
 
 
@@ -97,8 +99,58 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
                 errors.append(f"invalid JSON: evaluation/oracle_manifest.json: {exc}")
             except OSError as exc:
                 errors.append(f"cannot read evaluation/oracle_manifest.json: {exc}")
+        closure_path = root / "evaluation" / "closure_gold.json"
+        if closure_path.exists():
+            closure = load_closure_gold(root, allow_legacy=False)
+            errors.extend(
+                f"invalid closure gold: {message}" for message in closure.errors
+            )
+        behavior_path = root / "evaluation" / "behavior_contract.json"
+        if behavior_path.exists():
+            errors.extend(_validate_behavior_contract(root, behavior_path))
 
     return ValidationResult(task_dir=root, task_id=task_id, errors=errors)
+
+
+def _validate_behavior_contract(root: Path, path: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"invalid JSON: evaluation/behavior_contract.json: {exc}"]
+    if not isinstance(payload, dict):
+        return ["evaluation/behavior_contract.json must be a JSON object"]
+    if payload.get("task_id") != root.name:
+        errors.append("behavior contract task_id must match directory name")
+    clauses = payload.get("public_clauses")
+    clause_ids = {
+        str(item.get("behavior_id"))
+        for item in clauses or []
+        if isinstance(item, dict) and item.get("behavior_id")
+    }
+    if not clause_ids:
+        errors.append("behavior contract must contain public clauses")
+    for key in ("public_test_mappings", "hidden_test_mappings"):
+        mappings = payload.get(key)
+        if not isinstance(mappings, list):
+            errors.append(f"behavior contract {key} must be a list")
+            continue
+        for item in mappings:
+            if not isinstance(item, dict):
+                errors.append(f"behavior contract {key} entries must be objects")
+                continue
+            unknown = set(item.get("public_clause_ids") or []) - clause_ids
+            if unknown:
+                errors.append(
+                    f"behavior contract {key} references unknown clauses: {', '.join(sorted(unknown))}"
+                )
+    task_path = root / "TASK.md"
+    expected_hash = payload.get("spec_sha256")
+    if task_path.is_file() and isinstance(expected_hash, str):
+        actual = hashlib.sha256(task_path.read_bytes()).hexdigest()
+        if actual != expected_hash:
+            errors.append("behavior contract spec_sha256 does not match TASK.md")
+    return errors
 
 
 def _validate_go_tests(root: Path) -> list[str]:

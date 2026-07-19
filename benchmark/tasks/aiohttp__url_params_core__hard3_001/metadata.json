@@ -1,37 +1,5 @@
 {
-  "task_id": "aiohttp__url_params_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "third-party dependency coupling",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "649887ca860437e610fc4af5c8363a9be6f19681",
-    "license": "Apache-2.0",
-    "name": "aiohttp",
-    "url": "https://github.com/aio-libs/aiohttp.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped build_url normalize_headers into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "client/server runtime",
-      "async I/O"
-    ],
-    "included_behaviors": [
-      "URL query merging",
-      "CIMultiDict headers",
-      "header validation"
-    ],
-    "name": "build_url normalize_headers",
-    "source_entrypoints": [
-      "aiohttp.helpers.build_url"
-    ]
-  },
   "entanglement": {
     "description": "Requires query normalization and case-insensitive header handling without network client runtime.",
     "level": "high",
@@ -46,12 +14,6 @@
       "data_model_coupling",
       "third_party_dependency_coupling"
     ]
-  },
-  "output": {
-    "callable": "build_url",
-    "import": "from featurelifted import build_url, normalize_headers, CIMultiDict, InvalidHeaderName",
-    "package": "featurelifted",
-    "signature": "build_url(base: str, params: list[tuple[str, str]])"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped build_url normalize_headers into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "client/server runtime",
+      "async I/O"
+    ],
+    "included_behaviors": [
+      "URL query merging",
+      "CIMultiDict headers",
+      "header validation"
+    ],
+    "name": "build_url normalize_headers",
+    "source_entrypoints": [
+      "aiohttp.helpers.build_url"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "build_url",
+    "import": "from featurelifted import build_url, normalize_headers, CIMultiDict, InvalidHeaderName",
+    "package": "featurelifted",
+    "signature": "build_url(base: str, params: list[tuple[str, str]])"
+  },
+  "source": {
+    "commit": "649887ca860437e610fc4af5c8363a9be6f19681",
+    "license": "Apache-2.0",
+    "name": "aiohttp",
+    "url": "https://github.com/aio-libs/aiohttp.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "third-party dependency coupling",
+    "data_model_coupling"
+  ],
+  "task_id": "aiohttp__url_params_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

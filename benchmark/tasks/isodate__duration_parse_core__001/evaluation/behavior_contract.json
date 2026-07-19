@@ -1,0 +1,239 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_duration_full_components",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "b4e9bc387c6b54f1839896ceec586f42693526222a6ddc7bb0dd7980346028b6"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_duration_comma_decimal_hours",
+      "public_clause_ids": [
+        "B001",
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B003"
+        ],
+        "test_source_sha256": "be3c24e1749ad940163a4bad9a55ea01fe1343955e203667eaa4a37b45ca4624"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_duration_totimedelta_with_start",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B002"
+        ],
+        "test_source_sha256": "dbcbf35932606318407f8ac1775ba17a5f030b9df080413561b904c918eb807d"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_duration_isoformat_timedelta",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B002"
+        ],
+        "test_source_sha256": "406e2f8d5cebf4f38bcf8fcd2161198ecd6610647be0ec56a702a21fb9d1bcbd"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_invalid_raises",
+      "public_clause_ids": [
+        "B001",
+        "B004"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001",
+          "B004"
+        ],
+        "pass_2_ast_mapping": [
+          "B001",
+          "B004"
+        ],
+        "test_source_sha256": "2ff2bf84863056384c63bd103c46734c5a946aff57eacc2b0d9cab733992367c"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_isodate_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "review_evidence": {
+        "decision": "public_isolation_constraint",
+        "pass_1_nodeid_mapping": [],
+        "pass_2_ast_mapping": [],
+        "test_source_sha256": "14d1bdcd3327668c9337f97c8cb67553dd1298c619153a9aa1b760c25cb43843"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "parse P-period durations to timedelta or Duration"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "duration_isoformat for Duration and timedelta"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "decimal comma fractions in components"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
+      "text": "ISO8601Error on invalid input"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: isodate"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_parse_duration_days_hours",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "4b42ead7482889be219fe4a3971fb29911ddfd6c0d21299d9c738031de1bd4e9"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_parse_duration_weeks",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "c837d8a8b5b2381230b9a8703ead88ea43a4a0c10dafd7107d55eb714c07f072"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_duration_isoformat",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "336cf7e8d724dca1b543c1cc8b0038aeee091c84ec5e462d7c5f441bbf9cb132"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 0,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "parser_state_coupling",
+    "data_model_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "86ad430eeff9d2d6348e0c48783ef6739c88e5b10c954de1f957cfc07cc5ee61",
+  "task_id": "isodate__duration_parse_core__001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

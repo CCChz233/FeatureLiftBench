@@ -1,0 +1,179 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_dedupe_keeps_last_sku_row",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B004"
+        ],
+        "pass_2_ast_mapping": [
+          "B004"
+        ],
+        "test_source_sha256": "0b5a4032a9b939adc2c3435e23709c93fab01d069a009339cb7e53ef518e04e7"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_by_aggregates_quantity_and_price",
+      "public_clause_ids": [
+        "B002",
+        "B005"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002",
+          "B005"
+        ],
+        "pass_2_ast_mapping": [
+          "B002",
+          "B005"
+        ],
+        "test_source_sha256": "0ed9a7aa18ad11b5173b1981cd28afd93e06ab710d053f541ce7bfcd7d7534ca"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_rows_are_dropped",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B003"
+        ],
+        "test_source_sha256": "fd316ef636c7ebf161c0e15a6a2cb94825ee2ca8ac5042810324b8579cf0e58c"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "parse CSV text into row dicts"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "normalize headers and coerce quantity/unit_price fields"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "drop invalid rows and enforce minimum quantity"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
+      "text": "dedupe rows by sku keeping last occurrence"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
+      "text": "optionally aggregate rows by a grouping key"
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
+      "text": "sort stable output when not aggregating"
+    },
+    {
+      "behavior_id": "B007",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B008",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_transform_normalizes_headers_and_filters_min_quantity",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "2300fad73709485715be4dcdc5646292ba65df09459bc00b15113d206f024b55"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_transform_sorts_by_sku_when_not_grouping",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B006"
+        ],
+        "pass_2_ast_mapping": [
+          "B006"
+        ],
+        "test_source_sha256": "33536d6cc030594b9ce11057196c2d7b8bd8bef5cfe2d722c5080ba9766e398a"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 0,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "legacy_vibe_clutter",
+    "implicit_dependency_coupling",
+    "global_state_registry_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "bd94e83b241a215d7364cef2295abedf1a26a830eff2e998be671228cbfc9fb3",
+  "task_id": "vibe_app__csv_transform_core__001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

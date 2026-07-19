@@ -68,11 +68,12 @@ Reject repositories or slices that:
 
 ## Current Python Split Notes
 
-Local metadata scan on 2026-07-06:
+Local metadata scan on 2026-07-19:
 
-- `benchmark/tasks/`: 100 Python tasks.
-- Unique source names: 75.
-- Metadata difficulty: all 100 tasks marked `hard`.
-- Concentrated sources include `vibe_app` with 7 tasks, `coveragepy` with 5, `jinja2` with 5, `pytest` with 4, `sqlparse` with 4, and `lark` with 3.
+- `benchmark/tasks/`: 150 Python tasks (core-100 + hard50).
+- Unique source names: 121.
+- Metadata difficulty: all 150 tasks marked `hard`.
+- Concentrated sources include `vibe_app` with 7 tasks, `jinja2` with 5, `pytest` with 5, `coveragepy` with 5, `sqlparse` with 4, and `lark` with 3.
+- Smoke tasks: 3 in `benchmark/sanity/` (not counted in main split).
 
 TODO: compute repository LOC and installation score consistently for all accepted sources.

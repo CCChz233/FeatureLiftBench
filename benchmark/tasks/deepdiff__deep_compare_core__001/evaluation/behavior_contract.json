@@ -1,0 +1,189 @@
+{
+  "hidden_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_dict_change",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "ef6cb1045da9c754ca50541d41d2d1500406f9563fc2bf6d8ffb49fe6a1ed645"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_exclude_paths_wildcard",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B002"
+        ],
+        "pass_2_ast_mapping": [
+          "B002"
+        ],
+        "test_source_sha256": "483f954ff194d45d602d677194b1f931012759f9b0d391c07e4cfc73dc63a4bf"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_list_item_added",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "bd764b27a7858bd4a9492ee48012e517570410de63d61ec30a12343c70765cd5"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_path_and_extract",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B003"
+        ],
+        "pass_2_ast_mapping": [
+          "B003"
+        ],
+        "test_source_sha256": "0c7c7fc259fb9e39811387fc6c9df299a906b679b4cfd203023f3196d35c8e59"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_deepdiff_import_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "review_evidence": {
+        "decision": "public_isolation_constraint",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "e1cda7104e9949d4d7a560d462383916418eae63733cf9dbb9eb29e46a158c3b"
+      }
+    }
+  ],
+  "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
+      "text": "DeepDiff dict/list value changes"
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
+      "text": "exclude_paths and include_paths filtering"
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
+      "text": "parse_path and extract by path expression"
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "api_surface",
+      "spec_anchor": "metadata.json#/output/import",
+      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "isolation_constraint",
+      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "text": "the submitted package does not import forbidden upstream packages: deepdiff"
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_shallow_dict_diff",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [
+          "B001"
+        ],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "862797f1af5cdd0e83a79eed872f6d6332b2cc92685432a16229ee3345fa9187"
+      }
+    },
+    {
+      "mapping_method": "ai_assisted",
+      "nodeid": "public_tests/test_public_api.py::test_identical_nested",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "review_evidence": {
+        "decision": "full_test_ast_semantic_score",
+        "pass_1_nodeid_mapping": [],
+        "pass_2_ast_mapping": [
+          "B001"
+        ],
+        "test_source_sha256": "3a7e759228fb93212c2e85bf71de6711b7a646c65b3e333de43f93f4c7f68eeb"
+      }
+    }
+  ],
+  "review": {
+    "api_fallback_count": 0,
+    "conflict_count": 0,
+    "formal_human_double_review_pending": true,
+    "pass_1": {
+      "input_scope": "frozen public clauses and test nodeids",
+      "reviewer_id": "codex_semantic_nodeid_pass",
+      "reviewer_type": "ai_assisted_author"
+    },
+    "pass_2": {
+      "input_scope": "frozen public clauses and local test AST",
+      "reviewer_id": "codex_ast_body_pass",
+      "reviewer_type": "ai_assisted_second_pass_not_independent_human"
+    },
+    "protocol_version": "behavior_ai_review.v1"
+  },
+  "review_status": "ai_assisted_reviewed",
+  "risk_tags": [
+    "data_model_coupling",
+    "parser_state_coupling"
+  ],
+  "schema_version": "featureliftbench.behavior_contract.v1",
+  "spec_authored_from": [
+    "metadata.json#/feature/name",
+    "metadata.json#/feature/description",
+    "metadata.json#/feature/included_behaviors",
+    "metadata.json#/feature/excluded_behaviors",
+    "metadata.json#/output"
+  ],
+  "spec_sha256": "3d53021ef886ceaf360a3984d173e66d23d28cdc27bb85826503be8ced0d8e27",
+  "task_id": "deepdiff__deep_compare_core__001",
+  "unmapped_hidden_test_nodeids": [],
+  "unmapped_public_test_nodeids": []
+}

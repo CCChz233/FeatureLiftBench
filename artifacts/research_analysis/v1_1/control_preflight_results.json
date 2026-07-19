@@ -1,0 +1,504 @@
+{
+  "acceptance_checks": [
+    {
+      "alternative_three_stable_passes": true,
+      "copy_heavy_detected": true,
+      "copy_heavy_functional_pass": true,
+      "narrow_public_runnable": true,
+      "narrow_rejected_by_hidden": true,
+      "task_id": "boltons__iterutils_core__001"
+    },
+    {
+      "alternative_three_stable_passes": true,
+      "copy_heavy_detected": true,
+      "copy_heavy_functional_pass": true,
+      "narrow_public_runnable": true,
+      "narrow_rejected_by_hidden": true,
+      "task_id": "pluggy__hook_specs_core__001"
+    }
+  ],
+  "automated_functional_gate_passed": true,
+  "engineering_scope_decision": {
+    "batch_size": 2,
+    "completed_task_ids": [
+      "boltons__iterutils_core__001",
+      "pluggy__hook_specs_core__001"
+    ],
+    "mandatory_variants": [
+      "alternative_v11",
+      "copy_heavy_v11",
+      "narrow_v11"
+    ],
+    "paper_claim_boundary": "The two-task functional feasibility result is usable; no labor-cost claim is allowed until the prospective log is complete.",
+    "remaining_task_ids": [
+      "pydantic_v1__validation_error_core__001",
+      "coverage__config_merge_core__001",
+      "lark__grammar_loader_core__001",
+      "websockets__handshake_parse_core__001",
+      "schema__nested_validate_core__hard3_001",
+      "requests_cache__cache_key_core__hard3_001",
+      "sqlparse__format_filters_core__001",
+      "celery__signal_dispatch_core__hard3_001"
+    ],
+    "status": "proceed_staged_with_prospective_logging",
+    "stop_conditions": [
+      "any submission exceeds two non-environment repair rounds",
+      "prospective total projects above ten person-days",
+      "alternative cannot pass three isolated Oracle-equivalent evaluations"
+    ]
+  },
+  "interpretation_boundary": "The automated functionality/discrimination gate is auditable. The workload gate remains unverified until authors supply time and rework logs.",
+  "records": [
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.107258,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 4,
+      "reference_loc": 1240,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/boltons__iterutils_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 133,
+      "task_id": "boltons__iterutils_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.107258,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 4,
+      "reference_loc": 1240,
+      "repeat": "rep-2",
+      "result_path": "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-2/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/boltons__iterutils_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 133,
+      "task_id": "boltons__iterutils_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.107258,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 4,
+      "reference_loc": 1240,
+      "repeat": "rep-3",
+      "result_path": "experiments/v1_1_control_preflight/boltons__iterutils_core__001/alternative_v11/rep-3/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/boltons__iterutils_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 133,
+      "task_id": "boltons__iterutils_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "copy_heavy_pass",
+      "copied_file_count": 7,
+      "copied_fraction": 0.995221,
+      "copied_loc": 4373,
+      "copy_detection": {
+        "evidence": {
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/dictutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/dictutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/listutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/setutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/funcutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/funcutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/iterutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/iterutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/listutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/dictutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/listutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/setutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/mathutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/mathutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/setutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/dictutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/listutils.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/setutils.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11/featurelifted/typeutils.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/boltons__iterutils_core__001/repo/boltons/typeutils.py"
+          ]
+        },
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 3133,
+      "external_dependencies": [
+        "future_builtins"
+      ],
+      "external_dependency_count": 1,
+      "extraction_ratio_to_reference": 3.543548,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 4,
+      "reference_loc": 1240,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/boltons__iterutils_core__001/copy_heavy_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/boltons__iterutils_core__001/copy_heavy_v11",
+      "submitted_file_count": 9,
+      "submitted_loc": 4394,
+      "task_id": "boltons__iterutils_core__001",
+      "unapproved_external_dependencies": [
+        "future_builtins"
+      ],
+      "unapproved_external_dependency_count": 1,
+      "variant": "copy_heavy_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "non_functional",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.050806,
+      "forbidden_source_import": false,
+      "functional_pass": false,
+      "hidden_pass": false,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 4,
+      "reference_loc": 1240,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/boltons__iterutils_core__001/narrow_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "failed",
+      "submission_path": "benchmark/submissions/boltons__iterutils_core__001/narrow_v11",
+      "submitted_file_count": 2,
+      "submitted_loc": 63,
+      "task_id": "boltons__iterutils_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "narrow_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.140056,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 7,
+      "reference_loc": 714,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/pluggy__hook_specs_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 100,
+      "task_id": "pluggy__hook_specs_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.140056,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 7,
+      "reference_loc": 714,
+      "repeat": "rep-2",
+      "result_path": "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-2/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/pluggy__hook_specs_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 100,
+      "task_id": "pluggy__hook_specs_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "compact_pass",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.140056,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 7,
+      "reference_loc": 714,
+      "repeat": "rep-3",
+      "result_path": "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/alternative_v11/rep-3/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/pluggy__hook_specs_core__001/alternative_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 100,
+      "task_id": "pluggy__hook_specs_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "alternative_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "copy_heavy_pass",
+      "copied_file_count": 12,
+      "copied_fraction": 0.997199,
+      "copied_loc": 1424,
+      "copy_detection": {
+        "evidence": {
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/__init__.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/__init__.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_callers.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_callers.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_hooks.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_hooks.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_manager.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_manager.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_hooks.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_manager.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/__init__.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/__init__.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/_callers.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_callers.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/_hooks.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_hooks.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_manager.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/_manager.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_hooks.py",
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_manager.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/_result.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_result.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_redundant_snapshot/_tracing.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_tracing.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_result.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_result.py"
+          ],
+          "/Users/chz/code/FeatureLiftBench/benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11/featurelifted/_tracing.py": [
+            "/Users/chz/code/FeatureLiftBench/benchmark/tasks/pluggy__hook_specs_core__001/repo/pluggy/_tracing.py"
+          ]
+        },
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 710,
+      "external_dependencies": [
+        "importlib_metadata"
+      ],
+      "external_dependency_count": 1,
+      "extraction_ratio_to_reference": 2.0,
+      "forbidden_source_import": false,
+      "functional_pass": true,
+      "hidden_pass": true,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 7,
+      "reference_loc": 714,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/copy_heavy_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "passed",
+      "submission_path": "benchmark/submissions/pluggy__hook_specs_core__001/copy_heavy_v11",
+      "submitted_file_count": 16,
+      "submitted_loc": 1428,
+      "task_id": "pluggy__hook_specs_core__001",
+      "unapproved_external_dependencies": [
+        "importlib_metadata"
+      ],
+      "unapproved_external_dependency_count": 1,
+      "variant": "copy_heavy_v11"
+    },
+    {
+      "build_pass": true,
+      "closure_gold_file_completeness": "complete",
+      "compactness_class": "non_functional",
+      "copied_file_count": 0,
+      "copied_fraction": 0.0,
+      "copied_loc": 0,
+      "copy_detection": {
+        "evidence": {},
+        "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+        "method": "normalized_nonempty_line_sequence",
+        "minimum_matching_run": 3
+      },
+      "excess_copied_loc": 0,
+      "external_dependencies": [],
+      "external_dependency_count": 0,
+      "extraction_ratio_to_reference": 0.067227,
+      "forbidden_source_import": false,
+      "functional_pass": false,
+      "hidden_pass": false,
+      "path_leakage": false,
+      "public_pass": true,
+      "reference_file_count": 7,
+      "reference_loc": 714,
+      "repeat": "rep-1",
+      "result_path": "experiments/v1_1_control_preflight/pluggy__hook_specs_core__001/narrow_v11/rep-1/result.json",
+      "runtime_dependency_count": 0,
+      "status": "failed",
+      "submission_path": "benchmark/submissions/pluggy__hook_specs_core__001/narrow_v11",
+      "submitted_file_count": 3,
+      "submitted_loc": 48,
+      "task_id": "pluggy__hook_specs_core__001",
+      "unapproved_external_dependencies": [],
+      "unapproved_external_dependency_count": 0,
+      "variant": "narrow_v11"
+    }
+  ],
+  "schema_version": "featureliftbench.control_preflight.v1",
+  "tasks": [
+    "boltons__iterutils_core__001",
+    "pluggy__hook_specs_core__001"
+  ],
+  "workload_gate": {
+    "maximum_non_environment_rework_rounds_per_submission": 2,
+    "maximum_total_person_hours": 16,
+    "note": "Wall-clock and human authoring time were not instrumented; do not infer them from evaluator runs.",
+    "observed_person_hours": null,
+    "observed_rework_rounds": null,
+    "pilot10_projection_person_days": null,
+    "status": "unverified_missing_prospective_human_log"
+  }
+}

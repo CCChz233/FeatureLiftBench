@@ -1667,6 +1667,33 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertFalse(command_record["configured"])
             self.assertTrue((agent_output / "openhands_task.md").is_file())
 
+    def test_openhands_runner_appends_registered_experiment_condition(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            appendix = root / "condition.md"
+            appendix.write_text("Condition: static closure hint.\n", encoding="utf-8")
+            config = openhands_runner.OpenHandsRunnerConfig(
+                workspace_dir=workspace,
+                task_file=task_file,
+                submission_dir=workspace / "submission",
+                agent_output_dir=root / "agent",
+            )
+
+            with mock.patch.dict(
+                os.environ,
+                {openhands_runner.PROMPT_APPEND_FILE_ENV: str(appendix)},
+                clear=False,
+            ):
+                prompt = openhands_runner._build_openhands_prompt(config)
+
+            self.assertIn("Registered Experimental Condition", prompt)
+            self.assertIn("Condition: static closure hint.", prompt)
+            self.assertIn("does not grant access to hidden tests", prompt)
+
     def test_openhands_runner_executes_command_template_and_merges_usage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

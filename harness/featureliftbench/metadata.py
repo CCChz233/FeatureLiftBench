@@ -102,6 +102,13 @@ def validate_metadata_shape(metadata: dict[str, Any]) -> list[str]:
         elif difficulty not in {"easy", "medium", "hard"}:
             errors.append("field difficulty must be one of: easy, medium, hard")
 
+    split_role = metadata.get("split_role")
+    if split_role is not None:
+        if not isinstance(split_role, str):
+            errors.append(f"field split_role must be str, got {type(split_role).__name__}")
+        elif split_role != "mechanism_challenging":
+            errors.append("field split_role must be: mechanism_challenging")
+
     language = metadata.get("language")
     if language is not None:
         if not isinstance(language, str):

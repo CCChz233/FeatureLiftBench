@@ -48,3 +48,20 @@ The returned Traversable must support:
 
 Public tests cover module anchors, string anchors, basic `files()` traversal, nested text reads, and binary reads.
 Hidden tests cover multiple joinpath segments, slash-separated nested resource paths, encoding behavior, binary mode open, parent traversal rejection, missing resources, and MemoryTraversable compatibility.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — module object and string anchor resolution
+- **B002** — filesystem-backed Traversable root
+- **B003** — MemoryTraversable test tree
+- **B004** — iterdir, is_file, is_dir, name, open, read_bytes, read_text
+- **B005** — joinpath and / traversal
+- **B006** — read_text and read_binary helpers
+- **B007** — TraversalError for parent traversal and missing resources
+- **B008** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B009** — the submitted package does not import forbidden upstream packages: importlib_resources
+<!-- featureliftbench:behavior-clauses:end -->

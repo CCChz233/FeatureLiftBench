@@ -47,3 +47,20 @@ Public tests cover linear graph construction, merge-head calculation, branch-lab
 ## Hidden Test Intent
 
 Hidden tests cover multiple-head rejection, branch-label propagation to descendants, dependency-aware ancestry, missing revision errors, cycle detection, and symbolic `head` / `base` resolution.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — Revision object normalization
+- **B002** — RevisionMap graph construction
+- **B003** — versioned head and base calculation
+- **B004** — branch label resolution and propagation
+- **B005** — dependency-aware ancestry
+- **B006** — symbolic head/base lookup
+- **B007** — missing revision, multiple head, and cycle errors
+- **B008** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B009** — the submitted package does not import forbidden upstream packages: alembic, sqlalchemy
+<!-- featureliftbench:behavior-clauses:end -->

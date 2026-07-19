@@ -1,0 +1,247 @@
+{
+  "constraints": [
+    {
+      "constraint": "task_count",
+      "observed": 20,
+      "required": 20,
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "unique_source_repositories",
+      "observed": 20,
+      "required": 20,
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "split",
+      "observed": {
+        "core100": 13,
+        "hard50": 7
+      },
+      "required": {
+        "core100": 13,
+        "hard50": 7
+      },
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "feature_family",
+      "observed": {
+        "algorithm_data_structure": 1,
+        "cache_retry_policy": 2,
+        "config_resolve_discover": 2,
+        "parse_tokenize_decode": 4,
+        "protocol_state_transition": 1,
+        "registry_plugin_dispatch": 3,
+        "resource_metadata_loading": 2,
+        "serialize_format_render": 2,
+        "validate_normalize_construct": 2,
+        "workflow_session_orchestration": 1
+      },
+      "required": [
+        "parse_tokenize_decode",
+        "protocol_state_transition",
+        "validate_normalize_construct",
+        "serialize_format_render",
+        "registry_plugin_dispatch",
+        "config_resolve_discover",
+        "resource_metadata_loading",
+        "algorithm_data_structure",
+        "cache_retry_policy",
+        "workflow_session_orchestration"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "repository_domain",
+      "observed": {
+        "application": 2,
+        "configuration": 2,
+        "data_modeling": 2,
+        "general_utility": 5,
+        "networking": 2,
+        "packaging": 1,
+        "parsing": 5,
+        "testing": 1
+      },
+      "required": [
+        "parsing",
+        "data_modeling",
+        "testing",
+        "configuration",
+        "packaging",
+        "networking",
+        "general_utility",
+        "application"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "entanglement_mechanism",
+      "observed": {
+        "config_environment": 3,
+        "data_model_invariant": 15,
+        "dynamic_import_plugin": 7,
+        "framework_lifecycle": 6,
+        "global_state_registry": 2,
+        "implicit_runtime_dependency": 14,
+        "parser_state": 6,
+        "resource_packaging": 3,
+        "static_transitive_dependency": 16,
+        "third_party_contract": 1
+      },
+      "required": [
+        "static_transitive_dependency",
+        "implicit_runtime_dependency",
+        "data_model_invariant",
+        "parser_state",
+        "framework_lifecycle",
+        "global_state_registry",
+        "config_environment",
+        "resource_packaging",
+        "dynamic_import_plugin",
+        "third_party_contract"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "repository_archetype",
+      "observed": {
+        "application_service": 1,
+        "developer_tooling": 4,
+        "framework_plugin": 2,
+        "library": 13
+      },
+      "required": [
+        "library",
+        "framework_plugin",
+        "developer_tooling",
+        "application_service"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "closure_depth",
+      "observed": {
+        "deep": 3,
+        "medium": 4,
+        "shallow": 13
+      },
+      "required": [
+        "shallow",
+        "medium",
+        "deep"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "statefulness",
+      "observed": {
+        "global_state": 1,
+        "lifecycle_state": 6,
+        "local_state": 6,
+        "session_state": 1,
+        "stateless": 6
+      },
+      "required": [
+        "stateless",
+        "local_state",
+        "session_state",
+        "global_state",
+        "lifecycle_state"
+      ],
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    },
+    {
+      "constraint": "provenance",
+      "observed": {
+        "curated_vibe": 1,
+        "real_oss_mature": 19
+      },
+      "required": {
+        "curated_vibe": 1,
+        "real_oss_mature": 19
+      },
+      "satisfied": true,
+      "selection_mode": "exact_constraints",
+      "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+      "taxonomy_version": "v1",
+      "uncovered_values": []
+    }
+  ],
+  "schema_version": "featureliftbench.representative_constraint_audit.v1",
+  "seed": 20260714,
+  "selection_mode": "exact_constraints",
+  "task_ids": [
+    "alembic__revision_map_core__hard3_001",
+    "astroid__nodes_core__001",
+    "click__lazy_command_core__hard3_001",
+    "fsspec__url_chain_core__hard3_001",
+    "h11__message_parse_core__001",
+    "humanize__naturaltime_core__001",
+    "isodate__duration_parse_core__001",
+    "jinja2__loader_inheritance_core__001",
+    "parso__python_parse_core__001",
+    "phonenumbers__parse_format_core__001",
+    "pluggy__hook_call_order__001",
+    "pydantic_settings__env_source_core__001",
+    "pytest__skipif_eval_core__001",
+    "pyyaml__safe_load_dump__001",
+    "returns__result_pipeline_core__hard3_001",
+    "setuptools_scm__version_normalize_core__hard3_001",
+    "trafaret__validation_rules_core__hard3_001",
+    "urllib3__retry_backoff_core__001",
+    "vibe_app__plugin_registry_core__001",
+    "yamale__schema_validate_core__hard3_001"
+  ],
+  "taxonomy_sha256": "b81f1a9d7959eced4c3f6879a7717e752c184bc074901ecc67be652f7009c3f8",
+  "taxonomy_version": "v1",
+  "uncovered_values": {
+    "closure_depth": [],
+    "entanglement_mechanism": [],
+    "feature_family": [],
+    "provenance": [],
+    "repository_archetype": [],
+    "repository_domain": [],
+    "split": [],
+    "statefulness": [],
+    "task_count": [],
+    "unique_source_repositories": []
+  }
+}

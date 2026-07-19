@@ -20,3 +20,17 @@ from featurelifted import MockResponseRegistry, MockResponse, query_string_match
 - Forbidden imports: `responses`.
 - Allowed dependency: `requests` from `requirements.lock`.
 - No real network or adapter patching.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — PreparedRequest matching
+- **B002** — matcher helpers
+- **B003** — registry find/add/reset
+- **B004** — call history
+- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B006** — the submitted package does not import forbidden upstream packages: responses
+<!-- featureliftbench:behavior-clauses:end -->

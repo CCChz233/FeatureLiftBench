@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -94,6 +95,32 @@ class ValidateTaskTests(unittest.TestCase):
             result = validate_task(task_dir)
 
             self.assertTrue(result.valid, result.errors)
+
+    def test_behavior_contract_rejects_unknown_clause_and_spec_drift(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = _make_task(Path(tmp), "sample_task")
+            task_text = "# Task\n\n- **B001** — parse input\n"
+            (task_dir / "TASK.md").write_text(task_text, encoding="utf-8")
+            contract = {
+                "task_id": "sample_task",
+                "spec_sha256": hashlib.sha256(b"different").hexdigest(),
+                "public_clauses": [{"behavior_id": "B001", "text": "parse input"}],
+                "public_test_mappings": [],
+                "hidden_test_mappings": [
+                    {"nodeid": "hidden_tests/test_hidden.py::test_parse", "public_clause_ids": ["B999"]}
+                ],
+            }
+            (task_dir / "evaluation" / "behavior_contract.json").write_text(
+                json.dumps(contract), encoding="utf-8"
+            )
+
+            result = validate_task(task_dir)
+
+            self.assertIn(
+                "behavior contract hidden_test_mappings references unknown clauses: B999",
+                result.errors,
+            )
+            self.assertIn("behavior contract spec_sha256 does not match TASK.md", result.errors)
 
 
 def _make_task(root: Path, dirname: str, metadata_task_id: str | None = None) -> Path:

@@ -1,6 +1,8 @@
 # Batch-1 出题标准流程（Playbook）
 
-**最后更新：** 2026-06-28
+> **归档说明（2026-07-19）：** 本文是 batch-1 扩题（50→100 hard）的历史执行标准。现行主榜为 **150 hard**（+ batch-3 hard50）；当前状态 [docs/STATUS.md](docs/STATUS.md)；扩题政策 [docs/07_incremental_task_rules.md](docs/07_incremental_task_rules.md)。
+
+**最后更新：** 2026-06-28（内容冻结为历史参考）
 
 本文是 batch-1 扩题（50 → 100 hard）的**唯一执行标准**。`httpx__request_model_core__001` 与 `pydantic_v1__validation_error_core__001` 两题作为 pilot 参考；其中 `pydantic` 暴露了 **Flash 近 oracle copy 也能 functional pass** 的风险，后续按本文更严格的校准规则执行。
 
@@ -10,7 +12,7 @@
 | 仓库池 | [docs/python/01_python_repo_selection_criteria.md](docs/python/01_python_repo_selection_criteria.md) | 已接受 repo、待选 repo 数量目标、同仓上限 |
 | 质量评审 | [docs/python/03_python_difficulty_rubric.md](docs/python/03_python_difficulty_rubric.md) | Cursor/Agent 生成题后的客观入榜标准 |
 | 工程 backlog | [TODO.md](TODO.md) | 当前 sprint、进度表、优先级 |
-| 政策 | [docs/EXPANSION.md](docs/EXPANSION.md) | 选题原则、staging 政策、进度表 |
+| 政策 | [docs/07_incremental_task_rules.md](docs/07_incremental_task_rules.md) | 选题原则、staging 政策、promote gate |
 | 格式 | [docs/06_task_schema.md](docs/06_task_schema.md) | `metadata.json`、目录布局、评分公式 |
 | 设计 | [docs/task_designs/TEMPLATE.md](docs/task_designs/TEMPLATE.md) | 单题人类设计笔记模板 |
 | 契约 | [docs/03_evaluator_and_scoring.md](docs/03_evaluator_and_scoring.md) | 论文/复现口径 |
@@ -457,9 +459,7 @@ python3 harness/scripts/verify_all_oracles.py --task-id <task_id>
 
 **文档更新（checklist）：**
 
-- [ ] `docs/python/02_python_repo_task_inventory.md` — 加一行，更新主榜计数
-- [ ] `docs/EXPANSION.md` — 进度表
-- [ ] `docs/python/01_python_repo_selection_criteria.md` — 更新 repo 状态与同仓计数
+- [ ] `docs/STATUS.md` / `docs/python/02_python_repo_task_inventory.md` — 更新主榜计数
 - [ ] `docs/07_incremental_task_rules.md` — 如流程变化，更新生命周期规则
 - [ ] `docs/task_designs/<task_id>.md` — 填 Result 表 + Agent Calibration
 - [ ] `TODO.md` — 当前题指针移到下一道 shortlist
@@ -485,7 +485,7 @@ reuse 不成立、oracle 做不出、与 batch-0 重复、validate 过不了 →
 
 ## 当前队列与补位规则
 
-**进度：** 主榜 **100/100**（batch-1 已入榜 **50**）。batch-1 扩题 **已完成**。
+**进度（batch-1 归档）：** 当时主榜 **100/100**（batch-1 已入榜 **50**）。**现行（2026-07-19）：** 主榜 **150/150 hard** — [docs/STATUS.md](docs/STATUS.md) · batch-3 摘要 [reports/python_hard_batch3_sprint_summary.md](reports/python_hard_batch3_sprint_summary.md)。
 
 Agent 选下一题时按以下顺序，不需要人工重新排序：
 

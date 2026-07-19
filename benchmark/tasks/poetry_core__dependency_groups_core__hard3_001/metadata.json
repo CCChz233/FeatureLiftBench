@@ -1,37 +1,5 @@
 {
-  "task_id": "poetry_core__dependency_groups_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "metadata extraction / package discovery",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "5de24118d23a05a23af5d9eb1d8bd98850d09205",
-    "license": "MIT",
-    "name": "poetry_core",
-    "url": "https://github.com/python-poetry/poetry-core.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped pep 621 metadata and dependency group resolver into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "package build",
-      "wheel/sdist generation"
-    ],
-    "included_behaviors": [
-      "PEP 621 dependency parsing",
-      "dependency groups",
-      "include-group resolution"
-    ],
-    "name": "PEP 621 metadata and dependency group resolver",
-    "source_entrypoints": [
-      "poetry.core.packages.dependency_group.DependencyGroup"
-    ]
-  },
   "entanglement": {
     "description": "Requires dependency groups, includes, and normalization across transitive group closure.",
     "level": "high",
@@ -46,12 +14,6 @@
       "data_model_coupling",
       "config_environment_coupling"
     ]
-  },
-  "output": {
-    "callable": "parse_project_dependencies",
-    "import": "from featurelifted import parse_project_dependencies, resolve_group, DependencyGroup, DependencySpec",
-    "package": "featurelifted",
-    "signature": "parse_project_dependencies(project: dict)"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -73,6 +35,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped pep 621 metadata and dependency group resolver into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "package build",
+      "wheel/sdist generation"
+    ],
+    "included_behaviors": [
+      "PEP 621 dependency parsing",
+      "dependency groups",
+      "include-group resolution"
+    ],
+    "name": "PEP 621 metadata and dependency group resolver",
+    "source_entrypoints": [
+      "poetry.core.packages.dependency_group.DependencyGroup"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "parse_project_dependencies",
+    "import": "from featurelifted import parse_project_dependencies, resolve_group, DependencyGroup, DependencySpec",
+    "package": "featurelifted",
+    "signature": "parse_project_dependencies(project: dict)"
+  },
+  "source": {
+    "commit": "5de24118d23a05a23af5d9eb1d8bd98850d09205",
+    "license": "MIT",
+    "name": "poetry_core",
+    "url": "https://github.com/python-poetry/poetry-core.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "metadata extraction / package discovery",
+    "data_model_coupling"
+  ],
+  "task_id": "poetry_core__dependency_groups_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

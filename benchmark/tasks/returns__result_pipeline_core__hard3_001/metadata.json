@@ -1,19 +1,36 @@
 {
-  "task_id": "returns__result_pipeline_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "rule / policy engine",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "b158f518a6a32b7d4648e88c9819626ca6082354",
-    "license": "BSD-3-Clause",
-    "name": "returns",
-    "url": "https://github.com/dry-python/returns.git"
+  "entanglement": {
+    "description": "Container methods, decorators, and error propagation require semantic fidelity across Result helpers.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "Failure short-circuits map/bind",
+      "safe decorator exception mapping",
+      "Success value access",
+      "bind chains preserve errors"
+    ],
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "returns"
+    ],
+    "forbidden_imports": [
+      "returns"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "returns/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped result success failure safe into featurelifted.",
@@ -33,44 +50,28 @@
       "returns.pipeline.safe"
     ]
   },
-  "entanglement": {
-    "description": "Container methods, decorators, and error propagation require semantic fidelity across Result helpers.",
-    "level": "high",
-    "primary": "data_model_coupling",
-    "signals": [
-      "Failure short-circuits map/bind",
-      "safe decorator exception mapping",
-      "Success value access",
-      "bind chains preserve errors"
-    ],
-    "types": [
-      "data_model_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "Success",
     "import": "from featurelifted import Result, Success, Failure, safe",
     "package": "featurelifted",
     "signature": "Success(value)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "returns"
-    ],
-    "forbidden_imports": [
-      "returns"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "returns/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "b158f518a6a32b7d4648e88c9819626ca6082354",
+    "license": "BSD-3-Clause",
+    "name": "returns",
+    "url": "https://github.com/dry-python/returns.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "data_model_coupling"
+  ],
+  "task_id": "returns__result_pipeline_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

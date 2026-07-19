@@ -1,62 +1,22 @@
 {
-  "task_id": "json_logic__evaluator_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "rule / policy engine",
-    "parser_state_coupling"
-  ],
-  "source": {
-    "commit": "5fda9125eab4178f8f81c7779291940e31e87bab",
-    "license": "MIT",
-    "name": "json_logic",
-    "url": "https://github.com/nadirizr/json-logic-py.git"
-  },
-  "feature": {
-    "name": "JSON logic evaluator with variable resolution",
-    "description": "Extract jsonLogic evaluator.",
-    "source_entrypoints": [
-      "json_logic.jsonLogic"
-    ],
-    "included_behaviors": [
-      "jsonLogic evaluation",
-      "var paths",
-      "short-circuit and/or"
-    ],
-    "excluded_behaviors": [
-      "network access",
-      "original repository import at runtime"
-    ]
-  },
   "entanglement": {
+    "description": "Rules, truthiness, and variable path resolution interact across operator dispatch.",
     "level": "high",
     "primary": "parser_state_coupling",
-    "types": [
-      "parser_state_coupling",
-      "data_model_coupling"
-    ],
-    "description": "Rules, truthiness, and variable path resolution interact across operator dispatch.",
     "signals": [
       "short-circuit and/or",
       "nested var paths",
       "numeric coercion"
+    ],
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
     ]
   },
-  "output": {
-    "package": "featurelifted",
-    "import": "from featurelifted import jsonLogic",
-    "callable": "jsonLogic",
-    "signature": "jsonLogic(rules, data=None)"
-  },
   "environment": {
-    "python": "3.11",
-    "network": false,
-    "timeout_seconds": 90,
-    "dependency_lock": "requirements.lock",
     "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
     "forbidden_dependencies": [
       "json_logic"
     ],
@@ -66,11 +26,52 @@
     "forbidden_paths": [
       "repo/",
       "json_logic/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
+  },
+  "feature": {
+    "description": "Extract jsonLogic evaluator.",
+    "excluded_behaviors": [
+      "network access",
+      "original repository import at runtime"
+    ],
+    "included_behaviors": [
+      "jsonLogic evaluation",
+      "var paths",
+      "short-circuit and/or"
+    ],
+    "name": "JSON logic evaluator with variable resolution",
+    "source_entrypoints": [
+      "json_logic.jsonLogic"
     ]
   },
+  "language": "python",
+  "output": {
+    "callable": "jsonLogic",
+    "import": "from featurelifted import jsonLogic",
+    "package": "featurelifted",
+    "signature": "jsonLogic(rules, data=None)"
+  },
+  "source": {
+    "commit": "5fda9125eab4178f8f81c7779291940e31e87bab",
+    "license": "MIT",
+    "name": "json_logic",
+    "url": "https://github.com/nadirizr/json-logic-py.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "parser_state_coupling"
+  ],
+  "task_id": "json_logic__evaluator_core__hard3_001",
   "tests": {
     "command": "pytest",
-    "public": "public_tests/",
-    "hidden": "hidden_tests/"
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
   }
 }

@@ -35,6 +35,30 @@ def rewrite_source(text: str, package: str) -> str:
     return text
 
 
+def _rewrite_package_string_paths(text: str, package: str, *, replacement: str = "featurelifted") -> str:
+    return text.replace(f"{package}.", f"{replacement}.")
+
+
+def _vendor_site_package(dst_parent: Path, package_name: str, *, rel_path: str) -> None:
+    import importlib.util
+
+    spec = importlib.util.find_spec(package_name)
+    if spec is None or not spec.origin:
+        raise SystemExit(
+            f"cannot vendor {package_name!r}: install it in the build environment first "
+            f"(pip install {package_name})"
+        )
+    src = Path(spec.origin).resolve().parent
+    dst = dst_parent / rel_path
+    if dst.exists():
+        shutil.rmtree(dst)
+    shutil.copytree(
+        src,
+        dst,
+        ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"),
+    )
+
+
 def copy_tree(
     src_root: Path,
     dst_root: Path,
@@ -1158,7 +1182,10 @@ def vendor_markupsafe(dst_root: Path) -> None:
 
     tarball = VENDOR_WHEELS_DIR / "MarkupSafe-2.1.5.tar.gz"
     if not tarball.is_file():
-        raise SystemExit(f"missing vendored MarkupSafe source: {tarball}")
+        # Every Jinja task pins MarkupSafe in requirements.lock.  Vendoring is
+        # an optional offline optimization, not part of the submission's
+        # required closure, so a clean checkout must remain materializable.
+        return
     dst = dst_root / "featurelifted" / "vendor" / "markupsafe"
     if dst.exists():
         shutil.rmtree(dst)
@@ -1188,6 +1215,33 @@ if _vendor.is_dir() and str(_vendor) not in sys.path:
 '''
 
 
+JINJA2_RUNTIME_IMPORT_REPLACEMENTS = {
+    "compiler.py": {
+        'self.writeline("from jinja2.runtime import " + ", ".join(exported_names))':
+            'self.writeline("from featurelifted.runtime import " + ", ".join(exported_names))',
+    },
+    "loaders.py": {
+        "from jinja2 import BaseLoader, TemplateNotFound":
+            "from featurelifted import BaseLoader, TemplateNotFound",
+    },
+    "utils.py": {
+        "from jinja2 import Environment, select_autoescape":
+            "from featurelifted import Environment, select_autoescape",
+    },
+}
+
+
+def _patch_jinja2_runtime_imports(output: Path) -> None:
+    for relative_path, path_replacements in JINJA2_RUNTIME_IMPORT_REPLACEMENTS.items():
+        target = output / "featurelifted" / relative_path
+        if not target.is_file():
+            continue
+        text = target.read_text(encoding="utf-8")
+        for original, replacement in path_replacements.items():
+            text = text.replace(original, replacement)
+        target.write_text(text, encoding="utf-8")
+
+
 def build_jinja2(task_dir: Path, profile: str, output: Path) -> None:
     repo_pkg = task_dir / "repo" / "src" / "jinja2"
     if not repo_pkg.is_dir():
@@ -1212,6 +1266,13 @@ def build_jinja2(task_dir: Path, profile: str, output: Path) -> None:
         raise SystemExit(f"unknown jinja2 profile: {profile}")
 
     copy_tree(task_dir / "repo", output, paths, package=JINJA_PKG)
+    if profile in {
+        "loader_inheritance",
+        "compile_render",
+        "extensions",
+        "filters_tests",
+    }:
+        _patch_jinja2_runtime_imports(output)
     if profile == "lexer_parser":
         write_module(output, "environment.py", JINJA2_ENVIRONMENT_LEXER)
     vendor_markupsafe(output)
@@ -1276,6 +1337,7 @@ PYGMENTS_FORMATTER_PATHS = PYGMENTS_LEXER_PATHS + [
     "pygments/formatters/html.py",
     "pygments/style.py",
     "pygments/styles/__init__.py",
+    "pygments/styles/default.py",
 ]
 
 PYGMENTS_LEXER_INIT = '''\
@@ -1288,13 +1350,16 @@ from featurelifted import token
 
 def lex(code, lexer):
     try:
-        return lexer.get_tokens(code)
+        stream = lexer.get_tokens(code)
     except TypeError:
         if isinstance(lexer, type) and issubclass(lexer, RegexLexer):
             raise TypeError(
                 "lex() argument must be a lexer instance, not a class"
             )
         raise
+    if getattr(lexer, "stripall", False):
+        return [(ttype, value) for ttype, value in stream if ttype is not token.Text]
+    return list(stream)
 
 
 __all__ = [
@@ -1444,7 +1509,26 @@ def build_pygments(task_dir: Path, profile: str, output: Path) -> None:
         raise SystemExit(f"unknown pygments profile: {profile}")
 
     copy_tree(task_dir / "repo", output, paths, package="pygments")
+    _patch_pygments_submission(output)
     write_init(output, init)
+
+
+def _patch_pygments_submission(output: Path) -> None:
+    for path in output.rglob("*.py"):
+        text = path.read_text(encoding="utf-8")
+        updated = _rewrite_package_string_paths(text, "pygments")
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+
+
+def _patch_lark_submission(output: Path) -> None:
+    load_grammar = output / "featurelifted" / "load_grammar.py"
+    if not load_grammar.is_file():
+        return
+    text = load_grammar.read_text(encoding="utf-8")
+    text = text.replace("FromPackageLoader('lark'", "FromPackageLoader('featurelifted'")
+    text = text.replace('FromPackageLoader("lark"', 'FromPackageLoader("featurelifted"')
+    load_grammar.write_text(text, encoding="utf-8")
 
 
 def build_lark(task_dir: Path, profile: str, output: Path) -> None:
@@ -1462,6 +1546,7 @@ def build_lark(task_dir: Path, profile: str, output: Path) -> None:
         raise SystemExit(f"unknown lark profile: {profile}")
 
     copy_tree(task_dir / "repo", output, paths, package="lark")
+    _patch_lark_submission(output)
     write_init(output, init)
 
 
@@ -4831,6 +4916,15 @@ def _patch_environs_env_source(text: str) -> str:
     return text
 
 
+def _patch_environs_submission(output: Path) -> None:
+    fields_path = output / "featurelifted" / "fields.py"
+    if not fields_path.is_file():
+        return
+    text = fields_path.read_text(encoding="utf-8")
+    text = re.sub(r"fields\.Field\[[^\]]+\]", "fields.Field", text)
+    fields_path.write_text(text, encoding="utf-8")
+
+
 def build_environs(task_dir: Path, output: Path) -> None:
     repo_root = task_dir / "repo"
     if output.exists():
@@ -4841,6 +4935,7 @@ def build_environs(task_dir: Path, output: Path) -> None:
     env_text = rewrite_source(env_src.read_text(encoding="utf-8"), "environs")
     env_text = _patch_environs_env_source(env_text)
     write_module(output, "env.py", env_text)
+    _patch_environs_submission(output)
     write_init(output, ENVIRONS_INIT)
 
 
@@ -4862,6 +4957,7 @@ def build_environs_copy_all(task_dir: Path, output: Path) -> None:
     env_text = rewrite_source(env_src.read_text(encoding="utf-8"), "environs")
     env_text = _patch_environs_env_source(env_text)
     write_module(output, "env.py", env_text)
+    _patch_environs_submission(output)
     write_init(output, ENVIRONS_INIT)
 
 
@@ -5162,6 +5258,7 @@ def _patch_dynaconf_submission(output: Path) -> None:
     for path in output.rglob("*.py"):
         text = path.read_text(encoding="utf-8")
         text = rewrite_source(text, "dynaconf")
+        text = _rewrite_package_string_paths(text, "dynaconf")
         if "vendor" in path.parts:
             text = text.replace("dynaconf", "featurelifted")
         path.write_text(text, encoding="utf-8")
@@ -5355,6 +5452,7 @@ def _patch_passlib_submission(output: Path) -> None:
         text = text.replace("passlib.ifc", "featurelifted.ifc")
         text = text.replace("import passlib", "import featurelifted")
         text = text.replace("from passlib", "from featurelifted")
+        text = _rewrite_package_string_paths(text, "passlib")
         path.write_text(text, encoding="utf-8")
 
 
@@ -5510,6 +5608,44 @@ def _patch_pydantic_settings_submission(output: Path) -> None:
         "            dotenv_settings=dotenv_settings,\n            file_secret_settings=init_settings,",
     )
     main_path.write_text(text, encoding="utf-8")
+
+    dotenv_path = output / "featurelifted" / "sources" / "providers" / "dotenv.py"
+    dotenv_text = dotenv_path.read_text(encoding="utf-8")
+    dotenv_text = dotenv_text.replace("from dotenv import dotenv_values\n", "")
+    parser = '''\
+
+def _parse_dotenv_values(file_path: Path, *, encoding: str) -> dict[str, str | None]:
+    """Parse the simple dotenv subset retained for compatibility.
+
+    ``python-dotenv`` is intentionally excluded by this task's public
+    contract.  The target behavior reads ``os.environ``; this local adapter
+    prevents an eager third-party import while keeping predictable behavior
+    for basic ``KEY=VALUE`` files.
+    """
+
+    values: dict[str, str | None] = {}
+    for raw_line in file_path.read_text(encoding=encoding).splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        values[key] = value
+    return values
+'''
+    marker = "\n\nclass DotEnvSettingsSource(EnvSettingsSource):"
+    if "def _parse_dotenv_values(" not in dotenv_text:
+        dotenv_text = dotenv_text.replace(marker, parser + marker)
+    dotenv_text = dotenv_text.replace(
+        "file_vars: dict[str, str | None] = dotenv_values(\n"
+        "            file_path, encoding=encoding or 'utf8'\n"
+        "        )",
+        "file_vars = _parse_dotenv_values(file_path, encoding=encoding or 'utf8')",
+    )
+    dotenv_path.write_text(dotenv_text, encoding="utf-8")
 
 
 def build_pydantic_settings_env_source(task_dir: Path, output: Path) -> None:
@@ -5946,6 +6082,14 @@ def build_astroid_nodes(task_dir: Path, output: Path) -> None:
     manager.write_text(_patch_astroid_manager(manager.read_text(encoding="utf-8")), encoding="utf-8")
     modutils = output / "featurelifted" / "modutils.py"
     modutils.write_text(_patch_astroid_modutils(modutils.read_text(encoding="utf-8")), encoding="utf-8")
+    util = output / "featurelifted" / "util.py"
+    util.write_text(
+        util.read_text(encoding="utf-8").replace(
+            'importlib.import_module("." + module_name, "astroid")',
+            'importlib.import_module("." + module_name, "featurelifted")',
+        ),
+        encoding="utf-8",
+    )
     write_init(output, ASTROID_NODES_INIT)
 
 
@@ -6041,6 +6185,13 @@ BLEACH_SANITIZE_CORE = [
 BLEACH_SANITIZE_INIT = '''\
 """Bleach HTML sanitizer core."""
 
+import sys
+from pathlib import Path
+
+_vendor = Path(__file__).resolve().parent / "_vendor"
+if _vendor.is_dir() and str(_vendor) not in sys.path:
+    sys.path.insert(0, str(_vendor))
+
 from featurelifted.sanitizer import (
     ALLOWED_ATTRIBUTES,
     ALLOWED_PROTOCOLS,
@@ -6081,12 +6232,21 @@ __all__ = [
 '''
 
 
+def _patch_bleach_submission(output: Path) -> None:
+    _vendor_site_package(
+        output / "featurelifted" / "_vendor",
+        "webencodings",
+        rel_path="webencodings",
+    )
+
+
 def build_bleach_sanitize(task_dir: Path, output: Path) -> None:
     repo_root = task_dir / "repo"
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=True)
     copy_tree(repo_root, output, BLEACH_SANITIZE_CORE, package="bleach")
+    _patch_bleach_submission(output)
     write_init(output, BLEACH_SANITIZE_INIT)
 
 
@@ -6097,6 +6257,7 @@ def build_bleach_sanitize_copy_all(task_dir: Path, output: Path) -> None:
         shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=True)
     copy_tree(repo_root, output, rel_files, package="bleach")
+    _patch_bleach_submission(output)
     write_init(output, BLEACH_SANITIZE_INIT)
 
 
@@ -6380,11 +6541,51 @@ DEEPDIFF_COMPARE_CORE = [
 DEEPDIFF_COMPARE_INIT = '''\
 """DeepDiff structural comparison core."""
 
+import sys
+from pathlib import Path
+
+_vendor = Path(__file__).resolve().parent / "vendor"
+if _vendor.is_dir() and str(_vendor) not in sys.path:
+    sys.path.insert(0, str(_vendor))
+
 from featurelifted.diff import DeepDiff
 from featurelifted.path import extract, parse_path
 
 __all__ = ["DeepDiff", "extract", "parse_path"]
 '''
+
+
+def _patch_deepdiff_submission(output: Path) -> None:
+    _vendor_site_package(
+        output / "featurelifted" / "vendor",
+        "orderly_set",
+        rel_path="orderly_set",
+    )
+    lfucache = output / "featurelifted" / "lfucache.py"
+    text = lfucache.read_text(encoding="utf-8")
+    if "from cachebox import LRUCache" in text:
+        text = text.replace(
+            "from cachebox import LRUCache",
+            "from collections import OrderedDict\n\n\n"
+            "class LRUCache:\n"
+            "    def __init__(self, capacity):\n"
+            "        self.capacity = capacity\n"
+            "        self._data = OrderedDict()\n\n"
+            "    def get(self, key, default=None):\n"
+            "        if key not in self._data:\n"
+            "            return default\n"
+            "        self._data.move_to_end(key)\n"
+            "        return self._data[key]\n\n"
+            "    def insert(self, key, value):\n"
+            "        if key in self._data:\n"
+            "            self._data.move_to_end(key)\n"
+            "        self._data[key] = value\n"
+            "        while len(self._data) > self.capacity:\n"
+            "            self._data.popitem(last=False)\n\n"
+            "    def __contains__(self, key):\n"
+            "        return key in self._data",
+        )
+        lfucache.write_text(text, encoding="utf-8")
 
 
 def build_deepdiff_deep_compare(task_dir: Path, output: Path) -> None:
@@ -6393,6 +6594,7 @@ def build_deepdiff_deep_compare(task_dir: Path, output: Path) -> None:
         shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=True)
     copy_tree(repo_root, output, DEEPDIFF_COMPARE_CORE, package="deepdiff")
+    _patch_deepdiff_submission(output)
     write_init(output, DEEPDIFF_COMPARE_INIT)
 
 
@@ -6417,6 +6619,7 @@ def build_deepdiff_deep_compare_copy_all(task_dir: Path, output: Path) -> None:
         shutil.rmtree(output)
     output.mkdir(parents=True, exist_ok=True)
     copy_tree(repo_root, output, rel_files, package="deepdiff")
+    _patch_deepdiff_submission(output)
     write_init(output, DEEPDIFF_COMPARE_INIT)
 
 
@@ -7536,7 +7739,36 @@ def _patch_marshmallow_oracle(output: Path) -> None:
     write_init(output, MARSHMALLOW_INIT)
 
 
+BABEL_DATES_STUB = '''\
+"""Minimal DateTimePattern stub for locale pickle compatibility."""
+
+
+class DateTimePattern:
+    def __init__(self, pattern, format):
+        self.pattern = pattern
+        self.format = format
+'''
+
+BABEL_NUMBERS_STUB = '''\
+"""Minimal NumberPattern stub for locale pickle compatibility."""
+
+
+class NumberPattern:
+    def __init__(self, pattern, prefix, suffix, grouping, int_prec, frac_prec, exp_prec, exp_plus):
+        self.pattern = pattern
+        self.prefix = prefix
+        self.suffix = suffix
+        self.grouping = grouping
+        self.int_prec = int_prec
+        self.frac_prec = frac_prec
+        self.exp_prec = exp_prec
+        self.exp_plus = exp_plus
+'''
+
+
 def _patch_babel_oracle(output: Path) -> None:
+    write_module(output, "dates.py", BABEL_DATES_STUB)
+    write_module(output, "numbers.py", BABEL_NUMBERS_STUB)
     localedata = output / "featurelifted" / "localedata.py"
     text = localedata.read_text(encoding="utf-8")
     if "_is_locale_alias" not in text:
@@ -7549,7 +7781,20 @@ def _patch_babel_oracle(output: Path) -> None:
         text = text.replace("isinstance(val1, Alias)", "_is_locale_alias(val1)")
         text = text.replace("isinstance(data, Alias)", "_is_locale_alias(data)")
         text = text.replace("isinstance(val, Alias)", "_is_locale_alias(val)")
-        localedata.write_text(text, encoding="utf-8")
+    if "_FeatureliftedUnpickler" not in text:
+        unpickler_block = (
+            "\n\nclass _FeatureliftedUnpickler(pickle.Unpickler):\n"
+            "    def find_class(self, module, name):\n"
+            '        if module == "babel" or module.startswith("babel."):\n'
+            '            module = "featurelifted" + module[len("babel"):]\n'
+            "        return super().find_class(module, name)\n\n\n"
+            "def _load_locale_pickle(fileobj):\n"
+            "    return _FeatureliftedUnpickler(fileobj).load()\n"
+        )
+        text = text.replace("def merge(dict1, dict2):", unpickler_block + "def merge(dict1, dict2):")
+        text = text.replace("merge(data, pickle.load(fileobj))", "merge(data, _load_locale_pickle(fileobj))")
+        text = text.replace("data = pickle.load(fileobj)", "data = _load_locale_pickle(fileobj)")
+    localedata.write_text(text, encoding="utf-8")
     write_init(output, BABEL_INIT)
 
 

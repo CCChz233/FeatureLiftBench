@@ -74,3 +74,21 @@ Retrying(
 
 Public tests cover exception retries, result retries, fixed waits, and exhausted retry errors.
 Hidden tests cover wait-chain validation and exhaustion, callback state timing, `reraise`, retry predicate composition, and exponential wait behavior.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — Retrying callable execution loop
+- **B002** — RetryCallState with attempt number, outcome, idle_for, and upcoming_sleep
+- **B003** — RetryError and reraise behavior
+- **B004** — retry_if_exception_type and retry_if_result
+- **B005** — retry_any/retry_all composition via | and &
+- **B006** — stop_after_attempt, stop_after_delay, stop_before_delay
+- **B007** — wait_fixed, wait_none, wait_chain, wait_combine, wait_exponential
+- **B008** — before_sleep and retry_error_callback
+- **B009** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B010** — the submitted package does not import forbidden upstream packages: tenacity
+<!-- featureliftbench:behavior-clauses:end -->

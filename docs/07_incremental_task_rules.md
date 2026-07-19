@@ -8,6 +8,7 @@ Related:
 - [`benchmark/manifest.json`](../benchmark/manifest.json) — split registry
 - [`06_task_schema.md`](06_task_schema.md) — per-task package schema
 - [`python/01_python_repo_selection_criteria.md`](python/01_python_repo_selection_criteria.md) — upstream repo criteria
+- [`STATUS.md`](STATUS.md) — current main-split size and Oracle freeze
 
 ## Principles
 

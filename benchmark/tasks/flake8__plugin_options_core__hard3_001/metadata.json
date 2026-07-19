@@ -1,19 +1,36 @@
 {
-  "task_id": "flake8__plugin_options_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "dynamic dependency recovery",
-    "framework_coupling"
-  ],
-  "source": {
-    "commit": "bb943328eff3518ee193adbddffdfe15e239c3f7",
-    "license": "MIT",
-    "name": "flake8",
-    "url": "https://github.com/PyCQA/flake8.git"
+  "entanglement": {
+    "description": "Entry point discovery, option manager state, plugin parameters, and checker classification must be preserved.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "local plugin options register in OptionManager",
+      "select precedence enables only matching code prefixes",
+      "ignore disables matching plugins",
+      "tree/logical/physical checker grouping"
+    ],
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "flake8"
+    ],
+    "forbidden_imports": [
+      "flake8"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "flake8/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped plugin option registration and checker selection into featurelifted.",
@@ -33,44 +50,28 @@
       "flake8.plugins.finder.Plugins"
     ]
   },
-  "entanglement": {
-    "description": "Entry point discovery, option manager state, plugin parameters, and checker classification must be preserved.",
-    "level": "high",
-    "primary": "framework_coupling",
-    "signals": [
-      "local plugin options register in OptionManager",
-      "select precedence enables only matching code prefixes",
-      "ignore disables matching plugins",
-      "tree/logical/physical checker grouping"
-    ],
-    "types": [
-      "framework_coupling",
-      "config_environment_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "OptionManager",
     "import": "from featurelifted import OptionManager, PluginSpec, classify_plugins, apply_select_ignore",
     "package": "featurelifted",
     "signature": "OptionManager()"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "flake8"
-    ],
-    "forbidden_imports": [
-      "flake8"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "flake8/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "bb943328eff3518ee193adbddffdfe15e239c3f7",
+    "license": "MIT",
+    "name": "flake8",
+    "url": "https://github.com/PyCQA/flake8.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "dynamic dependency recovery",
+    "framework_coupling"
+  ],
+  "task_id": "flake8__plugin_options_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

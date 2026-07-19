@@ -1,20 +1,37 @@
 {
-  "task_id": "importlib_resources__traversable_tree_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "path/resource resolver",
-    "resource_coupling"
-  ],
-  "source": {
-    "commit": "1d554758b0cb1a030bf3acb131a276da8a3ebb1e",
-    "license": "Apache-2.0",
-    "license_source": "repo/pyproject.toml",
-    "name": "importlib_resources",
-    "url": "https://github.com/python/importlib_resources.git"
+  "entanglement": {
+    "description": "Resource access depends on package anchor resolution, Traversable path semantics, nested resource traversal, and text/binary mode behavior.",
+    "level": "high",
+    "primary": "resource_coupling",
+    "signals": [
+      "files(anchor) resolves module objects and string module names.",
+      "joinpath accepts multiple segments and slash-separated nested paths.",
+      "read_text and read_binary preserve text encoding and byte payload behavior.",
+      "parent traversal must be rejected to avoid path leakage."
+    ],
+    "types": [
+      "resource_coupling",
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "importlib_resources"
+    ],
+    "forbidden_imports": [
+      "importlib_resources"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "importlib_resources/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a Traversable package resource tree and text/binary readers without importing importlib_resources.",
@@ -43,45 +60,29 @@
       "importlib_resources.abc.Traversable"
     ]
   },
-  "entanglement": {
-    "description": "Resource access depends on package anchor resolution, Traversable path semantics, nested resource traversal, and text/binary mode behavior.",
-    "level": "high",
-    "primary": "resource_coupling",
-    "signals": [
-      "files(anchor) resolves module objects and string module names.",
-      "joinpath accepts multiple segments and slash-separated nested paths.",
-      "read_text and read_binary preserve text encoding and byte payload behavior.",
-      "parent traversal must be rejected to avoid path leakage."
-    ],
-    "types": [
-      "resource_coupling",
-      "data_model_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "files",
     "import": "from featurelifted import TraversalError, files, read_binary, read_text",
     "package": "featurelifted",
     "signature": "files(anchor) -> Traversable"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "importlib_resources"
-    ],
-    "forbidden_imports": [
-      "importlib_resources"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "importlib_resources/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "1d554758b0cb1a030bf3acb131a276da8a3ebb1e",
+    "license": "Apache-2.0",
+    "license_source": "repo/pyproject.toml",
+    "name": "importlib_resources",
+    "url": "https://github.com/python/importlib_resources.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "task_id": "importlib_resources__traversable_tree_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

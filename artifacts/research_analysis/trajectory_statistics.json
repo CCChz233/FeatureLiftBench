@@ -1,0 +1,2721 @@
+{
+  "schema_version": "featureliftbench.trajectory_statistics.v1",
+  "generated_at": "2026-07-13T13:13:17+00:00",
+  "source_csv": "/Users/chz/code/FeatureLiftBench/artifacts/research_analysis/trajectory_records.csv",
+  "definitions": {
+    "trajectory_inventory": "Every available experiments/python/openhands event trajectory; supplementary rows have analysis_included=false.",
+    "primary_corpus": "Seven frozen official suites listed by build_trajectory_records.py; 450 analysis rows.",
+    "public_hidden_fail": "public_pass=true and hidden_pass=false; skipped/unexecuted phases are NA.",
+    "under_extraction_proxy": "extraction_ratio <= 0.25; footprint proxy, not a causal label.",
+    "over_extraction_proxy": "extraction_ratio > 0.80; footprint proxy, not proof of literal copying.",
+    "copied_file_count_and_loc": "Evaluator submission file_count/loc; submission-footprint proxy.",
+    "repeated_file_reads": "Duplicate file_editor view actions to the same normalized path beyond the first.",
+    "repeated_line_reads": "Duplicate view actions to the same normalized path and exact view_range beyond the first."
+  },
+  "completeness": {
+    "rows": 464,
+    "columns": 59,
+    "required_schema_columns": 24,
+    "unique_run_ids": 464,
+    "structural_field_cell_completeness": {
+      "count": 4640,
+      "denominator": 4640,
+      "rate": 1.0
+    },
+    "by_required_field": {
+      "task_id": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "run_id": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "model": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "agent": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "public_pass": {
+        "nonempty": 353,
+        "denominator": 464,
+        "completeness": 0.760776
+      },
+      "hidden_pass": {
+        "nonempty": 353,
+        "denominator": 464,
+        "completeness": 0.760776
+      },
+      "functional_pass": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "extraction_ratio": {
+        "nonempty": 442,
+        "denominator": 464,
+        "completeness": 0.952586
+      },
+      "final_score": {
+        "nonempty": 462,
+        "denominator": 464,
+        "completeness": 0.99569
+      },
+      "copied_file_count": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "copied_loc": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "repeated_file_reads": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "repeated_line_reads": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "tool_error_count": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "harness_format_error_count": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "closure_plan_present": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "self_generated_tests": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "hidden_risk_discussed": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "stop_reason": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "primary_failure": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "secondary_failure": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "trajectory_path": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "evaluation_path": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      },
+      "evidence_step_ids": {
+        "nonempty": 464,
+        "denominator": 464,
+        "completeness": 1.0
+      }
+    },
+    "evaluation_available": {
+      "count": 442,
+      "denominator": 464,
+      "rate": 0.952586
+    },
+    "events_available": {
+      "count": 464,
+      "denominator": 464,
+      "rate": 1.0
+    },
+    "inventory_rows": 464,
+    "analysis_rows": 450,
+    "excluded_rows": 14,
+    "exclusion_reasons": {
+      "agent_setup_failure_suite": 10,
+      "post_hoc_rerun": 1,
+      "smoke_or_local_calibration": 3
+    }
+  },
+  "overall": {
+    "label": "all",
+    "runs": 450,
+    "strict_suite_pass": {
+      "count": 218,
+      "denominator": 450,
+      "rate": 0.484444
+    },
+    "functional_pass": {
+      "count": 220,
+      "denominator": 450,
+      "rate": 0.488889
+    },
+    "public_observed": {
+      "count": 351,
+      "denominator": 450,
+      "rate": 0.78
+    },
+    "public_pass_among_observed": {
+      "count": 319,
+      "denominator": 351,
+      "rate": 0.908832
+    },
+    "hidden_observed": {
+      "count": 351,
+      "denominator": 450,
+      "rate": 0.78
+    },
+    "hidden_pass_among_observed": {
+      "count": 221,
+      "denominator": 351,
+      "rate": 0.62963
+    },
+    "public_hidden_fail_total": {
+      "count": 98,
+      "denominator": 450,
+      "rate": 0.217778
+    },
+    "public_hidden_fail_given_public_pass": {
+      "count": 98,
+      "denominator": 319,
+      "rate": 0.30721
+    },
+    "environment_error": {
+      "count": 62,
+      "denominator": 450,
+      "rate": 0.137778
+    },
+    "low_ratio": {
+      "count": 197,
+      "denominator": 440,
+      "rate": 0.447727
+    },
+    "high_ratio": {
+      "count": 55,
+      "denominator": 440,
+      "rate": 0.125
+    },
+    "median_extraction_ratio": 0.282194,
+    "median_final_score": 0.0,
+    "median_tokens": 1705145.5,
+    "median_tool_calls": 43.0,
+    "median_copied_file_count": 6.0,
+    "closure_plan_present": {
+      "count": 49,
+      "denominator": 450,
+      "rate": 0.108889
+    },
+    "self_generated_tests": {
+      "count": 48,
+      "denominator": 450,
+      "rate": 0.106667
+    },
+    "hidden_risk_discussed": {
+      "count": 329,
+      "denominator": 450,
+      "rate": 0.731111
+    },
+    "explicit_finish": {
+      "count": 269,
+      "denominator": 450,
+      "rate": 0.597778
+    },
+    "repeated_file_read_affected": {
+      "count": 295,
+      "denominator": 450,
+      "rate": 0.655556
+    },
+    "unsupported_completion_claim": {
+      "count": 68,
+      "denominator": 450,
+      "rate": 0.151111
+    },
+    "public_hidden_fail_given_total": {
+      "count": 98,
+      "denominator": 450,
+      "rate": 0.217778
+    },
+    "strict_suite_pass_note": "run_status == passed (historical suite leaderboard status)",
+    "functional_pass_note": "evaluator scores.functional_gate == 1; includes valid submissions produced before step-limit exit"
+  },
+  "by_model": [
+    {
+      "label": "deepseek/deepseek-v4-flash",
+      "runs": 150,
+      "strict_suite_pass": {
+        "count": 91,
+        "denominator": 150,
+        "rate": 0.606667
+      },
+      "functional_pass": {
+        "count": 93,
+        "denominator": 150,
+        "rate": 0.62
+      },
+      "public_observed": {
+        "count": 141,
+        "denominator": 150,
+        "rate": 0.94
+      },
+      "public_pass_among_observed": {
+        "count": 141,
+        "denominator": 141,
+        "rate": 1.0
+      },
+      "hidden_observed": {
+        "count": 141,
+        "denominator": 150,
+        "rate": 0.94
+      },
+      "hidden_pass_among_observed": {
+        "count": 93,
+        "denominator": 141,
+        "rate": 0.659574
+      },
+      "public_hidden_fail_total": {
+        "count": 48,
+        "denominator": 150,
+        "rate": 0.32
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 48,
+        "denominator": 141,
+        "rate": 0.340426
+      },
+      "environment_error": {
+        "count": 2,
+        "denominator": 150,
+        "rate": 0.013333
+      },
+      "low_ratio": {
+        "count": 49,
+        "denominator": 147,
+        "rate": 0.333333
+      },
+      "high_ratio": {
+        "count": 23,
+        "denominator": 147,
+        "rate": 0.156463
+      },
+      "median_extraction_ratio": 0.363425,
+      "median_final_score": 0.308454,
+      "median_tokens": 1649321.0,
+      "median_tool_calls": 41.5,
+      "median_copied_file_count": 5.0,
+      "closure_plan_present": {
+        "count": 29,
+        "denominator": 150,
+        "rate": 0.193333
+      },
+      "self_generated_tests": {
+        "count": 20,
+        "denominator": 150,
+        "rate": 0.133333
+      },
+      "hidden_risk_discussed": {
+        "count": 128,
+        "denominator": 150,
+        "rate": 0.853333
+      },
+      "explicit_finish": {
+        "count": 56,
+        "denominator": 150,
+        "rate": 0.373333
+      },
+      "repeated_file_read_affected": {
+        "count": 103,
+        "denominator": 150,
+        "rate": 0.686667
+      },
+      "unsupported_completion_claim": {
+        "count": 14,
+        "denominator": 150,
+        "rate": 0.093333
+      }
+    },
+    {
+      "label": "openai/Qwen3-Coder-30B-A3B-Instruct",
+      "runs": 100,
+      "strict_suite_pass": {
+        "count": 24,
+        "denominator": 100,
+        "rate": 0.24
+      },
+      "functional_pass": {
+        "count": 24,
+        "denominator": 100,
+        "rate": 0.24
+      },
+      "public_observed": {
+        "count": 75,
+        "denominator": 100,
+        "rate": 0.75
+      },
+      "public_pass_among_observed": {
+        "count": 60,
+        "denominator": 75,
+        "rate": 0.8
+      },
+      "hidden_observed": {
+        "count": 75,
+        "denominator": 100,
+        "rate": 0.75
+      },
+      "hidden_pass_among_observed": {
+        "count": 25,
+        "denominator": 75,
+        "rate": 0.333333
+      },
+      "public_hidden_fail_total": {
+        "count": 35,
+        "denominator": 100,
+        "rate": 0.35
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 35,
+        "denominator": 60,
+        "rate": 0.583333
+      },
+      "environment_error": {
+        "count": 21,
+        "denominator": 100,
+        "rate": 0.21
+      },
+      "low_ratio": {
+        "count": 67,
+        "denominator": 100,
+        "rate": 0.67
+      },
+      "high_ratio": {
+        "count": 6,
+        "denominator": 100,
+        "rate": 0.06
+      },
+      "median_extraction_ratio": 0.167693,
+      "median_final_score": 0.0,
+      "median_tokens": 2020808.0,
+      "median_tool_calls": 52.5,
+      "median_copied_file_count": 6.0,
+      "closure_plan_present": {
+        "count": 0,
+        "denominator": 100,
+        "rate": 0.0
+      },
+      "self_generated_tests": {
+        "count": 25,
+        "denominator": 100,
+        "rate": 0.25
+      },
+      "hidden_risk_discussed": {
+        "count": 80,
+        "denominator": 100,
+        "rate": 0.8
+      },
+      "explicit_finish": {
+        "count": 87,
+        "denominator": 100,
+        "rate": 0.87
+      },
+      "repeated_file_read_affected": {
+        "count": 67,
+        "denominator": 100,
+        "rate": 0.67
+      },
+      "unsupported_completion_claim": {
+        "count": 36,
+        "denominator": 100,
+        "rate": 0.36
+      }
+    },
+    {
+      "label": "openai/Qwen3.6-27B-FP8",
+      "runs": 100,
+      "strict_suite_pass": {
+        "count": 54,
+        "denominator": 100,
+        "rate": 0.54
+      },
+      "functional_pass": {
+        "count": 54,
+        "denominator": 100,
+        "rate": 0.54
+      },
+      "public_observed": {
+        "count": 69,
+        "denominator": 100,
+        "rate": 0.69
+      },
+      "public_pass_among_observed": {
+        "count": 63,
+        "denominator": 69,
+        "rate": 0.913043
+      },
+      "hidden_observed": {
+        "count": 69,
+        "denominator": 100,
+        "rate": 0.69
+      },
+      "hidden_pass_among_observed": {
+        "count": 54,
+        "denominator": 69,
+        "rate": 0.782609
+      },
+      "public_hidden_fail_total": {
+        "count": 9,
+        "denominator": 100,
+        "rate": 0.09
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 9,
+        "denominator": 63,
+        "rate": 0.142857
+      },
+      "environment_error": {
+        "count": 21,
+        "denominator": 100,
+        "rate": 0.21
+      },
+      "low_ratio": {
+        "count": 40,
+        "denominator": 98,
+        "rate": 0.408163
+      },
+      "high_ratio": {
+        "count": 12,
+        "denominator": 98,
+        "rate": 0.122449
+      },
+      "median_extraction_ratio": 0.309449,
+      "median_final_score": 0.042951,
+      "median_tokens": 1553055.0,
+      "median_tool_calls": 35.5,
+      "median_copied_file_count": 9.0,
+      "closure_plan_present": {
+        "count": 6,
+        "denominator": 100,
+        "rate": 0.06
+      },
+      "self_generated_tests": {
+        "count": 1,
+        "denominator": 100,
+        "rate": 0.01
+      },
+      "hidden_risk_discussed": {
+        "count": 45,
+        "denominator": 100,
+        "rate": 0.45
+      },
+      "explicit_finish": {
+        "count": 67,
+        "denominator": 100,
+        "rate": 0.67
+      },
+      "repeated_file_read_affected": {
+        "count": 63,
+        "denominator": 100,
+        "rate": 0.63
+      },
+      "unsupported_completion_claim": {
+        "count": 12,
+        "denominator": 100,
+        "rate": 0.12
+      }
+    },
+    {
+      "label": "openai/Qwen3.6-35B-A3B-FP8",
+      "runs": 100,
+      "strict_suite_pass": {
+        "count": 49,
+        "denominator": 100,
+        "rate": 0.49
+      },
+      "functional_pass": {
+        "count": 49,
+        "denominator": 100,
+        "rate": 0.49
+      },
+      "public_observed": {
+        "count": 66,
+        "denominator": 100,
+        "rate": 0.66
+      },
+      "public_pass_among_observed": {
+        "count": 55,
+        "denominator": 66,
+        "rate": 0.833333
+      },
+      "hidden_observed": {
+        "count": 66,
+        "denominator": 100,
+        "rate": 0.66
+      },
+      "hidden_pass_among_observed": {
+        "count": 49,
+        "denominator": 66,
+        "rate": 0.742424
+      },
+      "public_hidden_fail_total": {
+        "count": 6,
+        "denominator": 100,
+        "rate": 0.06
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 6,
+        "denominator": 55,
+        "rate": 0.109091
+      },
+      "environment_error": {
+        "count": 18,
+        "denominator": 100,
+        "rate": 0.18
+      },
+      "low_ratio": {
+        "count": 41,
+        "denominator": 95,
+        "rate": 0.431579
+      },
+      "high_ratio": {
+        "count": 14,
+        "denominator": 95,
+        "rate": 0.147368
+      },
+      "median_extraction_ratio": 0.281882,
+      "median_final_score": 0.0,
+      "median_tokens": 1746881.5,
+      "median_tool_calls": 41.5,
+      "median_copied_file_count": 6.5,
+      "closure_plan_present": {
+        "count": 14,
+        "denominator": 100,
+        "rate": 0.14
+      },
+      "self_generated_tests": {
+        "count": 2,
+        "denominator": 100,
+        "rate": 0.02
+      },
+      "hidden_risk_discussed": {
+        "count": 76,
+        "denominator": 100,
+        "rate": 0.76
+      },
+      "explicit_finish": {
+        "count": 59,
+        "denominator": 100,
+        "rate": 0.59
+      },
+      "repeated_file_read_affected": {
+        "count": 62,
+        "denominator": 100,
+        "rate": 0.62
+      },
+      "unsupported_completion_claim": {
+        "count": 6,
+        "denominator": 100,
+        "rate": 0.06
+      }
+    }
+  ],
+  "by_split": [
+    {
+      "label": "core100",
+      "runs": 400,
+      "strict_suite_pass": {
+        "count": 210,
+        "denominator": 400,
+        "rate": 0.525
+      },
+      "functional_pass": {
+        "count": 212,
+        "denominator": 400,
+        "rate": 0.53
+      },
+      "public_observed": {
+        "count": 306,
+        "denominator": 400,
+        "rate": 0.765
+      },
+      "public_pass_among_observed": {
+        "count": 274,
+        "denominator": 306,
+        "rate": 0.895425
+      },
+      "hidden_observed": {
+        "count": 306,
+        "denominator": 400,
+        "rate": 0.765
+      },
+      "hidden_pass_among_observed": {
+        "count": 213,
+        "denominator": 306,
+        "rate": 0.696078
+      },
+      "public_hidden_fail_total": {
+        "count": 61,
+        "denominator": 400,
+        "rate": 0.1525
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 61,
+        "denominator": 274,
+        "rate": 0.222628
+      },
+      "environment_error": {
+        "count": 60,
+        "denominator": 400,
+        "rate": 0.15
+      },
+      "low_ratio": {
+        "count": 187,
+        "denominator": 391,
+        "rate": 0.478261
+      },
+      "high_ratio": {
+        "count": 42,
+        "denominator": 391,
+        "rate": 0.107417
+      },
+      "median_extraction_ratio": 0.261016,
+      "median_final_score": 0.026145,
+      "median_tokens": 1698567.5,
+      "median_tool_calls": 44.0,
+      "median_copied_file_count": 7.0,
+      "closure_plan_present": {
+        "count": 37,
+        "denominator": 400,
+        "rate": 0.0925
+      },
+      "self_generated_tests": {
+        "count": 28,
+        "denominator": 400,
+        "rate": 0.07
+      },
+      "hidden_risk_discussed": {
+        "count": 289,
+        "denominator": 400,
+        "rate": 0.7225
+      },
+      "explicit_finish": {
+        "count": 256,
+        "denominator": 400,
+        "rate": 0.64
+      },
+      "repeated_file_read_affected": {
+        "count": 262,
+        "denominator": 400,
+        "rate": 0.655
+      },
+      "unsupported_completion_claim": {
+        "count": 59,
+        "denominator": 400,
+        "rate": 0.1475
+      }
+    },
+    {
+      "label": "hard50",
+      "runs": 50,
+      "strict_suite_pass": {
+        "count": 8,
+        "denominator": 50,
+        "rate": 0.16
+      },
+      "functional_pass": {
+        "count": 8,
+        "denominator": 50,
+        "rate": 0.16
+      },
+      "public_observed": {
+        "count": 45,
+        "denominator": 50,
+        "rate": 0.9
+      },
+      "public_pass_among_observed": {
+        "count": 45,
+        "denominator": 45,
+        "rate": 1.0
+      },
+      "hidden_observed": {
+        "count": 45,
+        "denominator": 50,
+        "rate": 0.9
+      },
+      "hidden_pass_among_observed": {
+        "count": 8,
+        "denominator": 45,
+        "rate": 0.177778
+      },
+      "public_hidden_fail_total": {
+        "count": 37,
+        "denominator": 50,
+        "rate": 0.74
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 37,
+        "denominator": 45,
+        "rate": 0.822222
+      },
+      "environment_error": {
+        "count": 2,
+        "denominator": 50,
+        "rate": 0.04
+      },
+      "low_ratio": {
+        "count": 10,
+        "denominator": 49,
+        "rate": 0.204082
+      },
+      "high_ratio": {
+        "count": 13,
+        "denominator": 49,
+        "rate": 0.265306
+      },
+      "median_extraction_ratio": 0.507656,
+      "median_final_score": 0.0,
+      "median_tokens": 1771924.0,
+      "median_tool_calls": 39.5,
+      "median_copied_file_count": 3.5,
+      "closure_plan_present": {
+        "count": 12,
+        "denominator": 50,
+        "rate": 0.24
+      },
+      "self_generated_tests": {
+        "count": 20,
+        "denominator": 50,
+        "rate": 0.4
+      },
+      "hidden_risk_discussed": {
+        "count": 40,
+        "denominator": 50,
+        "rate": 0.8
+      },
+      "explicit_finish": {
+        "count": 13,
+        "denominator": 50,
+        "rate": 0.26
+      },
+      "repeated_file_read_affected": {
+        "count": 33,
+        "denominator": 50,
+        "rate": 0.66
+      },
+      "unsupported_completion_claim": {
+        "count": 9,
+        "denominator": 50,
+        "rate": 0.18
+      }
+    }
+  ],
+  "by_task_type": [
+    {
+      "label": "parser_state_coupling",
+      "runs": 161,
+      "strict_suite_pass": {
+        "count": 82,
+        "denominator": 161,
+        "rate": 0.509317
+      },
+      "functional_pass": {
+        "count": 82,
+        "denominator": 161,
+        "rate": 0.509317
+      },
+      "public_observed": {
+        "count": 123,
+        "denominator": 161,
+        "rate": 0.763975
+      },
+      "public_pass_among_observed": {
+        "count": 107,
+        "denominator": 123,
+        "rate": 0.869919
+      },
+      "hidden_observed": {
+        "count": 123,
+        "denominator": 161,
+        "rate": 0.763975
+      },
+      "hidden_pass_among_observed": {
+        "count": 83,
+        "denominator": 123,
+        "rate": 0.674797
+      },
+      "public_hidden_fail_total": {
+        "count": 24,
+        "denominator": 161,
+        "rate": 0.149068
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 24,
+        "denominator": 107,
+        "rate": 0.224299
+      },
+      "environment_error": {
+        "count": 23,
+        "denominator": 161,
+        "rate": 0.142857
+      },
+      "low_ratio": {
+        "count": 64,
+        "denominator": 157,
+        "rate": 0.407643
+      },
+      "high_ratio": {
+        "count": 11,
+        "denominator": 157,
+        "rate": 0.070064
+      },
+      "median_extraction_ratio": 0.307107,
+      "median_final_score": 0.073708,
+      "median_tokens": 1758497.0,
+      "median_tool_calls": 45.0,
+      "median_copied_file_count": 9.0,
+      "closure_plan_present": {
+        "count": 14,
+        "denominator": 161,
+        "rate": 0.086957
+      },
+      "self_generated_tests": {
+        "count": 8,
+        "denominator": 161,
+        "rate": 0.049689
+      },
+      "hidden_risk_discussed": {
+        "count": 116,
+        "denominator": 161,
+        "rate": 0.720497
+      },
+      "explicit_finish": {
+        "count": 99,
+        "denominator": 161,
+        "rate": 0.614907
+      },
+      "repeated_file_read_affected": {
+        "count": 114,
+        "denominator": 161,
+        "rate": 0.708075
+      },
+      "unsupported_completion_claim": {
+        "count": 20,
+        "denominator": 161,
+        "rate": 0.124224
+      }
+    },
+    {
+      "label": "data_model_coupling",
+      "runs": 113,
+      "strict_suite_pass": {
+        "count": 50,
+        "denominator": 113,
+        "rate": 0.442478
+      },
+      "functional_pass": {
+        "count": 52,
+        "denominator": 113,
+        "rate": 0.460177
+      },
+      "public_observed": {
+        "count": 81,
+        "denominator": 113,
+        "rate": 0.716814
+      },
+      "public_pass_among_observed": {
+        "count": 73,
+        "denominator": 81,
+        "rate": 0.901235
+      },
+      "hidden_observed": {
+        "count": 81,
+        "denominator": 113,
+        "rate": 0.716814
+      },
+      "hidden_pass_among_observed": {
+        "count": 52,
+        "denominator": 81,
+        "rate": 0.641975
+      },
+      "public_hidden_fail_total": {
+        "count": 21,
+        "denominator": 113,
+        "rate": 0.185841
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 21,
+        "denominator": 73,
+        "rate": 0.287671
+      },
+      "environment_error": {
+        "count": 18,
+        "denominator": 113,
+        "rate": 0.159292
+      },
+      "low_ratio": {
+        "count": 47,
+        "denominator": 110,
+        "rate": 0.427273
+      },
+      "high_ratio": {
+        "count": 10,
+        "denominator": 110,
+        "rate": 0.090909
+      },
+      "median_extraction_ratio": 0.276073,
+      "median_final_score": 0.0,
+      "median_tokens": 2206378.0,
+      "median_tool_calls": 47.0,
+      "median_copied_file_count": 6.0,
+      "closure_plan_present": {
+        "count": 11,
+        "denominator": 113,
+        "rate": 0.097345
+      },
+      "self_generated_tests": {
+        "count": 13,
+        "denominator": 113,
+        "rate": 0.115044
+      },
+      "hidden_risk_discussed": {
+        "count": 86,
+        "denominator": 113,
+        "rate": 0.761062
+      },
+      "explicit_finish": {
+        "count": 63,
+        "denominator": 113,
+        "rate": 0.557522
+      },
+      "repeated_file_read_affected": {
+        "count": 90,
+        "denominator": 113,
+        "rate": 0.79646
+      },
+      "unsupported_completion_claim": {
+        "count": 19,
+        "denominator": 113,
+        "rate": 0.168142
+      }
+    },
+    {
+      "label": "framework_coupling",
+      "runs": 66,
+      "strict_suite_pass": {
+        "count": 26,
+        "denominator": 66,
+        "rate": 0.393939
+      },
+      "functional_pass": {
+        "count": 26,
+        "denominator": 66,
+        "rate": 0.393939
+      },
+      "public_observed": {
+        "count": 46,
+        "denominator": 66,
+        "rate": 0.69697
+      },
+      "public_pass_among_observed": {
+        "count": 44,
+        "denominator": 46,
+        "rate": 0.956522
+      },
+      "hidden_observed": {
+        "count": 46,
+        "denominator": 66,
+        "rate": 0.69697
+      },
+      "hidden_pass_among_observed": {
+        "count": 26,
+        "denominator": 46,
+        "rate": 0.565217
+      },
+      "public_hidden_fail_total": {
+        "count": 18,
+        "denominator": 66,
+        "rate": 0.272727
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 18,
+        "denominator": 44,
+        "rate": 0.409091
+      },
+      "environment_error": {
+        "count": 14,
+        "denominator": 66,
+        "rate": 0.212121
+      },
+      "low_ratio": {
+        "count": 29,
+        "denominator": 64,
+        "rate": 0.453125
+      },
+      "high_ratio": {
+        "count": 15,
+        "denominator": 64,
+        "rate": 0.234375
+      },
+      "median_extraction_ratio": 0.45565,
+      "median_final_score": 0.0,
+      "median_tokens": 1699486.0,
+      "median_tool_calls": 43.0,
+      "median_copied_file_count": 6.0,
+      "closure_plan_present": {
+        "count": 10,
+        "denominator": 66,
+        "rate": 0.151515
+      },
+      "self_generated_tests": {
+        "count": 13,
+        "denominator": 66,
+        "rate": 0.19697
+      },
+      "hidden_risk_discussed": {
+        "count": 45,
+        "denominator": 66,
+        "rate": 0.681818
+      },
+      "explicit_finish": {
+        "count": 34,
+        "denominator": 66,
+        "rate": 0.515152
+      },
+      "repeated_file_read_affected": {
+        "count": 37,
+        "denominator": 66,
+        "rate": 0.560606
+      },
+      "unsupported_completion_claim": {
+        "count": 7,
+        "denominator": 66,
+        "rate": 0.106061
+      }
+    },
+    {
+      "label": "config_environment_coupling",
+      "runs": 51,
+      "strict_suite_pass": {
+        "count": 24,
+        "denominator": 51,
+        "rate": 0.470588
+      },
+      "functional_pass": {
+        "count": 24,
+        "denominator": 51,
+        "rate": 0.470588
+      },
+      "public_observed": {
+        "count": 45,
+        "denominator": 51,
+        "rate": 0.882353
+      },
+      "public_pass_among_observed": {
+        "count": 42,
+        "denominator": 45,
+        "rate": 0.933333
+      },
+      "hidden_observed": {
+        "count": 45,
+        "denominator": 51,
+        "rate": 0.882353
+      },
+      "hidden_pass_among_observed": {
+        "count": 24,
+        "denominator": 45,
+        "rate": 0.533333
+      },
+      "public_hidden_fail_total": {
+        "count": 18,
+        "denominator": 51,
+        "rate": 0.352941
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 18,
+        "denominator": 42,
+        "rate": 0.428571
+      },
+      "environment_error": {
+        "count": 6,
+        "denominator": 51,
+        "rate": 0.117647
+      },
+      "low_ratio": {
+        "count": 25,
+        "denominator": 51,
+        "rate": 0.490196
+      },
+      "high_ratio": {
+        "count": 8,
+        "denominator": 51,
+        "rate": 0.156863
+      },
+      "median_extraction_ratio": 0.251644,
+      "median_final_score": 0.0,
+      "median_tokens": 1352342.0,
+      "median_tool_calls": 38.0,
+      "median_copied_file_count": 4.0,
+      "closure_plan_present": {
+        "count": 6,
+        "denominator": 51,
+        "rate": 0.117647
+      },
+      "self_generated_tests": {
+        "count": 6,
+        "denominator": 51,
+        "rate": 0.117647
+      },
+      "hidden_risk_discussed": {
+        "count": 37,
+        "denominator": 51,
+        "rate": 0.72549
+      },
+      "explicit_finish": {
+        "count": 37,
+        "denominator": 51,
+        "rate": 0.72549
+      },
+      "repeated_file_read_affected": {
+        "count": 34,
+        "denominator": 51,
+        "rate": 0.666667
+      },
+      "unsupported_completion_claim": {
+        "count": 14,
+        "denominator": 51,
+        "rate": 0.27451
+      }
+    },
+    {
+      "label": "resource_coupling",
+      "runs": 29,
+      "strict_suite_pass": {
+        "count": 11,
+        "denominator": 29,
+        "rate": 0.37931
+      },
+      "functional_pass": {
+        "count": 11,
+        "denominator": 29,
+        "rate": 0.37931
+      },
+      "public_observed": {
+        "count": 28,
+        "denominator": 29,
+        "rate": 0.965517
+      },
+      "public_pass_among_observed": {
+        "count": 26,
+        "denominator": 28,
+        "rate": 0.928571
+      },
+      "hidden_observed": {
+        "count": 28,
+        "denominator": 29,
+        "rate": 0.965517
+      },
+      "hidden_pass_among_observed": {
+        "count": 11,
+        "denominator": 28,
+        "rate": 0.392857
+      },
+      "public_hidden_fail_total": {
+        "count": 15,
+        "denominator": 29,
+        "rate": 0.517241
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 15,
+        "denominator": 26,
+        "rate": 0.576923
+      },
+      "environment_error": {
+        "count": 0,
+        "denominator": 29,
+        "rate": 0.0
+      },
+      "low_ratio": {
+        "count": 8,
+        "denominator": 29,
+        "rate": 0.275862
+      },
+      "high_ratio": {
+        "count": 10,
+        "denominator": 29,
+        "rate": 0.344828
+      },
+      "median_extraction_ratio": 0.508983,
+      "median_final_score": 0.0,
+      "median_tokens": 1545592.0,
+      "median_tool_calls": 38.0,
+      "median_copied_file_count": 5.0,
+      "closure_plan_present": {
+        "count": 5,
+        "denominator": 29,
+        "rate": 0.172414
+      },
+      "self_generated_tests": {
+        "count": 6,
+        "denominator": 29,
+        "rate": 0.206897
+      },
+      "hidden_risk_discussed": {
+        "count": 24,
+        "denominator": 29,
+        "rate": 0.827586
+      },
+      "explicit_finish": {
+        "count": 14,
+        "denominator": 29,
+        "rate": 0.482759
+      },
+      "repeated_file_read_affected": {
+        "count": 16,
+        "denominator": 29,
+        "rate": 0.551724
+      },
+      "unsupported_completion_claim": {
+        "count": 7,
+        "denominator": 29,
+        "rate": 0.241379
+      }
+    },
+    {
+      "label": "legacy_vibe_clutter",
+      "runs": 24,
+      "strict_suite_pass": {
+        "count": 23,
+        "denominator": 24,
+        "rate": 0.958333
+      },
+      "functional_pass": {
+        "count": 23,
+        "denominator": 24,
+        "rate": 0.958333
+      },
+      "public_observed": {
+        "count": 23,
+        "denominator": 24,
+        "rate": 0.958333
+      },
+      "public_pass_among_observed": {
+        "count": 23,
+        "denominator": 23,
+        "rate": 1.0
+      },
+      "hidden_observed": {
+        "count": 23,
+        "denominator": 24,
+        "rate": 0.958333
+      },
+      "hidden_pass_among_observed": {
+        "count": 23,
+        "denominator": 23,
+        "rate": 1.0
+      },
+      "public_hidden_fail_total": {
+        "count": 0,
+        "denominator": 24,
+        "rate": 0.0
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 0,
+        "denominator": 23,
+        "rate": 0.0
+      },
+      "environment_error": {
+        "count": 0,
+        "denominator": 24,
+        "rate": 0.0
+      },
+      "low_ratio": {
+        "count": 20,
+        "denominator": 23,
+        "rate": 0.869565
+      },
+      "high_ratio": {
+        "count": 0,
+        "denominator": 23,
+        "rate": 0.0
+      },
+      "median_extraction_ratio": 0.111621,
+      "median_final_score": 0.888233,
+      "median_tokens": 381994.0,
+      "median_tool_calls": 26.5,
+      "median_copied_file_count": 5.0,
+      "closure_plan_present": {
+        "count": 2,
+        "denominator": 24,
+        "rate": 0.083333
+      },
+      "self_generated_tests": {
+        "count": 1,
+        "denominator": 24,
+        "rate": 0.041667
+      },
+      "hidden_risk_discussed": {
+        "count": 16,
+        "denominator": 24,
+        "rate": 0.666667
+      },
+      "explicit_finish": {
+        "count": 19,
+        "denominator": 24,
+        "rate": 0.791667
+      },
+      "repeated_file_read_affected": {
+        "count": 0,
+        "denominator": 24,
+        "rate": 0.0
+      },
+      "unsupported_completion_claim": {
+        "count": 0,
+        "denominator": 24,
+        "rate": 0.0
+      }
+    },
+    {
+      "label": "third_party_dependency_coupling",
+      "runs": 6,
+      "strict_suite_pass": {
+        "count": 2,
+        "denominator": 6,
+        "rate": 0.333333
+      },
+      "functional_pass": {
+        "count": 2,
+        "denominator": 6,
+        "rate": 0.333333
+      },
+      "public_observed": {
+        "count": 5,
+        "denominator": 6,
+        "rate": 0.833333
+      },
+      "public_pass_among_observed": {
+        "count": 4,
+        "denominator": 5,
+        "rate": 0.8
+      },
+      "hidden_observed": {
+        "count": 5,
+        "denominator": 6,
+        "rate": 0.833333
+      },
+      "hidden_pass_among_observed": {
+        "count": 2,
+        "denominator": 5,
+        "rate": 0.4
+      },
+      "public_hidden_fail_total": {
+        "count": 2,
+        "denominator": 6,
+        "rate": 0.333333
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 2,
+        "denominator": 4,
+        "rate": 0.5
+      },
+      "environment_error": {
+        "count": 1,
+        "denominator": 6,
+        "rate": 0.166667
+      },
+      "low_ratio": {
+        "count": 4,
+        "denominator": 6,
+        "rate": 0.666667
+      },
+      "high_ratio": {
+        "count": 1,
+        "denominator": 6,
+        "rate": 0.166667
+      },
+      "median_extraction_ratio": 0.127835,
+      "median_final_score": 0.0,
+      "median_tokens": 2410213.0,
+      "median_tool_calls": 48.0,
+      "median_copied_file_count": 9.0,
+      "closure_plan_present": {
+        "count": 1,
+        "denominator": 6,
+        "rate": 0.166667
+      },
+      "self_generated_tests": {
+        "count": 1,
+        "denominator": 6,
+        "rate": 0.166667
+      },
+      "hidden_risk_discussed": {
+        "count": 5,
+        "denominator": 6,
+        "rate": 0.833333
+      },
+      "explicit_finish": {
+        "count": 3,
+        "denominator": 6,
+        "rate": 0.5
+      },
+      "repeated_file_read_affected": {
+        "count": 4,
+        "denominator": 6,
+        "rate": 0.666667
+      },
+      "unsupported_completion_claim": {
+        "count": 1,
+        "denominator": 6,
+        "rate": 0.166667
+      }
+    }
+  ],
+  "by_dynamic_state": [
+    {
+      "label": "false",
+      "runs": 259,
+      "strict_suite_pass": {
+        "count": 120,
+        "denominator": 259,
+        "rate": 0.46332
+      },
+      "functional_pass": {
+        "count": 122,
+        "denominator": 259,
+        "rate": 0.471042
+      },
+      "public_observed": {
+        "count": 185,
+        "denominator": 259,
+        "rate": 0.714286
+      },
+      "public_pass_among_observed": {
+        "count": 165,
+        "denominator": 185,
+        "rate": 0.891892
+      },
+      "hidden_observed": {
+        "count": 185,
+        "denominator": 259,
+        "rate": 0.714286
+      },
+      "hidden_pass_among_observed": {
+        "count": 123,
+        "denominator": 185,
+        "rate": 0.664865
+      },
+      "public_hidden_fail_total": {
+        "count": 42,
+        "denominator": 259,
+        "rate": 0.162162
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 42,
+        "denominator": 165,
+        "rate": 0.254545
+      },
+      "environment_error": {
+        "count": 46,
+        "denominator": 259,
+        "rate": 0.177606
+      },
+      "low_ratio": {
+        "count": 100,
+        "denominator": 253,
+        "rate": 0.395257
+      },
+      "high_ratio": {
+        "count": 23,
+        "denominator": 253,
+        "rate": 0.090909
+      },
+      "median_extraction_ratio": 0.307107,
+      "median_final_score": 0.0,
+      "median_tokens": 1924255.0,
+      "median_tool_calls": 46.0,
+      "median_copied_file_count": 9.0,
+      "closure_plan_present": {
+        "count": 26,
+        "denominator": 259,
+        "rate": 0.100386
+      },
+      "self_generated_tests": {
+        "count": 23,
+        "denominator": 259,
+        "rate": 0.088803
+      },
+      "hidden_risk_discussed": {
+        "count": 189,
+        "denominator": 259,
+        "rate": 0.72973
+      },
+      "explicit_finish": {
+        "count": 152,
+        "denominator": 259,
+        "rate": 0.586873
+      },
+      "repeated_file_read_affected": {
+        "count": 193,
+        "denominator": 259,
+        "rate": 0.745174
+      },
+      "unsupported_completion_claim": {
+        "count": 40,
+        "denominator": 259,
+        "rate": 0.15444
+      }
+    },
+    {
+      "label": "true",
+      "runs": 191,
+      "strict_suite_pass": {
+        "count": 98,
+        "denominator": 191,
+        "rate": 0.513089
+      },
+      "functional_pass": {
+        "count": 98,
+        "denominator": 191,
+        "rate": 0.513089
+      },
+      "public_observed": {
+        "count": 166,
+        "denominator": 191,
+        "rate": 0.86911
+      },
+      "public_pass_among_observed": {
+        "count": 154,
+        "denominator": 166,
+        "rate": 0.927711
+      },
+      "hidden_observed": {
+        "count": 166,
+        "denominator": 191,
+        "rate": 0.86911
+      },
+      "hidden_pass_among_observed": {
+        "count": 98,
+        "denominator": 166,
+        "rate": 0.590361
+      },
+      "public_hidden_fail_total": {
+        "count": 56,
+        "denominator": 191,
+        "rate": 0.293194
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 56,
+        "denominator": 154,
+        "rate": 0.363636
+      },
+      "environment_error": {
+        "count": 16,
+        "denominator": 191,
+        "rate": 0.08377
+      },
+      "low_ratio": {
+        "count": 97,
+        "denominator": 187,
+        "rate": 0.518717
+      },
+      "high_ratio": {
+        "count": 32,
+        "denominator": 187,
+        "rate": 0.171123
+      },
+      "median_extraction_ratio": 0.24297,
+      "median_final_score": 0.0,
+      "median_tokens": 1497118.0,
+      "median_tool_calls": 38.0,
+      "median_copied_file_count": 5.0,
+      "closure_plan_present": {
+        "count": 23,
+        "denominator": 191,
+        "rate": 0.120419
+      },
+      "self_generated_tests": {
+        "count": 25,
+        "denominator": 191,
+        "rate": 0.13089
+      },
+      "hidden_risk_discussed": {
+        "count": 140,
+        "denominator": 191,
+        "rate": 0.732984
+      },
+      "explicit_finish": {
+        "count": 117,
+        "denominator": 191,
+        "rate": 0.612565
+      },
+      "repeated_file_read_affected": {
+        "count": 102,
+        "denominator": 191,
+        "rate": 0.534031
+      },
+      "unsupported_completion_claim": {
+        "count": 28,
+        "denominator": 191,
+        "rate": 0.146597
+      }
+    }
+  ],
+  "extraction": {
+    "known_ratio_runs": 440,
+    "unknown_ratio_runs": 10,
+    "under_proxy_le_0_25": {
+      "label": "under_proxy_le_0_25",
+      "runs": 197,
+      "strict_suite_pass": {
+        "count": 88,
+        "denominator": 197,
+        "rate": 0.446701
+      },
+      "functional_pass": {
+        "count": 88,
+        "denominator": 197,
+        "rate": 0.446701
+      },
+      "public_observed": {
+        "count": 162,
+        "denominator": 197,
+        "rate": 0.822335
+      },
+      "public_pass_among_observed": {
+        "count": 141,
+        "denominator": 162,
+        "rate": 0.87037
+      },
+      "hidden_observed": {
+        "count": 162,
+        "denominator": 197,
+        "rate": 0.822335
+      },
+      "hidden_pass_among_observed": {
+        "count": 88,
+        "denominator": 162,
+        "rate": 0.54321
+      },
+      "public_hidden_fail_total": {
+        "count": 53,
+        "denominator": 197,
+        "rate": 0.269036
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 53,
+        "denominator": 141,
+        "rate": 0.375887
+      },
+      "environment_error": {
+        "count": 27,
+        "denominator": 197,
+        "rate": 0.137056
+      },
+      "low_ratio": {
+        "count": 197,
+        "denominator": 197,
+        "rate": 1.0
+      },
+      "high_ratio": {
+        "count": 0,
+        "denominator": 197,
+        "rate": 0.0
+      },
+      "median_extraction_ratio": 0.132117,
+      "median_final_score": 0.0,
+      "median_tokens": 1705916.0,
+      "median_tool_calls": 43.0,
+      "median_copied_file_count": 5.0,
+      "closure_plan_present": {
+        "count": 19,
+        "denominator": 197,
+        "rate": 0.096447
+      },
+      "self_generated_tests": {
+        "count": 23,
+        "denominator": 197,
+        "rate": 0.116751
+      },
+      "hidden_risk_discussed": {
+        "count": 142,
+        "denominator": 197,
+        "rate": 0.720812
+      },
+      "explicit_finish": {
+        "count": 132,
+        "denominator": 197,
+        "rate": 0.670051
+      },
+      "repeated_file_read_affected": {
+        "count": 131,
+        "denominator": 197,
+        "rate": 0.664975
+      },
+      "unsupported_completion_claim": {
+        "count": 37,
+        "denominator": 197,
+        "rate": 0.187817
+      }
+    },
+    "middle_0_25_to_0_80": {
+      "label": "middle_0_25_to_0_80",
+      "runs": 188,
+      "strict_suite_pass": {
+        "count": 99,
+        "denominator": 188,
+        "rate": 0.526596
+      },
+      "functional_pass": {
+        "count": 101,
+        "denominator": 188,
+        "rate": 0.537234
+      },
+      "public_observed": {
+        "count": 141,
+        "denominator": 188,
+        "rate": 0.75
+      },
+      "public_pass_among_observed": {
+        "count": 132,
+        "denominator": 141,
+        "rate": 0.93617
+      },
+      "hidden_observed": {
+        "count": 141,
+        "denominator": 188,
+        "rate": 0.75
+      },
+      "hidden_pass_among_observed": {
+        "count": 101,
+        "denominator": 141,
+        "rate": 0.716312
+      },
+      "public_hidden_fail_total": {
+        "count": 31,
+        "denominator": 188,
+        "rate": 0.164894
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 31,
+        "denominator": 132,
+        "rate": 0.234848
+      },
+      "environment_error": {
+        "count": 31,
+        "denominator": 188,
+        "rate": 0.164894
+      },
+      "low_ratio": {
+        "count": 0,
+        "denominator": 188,
+        "rate": 0.0
+      },
+      "high_ratio": {
+        "count": 0,
+        "denominator": 188,
+        "rate": 0.0
+      },
+      "median_extraction_ratio": 0.420157,
+      "median_final_score": 0.294029,
+      "median_tokens": 1856692.0,
+      "median_tool_calls": 43.5,
+      "median_copied_file_count": 9.0,
+      "closure_plan_present": {
+        "count": 24,
+        "denominator": 188,
+        "rate": 0.12766
+      },
+      "self_generated_tests": {
+        "count": 16,
+        "denominator": 188,
+        "rate": 0.085106
+      },
+      "hidden_risk_discussed": {
+        "count": 141,
+        "denominator": 188,
+        "rate": 0.75
+      },
+      "explicit_finish": {
+        "count": 101,
+        "denominator": 188,
+        "rate": 0.537234
+      },
+      "repeated_file_read_affected": {
+        "count": 139,
+        "denominator": 188,
+        "rate": 0.739362
+      },
+      "unsupported_completion_claim": {
+        "count": 21,
+        "denominator": 188,
+        "rate": 0.111702
+      }
+    },
+    "over_proxy_gt_0_80": {
+      "label": "over_proxy_gt_0_80",
+      "runs": 55,
+      "strict_suite_pass": {
+        "count": 31,
+        "denominator": 55,
+        "rate": 0.563636
+      },
+      "functional_pass": {
+        "count": 31,
+        "denominator": 55,
+        "rate": 0.563636
+      },
+      "public_observed": {
+        "count": 48,
+        "denominator": 55,
+        "rate": 0.872727
+      },
+      "public_pass_among_observed": {
+        "count": 46,
+        "denominator": 48,
+        "rate": 0.958333
+      },
+      "hidden_observed": {
+        "count": 48,
+        "denominator": 55,
+        "rate": 0.872727
+      },
+      "hidden_pass_among_observed": {
+        "count": 32,
+        "denominator": 48,
+        "rate": 0.666667
+      },
+      "public_hidden_fail_total": {
+        "count": 14,
+        "denominator": 55,
+        "rate": 0.254545
+      },
+      "public_hidden_fail_given_public_pass": {
+        "count": 14,
+        "denominator": 46,
+        "rate": 0.304348
+      },
+      "environment_error": {
+        "count": 4,
+        "denominator": 55,
+        "rate": 0.072727
+      },
+      "low_ratio": {
+        "count": 0,
+        "denominator": 55,
+        "rate": 0.0
+      },
+      "high_ratio": {
+        "count": 55,
+        "denominator": 55,
+        "rate": 1.0
+      },
+      "median_extraction_ratio": 0.989646,
+      "median_final_score": 0.0,
+      "median_tokens": 1513048.0,
+      "median_tool_calls": 42.0,
+      "median_copied_file_count": 6.0,
+      "closure_plan_present": {
+        "count": 6,
+        "denominator": 55,
+        "rate": 0.109091
+      },
+      "self_generated_tests": {
+        "count": 9,
+        "denominator": 55,
+        "rate": 0.163636
+      },
+      "hidden_risk_discussed": {
+        "count": 43,
+        "denominator": 55,
+        "rate": 0.781818
+      },
+      "explicit_finish": {
+        "count": 35,
+        "denominator": 55,
+        "rate": 0.636364
+      },
+      "repeated_file_read_affected": {
+        "count": 23,
+        "denominator": 55,
+        "rate": 0.418182
+      },
+      "unsupported_completion_claim": {
+        "count": 10,
+        "denominator": 55,
+        "rate": 0.181818
+      }
+    }
+  },
+  "repeated_and_error_events": {
+    "repeated_file_reads": {
+      "affected_runs": {
+        "count": 295,
+        "denominator": 450,
+        "rate": 0.655556
+      },
+      "event_count": 1844,
+      "median_among_affected": 4.0
+    },
+    "repeated_line_reads": {
+      "affected_runs": {
+        "count": 143,
+        "denominator": 450,
+        "rate": 0.317778
+      },
+      "event_count": 394,
+      "median_among_affected": 1.0
+    },
+    "repeated_terminal_commands": {
+      "affected_runs": {
+        "count": 308,
+        "denominator": 450,
+        "rate": 0.684444
+      },
+      "event_count": 1446,
+      "median_among_affected": 3.0
+    },
+    "tool_error_count": {
+      "affected_runs": {
+        "count": 187,
+        "denominator": 450,
+        "rate": 0.415556
+      },
+      "event_count": 465,
+      "median_among_affected": 2.0
+    },
+    "harness_format_error_count": {
+      "affected_runs": {
+        "count": 193,
+        "denominator": 450,
+        "rate": 0.428889
+      },
+      "event_count": 589,
+      "median_among_affected": 2.0
+    },
+    "agent_reasoning_error_count": {
+      "affected_runs": {
+        "count": 68,
+        "denominator": 450,
+        "rate": 0.151111
+      },
+      "event_count": 68,
+      "median_among_affected": 1.0
+    },
+    "evaluator_environment_error_count": {
+      "affected_runs": {
+        "count": 62,
+        "denominator": 450,
+        "rate": 0.137778
+      },
+      "event_count": 62,
+      "median_among_affected": 1.0
+    }
+  },
+  "error_sources": {
+    "agent_reasoning_unsupported_completion_claim": {
+      "definition": "FinishAction asserts completion/test success but final functional gate is 0, excluding evaluator/environment errors.",
+      "all_runs": {
+        "count": 68,
+        "denominator": 450,
+        "rate": 0.151111
+      },
+      "non_environment_failures": {
+        "count": 68,
+        "denominator": 168,
+        "rate": 0.404762
+      }
+    },
+    "tool_execution_error": {
+      "definition": "OpenHands ObservationEvent has is_error=true, excluding tool-schema validation errors.",
+      "affected_runs": {
+        "count": 187,
+        "denominator": 450,
+        "rate": 0.415556
+      },
+      "events": 465
+    },
+    "harness_format_error": {
+      "definition": "Agent/Conversation error explicitly reports tool validation/schema/required-parameter failure.",
+      "affected_runs": {
+        "count": 193,
+        "denominator": 450,
+        "rate": 0.428889
+      },
+      "events": 589
+    },
+    "evaluator_environment_error": {
+      "definition": "Dependency installation, evaluator tooling, or Docker sandbox fails before a valid test outcome.",
+      "affected_runs": {
+        "count": 62,
+        "denominator": 450,
+        "rate": 0.137778
+      },
+      "events": 62
+    }
+  },
+  "primary_failure_counts": [
+    {
+      "primary_failure": "passed",
+      "count": 220,
+      "denominator": 450,
+      "rate": 0.488889
+    },
+    {
+      "primary_failure": "evaluator_or_environment_error",
+      "count": 62,
+      "denominator": 450,
+      "rate": 0.137778
+    },
+    {
+      "primary_failure": "hidden_behavior_contract_failure",
+      "count": 57,
+      "denominator": 450,
+      "rate": 0.126667
+    },
+    {
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "count": 39,
+      "denominator": 450,
+      "rate": 0.086667
+    },
+    {
+      "primary_failure": "dependency_closure_omission",
+      "count": 22,
+      "denominator": 450,
+      "rate": 0.048889
+    },
+    {
+      "primary_failure": "public_api_or_interface_failure",
+      "count": 17,
+      "denominator": 450,
+      "rate": 0.037778
+    },
+    {
+      "primary_failure": "public_behavior_failure",
+      "count": 11,
+      "denominator": 450,
+      "rate": 0.024444
+    },
+    {
+      "primary_failure": "missing_submission",
+      "count": 10,
+      "denominator": 450,
+      "rate": 0.022222
+    },
+    {
+      "primary_failure": "isolation_or_forbidden_import_failure",
+      "count": 8,
+      "denominator": 450,
+      "rate": 0.017778
+    },
+    {
+      "primary_failure": "build_syntax_or_version_failure",
+      "count": 3,
+      "denominator": 450,
+      "rate": 0.006667
+    },
+    {
+      "primary_failure": "packaging_or_build_failure",
+      "count": 1,
+      "denominator": 450,
+      "rate": 0.002222
+    }
+  ],
+  "stop_reason_counts": [
+    {
+      "stop_reason": "explicit_finish",
+      "count": 269,
+      "denominator": 450,
+      "rate": 0.597778
+    },
+    {
+      "stop_reason": "completion_signal",
+      "count": 88,
+      "denominator": 450,
+      "rate": 0.195556
+    },
+    {
+      "stop_reason": "agent_exit:passed",
+      "count": 59,
+      "denominator": 450,
+      "rate": 0.131111
+    },
+    {
+      "stop_reason": "step_limit_exceeded",
+      "count": 23,
+      "denominator": 450,
+      "rate": 0.051111
+    },
+    {
+      "stop_reason": "missing_submission_after_agent_exit",
+      "count": 9,
+      "denominator": 450,
+      "rate": 0.02
+    },
+    {
+      "stop_reason": "timeout",
+      "count": 2,
+      "denominator": 450,
+      "rate": 0.004444
+    }
+  ],
+  "cases": [
+    {
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.96319,
+      "final_score": 0.0,
+      "copied_file_count": 6,
+      "copied_loc": 471,
+      "repeated_file_reads": 0,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 1651172,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104/requests_cache__cache_key_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104/requests_cache__cache_key_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "ad2fc573-1401-4d53-8856-ab4034c217d6",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "pydantic_v1__validation_error_core__001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 0.535431,
+      "final_score": 0.0,
+      "copied_file_count": 15,
+      "copied_loc": 5599,
+      "repeated_file_reads": 4,
+      "tool_errors": 2,
+      "harness_errors": 0,
+      "tokens": 5096343,
+      "stop_reason": "step_limit_exceeded",
+      "primary_failure": "dependency_closure_omission",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/pydantic_v1__validation_error_core__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/pydantic_v1__validation_error_core__001/eval/result.json",
+      "evidence_step_ids": [
+        "16766354-cedc-406d-8563-ff18729b377a",
+        "997b5fdc-5360-4686-ad4e-9d63812d4c09",
+        "dd118e51-8dc2-4e9c-b076-c3a91c83247c",
+        "70c1a821-fd37-47cd-99b6-df6fd517088c",
+        "9a296cef-cacb-440d-a618-70dfe770fe2b",
+        "61c42c4f-e27b-4e37-9596-54a1ab44fe6c",
+        "f7e8dfec-e010-479a-9e27-4f1eaba0547f",
+        "eval:build"
+      ]
+    },
+    {
+      "task_id": "phonenumbers__parse_format_core__001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.426281,
+      "final_score": 0.0,
+      "copied_file_count": 10,
+      "copied_loc": 2871,
+      "repeated_file_reads": 60,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 5142307,
+      "stop_reason": "step_limit_exceeded",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/phonenumbers__parse_format_core__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/phonenumbers__parse_format_core__001/eval/result.json",
+      "evidence_step_ids": [
+        "bf656a8c-c910-4f9b-8f78-05723b8a1682",
+        "27ac166f-127f-4c68-bf47-80a3d4d89e9b",
+        "bf595ff8-e45f-4f66-afc6-86533a6183b1",
+        "0cf51515-3320-4b6e-ae72-8f921be8511c",
+        "dcbe18c6-a41c-467d-b8bb-fdc994557ae6",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "diskcache__eviction_policy_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.041578,
+      "final_score": 0.0,
+      "copied_file_count": 2,
+      "copied_loc": 117,
+      "repeated_file_reads": 2,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 1497118,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": true,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/diskcache__eviction_policy_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/diskcache__eviction_policy_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "f5b4b21a-19fd-4434-bc05-d5de5cc5f52e",
+        "6a5dd66b-3680-4910-aa2c-26de02794acb",
+        "8983822d-0773-4a70-b596-104bb30fcb8b",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.09368,
+      "final_score": 0.0,
+      "copied_file_count": 4,
+      "copied_loc": 292,
+      "repeated_file_reads": 8,
+      "tool_errors": 2,
+      "harness_errors": 0,
+      "tokens": 2601067,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/click__lazy_command_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/click__lazy_command_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "8493e436-818c-4cb1-9f5e-cd46f19ed74e",
+        "13d8c1ac-7416-4e9a-9d83-9d44babba949",
+        "3a7f3fcd-bdc9-4a00-85d8-0e32c8016d0e",
+        "4b66f5b9-0288-48d3-a025-a9b594eb447c",
+        "be76e535-ea4d-4624-86ce-fd268c30fd6e",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.102059,
+      "final_score": 0.0,
+      "copied_file_count": 4,
+      "copied_loc": 233,
+      "repeated_file_reads": 3,
+      "tool_errors": 2,
+      "harness_errors": 0,
+      "tokens": 1679652,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pytest__marker_registry_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pytest__marker_registry_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "af1d46e2-7746-4cdc-987a-a51865f978f2",
+        "14dbc6b4-e2ee-435d-b093-d24bb403c0a1",
+        "e16547b0-aff1-4e70-a9ac-536911810b40",
+        "03b0dc44-9d97-4a8d-804e-61cdf42d1e29",
+        "67e343d5-431f-4291-82db-2c27e2b03cf2",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.597656,
+      "final_score": 0.0,
+      "copied_file_count": 2,
+      "copied_loc": 153,
+      "repeated_file_reads": 0,
+      "tool_errors": 2,
+      "harness_errors": 0,
+      "tokens": 1020785,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": true,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/jupyter_server__extension_config_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/jupyter_server__extension_config_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "6682d720-653d-4c41-9e00-24ff374d85f1",
+        "cf06bb8e-1745-4663-97d0-10393c87192b",
+        "3e138020-326f-4bc7-9144-4387766f98f7",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 1.034437,
+      "final_score": 0.0,
+      "copied_file_count": 5,
+      "copied_loc": 781,
+      "repeated_file_reads": 3,
+      "tool_errors": 1,
+      "harness_errors": 0,
+      "tokens": 1248192,
+      "stop_reason": "explicit_finish",
+      "primary_failure": "hidden_interface_or_closure_failure",
+      "contract_review_required": true,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/parsel__selector_namespace_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/parsel__selector_namespace_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "ba17601f-4bae-49b5-833a-f7ac8bb9ac9e",
+        "f9de7651-56da-42fa-af18-4f72ece24075",
+        "ecfdd1ca-b4f5-4a8c-a302-3d947930dadf",
+        "525c3a9e-dfbb-49f9-9f4d-44e1a37247bb",
+        "5c22cd8e-a494-4db5-9890-4582da880548",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "true",
+      "functional_pass": "true",
+      "extraction_ratio": 1.139605,
+      "final_score": 0.0,
+      "copied_file_count": 8,
+      "copied_loc": 1502,
+      "repeated_file_reads": 2,
+      "tool_errors": 1,
+      "harness_errors": 1,
+      "tokens": 4307124,
+      "stop_reason": "explicit_finish",
+      "primary_failure": "passed",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/sqlalchemy__event_dispatch_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/sqlalchemy__event_dispatch_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "c46dddd1-b647-45aa-9784-4c584e29461c",
+        "ebb5381a-141c-4303-847b-b0132febea20",
+        "06778ac4-d540-49f4-98c1-574539ec120c",
+        "73e62f4b-7fe3-49a7-b393-473575b9ea84",
+        "6cf04002-1109-41c2-a810-0f839a2ee1fb",
+        "3aecc8c6-df21-4897-854e-7575cadbb4e4"
+      ]
+    },
+    {
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "true",
+      "functional_pass": "true",
+      "extraction_ratio": 0.878917,
+      "final_score": 0.121083,
+      "copied_file_count": 4,
+      "copied_loc": 617,
+      "repeated_file_reads": 0,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 1113070,
+      "stop_reason": "completion_signal",
+      "primary_failure": "passed",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104/stevedore__extension_manager_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104/stevedore__extension_manager_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "c98c6e5a-d4b1-45f8-8a7d-cde36690b202"
+      ]
+    },
+    {
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 0.387231,
+      "final_score": 0.0,
+      "copied_file_count": 5,
+      "copied_loc": 467,
+      "repeated_file_reads": 6,
+      "tool_errors": 1,
+      "harness_errors": 1,
+      "tokens": 1719320,
+      "stop_reason": "completion_signal",
+      "primary_failure": "hidden_behavior_contract_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pluggy__hook_wrapper_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pluggy__hook_wrapper_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "532fa682-0eea-4a3f-9258-390009b27fd0",
+        "2f60e1d2-0955-4484-941d-14ad65fe6ce5",
+        "2af74bd3-8b88-491b-9177-229e620a9c10",
+        "de336333-b4de-4cb8-ac54-52a4f932bd01",
+        "a23ff659-f27c-4467-9a7a-e786e3f1820a",
+        "7500865e-a69f-44a9-b666-4e7b64695a45",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": null,
+      "final_score": 0.0,
+      "copied_file_count": 0,
+      "copied_loc": 0,
+      "repeated_file_reads": 0,
+      "tool_errors": 1,
+      "harness_errors": 3,
+      "tokens": 35316,
+      "stop_reason": "missing_submission_after_agent_exit",
+      "primary_failure": "missing_submission",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pydantic__field_validator_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/pydantic__field_validator_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "31f49cae-d932-478e-b085-9ea747031afb",
+        "e7db6b9b-d9f9-42fe-9c7d-bef038fa8a75",
+        "7ad35608-7fc0-4456-8a66-9b09f605ec5c"
+      ]
+    },
+    {
+      "task_id": "coverage__config_merge_core__001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "false",
+      "functional_pass": "false",
+      "extraction_ratio": 1.0,
+      "final_score": 0.0,
+      "copied_file_count": 2,
+      "copied_loc": 264,
+      "repeated_file_reads": 0,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 1354848,
+      "stop_reason": "explicit_finish",
+      "primary_failure": "hidden_behavior_contract_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/coverage__config_merge_core__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/coverage__config_merge_core__001/eval/result.json",
+      "evidence_step_ids": [
+        "89c4db31-c9c8-483e-8b1d-cf9d53395808",
+        "3b5cf3a1-ab42-4e7d-a4bb-13cf9ac4058c",
+        "eval:hidden_tests"
+      ]
+    },
+    {
+      "task_id": "dynaconf__settings_merge_core__001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "true",
+      "hidden_pass": "true",
+      "functional_pass": "true",
+      "extraction_ratio": 0.178331,
+      "final_score": 0.821669,
+      "copied_file_count": 14,
+      "copied_loc": 3835,
+      "repeated_file_reads": 21,
+      "tool_errors": 0,
+      "harness_errors": 1,
+      "tokens": 11474158,
+      "stop_reason": "explicit_finish",
+      "primary_failure": "passed",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/dynaconf__settings_merge_core__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/dynaconf__settings_merge_core__001/eval/result.json",
+      "evidence_step_ids": [
+        "e30b970e-e5ee-41f7-8db9-ae18dd2e177d",
+        "a2186545-7309-498a-a0e5-7f98a6b4331f",
+        "998202f5-1c38-4b58-9ac6-0a6dce5afcf0",
+        "7b53e3b4-9c8a-404b-a7f2-4b6e1ffdcfe5",
+        "8d686c00-9481-42be-a622-e3ceb7ff9769"
+      ]
+    },
+    {
+      "task_id": "sphinx__extension_registry_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 0.115282,
+      "final_score": 0.0,
+      "copied_file_count": 5,
+      "copied_loc": 129,
+      "repeated_file_reads": 0,
+      "tool_errors": 1,
+      "harness_errors": 0,
+      "tokens": 1860449,
+      "stop_reason": "completion_signal",
+      "primary_failure": "build_syntax_or_version_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/sphinx__extension_registry_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/sphinx__extension_registry_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "64906364-b28d-43f3-95c9-3f58f081d8b8",
+        "03da34c1-c7d4-497f-a431-d664ba3baa2b",
+        "eval:build"
+      ]
+    },
+    {
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 3.044248,
+      "final_score": 0.0,
+      "copied_file_count": 5,
+      "copied_loc": 344,
+      "repeated_file_reads": 12,
+      "tool_errors": 1,
+      "harness_errors": 0,
+      "tokens": 3778387,
+      "stop_reason": "completion_signal",
+      "primary_failure": "dependency_closure_omission",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/readme_renderer__content_type_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5/readme_renderer__content_type_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "c5208f5e-528b-4d64-ba6d-ef42395f252b",
+        "3040bfc9-df69-4263-acf0-2e4454ec221d",
+        "f274ab53-2a2a-4bc0-9f08-0d1a68cc0b8a",
+        "c27b24cb-6d6d-4f13-a746-f5ddf3eeac11",
+        "eval:build"
+      ]
+    },
+    {
+      "task_id": "bleach__sanitize_core__001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 0.506234,
+      "final_score": 0.0,
+      "copied_file_count": 36,
+      "copied_loc": 12709,
+      "repeated_file_reads": 1,
+      "tool_errors": 2,
+      "harness_errors": 0,
+      "tokens": 2005228,
+      "stop_reason": "completion_signal",
+      "primary_failure": "dependency_closure_omission",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/bleach__sanitize_core__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429/bleach__sanitize_core__001/eval/result.json",
+      "evidence_step_ids": [
+        "14a279c3-172d-486b-aad4-efec65f14628",
+        "b38c1249-27ba-425c-b459-ff3839259165",
+        "e1f713d4-1f5c-4e6d-b95d-ba08ebdb971a",
+        "a798783a-9e8e-43f8-b42f-df9167da7a13",
+        "eval:build"
+      ]
+    },
+    {
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 0.311381,
+      "final_score": 0.0,
+      "copied_file_count": 3,
+      "copied_loc": 487,
+      "repeated_file_reads": 2,
+      "tool_errors": 0,
+      "harness_errors": 1,
+      "tokens": 1277571,
+      "stop_reason": "completion_signal",
+      "primary_failure": "evaluator_or_environment_error",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/responses__request_matcher_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "b135beca-fec3-49a3-85f1-f81db6c13e44",
+        "c0dbe9f4-bcb7-46d2-b997-1b23d35f78da",
+        "d45122ae-c345-4c36-af03-1200ca011f68",
+        "9664ab72-299d-4ba7-a400-7ccc5fff384f",
+        "eval:build",
+        "eval:dependency_install_failed"
+      ]
+    },
+    {
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "model": "deepseek/deepseek-v4-flash",
+      "public_pass": "NA",
+      "hidden_pass": "NA",
+      "functional_pass": "false",
+      "extraction_ratio": 1.298456,
+      "final_score": 0.0,
+      "copied_file_count": 16,
+      "copied_loc": 757,
+      "repeated_file_reads": 1,
+      "tool_errors": 0,
+      "harness_errors": 0,
+      "tokens": 2679835,
+      "stop_reason": "completion_signal",
+      "primary_failure": "evaluator_or_environment_error",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4/yamale__schema_validate_core__hard3_001/eval/result.json",
+      "evidence_step_ids": [
+        "ee3433b3-5447-4827-85bf-80d78e697ee8",
+        "cba1c648-5bf8-492f-824b-a9a173f14558",
+        "eval:build",
+        "eval:dependency_install_failed"
+      ]
+    },
+    {
+      "task_id": "pyyaml__safe_load_dump__001",
+      "model": "openai/Qwen3-Coder-30B-A3B-Instruct",
+      "public_pass": "true",
+      "hidden_pass": "true",
+      "functional_pass": "false",
+      "extraction_ratio": 1.002022,
+      "final_score": 0.0,
+      "copied_file_count": 17,
+      "copied_loc": 4459,
+      "repeated_file_reads": 4,
+      "tool_errors": 1,
+      "harness_errors": 0,
+      "tokens": 2217561,
+      "stop_reason": "explicit_finish",
+      "primary_failure": "isolation_or_forbidden_import_failure",
+      "contract_review_required": false,
+      "trajectory_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pyyaml__safe_load_dump__001/agent/openhands_events.jsonl",
+      "evaluation_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731/pyyaml__safe_load_dump__001/eval/result.json",
+      "evidence_step_ids": [
+        "e355fb56-3a68-4c5d-88d7-f33498675e8e",
+        "043fd0df-7da6-4c20-82da-0af4d49ca216",
+        "61e3efb5-ff31-4183-9ede-f91e33e1deb5",
+        "2d95128b-1926-44f3-a5d0-cc5502f4f82a",
+        "3efca204-2383-4e72-b969-c1d80169967b"
+      ]
+    }
+  ]
+}

@@ -1,37 +1,5 @@
 {
-  "task_id": "setuptools_scm__version_normalize_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "metadata extraction / package discovery",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "5b91e2faf0079157a52c0914c21beb6622e9f7a7",
-    "license": "MIT",
-    "name": "setuptools_scm",
-    "url": "https://github.com/pypa/setuptools_scm.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped version_from_scm into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "subprocess git/hg",
-      "full setuptools integration"
-    ],
-    "included_behaviors": [
-      "SCM-like version normalization",
-      "dev distance suffix",
-      "local node suffix"
-    ],
-    "name": "version_from_scm",
-    "source_entrypoints": [
-      "setuptools_scm.version.version_from_scm"
-    ]
-  },
   "entanglement": {
     "description": "Version schemes, local node suffixes, dirty tags, and distance-from-tag rules require transitive helpers.",
     "level": "high",
@@ -46,12 +14,6 @@
       "data_model_coupling",
       "implicit_dependency_coupling"
     ]
-  },
-  "output": {
-    "callable": "version_from_scm",
-    "import": "from featurelifted import version_from_scm",
-    "package": "featurelifted",
-    "signature": "version_from_scm(root, *, tag='v1.0.0', distance=0, dirty=False, node='g1234567')"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped version_from_scm into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "subprocess git/hg",
+      "full setuptools integration"
+    ],
+    "included_behaviors": [
+      "SCM-like version normalization",
+      "dev distance suffix",
+      "local node suffix"
+    ],
+    "name": "version_from_scm",
+    "source_entrypoints": [
+      "setuptools_scm.version.version_from_scm"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "version_from_scm",
+    "import": "from featurelifted import version_from_scm",
+    "package": "featurelifted",
+    "signature": "version_from_scm(root, *, tag='v1.0.0', distance=0, dirty=False, node='g1234567')"
+  },
+  "source": {
+    "commit": "5b91e2faf0079157a52c0914c21beb6622e9f7a7",
+    "license": "MIT",
+    "name": "setuptools_scm",
+    "url": "https://github.com/pypa/setuptools_scm.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "metadata extraction / package discovery",
+    "data_model_coupling"
+  ],
+  "task_id": "setuptools_scm__version_normalize_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

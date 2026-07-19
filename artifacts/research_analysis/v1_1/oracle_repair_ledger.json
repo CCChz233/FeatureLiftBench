@@ -1,0 +1,304 @@
+{
+  "active_task_count": 0,
+  "active_tasks": [],
+  "benchmark_version": "python-v1.1-revision-3",
+  "current_freeze_id": "5f9012f6dc748c90",
+  "full_revalidation_pending_due_asset_revision": false,
+  "interpretation_boundary": "Sixteen tasks passed targeted three-repeat Docker validation after Oracle packaging repairs. A current 450-run freeze is linked when its stable failure set exactly equals the active quarantine; formal annotation review remains separate.",
+  "physical_deletion": false,
+  "policy": "Exclude from v1.1 aggregate scoring until repaired and independently revalidated; retain task IDs, paths, and historical v1 results.",
+  "repair_revision": 3,
+  "resolved_task_count": 16,
+  "resolved_tasks": [
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "607e70aee2394d48",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-1/astroid__nodes_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-2/astroid__nodes_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-3/astroid__nodes_core__001/result.json"
+      ],
+      "repair": "relative dynamic imports resolve inside featurelifted",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_2/astroid__nodes_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/astroid__nodes_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/astroid__nodes_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "astroid__nodes_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "607e70aee2394d48",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-1/jinja2__loader_inheritance_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-2/jinja2__loader_inheritance_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-3/jinja2__loader_inheritance_core__001/result.json"
+      ],
+      "repair": "generated and deferred imports resolve inside featurelifted",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_2/jinja2__loader_inheritance_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/jinja2__loader_inheritance_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/jinja2__loader_inheritance_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "jinja2__loader_inheritance_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "607e70aee2394d48",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-1/pydantic_settings__env_source_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-2/pydantic_settings__env_source_core__001/result.json",
+        "experiments/v1_1_oracle_validation/607e70aee2394d48/full/rep-3/pydantic_settings__env_source_core__001/result.json"
+      ],
+      "repair": "excluded python-dotenv import replaced by a task-scoped adapter",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_2/pydantic_settings__env_source_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/pydantic_settings__env_source_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_2/pydantic_settings__env_source_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "pydantic_settings__env_source_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/babel__plural_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/babel__plural_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/babel__plural_core__001/result.json"
+      ],
+      "repair": "locale pickle unpickler maps babel.* to featurelifted.* with dates/numbers stubs",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/babel__plural_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/babel__plural_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/babel__plural_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "babel__plural_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/bleach__sanitize_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/bleach__sanitize_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/bleach__sanitize_core__001/result.json"
+      ],
+      "repair": "vendored webencodings under featurelifted/_vendor with import bootstrap",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/bleach__sanitize_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/bleach__sanitize_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/bleach__sanitize_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "bleach__sanitize_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/deepdiff__deep_compare_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/deepdiff__deep_compare_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/deepdiff__deep_compare_core__001/result.json"
+      ],
+      "repair": "vendored orderly_set and inlined LRU cache for lfucache",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/deepdiff__deep_compare_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/deepdiff__deep_compare_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/deepdiff__deep_compare_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "deepdiff__deep_compare_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/dynaconf__settings_merge_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/dynaconf__settings_merge_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/dynaconf__settings_merge_core__001/result.json"
+      ],
+      "repair": "rewrote dynaconf.* loader module path strings to featurelifted.*",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/dynaconf__settings_merge_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/dynaconf__settings_merge_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/dynaconf__settings_merge_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "dynaconf__settings_merge_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/environs__typed_env_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/environs__typed_env_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/environs__typed_env_core__001/result.json"
+      ],
+      "repair": "removed runtime Field[...] subscript from oracle fields.py",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/environs__typed_env_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/environs__typed_env_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/environs__typed_env_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "environs__typed_env_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/jinja2__compile_render_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/jinja2__compile_render_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/jinja2__compile_render_core__001/result.json"
+      ],
+      "repair": "generated runtime imports target featurelifted instead of jinja2",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__compile_render_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__compile_render_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__compile_render_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "jinja2__compile_render_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/jinja2__extensions_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/jinja2__extensions_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/jinja2__extensions_core__001/result.json"
+      ],
+      "repair": "generated runtime imports target featurelifted instead of jinja2",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__extensions_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__extensions_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__extensions_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "jinja2__extensions_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/jinja2__filters_tests_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/jinja2__filters_tests_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/jinja2__filters_tests_core__001/result.json"
+      ],
+      "repair": "generated runtime imports target featurelifted instead of jinja2",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__filters_tests_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__filters_tests_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/jinja2__filters_tests_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "jinja2__filters_tests_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/lark__parse_tree_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/lark__parse_tree_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/lark__parse_tree_core__001/result.json"
+      ],
+      "repair": "stdlib grammar loader uses featurelifted package name",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/lark__parse_tree_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/lark__parse_tree_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/lark__parse_tree_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "lark__parse_tree_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/lark__visitor_transform_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/lark__visitor_transform_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/lark__visitor_transform_core__001/result.json"
+      ],
+      "repair": "stdlib grammar loader uses featurelifted package name",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/lark__visitor_transform_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/lark__visitor_transform_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/lark__visitor_transform_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "lark__visitor_transform_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/passlib__hash_context_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/passlib__hash_context_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/passlib__hash_context_core__001/result.json"
+      ],
+      "repair": "handler registry module path strings target featurelifted.handlers.*",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/passlib__hash_context_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/passlib__hash_context_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/passlib__hash_context_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "passlib__hash_context_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/pygments__formatter_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/pygments__formatter_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/pygments__formatter_core__001/result.json"
+      ],
+      "repair": "dynamic pygments module strings rewritten; bundled default style",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/pygments__formatter_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/pygments__formatter_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/pygments__formatter_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "pygments__formatter_core__001"
+    },
+    {
+      "all_build_public_hidden_isolation_pass": true,
+      "current_freeze_id": "5f9012f6dc748c90",
+      "current_full_result_paths": [
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-1/pygments__lexer_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-2/pygments__lexer_core__001/result.json",
+        "experiments/v1_1_oracle_validation/5f9012f6dc748c90/full/rep-3/pygments__lexer_core__001/result.json"
+      ],
+      "repair": "dynamic pygments module strings rewritten; lex() honors stripall Text filtering",
+      "repetitions": 3,
+      "result_paths": [
+        "experiments/v1_1_repair_preflight/revision_3/pygments__lexer_core__001/run_1/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/pygments__lexer_core__001/run_2/result.json",
+        "experiments/v1_1_repair_preflight/revision_3/pygments__lexer_core__001/run_3/result.json"
+      ],
+      "review_status": "author_repaired_three_repeat_docker_validated",
+      "task_id": "pygments__lexer_core__001"
+    }
+  ],
+  "schema_version": "featureliftbench.versioned_quarantine.v2",
+  "source_freeze_id": "607e70aee2394d48"
+}

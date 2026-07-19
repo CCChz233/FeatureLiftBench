@@ -50,7 +50,17 @@ api_base_env = "VLLM_QWEN3_CODER_30B_API_BASE"
 cost_limit = "0"
 call_limit = "0"
 
-# --- Frozen Python-150 paper extension (OpenHands) ---
+# --- Frozen Python-150 paper (OpenHands) ---
+
+[profiles.openhands_deepseek_v4_flash]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
 
 [profiles.openhands_qwen3_6_27b_fp8_paper]
 model = "openai/Qwen3.6-27B-FP8"

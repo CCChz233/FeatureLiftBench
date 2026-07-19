@@ -1,37 +1,5 @@
 {
-  "task_id": "dateutil__zone_resolver_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "path/resource resolver",
-    "resource_coupling"
-  ],
-  "source": {
-    "commit": "48bd1af97e71baf8e96fce5b663d589caac8f147",
-    "license": "Apache-2.0",
-    "name": "dateutil",
-    "url": "https://github.com/dateutil/dateutil.git"
-  },
-  "feature": {
-    "description": "Extract a task-scoped zoneresolver into featurelifted.",
-    "excluded_behaviors": [
-      "network access",
-      "tzdata download",
-      "full datetime tz conversion"
-    ],
-    "included_behaviors": [
-      "tzfile parsing boundary",
-      "zone cache",
-      "alias resolution"
-    ],
-    "name": "ZoneResolver",
-    "source_entrypoints": [
-      "dateutil.zoneinfo.ZoneResolver"
-    ]
-  },
   "entanglement": {
     "description": "Requires local zoneinfo resource lookup, cache behavior, alias handling, and binary parser boundary.",
     "level": "high",
@@ -46,12 +14,6 @@
       "resource_coupling",
       "parser_state_coupling"
     ]
-  },
-  "output": {
-    "callable": "ZoneResolver",
-    "import": "from featurelifted import ZoneResolver, parse_tzfile, UnknownZoneError, InvalidTZFileError",
-    "package": "featurelifted",
-    "signature": "ZoneResolver()"
   },
   "environment": {
     "allowed_dependencies": [],
@@ -70,6 +32,45 @@
     "python": "3.11",
     "timeout_seconds": 90
   },
+  "feature": {
+    "description": "Extract a task-scoped zoneresolver into featurelifted.",
+    "excluded_behaviors": [
+      "network access",
+      "tzdata download",
+      "full datetime tz conversion"
+    ],
+    "included_behaviors": [
+      "tzfile parsing boundary",
+      "zone cache",
+      "alias resolution"
+    ],
+    "name": "ZoneResolver",
+    "source_entrypoints": [
+      "dateutil.zoneinfo.ZoneResolver"
+    ]
+  },
+  "language": "python",
+  "output": {
+    "callable": "ZoneResolver",
+    "import": "from featurelifted import ZoneResolver, parse_tzfile, UnknownZoneError, InvalidTZFileError",
+    "package": "featurelifted",
+    "signature": "ZoneResolver()"
+  },
+  "source": {
+    "commit": "48bd1af97e71baf8e96fce5b663d589caac8f147",
+    "license": "Apache-2.0",
+    "name": "dateutil",
+    "url": "https://github.com/dateutil/dateutil.git"
+  },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "resource_coupling"
+  ],
+  "task_id": "dateutil__zone_resolver_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

@@ -1,20 +1,37 @@
 {
-  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "path/resource resolver",
-    "config_environment_coupling"
-  ],
-  "source": {
-    "commit": "ad6b4aea233a9634ffcd6ad553ecd63129ab5f6e",
-    "license": "BSD-3-Clause",
-    "name": "jupyter_core",
-    "tag": "v5.8.1",
-    "url": "https://github.com/jupyter/jupyter_core"
+  "entanglement": {
+    "description": "environment, path resolver, platform state",
+    "level": "high",
+    "primary": "config_environment_coupling",
+    "signals": [
+      "Jupyter path precedence depends on environment variables, platform, sys.prefix, and user site paths.",
+      "The surrounding upstream repo contains unrelated CLI, migration, application, and troubleshooting modules."
+    ],
+    "types": [
+      "config_environment_coupling",
+      "resource_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "jupyter_core",
+      "platformdirs"
+    ],
+    "forbidden_imports": [
+      "jupyter_core",
+      "platformdirs"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "jupyter_core/paths.py"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract deterministic Jupyter config/data/runtime path resolution without importing jupyter_core or platformdirs.",
@@ -41,45 +58,29 @@
       "jupyter_core.paths.jupyter_config_path"
     ]
   },
-  "entanglement": {
-    "description": "environment, path resolver, platform state",
-    "level": "high",
-    "primary": "config_environment_coupling",
-    "signals": [
-      "Jupyter path precedence depends on environment variables, platform, sys.prefix, and user site paths.",
-      "The surrounding upstream repo contains unrelated CLI, migration, application, and troubleshooting modules."
-    ],
-    "types": [
-      "config_environment_coupling",
-      "resource_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "jupyter_config_path",
     "import": "from featurelifted import jupyter_config_dir, jupyter_config_path, jupyter_data_dir, jupyter_path, jupyter_runtime_dir",
     "package": "featurelifted",
     "signature": "jupyter_config_path(env=None, home=None, platform='linux', sys_prefix='/usr', user_site_base=None, enable_user_site=True) -> list[str]"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "jupyter_core",
-      "platformdirs"
-    ],
-    "forbidden_imports": [
-      "jupyter_core",
-      "platformdirs"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "jupyter_core/paths.py"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "ad6b4aea233a9634ffcd6ad553ecd63129ab5f6e",
+    "license": "BSD-3-Clause",
+    "name": "jupyter_core",
+    "tag": "v5.8.1",
+    "url": "https://github.com/jupyter/jupyter_core"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "path/resource resolver",
+    "config_environment_coupling"
+  ],
+  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

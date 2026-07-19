@@ -1,19 +1,36 @@
 {
-  "task_id": "trafaret__validation_rules_core__hard3_001",
-  "language": "python",
-  "status": "main",
   "difficulty": "hard",
-  "tags": [
-    "batch-3",
-    "hard",
-    "rule / policy engine",
-    "data_model_coupling"
-  ],
-  "source": {
-    "commit": "4ac577155c93e5a3b024645abd64b1442fd4d550",
-    "license": "BSD-3-Clause",
-    "name": "trafaret",
-    "url": "https://github.com/Deepwalker/trafaret.git"
+  "entanglement": {
+    "description": "Composable validators, DataError structure, key policies, and converter behavior interact.",
+    "level": "high",
+    "primary": "data_model_coupling",
+    "signals": [
+      "Dict key optionality via Key",
+      "Forward recursion via set_type",
+      "path-specific DataError",
+      "Or/And composition operators"
+    ],
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "trafaret"
+    ],
+    "forbidden_imports": [
+      "trafaret"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "trafaret/"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 90
   },
   "feature": {
     "description": "Extract a task-scoped composable trafaret validation rules into featurelifted.",
@@ -34,44 +51,28 @@
       "trafaret.Forward"
     ]
   },
-  "entanglement": {
-    "description": "Composable validators, DataError structure, key policies, and converter behavior interact.",
-    "level": "high",
-    "primary": "data_model_coupling",
-    "signals": [
-      "Dict key optionality via Key",
-      "Forward recursion via set_type",
-      "path-specific DataError",
-      "Or/And composition operators"
-    ],
-    "types": [
-      "data_model_coupling",
-      "implicit_dependency_coupling"
-    ]
-  },
+  "language": "python",
   "output": {
     "callable": "Dict",
     "import": "from featurelifted import Int, String, Dict, Key, Or, And, Forward, DataError",
     "package": "featurelifted",
     "signature": "Dict(schema)"
   },
-  "environment": {
-    "allowed_dependencies": [],
-    "dependency_lock": "requirements.lock",
-    "forbidden_dependencies": [
-      "trafaret"
-    ],
-    "forbidden_imports": [
-      "trafaret"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "trafaret/"
-    ],
-    "network": false,
-    "python": "3.11",
-    "timeout_seconds": 90
+  "source": {
+    "commit": "4ac577155c93e5a3b024645abd64b1442fd4d550",
+    "license": "BSD-3-Clause",
+    "name": "trafaret",
+    "url": "https://github.com/Deepwalker/trafaret.git"
   },
+  "split_role": "mechanism_challenging",
+  "status": "main",
+  "tags": [
+    "batch-3",
+    "hard",
+    "rule / policy engine",
+    "data_model_coupling"
+  ],
+  "task_id": "trafaret__validation_rules_core__hard3_001",
   "tests": {
     "command": "pytest",
     "hidden": "hidden_tests/",

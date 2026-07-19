@@ -1,0 +1,94 @@
+{
+  "schema_version": "featureliftbench.expert_adjudication_ledger.v1",
+  "generated_at": "2026-07-19",
+  "reviewer_id": "cursor_grok_expert_pass_20260719",
+  "reviewer_type": "ai_assisted_expert",
+  "review_boundary": "Expert AI adjudication for engineering quality. Does NOT satisfy independent human double-review paper-release gates. formal_human_review_pending remains true.",
+  "paper_release_impact": "none",
+  "documents": [
+    "docs/research_analysis/expert_review/00_EXPERT_REVIEW_SUMMARY.md",
+    "docs/research_analysis/expert_review/01_TAXONOMY_EXPERT_REVIEW.md",
+    "docs/research_analysis/expert_review/02_NEAR_DUPLICATE_EXPERT_REVIEW.md",
+    "docs/research_analysis/expert_review/03_PILOT10_BEHAVIOR_EXPERT_REVIEW.md",
+    "docs/research_analysis/expert_review/04_DIAGNOSTIC40_CLOSURE_EXPERT_REVIEW.md"
+  ],
+  "taxonomy": {
+    "queue_size": 15,
+    "accept": 13,
+    "accept_with_reservation": 2,
+    "revise": 0,
+    "reject": 0,
+    "reservation_task_ids": [
+      "coverage__glob_matcher_core__001",
+      "jinja2__filters_tests_core__001"
+    ],
+    "tasks": [
+      {"task_id": "aiohttp__url_params_core__hard3_001", "decision": "accept"},
+      {"task_id": "alembic__revision_map_core__hard3_001", "decision": "accept"},
+      {"task_id": "build__pyproject_backend_core__hard3_001", "decision": "accept"},
+      {"task_id": "coverage__glob_matcher_core__001", "decision": "accept_with_reservation"},
+      {"task_id": "coverage__path_remap_core__001", "decision": "accept"},
+      {"task_id": "fs__url_opener_core__hard3_001", "decision": "accept"},
+      {"task_id": "glom__spec_eval_core__hard3_001", "decision": "accept"},
+      {"task_id": "jinja2__filters_tests_core__001", "decision": "accept_with_reservation"},
+      {"task_id": "lark__visitor_transform_core__001", "decision": "accept"},
+      {"task_id": "parsel__selector_namespace_core__hard3_001", "decision": "accept"},
+      {"task_id": "pyramid__configurator_action_core__hard3_001", "decision": "accept"},
+      {"task_id": "referencing__json_schema_refs_core__001", "decision": "accept"},
+      {"task_id": "starlette__route_matching_core__hard3_001", "decision": "accept"},
+      {"task_id": "werkzeug__routing_core__001", "decision": "accept"},
+      {"task_id": "wheel__metadata_normalize_core__hard3_001", "decision": "accept"}
+    ]
+  },
+  "near_duplicate": {
+    "queue_size": 8,
+    "accept": 8,
+    "clusters": [
+      {"candidate_cluster": "coveragepy / config_resolve_discover", "decision": "accept"},
+      {"candidate_cluster": "jinja2 / serialize_format_render", "decision": "accept"},
+      {"candidate_cluster": "pluggy / registry_plugin_dispatch", "decision": "accept"},
+      {"candidate_cluster": "pydantic / validate_normalize_construct", "decision": "accept"},
+      {"candidate_cluster": "pytest / registry_plugin_dispatch", "decision": "accept"},
+      {"candidate_cluster": "sqlparse / parse_tokenize_decode", "decision": "accept"},
+      {"candidate_cluster": "vibe_app / workflow_session_orchestration", "decision": "accept"},
+      {"candidate_cluster": "vibe_app / cache_retry_policy", "decision": "accept"}
+    ]
+  },
+  "pilot10_behavior": {
+    "queue_size": 10,
+    "accept": 7,
+    "accept_with_reservation": 3,
+    "reservation_task_ids": [
+      "schema__nested_validate_core__hard3_001",
+      "sqlparse__format_filters_core__001",
+      "celery__signal_dispatch_core__hard3_001"
+    ],
+    "task_ids": [
+      "pluggy__hook_specs_core__001",
+      "pydantic_v1__validation_error_core__001",
+      "coverage__config_merge_core__001",
+      "lark__grammar_loader_core__001",
+      "websockets__handshake_parse_core__001",
+      "boltons__iterutils_core__001",
+      "schema__nested_validate_core__hard3_001",
+      "requests_cache__cache_key_core__hard3_001",
+      "sqlparse__format_filters_core__001",
+      "celery__signal_dispatch_core__hard3_001"
+    ]
+  },
+  "diagnostic40_closure": {
+    "queue_size": 40,
+    "file_scope_decision": "accept_provisional",
+    "human_spotcheck_priority_task_ids": [
+      "astroid__nodes_core__001",
+      "lark__grammar_loader_core__001",
+      "parso__python_parse_core__001",
+      "pydantic_settings__env_source_core__001",
+      "sqlparse__format_filters_core__001",
+      "pyyaml__safe_load_dump__001",
+      "pydantic_v1__validation_error_core__001",
+      "phonenumbers__parse_format_core__001"
+    ],
+    "symbol_runtime_minimality": "out_of_scope"
+  }
+}

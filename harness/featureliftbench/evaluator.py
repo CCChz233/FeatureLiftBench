@@ -407,6 +407,13 @@ def _base_evaluation_env() -> dict[str, str]:
     env = os.environ.copy()
     env.pop("PYTHONPATH", None)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
+    # Freeze locale-, timezone-, and hash-sensitive behavior across reruns.
+    # C.UTF-8 is present in the pinned Linux evaluation image and keeps UTF-8
+    # semantics without inheriting host locale state.
+    env["PYTHONHASHSEED"] = "0"
+    env["TZ"] = "UTC"
+    env["LC_ALL"] = "C.UTF-8"
+    env["LANG"] = "C.UTF-8"
     return env
 
 

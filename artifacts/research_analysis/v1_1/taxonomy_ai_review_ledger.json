@@ -1,0 +1,166 @@
+{
+  "review_boundary": "This adjudication is AI-assisted author review, not independent human double review.",
+  "schema_version": "featureliftbench.taxonomy_ai_review_ledger.v1",
+  "tasks": [
+    {
+      "field_overrides": {
+        "has_global_state": "false",
+        "has_registry": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "URL/header helpers are stateless; module constants are not mutable global state or a registry.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "aiohttp__url_params_core__hard3_001"
+    },
+    {
+      "field_overrides": {},
+      "formal_human_review_pending": true,
+      "rationale": "RevisionMap is a local graph/data-structure closure; existing cross-family labels remain the best fit.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "alembic__revision_map_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "has_framework_lifecycle": "false",
+        "has_registry": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "The extracted table parser validates data and does not execute backend registry lifecycle.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "build__pyproject_backend_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "has_dynamic_import": "false",
+        "has_global_state": "false",
+        "has_registry": "false",
+        "normalized_entanglement_types": "config_environment;implicit_runtime_dependency;static_transitive_dependency"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Glob compilation uses platform/config semantics but no dynamic plugin loading, packaged resource, or mutable registry.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "coverage__glob_matcher_core__001"
+    },
+    {
+      "field_overrides": {
+        "has_dynamic_import": "false",
+        "has_framework_lifecycle": "false",
+        "has_global_state": "false",
+        "has_registry": "false",
+        "normalized_entanglement_types": "config_environment;implicit_runtime_dependency;static_transitive_dependency"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "PathAliases is instance-local path/config logic; shared utilities do not imply plugin or framework lifecycle.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "coverage__path_remap_core__001"
+    },
+    {
+      "field_overrides": {
+        "static_file_closure_depth": "1"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "The registry entrypoint depends on the parser file, giving a one-edge static closure.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "fs__url_opener_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "feature_family_primary": "algorithm_data_structure",
+        "feature_statefulness": "local_state",
+        "has_registry": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Spec evaluation is a local recursive data-structure interpreter, not a cache/retry policy.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "glom__spec_eval_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "feature_family_primary": "serialize_format_render",
+        "feature_family_secondary": "registry_plugin_dispatch",
+        "feature_statefulness": "local_state"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Rendering/filter application is primary; mutable Environment filter/test registries are secondary and instance-local.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "jinja2__filters_tests_core__001"
+    },
+    {
+      "field_overrides": {},
+      "formal_human_review_pending": true,
+      "rationale": "Tree visitor/transformer remains a local-state algorithm with parser closure.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "lark__visitor_transform_core__001"
+    },
+    {
+      "field_overrides": {
+        "has_framework_lifecycle": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Namespace registration is instance-local selector state, not framework lifecycle.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "parsel__selector_namespace_core__hard3_001"
+    },
+    {
+      "field_overrides": {},
+      "formal_human_review_pending": true,
+      "rationale": "Action commit/conflict resolution is lifecycle orchestration with registry semantics.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "pyramid__configurator_action_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "feature_statefulness": "local_state"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Registry/Resolver objects carry immutable-local resolution state across chained lookups.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "referencing__json_schema_refs_core__001"
+    },
+    {
+      "field_overrides": {
+        "feature_statefulness": "local_state"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Route matching mutates/reads Router instance state but does not require application startup lifecycle.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "starlette__route_matching_core__hard3_001"
+    },
+    {
+      "field_overrides": {
+        "feature_statefulness": "local_state",
+        "has_dynamic_import": "false",
+        "has_global_state": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Map/MapAdapter state is instance-local; converter tables do not require dynamic imports or mutable global state.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "werkzeug__routing_core__001"
+    },
+    {
+      "field_overrides": {
+        "has_registry": "false"
+      },
+      "formal_human_review_pending": true,
+      "rationale": "Metadata normalization and filename parsing do not implement a registry.",
+      "reviewer_id": "codex_taxonomy_semantic_pass",
+      "reviewer_type": "ai_assisted_author",
+      "task_id": "wheel__metadata_normalize_core__hard3_001"
+    }
+  ],
+  "taxonomy_version": "v1"
+}

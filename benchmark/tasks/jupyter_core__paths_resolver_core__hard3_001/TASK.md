@@ -37,3 +37,18 @@ depend on the host machine.
 Public tests cover basic path precedence and platform defaults. Hidden tests
 cover disabled config behavior, runtime fallback, environment-over-user order,
 Windows path separators, and system-path exclusion.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — JUPYTER_CONFIG_PATH and JUPYTER_PATH precedence
+- **B002** — JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, and JUPYTER_RUNTIME_DIR overrides
+- **B003** — Linux, macOS, and Windows path defaults
+- **B004** — JUPYTER_NO_CONFIG isolated config behavior
+- **B005** — JUPYTER_PREFER_ENV_PATH ordering
+- **B006** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B007** — the submitted package does not import forbidden upstream packages: jupyter_core, platformdirs
+<!-- featureliftbench:behavior-clauses:end -->

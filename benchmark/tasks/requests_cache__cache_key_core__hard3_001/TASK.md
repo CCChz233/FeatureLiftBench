@@ -43,3 +43,24 @@ Also expose `normalize_url`, `normalize_params`, `normalize_headers`, `normalize
 
 Public tests cover query ordering, ignored query parameters, request compatibility helper behavior, and Cache-Control `max-age` / `no-store`.
 Hidden tests cover JSON body normalization, form body normalization, key-only query params, selected-header matching, multi-value header normalization, redaction, Expires, and default expiration.
+
+<!-- featureliftbench:behavior-clauses:start -->
+## Public Behavior Contract
+
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise
+these clauses but do not introduce additional requirements.
+
+- **B001** — create_key
+- **B002** — create_cache_key compatibility helper
+- **B003** — normalize_url
+- **B004** — normalize_params
+- **B005** — normalize_headers
+- **B006** — normalize_body
+- **B007** — get_matched_headers
+- **B008** — CachePolicy.from_headers
+- **B009** — get_expiration
+- **B010** — Cache-Control no-store and max-age
+- **B011** — Expires and default expiration
+- **B012** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
+- **B013** — the submitted package does not import forbidden upstream packages: requests_cache, requests, url_normalize
+<!-- featureliftbench:behavior-clauses:end -->

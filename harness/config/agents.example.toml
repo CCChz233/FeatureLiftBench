@@ -23,6 +23,52 @@ api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
 call_limit = "0"
 
+# Opt-in Repository Semantic Graph profiles. These can be used with
+# mini-swe-agent, OpenHands, or FeatureLiftAgent; existing profiles stay disabled.
+[profiles.deepseek_v4_flash_rsg_static]
+model = "deepseek/deepseek-v4-flash"
+agent_bin = "mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+repo_graph_mode = "static"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 30
+repo_graph_query_max_chars = 12000
+
+[profiles.deepseek_v4_flash_rsg_closure]
+model = "deepseek/deepseek-v4-flash"
+agent_bin = "mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+repo_graph_mode = "closure"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 30
+repo_graph_query_max_chars = 12000
+
+[profiles.deepseek_v4_flash_rsg_evidence]
+model = "deepseek/deepseek-v4-flash"
+agent_bin = "mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+repo_graph_mode = "evidence"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 30
+repo_graph_query_max_chars = 12000
+# Applied only when --agent featurelift-agent is selected.
+featurelift_enable_llm = true
+featurelift_execute_actions = true
+featurelift_llm_phases = "closure_plan,extraction_plan,final_checklist"
+featurelift_max_repair_rounds = 1
+
 # Go pilot / paper baselines: cap agent at 120 LLM steps (MSWEA_GLOBAL_CALL_LIMIT).
 [profiles.deepseek_v4_flash_120]
 model = "deepseek/deepseek-v4-flash"
@@ -61,6 +107,84 @@ call_limit = "0"
 context_window_tokens = 131072
 reserved_output_tokens = 8192
 openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+# Opt-in token-threshold context compression experiments.
+[profiles.openhands_deepseek_v4_flash_ctx64k]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 65536
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+[profiles.openhands_deepseek_v4_flash_ctx128k]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+[profiles.openhands_deepseek_v4_flash_ctx256k]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 262144
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+# Frozen 12-run RSG Pilot arms. Keep these profiles byte-equivalent except
+# for the explicit repository graph intervention fields on P3.
+[profiles.openhands_deepseek_v4_flash_rsg_pilot_p0]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+[profiles.openhands_deepseek_v4_flash_rsg_pilot_p3]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+repo_graph_mode = "closure"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 30
+repo_graph_bootstrap_max_chars = 4096
+repo_graph_query_max_chars = 12000
 
 [profiles.openhands_qwen3_6_27b_fp8_paper]
 model = "openai/Qwen3.6-27B-FP8"

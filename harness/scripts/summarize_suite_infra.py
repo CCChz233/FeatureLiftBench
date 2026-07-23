@@ -15,6 +15,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
+from featureliftbench.suite_utils import resolve_suite_artifact_path
+
 INFRA_OK_FAILURE_CLASSES = frozenset({"passed", "model_failed"})
 
 
@@ -58,7 +60,12 @@ def summarize_suite_infra(suite_dir: Path) -> dict[str, Any]:
             continue
         task_id = str(run.get("task_id") or "")
         task_dir = suite_dir / task_id
-        run_json_path = Path(run.get("run_json") or task_dir / "run.json")
+        run_json_path = resolve_suite_artifact_path(
+            suite_dir,
+            task_id,
+            "run.json",
+            run.get("run_json"),
+        )
         if not run_json_path.is_file():
             continue
         try:

@@ -9,11 +9,72 @@ from unittest import mock
 
 from featureliftbench.openhands_usage import MAX_ALLOWED_PROMPT_TOKENS
 from featureliftbench.openhands_usage import openhands_context_limits
+from featureliftbench.openhands_usage import openhands_context_policy
 from featureliftbench.openhands_usage import parse_events_jsonl
+from featureliftbench.openhands_usage import parse_openhands_compression_events
 from featureliftbench.openhands_usage import write_usage_from_events
 
 
 class OpenHandsUsageTests(unittest.TestCase):
+    def test_token_context_policy_derives_trigger_and_target(self) -> None:
+        policy = openhands_context_policy(
+            {
+                "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE": "token",
+                "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "65536",
+                "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS": "8192",
+                "FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST": "4",
+                "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS": "1000000",
+            }
+        )
+
+        self.assertEqual(policy.condenser_trigger_tokens, 57344)
+        self.assertEqual(policy.condenser_target_tokens, 28672)
+        self.assertTrue(policy.token_compression_enabled)
+
+    def test_parse_condensation_events_counts_without_retaining_content(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            events_path = Path(tmp) / "openhands_events.jsonl"
+            events_path.write_text(
+                "\n".join(
+                    [
+                        json.dumps(
+                            {
+                                "kind": "Condensation",
+                                "forgotten_event_ids": ["e1", "e2", "e3"],
+                                "summary": "private full summary text",
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "kind": "Condensation",
+                                "forgotten_event_ids": ["e4"],
+                                "summary": "",
+                            }
+                        ),
+                        json.dumps(
+                            {
+                                "type": "assistant_message",
+                                "usage": {
+                                    "prompt_tokens": 100,
+                                    "completion_tokens": 10,
+                                },
+                            }
+                        ),
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            counts = parse_openhands_compression_events(events_path)
+            usage = parse_events_jsonl(events_path)
+
+        self.assertEqual(counts["condensation_events"], 2)
+        self.assertEqual(counts["forgotten_event_count"], 4)
+        self.assertEqual(counts["condensation_summaries_nonempty"], 1)
+        self.assertEqual(usage["context_audit"]["condensation_events"], 2)
+        self.assertNotIn("private full summary text", json.dumps(usage))
+
     def test_parse_events_jsonl_aggregates_usage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             events_path = Path(tmp) / "openhands_events.jsonl"

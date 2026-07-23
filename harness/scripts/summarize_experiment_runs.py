@@ -16,6 +16,7 @@ if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
 from featureliftbench.paths import TASKS_DIR
+from featureliftbench.suite_utils import resolve_suite_artifact_path
 
 HIGH_EXTRACTION_RATIO = 0.8
 LOW_EXTRACTION_RATIO = 0.25
@@ -66,11 +67,19 @@ def classify_failure(
 
 
 def enrich_task_run(suite_dir: Path, task_id: str, suite_entry: dict[str, Any]) -> dict[str, Any]:
-    run_json = Path(suite_entry.get("run_json") or suite_dir / task_id / "run.json")
+    run_json = resolve_suite_artifact_path(
+        suite_dir,
+        task_id,
+        "run.json",
+        suite_entry.get("run_json"),
+    )
     detail = load_json(run_json) if run_json.is_file() else {}
-    eval_path = Path(
+    eval_path = resolve_suite_artifact_path(
+        suite_dir,
+        task_id,
+        "eval/result.json",
         (detail.get("evaluation") or {}).get("result_json")
-        or suite_dir / task_id / "eval" / "result.json"
+        or suite_entry.get("result_json"),
     )
     eval_detail = load_json(eval_path) if eval_path.is_file() else {}
 

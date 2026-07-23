@@ -9,12 +9,28 @@ from pathlib import Path
 from typing import Any
 
 from .agent_adapters import AgentRunConfig
+from .openhands_usage import CONDENSER_KEEP_FIRST_ENV
+from .openhands_usage import CONDENSER_MAX_EVENTS_ENV
+from .openhands_usage import CONDENSER_MODE_ENV
+from .openhands_usage import CONTEXT_WINDOW_ENV
+from .openhands_usage import DEFAULT_CONDENSER_KEEP_FIRST
+from .openhands_usage import DEFAULT_CONDENSER_MAX_EVENTS
+from .openhands_usage import RESERVED_OUTPUT_ENV
 from .paths import DEFAULT_AGENT_CONFIG
+from .repo_graph.policy import BOOTSTRAP_MAX_CHARS_ENV
+from .repo_graph.policy import BOOTSTRAP_MAX_NODES_ENV
+from .repo_graph.policy import CACHE_DIR_ENV as REPO_GRAPH_CACHE_DIR_ENV
+from .repo_graph.policy import FAIL_FAST_ENV
+from .repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
+from .repo_graph.policy import QUERY_MAX_CHARS_ENV
+from .repo_graph.policy import TRANSPORT_ENV
+from .repo_graph.policy import RepoGraphPolicy
 
 
 DEFAULT_API_KEY_ENV = "FEATURELIFTBENCH_API_KEY"
 DEFAULT_API_BASE_ENV = "FEATURELIFTBENCH_API_BASE"
 DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
+OPENHANDS_MAX_STEPS_ENV = "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"
 DEFAULT_OPENHANDS_COMMAND = (
     "openhands --headless --override-with-envs --exit-without-confirmation "
     "-f {prompt_file} --json"
@@ -101,12 +117,135 @@ def load_agent_run_config(
     if cost_tracking:
         env.setdefault("MSWEA_COST_TRACKING", cost_tracking)
 
-    context_window_tokens = _positive_int_value(profile.get("context_window_tokens"))
-    reserved_output_tokens = _positive_int_value(profile.get("reserved_output_tokens"))
+    context_mode = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=CONDENSER_MODE_ENV,
+        profile_value=profile.get("openhands_condenser_mode"),
+    ).lower()
+    if context_mode and context_mode not in {"default", "token"}:
+        raise ValueError(f"unknown OpenHands condenser mode: {context_mode}")
+
+    context_window_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=CONTEXT_WINDOW_ENV,
+        profile_value=profile.get("context_window_tokens"),
+    )
+    reserved_output_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=RESERVED_OUTPUT_ENV,
+        profile_value=profile.get("reserved_output_tokens"),
+    )
+    context_window_tokens = _positive_int_value(context_window_raw)
+    reserved_output_tokens = _positive_int_value(reserved_output_raw)
+
+    keep_first_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=CONDENSER_KEEP_FIRST_ENV,
+        profile_value=profile.get("openhands_condenser_keep_first"),
+    )
+    max_events_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=CONDENSER_MAX_EVENTS_ENV,
+        profile_value=profile.get("openhands_condenser_max_events"),
+    )
+    keep_first = _non_negative_int_value(keep_first_raw)
+    max_events = _positive_int_value(max_events_raw)
+
+    if context_mode == "token":
+        if not _is_openhands_agent(base_config.agent):
+            raise ValueError("OpenHands token condenser mode requires an OpenHands agent")
+        if context_window_tokens is None or reserved_output_tokens is None:
+            raise ValueError(
+                "OpenHands token condenser mode requires positive "
+                "context_window_tokens and reserved_output_tokens"
+            )
+        if context_window_tokens <= reserved_output_tokens:
+            raise ValueError(
+                "OpenHands token condenser mode requires context_window_tokens > "
+                "reserved_output_tokens"
+            )
+        if keep_first_raw and keep_first is None:
+            raise ValueError("openhands_condenser_keep_first must be a non-negative integer")
+        if max_events_raw and max_events is None:
+            raise ValueError("openhands_condenser_max_events must be a positive integer")
+        keep_first = (
+            DEFAULT_CONDENSER_KEEP_FIRST if keep_first is None else keep_first
+        )
+        max_events = DEFAULT_CONDENSER_MAX_EVENTS if max_events is None else max_events
+        env[CONDENSER_MODE_ENV] = "token"
+        env[CONDENSER_KEEP_FIRST_ENV] = str(keep_first)
+        env[CONDENSER_MAX_EVENTS_ENV] = str(max_events)
+        env["FEATURELIFTBENCH_AGENT_PROFILE"] = selected_profile
+
     if context_window_tokens is not None:
-        env.setdefault("FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS", str(context_window_tokens))
+        env[CONTEXT_WINDOW_ENV] = str(context_window_tokens)
+    elif context_mode == "token":
+        raise ValueError("context_window_tokens must be a positive integer")
     if reserved_output_tokens is not None:
-        env.setdefault("FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS", str(reserved_output_tokens))
+        env[RESERVED_OUTPUT_ENV] = str(reserved_output_tokens)
+    elif context_mode == "token":
+        raise ValueError("reserved_output_tokens must be a positive integer")
+
+    repo_graph_values = {
+        REPO_GRAPH_MODE_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=REPO_GRAPH_MODE_ENV,
+            profile_value=profile.get("repo_graph_mode"),
+        ),
+        TRANSPORT_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=TRANSPORT_ENV,
+            profile_value=profile.get("repo_graph_transport"),
+        ),
+        FAIL_FAST_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=FAIL_FAST_ENV,
+            profile_value=profile.get("repo_graph_fail_fast"),
+        ),
+        BOOTSTRAP_MAX_NODES_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=BOOTSTRAP_MAX_NODES_ENV,
+            profile_value=profile.get("repo_graph_bootstrap_max_nodes"),
+        ),
+        BOOTSTRAP_MAX_CHARS_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=BOOTSTRAP_MAX_CHARS_ENV,
+            profile_value=profile.get("repo_graph_bootstrap_max_chars"),
+        ),
+        QUERY_MAX_CHARS_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=QUERY_MAX_CHARS_ENV,
+            profile_value=profile.get("repo_graph_query_max_chars"),
+        ),
+        REPO_GRAPH_CACHE_DIR_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=REPO_GRAPH_CACHE_DIR_ENV,
+            profile_value=profile.get("repo_graph_cache_dir"),
+        ),
+    }
+    explicit_repo_graph = any(value for value in repo_graph_values.values())
+    repo_graph_policy = RepoGraphPolicy.from_env(repo_graph_values)
+    if explicit_repo_graph:
+        env[REPO_GRAPH_MODE_ENV] = repo_graph_policy.mode
+        env[TRANSPORT_ENV] = repo_graph_policy.transport
+        env[FAIL_FAST_ENV] = "true" if repo_graph_policy.fail_fast else "false"
+        env[BOOTSTRAP_MAX_NODES_ENV] = str(repo_graph_policy.bootstrap_max_nodes)
+        env[BOOTSTRAP_MAX_CHARS_ENV] = str(repo_graph_policy.bootstrap_max_chars)
+        env[QUERY_MAX_CHARS_ENV] = str(repo_graph_policy.query_max_chars)
+        if repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]:
+            env[REPO_GRAPH_CACHE_DIR_ENV] = repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]
 
     native_tool_calling = profile.get("native_tool_calling")
     if _is_openhands_agent(base_config.agent) and native_tool_calling is not None:
@@ -114,6 +253,16 @@ def load_agent_run_config(
             "LLM_NATIVE_TOOL_CALLING",
             "true" if _truthy(native_tool_calling) else "false",
         )
+    openhands_max_steps = _positive_int_value(
+        _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=OPENHANDS_MAX_STEPS_ENV,
+            profile_value=profile.get("openhands_max_steps"),
+        )
+    )
+    if _is_openhands_agent(base_config.agent) and openhands_max_steps is not None:
+        env[OPENHANDS_MAX_STEPS_ENV] = str(openhands_max_steps)
 
     extra_args = _merge_extra_args(
         _featurelift_profile_extra_args(profile, agent=base_config.agent),
@@ -156,10 +305,38 @@ def load_agent_run_config(
         "cost_tracking": cost_tracking or "",
         "context_window_tokens": context_window_tokens or "",
         "reserved_output_tokens": reserved_output_tokens or "",
+        "openhands_condenser_mode": context_mode or "default",
+        "openhands_condenser_trigger_tokens": (
+            context_window_tokens - reserved_output_tokens
+            if context_mode == "token"
+            and context_window_tokens is not None
+            and reserved_output_tokens is not None
+            else ""
+        ),
+        "openhands_condenser_target_tokens": (
+            (context_window_tokens - reserved_output_tokens) // 2
+            if context_mode == "token"
+            and context_window_tokens is not None
+            and reserved_output_tokens is not None
+            else ""
+        ),
+        "openhands_condenser_keep_first": keep_first if context_mode == "token" else "",
+        "openhands_condenser_max_events": max_events if context_mode == "token" else "",
         "openhands_command": openhands_command if _is_openhands_agent(base_config.agent) else "",
         "openhands_command_configured": bool(openhands_command)
         if _is_openhands_agent(base_config.agent)
         else False,
+        "openhands_max_steps": openhands_max_steps or "",
+        "native_tool_calling": (
+            env.get("LLM_NATIVE_TOOL_CALLING", "") if _is_openhands_agent(base_config.agent) else ""
+        ),
+        "repo_graph_mode": repo_graph_policy.mode,
+        "repo_graph_transport": repo_graph_policy.transport,
+        "repo_graph_fail_fast": repo_graph_policy.fail_fast,
+        "repo_graph_bootstrap_max_nodes": repo_graph_policy.bootstrap_max_nodes,
+        "repo_graph_bootstrap_max_chars": repo_graph_policy.bootstrap_max_chars,
+        "repo_graph_query_max_chars": repo_graph_policy.query_max_chars,
+        "repo_graph_cache_configured": bool(repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]),
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 
@@ -290,6 +467,39 @@ def _positive_int_value(value: Any) -> int | None:
             return None
         return parsed if parsed > 0 else None
     return None
+
+
+def _non_negative_int_value(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if value >= 0 else None
+    if isinstance(value, str) and value.strip():
+        try:
+            parsed = int(value.strip())
+        except ValueError:
+            return None
+        return parsed if parsed >= 0 else None
+    return None
+
+
+def _resolve_profile_env_value(
+    *,
+    base_config: AgentRunConfig,
+    env_values: dict[str, str],
+    env_name: str,
+    profile_value: Any,
+) -> str:
+    """Resolve one non-secret run setting using the documented precedence."""
+
+    base_env = base_config.env or {}
+    profile_text = "" if profile_value is None else str(profile_value).strip()
+    return _first_non_empty(
+        base_env.get(env_name),
+        os.environ.get(env_name),
+        env_values.get(env_name),
+        profile_text,
+    )
 
 
 def _is_featurelift_agent(agent: str) -> bool:

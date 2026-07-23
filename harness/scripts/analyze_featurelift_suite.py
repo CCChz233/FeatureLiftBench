@@ -15,6 +15,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
+from featureliftbench.suite_utils import resolve_suite_artifact_path
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -27,7 +29,12 @@ def _load_json(path: Path) -> dict[str, Any]:
 def _task_row(suite_dir: Path, run: dict[str, Any]) -> dict[str, Any]:
     task_id = str(run.get("task_id") or "")
     task_dir = suite_dir / task_id
-    run_json_path = Path(run.get("run_json") or task_dir / "run.json")
+    run_json_path = resolve_suite_artifact_path(
+        suite_dir,
+        task_id,
+        "run.json",
+        run.get("run_json"),
+    )
     detail = _load_json(run_json_path) if run_json_path.is_file() else {}
     agent = detail.get("agent") if isinstance(detail.get("agent"), dict) else {}
     usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
@@ -107,6 +114,15 @@ def analyze_featurelift_suite(suite_dir: Path) -> dict[str, Any]:
     }
 
 
+def _output_paths(prefix: Path) -> tuple[Path, Path]:
+    """Append report extensions without truncating dotted run IDs."""
+
+    return (
+        prefix.parent / f"{prefix.name}.json",
+        prefix.parent / f"{prefix.name}.md",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("suite_dir", type=Path, help="Directory containing suite.json")
@@ -123,8 +139,7 @@ def main() -> int:
     prefix = args.output_prefix or (suite_dir / "featurelift-analysis")
     prefix.parent.mkdir(parents=True, exist_ok=True)
 
-    json_path = prefix.with_suffix(".json")
-    md_path = prefix.with_suffix(".md")
+    json_path, md_path = _output_paths(prefix)
     json_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     md_path.write_text(_render_markdown(summary), encoding="utf-8")
     print(f"Wrote {json_path}")

@@ -41,6 +41,36 @@ FAILURE_CLASSES = frozenset(
 )
 
 
+def resolve_suite_artifact_path(
+    suite_dir: str | Path,
+    task_id: str,
+    relative_path: str | Path,
+    recorded_path: object = None,
+) -> Path:
+    """Resolve a task artifact after a suite has moved between machines.
+
+    Older suite files record absolute server paths.  The task-local path is the
+    portable source of truth, so prefer it whenever it exists and only fall
+    back to the recorded path for legacy layouts.
+    """
+
+    suite_path = Path(suite_dir)
+    local_path = suite_path / task_id / Path(relative_path)
+    if local_path.exists():
+        return local_path
+
+    if isinstance(recorded_path, (str, Path)) and str(recorded_path):
+        candidate = Path(recorded_path)
+        if candidate.exists():
+            return candidate
+        if not candidate.is_absolute():
+            relative_candidate = suite_path / candidate
+            if relative_candidate.exists():
+                return relative_candidate
+
+    return local_path
+
+
 def parse_retry_only_statuses(value: str | None) -> frozenset[str]:
     """Parse a comma-separated list of run statuses eligible for agent retry."""
 
@@ -280,7 +310,7 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
             tasks_by_failure_class.setdefault(failure_class, []).append(task_id)
     for task_ids in tasks_by_failure_class.values():
         task_ids.sort()
-    return {
+    summary: dict[str, Any] = {
         "total": len(runs),
         "passed": sum(1 for run in runs if run.get("status") == "passed"),
         "failed": sum(1 for run in runs if run.get("status") != "passed"),
@@ -304,13 +334,48 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
             1 for run in runs if run.get("evaluation", {}).get("docker_sandbox_error") is True
         ),
         "average_final_score": (
-            round(sum(numeric_scores) / len(numeric_scores), 6) if numeric_scores else 0.0
+            # The benchmark denominator is every assigned task. Missing
+            # submissions and failed gates therefore contribute zero instead
+            # of disappearing from the average.
+            round(sum(numeric_scores) / len(runs), 6) if runs else 0.0
         ),
         "by_status": by_status,
         "tasks_by_status": tasks_by_status,
         "failure_classes": failure_classes,
         "tasks_by_failure_class": tasks_by_failure_class,
     }
+    graph_runs = [
+        run.get("repo_graph")
+        for run in runs
+        if isinstance(run.get("repo_graph"), dict)
+    ]
+    if graph_runs:
+        summary["repo_graph"] = {
+            "enabled_runs": len(graph_runs),
+            "adoption_compliant_runs": sum(
+                graph.get("adoption_compliant") is True for graph in graph_runs
+            ),
+            "task_closure_queried_runs": sum(
+                graph.get("task_closure_queried") is True for graph in graph_runs
+            ),
+            "fresh_submission_check_runs": sum(
+                graph.get("fresh_submission_check") is True for graph in graph_runs
+            ),
+            "query_count": sum(
+                int(graph.get("query_count", 0))
+                for graph in graph_runs
+                if isinstance(graph.get("query_count", 0), int)
+            ),
+            "query_failure_count": sum(
+                int(graph.get("query_failure_count", 0))
+                for graph in graph_runs
+                if isinstance(graph.get("query_failure_count", 0), int)
+            ),
+            "protocol_violation_runs": sum(
+                graph.get("protocol_violation") is True for graph in graph_runs
+            ),
+        }
+    return summary
 
 
 def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
@@ -340,8 +405,16 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
         for key in (
             "context_window_tokens",
             "reserved_output_tokens",
+            "max_allowed_prompt_tokens",
             "max_prompt_tokens_per_call",
             "max_total_tokens_per_call",
+            "condenser_trigger_tokens",
+            "condenser_target_tokens",
+            "condenser_keep_first",
+            "condenser_max_events",
+            "condensation_events",
+            "forgotten_event_count",
+            "condensation_summaries_nonempty",
         ):
             value = context_audit.get(key)
             if isinstance(value, int):
@@ -350,6 +423,9 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
             value = context_audit.get(key)
             if isinstance(value, bool):
                 compact_audit[key] = value
+        compression_mode = context_audit.get("compression_mode")
+        if isinstance(compression_mode, str) and compression_mode:
+            compact_audit["compression_mode"] = compression_mode
         if compact_audit:
             compact["context_audit"] = compact_audit
     tool_summary = usage.get("tool_summary")
@@ -407,7 +483,39 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
             entry[key] = value
     if _agent_result_has_log_limit(run):
         entry["log_limit_exceeded"] = True
+    repo_graph = run.get("repo_graph")
+    if isinstance(repo_graph, dict):
+        entry["repo_graph"] = compact_repo_graph_usage(repo_graph)
     return entry
+
+
+def compact_repo_graph_usage(usage: dict[str, Any]) -> dict[str, Any]:
+    compact: dict[str, Any] = {}
+    for key in (
+        "query_count",
+        "successful_query_count",
+        "query_failure_count",
+        "query_chars",
+        "bootstrap_chars",
+        "submission_revision",
+    ):
+        value = usage.get(key)
+        if isinstance(value, int):
+            compact[key] = value
+    for key in (
+        "task_closure_queried",
+        "fresh_submission_check",
+        "adoption_compliant",
+        "protocol_violation",
+    ):
+        value = usage.get(key)
+        if isinstance(value, bool):
+            compact[key] = value
+    for key in ("status", "mechanism_status", "snapshot_id"):
+        value = usage.get(key)
+        if isinstance(value, str) and value:
+            compact[key] = value
+    return compact
 
 
 def _eval_result_has_flag(eval_result: dict[str, Any], flag: str) -> bool:

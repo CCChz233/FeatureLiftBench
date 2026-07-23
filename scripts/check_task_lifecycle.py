@@ -2,8 +2,8 @@
 """Read-only lifecycle and package structure audit for FeatureLiftBench tasks.
 
 Writes:
-  reports/task_lifecycle_report.md
-  reports/task_lifecycle_report.csv
+  reports/audits/task_lifecycle_report.md
+  reports/audits/task_lifecycle_report.csv
 
 Does not modify benchmark data, evaluator code, or experiment artifacts.
 """
@@ -22,7 +22,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "benchmark" / "manifest.json"
-REPORTS_DIR = ROOT / "reports"
+REPORTS_DIR = ROOT / "reports" / "audits"
 CSV_PATH = REPORTS_DIR / "task_lifecycle_report.csv"
 MD_PATH = REPORTS_DIR / "task_lifecycle_report.md"
 

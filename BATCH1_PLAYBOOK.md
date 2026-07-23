@@ -485,7 +485,7 @@ reuse 不成立、oracle 做不出、与 batch-0 重复、validate 过不了 →
 
 ## 当前队列与补位规则
 
-**进度（batch-1 归档）：** 当时主榜 **100/100**（batch-1 已入榜 **50**）。**现行（2026-07-19）：** 主榜 **150/150 hard** — [docs/STATUS.md](docs/STATUS.md) · batch-3 摘要 [reports/python_hard_batch3_sprint_summary.md](reports/python_hard_batch3_sprint_summary.md)。
+**进度（batch-1 归档）：** 当时主榜 **100/100**（batch-1 已入榜 **50**）。**现行（2026-07-19）：** 主榜 **150/150 hard** — [docs/STATUS.md](docs/STATUS.md) · batch-3 摘要 [reports/archive/batch3_202607/python_hard_batch3_sprint_summary.md](reports/archive/batch3_202607/python_hard_batch3_sprint_summary.md)。
 
 Agent 选下一题时按以下顺序，不需要人工重新排序：
 

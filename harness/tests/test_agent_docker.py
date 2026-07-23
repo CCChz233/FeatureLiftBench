@@ -14,6 +14,8 @@ from featureliftbench.agent_docker import build_agent_docker_invocation
 from featureliftbench.agent_docker import run_agent_in_docker
 from featureliftbench.agent_docker import _should_mirror_agent_logs
 from featureliftbench.paths import HARNESS_ROOT
+from featureliftbench.repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
+from featureliftbench.repo_graph.policy import ROOT_ENV as REPO_GRAPH_ROOT_ENV
 
 
 class _FakeDockerProcess:
@@ -43,6 +45,34 @@ class _FakeDockerProcess:
 
 
 class AgentDockerTests(unittest.TestCase):
+    def test_enabled_repo_graph_uses_private_container_run_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            agent_output.mkdir()
+            context = AgentRunContext(
+                workspace_dir=workspace,
+                task_file=workspace / "TASK.md",
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                task_text="graph task",
+            )
+            config = AgentRunConfig(
+                agent="mini-swe-agent",
+                env={
+                    REPO_GRAPH_MODE_ENV: "static",
+                    REPO_GRAPH_ROOT_ENV: str(agent_output / "state" / "repo_graph"),
+                },
+            )
+            invocation = build_agent_docker_invocation(context, config)
+            self.assertEqual(
+                invocation.env[REPO_GRAPH_ROOT_ENV],
+                "/flb/agent/state/repo_graph",
+            )
+            self.assertIn(f"--env {REPO_GRAPH_ROOT_ENV}", " ".join(invocation.command))
+
     def test_builds_bounded_docker_command_without_secret_values(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

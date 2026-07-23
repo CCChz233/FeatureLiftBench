@@ -11,6 +11,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import as_completed
 from dataclasses import dataclass
+from dataclasses import replace
 from datetime import UTC
 from datetime import datetime
 from pathlib import Path
@@ -27,6 +28,11 @@ from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
 from .paths import resolve_task_input
+from .repo_graph.policy import RepoGraphPolicy
+from .repo_graph.runtime import RepoGraphRunState
+from .repo_graph.runtime import append_repo_graph_prompt
+from .repo_graph.runtime import finalize_repo_graph
+from .repo_graph.runtime import initialize_repo_graph
 from .suite_utils import ALL_RUN_STATUSES
 from .suite_utils import DEFAULT_RETRY_ONLY_STATUSES
 from .suite_utils import compact_suite_run_entry
@@ -394,12 +400,46 @@ def run_agent_on_task(
     agent_result = None
     eval_result = None
     recovery_info: dict[str, Any] | None = None
+    repo_graph_state: RepoGraphRunState | None = None
+    repo_graph_usage: dict[str, Any] | None = None
+    pre_agent_failure = False
     workspace_submission_dir = workspace_dir / "submission"
     stdout_log = agent_output_dir / "stdout.log"
     stderr_log = agent_output_dir / "stderr.log"
 
     if validation.valid:
         task_file = prepare_agent_workspace(task_path, workspace_dir, metadata)
+        run_config = config
+        agent_ready = True
+        try:
+            repo_graph_policy = RepoGraphPolicy.from_env(config.env)
+        except ValueError as exc:
+            errors.append(f"repository graph configuration failed before agent start: {exc}")
+            repo_graph_policy = None
+            agent_ready = False
+            pre_agent_failure = True
+        if repo_graph_policy is not None and repo_graph_policy.enabled:
+            try:
+                repo_graph_state = initialize_repo_graph(
+                    workspace_dir=workspace_dir,
+                    agent_output_dir=agent_output_dir,
+                    config_env=config.env,
+                )
+                assert repo_graph_state is not None
+                append_repo_graph_prompt(task_file, repo_graph_state)
+                run_config = replace(
+                    config,
+                    env={**(config.env or {}), **repo_graph_state.env},
+                )
+            except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
+                _write_repo_graph_initialization_failure(
+                    agent_output_dir,
+                    policy=repo_graph_policy,
+                    error=exc,
+                )
+                errors.append(f"repository graph initialization failed before agent start: {exc}")
+                agent_ready = not repo_graph_policy.fail_fast
+                pre_agent_failure = repo_graph_policy.fail_fast
         prompt_path = agent_output_dir / "prompt.txt"
         prompt_path.write_text(task_file.read_text(encoding="utf-8"), encoding="utf-8")
 
@@ -410,25 +450,26 @@ def run_agent_on_task(
             agent_output_dir=agent_output_dir,
             task_text=task_file.read_text(encoding="utf-8"),
         )
-        try:
-            if agent_docker:
-                agent_result = run_agent_in_docker(
-                    context,
-                    config,
-                    image=agent_docker_image,
-                    stdout_log=stdout_log,
-                    stderr_log=stderr_log,
-                )
-            else:
-                adapter = get_agent_adapter(config.agent)
-                agent_result = adapter.run(
-                    context,
-                    config,
-                    stdout_log=stdout_log,
-                    stderr_log=stderr_log,
-                )
-        except ValueError as exc:
-            errors.append(str(exc))
+        if agent_ready:
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        run_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(run_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        run_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(str(exc))
         if agent_result is not None and not stdout_log.is_file():
             _write_agent_logs(agent_output_dir, agent_result)
 
@@ -455,8 +496,18 @@ def run_agent_on_task(
                     eval_docker_image=eval_docker_image,
                 )
             else:
-                errors.append("agent did not create any files under workspace/submission")
-                errors.append(_missing_submission_diagnostic(workspace_dir))
+                if agent_ready:
+                    errors.append("agent did not create any files under workspace/submission")
+                    errors.append(_missing_submission_diagnostic(workspace_dir))
+
+        if repo_graph_state is not None:
+            try:
+                repo_graph_usage = finalize_repo_graph(
+                    repo_graph_state,
+                    submission_dir=workspace_submission_dir,
+                )
+            except (OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"repository graph post-run audit failed: {exc}")
 
     agent_payload: dict[str, Any]
     if agent_result is None:
@@ -487,6 +538,8 @@ def run_agent_on_task(
         submission_exists=submission_exists,
         eval_result=eval_result,
     )
+    if pre_agent_failure:
+        status = "failed"
     run_json_path = output_path / "run.json"
     submission_payload: dict[str, Any] = {
         "dir": str(collected_submission_dir),
@@ -517,10 +570,39 @@ def run_agent_on_task(
         "errors": errors,
         "run_json": str(run_json_path),
     }
+    if repo_graph_usage is not None:
+        result["repo_graph"] = repo_graph_usage
     if previous_attempt_json is not None:
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     return result
+
+
+def _write_repo_graph_initialization_failure(
+    agent_output_dir: Path,
+    *,
+    policy: RepoGraphPolicy,
+    error: Exception,
+) -> None:
+    (agent_output_dir / "repo_graph_policy.json").write_text(
+        json.dumps(policy.to_dict(), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (agent_output_dir / "repo_graph_build.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "featureliftbench.repo_graph.run.v1",
+                "status": "initialization_failed",
+                "error_type": type(error).__name__,
+                "error": str(error),
+                "model_invoked": False,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 def _evaluate_collected_submission(
@@ -1723,6 +1805,17 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
             ),
             "max_total_tokens_per_call": max(
                 (_int_metric(audit.get("max_total_tokens_per_call")) or 0)
+                for audit in context_audits
+            ),
+            "token_compression_runs": sum(
+                audit.get("compression_mode") == "token" for audit in context_audits
+            ),
+            "condensation_events": sum(
+                _int_metric(audit.get("condensation_events")) or 0
+                for audit in context_audits
+            ),
+            "forgotten_event_count": sum(
+                _int_metric(audit.get("forgotten_event_count")) or 0
                 for audit in context_audits
             ),
         }

@@ -1,0 +1,160 @@
+{
+  "data_quality": {
+    "rows": 550,
+    "unique_runs": 550,
+    "unique_model_task_pairs": 550,
+    "unique_tasks": 150,
+    "trajectory_coverage": 550,
+    "evaluation_coverage": 533,
+    "taxonomy_join_coverage": 550,
+    "duplicate_run_ids": 0,
+    "token_identity_mismatches": 0,
+    "oracle_file_manifest_tasks": 150,
+    "clean_install_executed_runs": 0,
+    "context_window_unique": [
+      131072,
+      204800
+    ],
+    "runtime_gold_limit": "closure_gold marks runtime_state and symbol completeness unresolved for the audited task set"
+  },
+  "runs": 550,
+  "formal_passes": 225,
+  "nonpasses": 325,
+  "public_pass_hidden_fail": 173,
+  "condensation_runs": 288,
+  "condensation_events": 552,
+  "context_truncated_runs": 31,
+  "memory_loss_candidates": 58,
+  "stage_counts": {
+    "dependency_discovery": 85,
+    "implementation": 80,
+    "evaluator_or_environment": 62,
+    "dynamic_semantics": 43,
+    "budget_exhaustion": 32,
+    "boundary_recovery": 15,
+    "localization": 5,
+    "verification": 2,
+    "unclear": 1
+  },
+  "dynamic_primary": [
+    {
+      "group": "dynamic_runtime",
+      "runs": 432,
+      "tasks": 117,
+      "formal_passes": 178,
+      "pass_rate": 0.41203703703703703,
+      "pass_ci_low": 0.36659597698998153,
+      "pass_ci_high": 0.4590287453862211,
+      "public_pass_hidden_fail": 138,
+      "hidden_failure_rate_given_public": 0.43260188087774293,
+      "hidden_pass_rate_observed": 0.5186246418338109,
+      "median_tokens": 1505739.0,
+      "median_repeated_reads": 1.0,
+      "repeat_read_affected_rate": 0.5416666666666666,
+      "runtime_probe_rate": 0.8263888888888888,
+      "dynamic_probe_rate": 0.2777777777777778,
+      "dynamic_recognition_rate": 0.6782407407407407,
+      "fresh_final_verification_rate": 0.8078703703703703,
+      "condensation_rate": 0.5092592592592593
+    },
+    {
+      "group": "relatively_static",
+      "runs": 118,
+      "tasks": 33,
+      "formal_passes": 47,
+      "pass_rate": 0.3983050847457627,
+      "pass_ci_low": 0.31452541962182934,
+      "pass_ci_high": 0.4884975216396117,
+      "public_pass_hidden_fail": 35,
+      "hidden_failure_rate_given_public": 0.4268292682926829,
+      "hidden_pass_rate_observed": 0.5,
+      "median_tokens": 1654110.5,
+      "median_repeated_reads": 2.0,
+      "repeat_read_affected_rate": 0.6186440677966102,
+      "runtime_probe_rate": 0.864406779661017,
+      "dynamic_probe_rate": 0.03389830508474576,
+      "dynamic_recognition_rate": 0.1440677966101695,
+      "fresh_final_verification_rate": 0.8220338983050848,
+      "condensation_rate": 0.576271186440678
+    }
+  ],
+  "regression": [
+    {
+      "specification": "primary_preoutcome",
+      "term": "dynamic_int",
+      "odds_ratio": 1.157611264092784,
+      "ci_low": 0.5399017967666755,
+      "ci_high": 2.4820510818444577,
+      "p_value": 0.7068411712027505,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.35462861648032784
+    },
+    {
+      "specification": "primary_split_interaction",
+      "term": "dynamic_int",
+      "odds_ratio": 0.8530462991002645,
+      "ci_low": 0.36845744614369624,
+      "ci_high": 1.9749580203214674,
+      "p_value": 0.7105710063423264,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.36297433524562883
+    },
+    {
+      "specification": "primary_split_interaction",
+      "term": "dynamic_int:C(split)[T.hard50]",
+      "odds_ratio": 10.0721352595999,
+      "ci_low": 0.7466819688551862,
+      "ci_high": 135.8649504329341,
+      "p_value": 0.08186790744207406,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.36297433524562883
+    },
+    {
+      "specification": "primary_plus_trajectory",
+      "term": "dynamic_int",
+      "odds_ratio": 1.1006612774492264,
+      "ci_low": 0.5119447116475005,
+      "ci_high": 2.3663790642109612,
+      "p_value": 0.80600058491924,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.3571212146464273
+    },
+    {
+      "specification": "primary_plus_trajectory",
+      "term": "condensation_any",
+      "odds_ratio": 0.6996679494746535,
+      "ci_low": 0.37188994281545956,
+      "ci_high": 1.3163443889231095,
+      "p_value": 0.26803399182437726,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.3571212146464273
+    },
+    {
+      "specification": "primary_plus_trajectory",
+      "term": "repeat_any",
+      "odds_ratio": 0.9747367469515077,
+      "ci_low": 0.5472294250791211,
+      "ci_high": 1.7362219250549908,
+      "p_value": 0.9307718281685543,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.3571212146464273
+    },
+    {
+      "specification": "legacy_definition_sensitivity",
+      "term": "legacy_dynamic_int",
+      "odds_ratio": 1.2598169992430026,
+      "ci_low": 0.6307689103509295,
+      "ci_high": 2.5161970501980444,
+      "p_value": 0.5128615605272776,
+      "n": 550,
+      "clusters": 150,
+      "pseudo_r2": 0.355453519424095
+    }
+  ]
+}

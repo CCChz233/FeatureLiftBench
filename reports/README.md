@@ -1,31 +1,34 @@
 # Reports
 
-Sprint 与审计的**时间点快照**（本目录默认 gitignore）。
+分析产物与时间点快照。顶层只保留当前分析目录和分类目录；旧 sprint 不再散落在顶层。
 
 **可提交索引：** [docs/REPORTS_INDEX.md](../docs/REPORTS_INDEX.md)  
 **当前状态：** [docs/STATUS.md](../docs/STATUS.md)  
 **实验清单：** [docs/EXPERIMENTS.md](../docs/EXPERIMENTS.md)
 
-## Batch-3（100 → 150 hard）
+## 当前分析
+
+| Path | Role |
+| --- | --- |
+| [token_efficiency_20260720/](token_efficiency_20260720/) | 当前 token、context condenser 与 Budgeted ECSM 分析 |
+| [paper_analysis/](paper_analysis/) | 冻结论文 run 的主表、切片和案例 |
+| [trajectory_innovation/](trajectory_innovation/) | 轨迹创新原型输出 |
+
+## Batch-3 历史归档
 
 | Report | Status |
 | --- | --- |
-| [python_hard_batch3_plan.md](python_hard_batch3_plan.md) | Historical |
-| [python_hard_batch3_pilot.md](python_hard_batch3_pilot.md) | Historical |
-| [python_hard_batch3_materialization.md](python_hard_batch3_materialization.md) | Historical |
-| [python_hard_batch3_eval_verification.md](python_hard_batch3_eval_verification.md) | Historical |
-| [python_hard_batch3_sprint_summary.md](python_hard_batch3_sprint_summary.md) | Superseded by docs/STATUS for scale |
-| [batch3_promotion_readiness.md](batch3_promotion_readiness.md) | Snapshot |
-| [batch3_next_stage_implementation_20260708.md](batch3_next_stage_implementation_20260708.md) | Snapshot |
+统一放在 [archive/batch3_202607/](archive/batch3_202607/)；这些是 100→150 hard 的历史计划、材料化、验证和 promotion 快照。
 
 ## Paper analysis
 
 见 [docs/REPORTS_INDEX.md](../docs/REPORTS_INDEX.md) 与 [docs/paper_runs_frozen.md](../docs/paper_runs_frozen.md)。
 
-## Task audit
+## Benchmark audits
 
 | Report | Role |
 | --- | --- |
-| [python_task_audit.md](python_task_audit.md) | Audit |
-| [task_lifecycle_report.md](task_lifecycle_report.md) | Lifecycle |
-| [missing_high_value_repos.md](missing_high_value_repos.md) | Repo gaps |
+| [audits/python_task_audit.md](audits/python_task_audit.md) | Task audit |
+| [audits/task_lifecycle_report.md](audits/task_lifecycle_report.md) | Lifecycle |
+| [audits/missing_high_value_repos.md](audits/missing_high_value_repos.md) | Repo gaps |
+| [audits/benchmark_integrity_audit/](audits/benchmark_integrity_audit/) | Integrity evidence |

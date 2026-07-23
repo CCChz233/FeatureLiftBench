@@ -15,6 +15,7 @@ from typing import Any
 from urllib.parse import urlsplit
 from urllib.parse import urlunsplit
 
+from .openhands_usage import context_policy_audit_fields
 from .openhands_usage import openhands_context_limits
 
 
@@ -170,6 +171,10 @@ class LLMUsageProxy:
                 "max_total_tokens_per_call": max_total,
                 "context_violation": context_violation,
                 "over_context_behavior": "audited_by_featureliftbench_proxy",
+                **context_policy_audit_fields(),
+                "condensation_events": 0,
+                "forgotten_event_count": 0,
+                "condensation_summaries_nonempty": 0,
             },
         }
         self.config.usage_path.write_text(

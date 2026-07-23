@@ -28,6 +28,15 @@ def write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+def output_paths(prefix: Path) -> tuple[Path, Path]:
+    """Append report extensions without treating dots in run IDs as suffixes."""
+
+    return (
+        prefix.parent / f"{prefix.name}.json",
+        prefix.parent / f"{prefix.name}.md",
+    )
+
+
 def fmt_float(value: Any, digits: int = 3) -> str:
     if isinstance(value, (int, float)):
         return f"{value:.{digits}f}"
@@ -423,10 +432,11 @@ def main() -> int:
     source = Path(args.input)
     output_prefix = Path(args.output_prefix)
     analysis = build_analysis(source)
-    write_json(output_prefix.with_suffix(".json"), analysis)
-    write_text(output_prefix.with_suffix(".md"), render_md(analysis))
-    print(f"Wrote {output_prefix.with_suffix('.json')}")
-    print(f"Wrote {output_prefix.with_suffix('.md')}")
+    json_path, md_path = output_paths(output_prefix)
+    write_json(json_path, analysis)
+    write_text(md_path, render_md(analysis))
+    print(f"Wrote {json_path}")
+    print(f"Wrote {md_path}")
     return 0
 
 

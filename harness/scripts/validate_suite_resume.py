@@ -13,6 +13,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
+from featureliftbench.suite_utils import resolve_suite_artifact_path
+
 
 def _load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -56,7 +58,12 @@ def validate_suite_resume(
             continue
 
         task_dir = suite_dir / task_id
-        run_json_path = Path(run.get("run_json") or task_dir / "run.json")
+        run_json_path = resolve_suite_artifact_path(
+            suite_dir,
+            task_id,
+            "run.json",
+            run.get("run_json"),
+        )
         usage_json_path = task_dir / "agent" / "usage.json"
         submission_dir = task_dir / "submission"
         eval_result_path = task_dir / "eval" / "result.json"

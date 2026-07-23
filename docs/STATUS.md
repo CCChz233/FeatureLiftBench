@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-**最后更新：** 2026-07-20
+**最后更新：** 2026-07-23
 
 本文是手写状态摘要。详细 gate 表格由脚本生成，见 [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md)（`python tools/research_analysis/build_v11_audit_status.py`）。
 
@@ -39,10 +39,24 @@ Engineering 实验可开跑。正式 aggregate 用当前 main split + 本 freeze
 | --- | --- |
 | 四模型 core-100 | ✅ 已冻结 |
 | Flash Python-150 | ✅ 91/150 |
-| 另三模型 hard50 | ❌ **待跑**（补齐即可做完整 150 对比） |
+| Qwen 27B / 35B Python-150 | ⚠️ candidate 已齐：58/150、52/150；待冻结 |
+| Qwen-Coder hard50 | ❌ **待跑**（当前仅 core-100） |
 | ECSM Pilot | ❌ 0/70 cells |
+| OpenHands RSG Pilot | ⛔ 2/12 付费门控后停止；原生工具接入待完成 |
 
 详见 [EXPERIMENTS.md](EXPERIMENTS.md) · [paper_runs_frozen.md](paper_runs_frozen.md)
+
+### RSG Pilot 门控（2026-07-23）
+
+`rsg-pilot-v1-20260723-clean1` 完成了 Celery P0/P3 第一对后按预注册规则停止：
+
+- P0 与 P3 均为普通 `model_failed`，不是基础设施或 context failure；
+- P3 成功执行 fresh `submission-check`，但没有执行 `task-closure`；
+- `adoption_compliant=false`，停止原因是 `paid_pair_rsg_adoption_gate_failed`；
+- 两条 run 均为 0 condensation、0 context violation；最大 prompt 分别为 68,134 和 93,944，低于 122,880 触发值；
+- 剩余 10 个 cells 未启动。下一步先注册 OpenHands 原生 RSG tools 并通过新的 mechanism smoke，再恢复 Pilot。
+
+本次只有一对轨迹，不能据此判断 RSG correctness 或 token 因果效应。
 
 ## v1.1 论文门禁（摘要）
 
@@ -71,5 +85,5 @@ Engineering 实验可开跑。正式 aggregate 用当前 main split + 本 freeze
 | --- | --- | --- |
 | batch-0 | 50 hard grandfather | [07_incremental_task_rules.md](07_incremental_task_rules.md) |
 | batch-1 | +50 → 100 hard | [../BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md)（归档） |
-| batch-3 | +50 → 150 hard | 本地 `reports/python_hard_batch3_sprint_summary.md` |
+| batch-3 | +50 → 150 hard | 本地 `reports/archive/batch3_202607/python_hard_batch3_sprint_summary.md` |
 | v1.1 repair | 13 quarantine → 0 | [research_analysis/ORACLE_REVALIDATION_REPORT.md](research_analysis/ORACLE_REVALIDATION_REPORT.md) |

@@ -14,6 +14,12 @@ MAX_ALLOWED_PROMPT_TOKENS = CONTEXT_WINDOW_TOKENS - RESERVED_OUTPUT_TOKENS
 
 CONTEXT_WINDOW_ENV = "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS"
 RESERVED_OUTPUT_ENV = "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS"
+CONDENSER_MODE_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE"
+CONDENSER_KEEP_FIRST_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST"
+CONDENSER_MAX_EVENTS_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS"
+
+DEFAULT_CONDENSER_KEEP_FIRST = 4
+DEFAULT_CONDENSER_MAX_EVENTS = 1_000_000
 
 DEFAULT_EVENTS_FILENAME = "openhands_events.jsonl"
 DEFAULT_USAGE_FILENAME = "openhands_usage.json"
@@ -34,6 +40,22 @@ class OpenHandsContextLimits:
     max_allowed_prompt_tokens: int
 
 
+@dataclass(frozen=True)
+class OpenHandsContextPolicy:
+    compression_mode: str
+    context_window_tokens: int
+    reserved_output_tokens: int
+    max_allowed_prompt_tokens: int
+    condenser_trigger_tokens: int | None
+    condenser_target_tokens: int | None
+    condenser_keep_first: int
+    condenser_max_events: int
+
+    @property
+    def token_compression_enabled(self) -> bool:
+        return self.compression_mode == "token"
+
+
 def openhands_context_limits(env: dict[str, str] | None = None) -> OpenHandsContextLimits:
     source = os.environ if env is None else env
     context_window = _positive_int_env(source, CONTEXT_WINDOW_ENV, CONTEXT_WINDOW_TOKENS)
@@ -44,6 +66,77 @@ def openhands_context_limits(env: dict[str, str] | None = None) -> OpenHandsCont
         reserved_output_tokens=reserved_output,
         max_allowed_prompt_tokens=max_allowed,
     )
+
+
+def openhands_context_policy(env: dict[str, str] | None = None) -> OpenHandsContextPolicy:
+    """Resolve the opt-in OpenHands context policy from a run environment.
+
+    Legacy runs retain their existing OpenHands defaults. Token mode is strict:
+    malformed or impossible limits raise before the first model request.
+    """
+
+    source = os.environ if env is None else env
+    mode = str(source.get(CONDENSER_MODE_ENV, "default")).strip().lower() or "default"
+    if mode not in {"default", "token"}:
+        raise ValueError(f"unknown OpenHands condenser mode: {mode}")
+
+    if mode == "token":
+        context_window = _required_positive_int_env(source, CONTEXT_WINDOW_ENV)
+        reserved_output = _required_positive_int_env(source, RESERVED_OUTPUT_ENV)
+        if context_window <= reserved_output:
+            raise ValueError(
+                "OpenHands token condenser requires context_window_tokens > "
+                "reserved_output_tokens"
+            )
+        keep_first = _non_negative_int_env(
+            source,
+            CONDENSER_KEEP_FIRST_ENV,
+            DEFAULT_CONDENSER_KEEP_FIRST,
+        )
+        max_events = _required_positive_int_env(
+            source,
+            CONDENSER_MAX_EVENTS_ENV,
+            default=DEFAULT_CONDENSER_MAX_EVENTS,
+        )
+        trigger = context_window - reserved_output
+        return OpenHandsContextPolicy(
+            compression_mode=mode,
+            context_window_tokens=context_window,
+            reserved_output_tokens=reserved_output,
+            max_allowed_prompt_tokens=trigger,
+            condenser_trigger_tokens=trigger,
+            condenser_target_tokens=trigger // 2,
+            condenser_keep_first=keep_first,
+            condenser_max_events=max_events,
+        )
+
+    limits = openhands_context_limits(source)
+    return OpenHandsContextPolicy(
+        compression_mode=mode,
+        context_window_tokens=limits.context_window_tokens,
+        reserved_output_tokens=limits.reserved_output_tokens,
+        max_allowed_prompt_tokens=limits.max_allowed_prompt_tokens,
+        condenser_trigger_tokens=None,
+        condenser_target_tokens=None,
+        condenser_keep_first=DEFAULT_CONDENSER_KEEP_FIRST,
+        condenser_max_events=DEFAULT_CONDENSER_MAX_EVENTS,
+    )
+
+
+def context_policy_audit_fields(
+    env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    policy = openhands_context_policy(env)
+    return {
+        "compression_mode": policy.compression_mode,
+        "context_window_tokens": policy.context_window_tokens,
+        "reserved_output_tokens": policy.reserved_output_tokens,
+        "max_allowed_prompt_tokens": policy.max_allowed_prompt_tokens,
+        "condenser_trigger_tokens": policy.condenser_trigger_tokens,
+        "condenser_target_tokens": policy.condenser_target_tokens,
+        "condenser_keep_first": policy.condenser_keep_first,
+        "condenser_max_events": policy.condenser_max_events,
+    }
 
 
 def parse_openhands_progress_snapshot(log_path: Path) -> OpenHandsProgressSnapshot | None:
@@ -132,10 +225,16 @@ def parse_events_jsonl(path: Path) -> dict[str, Any]:
     max_prompt_tokens_per_call = 0
     max_total_tokens_per_call = 0
     saw_usage = False
+    compression = {
+        "condensation_events": 0,
+        "forgotten_event_count": 0,
+        "condensation_summaries_nonempty": 0,
+    }
 
     try:
         events = _iter_json_events(path)
         for event in events:
+            _accumulate_condensation_event(event, compression)
             for usage in _iter_usage_records(event):
                 saw_usage = True
                 prompt = _int_metric(usage.get("prompt_tokens"))
@@ -186,8 +285,28 @@ def parse_events_jsonl(path: Path) -> dict[str, Any]:
             "max_total_tokens_per_call": max_total_tokens_per_call,
             "context_violation": context_violation,
             "over_context_behavior": "managed_by_openhands",
+            **context_policy_audit_fields(),
+            **compression,
         },
     }
+
+
+def parse_openhands_compression_events(path: Path | None) -> dict[str, int]:
+    """Count condensation events without retaining summary text or event IDs."""
+
+    counts = {
+        "condensation_events": 0,
+        "forgotten_event_count": 0,
+        "condensation_summaries_nonempty": 0,
+    }
+    if path is None or not path.is_file():
+        return counts
+    try:
+        for event in _iter_json_events(path):
+            _accumulate_condensation_event(event, counts)
+    except OSError:
+        return counts
+    return counts
 
 
 def write_usage_from_events(
@@ -229,6 +348,10 @@ def _empty_usage(
             "reserved_output_tokens": limits.reserved_output_tokens,
             "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "over_context_behavior": "managed_by_openhands",
+            **context_policy_audit_fields(),
+            "condensation_events": 0,
+            "forgotten_event_count": 0,
+            "condensation_summaries_nonempty": 0,
         },
     }
 
@@ -242,6 +365,55 @@ def _positive_int_env(source: dict[str, str], name: str, default: int) -> int:
     except ValueError:
         return default
     return parsed if parsed > 0 else default
+
+
+def _required_positive_int_env(
+    source: dict[str, str],
+    name: str,
+    *,
+    default: int | None = None,
+) -> int:
+    raw = source.get(name)
+    if raw is None and default is not None:
+        return default
+    try:
+        parsed = int(str(raw).strip())
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be a positive integer") from exc
+    if parsed <= 0:
+        raise ValueError(f"{name} must be a positive integer")
+    return parsed
+
+
+def _non_negative_int_env(
+    source: dict[str, str],
+    name: str,
+    default: int,
+) -> int:
+    raw = source.get(name, str(default))
+    try:
+        parsed = int(str(raw).strip())
+    except ValueError as exc:
+        raise ValueError(f"{name} must be a non-negative integer") from exc
+    if parsed < 0:
+        raise ValueError(f"{name} must be a non-negative integer")
+    return parsed
+
+
+def _accumulate_condensation_event(
+    event: dict[str, Any],
+    counts: dict[str, int],
+) -> None:
+    kind = str(event.get("kind") or event.get("type") or "")
+    if kind != "Condensation":
+        return
+    counts["condensation_events"] += 1
+    forgotten = event.get("forgotten_event_ids")
+    if isinstance(forgotten, list):
+        counts["forgotten_event_count"] += len(forgotten)
+    summary = event.get("summary")
+    if isinstance(summary, str) and summary.strip():
+        counts["condensation_summaries_nonempty"] += 1
 
 
 def _iter_json_events(path: Path):

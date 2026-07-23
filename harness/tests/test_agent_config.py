@@ -1,14 +1,211 @@
 from __future__ import annotations
 
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_config import load_agent_run_config
+from featureliftbench.repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
 
 
 class AgentConfigTests(unittest.TestCase):
+    def test_repo_graph_profile_is_opt_in_validated_and_uses_environment_precedence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config_file = root / "agents.toml"
+            config_file.write_text(
+                "[profiles.default]\n"
+                'repo_graph_mode = "static"\n'
+                'repo_graph_transport = "cli"\n'
+                "repo_graph_fail_fast = true\n"
+                "repo_graph_bootstrap_max_nodes = 24\n"
+                "repo_graph_bootstrap_max_chars = 4096\n"
+                "repo_graph_query_max_chars = 9000\n",
+                encoding="utf-8",
+            )
+            with mock.patch.dict(os.environ, {REPO_GRAPH_MODE_ENV: "closure"}, clear=False):
+                loaded = load_agent_run_config(
+                    base_config=AgentRunConfig(agent="mini-swe-agent"),
+                    config_path=config_file,
+                )
+
+            self.assertEqual(loaded.summary["repo_graph_mode"], "closure")
+            self.assertEqual(loaded.summary["repo_graph_bootstrap_max_nodes"], 24)
+            self.assertEqual(loaded.summary["repo_graph_bootstrap_max_chars"], 4096)
+            self.assertEqual((loaded.run_config.env or {})[REPO_GRAPH_MODE_ENV], "closure")
+
+    def test_repo_graph_invalid_mode_and_budget_fail_configuration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            invalid_mode = root / "invalid-mode.toml"
+            invalid_mode.write_text(
+                "[profiles.default]\nrepo_graph_mode = \"magic\"\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "unknown repository graph mode"):
+                load_agent_run_config(
+                    base_config=AgentRunConfig(agent="mini-swe-agent"),
+                    config_path=invalid_mode,
+                )
+            invalid_budget = root / "invalid-budget.toml"
+            invalid_budget.write_text(
+                "[profiles.default]\n"
+                'repo_graph_mode = "static"\n'
+                "repo_graph_query_max_chars = 128\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "at least 512"):
+                load_agent_run_config(
+                    base_config=AgentRunConfig(agent="mini-swe-agent"),
+                    config_path=invalid_budget,
+                )
+            invalid_bootstrap = root / "invalid-bootstrap.toml"
+            invalid_bootstrap.write_text(
+                "[profiles.default]\n"
+                'repo_graph_mode = "closure"\n'
+                "repo_graph_bootstrap_max_chars = 900\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "at least 1024"):
+                load_agent_run_config(
+                    base_config=AgentRunConfig(agent="mini-swe-agent"),
+                    config_path=invalid_bootstrap,
+                )
+
+    def test_legacy_profile_keeps_repo_graph_disabled_without_forwarded_env(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_file = Path(tmp) / "agents.toml"
+            config_file.write_text("[profiles.default]\n", encoding="utf-8")
+            loaded = load_agent_run_config(
+                base_config=AgentRunConfig(agent="mini-swe-agent"),
+                config_path=config_file,
+            )
+            self.assertEqual(loaded.summary["repo_graph_mode"], "disabled")
+            self.assertNotIn(REPO_GRAPH_MODE_ENV, loaded.run_config.env or {})
+
+    def test_openhands_token_profiles_derive_expected_thresholds(self) -> None:
+        cases = (
+            ("ctx64k", 65536, 57344, 28672),
+            ("ctx128k", 131072, 122880, 61440),
+            ("ctx256k", 262144, 253952, 126976),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            config_file = Path(tmp) / "agents.toml"
+            tables = []
+            for name, total, _, _ in cases:
+                tables.append(
+                    f"[profiles.{name}]\n"
+                    f"context_window_tokens = {total}\n"
+                    "reserved_output_tokens = 8192\n"
+                    'openhands_condenser_mode = "token"\n'
+                    "openhands_condenser_keep_first = 4\n"
+                    "openhands_condenser_max_events = 1000000\n"
+                )
+            config_file.write_text("\n".join(tables), encoding="utf-8")
+
+            for name, total, trigger, target in cases:
+                loaded = load_agent_run_config(
+                    base_config=AgentRunConfig(agent="openhands"),
+                    config_path=config_file,
+                    profile_name=name,
+                )
+                self.assertEqual(loaded.summary["context_window_tokens"], total)
+                self.assertEqual(
+                    loaded.summary["openhands_condenser_trigger_tokens"], trigger
+                )
+                self.assertEqual(
+                    loaded.summary["openhands_condenser_target_tokens"], target
+                )
+
+    def test_openhands_token_mode_rejects_invalid_or_unknown_configuration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            invalid_window = root / "invalid-window.toml"
+            invalid_window.write_text(
+                "[profiles.default]\n"
+                "context_window_tokens = 8192\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "token"\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "context_window_tokens >"):
+                load_agent_run_config(
+                    base_config=AgentRunConfig(agent="openhands"),
+                    config_path=invalid_window,
+                )
+
+            unknown_mode = root / "unknown-mode.toml"
+            unknown_mode.write_text(
+                "[profiles.default]\n"
+                'openhands_condenser_mode = "mystery"\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "unknown OpenHands condenser mode"):
+                load_agent_run_config(
+                    base_config=AgentRunConfig(agent="openhands"),
+                    config_path=unknown_mode,
+                )
+
+    def test_openhands_context_environment_precedence(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            env_file = root / ".env"
+            config_file = root / "agents.toml"
+            env_file.write_text(
+                "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS=90000\n",
+                encoding="utf-8",
+            )
+            config_file.write_text(
+                "[profiles.default]\n"
+                "context_window_tokens = 65536\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "token"\n',
+                encoding="utf-8",
+            )
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "100000"},
+                clear=False,
+            ):
+                loaded = load_agent_run_config(
+                    base_config=AgentRunConfig(
+                        agent="openhands",
+                        env={"FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "110000"},
+                    ),
+                    config_path=config_file,
+                    env_file=env_file,
+                )
+
+            self.assertEqual(loaded.summary["context_window_tokens"], 110000)
+            self.assertEqual(
+                (loaded.run_config.env or {})[
+                    "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS"
+                ],
+                "110000",
+            )
+
+    def test_legacy_openhands_profile_does_not_enable_token_condenser(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_file = Path(tmp) / "agents.toml"
+            config_file.write_text(
+                "[profiles.default]\n"
+                "context_window_tokens = 131072\n"
+                "reserved_output_tokens = 8192\n",
+                encoding="utf-8",
+            )
+            loaded = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+            )
+            self.assertEqual(loaded.summary["openhands_condenser_mode"], "default")
+            self.assertNotIn(
+                "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE",
+                loaded.run_config.env or {},
+            )
+
     def test_load_agent_run_config_maps_shared_key_to_common_env(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -1,0 +1,9 @@
+priority,module,direct_failures,share_agent_failures,median_tokens,theoretical_ceiling_pp,twenty_percent_recovery_pp,evidence_strength,pass_value,efficiency_value,recommended_change
+1,Semantic closure planner,85,0.323,1856717,15.45,3.09,strong,very high,medium,"Maintain an evidence-backed ledger of required APIs, types, resources, environment assumptions, and unresolved dependencies before implementation"
+2,Implementation and repair loop,80,0.304,1367111,14.55,2.91,medium,very high,medium,"Use focused differential probes, counterexamples, and failing-behavior repair instead of broad repeated testing"
+3,Budgeted exploration scheduler,32,0.122,3407742,5.82,1.16,medium,medium,very high,"Allocate phase budgets, score information gain, suppress unchanged reads, and enforce stop-or-switch checkpoints"
+4,Targeted runtime semantics engine,43,0.163,1256767,7.82,1.56,medium-to-weak,medium uncertain,medium,"Trigger state/import/environment/resource probes only from concrete dynamic-risk cues and preserve the resulting state model"
+5,Boundary and packaging planner,15,0.057,2200698,2.73,0.55,strong,medium,medium,"Optimize the minimal semantic slice and continuously check forbidden imports, extraction ratio, and packaged resources"
+6,Verification state machine,2,0.008,3402378,0.36,0.07,medium-to-strong,low direct / high enabling,high diagnostic,"Invalidate stale test conclusions after every edit and require targeted probes, public tests, isolation, and clean-install gates"
+7,Evidence memory and condenser,2,0.008,2031538,0.36,0.07,weak,low observed,medium uncertain,"Keep a pinned structured evidence store separate from rolling dialogue summaries and deduplicate file snapshots"
+8,Localization,5,0.019,166556,0.91,0.18,weak,low,low,"Use symbol/file retrieval improvements only after higher-value post-localization bottlenecks are addressed"

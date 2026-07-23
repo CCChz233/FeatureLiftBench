@@ -16,6 +16,9 @@ if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
 from featureliftbench.suite_utils import detect_eval_flake
+from featureliftbench.suite_utils import resolve_suite_artifact_path
+from featureliftbench.closure_gold import load_closure_gold, score_closure
+from featureliftbench.trajectory_audit import audit_trajectory, read_event_jsonl
 
 
 def aggregate_suite_summaries(suite_dirs: list[Path]) -> dict[str, Any]:
@@ -80,7 +83,12 @@ def load_json(path: Path) -> dict[str, Any]:
 
 def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
     task_id = run.get("task_id", "")
-    run_json_path = Path(run.get("run_json") or suite_dir / task_id / "run.json")
+    run_json_path = resolve_suite_artifact_path(
+        suite_dir,
+        task_id,
+        "run.json",
+        run.get("run_json"),
+    )
     if not run_json_path.is_file():
         return dict(run)
 
@@ -92,7 +100,12 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
     scores = evaluation.get("scores") or {}
     metrics = evaluation.get("metrics") or {}
 
-    result_json_path = Path(evaluation.get("result_json") or suite_dir / task_id / "eval" / "result.json")
+    result_json_path = resolve_suite_artifact_path(
+        suite_dir,
+        task_id,
+        "eval/result.json",
+        evaluation.get("result_json") or run.get("result_json"),
+    )
     if result_json_path.is_file():
         eval_detail = load_json(result_json_path)
         scores = eval_detail.get("scores") or scores
@@ -100,11 +113,18 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
         build_pass = eval_detail.get("build_pass", evaluation.get("build_pass"))
         test_pass = eval_detail.get("test_pass", evaluation.get("test_pass"))
     else:
+        eval_detail = {}
         build_pass = evaluation.get("build_pass")
         test_pass = evaluation.get("test_pass")
 
     task_run_dir = suite_dir / task_id
     eval_flake = detect_eval_flake(task_run_dir)
+    graph_usage = detail.get("repo_graph") if isinstance(detail.get("repo_graph"), dict) else {}
+    graph_build_path = task_run_dir / "agent" / "repo_graph_build.json"
+    graph_build = load_json(graph_build_path) if graph_build_path.is_file() else {}
+    events_path = task_run_dir / "agent" / "openhands_events.jsonl"
+    trajectory = audit_trajectory(read_event_jsonl(events_path))
+    closure_gold_score = _closure_gold_score(task_run_dir, task_id)
 
     enriched = dict(run)
     enriched.update(
@@ -125,11 +145,53 @@ def enrich_run(run: dict[str, Any], suite_dir: Path) -> dict[str, Any]:
             "submission_recovered": submission.get("recovered", False),
             "submission_recovery_sources": submission.get("recovery_sources", []),
             "trajectory_json": str(suite_dir / task_id / "agent" / "trajectory.json"),
+            "trajectory_audit": trajectory,
+            "public_pass": _gate_pass(eval_detail, "public_tests"),
+            "hidden_pass": _gate_pass(eval_detail, "hidden_tests"),
+            "install_pass": _gate_pass(eval_detail, "submission_install"),
+            "context_audit": usage.get("context_audit", {}),
+            "repo_graph": {
+                **graph_usage,
+                "build_duration_seconds": graph_build.get("duration_seconds"),
+                "cache_hit": (graph_build.get("cache") or {}).get("hit")
+                if isinstance(graph_build.get("cache"), dict)
+                else None,
+                "graph_bytes": graph_build.get("graph_bytes"),
+                "rss_peak_bytes": graph_build.get("rss_peak_bytes"),
+                "closure_gold_file_score": closure_gold_score,
+            }
+            if graph_usage or graph_build
+            else {},
+            "system_fingerprints": trajectory.get("system_fingerprints", []),
             "status": evaluation.get("status") or run.get("status"),
             "eval_flake": eval_flake,
         }
     )
     return enriched
+
+
+def _gate_pass(evaluation: dict[str, Any], key: str) -> bool | None:
+    gate = evaluation.get(key)
+    return gate.get("passed") if isinstance(gate, dict) and isinstance(gate.get("passed"), bool) else None
+
+
+def _closure_gold_score(task_run_dir: Path, task_id: str) -> dict[str, Any] | None:
+    task_dir = _REPO_ROOT / "benchmark" / "tasks" / task_id
+    closure_path = task_run_dir / "agent" / "state" / "repo_graph" / "closure_overlay.json"
+    if not task_dir.is_dir() or not closure_path.is_file():
+        return None
+    closure = load_json(closure_path)
+    predictions: list[str] = []
+    for node in closure.get("candidate_nodes", []):
+        if not isinstance(node, dict):
+            continue
+        location = node.get("location")
+        if not isinstance(location, str) or not location:
+            continue
+        path = location.rsplit(":", 1)[0]
+        predictions.append(path if path.startswith("repo/") else f"repo/{path}")
+    score = score_closure(load_closure_gold(task_dir), predictions, kind="file")
+    return score.as_dict() if score is not None else None
 
 
 def main() -> int:

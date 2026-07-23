@@ -364,13 +364,22 @@ def run(config: FeatureLiftAgentConfig) -> int:
 
     _write_context_audit(config.agent_output_dir / "context_audit.jsonl", audit_records)
     _create_submission_scaffold(config.submission_dir)
+    native_stopping_guard = _repo_graph_native_stopping_guard(config)
+    exit_status = _completed_exit_status(config, tool_observations)
+    stopping_blocked = bool(
+        config.execute_actions
+        and native_stopping_guard is not None
+        and not native_stopping_guard.get("ready", False)
+    )
+    if stopping_blocked:
+        exit_status = "stopping_guard_blocked"
     _write_usage(
         config,
         available=True,
         context_violation=False,
         audit_records=audit_records,
         usage_totals=usage_totals,
-        exit_status=_completed_exit_status(config, tool_observations),
+        exit_status=exit_status,
         tool_observations=tool_observations,
     )
     print("FeatureLiftAgent scaffold initialized")
@@ -378,6 +387,9 @@ def run(config: FeatureLiftAgentConfig) -> int:
         print(f"Completed {usage_totals.get('api_calls', 0)} context-audited LLM phase call(s).")
     else:
         print("Runtime model calls are disabled; wrote protocol artifacts only.")
+    if stopping_blocked:
+        print("FeatureLiftAgent stopping guard blocked finalization", file=sys.stderr)
+        return 3
     return 0
 
 
@@ -489,6 +501,7 @@ def _build_phase_prompt(state_dir: Path, phase: str) -> tuple[str, str]:
             f"{_read_text(state_dir / 'source_entrypoints.json')}\n\n"
             "## repo_map.md\n"
             f"{_read_text(state_dir / 'repo_map.md')}\n"
+            f"{_repo_graph_phase_context(state_dir)}"
         )
     elif phase == "extraction_plan":
         task = (
@@ -535,6 +548,14 @@ def _build_phase_prompt(state_dir: Path, phase: str) -> tuple[str, str]:
         )
     else:
         raise FeatureLiftAgentError(f"unknown LLM phase: {phase}")
+    graph_enabled = (state_dir / "repo_graph" / "base" / "manifest.json").is_file()
+    evidence_enabled = (state_dir / "repo_graph" / "semantic_claims.jsonl").is_file()
+    if evidence_enabled:
+        allowed_action_types = "inspect_file|copy_file|write_file|repo_graph_query|repo_graph_claim|run_public_tests|prune_submission|final_check"
+    elif graph_enabled:
+        allowed_action_types = "inspect_file|copy_file|write_file|repo_graph_query|run_public_tests|prune_submission|final_check"
+    else:
+        allowed_action_types = "inspect_file|copy_file|write_file|run_public_tests|prune_submission|final_check"
     user_prompt = (
         f"Phase: {phase}\n\n"
         f"Task: {task}\n\n"
@@ -544,7 +565,7 @@ def _build_phase_prompt(state_dir: Path, phase: str) -> tuple[str, str]:
         f'  "phase": "{phase}",\n'
         '  "summary": "one paragraph",\n'
         '  "actions": [\n'
-        '    {"type": "inspect_file|copy_file|write_file|run_public_tests|prune_submission|final_check", "target": "path or check name", "reason": "why"}\n'
+        f'    {{"type": "{allowed_action_types}", "target": "path or check name", "reason": "why"}}\n'
         "  ],\n"
         '  "risks": ["risk or unknown"]\n'
         "}\n"
@@ -713,7 +734,16 @@ def _execute_action(
     action_type = _action_text_field(action, "type")
     target = _action_text_field(action, "target")
     reason = _action_text_field(action, "reason")
-    if action_type not in _action_schema()["action_types"]:
+    graph_enabled = (
+        config.agent_output_dir / "state" / "repo_graph" / "base" / "manifest.json"
+    ).is_file()
+    evidence_enabled = (
+        config.agent_output_dir / "state" / "repo_graph" / "semantic_claims.jsonl"
+    ).is_file()
+    if action_type not in _action_schema(
+        repo_graph_enabled=graph_enabled,
+        repo_graph_evidence_enabled=evidence_enabled,
+    )["action_types"]:
         return _tool_observation(
             phase=phase,
             action_index=action_index,
@@ -730,6 +760,10 @@ def _execute_action(
             return _copy_file_action(config, phase, action_index, action)
         if action_type == "write_file":
             return _write_file_action(config, phase, action_index, action)
+        if action_type == "repo_graph_query":
+            return _repo_graph_query_action(config, phase, action_index, action)
+        if action_type == "repo_graph_claim":
+            return _repo_graph_claim_action(config, phase, action_index, action)
         if action_type == "run_public_tests":
             return _run_public_tests_action(config, phase, action_index, action)
         if action_type == "prune_submission":
@@ -830,6 +864,7 @@ def _copy_file_action(
     else:
         shutil.copy2(source, destination)
     _prune_submission_transients(config.submission_dir)
+    _sync_repo_graph_after_mutation(config)
     return _tool_observation(
         phase=phase,
         action_index=action_index,
@@ -868,6 +903,7 @@ def _write_file_action(
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(content, encoding="utf-8")
     _prune_submission_transients(config.submission_dir)
+    _sync_repo_graph_after_mutation(config)
     return _tool_observation(
         phase=phase,
         action_index=action_index,
@@ -879,6 +915,206 @@ def _write_file_action(
     )
 
 
+def _repo_graph_query_action(
+    config: FeatureLiftAgentConfig,
+    phase: str,
+    action_index: int,
+    action: dict[str, Any],
+) -> dict[str, Any]:
+    reason = _action_text_field(action, "reason")
+    command = _action_text_field(action, "command")
+    target = _action_text_field(action, "target", "query", "node")
+    graph_root = config.agent_output_dir / "state" / "repo_graph"
+    if not (graph_root / "base" / "manifest.json").is_file():
+        raise FeatureLiftAgentError("repository graph is not enabled for this run")
+    allowed = {
+        "bootstrap",
+        "search",
+        "inspect",
+        "paths",
+        "closure",
+        "risks",
+        "self-check",
+        "sync-submission",
+        "compare",
+        "detectors",
+        "freshness",
+        "stopping-check",
+        "claim-list",
+        "evidence-list",
+    }
+    if command not in allowed:
+        raise FeatureLiftAgentError(f"unsupported repository graph command: {command or 'missing'}")
+    cli_command = {
+        "claim-list": ["claim", "list"],
+        "evidence-list": ["evidence", "list"],
+    }.get(command, [command])
+    argv = [sys.executable, "-m", "featureliftbench.repo_graph.cli", *cli_command]
+    if command == "search":
+        if not target:
+            raise FeatureLiftAgentError("repo_graph_query search requires query or target")
+        argv.append(target)
+    elif command == "inspect":
+        if not target:
+            raise FeatureLiftAgentError("repo_graph_query inspect requires node or target")
+        argv.append(target)
+    elif command == "paths":
+        source = _action_text_field(action, "source")
+        destination = _action_text_field(action, "destination")
+        if not source or not destination:
+            raise FeatureLiftAgentError("repo_graph_query paths requires source and destination")
+        argv.extend([source, destination])
+    elif command == "closure":
+        entrypoints = action.get("entrypoints")
+        values = (
+            [str(item) for item in entrypoints if isinstance(item, str) and item]
+            if isinstance(entrypoints, list)
+            else ([target] if target else [])
+        )
+        if not values:
+            raise FeatureLiftAgentError("repo_graph_query closure requires entrypoints or target")
+        argv.extend(values)
+    elif command == "risks" and target:
+        argv.append(target)
+    env = _tool_env(config)
+    env["FEATURELIFTBENCH_REPO_GRAPH_ROOT"] = str(graph_root)
+    env["FEATURELIFTBENCH_AGENT_OUTPUT_DIR"] = str(config.agent_output_dir)
+    env["FEATURELIFTBENCH_SUBMISSION_DIR"] = str(config.submission_dir)
+    env["FEATURELIFTBENCH_WORKSPACE"] = str(config.workspace)
+    completed = subprocess.run(
+        argv,
+        cwd=config.workspace,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=config.tool_timeout_seconds,
+        check=False,
+    )
+    output = _bounded_text(
+        (completed.stdout or "") + (completed.stderr or ""),
+        config.max_observation_chars,
+    )
+    repeat_count = _record_repo_graph_query_policy(
+        config,
+        command=command,
+        target=target,
+        source=_action_text_field(action, "source"),
+        destination=_action_text_field(action, "destination"),
+    )
+    observation = _tool_observation(
+        phase=phase,
+        action_index=action_index,
+        action_type="repo_graph_query",
+        target=f"{command} {target}".strip(),
+        reason=reason,
+        status="success" if completed.returncode == 0 else "failed",
+        summary=(
+            f"repository graph {command} exited {completed.returncode}"
+            + (
+                f"; repeated {repeat_count} times without submission revision change"
+                if repeat_count > 1
+                else ""
+            )
+        ),
+        output=output,
+        truncated=len((completed.stdout or "") + (completed.stderr or "")) > config.max_observation_chars,
+        returncode=completed.returncode,
+    )
+    observation["repeat_count_same_revision"] = repeat_count
+    observation["action_priority"] = "deprioritized" if repeat_count > 1 else "normal"
+    return observation
+
+
+def _record_repo_graph_query_policy(
+    config: FeatureLiftAgentConfig,
+    *,
+    command: str,
+    target: str,
+    source: str,
+    destination: str,
+) -> int:
+    graph_root = config.agent_output_dir / "state" / "repo_graph"
+    revision_state = _read_json_object(graph_root / "submission_state.json")
+    revision = revision_state.get("revision", 0)
+    fingerprint = hashlib.sha256(
+        json.dumps(
+            {
+                "command": command,
+                "target": target,
+                "source": source,
+                "destination": destination,
+                "revision": revision,
+            },
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
+    path = graph_root / "query_policy.json"
+    state = _read_json_object(path)
+    counts = state.get("counts") if isinstance(state.get("counts"), dict) else {}
+    count = int(counts.get(fingerprint, 0)) + 1
+    counts[fingerprint] = count
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": "featureliftbench.repo_graph.query_policy.v1",
+                "counts": counts,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return count
+
+
+def _repo_graph_claim_action(
+    config: FeatureLiftAgentConfig,
+    phase: str,
+    action_index: int,
+    action: dict[str, Any],
+) -> dict[str, Any]:
+    if not _repo_graph_evidence_enabled(config):
+        raise FeatureLiftAgentError("repository graph evidence mode is not enabled")
+    from .repo_graph.ledger import RepoGraphLedger
+
+    ledger = RepoGraphLedger(config.agent_output_dir / "state" / "repo_graph")
+    operation = _action_text_field(action, "operation") or "add"
+    reason = _action_text_field(action, "reason")
+    if operation == "add":
+        record = ledger.add_claim(
+            subject=_action_text_field(action, "subject", "target"),
+            predicate=_action_text_field(action, "predicate"),
+            object_value=_action_text_field(action, "object"),
+            classification=_action_text_field(action, "classification") or "unresolved",
+            confidence=float(action.get("confidence", 0.5)),
+        )
+    elif operation == "update":
+        evidence_ids = action.get("evidence_ids")
+        record = ledger.update_claim(
+            _action_text_field(action, "claim_id", "target"),
+            status=_action_text_field(action, "status"),
+            evidence_ids=(
+                [str(item) for item in evidence_ids if isinstance(item, str)]
+                if isinstance(evidence_ids, list)
+                else []
+            ),
+            classification=_action_text_field(action, "classification") or None,
+        )
+    else:
+        raise FeatureLiftAgentError(f"unsupported repo_graph_claim operation: {operation}")
+    return _tool_observation(
+        phase=phase,
+        action_index=action_index,
+        action_type="repo_graph_claim",
+        target=str(record.get("claim_id", "")),
+        reason=reason,
+        status="success",
+        summary=f"claim {operation} accepted in state {record.get('status', '')}",
+        output=json.dumps(record, indent=2, sort_keys=True),
+    )
+
+
 def _run_public_tests_action(
     config: FeatureLiftAgentConfig,
     phase: str,
@@ -887,7 +1123,18 @@ def _run_public_tests_action(
 ) -> dict[str, Any]:
     reason = _action_text_field(action, "reason")
     _create_submission_scaffold(config.submission_dir)
+    _sync_repo_graph_after_mutation(config)
     result = _run_public_tests_command(config)
+    _record_repo_graph_tool_evidence(
+        config,
+        kind="test_result",
+        probe_type="public_test_suite",
+        evidence_class="public_test",
+        status="supports" if result["status"] == "success" else "failed",
+        input_summary="run current public tests against current submission revision",
+        result_summary=result["summary"],
+        command=" ".join(str(item) for item in result.get("command", [])),
+    )
     return _tool_observation(
         phase=phase,
         action_index=action_index,
@@ -909,6 +1156,7 @@ def _prune_submission_action(
 ) -> dict[str, Any]:
     reason = _action_text_field(action, "reason")
     removed = _prune_submission_transients(config.submission_dir)
+    _sync_repo_graph_after_mutation(config)
     return _tool_observation(
         phase=phase,
         action_index=action_index,
@@ -929,6 +1177,7 @@ def _final_check_action(
 ) -> dict[str, Any]:
     reason = _action_text_field(action, "reason")
     _create_submission_scaffold(config.submission_dir)
+    _sync_repo_graph_after_mutation(config)
     import_probe = subprocess.run(
         [str(_ensure_agent_tool_python(config)), "-c", "import featurelifted"],
         cwd=config.workspace,
@@ -956,6 +1205,23 @@ def _final_check_action(
         "forbidden_import_hits": forbidden_hits,
         "public_tests": public_tests,
     }
+    _record_repo_graph_tool_evidence(
+        config,
+        kind="verification_result",
+        probe_type="final_verification",
+        evidence_class="api_probe",
+        status="supports" if status == "success" else "failed",
+        input_summary="import probe, forbidden import scan, and public tests",
+        result_summary=(
+            f"import={import_probe.returncode}; forbidden={len(forbidden_hits)}; "
+            f"public={public_tests['status']}"
+        ),
+        command="featurelift-agent final_check",
+    )
+    guard = _repo_graph_native_stopping_guard(config, sync=False)
+    if status == "success" and guard is not None and not guard.get("ready", False):
+        status = "failed"
+        output["repo_graph_stopping_guard"] = guard
     return _tool_observation(
         phase=phase,
         action_index=action_index,
@@ -971,6 +1237,72 @@ def _final_check_action(
         output=json.dumps(output, indent=2, sort_keys=True),
         returncode=import_probe.returncode,
     )
+
+
+def _repo_graph_evidence_enabled(config: FeatureLiftAgentConfig) -> bool:
+    return (
+        config.agent_output_dir / "state" / "repo_graph" / "semantic_claims.jsonl"
+    ).is_file()
+
+
+def _sync_repo_graph_after_mutation(config: FeatureLiftAgentConfig) -> dict[str, Any] | None:
+    if not _repo_graph_evidence_enabled(config):
+        return None
+    from .repo_graph.submission import sync_submission
+
+    return sync_submission(
+        config.agent_output_dir / "state" / "repo_graph",
+        config.submission_dir,
+    )
+
+
+def _record_repo_graph_tool_evidence(
+    config: FeatureLiftAgentConfig,
+    *,
+    kind: str,
+    probe_type: str,
+    evidence_class: str,
+    status: str,
+    input_summary: str,
+    result_summary: str,
+    command: str,
+) -> dict[str, Any] | None:
+    if not _repo_graph_evidence_enabled(config):
+        return None
+    from .repo_graph.ledger import RepoGraphLedger
+
+    return RepoGraphLedger(
+        config.agent_output_dir / "state" / "repo_graph"
+    ).record_evidence(
+        kind=kind,
+        probe_type=probe_type,
+        evidence_class=evidence_class,
+        status=status,
+        input_summary=input_summary,
+        result_summary=result_summary,
+        command=command,
+    )
+
+
+def _repo_graph_native_stopping_guard(
+    config: FeatureLiftAgentConfig,
+    *,
+    sync: bool = True,
+) -> dict[str, Any] | None:
+    if not _repo_graph_evidence_enabled(config):
+        return None
+    from .repo_graph.ledger import RepoGraphLedger
+
+    if sync:
+        _sync_repo_graph_after_mutation(config)
+    guard = RepoGraphLedger(
+        config.agent_output_dir / "state" / "repo_graph"
+    ).stopping_guard()
+    (config.agent_output_dir / "state" / "repo_graph" / "stopping_guard.json").write_text(
+        json.dumps(guard, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return guard
 
 
 def _run_public_tests_command(config: FeatureLiftAgentConfig) -> dict[str, Any]:
@@ -1316,7 +1648,16 @@ def _write_state_files(config: FeatureLiftAgentConfig, state_dir: Path, task_tex
     )
     _write_repo_map(state_dir / "repo_map.md", repo_summary)
     (state_dir / "action_schema.json").write_text(
-        json.dumps(_action_schema(), indent=2, sort_keys=True),
+        json.dumps(
+            _action_schema(
+                repo_graph_enabled=(state_dir / "repo_graph" / "base" / "manifest.json").is_file(),
+                repo_graph_evidence_enabled=(
+                    state_dir / "repo_graph" / "semantic_claims.jsonl"
+                ).is_file(),
+            ),
+            indent=2,
+            sort_keys=True,
+        ),
         encoding="utf-8",
     )
     (state_dir / "source_entrypoints.json").write_text(
@@ -1368,38 +1709,94 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return data if isinstance(data, dict) else {}
 
 
-def _action_schema() -> dict[str, Any]:
-    return {
-        "schema_version": "featureliftbench.agent_action_schema.v1",
-        "action_types": {
-            "inspect_file": {
-                "description": "Read or inspect a workspace file before deciding closure.",
-                "required_fields": ["target", "reason"],
-            },
-            "copy_file": {
-                "description": "Copy a source file into submission/featurelifted or package resources.",
-                "required_fields": ["target", "reason"],
-                "optional_fields": ["source", "destination"],
-            },
-            "write_file": {
-                "description": "Create or edit a file under submission/.",
-                "required_fields": ["target", "reason"],
-                "optional_fields": ["content"],
-            },
-            "run_public_tests": {
-                "description": "Run public tests or output API probes available in the workspace.",
-                "required_fields": ["target", "reason"],
-            },
-            "prune_submission": {
-                "description": "Remove known transient cache/build files from submission/ only.",
-                "required_fields": ["target", "reason"],
-            },
-            "final_check": {
-                "description": "Run final pre-submit audit checks.",
-                "required_fields": ["target", "reason"],
-            },
+def _action_schema(
+    *,
+    repo_graph_enabled: bool = False,
+    repo_graph_evidence_enabled: bool = False,
+) -> dict[str, Any]:
+    action_types: dict[str, Any] = {
+        "inspect_file": {
+            "description": "Read or inspect a workspace file before deciding closure.",
+            "required_fields": ["target", "reason"],
+        },
+        "copy_file": {
+            "description": "Copy a source file into submission/featurelifted or package resources.",
+            "required_fields": ["target", "reason"],
+            "optional_fields": ["source", "destination"],
+        },
+        "write_file": {
+            "description": "Create or edit a file under submission/.",
+            "required_fields": ["target", "reason"],
+            "optional_fields": ["content"],
+        },
+        "run_public_tests": {
+            "description": "Run public tests or output API probes available in the workspace.",
+            "required_fields": ["target", "reason"],
+        },
+        "prune_submission": {
+            "description": "Remove known transient cache/build files from submission/ only.",
+            "required_fields": ["target", "reason"],
+        },
+        "final_check": {
+            "description": "Run final pre-submit audit checks.",
+            "required_fields": ["target", "reason"],
         },
     }
+    if repo_graph_enabled:
+        action_types["repo_graph_query"] = {
+            "description": "Run one bounded query against the run-local advisory repository graph.",
+            "required_fields": ["command", "reason"],
+            "optional_fields": ["target", "query", "node", "source", "destination", "entrypoints"],
+            "commands": [
+                "bootstrap",
+                "search",
+                "inspect",
+                "paths",
+                "closure",
+                "risks",
+                "self-check",
+                "sync-submission",
+                "compare",
+                "detectors",
+                "freshness",
+                "stopping-check",
+                "claim-list",
+                "evidence-list",
+            ],
+        }
+    if repo_graph_evidence_enabled:
+        action_types["repo_graph_claim"] = {
+            "description": "Add a closure claim or request a status transition guarded by recorded evidence.",
+            "required_fields": ["operation", "reason"],
+            "optional_fields": [
+                "subject",
+                "predicate",
+                "object",
+                "classification",
+                "confidence",
+                "claim_id",
+                "status",
+                "evidence_ids",
+            ],
+            "operations": ["add", "update"],
+        }
+    return {
+        "schema_version": "featureliftbench.agent_action_schema.v1",
+        "action_types": action_types,
+    }
+
+
+def _repo_graph_phase_context(state_dir: Path) -> str:
+    graph_dir = state_dir / "repo_graph"
+    bootstrap = graph_dir / "bootstrap.md"
+    if not bootstrap.is_file():
+        return ""
+    chunks = ["\n## repo_graph/bootstrap.md\n", _read_text(bootstrap), "\n"]
+    for name in ("task_overlay.json", "closure_overlay.json"):
+        path = graph_dir / name
+        if path.is_file():
+            chunks.extend([f"\n## repo_graph/{name}\n", _read_text(path), "\n"])
+    return "".join(chunks)
 
 
 def _extract_source_entrypoints(metadata: dict[str, Any]) -> dict[str, Any]:

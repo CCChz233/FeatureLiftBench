@@ -1,0 +1,127 @@
+{
+  "controls": {
+    "agent": "openhands-agent",
+    "agent_backend": "local",
+    "agent_profile": "openhands_deepseek_v4_flash",
+    "context_window_tokens": 131072,
+    "eval_backend": "docker",
+    "max_steps": 120,
+    "model": "deepseek/deepseek-v4-flash",
+    "network_for_agent": "profile_default",
+    "network_for_evaluator": "none",
+    "per_instance_total_token_budget": 6000000,
+    "reserved_output_tokens": 8192,
+    "seeds": [
+      0
+    ],
+    "submission_protocol": "submission/featurelifted",
+    "temperature": 0,
+    "test_permissions": "public_tests_only",
+    "timeout_seconds": 3600,
+    "tools": [
+      "file_editor",
+      "terminal",
+      "task_tracker",
+      "think",
+      "finish"
+    ]
+  },
+  "docker": {
+    "image_id": "sha256:cccf858c5f9b278de16bf9317aa032fd61c022dd1c257016ab08d5b68990f368",
+    "immutable_ref": "featureliftbench-eval@sha256:cccf858c5f9b278de16bf9317aa032fd61c022dd1c257016ab08d5b68990f368",
+    "repo_digests": [
+      "featureliftbench-eval@sha256:cccf858c5f9b278de16bf9317aa032fd61c022dd1c257016ab08d5b68990f368"
+    ],
+    "requested_ref": "featureliftbench-eval:latest"
+  },
+  "evidence_status": "provisional_ai_assisted_annotations",
+  "freeze_id": "1a54c53fd2f95070",
+  "generated_at": "2026-07-16T10:46:11+00:00",
+  "global_files": {
+    "experiments/ecsm_pilot/analyze_pilot.py": "10fdd57df61a7c0d953e994f9c1344b5eba1835770dcc965f72ccf2247ffa589",
+    "experiments/ecsm_pilot/pilot_freeze.py": "db3536c5429e679416b7e8053a7253fa093b7f511fcf482bc1879692e2f87854",
+    "experiments/ecsm_pilot/pilot_manifest.yaml": "d7209d200c5cbe65cec2ce7e7ff1ecde70ad94948380b9506fd246a132bf9261",
+    "experiments/ecsm_pilot/run_pilot.py": "5837de7b6d605129ec018a353b7590645c149eff97b0cb76e7d1ba6a41b9139c",
+    "harness/config/agents.toml": "759039fa833de2b371075cb2e94cb71d14f5391bc77918b1fe559244783a3bfe",
+    "harness/featureliftbench/agent_runner.py": "296552b7ed0c568351432913e903e3f0f43a321fe22f09498331f64c03e9ec2d",
+    "harness/featureliftbench/closure_gold.py": "47c0f1c6f94eb0cbaef813f694bb028f9456dfbf7ba40b2c05a89bde2b7daa5b",
+    "harness/featureliftbench/compactness.py": "9de7f685021a3069e450e6ab09203ca55ea08b9168d619cc88f55fd7135fd826",
+    "harness/featureliftbench/docker_eval.py": "d069335a5bd19fb5900ded04dfb43deaff33c0dbaea68558076b59a344de3b81",
+    "harness/featureliftbench/evaluator.py": "1857da76dde8dc40ccd7fac0d56637a8d2f8a61546b8857d45b9825b731b01c1",
+    "harness/featureliftbench/llm_usage_proxy.py": "32bd7447f1616ab0af5e63101fa734521cf3677e01dd2dadb17ba33c5d82e440",
+    "harness/featureliftbench/openhands_runner.py": "450480d85be1c71fc282be1d9e272673ca97391c53bb905c58ada4b91c13a6ce",
+    "harness/featureliftbench/schemas/behavior_contract.schema.json": "32bcf728ed4e3ac99cdbdbc28623fa7b875d2842169343ec8ec64eded9b22dc4",
+    "harness/featureliftbench/schemas/closure_gold.schema.json": "b3475f21b23c6e2bd470b48472416c5d6e6fa93661735a78d480224a2b066533",
+    "harness/featureliftbench/schemas/result.schema.json": "4c42cd3a0e49448bb1b77b7aef7ee7805a4d8e8466b18f1f16d78fd68f23b559",
+    "harness/featureliftbench/schemas/task_metadata.schema.json": "b6a5ecab756d0cd447b992975eacd45a91a2a5505d8c0c5983a96185e2423b12",
+    "harness/featureliftbench/schemas/task_metadata_go.schema.json": "ca89a1ccd6c4551f5ca7a5f98e27e30cd47478eb8b2a3605578f9b7a4920214d",
+    "harness/featureliftbench/scoring.py": "c57aaf544960eee1da0b23fd4d189cd8f8b8c696309dfcbe33a6fd8fd277ab8e"
+  },
+  "mutation_policy": {
+    "global_change": "supersede and rerun all arms for every started task",
+    "overwrite_previous_results": false,
+    "task_local_change": "supersede and rerun all seven arms for that task"
+  },
+  "paper_release_ready_at_freeze": false,
+  "pilot_id": "ecsm-pilot-v1",
+  "pilot_manifest": "experiments/ecsm_pilot/pilot_manifest.yaml",
+  "pilot_manifest_sha256": "d7209d200c5cbe65cec2ce7e7ff1ecde70ad94948380b9506fd246a132bf9261",
+  "pilot_revision": 3,
+  "release_gate_report": "artifacts/research_analysis/v1_1/release_gate_report.json",
+  "release_gate_report_sha256": "729305bb0f2611f0b0fa5d529c62cd54f56deadd59e5c0bec522728c7fe1615a",
+  "schema_version": "featureliftbench.ecsm_pilot_freeze.v1",
+  "task_ids": [
+    "pluggy__hook_specs_core__001",
+    "pydantic_v1__validation_error_core__001",
+    "coverage__config_merge_core__001",
+    "lark__grammar_loader_core__001",
+    "websockets__handshake_parse_core__001",
+    "boltons__iterutils_core__001",
+    "schema__nested_validate_core__hard3_001",
+    "requests_cache__cache_key_core__hard3_001",
+    "sqlparse__format_filters_core__001",
+    "celery__signal_dispatch_core__hard3_001"
+  ],
+  "task_trees": {
+    "boltons__iterutils_core__001": {
+      "file_count": 18,
+      "sha256": "12ecc6106c6ac9f7fb3c7e8661751ce41cc28ee80eb108c0b476c4ff465a7b6d"
+    },
+    "celery__signal_dispatch_core__hard3_001": {
+      "file_count": 15,
+      "sha256": "7ea8bac71082339cf7944ce986a5002eda25782f3b8820cab96d8c989ff25184"
+    },
+    "coverage__config_merge_core__001": {
+      "file_count": 413,
+      "sha256": "9cd3ce0a15057a0203fcd06fa61c1a8388fa09bc9e974bd2331b379901e924e7"
+    },
+    "lark__grammar_loader_core__001": {
+      "file_count": 49,
+      "sha256": "00c39efabdcafdd737ad66edd5f0692de3cb80ec88703de40c6255199ceb677d"
+    },
+    "pluggy__hook_specs_core__001": {
+      "file_count": 16,
+      "sha256": "41c47f76fa4ec8a597e27167ff16487db987b6ee25186b12504701439cf82646"
+    },
+    "pydantic_v1__validation_error_core__001": {
+      "file_count": 63,
+      "sha256": "e8bc7e28637695ad3e93a780e95ba66e39b1cc37d51f4accf7fd8560353d40c1"
+    },
+    "requests_cache__cache_key_core__hard3_001": {
+      "file_count": 16,
+      "sha256": "37c421a78cdaba52283cb4e7bc3728291cf0d978242641cf4b917dba8d579d2d"
+    },
+    "schema__nested_validate_core__hard3_001": {
+      "file_count": 12,
+      "sha256": "8d9f135ee285ba36a8a14ab2b6acdf1cd3ec06ffb545f466bfd9cfa03e2117b1"
+    },
+    "sqlparse__format_filters_core__001": {
+      "file_count": 95,
+      "sha256": "fa1d794f8f661007d5d57ff827a0ab2affcf3537ba41d8a161d1a56275f9f84e"
+    },
+    "websockets__handshake_parse_core__001": {
+      "file_count": 61,
+      "sha256": "08c3a10e827332857472c68b60cf3e5817cd3633469404d38e51ac1540e65801"
+    }
+  }
+}

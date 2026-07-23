@@ -1,0 +1,947 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "FeatureLiftBench 严格失败归因：550 条 Agent 轨迹",
+    "description": "竞争性瓶颈假设、阶段漏斗、动态运行时对比、代表案例与证据边界。",
+    "generatedAt": "2026-07-21T11:32:40.249158+00:00",
+    "sources": [
+      {
+        "id": "trajectory_audit",
+        "label": "FeatureLiftBench 550-run trajectory-stage audit",
+        "path": "reports/failure_attribution_20260720/trajectory_stage_labels_550.csv",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM read_csv_auto('reports/failure_attribution_20260720/trajectory_stage_labels_550.csv', header=true);",
+          "description": "Deterministic joins and rule-based stage attribution over frozen run records, trajectories, evaluator logs, metadata, oracle manifests, and taxonomy.",
+          "tables_used": [
+            "reports/token_efficiency_20260720/trajectory_records_550.csv",
+            "artifacts/research_analysis/python150_task_taxonomy.csv"
+          ],
+          "filters": [
+            "frozen_primary runs only",
+            "550 unique model-task pairs",
+            "infrastructure failures retained in total denominator"
+          ],
+          "metric_definitions": [
+            "Formal pass = run_status equals passed.",
+            "Hidden fail | public pass = hidden_pass is false among runs where public_pass is true.",
+            "Dynamic-runtime primary definition is outcome-blind and requires cross-boundary import/state/lifecycle/config/resource coupling.",
+            "Earliest failure stage is a conservative evidence-assisted attribution, not causal ground truth."
+          ]
+        }
+      }
+    ],
+    "cards": [
+      {
+        "id": "formal_pass",
+        "dataset": "headline",
+        "sourceId": "trajectory_audit",
+        "description": "冻结 suite 的正式通过率。",
+        "metrics": [
+          {
+            "label": "Formal pass",
+            "field": "formal_pass_rate",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "public_hidden",
+        "dataset": "headline",
+        "sourceId": "trajectory_audit",
+        "description": "public pass 后进入 hidden fail 的条件比例。",
+        "metrics": [
+          {
+            "label": "Hidden fail | public",
+            "field": "public_hidden_fail_rate",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "dynamic_gap",
+        "dataset": "headline",
+        "sourceId": "trajectory_audit",
+        "description": "dynamic-runtime 与 relatively-static 的 formal-pass 差异。",
+        "metrics": [
+          {
+            "label": "Dynamic pass gap",
+            "field": "dynamic_pass_gap",
+            "format": "percent",
+            "signed": true
+          }
+        ]
+      },
+      {
+        "id": "infra",
+        "dataset": "headline",
+        "sourceId": "trajectory_audit",
+        "description": "被隔离为 evaluator/dependency-install 的非 Agent 失败。",
+        "metrics": [
+          {
+            "label": "Infrastructure failures",
+            "field": "infrastructure_failures",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "entry_observed",
+        "dataset": "cold_start_headline",
+        "sourceId": "trajectory_audit",
+        "description": "有直接证据读到正确入口文件的轨迹比例。",
+        "metrics": [
+          {
+            "label": "Correct entry observed",
+            "field": "entry_observed_rate",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "entry_within_five",
+        "dataset": "cold_start_headline",
+        "sourceId": "trajectory_audit",
+        "description": "在有入口证据的轨迹中，5 个 Agent 操作内读到正确入口的比例。",
+        "metrics": [
+          {
+            "label": "Entry within 5 actions",
+            "field": "entry_within_five_rate",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "closure_plan",
+        "dataset": "cold_start_headline",
+        "sourceId": "trajectory_audit",
+        "description": "轨迹中出现显式 closure plan 的比例。",
+        "metrics": [
+          {
+            "label": "Explicit closure plan",
+            "field": "closure_plan_rate",
+            "format": "percent"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "failure_stages",
+        "title": "Earliest observed failure stage",
+        "subtitle": "Dependency/API closure and ordinary implementation dominate agent-attributable failures.",
+        "type": "horizontalBar",
+        "intent": "comparison",
+        "question": "Which earliest failure stages account for the most non-pass runs?",
+        "rationale": "A ranked horizontal bar chart makes the long stage labels and count comparison readable.",
+        "dataset": "failure_stages",
+        "sourceId": "trajectory_audit",
+        "encodings": {
+          "x": {
+            "field": "stage",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "failures",
+            "type": "quantitative",
+            "format": "number"
+          }
+        },
+        "xAxisTitle": "Earliest stage",
+        "yAxisTitle": "Failures",
+        "valueFormat": "number",
+        "layout": "full"
+      },
+      {
+        "id": "dynamic_static",
+        "title": "Dynamic-runtime and relatively-static outcomes",
+        "subtitle": "Aggregate pass and post-public hidden-failure rates are nearly identical.",
+        "type": "bar",
+        "intent": "comparison",
+        "question": "Do dynamic-runtime tasks have materially worse observed outcomes?",
+        "rationale": "Grouped bars compare the two pre-outcome task groups on the same rate scale.",
+        "dataset": "dynamic_comparison",
+        "sourceId": "trajectory_audit",
+        "encodings": {
+          "x": {
+            "field": "metric",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "rate",
+            "type": "quantitative",
+            "format": "percent"
+          },
+          "color": {
+            "field": "group",
+            "type": "nominal"
+          }
+        },
+        "valueFormat": "percent",
+        "combinationRationale": "Color distinguishes the two task groups while the x-axis identifies the outcome metric.",
+        "layout": "full"
+      },
+      {
+        "id": "module_ceiling",
+        "title": "Agent module addressable ceilings",
+        "subtitle": "Maximum absolute pass-rate gain if every directly attributed failure were recovered; not a forecast.",
+        "type": "horizontalBar",
+        "intent": "comparison",
+        "question": "Which Agent modules have the largest directly observed failure opportunity?",
+        "rationale": "A ranked horizontal bar chart makes the long module names and percentage-point ceilings readable.",
+        "dataset": "module_priorities",
+        "sourceId": "trajectory_audit",
+        "encodings": {
+          "x": {
+            "field": "module",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "theoretical_ceiling_pp",
+            "type": "quantitative",
+            "format": "number"
+          }
+        },
+        "xAxisTitle": "Agent module",
+        "yAxisTitle": "Theoretical pass ceiling, percentage points",
+        "valueFormat": "number",
+        "layout": "full"
+      },
+      {
+        "id": "cold_start_actions",
+        "title": "Actions before the first observed correct-entry read",
+        "subtitle": "523 runs with direct entry evidence; 90.8% reached the entry within five Agent actions.",
+        "type": "bar",
+        "intent": "distribution",
+        "question": "How much early navigation work occurs before the correct entry is observed?",
+        "rationale": "Discrete action bands show that entry discovery is concentrated in the first five actions.",
+        "dataset": "cold_start_actions",
+        "sourceId": "trajectory_audit",
+        "encodings": {
+          "x": {
+            "field": "action_band",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "runs",
+            "type": "quantitative",
+            "format": "number"
+          }
+        },
+        "xAxisTitle": "Agent actions before/at first correct-entry evidence",
+        "yAxisTitle": "Runs",
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "stage_table",
+        "title": "Failure stages and token medians",
+        "subtitle": "Post-outcome attribution counts; success rate is not meaningful within these rows.",
+        "dataset": "failure_stages",
+        "sourceId": "trajectory_audit",
+        "defaultSort": {
+          "field": "failures",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "stage",
+            "label": "Earliest stage",
+            "type": "text"
+          },
+          {
+            "field": "failures",
+            "label": "Failures",
+            "format": "number"
+          },
+          {
+            "field": "median_tokens_m",
+            "label": "Median tokens, M",
+            "format": "number"
+          },
+          {
+            "field": "models",
+            "label": "Models",
+            "format": "number"
+          },
+          {
+            "field": "tasks",
+            "label": "Tasks",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "case_table",
+        "title": "Sixteen representative trajectory dossiers",
+        "subtitle": "Deterministic stage-diverse selection; full evidence paths remain in the local dossier.",
+        "dataset": "representative_cases",
+        "sourceId": "trajectory_audit",
+        "defaultSort": {
+          "field": "stage",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "task",
+            "label": "Task",
+            "type": "text"
+          },
+          {
+            "field": "model",
+            "label": "Model",
+            "type": "text"
+          },
+          {
+            "field": "stage",
+            "label": "Earliest stage",
+            "type": "text"
+          },
+          {
+            "field": "subtype",
+            "label": "Subtype",
+            "type": "text"
+          },
+          {
+            "field": "missed",
+            "label": "Missed behavior/dependency",
+            "type": "text"
+          },
+          {
+            "field": "intervention",
+            "label": "Most likely intervention",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "module_table",
+        "title": "Module priorities, evidence, and value",
+        "subtitle": "Ceilings are non-causal upper bounds; the 20% column is a common PoC screening threshold, not a forecast.",
+        "dataset": "module_priorities",
+        "sourceId": "trajectory_audit",
+        "defaultSort": {
+          "field": "priority",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "priority",
+            "label": "Priority",
+            "format": "number"
+          },
+          {
+            "field": "module",
+            "label": "Module",
+            "type": "text"
+          },
+          {
+            "field": "direct_failures",
+            "label": "Direct failures",
+            "format": "number"
+          },
+          {
+            "field": "theoretical_ceiling_pp",
+            "label": "Ceiling, pp",
+            "format": "number"
+          },
+          {
+            "field": "twenty_percent_recovery_pp",
+            "label": "20% recovery, pp",
+            "format": "number"
+          },
+          {
+            "field": "evidence_strength",
+            "label": "Evidence",
+            "type": "text"
+          },
+          {
+            "field": "pass_value",
+            "label": "Pass value",
+            "type": "text"
+          },
+          {
+            "field": "efficiency_value",
+            "label": "Efficiency value",
+            "type": "text"
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# FeatureLiftBench 严格失败归因：550 条 Agent 轨迹",
+        "layout": "full"
+      },
+      {
+        "id": "executive",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Executive Summary\n\n**主要瓶颈发生在定位之后。** 排除 62 条 evaluator/dependency-install 失败后，263 条 Agent 可归因失败中，dependency/API closure 有 85 条，普通实现/语义错误 80 条，动态语义候选 43 条，预算/工作流终止 32 条。动态任务 formal pass 为 41.2%，相对静态任务为 39.8%；当前证据不支持把动态代码理解或 token 管理单独定为总体根因。",
+        "layout": "full"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "formal_pass",
+          "public_hidden",
+          "dynamic_gap",
+          "infra"
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "findings",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Key Findings\n\n**Closure 与实现错误排在前两位。** 95.1% 的 run 可直接观察到正确入口，72.9% public pass，但只有 41.5% hidden pass。动态候选不是一个单一机制：37 条仍是 capability-or-implementation 未决，4 条更接近 exploration policy，只有 2 条是弱 memory-state 候选。",
+        "layout": "full"
+      },
+      {
+        "id": "stage_chart",
+        "type": "chart",
+        "chartId": "failure_stages",
+        "layout": "full"
+      },
+      {
+        "id": "stage_table_block",
+        "type": "table",
+        "tableId": "stage_table",
+        "layout": "full"
+      },
+      {
+        "id": "module_section",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Module Improvement Priorities\n\n**先做 semantic closure planner 和 implementation/repair loop。** 它们分别直接对应 85 和 80 条失败，理论绝对通过率上限为 +15.5 pp 和 +14.5 pp。Budgeted exploration scheduler 对 pass 的上限较小（+5.8 pp），但预算失败 median 为 3.41M token，效率价值很高。Targeted runtime semantics 的上限为 +7.8 pp，但证据仍不足，应按风险触发并通过随机对照验证。",
+        "layout": "full"
+      },
+      {
+        "id": "module_chart",
+        "type": "chart",
+        "chartId": "module_ceiling",
+        "layout": "full"
+      },
+      {
+        "id": "module_table_block",
+        "type": "table",
+        "tableId": "module_table",
+        "layout": "full"
+      },
+      {
+        "id": "cold_start_section",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Cold-start Diagnosis\n\n**Navigation cold start is small; semantic-state cold start remains.** Correct entry files were directly observed in 523/550 runs. Among those runs, the median first-entry point was the third Agent action and 90.8% reached it within five actions. Only 5 failures were classified as localization. In contrast, an explicit closure plan appeared in only 62/550 runs, so every run largely reconstructs API, dependency, runtime-risk, and verification state from scratch.",
+        "layout": "full"
+      },
+      {
+        "id": "cold_start_metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "entry_observed",
+          "entry_within_five",
+          "closure_plan"
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "cold_start_chart",
+        "type": "chart",
+        "chartId": "cold_start_actions",
+        "layout": "full"
+      },
+      {
+        "id": "cold_start_caveat",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Cold-start Evidence Boundary\n\nFinding the entry after more than five actions was associated with 37.5% pass versus 42.1% within five actions, but only 48 runs were in the late group and pass rates were not monotonic across action bands. This is descriptive, not evidence that navigation delay causes failure. The stronger architectural signal is the absence of a persistent semantic closure artifact, which still requires an intervention experiment to quantify.",
+        "layout": "full"
+      },
+      {
+        "id": "dynamic_section",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Dynamic Runtime Comparison\n\n主调整模型控制 model、split、任务快照 LOC、reference LOC、public-test 数和 entanglement 数；dynamic 对成功的 OR=1.16（95% CI 0.54–2.48）。加入 condensation 与 unchanged repeated-read 后，两者也没有稳定的独立关联。由于标签、探针和 condensation 都非随机，这些结果只能解释为关联。",
+        "layout": "full"
+      },
+      {
+        "id": "dynamic_chart",
+        "type": "chart",
+        "chartId": "dynamic_static",
+        "layout": "full"
+      },
+      {
+        "id": "cases_section",
+        "type": "markdown",
+        "body": "## Representative Cases\n\n下面的 16 条覆盖 boundary、budget、dependency、dynamic、implementation 与 verification。完整档案回答 Agent 已知信息、遗漏可见性、探针机会、发现/遗忘时序和最可能干预。",
+        "layout": "full"
+      },
+      {
+        "id": "case_table_block",
+        "type": "table",
+        "tableId": "case_table",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "trajectory_audit",
+        "body": "## Evidence Boundaries\n\n**可以确认：** outcome 漏斗、API/forbidden-import 错误、明确 step/timeout、288 条 condensation run 与 552 次 condensation。\n\n**不能确认：** dynamic coupling、high token、repeated reads 或 condensation 的因果效应；clean-install 成功率（实际执行 0/550）；64k/128k/256k 窗口效应；精确 runtime closure recall。216 条 dependency 阶段仍为 unknown，symbol/runtime-state gold 尚未完成人工双审。",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## Recommended Next Experiments\n\n1. 在 dynamic/static 分层任务上比较 default 与 mandatory targeted runtime probe。\n2. 做 dependency-hint、runtime-trace、extra-token 三臂配对实验。\n3. 固定预算比较 default condenser 与 evidence-pinned memory。\n4. 同模型同任务同 seed 跑 64k/128k/256k，并加入真实 wheel/venv clean-install 门。\n5. 对 public-pass/hidden-fail 子集进行盲法双人 earliest-stage 金标。",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-21T11:32:40.249158+00:00",
+    "status": "ready",
+    "datasets": {
+      "headline": [
+        {
+          "formal_pass_rate": 0.4090909090909091,
+          "public_hidden_fail_rate": 0.4314214463840399,
+          "dynamic_pass_gap": 0.013731952291274274,
+          "infrastructure_failures": 62
+        }
+      ],
+      "failure_stages": [
+        {
+          "stage": "dependency discovery",
+          "failures": 85,
+          "median_tokens": 1856717.0,
+          "median_tokens_m": 1.86,
+          "models": 4,
+          "tasks": 49
+        },
+        {
+          "stage": "implementation",
+          "failures": 80,
+          "median_tokens": 1372659.0,
+          "median_tokens_m": 1.37,
+          "models": 4,
+          "tasks": 49
+        },
+        {
+          "stage": "evaluator or environment",
+          "failures": 62,
+          "median_tokens": 2722537.0,
+          "median_tokens_m": 2.72,
+          "models": 4,
+          "tasks": 23
+        },
+        {
+          "stage": "dynamic semantics",
+          "failures": 43,
+          "median_tokens": 1256277.0,
+          "median_tokens_m": 1.26,
+          "models": 4,
+          "tasks": 23
+        },
+        {
+          "stage": "budget exhaustion",
+          "failures": 32,
+          "median_tokens": 3405194.0,
+          "median_tokens_m": 3.41,
+          "models": 4,
+          "tasks": 30
+        },
+        {
+          "stage": "boundary recovery",
+          "failures": 15,
+          "median_tokens": 2200698.0,
+          "median_tokens_m": 2.2,
+          "models": 4,
+          "tasks": 12
+        },
+        {
+          "stage": "localization",
+          "failures": 5,
+          "median_tokens": 166556.0,
+          "median_tokens_m": 0.17,
+          "models": 3,
+          "tasks": 4
+        },
+        {
+          "stage": "verification",
+          "failures": 2,
+          "median_tokens": 3402378.0,
+          "median_tokens_m": 3.4,
+          "models": 1,
+          "tasks": 2
+        },
+        {
+          "stage": "unclear",
+          "failures": 1,
+          "median_tokens": 4976778.0,
+          "median_tokens_m": 4.98,
+          "models": 1,
+          "tasks": 1
+        }
+      ],
+      "dynamic_comparison": [
+        {
+          "metric": "Formal pass",
+          "group": "Dynamic runtime",
+          "rate": 0.412037037037037,
+          "runs": 432,
+          "tasks": 117,
+          "median_tokens": 1505739.0,
+          "repeat_read_rate": 0.5416666666666666,
+          "runtime_probe_rate": 0.8263888888888888,
+          "fresh_verify_rate": 0.8078703703703703
+        },
+        {
+          "metric": "Hidden fail | public pass",
+          "group": "Dynamic runtime",
+          "rate": 0.4326018808777429,
+          "runs": 432,
+          "tasks": 117,
+          "median_tokens": 1505739.0,
+          "repeat_read_rate": 0.5416666666666666,
+          "runtime_probe_rate": 0.8263888888888888,
+          "fresh_verify_rate": 0.8078703703703703
+        },
+        {
+          "metric": "Formal pass",
+          "group": "Relatively static",
+          "rate": 0.3983050847457627,
+          "runs": 118,
+          "tasks": 33,
+          "median_tokens": 1654110.5,
+          "repeat_read_rate": 0.6186440677966102,
+          "runtime_probe_rate": 0.864406779661017,
+          "fresh_verify_rate": 0.8220338983050848
+        },
+        {
+          "metric": "Hidden fail | public pass",
+          "group": "Relatively static",
+          "rate": 0.4268292682926829,
+          "runs": 118,
+          "tasks": 33,
+          "median_tokens": 1654110.5,
+          "repeat_read_rate": 0.6186440677966102,
+          "runtime_probe_rate": 0.864406779661017,
+          "fresh_verify_rate": 0.8220338983050848
+        }
+      ],
+      "module_priorities": [
+        {
+          "priority": 1,
+          "module": "Semantic closure planner",
+          "direct_failures": 85,
+          "share_agent_failures": 0.323,
+          "median_tokens_m": 1.86,
+          "theoretical_ceiling_pp": 15.45,
+          "twenty_percent_recovery_pp": 3.09,
+          "evidence_strength": "strong",
+          "pass_value": "very high",
+          "efficiency_value": "medium",
+          "recommended_change": "Maintain an evidence-backed ledger of required APIs, types, resources, environment assumptions, and unresolved dependencies before implementation"
+        },
+        {
+          "priority": 2,
+          "module": "Implementation and repair loop",
+          "direct_failures": 80,
+          "share_agent_failures": 0.304,
+          "median_tokens_m": 1.37,
+          "theoretical_ceiling_pp": 14.55,
+          "twenty_percent_recovery_pp": 2.91,
+          "evidence_strength": "medium",
+          "pass_value": "very high",
+          "efficiency_value": "medium",
+          "recommended_change": "Use focused differential probes, counterexamples, and failing-behavior repair instead of broad repeated testing"
+        },
+        {
+          "priority": 3,
+          "module": "Budgeted exploration scheduler",
+          "direct_failures": 32,
+          "share_agent_failures": 0.122,
+          "median_tokens_m": 3.41,
+          "theoretical_ceiling_pp": 5.82,
+          "twenty_percent_recovery_pp": 1.16,
+          "evidence_strength": "medium",
+          "pass_value": "medium",
+          "efficiency_value": "very high",
+          "recommended_change": "Allocate phase budgets, score information gain, suppress unchanged reads, and enforce stop-or-switch checkpoints"
+        },
+        {
+          "priority": 4,
+          "module": "Targeted runtime semantics engine",
+          "direct_failures": 43,
+          "share_agent_failures": 0.163,
+          "median_tokens_m": 1.26,
+          "theoretical_ceiling_pp": 7.82,
+          "twenty_percent_recovery_pp": 1.56,
+          "evidence_strength": "medium-to-weak",
+          "pass_value": "medium uncertain",
+          "efficiency_value": "medium",
+          "recommended_change": "Trigger state/import/environment/resource probes only from concrete dynamic-risk cues and preserve the resulting state model"
+        },
+        {
+          "priority": 5,
+          "module": "Boundary and packaging planner",
+          "direct_failures": 15,
+          "share_agent_failures": 0.057,
+          "median_tokens_m": 2.2,
+          "theoretical_ceiling_pp": 2.73,
+          "twenty_percent_recovery_pp": 0.55,
+          "evidence_strength": "strong",
+          "pass_value": "medium",
+          "efficiency_value": "medium",
+          "recommended_change": "Optimize the minimal semantic slice and continuously check forbidden imports, extraction ratio, and packaged resources"
+        },
+        {
+          "priority": 6,
+          "module": "Verification state machine",
+          "direct_failures": 2,
+          "share_agent_failures": 0.008,
+          "median_tokens_m": 3.4,
+          "theoretical_ceiling_pp": 0.36,
+          "twenty_percent_recovery_pp": 0.07,
+          "evidence_strength": "medium-to-strong",
+          "pass_value": "low direct / high enabling",
+          "efficiency_value": "high diagnostic",
+          "recommended_change": "Invalidate stale test conclusions after every edit and require targeted probes, public tests, isolation, and clean-install gates"
+        },
+        {
+          "priority": 7,
+          "module": "Evidence memory and condenser",
+          "direct_failures": 2,
+          "share_agent_failures": 0.008,
+          "median_tokens_m": 2.03,
+          "theoretical_ceiling_pp": 0.36,
+          "twenty_percent_recovery_pp": 0.07,
+          "evidence_strength": "weak",
+          "pass_value": "low observed",
+          "efficiency_value": "medium uncertain",
+          "recommended_change": "Keep a pinned structured evidence store separate from rolling dialogue summaries and deduplicate file snapshots"
+        },
+        {
+          "priority": 8,
+          "module": "Localization",
+          "direct_failures": 5,
+          "share_agent_failures": 0.019,
+          "median_tokens_m": 0.17,
+          "theoretical_ceiling_pp": 0.91,
+          "twenty_percent_recovery_pp": 0.18,
+          "evidence_strength": "weak",
+          "pass_value": "low",
+          "efficiency_value": "low",
+          "recommended_change": "Use symbol/file retrieval improvements only after higher-value post-localization bottlenecks are addressed"
+        }
+      ],
+      "cold_start_headline": [
+        {
+          "entry_observed_rate": 0.9509090909090909,
+          "entry_within_five_rate": 0.9082217973231358,
+          "closure_plan_rate": 0.11272727272727273
+        }
+      ],
+      "cold_start_actions": [
+        {
+          "action_band": "1",
+          "runs": 50,
+          "pass_rate": 0.3,
+          "median_actions": 1
+        },
+        {
+          "action_band": "2–3",
+          "runs": 293,
+          "pass_rate": 0.416382,
+          "median_actions": 2
+        },
+        {
+          "action_band": "4–5",
+          "runs": 132,
+          "pass_rate": 0.477273,
+          "median_actions": 4
+        },
+        {
+          "action_band": ">5",
+          "runs": 48,
+          "pass_rate": 0.375,
+          "median_actions": 7
+        }
+      ],
+      "representative_cases": [
+        {
+          "task": "pytest__fixture_resolve_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "boundary recovery",
+          "subtype": "verification",
+          "missed": "fixture lookup error lists available",
+          "intervention": "forbidden-import audit plus clean isolation check"
+        },
+        {
+          "task": "responses__request_matcher_core__hard3_001",
+          "model": "Qwen3.6-35B-A3B-FP8",
+          "stage": "boundary recovery",
+          "subtype": "verification",
+          "missed": "query and header matchers and once behavior",
+          "intervention": "forbidden-import audit plus clean isolation check"
+        },
+        {
+          "task": "lark__visitor_transform_core__001",
+          "model": "Qwen3.6-27B-FP8",
+          "stage": "budget exhaustion",
+          "subtype": "exploration policy or budget",
+          "missed": "missing exported API: Discard",
+          "intervention": "phase budget with earlier stop/prune policy"
+        },
+        {
+          "task": "pygments__lexer_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "budget exhaustion",
+          "subtype": "exploration policy or budget",
+          "missed": "string and comment tokens are distinct",
+          "intervention": "phase budget with earlier stop/prune policy"
+        },
+        {
+          "task": "isort__settings_resolver_core__hard3_001",
+          "model": "Qwen3.6-35B-A3B-FP8",
+          "stage": "dependency discovery",
+          "subtype": "verification",
+          "missed": "missing exported API: ProfileDoesNotExist",
+          "intervention": "dependency/API closure hint and import-surface checklist"
+        },
+        {
+          "task": "passlib__hash_context_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "dependency discovery",
+          "subtype": "verification",
+          "missed": "missing behavior/API member: identify",
+          "intervention": "dependency/API closure hint and import-surface checklist"
+        },
+        {
+          "task": "pendulum__parse_format_core__001",
+          "model": "deepseek-v4-flash",
+          "stage": "dependency discovery",
+          "subtype": "verification",
+          "missed": "missing behavior/API member: remaining_days",
+          "intervention": "dependency/API closure hint and import-surface checklist"
+        },
+        {
+          "task": "transitions__state_machine_core__hard3_001",
+          "model": "deepseek-v4-flash",
+          "stage": "dependency discovery",
+          "subtype": "verification",
+          "missed": "missing behavior/API member: parent",
+          "intervention": "dependency/API closure hint and import-surface checklist"
+        },
+        {
+          "task": "celery__signal_dispatch_core__hard3_001",
+          "model": "Qwen3.6-35B-A3B-FP8",
+          "stage": "dynamic semantics",
+          "subtype": "memory state management",
+          "missed": "weak receiver cleanup after sender deletion",
+          "intervention": "evidence-pinned memory with invalidation"
+        },
+        {
+          "task": "configobj__roundtrip_config_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "dynamic semantics",
+          "subtype": "capability or implementation",
+          "missed": "comment preserved on write",
+          "intervention": "runtime trace plus behavior-differential probe"
+        },
+        {
+          "task": "dynaconf__settings_merge_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "dynamic semantics",
+          "subtype": "capability or implementation",
+          "missed": "layered toml environments",
+          "intervention": "runtime trace plus behavior-differential probe"
+        },
+        {
+          "task": "phonenumbers__parse_format_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "dynamic semantics",
+          "subtype": "exploration policy",
+          "missed": "is valid and e164 us",
+          "intervention": "targeted runtime trace/probe policy"
+        },
+        {
+          "task": "pygments__formatter_core__001",
+          "model": "Qwen3-Coder-30B-A3B-Instruct",
+          "stage": "implementation",
+          "subtype": "verification",
+          "missed": "full document and keyword highlighting",
+          "intervention": "targeted failing-behavior probe"
+        },
+        {
+          "task": "pygments__lexer_core__001",
+          "model": "Qwen3.6-27B-FP8",
+          "stage": "implementation",
+          "subtype": "verification",
+          "missed": "stripall option removes whitespace tokens",
+          "intervention": "targeted failing-behavior probe"
+        },
+        {
+          "task": "scrapy__item_loader_core__hard3_001",
+          "model": "deepseek-v4-flash",
+          "stage": "implementation",
+          "subtype": "verification",
+          "missed": "missing field raises",
+          "intervention": "targeted failing-behavior probe"
+        },
+        {
+          "task": "license_expression__policy_core__hard3_001",
+          "model": "Qwen3.6-35B-A3B-FP8",
+          "stage": "verification",
+          "subtype": "implementation",
+          "missed": "AND binds tighter than OR unless parentheses override it.",
+          "intervention": "mandatory fresh public/install verification after final edit"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "trajectory_audit",
+      "label": "FeatureLiftBench 550-run trajectory-stage audit",
+      "path": "reports/failure_attribution_20260720/trajectory_stage_labels_550.csv",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_csv_auto('reports/failure_attribution_20260720/trajectory_stage_labels_550.csv', header=true);",
+        "description": "Deterministic joins and rule-based stage attribution over frozen run records, trajectories, evaluator logs, metadata, oracle manifests, and taxonomy.",
+        "tables_used": [
+          "reports/token_efficiency_20260720/trajectory_records_550.csv",
+          "artifacts/research_analysis/python150_task_taxonomy.csv"
+        ],
+        "filters": [
+          "frozen_primary runs only",
+          "550 unique model-task pairs",
+          "infrastructure failures retained in total denominator"
+        ],
+        "metric_definitions": [
+          "Formal pass = run_status equals passed.",
+          "Hidden fail | public pass = hidden_pass is false among runs where public_pass is true.",
+          "Dynamic-runtime primary definition is outcome-blind and requires cross-boundary import/state/lifecycle/config/resource coupling.",
+          "Earliest failure stage is a conservative evidence-assisted attribution, not causal ground truth."
+        ]
+      }
+    }
+  ]
+}

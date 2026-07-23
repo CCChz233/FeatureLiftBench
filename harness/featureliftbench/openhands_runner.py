@@ -18,8 +18,12 @@ from typing import Any
 
 from .llm_env import apply_openhands_llm_env
 from .llm_usage_proxy import maybe_start_openhands_usage_proxy
+from .openhands_usage import CONDENSER_MODE_ENV
+from .openhands_usage import context_policy_audit_fields
 from .openhands_usage import looks_like_openhands_step
+from .openhands_usage import openhands_context_policy
 from .openhands_usage import openhands_context_limits
+from .openhands_usage import parse_openhands_compression_events
 from .openhands_usage import resolve_events_path
 from .openhands_usage import write_usage_from_events
 from .resource_limits import command_output_limit_bytes
@@ -168,7 +172,27 @@ def run(config: OpenHandsRunnerConfig) -> int:
     )
     env = apply_openhands_llm_env(env)
     env.setdefault("OPENHANDS_SUPPRESS_BANNER", "1")
-    _maybe_seed_agent_settings(command, env, config.agent_output_dir)
+    try:
+        _maybe_seed_agent_settings(command, env, config.agent_output_dir)
+    except (RuntimeError, ValueError) as exc:
+        try:
+            _write_context_policy(
+                config,
+                env,
+                status="configuration_failed",
+                error=str(exc),
+            )
+        except ValueError:
+            _write_invalid_context_policy(config, env, str(exc))
+        _write_usage(
+            config,
+            exit_status="context_configuration_failed",
+            returncode=2,
+            duration_seconds=0.0,
+            raw_usage=None,
+        )
+        print(f"FeatureLiftBench: {exc}", file=sys.stderr)
+        return 2
 
     start = time.monotonic()
     proxy = maybe_start_openhands_usage_proxy(env, config.agent_output_dir)
@@ -201,6 +225,10 @@ def run(config: OpenHandsRunnerConfig) -> int:
             raw_usage_path,
         )
     raw_usage = _read_raw_usage(config.agent_output_dir)
+    raw_usage = _merge_compression_audit(
+        raw_usage,
+        parse_openhands_compression_events(events_path),
+    )
     exit_status = "passed" if returncode == 0 else "openhands_failed"
     if command_result.log_limit_exceeded:
         exit_status = "log_limit_exceeded"
@@ -246,32 +274,80 @@ def _point_openhands_to_proxy(env: dict[str, str], proxy_base_url: str) -> None:
 _TRUTHY = {"true", "1", "yes", "on"}
 
 _AGENT_SETTINGS_GENERATOR = """
+import importlib.metadata
+import json
 import os
 from openhands.sdk.llm import LLM
 from openhands_cli.utils import get_default_cli_agent
 
 out = os.environ["FLB_AGENT_SETTINGS_OUT"]
+meta_out = os.environ["FLB_AGENT_SETTINGS_META_OUT"]
+mode = os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE", "default")
+token_mode = mode == "token"
+native_raw = os.environ.get("LLM_NATIVE_TOOL_CALLING", "true").strip().lower()
+native = native_raw not in {"false", "0", "no", "off"}
+trigger = int(os.environ["FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS"]) - int(
+    os.environ["FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS"]
+) if token_mode else None
+keep_first = int(os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST", "4"))
+max_events = int(os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS", "1000000"))
 llm = LLM(
-    model="openai/placeholder",
+    model=os.environ.get("LLM_MODEL", "openai/placeholder"),
     api_key="placeholder",
     usage_id="agent",
-    native_tool_calling=False,
+    native_tool_calling=native,
+    max_input_tokens=trigger,
 )
 agent = get_default_cli_agent(llm)
 
 
-def _off(inner):
-    return inner.model_copy(update={"native_tool_calling": False})
+def _configure_llm(inner):
+    updates = {"native_tool_calling": native}
+    if token_mode:
+        updates["max_input_tokens"] = trigger
+    return inner.model_copy(update=updates)
 
 
-updates = {"llm": _off(agent.llm)}
+updates = {"llm": _configure_llm(agent.llm)}
 condenser = getattr(agent, "condenser", None)
+if token_mode and (condenser is None or not hasattr(condenser, "llm")):
+    raise RuntimeError("OpenHands LLMSummarizingCondenser is unavailable")
 if condenser is not None and hasattr(condenser, "llm"):
-    updates["condenser"] = condenser.model_copy(update={"llm": _off(condenser.llm)})
+    condenser_updates = {"llm": _configure_llm(condenser.llm)}
+    if token_mode:
+        condenser_updates.update({
+            "max_tokens": trigger,
+            "max_size": max_events,
+            "keep_first": keep_first,
+        })
+    updates["condenser"] = condenser.model_copy(update=condenser_updates)
 agent = agent.model_copy(update=updates)
 os.makedirs(os.path.dirname(out), exist_ok=True)
 with open(out, "w", encoding="utf-8") as handle:
     handle.write(agent.model_dump_json())
+
+
+def _version(name):
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown"
+
+
+metadata = {
+    "openhands_version": _version("openhands"),
+    "openhands_sdk_version": _version("openhands-sdk"),
+    "settings": {
+        "agent_max_input_tokens": agent.llm.max_input_tokens,
+        "condenser_max_tokens": getattr(agent.condenser, "max_tokens", None),
+        "condenser_max_size": getattr(agent.condenser, "max_size", None),
+        "condenser_keep_first": getattr(agent.condenser, "keep_first", None),
+        "native_tool_calling": agent.llm.native_tool_calling,
+        "same_model_after_environment_override": True,
+    },
+}
+with open(meta_out, "w", encoding="utf-8") as handle:
+    json.dump(metadata, handle, indent=2, sort_keys=True)
 """
 
 
@@ -280,44 +356,54 @@ def _maybe_seed_agent_settings(
     env: dict[str, str],
     agent_output_dir: Path,
 ) -> None:
-    """Persist an agent_settings.json so OpenHands honors native_tool_calling=False.
+    """Create an isolated persistence directory and any required agent settings.
 
-    The OpenHands CLI only overrides model/api_key/base_url from env vars; other
-    LLM fields (like ``native_tool_calling``) are taken from a persisted agent
-    spec. When LLM_NATIVE_TOOL_CALLING is explicitly falsy we generate a default
-    agent spec with native tool calling disabled and drop it in the persistence
-    directory. This lets local vLLM servers without --enable-auto-tool-choice work
-    by using prompt-based tool calling.
+    Token mode always generates a strict settings file. Legacy mode only creates
+    one for the existing native-tool-calling override, preserving its behavior.
     """
+    policy = openhands_context_policy(env)
     native = env.get("LLM_NATIVE_TOOL_CALLING")
-    if native is None or native.strip().lower() in _TRUTHY:
-        return
+    needs_native_override = native is not None and native.strip().lower() not in _TRUTHY
 
-    home = env.get("HOME") or os.path.expanduser("~")
-    persist_dir = env.get("OPENHANDS_PERSISTENCE_DIR") or os.path.join(home, ".openhands")
-    env["OPENHANDS_PERSISTENCE_DIR"] = persist_dir
-    settings_path = os.path.join(persist_dir, "agent_settings.json")
-    if os.path.isfile(settings_path):
+    persist_dir = agent_output_dir / "openhands_persistence"
+    persist_dir.mkdir(parents=True, exist_ok=True)
+    env["OPENHANDS_PERSISTENCE_DIR"] = str(persist_dir)
+    settings_path = persist_dir / "agent_settings.json"
+    metadata_path = agent_output_dir / "agent_settings_metadata.json"
+
+    _write_context_policy(
+        config=None,
+        env=env,
+        agent_output_dir=agent_output_dir,
+        status="configured",
+    )
+    if not policy.token_compression_enabled and not needs_native_override:
         return
 
     interpreter = _resolve_openhands_python(command)
     if interpreter is None:
-        print(
-            "FeatureLiftBench: could not resolve OpenHands interpreter; "
-            "native_tool_calling override skipped.",
-            file=sys.stderr,
-        )
+        message = "could not resolve the OpenHands interpreter for agent settings"
+        if policy.token_compression_enabled:
+            raise RuntimeError(message)
+        print(f"FeatureLiftBench: {message}; override skipped.", file=sys.stderr)
         return
 
     gen_env = dict(env)
-    gen_env["FLB_AGENT_SETTINGS_OUT"] = settings_path
-    result = subprocess.run(
-        [interpreter, "-c", _AGENT_SETTINGS_GENERATOR],
-        env=gen_env,
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
+    gen_env["FLB_AGENT_SETTINGS_OUT"] = str(settings_path)
+    gen_env["FLB_AGENT_SETTINGS_META_OUT"] = str(metadata_path)
+    try:
+        result = subprocess.run(
+            [interpreter, "-c", _AGENT_SETTINGS_GENERATOR],
+            env=gen_env,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        if policy.token_compression_enabled:
+            raise RuntimeError(f"OpenHands agent settings generation failed: {exc}") from exc
+        print(f"FeatureLiftBench: OpenHands settings override skipped: {exc}", file=sys.stderr)
+        return
     log_path = agent_output_dir / "agent_settings_seed.log"
     log_path.write_text(
         f"returncode={result.returncode}\n"
@@ -325,12 +411,32 @@ def _maybe_seed_agent_settings(
         f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}\n",
         encoding="utf-8",
     )
-    if result.returncode != 0 or not os.path.isfile(settings_path):
-        print(
-            "FeatureLiftBench: failed to seed agent_settings.json for "
-            "native_tool_calling override (see agent_settings_seed.log).",
-            file=sys.stderr,
-        )
+    succeeded = result.returncode == 0 and settings_path.is_file()
+    if policy.token_compression_enabled:
+        succeeded = succeeded and metadata_path.is_file()
+    if not succeeded:
+        message = "failed to generate isolated OpenHands agent settings"
+        if policy.token_compression_enabled:
+            raise RuntimeError(f"{message} (see agent_settings_seed.log)")
+        print(f"FeatureLiftBench: {message} (see agent_settings_seed.log).", file=sys.stderr)
+        return
+
+    metadata: dict[str, Any] = {}
+    if metadata_path.is_file():
+        try:
+            loaded = json.loads(metadata_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                metadata = loaded
+        except (OSError, json.JSONDecodeError):
+            metadata = {}
+        metadata_path.unlink(missing_ok=True)
+    _write_context_policy(
+        config=None,
+        env=env,
+        agent_output_dir=agent_output_dir,
+        status="configured",
+        runtime_metadata=metadata,
+    )
 
 
 def _resolve_openhands_python(command: list[str]) -> str | None:
@@ -352,6 +458,67 @@ def _resolve_openhands_python(command: list[str]) -> str | None:
     if os.path.exists(fallback):
         return fallback
     return None
+
+
+def _write_context_policy(
+    config: OpenHandsRunnerConfig | None,
+    env: dict[str, str],
+    agent_output_dir: Path | None = None,
+    *,
+    status: str = "pending",
+    error: str = "",
+    runtime_metadata: dict[str, Any] | None = None,
+) -> None:
+    output_dir = agent_output_dir or (config.agent_output_dir if config is not None else None)
+    if output_dir is None:
+        raise ValueError("agent_output_dir is required for context policy")
+    policy = openhands_context_policy(env)
+    payload: dict[str, Any] = {
+        "schema_version": "featureliftbench.openhands_context_policy.v1",
+        "runtime": "openhands",
+        "profile": env.get("FEATURELIFTBENCH_AGENT_PROFILE", ""),
+        "model": (config.model if config is not None else env.get("FEATURELIFTBENCH_MODEL", "")),
+        "status": status,
+        "compression_mode": policy.compression_mode,
+        "context_window_tokens": policy.context_window_tokens,
+        "reserved_output_tokens": policy.reserved_output_tokens,
+        "trigger_tokens": policy.condenser_trigger_tokens,
+        "estimated_target_tokens": policy.condenser_target_tokens,
+        "keep_first": policy.condenser_keep_first,
+        "event_fallback": policy.condenser_max_events,
+        "persistence_dir": str(output_dir / "openhands_persistence"),
+        "settings_path": str(output_dir / "openhands_persistence" / "agent_settings.json"),
+        "error": error,
+    }
+    if runtime_metadata:
+        for key in ("openhands_version", "openhands_sdk_version", "settings"):
+            value = runtime_metadata.get(key)
+            if value is not None:
+                payload[key] = value
+    (output_dir / "context_policy.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+
+
+def _write_invalid_context_policy(
+    config: OpenHandsRunnerConfig,
+    env: dict[str, str],
+    error: str,
+) -> None:
+    payload = {
+        "schema_version": "featureliftbench.openhands_context_policy.v1",
+        "runtime": "openhands",
+        "profile": env.get("FEATURELIFTBENCH_AGENT_PROFILE", ""),
+        "model": config.model,
+        "status": "configuration_failed",
+        "compression_mode": env.get(CONDENSER_MODE_ENV, ""),
+        "error": error,
+    }
+    (config.agent_output_dir / "context_policy.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
 
 
 def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
@@ -788,6 +955,26 @@ def _read_raw_usage(agent_output_dir: Path) -> dict[str, Any] | None:
     return None
 
 
+def _merge_compression_audit(
+    raw_usage: dict[str, Any] | None,
+    compression: dict[str, int],
+) -> dict[str, Any]:
+    merged = dict(raw_usage) if raw_usage is not None else {}
+    existing = merged.get("context_audit")
+    context = dict(existing) if isinstance(existing, dict) else {}
+    if raw_usage is None:
+        context.update(
+            {
+                "available": False,
+                "usage_unverified": True,
+                "token_source": "events_without_token_usage",
+            }
+        )
+    context.update(compression)
+    merged["context_audit"] = context
+    return merged
+
+
 def _write_usage(
     config: OpenHandsRunnerConfig,
     *,
@@ -861,6 +1048,12 @@ def _usage_context_audit(raw_usage: dict[str, Any] | None) -> dict[str, Any]:
     raw_available = raw_context.get("available")
     context_available = raw_available if isinstance(raw_available, bool) else bool(raw_context)
     limits = openhands_context_limits()
+    try:
+        policy_fields = context_policy_audit_fields()
+    except ValueError:
+        policy_fields = {
+            "compression_mode": os.environ.get(CONDENSER_MODE_ENV, "invalid"),
+        }
 
     audit: dict[str, Any] = {
         "available": context_available,
@@ -878,6 +1071,10 @@ def _usage_context_audit(raw_usage: dict[str, Any] | None) -> dict[str, Any]:
         "context_window_tokens": limits.context_window_tokens,
         "reserved_output_tokens": limits.reserved_output_tokens,
         "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
+        **policy_fields,
+        "condensation_events": 0,
+        "forgotten_event_count": 0,
+        "condensation_summaries_nonempty": 0,
     }
     for key in (
         "context_window_tokens",
@@ -885,10 +1082,20 @@ def _usage_context_audit(raw_usage: dict[str, Any] | None) -> dict[str, Any]:
         "max_allowed_prompt_tokens",
         "max_prompt_tokens_per_call",
         "max_total_tokens_per_call",
+        "condenser_trigger_tokens",
+        "condenser_target_tokens",
+        "condenser_keep_first",
+        "condenser_max_events",
+        "condensation_events",
+        "forgotten_event_count",
+        "condensation_summaries_nonempty",
     ):
         value = _int_metric(raw_context.get(key))
         if value is not None:
             audit[key] = value
+    compression_mode = raw_context.get("compression_mode")
+    if isinstance(compression_mode, str) and compression_mode:
+        audit["compression_mode"] = compression_mode
     return audit
 
 

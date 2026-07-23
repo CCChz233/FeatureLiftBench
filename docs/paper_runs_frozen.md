@@ -64,19 +64,28 @@ Outputs land in `reports/paper_analysis/`.
 
 ## Missing Matched Runs
 
-DeepSeek-V4-Flash covers all 150 tasks. The following models still need the same hard-extension-50 before they can be compared on the full split:
+DeepSeek-V4-Flash covers all 150 tasks. Qwen3-Coder still needs the same hard-extension-50 before it can be compared on the full split:
 
 | Profile | Missing tasks | Planned output family |
 | --- | ---: | --- |
-| `openhands_qwen3_6_27b_fp8_paper` | 50 | `experiments/python/openhands/qwen3.6-27b-fp8/` |
-| `openhands_qwen3_6_35b_a3b_fp8_paper` | 50 | `experiments/python/openhands/qwen3.6-35b-a3b-fp8/` |
 | `openhands_qwen3_coder_30b_paper` | 50 | `experiments/python/openhands/qwen3-coder-30b-a3b-instruct/` |
+
+## Candidate Matched Runs (not frozen)
+
+Received and indexed on 2026-07-20. These runs are intentionally excluded from frozen paper tables until their protocol metadata is reviewed and this file is explicitly re-frozen.
+
+| Model | Candidate run | Hard50 | Combined Python-150 |
+| --- | --- | ---: | ---: |
+| qwen3.6-27b-fp8 | `experiments/python/openhands/qwen3.6-27b-fp8/hard50-qwen3.6-27b-fp8-20260720-023500` | 4/50 | 58/150 |
+| qwen3.6-35b-a3b-fp8 | `experiments/python/openhands/qwen3.6-35b-a3b-fp8/hard50-qwen3.6-35b-a3b-fp8-20260720-022800` | 3/50 | 52/150 |
+
+The candidate task sets match the frozen Python-150 task set. Their combined averages, using all 150 assigned tasks as denominator, are 0.224684 and 0.210023 respectively. See `experiments/registry/studies/python150-current.json`.
 
 Preview a run without calling an API:
 
 ```bash
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper
-./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper
+./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper
+./harness/scripts/run_python150_paper.sh openhands_qwen3_coder_30b_paper
 ```
 
 The scripts require an explicit `--execute` argument to start external model calls. Run only after approving transmission of task instructions, public snapshots, and prompts to the configured provider. Server steps: see `RUN.md` §6.1.

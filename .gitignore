@@ -14,6 +14,7 @@ build/
 benchmark/tasks/**/.pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.repo_graph_cache/
 
 .DS_Store
 
@@ -32,6 +33,15 @@ experiments/*
 !experiments/GO/openhands/README.md
 !experiments/ecsm_pilot/
 experiments/ecsm_pilot/runs/
+!experiments/registry/
+!experiments/registry/**
+!experiments/bundles/
+experiments/bundles/*
+!experiments/bundles/README.md
+!experiments/bundles/incoming/
+experiments/bundles/incoming/*
+!experiments/bundles/incoming/README.md
+!experiments/bundles/incoming/*.sha256
 
 evidence/*
 !evidence/.gitkeep
@@ -46,6 +56,17 @@ reports/*
 !reports/paper_analysis/
 reports/paper_analysis/*
 !reports/paper_analysis/README.md
+!reports/token_efficiency_20260720/
+!reports/token_efficiency_20260720/**
+!reports/failure_attribution_20260720/
+!reports/failure_attribution_20260720/**
+reports/failure_attribution_20260720/__pycache__/
+!reports/repo_graph_phase1/
+!reports/repo_graph_phase1/**
+!reports/repo_graph_phase2/
+!reports/repo_graph_phase2/**
+!reports/repo_graph_phase3/
+!reports/repo_graph_phase3/**
 scripts/*
 !scripts/check_task_lifecycle.py
 

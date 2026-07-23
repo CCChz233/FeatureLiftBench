@@ -1,0 +1,126 @@
+{
+  "schema_version": "featureliftbench.experiment_study.v1",
+  "study_id": "python150-current",
+  "generated_at": "2026-07-20T05:43:56+00:00",
+  "models": [
+    {
+      "model_slug": "deepseek-v4-flash",
+      "status": "frozen",
+      "complete": true,
+      "tasks": 150,
+      "passed": 91,
+      "pass_rate": 0.606667,
+      "average_final_score": 0.358817,
+      "task_set_hash": "e3e3557f26da9851b1562897e4455a78c0bb8c67e799ac8447a9d2df6c195fa5",
+      "duplicate_tasks": [],
+      "missing_runs": [],
+      "components": [
+        {
+          "run_id": "main-flash-20260705-232429",
+          "scope": "core100",
+          "tasks": 100,
+          "passed": 83,
+          "raw_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429"
+        },
+        {
+          "run_id": "batch3-flash-20260707-113104",
+          "scope": "hard50-fragment",
+          "tasks": 10,
+          "passed": 2,
+          "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104"
+        },
+        {
+          "run_id": "batch3-flash-20260707-wave2wave4",
+          "scope": "hard50-fragment",
+          "tasks": 20,
+          "passed": 5,
+          "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4"
+        },
+        {
+          "run_id": "batch3-flash-20260708-wave5",
+          "scope": "hard50-fragment",
+          "tasks": 20,
+          "passed": 1,
+          "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5"
+        }
+      ]
+    },
+    {
+      "model_slug": "qwen3.6-27b-fp8",
+      "status": "candidate",
+      "complete": true,
+      "tasks": 150,
+      "passed": 58,
+      "pass_rate": 0.386667,
+      "average_final_score": 0.224684,
+      "task_set_hash": "e3e3557f26da9851b1562897e4455a78c0bb8c67e799ac8447a9d2df6c195fa5",
+      "duplicate_tasks": [],
+      "missing_runs": [],
+      "components": [
+        {
+          "run_id": "qwen36-27b-fp8-main-20260704-001328",
+          "scope": "core100",
+          "tasks": 100,
+          "passed": 54,
+          "raw_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328"
+        },
+        {
+          "run_id": "hard50-qwen3.6-27b-fp8-20260720-023500",
+          "scope": "hard50",
+          "tasks": 50,
+          "passed": 4,
+          "raw_path": "experiments/python/openhands/qwen3.6-27b-fp8/hard50-qwen3.6-27b-fp8-20260720-023500"
+        }
+      ]
+    },
+    {
+      "model_slug": "qwen3.6-35b-a3b-fp8",
+      "status": "candidate",
+      "complete": true,
+      "tasks": 150,
+      "passed": 52,
+      "pass_rate": 0.346667,
+      "average_final_score": 0.210023,
+      "task_set_hash": "e3e3557f26da9851b1562897e4455a78c0bb8c67e799ac8447a9d2df6c195fa5",
+      "duplicate_tasks": [],
+      "missing_runs": [],
+      "components": [
+        {
+          "run_id": "qwen36-35b-a3b-fp8-main-20260704-001313",
+          "scope": "core100",
+          "tasks": 100,
+          "passed": 49,
+          "raw_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313"
+        },
+        {
+          "run_id": "hard50-qwen3.6-35b-a3b-fp8-20260720-022800",
+          "scope": "hard50",
+          "tasks": 50,
+          "passed": 3,
+          "raw_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/hard50-qwen3.6-35b-a3b-fp8-20260720-022800"
+        }
+      ]
+    },
+    {
+      "model_slug": "qwen3-coder-30b-a3b-instruct",
+      "status": "incomplete",
+      "complete": false,
+      "tasks": 100,
+      "passed": 24,
+      "pass_rate": 0.24,
+      "average_final_score": 0.172782,
+      "task_set_hash": "cdb854258c41ebb5127fa86bf7853806d68296a2148a884f23011dd14423e2a0",
+      "duplicate_tasks": [],
+      "missing_runs": [],
+      "components": [
+        {
+          "run_id": "main-20260702-212731",
+          "scope": "core100",
+          "tasks": 100,
+          "passed": 24,
+          "raw_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731"
+        }
+      ]
+    }
+  ]
+}

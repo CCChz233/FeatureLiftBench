@@ -47,11 +47,41 @@ def refresh_suite(suite_dir: Path) -> dict[str, Any]:
             continue
         run = json.loads(run_path.read_text(encoding="utf-8"))
         if isinstance(run, dict):
+            result_path = suite_dir / task_id / "eval" / "result.json"
+            if result_path.is_file():
+                eval_result = json.loads(result_path.read_text(encoding="utf-8"))
+                if isinstance(eval_result, dict):
+                    evaluation = run.get("evaluation")
+                    if not isinstance(evaluation, dict):
+                        evaluation = {}
+                        run["evaluation"] = evaluation
+                    evaluation.update(
+                        {
+                            "result_json": f"{task_id}/eval/result.json",
+                            "status": eval_result.get("status", evaluation.get("status")),
+                            "scores": eval_result.get("scores", evaluation.get("scores", {})),
+                            "build_pass": eval_result.get(
+                                "build_pass", evaluation.get("build_pass")
+                            ),
+                            "test_pass": eval_result.get(
+                                "test_pass", evaluation.get("test_pass")
+                            ),
+                        }
+                    )
             refreshed.append(run)
 
-    suite["runs"] = [compact_suite_run_entry(run) for run in refreshed]
+    compact_runs = [compact_suite_run_entry(run) for run in refreshed]
+    for entry in compact_runs:
+        task_id = entry.get("task_id")
+        if not isinstance(task_id, str) or not task_id:
+            continue
+        entry["run_json"] = f"{task_id}/run.json"
+        result_path = suite_dir / task_id / "eval" / "result.json"
+        entry["result_json"] = f"{task_id}/eval/result.json" if result_path.is_file() else ""
+    suite["runs"] = compact_runs
     suite["summary"] = rebuild_suite_summary(refreshed)
     suite["agent_usage_totals"] = _sum_agent_usage(refreshed)
+    suite["portable_paths"] = True
     suite_path.write_text(json.dumps(suite, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return suite
 

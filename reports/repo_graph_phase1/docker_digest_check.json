@@ -1,0 +1,24 @@
+{
+  "schema_version": "featureliftbench.repo_graph.docker_digest_check.v1",
+  "checked_at": "2026-07-22",
+  "fixture": "harness/tests/fixtures/repo_graph_mixed",
+  "image": {
+    "tag": "featureliftbench-agent:rsg-phase1",
+    "id": "sha256:aa570a3d8ccc15148af8c83534d6192b0b02d734692bd1a4d69ced6fd3b1a7de",
+    "platform": "linux/arm64",
+    "python": "3.11.14"
+  },
+  "host": {
+    "python": "3.12.2"
+  },
+  "result": {
+    "implementation_hash": "243ede2744fd7bc809261a838438b2ffe622f15c8e99d70fe257487b44c9b18f",
+    "snapshot_id": "2758c3a80fcb45992bb0353f5eec943632865d7770e4f910f788324cb332dddc",
+    "graph_hash": "e72b9a1475a38fccf2cb43438e32cc24cc7785ebfa73fde484e891d7969b8a1a",
+    "nodes": 20,
+    "edges": 24,
+    "parse_error_files": 0,
+    "snapshot_match": true,
+    "graph_match": true
+  }
+}

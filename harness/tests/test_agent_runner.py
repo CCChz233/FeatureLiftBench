@@ -29,6 +29,10 @@ from featureliftbench.agent_runner import run_agent_on_path
 from featureliftbench.agent_runner import run_agent_on_task
 from featureliftbench.evaluator import evaluate_submission
 from featureliftbench.metadata import load_metadata
+from featureliftbench.repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
+from featureliftbench.repo_graph.policy import ROOT_ENV as REPO_GRAPH_ROOT_ENV
+from featureliftbench.repo_graph.runtime import append_repo_graph_prompt
+from featureliftbench.repo_graph.runtime import initialize_repo_graph
 
 
 class AgentRunnerTests(unittest.TestCase):
@@ -189,6 +193,245 @@ class AgentRunnerTests(unittest.TestCase):
             run_json = json.loads((root / "output" / "run.json").read_text(encoding="utf-8"))
             self.assertEqual(run_json["agent"]["usage"]["prompt_tokens"], 100)
             self.assertFalse((root / "output" / "workspace" / "hidden_tests").exists())
+            self.assertFalse((root / "output" / "agent" / "repo_graph_policy.json").exists())
+            self.assertNotIn(
+                "Repository Semantic Graph",
+                (root / "output" / "agent" / "prompt.txt").read_text(encoding="utf-8"),
+            )
+
+    def test_repo_graph_bootstrap_is_identical_for_all_agent_adapters(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            prompts: list[str] = []
+            roots: list[str] = []
+
+            def fake_run(context, config, **_kwargs):
+                prompts.append(context.task_text.split("## Repository Semantic Graph (RSG)", 1)[1])
+                roots.append((config.env or {})[REPO_GRAPH_ROOT_ENV])
+                package = context.submission_dir / "featurelifted"
+                package.mkdir(parents=True, exist_ok=True)
+                (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+                return AgentCommandResult(
+                    name=config.agent,
+                    command=[config.agent],
+                    report_command=[config.agent],
+                    returncode=0,
+                    duration_seconds=0.01,
+                    stdout="",
+                    stderr="",
+                )
+
+            fake_adapter = mock.MagicMock()
+            fake_adapter.run.side_effect = fake_run
+            with mock.patch(
+                "featureliftbench.agent_runner.get_agent_adapter",
+                return_value=fake_adapter,
+            ):
+                for agent in ("mini-swe-agent", "openhands-agent", "featurelift-agent"):
+                    result = run_agent_on_task(
+                        task_dir,
+                        root / f"output-{agent}",
+                        AgentRunConfig(
+                            agent=agent,
+                            env={REPO_GRAPH_MODE_ENV: "closure"},
+                            timeout_seconds=120,
+                        ),
+                    )
+                    self.assertEqual(result["status"], "passed")
+                    self.assertFalse(result["repo_graph"]["protocol_violation"])
+
+            self.assertEqual(len(prompts), 3)
+            self.assertEqual(prompts[0], prompts[1])
+            self.assertEqual(prompts[1], prompts[2])
+            self.assertEqual(len(set(roots)), 3)
+            self.assertTrue(all(path.endswith("/agent/state/repo_graph") for path in roots))
+
+    def test_repo_graph_fail_fast_stops_before_agent_invocation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            adapter = mock.MagicMock()
+            with mock.patch(
+                "featureliftbench.agent_runner.initialize_repo_graph",
+                side_effect=ValueError("synthetic graph failure"),
+            ), mock.patch(
+                "featureliftbench.agent_runner.get_agent_adapter",
+                return_value=adapter,
+            ):
+                result = run_agent_on_task(
+                    task_dir,
+                    root / "output",
+                    AgentRunConfig(
+                        agent="mini-swe-agent",
+                        env={REPO_GRAPH_MODE_ENV: "static"},
+                    ),
+                )
+
+            adapter.run.assert_not_called()
+            self.assertEqual(result["status"], "failed")
+            self.assertTrue(any("before agent start" in error for error in result["errors"]))
+            build = json.loads(
+                (root / "output" / "agent" / "repo_graph_build.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertFalse(build["model_invoked"])
+
+    def test_featurelift_agent_receives_and_can_query_enabled_repo_graph(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace = root / "workspace"
+            task_file = prepare_agent_workspace(
+                task_dir,
+                workspace,
+                load_metadata(task_dir).data,
+            )
+            agent_output = root / "agent"
+            state = initialize_repo_graph(
+                workspace_dir=workspace,
+                agent_output_dir=agent_output,
+                config_env={REPO_GRAPH_MODE_ENV: "static"},
+            )
+            assert state is not None
+            append_repo_graph_prompt(task_file, state)
+            config = featurelift_agent.FeatureLiftAgentConfig(
+                workspace=workspace,
+                task_file=task_file,
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                model="openai/example",
+                context_window_tokens=131072,
+                reserved_output_tokens=8192,
+                runtime="scaffold",
+                enable_llm=False,
+                api_base="",
+                api_key="",
+                request_timeout_seconds=30,
+                max_tokens=1024,
+            )
+            featurelift_agent._write_state_files(
+                config,
+                agent_output / "state",
+                task_file.read_text(encoding="utf-8"),
+            )
+            _system, user_prompt = featurelift_agent._build_phase_prompt(
+                agent_output / "state",
+                "closure_plan",
+            )
+            self.assertIn("repo_graph/bootstrap.md", user_prompt)
+            self.assertIn("repo_graph_query", user_prompt)
+            observation = featurelift_agent._execute_action(
+                config,
+                "closure_plan",
+                1,
+                {
+                    "type": "repo_graph_query",
+                    "command": "search",
+                    "query": "VALUE",
+                    "reason": "locate output provider",
+                },
+            )
+            self.assertEqual(observation["status"], "success")
+            self.assertIn('"name":"VALUE"', observation["output"])
+            repeated = featurelift_agent._execute_action(
+                config,
+                "closure_plan",
+                2,
+                {
+                    "type": "repo_graph_query",
+                    "command": "search",
+                    "query": "VALUE",
+                    "reason": "repeat without state change",
+                },
+            )
+            self.assertEqual(repeated["repeat_count_same_revision"], 2)
+            self.assertEqual(repeated["action_priority"], "deprioritized")
+            self.assertEqual(
+                len((agent_output / "repo_graph_queries.jsonl").read_text().splitlines()),
+                2,
+            )
+
+    def test_featurelift_evidence_mode_syncs_mutations_and_enforces_fresh_final_check(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            workspace = root / "workspace"
+            task_file = prepare_agent_workspace(
+                task_dir,
+                workspace,
+                load_metadata(task_dir).data,
+            )
+            agent_output = root / "agent"
+            state = initialize_repo_graph(
+                workspace_dir=workspace,
+                agent_output_dir=agent_output,
+                config_env={REPO_GRAPH_MODE_ENV: "evidence"},
+            )
+            assert state is not None
+            append_repo_graph_prompt(task_file, state)
+            config = featurelift_agent.FeatureLiftAgentConfig(
+                workspace=workspace,
+                task_file=task_file,
+                submission_dir=workspace / "submission",
+                agent_output_dir=agent_output,
+                model="openai/example",
+                context_window_tokens=131072,
+                reserved_output_tokens=8192,
+                runtime="scaffold",
+                enable_llm=False,
+                api_base="",
+                api_key="",
+                request_timeout_seconds=30,
+                max_tokens=1024,
+                execute_actions=True,
+            )
+            write = featurelift_agent._execute_action(
+                config,
+                "extraction_plan",
+                1,
+                {
+                    "type": "write_file",
+                    "target": "featurelifted/__init__.py",
+                    "content": "VALUE = 1\n",
+                    "reason": "implement output API",
+                },
+            )
+            self.assertEqual(write["status"], "success")
+            self.assertEqual(
+                json.loads((state.root / "submission_state.json").read_text())["revision"],
+                1,
+            )
+            final = featurelift_agent._execute_action(
+                config,
+                "final_checklist",
+                2,
+                {
+                    "type": "final_check",
+                    "target": "current submission",
+                    "reason": "fresh verification",
+                },
+            )
+            self.assertEqual(final["status"], "success")
+            self.assertTrue(
+                json.loads((state.root / "stopping_guard.json").read_text())["ready"]
+            )
+            featurelift_agent._execute_action(
+                config,
+                "extraction_plan",
+                3,
+                {
+                    "type": "write_file",
+                    "target": "featurelifted/__init__.py",
+                    "content": "VALUE = 1\nOTHER = 2\n",
+                    "reason": "post-verification mutation",
+                },
+            )
+            guard = featurelift_agent._repo_graph_native_stopping_guard(config)
+            assert guard is not None
+            self.assertFalse(guard["ready"])
+            self.assertIn("missing_fresh_final_verification", guard["blockers"])
 
     def test_single_task_enables_live_progress_when_tty(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1449,6 +1692,9 @@ class AgentRunnerTests(unittest.TestCase):
                             "max_total_tokens_per_call": 120,
                             "context_violation": False,
                             "usage_unverified": True,
+                            "compression_mode": "token",
+                            "condensation_events": 2,
+                            "forgotten_event_count": 30,
                         },
                     }
                 }
@@ -1464,6 +1710,9 @@ class AgentRunnerTests(unittest.TestCase):
                             "max_total_tokens_per_call": 240,
                             "context_violation": True,
                             "usage_unverified": False,
+                            "compression_mode": "token",
+                            "condensation_events": 1,
+                            "forgotten_event_count": 12,
                         },
                     }
                 }
@@ -1477,6 +1726,9 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertEqual(audit["context_violation_runs"], 1)
         self.assertEqual(audit["usage_unverified_runs"], 1)
         self.assertEqual(audit["max_prompt_tokens_per_call"], 200)
+        self.assertEqual(audit["token_compression_runs"], 2)
+        self.assertEqual(audit["condensation_events"], 3)
+        self.assertEqual(audit["forgotten_event_count"], 42)
 
     def test_sums_tool_summary_for_suite(self) -> None:
         runs = [
@@ -1633,6 +1885,105 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertIn("openhands run --prompt-file {prompt_file}", command)
             self.assertIn("--extra", command)
             self.assertIn("value", command)
+
+    def test_openhands_token_mode_generates_isolated_settings_for_native_modes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            global_settings = root / "home" / ".openhands" / "agent_settings.json"
+            global_settings.parent.mkdir(parents=True)
+            global_settings.write_text('{"global": true}', encoding="utf-8")
+
+            def fake_generate(args, *, env, **kwargs):
+                self.assertEqual(args[1], "-c")
+                settings_path = Path(env["FLB_AGENT_SETTINGS_OUT"])
+                metadata_path = Path(env["FLB_AGENT_SETTINGS_META_OUT"])
+                self.assertNotEqual(settings_path, global_settings)
+                settings_path.parent.mkdir(parents=True, exist_ok=True)
+                settings_path.write_text(
+                    json.dumps(
+                        {
+                            "llm": {"max_input_tokens": 57344},
+                            "condenser": {
+                                "max_tokens": 57344,
+                                "max_size": 1000000,
+                                "keep_first": 4,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                metadata_path.write_text(
+                    json.dumps(
+                        {
+                            "openhands_version": "test",
+                            "openhands_sdk_version": "test-sdk",
+                            "settings": {
+                                "agent_max_input_tokens": 57344,
+                                "condenser_max_tokens": 57344,
+                                "condenser_max_size": 1000000,
+                                "condenser_keep_first": 4,
+                            },
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                return mock.Mock(returncode=0, stdout="", stderr="")
+
+            for native in ("true", "false"):
+                output = root / f"agent-{native}"
+                output.mkdir()
+                env = {
+                    "HOME": str(root / "home"),
+                    "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE": "token",
+                    "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "65536",
+                    "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS": "8192",
+                    "FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST": "4",
+                    "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS": "1000000",
+                    "LLM_NATIVE_TOOL_CALLING": native,
+                }
+                with (
+                    mock.patch.object(
+                        openhands_runner,
+                        "_resolve_openhands_python",
+                        return_value="/fake/python",
+                    ),
+                    mock.patch.object(
+                        openhands_runner.subprocess,
+                        "run",
+                        side_effect=fake_generate,
+                    ),
+                ):
+                    openhands_runner._maybe_seed_agent_settings(
+                        ["openhands"], env, output
+                    )
+
+                expected = output / "openhands_persistence" / "agent_settings.json"
+                self.assertEqual(env["OPENHANDS_PERSISTENCE_DIR"], str(expected.parent))
+                self.assertTrue(expected.is_file())
+                policy = json.loads((output / "context_policy.json").read_text())
+                self.assertEqual(policy["status"], "configured")
+                self.assertEqual(policy["trigger_tokens"], 57344)
+                self.assertEqual(policy["settings"]["condenser_max_size"], 1000000)
+                self.assertEqual(global_settings.read_text(), '{"global": true}')
+
+    def test_openhands_token_mode_fails_fast_when_settings_cannot_be_generated(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "agent"
+            output.mkdir()
+            env = {
+                "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE": "token",
+                "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "65536",
+                "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS": "8192",
+            }
+            with mock.patch.object(
+                openhands_runner,
+                "_resolve_openhands_python",
+                return_value=None,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "could not resolve"):
+                    openhands_runner._maybe_seed_agent_settings(
+                        ["openhands"], env, output
+                    )
 
     def test_openhands_runner_missing_command_writes_usage(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -12,6 +12,84 @@ sys.path.insert(0, str(_REPO_ROOT / "harness" / "scripts"))
 
 import summarize_suite_infra  # noqa: E402
 import validate_suite_resume  # noqa: E402
+from analyze_featurelift_suite import _output_paths  # noqa: E402
+from analyze_suite_results import output_paths as suite_result_output_paths  # noqa: E402
+from featureliftbench.suite_utils import compact_agent_usage  # noqa: E402
+from featureliftbench.suite_utils import rebuild_suite_summary  # noqa: E402
+from featureliftbench.suite_utils import resolve_suite_artifact_path  # noqa: E402
+
+
+class PortableSuitePathTests(unittest.TestCase):
+    def test_compact_usage_keeps_context_compression_audit(self) -> None:
+        compact = compact_agent_usage(
+            {
+                "available": True,
+                "total_tokens": 1000,
+                "context_audit": {
+                    "compression_mode": "token",
+                    "condenser_trigger_tokens": 57344,
+                    "condenser_target_tokens": 28672,
+                    "condensation_events": 2,
+                    "forgotten_event_count": 44,
+                    "max_prompt_tokens_per_call": 57000,
+                    "context_violation": False,
+                },
+            }
+        )
+
+        audit = compact["context_audit"]
+        self.assertEqual(audit["compression_mode"], "token")
+        self.assertEqual(audit["condensation_events"], 2)
+        self.assertEqual(audit["forgotten_event_count"], 44)
+        self.assertEqual(audit["condenser_trigger_tokens"], 57344)
+
+    def test_task_local_artifact_wins_over_stale_absolute_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            suite_dir = Path(tmp) / "suite"
+            local_run = suite_dir / "task_a" / "run.json"
+            local_run.parent.mkdir(parents=True)
+            local_run.write_text("{}", encoding="utf-8")
+
+            resolved = resolve_suite_artifact_path(
+                suite_dir,
+                "task_a",
+                "run.json",
+                "/old/server/experiments/task_a/run.json",
+            )
+
+            self.assertEqual(resolved, local_run)
+
+    def test_dotted_run_id_is_not_treated_as_a_suffix(self) -> None:
+        prefix = Path("hard50-qwen3.6-27b-analysis")
+        json_path, md_path = _output_paths(prefix)
+        self.assertEqual(json_path.name, "hard50-qwen3.6-27b-analysis.json")
+        self.assertEqual(md_path.name, "hard50-qwen3.6-27b-analysis.md")
+
+        json_path, md_path = suite_result_output_paths(prefix)
+        self.assertEqual(json_path.name, "hard50-qwen3.6-27b-analysis.json")
+        self.assertEqual(md_path.name, "hard50-qwen3.6-27b-analysis.md")
+
+    def test_suite_average_uses_all_assigned_tasks_as_denominator(self) -> None:
+        summary = rebuild_suite_summary(
+            [
+                {
+                    "task_id": "passed",
+                    "status": "passed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True},
+                    "evaluation": {"scores": {"final_score": 0.8}},
+                },
+                {
+                    "task_id": "missing",
+                    "status": "missing_submission",
+                    "agent": {"passed": False},
+                    "submission": {"exists": False},
+                    "evaluation": {},
+                },
+            ]
+        )
+
+        self.assertEqual(summary["average_final_score"], 0.4)
 
 
 class ValidateSuiteResumeTests(unittest.TestCase):

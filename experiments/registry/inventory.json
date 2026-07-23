@@ -1,0 +1,697 @@
+{
+  "schema_version": "featureliftbench.experiment_inventory.v1",
+  "generated_at": "2026-07-20T05:43:56+00:00",
+  "suite_count": 23,
+  "runs": [
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/GO/openhands/deepseek-v4-flash/go-openhands-deepseek-v4-flash-20260705-001",
+      "run_id": "go-openhands-deepseek-v4-flash-20260705-001",
+      "status": "support",
+      "category": "calibration",
+      "scope": "go-calibration",
+      "language": "go",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/GO/openhands/deepseek-v4-flash/go-openhands-deepseek-v4-flash-20260705-001",
+      "generated_at": "2026-07-05T05:43:04Z",
+      "task_count": 3,
+      "task_set_hash": "e3812da47f86b3b9bb48dcb315333b3d3eb2b3097a66cb99bc85180a9e6c1c05",
+      "evaluated": 3,
+      "passed": 3,
+      "missing_submission": 0,
+      "average_final_score": 0.501318,
+      "total_tokens": 832725,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.501318,
+        "absolute_run_paths": 3,
+        "absolute_result_paths": 3
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-112646",
+      "run_id": "batch3-flash-20260707-112646",
+      "status": "superseded",
+      "category": "leaderboard",
+      "scope": "hard50-fragment",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-112646",
+      "generated_at": "2026-07-07T03:26:59Z",
+      "task_count": 10,
+      "task_set_hash": "00705c43ec0540994b93bef51f6ff250bc24f94045dd6db017f6e98757296aa6",
+      "evaluated": 0,
+      "passed": 0,
+      "missing_submission": 10,
+      "average_final_score": 0.0,
+      "total_tokens": 0,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 10,
+        "absolute_result_paths": 0
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104",
+      "run_id": "batch3-flash-20260707-113104",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "hard50-fragment",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104",
+      "generated_at": "2026-07-07T04:20:32Z",
+      "task_count": 10,
+      "task_set_hash": "00705c43ec0540994b93bef51f6ff250bc24f94045dd6db017f6e98757296aa6",
+      "evaluated": 10,
+      "passed": 2,
+      "missing_submission": 0,
+      "average_final_score": 0.058741,
+      "total_tokens": 20074804,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.058741,
+        "absolute_run_paths": 10,
+        "absolute_result_paths": 10
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4",
+      "run_id": "batch3-flash-20260707-wave2wave4",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "hard50-fragment",
+      "language": "python",
+      "agent": "openhands",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4",
+      "generated_at": "2026-07-07T13:07:05Z",
+      "task_count": 20,
+      "task_set_hash": "54ec8d08acbf3eb8d84f63e5ec63fd2fb717efffc82a72f7e88d9c8b20a1ef50",
+      "evaluated": 20,
+      "passed": 5,
+      "missing_submission": 0,
+      "average_final_score": 0.031127,
+      "total_tokens": 40865923,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.031127,
+        "absolute_run_paths": 20,
+        "absolute_result_paths": 20
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5",
+      "run_id": "batch3-flash-20260708-wave5",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "hard50-fragment",
+      "language": "python",
+      "agent": "openhands",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260708-wave5",
+      "generated_at": "2026-07-08T04:36:36Z",
+      "task_count": 20,
+      "task_set_hash": "3fda112c8ff28eeb1cbb3bf86f5a8f3569d487ede618c00392392a541b71ea1f",
+      "evaluated": 19,
+      "passed": 1,
+      "missing_submission": 1,
+      "average_final_score": 0.031556,
+      "total_tokens": 33263814,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "summary_average_mismatch",
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.033216,
+        "absolute_run_paths": 20,
+        "absolute_result_paths": 19
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/batch3-pydantic-rerun-20260711",
+      "run_id": "batch3-pydantic-rerun-20260711",
+      "status": "candidate",
+      "category": "leaderboard",
+      "scope": "hard50-fragment",
+      "language": "python",
+      "agent": "openhands",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/batch3-pydantic-rerun-20260711",
+      "generated_at": "2026-07-11T15:04:34Z",
+      "task_count": 1,
+      "task_set_hash": "c027b4ca8176c246fd41bac3229a14f7ab97535b79a813da91496d43d7b283d2",
+      "evaluated": 1,
+      "passed": 0,
+      "missing_submission": 0,
+      "average_final_score": 0.0,
+      "total_tokens": 1651069,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 1,
+        "absolute_result_paths": 1
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429",
+      "run_id": "main-flash-20260705-232429",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "core100",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429",
+      "generated_at": "2026-07-06T00:16:31Z",
+      "task_count": 100,
+      "task_set_hash": "cdb854258c41ebb5127fa86bf7853806d68296a2148a884f23011dd14423e2a0",
+      "evaluated": 98,
+      "passed": 83,
+      "missing_submission": 2,
+      "average_final_score": 0.519816,
+      "total_tokens": 225210205,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "summary_average_mismatch",
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.530424,
+        "absolute_run_paths": 100,
+        "absolute_result_paths": 98
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731",
+      "run_id": "main-20260702-212731",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "core100",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3-Coder-30B-A3B-Instruct",
+      "profile": "flb.local",
+      "raw_path": "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731",
+      "generated_at": "2026-07-03T00:40:57Z",
+      "task_count": 100,
+      "task_set_hash": "cdb854258c41ebb5127fa86bf7853806d68296a2148a884f23011dd14423e2a0",
+      "evaluated": 100,
+      "passed": 24,
+      "missing_submission": 0,
+      "average_final_score": 0.172782,
+      "total_tokens": 216836907,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.172782,
+        "absolute_run_paths": 100,
+        "absolute_result_paths": 100
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/qwen3.6-27b-fp8/hard50-qwen3.6-27b-fp8-20260720-023500",
+      "run_id": "hard50-qwen3.6-27b-fp8-20260720-023500",
+      "status": "candidate",
+      "category": "leaderboard",
+      "scope": "hard50",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-27B-FP8",
+      "profile": "openhands_qwen3_6_27b_fp8_paper",
+      "raw_path": "experiments/python/openhands/qwen3.6-27b-fp8/hard50-qwen3.6-27b-fp8-20260720-023500",
+      "generated_at": "2026-07-20T02:09:15Z",
+      "task_count": 50,
+      "task_set_hash": "cd2500d3973d583baa19c908aec025b1cde0083ff903f35585aadb19c39fb6d0",
+      "evaluated": 44,
+      "passed": 4,
+      "missing_submission": 6,
+      "average_final_score": 0.026916,
+      "total_tokens": 59503371,
+      "quality": {
+        "ok": true,
+        "flags": [],
+        "summary_average_final_score": 0.026916,
+        "absolute_run_paths": 0,
+        "absolute_result_paths": 0
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328",
+      "run_id": "qwen36-27b-fp8-main-20260704-001328",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "core100",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-27B-FP8",
+      "profile": "flb.local",
+      "raw_path": "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328",
+      "generated_at": "2026-07-04T15:35:55Z",
+      "task_count": 100,
+      "task_set_hash": "cdb854258c41ebb5127fa86bf7853806d68296a2148a884f23011dd14423e2a0",
+      "evaluated": 98,
+      "passed": 54,
+      "missing_submission": 2,
+      "average_final_score": 0.323569,
+      "total_tokens": 197887470,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "summary_average_mismatch",
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.330172,
+        "absolute_run_paths": 100,
+        "absolute_result_paths": 98
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/hard50-qwen3.6-35b-a3b-fp8-20260720-022800",
+      "run_id": "hard50-qwen3.6-35b-a3b-fp8-20260720-022800",
+      "status": "candidate",
+      "category": "leaderboard",
+      "scope": "hard50",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-35B-A3B-FP8",
+      "profile": "openhands_qwen3_6_35b_a3b_fp8_paper",
+      "raw_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/hard50-qwen3.6-35b-a3b-fp8-20260720-022800",
+      "generated_at": "2026-07-19T21:58:25Z",
+      "task_count": 50,
+      "task_set_hash": "cd2500d3973d583baa19c908aec025b1cde0083ff903f35585aadb19c39fb6d0",
+      "evaluated": 49,
+      "passed": 3,
+      "missing_submission": 1,
+      "average_final_score": 0.024567,
+      "total_tokens": 70298584,
+      "quality": {
+        "ok": true,
+        "flags": [],
+        "summary_average_final_score": 0.024567,
+        "absolute_run_paths": 0,
+        "absolute_result_paths": 0
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "run_id": "qwen36-35b-a3b-fp8-main-20260704-001313",
+      "status": "frozen",
+      "category": "leaderboard",
+      "scope": "core100",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-35B-A3B-FP8",
+      "profile": "flb.local",
+      "raw_path": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "generated_at": "2026-07-04T03:38:29Z",
+      "task_count": 100,
+      "task_set_hash": "cdb854258c41ebb5127fa86bf7853806d68296a2148a884f23011dd14423e2a0",
+      "evaluated": 95,
+      "passed": 49,
+      "missing_submission": 5,
+      "average_final_score": 0.30275,
+      "total_tokens": 228089119,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "summary_average_mismatch",
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.318684,
+        "absolute_run_paths": 100,
+        "absolute_result_paths": 95
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/openhands-pilot5-20260702-103319/batch2",
+      "run_id": "batch2",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/openhands-pilot5-20260702-103319/batch2",
+      "generated_at": "2026-07-02T03:09:53Z",
+      "task_count": 2,
+      "task_set_hash": "b46c5b8bdf1e7bd692efdcb5e54633615717e51e55f1e669c541fa73aaafb4c0",
+      "evaluated": 2,
+      "passed": 1,
+      "missing_submission": 0,
+      "average_final_score": 0.233201,
+      "total_tokens": 5611010,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.233201,
+        "absolute_run_paths": 2,
+        "absolute_result_paths": 2
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/openhands-pilot5-20260702-103319/sanity3",
+      "run_id": "sanity3",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/openhands-pilot5-20260702-103319/sanity3",
+      "generated_at": "2026-07-02T02:55:31Z",
+      "task_count": 3,
+      "task_set_hash": "9ec66dcb68977413fdbd3436393e822104dcb5c01f34c746d25b62d9233f66d2",
+      "evaluated": 3,
+      "passed": 3,
+      "missing_submission": 0,
+      "average_final_score": 0.753134,
+      "total_tokens": 2266822,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.753134,
+        "absolute_run_paths": 3,
+        "absolute_result_paths": 3
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/batch2",
+      "run_id": "batch2",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/batch2",
+      "generated_at": "2026-07-02T05:17:14Z",
+      "task_count": 2,
+      "task_set_hash": "b46c5b8bdf1e7bd692efdcb5e54633615717e51e55f1e669c541fa73aaafb4c0",
+      "evaluated": 2,
+      "passed": 0,
+      "missing_submission": 0,
+      "average_final_score": 0.0,
+      "total_tokens": 8085158,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 2,
+        "absolute_result_paths": 2
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/sanity3",
+      "run_id": "sanity3",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/sanity3",
+      "generated_at": "2026-07-02T04:49:11Z",
+      "task_count": 3,
+      "task_set_hash": "9ec66dcb68977413fdbd3436393e822104dcb5c01f34c746d25b62d9233f66d2",
+      "evaluated": 3,
+      "passed": 3,
+      "missing_submission": 0,
+      "average_final_score": 0.726951,
+      "total_tokens": 2963343,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.726951,
+        "absolute_run_paths": 3,
+        "absolute_result_paths": 3
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/pilot-5-20260701-161103",
+      "run_id": "pilot-5-20260701-161103",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/pilot-5-20260701-161103",
+      "generated_at": "2026-07-01T08:23:30Z",
+      "task_count": 2,
+      "task_set_hash": "b46c5b8bdf1e7bd692efdcb5e54633615717e51e55f1e669c541fa73aaafb4c0",
+      "evaluated": 2,
+      "passed": 1,
+      "missing_submission": 0,
+      "average_final_score": 0.233658,
+      "total_tokens": 0,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.233658,
+        "absolute_run_paths": 2,
+        "absolute_result_paths": 2
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/sanity-pilot-20260701-151923",
+      "run_id": "sanity-pilot-20260701-151923",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/sanity-pilot-20260701-151923",
+      "generated_at": "2026-07-01T07:52:42Z",
+      "task_count": 3,
+      "task_set_hash": "9ec66dcb68977413fdbd3436393e822104dcb5c01f34c746d25b62d9233f66d2",
+      "evaluated": 3,
+      "passed": 0,
+      "missing_submission": 0,
+      "average_final_score": 0.0,
+      "total_tokens": 0,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 3,
+        "absolute_result_paths": 3
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/smoke/workers2-sanity-20260701-162415",
+      "run_id": "workers2-sanity-20260701-162415",
+      "status": "support",
+      "category": "smoke",
+      "scope": "smoke",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/smoke/workers2-sanity-20260701-162415",
+      "generated_at": "2026-07-01T08:44:10Z",
+      "task_count": 3,
+      "task_set_hash": "9ec66dcb68977413fdbd3436393e822104dcb5c01f34c746d25b62d9233f66d2",
+      "evaluated": 3,
+      "passed": 0,
+      "missing_submission": 0,
+      "average_final_score": 0.0,
+      "total_tokens": 0,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 3,
+        "absolute_result_paths": 3
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/batch3-flash-20260707-wave2wave4",
+      "run_id": "batch3-flash-20260707-wave2wave4",
+      "status": "support",
+      "category": "validation",
+      "scope": "infra-reevaluation",
+      "language": "python",
+      "agent": "openhands",
+      "model": "deepseek/deepseek-v4-flash",
+      "profile": "openhands_deepseek_v4_flash",
+      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/batch3-flash-20260707-wave2wave4",
+      "generated_at": "2026-07-14T14:31:25Z",
+      "task_count": 2,
+      "task_set_hash": "516c56a9a7afbdf160b9739c9b39433b5cc0c137a5bb19ba93f4488bcc523ad5",
+      "evaluated": 2,
+      "passed": 0,
+      "missing_submission": 0,
+      "average_final_score": 0.0,
+      "total_tokens": 3957406,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.0,
+        "absolute_run_paths": 2,
+        "absolute_result_paths": 2
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/main-20260702-212731",
+      "run_id": "main-20260702-212731",
+      "status": "support",
+      "category": "validation",
+      "scope": "infra-reevaluation",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3-Coder-30B-A3B-Instruct",
+      "profile": "flb.local",
+      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/main-20260702-212731",
+      "generated_at": "2026-07-14T14:32:02Z",
+      "task_count": 21,
+      "task_set_hash": "f6e877f29c57b346dee2c0b99b2b8c77bb77f12a2651e3c57ed683117bcfc20e",
+      "evaluated": 21,
+      "passed": 2,
+      "missing_submission": 0,
+      "average_final_score": 0.07443,
+      "total_tokens": 58227061,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.07443,
+        "absolute_run_paths": 21,
+        "absolute_result_paths": 21
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-27b-fp8-main-20260704-001328",
+      "run_id": "qwen36-27b-fp8-main-20260704-001328",
+      "status": "support",
+      "category": "validation",
+      "scope": "infra-reevaluation",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-27B-FP8",
+      "profile": "flb.local",
+      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-27b-fp8-main-20260704-001328",
+      "generated_at": "2026-07-14T14:32:39Z",
+      "task_count": 21,
+      "task_set_hash": "f6e877f29c57b346dee2c0b99b2b8c77bb77f12a2651e3c57ed683117bcfc20e",
+      "evaluated": 21,
+      "passed": 14,
+      "missing_submission": 0,
+      "average_final_score": 0.374977,
+      "total_tokens": 57719238,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.374977,
+        "absolute_run_paths": 21,
+        "absolute_result_paths": 21
+      }
+    },
+    {
+      "schema_version": "featureliftbench.experiment_run.v1",
+      "record_id": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "run_id": "qwen36-35b-a3b-fp8-main-20260704-001313",
+      "status": "support",
+      "category": "validation",
+      "scope": "infra-reevaluation",
+      "language": "python",
+      "agent": "openhands-agent",
+      "model": "openai/Qwen3.6-35B-A3B-FP8",
+      "profile": "flb.local",
+      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "generated_at": "2026-07-14T14:33:09Z",
+      "task_count": 18,
+      "task_set_hash": "b274164e1d41aa979fd1fe466bd1f9416eb825ff1167f587e758ddb37bc66719",
+      "evaluated": 18,
+      "passed": 9,
+      "missing_submission": 0,
+      "average_final_score": 0.333297,
+      "total_tokens": 64755131,
+      "quality": {
+        "ok": false,
+        "flags": [
+          "absolute_artifact_paths"
+        ],
+        "summary_average_final_score": 0.333297,
+        "absolute_run_paths": 18,
+        "absolute_result_paths": 18
+      }
+    }
+  ]
+}

@@ -2,7 +2,24 @@
 
 v1.1 硬化、Pilot、taxonomy 与论文门禁相关文档。生成型 JSON/CSV 在 `artifacts/research_analysis/`；本目录是人类可读规范与状态摘要。
 
+> 当前讨论不要从本目录逐个找文件。统一入口是 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。本目录保存被入口引用的方法规范、实验协议和审计证据。
+
 **Living status：** [../STATUS.md](../STATUS.md) · 生成表格 [V11_IMPLEMENTATION_STATUS.md](V11_IMPLEMENTATION_STATUS.md)（`python tools/research_analysis/build_v11_audit_status.py`）
+
+## 当前活跃文档
+
+| Doc | Role |
+| --- | --- |
+| [ICLR_INNOVATION_ROADMAP.md](ICLR_INNOVATION_ROADMAP.md) | 论文创新定位 |
+| [ECSM_METHOD_SPEC.md](ECSM_METHOD_SPEC.md) | ECSM 方法定义 |
+| [REPOSITORY_SEMANTIC_GRAPH_DESIGN.md](REPOSITORY_SEMANTIC_GRAPH_DESIGN.md) | 仓库语义骨架图、任务闭包 overlay 与证据记忆最终设计 |
+| [REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md](REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md) | Tree-sitter RSG 分阶段实现、测试与 Pilot 门禁 |
+| [../../reports/repo_graph_phase1/README.md](../../reports/repo_graph_phase1/README.md) | RSG Phase 1 自动验收结果与剩余 checkpoint |
+| [EXPERIMENT_SCOPE_AND_ARM_RATIONALE.md](EXPERIMENT_SCOPE_AND_ARM_RATIONALE.md) | 实验 arm 与 scope |
+| [PILOT_DECISION_RULES.md](PILOT_DECISION_RULES.md) | 扩展/停止规则 |
+| [CAUSAL_EXPERIMENT_PLAN.md](CAUSAL_EXPERIMENT_PLAN.md) | 因果实验设计 |
+
+其余文档是 benchmark 硬化、审计或历史机制证据，不作为今天讨论的入口。
 
 ## Protocol & gates
 
@@ -33,6 +50,8 @@ v1.1 硬化、Pilot、taxonomy 与论文门禁相关文档。生成型 JSON/CSV 
 | Doc | Role |
 | --- | --- |
 | [ECSM_METHOD_SPEC.md](ECSM_METHOD_SPEC.md) | ECSM prompting protocol |
+| [REPOSITORY_SEMANTIC_GRAPH_DESIGN.md](REPOSITORY_SEMANTIC_GRAPH_DESIGN.md) | Repository Semantic Graph Final Design v1 |
+| [REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md](REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md) | Repository Semantic Graph implementation plan |
 | [MECHANISM_HYPOTHESES.md](MECHANISM_HYPOTHESES.md) | Mechanism hypotheses |
 | [TRAJECTORY_FINDINGS.md](TRAJECTORY_FINDINGS.md) | Trajectory analysis findings |
 | [CAUSAL_EXPERIMENT_PLAN.md](CAUSAL_EXPERIMENT_PLAN.md) | Causal experiment plan |

@@ -20,7 +20,10 @@ RUN if [ "$INSTALL_OPENHANDS" = "1" ]; then \
       && rm -rf /var/lib/apt/lists/*; \
     fi
 
+COPY harness/config/repo_graph_requirements.lock /tmp/repo_graph_requirements.lock
+
 RUN pip install --index-url https://mirrors.aliyun.com/pypi/simple/ \
+    -r /tmp/repo_graph_requirements.lock \
     "pytest==7.4.4" \
     "rich"
 
@@ -44,6 +47,10 @@ RUN printf '%s\n' \
     'mkdir -p "${HOME:-/tmp/flb-home}"' \
     'exec "$@"' \
     > /usr/local/bin/flb-agent-entrypoint \
-    && chmod +x /usr/local/bin/flb-agent-entrypoint
+    && printf '%s\n' \
+    '#!/usr/bin/env sh' \
+    'exec python -m featureliftbench.repo_graph.cli "$@"' \
+    > /usr/local/bin/flb-rsg \
+    && chmod +x /usr/local/bin/flb-agent-entrypoint /usr/local/bin/flb-rsg
 
 ENTRYPOINT ["flb-agent-entrypoint"]

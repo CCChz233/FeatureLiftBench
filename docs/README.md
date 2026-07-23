@@ -6,6 +6,7 @@
 
 | 我想… | 从这里开始 |
 | --- | --- |
+| 参与当前论文与实验讨论 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
 | 了解 benchmark 是什么 | [00_overview.md](00_overview.md) → [01_task_definition.md](01_task_definition.md) |
 | 跑实验 / 补齐 Python-150 | [../RUN.md](../RUN.md) §6.1 · [EXPERIMENTS.md](EXPERIMENTS.md) |
 | 看已有结果与缺口 | [EXPERIMENTS.md](EXPERIMENTS.md) · [FINDINGS.md](FINDINGS.md) |
@@ -51,6 +52,7 @@ Python 与 Go 是 FeatureLiftBench 的 language split，共享同一 task 语义
 
 ## Research & Paper
 
+- [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) — **唯一的当前研究入口**；先读这里，再按需进入方法、实验和分析工件
 - [research_analysis/](research_analysis/) — v1.1 硬化协议、Pilot、ECSM、taxonomy、Oracle 报告
 - [paper_runs_frozen.md](paper_runs_frozen.md) — 冻结 formal run ID 与 leaderboard 口径
 - [paper_tables.md](paper_tables.md) — 论文表格草稿

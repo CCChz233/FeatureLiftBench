@@ -19,6 +19,7 @@ from .agent_adapters import get_agent_adapter
 from .paths import HARNESS_ROOT
 from .resource_limits import command_output_limit_bytes
 from .resource_limits import detect_resource_limited
+from .repo_graph.policy import ROOT_ENV as REPO_GRAPH_ROOT_ENV
 
 DEFAULT_AGENT_IMAGE = "featureliftbench-agent:latest"
 DEFAULT_GO_AGENT_IMAGE = "featureliftbench-agent-go:latest"
@@ -312,6 +313,9 @@ def _docker_env(config: AgentRunConfig) -> tuple[set[str], dict[str, str]]:
         "PYTHONPATH": str(CONTAINER_HARNESS),
         "HOME": "/tmp/flb-home",
     }
+    repo_graph_mode = (config.env or {}).get("FEATURELIFTBENCH_REPO_GRAPH_MODE", "disabled")
+    if repo_graph_mode != "disabled":
+        fixed_env[REPO_GRAPH_ROOT_ENV] = str(CONTAINER_AGENT_OUTPUT / "state" / "repo_graph")
     for key, value in fixed_env.items():
         process_env[key] = value
         env_keys.add(key)

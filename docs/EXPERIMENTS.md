@@ -133,7 +133,7 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
 | `spec_status: legacy` | 0 | 历史 Flash 91/150 等仍是 **legacy run 数字**；不能与新跑拼接 |
 | `spec_status: compliant` | 150 | schema / validator / contract / Oracle 已闭环；可跑正式实验 |
 
-- 合规报表：`reports/constitution/spec_compliance_150_20260724.csv`
+- 冻结合规报表：`reports/audits/spec_compliance_frozen_20260724.csv`
 - 新协议内容审计：`reports/audits/new_protocol_readiness.md`
 - 当前审计：engineering-ready 150/150、完整非模板化契约 150/150、
   experiment-ready 150/150；含可发现上游测试 48/150 为信息项。

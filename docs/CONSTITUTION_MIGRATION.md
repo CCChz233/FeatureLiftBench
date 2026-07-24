@@ -30,13 +30,14 @@
 | `transitions__state_machine_core__hard3_001` | `model.parent.state` 写入 behavior **B004** |
 | `scrapy__item_loader_core__hard3_001` | 未定义字段 `KeyError` 写入 behavior **B006** |
 
-重判笔记：[../reports/constitution/pilot_rejudgement_20260724.md](../reports/constitution/pilot_rejudgement_20260724.md)
+冻结合规清单：
+[spec_compliance_frozen_20260724.csv](../reports/audits/spec_compliance_frozen_20260724.csv)
 
-合规 CSV：[../reports/constitution/spec_compliance_150_20260724.csv](../reports/constitution/spec_compliance_150_20260724.csv)
+全量 150 题协议就绪度：
+[new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md)
 
-Hard-50 批次证据：[../reports/constitution/hard50_migration_20260724.md](../reports/constitution/hard50_migration_20260724.md)
-
-全量 150 题验收：[../reports/constitution/compliant150_migration_20260724.md](../reports/constitution/compliant150_migration_20260724.md)
+Oracle 与 spec 的冻结标识见
+[STATUS.md](STATUS.md)；原始运行目录和模型实验结果不纳入代码仓库。
 
 > 全部 150 题的 `manual_review` 明确标注为 AI 辅助逐题审核，`independent_human_review: false`。这满足当前工程迁移与可执行门禁，但不冒充独立人工 paper-gold。
 

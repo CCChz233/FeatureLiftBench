@@ -10,6 +10,12 @@
 
 FeatureLiftBench 是一个面向代码智能体的仓库级评测基准，用于评估 Agent 能否在保持目标功能行为正确的前提下，将该功能从原仓库的框架、配置、状态、资源、环境和无关模块中解耦出来，形成一个**独立可安装、可测试、相对精简、可复用**的 Python package。
 
+**当前冻结状态（2026-07-24）：** Python 主榜 **150/150
+experiment-ready**，spec freeze `f7c616edb47ea533`，Oracle freeze
+`7c042d5528b7d0fd`（450/450）。正式默认实验为 **OpenHands + 指定模型 +
+test-blind Main + agent/eval Docker + 每题一次 Pass@1**。独立人工审核按计划在
+模型实验后进行，因此当前可做正式实验，但尚不称为 paper-ready release。
+
 与主要关注 bug 修复或功能实现的 SWE benchmark 不同，FeatureLiftBench 关注一种更贴近维护场景的能力：
 
 > Agent 能否面对“能跑但结构混乱、功能边界不清、依赖缠绕”的仓库，重新理解已有功能，将它解耦、抽取、重组为可复用的软件单元？
@@ -71,12 +77,15 @@ FeatureLiftBench 的现实意义在于评估代码智能体能否把“能跑但
 每个 benchmark 样例给定：
 
 * 一个真实开源仓库的固定 commit；
-* 一个目标功能或目标解耦对象描述；
-* 一个或多个源入口 API；
+* 一个完整公开的目标功能契约；
+* 一个或多个 source entrypoints；
 * 一个期望输出 API；
-* public tests；
-* hidden tests；
-* 任务级约束和评测规则。
+* evaluator 持有的 public regression tests 与 hidden tests；
+* 隔离、紧凑性和任务级评测规则。
+
+在正式 test-blind Main 中，Agent 只接收生成后的 `TASK.md`、源仓库快照与
+锁定依赖；benchmark 的 `public_tests/` 和 `hidden_tests/` 都在 submission
+完成后由 evaluator 执行，不会作为解题反馈提供给 Agent。
 
 Agent 需要在 `submission/` 目录下生成一个解耦后的 Python package。该 package 必须满足：
 
@@ -129,50 +138,30 @@ submission/
 
 ## Agent Harness
 
-`eval` 命令只负责给已有 submission 阅卷；真正接入 Agent 时使用 `run-agent`：
+`eval` 命令只负责给已有 submission 阅卷。正式 Python-150 实验统一使用
+内容冻结、先 plan 后 execute 的 OpenHands runner：
 
 ```bash
-python3 -B -m featureliftbench.cli run-agent \
-  benchmark/tasks/iniconfig__parse_config__001 \
-  --agent mini-swe-agent \
-  --model <model-name> \
-  --output experiments/mini-swe-agent/iniconfig
+./harness/scripts/run_python150_paper.sh \
+  <openhands-profile> \
+  <run-id>
 ```
 
-传入 `benchmark/tasks/` 根目录时会按数据集批量运行 **主榜 50 hard**，并写出 `suite.json`：
+plan 模式不调用模型 API。确认输出包含 150/150 compliant、test-blind Main、
+agent/eval Docker 和 Pass@1 后，在 `tmux` 中执行：
 
 ```bash
-python3 -B -m featureliftbench.cli run-agent \
-  benchmark/tasks \
-  --agent mini-swe-agent \
-  --model <model-name> \
-  --num-workers 2 \
-  --output experiments/mini-swe-agent/<run_id>
+./harness/scripts/run_python150_paper.sh \
+  <openhands-profile> \
+  <run-id> \
+  --workers 1 \
+  --execute
 ```
 
-列出题目：`python3 harness/scripts/list_tasks.py`。按难度或 tag 切片：`python3 harness/scripts/list_tasks.py --difficulty hard --paths`。
-
-`--num-workers` 只在传入 `benchmark/tasks/` 这类数据集根目录时生效；默认 `1` 保持串行。跑真实模型时建议先用 `2` 或 `3`，避免 API 限流和本机资源争用。
-
-正式跑批建议把 Agent 执行和 eval 都放进短命 Docker container：
-
-```bash
-docker/build_agent_image.sh featureliftbench-agent:latest
-docker/build_eval_image.sh featureliftbench-eval:latest
-
-PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent \
-  benchmark/tasks \
-  --agent mini-swe-agent \
-  --model <model-name> \
-  --agent-docker \
-  --eval-docker \
-  --num-workers 1 \
-  --output experiments/mini-swe-agent/<run_id>
-```
-
-`--agent-docker` 限制 Agent 只能看到 prepared workspace、agent output 和只读 harness；不挂载 benchmark root、hidden tests、host home、`.env` 或 Docker socket。`--eval-docker` 使用独立的禁网 eval container，并对内存、CPU、进程数、日志和只读挂载做限制。两个开关也可通过 `FEATURELIFTBENCH_AGENT_DOCKER=1` 与 `FEATURELIFTBENCH_EVAL_DOCKER=1` 启用。
-
-两个 Docker build 脚本默认使用 `python:3.11-slim`，可分别用 `FEATURELIFTBENCH_AGENT_PYTHON_BASE` / `FEATURELIFTBENCH_EVAL_PYTHON_BASE` 覆盖；agent 镜像 pin `mini-swe-agent==1.17.3`，避免 upstream CLI/API 变动破坏 `mini_live_runner`。
+完整服务器部署、镜像构建、smoke、恢复和汇总步骤见
+[`docs/SERVER_RUNBOOK_COMPLIANT150.md`](docs/SERVER_RUNBOOK_COMPLIANT150.md)。
+其他 adapter 和切片运行属于开发、消融或历史校准入口，不能与当前 compliant
+Python-150 主榜结果混报。
 
 Agent Harness 会为每个任务创建一个 agent 可见 workspace：
 
@@ -180,16 +169,14 @@ Agent Harness 会为每个任务创建一个 agent 可见 workspace：
 experiments/<run_id>/
   workspace/
     repo/
-    public_tests/
     requirements.lock
-    metadata.json        # redacted，不包含 hidden/evaluation/scoring_reference
     TASK.md
     submission/          # Agent 在这里写最终答案
   agent/
     prompt.txt
     stdout.log
     stderr.log
-    trajectory.json      # mini-swe-agent --output
+    trajectory.json      # Agent 轨迹（具体格式由 adapter 决定）
   submission/            # 从 workspace/submission 收集出的答案
   eval/
     result.json
@@ -238,13 +225,18 @@ jq '.info.model_stats' experiments/mini-swe-agent/<suite_run_id>/<task_id>/agent
 
 推荐运行 CLI 时使用 **Python 3.11+**（例如 `python3.12`）。系统自带的 `python3` 若为 3.9/3.10，会因缺少 `tomllib` 无法启动。
 
-**首次部署**（本机或服务器）：`./setup.sh` → 编辑 `.env` → `./run.sh`。更完整的运行说明见 [RUN.md](RUN.md)。
+**首次部署**（本机或服务器）：`./setup.sh` → 编辑 `.env` → 先运行
+Python-150 runner 的 plan。更完整的运行说明见 [RUN.md](RUN.md)。
 
-`hidden_tests/`、`evaluation/` 和未公开评测规则不会进入 agent workspace。Agent 只能看到源仓库、public tests、锁定依赖和裁剪后的任务说明。
+`public_tests/`、`hidden_tests/`、`evaluation/` 和未公开评测规则都不会进入
+test-blind Main 的 agent workspace。Agent 只能看到源仓库、锁定依赖和由完整
+公开功能契约生成的任务说明。
 
-当前内置两个 adapter：
+当前支持四个 adapter；正式主榜使用 `openhands-agent`：
 
+* `openhands-agent`：在 agent Docker 中调用 OpenHands headless CLI；
 * `mini-swe-agent`：调用 `mini --task <TASK.md内容> --output agent/trajectory.json --exit-immediately`，支持 `--model`、`--config`、`--yolo`、`--agent-bin`；
+* `featurelift-agent`：用于 FeatureLift 方法实验；
 * `command`：用于调试或接入其他 Agent，命令模板可使用 `{workspace}`、`{task_file}`、`{submission_dir}`、`{agent_output_dir}`。
 
 ### Agent API 配置
@@ -362,7 +354,10 @@ benchmark/tasks/<task_id>/
     oracle_manifest.json
 ```
 
-`repo/` 是任务输入的一部分，Agent 可以读取它。`hidden_tests/` 在正式评测时不可见。Agent 在 `submission/featurelifted/` 下写出解耦后的 package（包名固定为 `featurelifted`）。
+`repo/` 是任务输入的一部分，Agent 可以读取它。Benchmark 自有的
+`public_tests/` 与 `hidden_tests/` 在正式解题阶段都不可见，并在 submission
+后统一运行。Agent 在 `submission/featurelifted/` 下写出解耦后的 package
+（包名固定为 `featurelifted`）。
 
 当前 benchmark **主榜 150 hard** + **3 smoke**。完整列表见 [`docs/python/02_python_repo_task_inventory.md`](docs/python/02_python_repo_task_inventory.md)。
 
@@ -530,7 +525,7 @@ ExtractionRatio = SubmissionPythonLOC / SourceRepoPythonLOC
 * 使用 `eval`、`exec`、动态 import 生成主要功能逻辑；
 * 复制完整仓库、完整测试目录、完整文档目录或完整 CI 配置；
 * 引入与目标功能无关的大型框架依赖；
-* 通过硬编码 public tests 样例返回结果。
+* 通过硬编码已知样例或 evaluator 泄漏信息返回结果。
 
 这些规则不是为了限制合理实现，而是为了确保分数反映“理解功能边界并解耦必要代码”的能力。
 
@@ -542,7 +537,7 @@ ExtractionRatio = SubmissionPythonLOC / SourceRepoPythonLOC
 | --- | --- | --- |
 | Copy-All | 直接复制整个源仓库并做最小包装 | 投机性下界 |
 | Manual Oracle Closure | 人工标注接近最小的必要文件和依赖 | 最小化参考上界 |
-| LLM-only | 只给任务说明和 public tests，让模型生成输出 | 基础模型能力 |
+| LLM-only | 只给完整任务说明、不提供 evaluator tests，让模型生成输出 | 基础模型能力 |
 | Bash Agent | Agent 可使用 shell 查看仓库、运行测试和编辑文件 | 实际代码代理能力 |
 | RepoMap Agent | 给 Agent 提供仓库级静态摘要 | 测试摘要是否有帮助 |
 | Graph-guided Agent | 使用 import graph、call graph 和测试覆盖信息辅助解耦 | 测试结构化上下文价值 |
@@ -657,7 +652,7 @@ Pilot 可以从小仓库开始，但正式版需要加入中型仓库、legacy �
 
 ### 阶段二：Benchmark v0
 
-* ~~扩展到 30-50 个任务~~（**已完成**：50 hard + 3 smoke）；
+* ~~扩展到 30-50 个任务~~（**已完成**，后续已扩展为 150 hard + 3 smoke）；
 * 加入 entangled / hard-plus 任务，覆盖框架耦合、配置耦合、全局状态、资源文件和 legacy/vibe-coded clutter；
 * 继续校准 metadata schema；
 * 校准任务难度标签；
@@ -668,7 +663,7 @@ Pilot 可以从小仓库开始，但正式版需要加入中型仓库、legacy �
 
 ### 阶段三：完整 Benchmark
 
-* 扩展到 80-120 个任务；
+* ~~扩展到 80-120 个任务~~（当前 Python 主榜已冻结为 150 题）；
 * 覆盖更多中型仓库、vibe-coded 项目、legacy 风格项目和多种功能类型；
 * 做工具上下文、依赖图、调用图、测试覆盖信息的消融实验；
 * 发布 benchmark、评测代码、baseline 结果和任务构建指南。
@@ -690,9 +685,10 @@ FeatureLiftBench **统一 benchmark** 已落地：Python 主榜 **150 hard** + s
 
 演进方式：在 `benchmark/tasks/` 下**新增或删除**题目，不另建第二套 collection。
 
-已完成 pilot 与 hard 任务的 `mini-swe-agent` suite 校准。示例：`sqlparse__parse_format_core__001` baseline（deepseek-v4-pro）：通过，`extraction_ratio≈0.487`，45 steps，856k tokens。
-
-最近一次 hard 子集 suite（18 题，`extreme` tag）：`experiments/mini-swe-agent/extreme-18-suite-001/`（14/18 通过）。分析：`python3 harness/scripts/analyze_benchmark_suite.py experiments/mini-swe-agent/extreme-18-suite-001`。
+当前主榜为 **150/150 compliant、150/150 experiment-ready、0 legacy**；
+完整 Oracle Docker 复验为 **450/450**。模型实验输出保存在本地或服务器
+`experiments/` 中，不纳入 benchmark 代码提交。历史 legacy 与旧可见
+public-tests 结果不得与当前 compliant test-blind Main 静默合并。
 
 ## 待讨论问题
 

@@ -60,4 +60,7 @@ Public 与 hidden **共享同一公开行为契约**；hidden 可加深覆盖，
 
 ## Current Priority
 
-规格迁移与 validate 已完成 **150/150**。当前优先独立人工 paper-gold 审核与新合规 core-100 模型校准；见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) · [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。
+规格迁移与 validate 已完成 **150/150**。当前优先运行冻结后的 compliant
+Python-150 test-blind Main 模型实验；独立人工 paper-gold 审核按计划在完整
+模型实验之后进行。见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) ·
+[CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。

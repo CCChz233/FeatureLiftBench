@@ -204,7 +204,7 @@ RSG 设计文档仍见 `research_analysis/REPOSITORY_SEMANTIC_GRAPH_*`（已标�
 | 3 | 试点 isort、transitions、scrapy + hidden 重判 | ✅ |
 | 4 | 主榜 `spec_status: legacy` 标注 + 分批迁移 | ✅ 150/150 compliant；0 legacy |
 | 5 | Test-blind Main / Public-feedback / Short-prompt 工程 | ✅ |
-| 6 | Compliant 子集重跑 OpenHands 基线 | 🚧 hard-50 已完成；新合规 core-100 待校准 |
+| 6 | Compliant Python-150 重跑 OpenHands 基线 | 🚧 全榜 test-blind Main 正式实验待运行 |
 | 7 | Contract Checklist / Probe / Reference Support Set | ⏳ |
 | 8 | RSG start-here 仅 retrieval baseline | ✅ 政策 |
 

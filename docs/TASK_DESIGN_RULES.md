@@ -274,7 +274,7 @@ Benchmark 只规定：
 | 3 | 试点 isort / transitions / scrapy + hidden 重判 | ✅ |
 | 4 | 生成器 `public_spec → TASK.md` | ✅ `render-task`；compliant agent workspace 已接入 |
 | 5 | 主榜分批迁移；`spec_status: legacy` 标注 | ✅ 150/150 compliant；0 legacy |
-| 6 | Compliant 子集重跑 OpenHands 基线 → 方法实验 | 🚧 hard-50 已完成；core-100 待校准 |
+| 6 | Compliant Python-150 重跑 OpenHands 基线 → 方法实验 | 🚧 全榜 test-blind Main 正式实验待运行 |
 | 7 | RSG start-here 仅 retrieval baseline；扩题低优先级 | ✅ 政策已冻结 |
 
 操作细节：[CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)

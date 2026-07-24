@@ -31,7 +31,7 @@ freeze 已完成。独立人工 paper-gold 审核按计划延后到 150 题实�
 它只阻塞 paper-ready 发布，不阻塞当前模型实验。
 
 150 题工程合规结果：
-[reports/constitution/compliant150_migration_20260724.md](../reports/constitution/compliant150_migration_20260724.md)
+[reports/audits/new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md)
 （逐题验证 **150/150**；当前冻结 Oracle 证据 **450/450**）。
 
 权威叙事：[BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)
@@ -93,12 +93,8 @@ RSG hard 报告：`reports/repo_graph_phase2/rsg_hard_ab_20260724.md`
 | Hard-50 compliant rebaseline | ✅ 旧标签 Main=现 Public-feedback **11/50**；旧标签 No-public=现 test-blind Main **4/50**；两臂各 50/50 完整 |
 | Python-150 独立人工审核 | **0/150；延后，仅阻塞 paper-ready** |
 | Spec freeze | `f7c616edb47ea533`（Oracle freeze `7c042d5528b7d0fd`） |
-| Hard-50 paired report | `experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` |
-| 合规报表 | [reports/constitution/spec_compliance_150_20260724.csv](../reports/constitution/spec_compliance_150_20260724.csv) |
-| Hidden 重判笔记 | [reports/constitution/pilot_rejudgement_20260724.md](../reports/constitution/pilot_rejudgement_20260724.md) |
-| Hard-50 迁移证据 | [reports/constitution/hard50_migration_20260724.md](../reports/constitution/hard50_migration_20260724.md) |
-| 100/150 验收证据 | [reports/constitution/compliant100_migration_20260724.md](../reports/constitution/compliant100_migration_20260724.md) |
-| 150/150 验收证据 | [reports/constitution/compliant150_migration_20260724.md](../reports/constitution/compliant150_migration_20260724.md) |
+| Hard-50 paired report | 本地历史结果（不进 Git）：`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` |
+| 冻结合规报表 | [reports/audits/spec_compliance_frozen_20260724.csv](../reports/audits/spec_compliance_frozen_20260724.csv) |
 | 新协议内容审计 | [reports/audits/new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md) |
 | 操作手册 | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) |
 

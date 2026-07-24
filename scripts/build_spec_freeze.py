@@ -52,6 +52,14 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="verify that the existing output has the current freeze id",
     )
+    parser.add_argument(
+        "--require-oracle-artifacts",
+        action="store_true",
+        help=(
+            "fail unless the local Oracle freeze manifest and submissions are "
+            "available and match the tracked freeze"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -204,7 +212,21 @@ def build_payload(pointer_path: Path) -> dict[str, Any]:
     return payload
 
 
-def verify_existing(payload: dict[str, Any]) -> None:
+def _oracle_artifacts_available(pointer_path: Path) -> bool:
+    if not pointer_path.is_file():
+        return False
+    pointer = _load(pointer_path)
+    manifest_path = pointer.get("freeze_manifest")
+    if not isinstance(manifest_path, str) or not manifest_path:
+        raise ValueError(f"Oracle pointer lacks freeze_manifest: {pointer_path}")
+    return (ROOT / manifest_path).is_file()
+
+
+def verify_existing(
+    payload: dict[str, Any],
+    *,
+    verify_oracle_trees: bool,
+) -> None:
     expected_freeze_id = manifest_digest(payload)[:16]
     if payload.get("freeze_id") != expected_freeze_id:
         raise ValueError("tracked spec freeze digest is invalid")
@@ -249,12 +271,13 @@ def verify_existing(payload: dict[str, Any]) -> None:
             raise ValueError(f"generated TASK hash differs: {task_id}")
         if _tree_digest(task_dir).get("sha256") != record.get("task_tree_sha256"):
             raise ValueError(f"task tree differs: {task_id}")
-        oracle_dir = ROOT / "benchmark/submissions" / task_id / "oracle"
-        if (
-            _tree_digest(oracle_dir).get("sha256")
-            != record.get("oracle_tree_sha256")
-        ):
-            raise ValueError(f"Oracle tree differs: {task_id}")
+        if verify_oracle_trees:
+            oracle_dir = ROOT / "benchmark/submissions" / task_id / "oracle"
+            if (
+                _tree_digest(oracle_dir).get("sha256")
+                != record.get("oracle_tree_sha256")
+            ):
+                raise ValueError(f"Oracle tree differs: {task_id}")
         result = validate_task(task_dir)
         if not result.valid:
             raise ValueError(
@@ -266,8 +289,19 @@ def main() -> int:
     args = _parse_args()
     if args.check:
         existing = _load(args.output)
-        verify_existing(existing)
-        if args.oracle_pointer.is_file():
+        oracle_artifacts_available = _oracle_artifacts_available(
+            args.oracle_pointer
+        )
+        if args.require_oracle_artifacts and not oracle_artifacts_available:
+            raise ValueError(
+                "local Oracle artifacts are required but unavailable; "
+                f"pointer={args.oracle_pointer}"
+            )
+        verify_existing(
+            existing,
+            verify_oracle_trees=oracle_artifacts_available,
+        )
+        if oracle_artifacts_available:
             payload = build_payload(args.oracle_pointer)
             if existing.get("freeze_id") != payload["freeze_id"]:
                 print(
@@ -277,7 +311,15 @@ def main() -> int:
                     file=sys.stderr,
                 )
                 return 1
-        print(f"spec freeze verified: {existing['freeze_id']}")
+        oracle_status = (
+            "local Oracle artifacts verified"
+            if oracle_artifacts_available
+            else "recorded Oracle freeze verified; local artifacts not required"
+        )
+        print(
+            f"spec freeze verified: {existing['freeze_id']} "
+            f"({oracle_status})"
+        )
         return 0
     payload = build_payload(args.oracle_pointer)
     args.output.parent.mkdir(parents=True, exist_ok=True)

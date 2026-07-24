@@ -1,6 +1,7 @@
 # Reports index（可提交版）
 
-`reports/` 目录在 `.gitignore` 中（本地生成物）。本文件是**可进 git 的索引**，指向本地 `reports/` 路径与 docs 内权威文档。
+`reports/` 默认属于本地生成物；只有 freeze、发布门禁和小型 audit 摘要进入
+Git。本文件区分已跟踪的发布证据与不提交的本地实验结果。
 
 数字型当前状态以 [STATUS.md](STATUS.md) 为准，不以 sprint 报告为准。
 
@@ -8,13 +9,13 @@
 
 | 本地路径 | 内容 |
 | --- | --- |
-| `reports/constitution/spec_compliance_150_20260724.csv` | 主榜 `spec_status` 分列（150 compliant / 0 legacy） |
-| `reports/constitution/pilot_rejudgement_20260724.md` | 试点三题 hidden failure 重判 |
-| `reports/constitution/hard50_migration_20260724.md` | hard-50 宪法迁移、审核来源与 Oracle 复验 |
-| `reports/constitution/compliant150_migration_20260724.md` | Python-150 全量工程合规验收 |
+| `reports/audits/spec_compliance_frozen_20260724.csv` | 已跟踪的主榜冻结合规清单（150 compliant / 0 legacy） |
 | `reports/audits/new_protocol_readiness.md` | Test-blind 新协议内容就绪度与逐题修订队列 |
-| `experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` | compliant hard-50 可见性配对；旧 Main=现 Public-feedback，旧 No-public=现 test-blind Main |
+| `artifacts/research_analysis/v1_1/current_spec_freeze.json` | 已跟踪的 spec 与 Oracle 内容冻结标识 |
 | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | 迁移 CLI 与 rebaseline 手册 |
+
+`reports/constitution/`、`experiments/`、Agent 轨迹与原始模型输出不进入 Git。
+历史结果只在文档中标明口径，不作为当前 benchmark source of truth。
 
 ## 当前分析
 

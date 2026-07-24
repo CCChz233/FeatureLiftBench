@@ -27,7 +27,7 @@
 | 迁规格 / 跑 validate | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) · [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
 | 做 Public-feedback 等对照 | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) · [../RUN.md](../RUN.md) §1.5 |
 | 看当前优先级与下一步 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
-| 看规模 / Oracle / 合规计数 | [STATUS.md](STATUS.md) · `reports/constitution/spec_compliance_150_20260724.csv` |
+| 看规模 / Oracle / 合规计数 | [STATUS.md](STATUS.md) · `reports/audits/spec_compliance_frozen_20260724.csv` |
 | 跑实验 | [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) · [../RUN.md](../RUN.md) · [EXPERIMENTS.md](EXPERIMENTS.md) |
 | 看结果解读 | [FINDINGS.md](FINDINGS.md) |
 | 生命周期 / promote | [07_incremental_task_rules.md](07_incremental_task_rules.md) |
@@ -85,7 +85,7 @@
 
 | 状态 | 文档 |
 | --- | --- |
-| **当前主线** | Python-150 独立人工 paper-gold 审核 + compliant core-100 校准 |
+| **当前主线** | 冻结后的 compliant Python-150 test-blind Main 完整实验；独立人工审核在实验后 |
 | **下一方法候选** | Contract/API closure recovery（compliant 子集上验证） |
 | **降级** | RSG start-here |
 | **废弃** | ECSM |

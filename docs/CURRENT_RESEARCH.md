@@ -6,7 +6,7 @@
 
 ## 一句话结论
 
-FeatureLiftBench 上，在 **entrypoint-conditioned OpenHands** 基线下，Agent 通常能找到实现，但卡在入口之后的 **API/行为契约完成与紧凑解耦**。规格、测试与 Agent 可见信息现已在 150/150 任务上完成工程统一；下一步优先独立人工审核与 compliant 模型校准，而不是扩题或调 start-here 检索。
+FeatureLiftBench 上，在 **entrypoint-conditioned OpenHands** 基线下，Agent 通常能找到实现，但卡在入口之后的 **API/行为契约完成与紧凑解耦**。规格、测试与 Agent 可见信息现已在 150/150 任务上完成工程统一；下一步优先运行冻结后的 compliant Python-150 模型实验，而不是扩题或调 start-here 检索。独立人工审核按计划在完整模型实验之后进行。
 
 论文目标仍是 **Benchmark + 方法**：
 
@@ -39,8 +39,10 @@ test-blind Main；当前 spec freeze 已通过实验门禁，独立人工审核�
 | 8 | Contract Checklist / Probe / Reference Support Set | ⏳ |
 
 150 题工程合规结果：
-[compliant150_migration_20260724.md](../reports/constitution/compliant150_migration_20260724.md)
-（全量校验、Oracle、生命周期与 harness 验收证据）。
+[new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md)
+（逐题协议就绪度）与
+[spec_compliance_frozen_20260724.csv](../reports/audits/spec_compliance_frozen_20260724.csv)
+（冻结合规清单）。
 
 ## 方法线怎么放
 
@@ -103,4 +105,4 @@ test-blind Main；当前 spec freeze 已通过实验门禁，独立人工审核�
 | `docs/` | 规范与入口；宪法 + 迁移手册优先 |
 | `harness/featureliftbench/` | 评测、校验、迁移 |
 | `experiments/` | 原始运行（标注 legacy/compliant） |
-| `reports/constitution/` | 迁移与 hidden 重判 |
+| `reports/audits/` | 已跟踪的冻结合规与协议就绪度摘要 |

@@ -189,10 +189,25 @@ class ConstitutionLegacyAnnotationTests(unittest.TestCase):
         )
 
     def test_oracle_module_detection_is_case_sensitive(self) -> None:
-        repo_root = Path(__file__).resolve().parents[2]
-        task_dir = repo_root / "benchmark" / "tasks" / "isodate__duration_parse_core__001"
-        self.assertTrue(_oracle_api_is_module(task_dir, "isodates"))
-        self.assertFalse(_oracle_api_is_module(task_dir, "Duration"))
+        with tempfile.TemporaryDirectory() as tmp:
+            repo_root = Path(tmp)
+            task_dir = repo_root / "benchmark" / "tasks" / "demo__task__001"
+            oracle_root = (
+                repo_root
+                / "benchmark"
+                / "submissions"
+                / task_dir.name
+                / "oracle"
+                / "featurelifted"
+            )
+            task_dir.mkdir(parents=True)
+            oracle_root.mkdir(parents=True)
+            (oracle_root / "isodates.py").write_text(
+                "VALUE = 1\n",
+                encoding="utf-8",
+            )
+            self.assertTrue(_oracle_api_is_module(task_dir, "isodates"))
+            self.assertFalse(_oracle_api_is_module(task_dir, "Isodates"))
 
     def test_legacy_task_without_public_spec(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

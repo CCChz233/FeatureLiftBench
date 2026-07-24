@@ -104,6 +104,12 @@ The plan must report:
 
 No API request is sent in plan mode.
 
+On a clean server clone, `build_spec_freeze.py --check` verifies the tracked
+task/evaluator/wheel trees and the recorded Oracle freeze identity without
+requiring ignored Oracle submissions or raw run directories. On the Oracle
+revalidation host, add `--require-oracle-artifacts` to verify those local
+artifacts as well.
+
 The frozen benchmark identifiers for this run are:
 
 - spec freeze `f7c616edb47ea533`;

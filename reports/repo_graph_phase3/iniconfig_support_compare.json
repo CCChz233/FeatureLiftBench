@@ -1,0 +1,78 @@
+{
+  "budget_tokens": 2000,
+  "keyword_baseline": {
+    "entities": [
+      "python:iniconfig:dependency",
+      "python:iniconfig:module",
+      "python:iniconfig.IniConfig:class",
+      "python:testing.test_iniconfig:module",
+      "python:testing.test_iniconfig.test_iniconfig_duplicate_key_fails:function",
+      "python:testing.test_iniconfig.test_iniconfig_from_file:function",
+      "python:testing.test_iniconfig.test_iniconfig_get_convert:function",
+      "python:testing.test_iniconfig.test_iniconfig_get_missing:function",
+      "python:testing.test_iniconfig.test_iniconfig_lineof:function",
+      "python:testing.test_iniconfig.test_iniconfig_section_first:function",
+      "file:testing/test_iniconfig.py:file",
+      "python:iniconfig.IniConfig.__contains__:method",
+      "python:iniconfig.IniConfig.__getitem__:method",
+      "python:iniconfig.IniConfig.__init__:method",
+      "python:iniconfig.IniConfig.__iter__:method",
+      "python:iniconfig.IniConfig.get:method",
+      "python:iniconfig.IniConfig.get:method#1",
+      "python:iniconfig.IniConfig.get:method#2",
+      "python:iniconfig.IniConfig.get:method#3",
+      "python:iniconfig.IniConfig.get:method#4",
+      "python:iniconfig.IniConfig.get:method#5",
+      "python:iniconfig.IniConfig.lineof:method",
+      "python:iniconfig.IniConfig.parse:method",
+      "python:iniconfig.SectionWrapper:class",
+      "python:iniconfig.SectionWrapper.__getitem__:method",
+      "python:iniconfig.SectionWrapper.__init__:method",
+      "python:iniconfig.SectionWrapper.__iter__:method",
+      "python:iniconfig.SectionWrapper.__iter__.lineof:function",
+      "python:iniconfig.SectionWrapper.get:method",
+      "python:iniconfig.SectionWrapper.get:method#1"
+    ],
+    "entity_count": 30,
+    "used_tokens": 365
+  },
+  "khop_baseline": {
+    "entities": [
+      "python:iniconfig.IniConfig.__contains__:method",
+      "python:iniconfig.IniConfig.__getitem__:method",
+      "python:iniconfig.IniConfig.__init__:method",
+      "python:iniconfig.IniConfig.__iter__:method",
+      "python:iniconfig.IniConfig.get:method",
+      "python:iniconfig.IniConfig.get:method#1",
+      "python:iniconfig.IniConfig.get:method#2",
+      "python:iniconfig.IniConfig.get:method#3",
+      "python:iniconfig.IniConfig.get:method#4",
+      "python:iniconfig.IniConfig.get:method#5",
+      "python:iniconfig.IniConfig.lineof:method",
+      "python:iniconfig.IniConfig.parse:method",
+      "python:iniconfig.IniConfig:class",
+      "python:iniconfig.SectionWrapper:class"
+    ],
+    "entity_count": 14,
+    "truncated": true,
+    "used_tokens": 153
+  },
+  "operational_support": {
+    "boundaries": 15,
+    "core": 13,
+    "covered_categories": [
+      "implementation"
+    ],
+    "seeds": [
+      "python:iniconfig.IniConfig:class"
+    ],
+    "status": "ok",
+    "support": 6,
+    "used_tokens": 1986
+  },
+  "repo": "benchmark/sanity/iniconfig__parse_config__001/repo",
+  "schema_version": "featureliftbench.repo_graph.support_compare.v1",
+  "seeds_requested": [
+    "IniConfig"
+  ]
+}

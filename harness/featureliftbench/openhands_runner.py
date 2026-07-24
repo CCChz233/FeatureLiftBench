@@ -522,15 +522,46 @@ def _write_invalid_context_policy(
 
 
 def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
+    from .ablation import ablation_options_from_env
+
     task_text = config.task_file.read_text(encoding="utf-8")
+    options = ablation_options_from_env(os.environ)
+    if options.mount_public_tests:
+        public_line = (
+            "- Public tests are under `public_tests/` and may be run for feedback.\n"
+        )
+        test_hint = (
+            "When you need to run tests, prefer:\n\n"
+            "```bash\n"
+            "PYTHONPATH=submission pytest public_tests/\n"
+            "```\n\n"
+        )
+        complete_note = (
+            "- Keep the implementation behavior-complete, not only tailored to public tests.\n\n"
+        )
+    else:
+        public_line = (
+            "- Benchmark-authored evaluator tests are **not mounted**. Upstream tests, docs, "
+            "and examples already present under `repo/` remain available.\n"
+        )
+        test_hint = (
+            "Implement from the public contract and `repo/`. Discover relevant upstream tests "
+            "when present, adapt or write your own tests, and run them before submitting. "
+            "The evaluator runs its private test tiers only after submit.\n\n"
+        )
+        complete_note = (
+            "- Keep the implementation behavior-complete against the Required Output API and "
+            "included behaviors.\n\n"
+        )
     prompt = (
         "# FeatureLiftBench Task for OpenHands\n\n"
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
         "## Workspace Contract\n\n"
         f"- Workspace root: `{config.workspace_dir}`\n"
         "- Source code to inspect is under `repo/`.\n"
-        "- Public tests are under `public_tests/` and may be run for feedback.\n"
-        "- Hidden tests and evaluation files are benchmark-only boundaries; do not use them as inputs.\n"
+        f"{public_line}"
+        "- All benchmark-authored evaluator tests and evaluation files are private boundaries; "
+        "do not use them as inputs.\n"
         f"- Final output must be written under `{config.submission_dir}`.\n"
         "- The importable package must be `submission/featurelifted/`.\n"
         "- Do not place the answer in a top-level `featurelifted/` directory.\n"
@@ -538,7 +569,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "directly via `PYTHONPATH`.\n"
         "- If a `pyproject.toml` is truly necessary, use only `setuptools.build_meta` as the "
         "build backend; never use `setuptools.backends._legacy:_Backend`.\n"
-        "- Keep the implementation behavior-complete, not only tailored to public tests.\n\n"
+        f"{complete_note}"
         "## Required Finish State\n\n"
         "Create a normal Python submission layout:\n\n"
         "```text\n"
@@ -547,10 +578,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "    __init__.py\n"
         "    ...\n"
         "```\n\n"
-        "When you need to run tests, prefer:\n\n"
-        "```bash\n"
-        "PYTHONPATH=submission pytest public_tests/\n"
-        "```\n\n"
+        f"{test_hint}"
         "## Task\n\n"
         f"{task_text}\n"
     )

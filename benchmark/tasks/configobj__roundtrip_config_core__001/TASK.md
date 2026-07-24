@@ -1,35 +1,62 @@
 # FeatureLift Task: INI-like config round-trip and configspec validation
 
-Extract ConfigObj parsing/writing with comment preservation and Validator configspec checks without original configobj import.
+Extract a task-scoped subset of `configobj` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `import featurelifted; from featurelifted import ConfigObj, DuplicateError, flatten_errors, get_extra_values; from featurelifted.validate import Validator, VdtValueTooSmallError`
-- Callable: `featurelifted.ConfigObj`
-- Signature: `ConfigObj(infile=None, ...)`
+```python
+from featurelifted import (
+    ConfigObj,
+    DuplicateError,
+    flatten_errors,
+    get_extra_values,
+    validate,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- original configobj import at runtime
-- project tests and packaging
+- `ConfigObj(infile=None, options=None, configspec=None, encoding=None, interpolation=True, raise_errors=False, list_values=True, create_empty=False, file_error=False, stringify=True, indent_type=None, default_encoding=None, unrepr=False, write_empty_values=False, _inspec=False)` class constructor
+  - `ConfigObj.validate(self, validator, preserve_errors=False, copy=False, section=None)`
+  - `ConfigObj.write(self, outfile=None, section=None)`
+- `DuplicateError` must be importable and raisable
+- `flatten_errors(cfg, res, levels=None, results=None)`
+- `get_extra_values(conf, _prepend=())`
+- `validate` module must be importable
+  - `validate.Validator(functions=None)` class constructor
+  - `validate.VdtValueTooSmallError` must be importable and raisable
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: parse INI-like config from strings with nested sections. Required observable cases include parse sections and values; no configobj import surface.
+- The extracted feature must support this observable behavior: write configs preserving comments and key order metadata. Required observable cases include write roundtrip keys; scalar order metadata; comment preserved on write.
+- The extracted feature must support this observable behavior: validate values against configspec via Validator. Required observable cases include configspec validation failure flattened; get extra values from configspec.
+- The extracted feature must support this observable behavior: report validation failures with flatten_errors. Required observable cases include configspec validation failure flattened.
+- The extracted feature must support this observable behavior: detect duplicate sections and parse errors. Required observable cases include parse sections and values; duplicate section raises.
+- The package exposes the required task API paths `featurelifted.ConfigObj`, `featurelifted.ConfigObj.validate`, `featurelifted.ConfigObj.write`, `featurelifted.DuplicateError`, `featurelifted.flatten_errors`, `featurelifted.get_extra_values`, `featurelifted.validate`, `featurelifted.validate.Validator`, `featurelifted.validate.VdtValueTooSmallError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `configobj`
+- Forbidden imports: `configobj`.
+- Do not implement original configobj import at runtime.
+- Do not implement project tests and packaging.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — parse INI-like config from strings with nested sections
-- **B002** — write configs preserving comments and key order metadata
-- **B003** — validate values against configspec via Validator
-- **B004** — report validation failures with flatten_errors
-- **B005** — detect duplicate sections and parse errors
-- **B006** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B007** — the submitted package does not import forbidden upstream packages: configobj
+- **B001** — The extracted feature must support this observable behavior: parse INI-like config from strings with nested sections. Required observable cases include parse sections and values; no configobj import surface.
+- **B002** — The extracted feature must support this observable behavior: write configs preserving comments and key order metadata. Required observable cases include write roundtrip keys; scalar order metadata; comment preserved on write.
+- **B003** — The extracted feature must support this observable behavior: validate values against configspec via Validator. Required observable cases include configspec validation failure flattened; get extra values from configspec.
+- **B004** — The extracted feature must support this observable behavior: report validation failures with flatten_errors. Required observable cases include configspec validation failure flattened.
+- **B005** — The extracted feature must support this observable behavior: detect duplicate sections and parse errors. Required observable cases include parse sections and values; duplicate section raises.
+- **B006** — The package exposes the required task API paths `featurelifted.ConfigObj`, `featurelifted.ConfigObj.validate`, `featurelifted.ConfigObj.write`, `featurelifted.DuplicateError`, `featurelifted.flatten_errors`, `featurelifted.get_extra_values`, `featurelifted.validate`, `featurelifted.validate.Validator`, `featurelifted.validate.VdtValueTooSmallError` with the kinds and callable signatures listed in this contract.
+- **B007** — the submitted package does not import forbidden upstream packages: configobj.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -1,24 +1,22 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_distribution_entry_points",
       "public_clause_ids": [
         "B002",
-        "B004"
+        "B004",
+        "B001",
+        "B003",
+        "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "81f62350d6158290e49e5c25c267a878423fb264c7ced1906dd270f59a61d971"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -26,83 +24,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse entry point definitions from metadata"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse entry point definitions from metadata. Required observable cases include path distribution entry points."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "select entry points by group and name"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: select entry points by group and name. Required observable cases include entry point value parsing and selection; path distribution entry points."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "load entry point targets"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: load entry point targets. Required observable cases include path distribution entry points."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "read entry points from PathDistribution metadata directories"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: read entry points from PathDistribution metadata directories. Required observable cases include path distribution entry points."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "parse INI-style sectioned entry point config"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: parse INI-style sectioned entry point config. Required observable cases include entry point value parsing and selection; sectioned entry point config; path distribution entry points."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: importlib_metadata"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_entry_point_value_parsing_and_selection",
       "public_clause_ids": [
         "B002",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B005"
-        ],
-        "test_source_sha256": "6839afe51c72d79bb0ddf8a712064feee9efa522ffc7d084da6f7596df5a7445"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_sectioned_entry_point_config",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "75fb80be226979ca019f80cfa6996f25b9c619b803fb78cbb53039631d57f13e"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -136,7 +112,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "1b4c85c3712cc4e818368781d49f2a046c79c78e9bd5f2cd7478caac27f45751",
+  "spec_sha256": "d4b97b47085be2fef23b390932e98b7fe293d1707746f1ec18242c9338990d32",
   "task_id": "importlib_metadata__entry_points_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

@@ -1,75 +1,42 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_json_list_env",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "1484f2ce5ed89e488a9df9d2cdfbb4276e19aee51dfe7f81d192abbe17b03815"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_case_sensitive_env",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "fc80135962711af5cb89eb10f5b22ea452dec62e3d27f783edae233ed3b4d02a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_ignore_empty_env",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "74f101afed6392ef579daffc9da169dd3d68c6714b8da1629fab52c808ccd1fd"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_none_str",
       "public_clause_ids": [
-        "B004"
+        "B004",
+        "B001",
+        "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "6409fa6799d1e950505961b596af8bf40dfde682485f060808bfe0fe769bb234"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -77,60 +44,48 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "BaseSettings loads fields from os.environ with env_prefix"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: BaseSettings loads fields from os.environ with env_prefix. Required observable cases include env prefix and nested; parse none str."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "nested models via env_nested_delimiter"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: nested models via env_nested_delimiter. Required observable cases include env prefix and nested; parse none str."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "json/complex field parsing and case_sensitive option"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: json/complex field parsing and case_sensitive option. Required observable cases include json list env; case sensitive env."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "env_ignore_empty and env_parse_none_str"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: env_ignore_empty and env_parse_none_str. Required observable cases include json list env; ignore empty env; parse none str."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.BaseSettings`, `featurelifted.SettingsConfigDict`, `featurelifted.SettingsError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: pydantic_settings"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_env_prefix_and_nested",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "831c863f7a5a692279dcdcfba0c906fb2ca05e349ffff73411f57af329c3a214"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -163,7 +118,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "03b8636ad7377ac75edeb5eb25065e2c32d80dfb752560496cdac52227314951",
+  "spec_sha256": "94c5c7b0260598894f7f0d039b72489d44808bf8d940adcbd7f15879c776bf22",
   "task_id": "pydantic_settings__env_source_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

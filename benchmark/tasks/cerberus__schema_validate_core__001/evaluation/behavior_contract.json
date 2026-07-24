@@ -1,93 +1,49 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_schema_validation",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "00bf22478bcd2f337eae910621e35b98fa2d945fb925e7f53287c18bfbfca1a6"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_coerce_updates_document",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "ae3ecc7048937b2e1dd2e1046a2450b0401f6832df0b4f60e2fa6b5bc4579489"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_list_error_paths",
       "public_clause_ids": [
         "B002",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "fc13ce69133cee8d69f3a7ab0e71ef1f2299dc77f8c798ec92c305216035cb66"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_deep_nested_schema_and_coerce_combo",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "31d6320d46a48084bcf3b7bb476dd75584e59c6039bce135e63357fc20188f5e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_cerberus_import_surface",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "733847ff0801ee7c1becc624a5ca3a30ef0c585d0782293b4ebc918c0ac16de2"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -95,91 +51,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "validate dict documents against nested schema definitions"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: validate dict documents against nested schema definitions. Required observable cases include validate returns bool; nested schema validation; coerce updates document; deep nested schema and coerce combo."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "enforce required fields and type rules on nested mappings and lists"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: enforce required fields and type rules on nested mappings and lists. Required observable cases include required field rejects missing; type rule rejects wrong type; nested list error paths."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "coerce field values during validation and reflect coerced document"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: coerce field values during validation and reflect coerced document. Required observable cases include coerce updates document."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "aggregate nested validation failures into structured error trees"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: aggregate nested validation failures into structured error trees. Required observable cases include nested schema validation; nested list error paths."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.Validator`, `featurelifted.Validator.document`, `featurelifted.Validator.errors`, `featurelifted.Validator.validate`, `featurelifted.DocumentError`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: cerberus"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_required_field_rejects_missing",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "c48d5d9d735ef4b1bf990a185b5e4c1ea3ad1338d9d5fa72503d3f82881a05fa"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_type_rule_rejects_wrong_type",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "5df4edb27229963bcccc0b4c8d6f96ec7ca89e7a5f18e2fb7f928fd46664ba77"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_validate_returns_bool",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "95e86e989f22ddf255baeb5ecdf7b918416715ec248ffdc1aedf864ed5e7e315"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -212,7 +138,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "17f73776984b09bdc8acec805b5213ec1241fd5ef7c5f2383b5953135936420d",
+  "spec_sha256": "ded910c7ec601e3200b8dce7ec0db4e827504fdcf3d50db94c20fed0f60c4580",
   "task_id": "cerberus__schema_validate_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

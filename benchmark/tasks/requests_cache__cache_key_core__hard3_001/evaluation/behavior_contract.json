@@ -1,96 +1,54 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_json_body_sorting_and_redaction_affect_cache_key",
       "public_clause_ids": [
         "B001",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "b46513c969bd8f8698fc19ff798c99fffaafeeda9aafc851bc02649c7724191a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_form_body_and_key_only_params_are_normalized",
       "public_clause_ids": [
         "B004",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B006"
-        ],
-        "test_source_sha256": "fa5f02b253b14d01c780e4c01c91732992997e411f5cfd04fed0b51546333590"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_match_headers_controls_key_variation",
       "public_clause_ids": [
         "B005",
-        "B007"
+        "B007",
+        "B002",
+        "B003",
+        "B008",
+        "B009",
+        "B010"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B007"
-        ],
-        "test_source_sha256": "2cecee0cdcbccce6b805744bbceed832f9d810dd38d3b39ebee0ba4e8af97773"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_header_multi_value_normalization_and_redaction",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B007",
-          "B008"
-        ],
-        "pass_2_ast_mapping": [
-          "B005",
-          "B008"
-        ],
-        "test_source_sha256": "150891b79513e06c34fd0e96cfa6375625f72304ade98dc9f47dff67e2392f52"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_expires_header_and_default_expiration",
       "public_clause_ids": [
         "B011"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B011"
-        ],
-        "pass_2_ast_mapping": [
-          "B011"
-        ],
-        "test_source_sha256": "f7e834dd03d8b4d26cdfb09c8f7df6de57c2154f9d1a8ecee5a036e953d826ac"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B012"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -98,130 +56,104 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "create_key"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "create_key normalizes method, URL, parameters, selected headers, and body before returning a deterministic cache-key digest."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "create_cache_key compatibility helper"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "create_cache_key reads request-like objects and produces the same key as create_key with equivalent explicit fields."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "normalize_url"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "normalize_url lowercases scheme and host, merges explicit parameters, sorts query items, and preserves key-only or repeated parameters."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "normalize_params"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "normalize_params sorts parameters and redacts configured ignored values without removing their keys."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "normalize_headers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "normalize_headers includes only matched headers, normalizes names and whitespace, and deterministically orders multi-value content."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "normalize_body"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "normalize_body canonicalizes JSON key order and form-encoded parameters and redacts ignored values in both body forms."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "get_matched_headers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "get_matched_headers returns the normalized header subset requested by match_headers and excludes unmatched headers."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/7",
-      "text": "CachePolicy.from_headers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "CachePolicy.from_headers interprets Cache-Control and Expires headers into storage and expiration decisions."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/8",
-      "text": "get_expiration"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
+      "text": "get_expiration returns max-age seconds, Expires relative to now, no-store suppression, or the declared default when no directive applies."
     },
     {
       "behavior_id": "B010",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/9",
-      "text": "Cache-Control no-store and max-age"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B010",
+      "text": "`Cache-Control: max-age=N` sets expiration to `N` seconds."
     },
     {
       "behavior_id": "B011",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/10",
-      "text": "Expires and default expiration"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B011",
+      "text": "Use `default` expiration when no cache header applies."
     },
     {
       "behavior_id": "B012",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B012",
+      "text": "The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B013",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B013",
       "text": "the submitted package does not import forbidden upstream packages: requests_cache, requests, url_normalize"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_query_order_normalized",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "b0893408cde05b34e7ef27ce0f2cbabee5b113467c50e7c4247979d52330fceb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_ignored_parameter_redacts_value_for_matching",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B007"
-        ],
-        "test_source_sha256": "69a59f921cd1dd1eabc1492de2404749f137544465eb789280cb90eb54ae29bb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_cache_control_max_age_and_no_store",
       "public_clause_ids": [
         "B010"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B010"
-        ],
-        "pass_2_ast_mapping": [
-          "B010"
-        ],
-        "test_source_sha256": "ac946750f52f1dbf2e6488197b82da13966bba295949baff665de3a2a2a0398f"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -254,7 +186,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "b220a93760bd2a6dbaa2e829c051b7c97c28988d877515da9646ab8db52934b8",
+  "spec_sha256": "6fd5e0bf51d754238551447a62bef1be433dfb854c29400678ae6dafecf4e729",
   "task_id": "requests_cache__cache_key_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

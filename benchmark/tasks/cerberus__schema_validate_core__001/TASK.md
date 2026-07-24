@@ -1,36 +1,57 @@
 # FeatureLift Task: Schema validation core
 
-Extract Cerberus Validator with nested schema rules, type coercion, and structured error aggregation without original cerberus import.
+Extract a task-scoped subset of `cerberus` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `import featurelifted; from featurelifted import Validator, DocumentError, SchemaError`
-- Callable: `featurelifted.Validator`
-- Signature: `Validator(schema=None, allow_unknown=False, require_all=False)(document)`
+```python
+from featurelifted import (
+    DocumentError,
+    SchemaError,
+    Validator,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- schema_registry and rules_set_registry named schema indirection
-- normalization rename/default pipelines beyond coerce in tests
-- benchmarks, upstream tests, docs, and packaging metadata
-- original cerberus import at runtime
+- `Validator(*args, **kwargs)` class constructor
+  - `Validator.document` attribute must exist on instances
+  - `Validator.errors` attribute must exist on instances
+  - `Validator.validate(self, document, schema=None, update=False, normalize=True)`
+- `DocumentError` must be importable and raisable
+- `SchemaError` must be importable and raisable
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: validate dict documents against nested schema definitions. Required observable cases include validate returns bool; nested schema validation; coerce updates document; deep nested schema and coerce combo.
+- The extracted feature must support this observable behavior: enforce required fields and type rules on nested mappings and lists. Required observable cases include required field rejects missing; type rule rejects wrong type; nested list error paths.
+- The extracted feature must support this observable behavior: coerce field values during validation and reflect coerced document. Required observable cases include coerce updates document.
+- The extracted feature must support this observable behavior: aggregate nested validation failures into structured error trees. Required observable cases include nested schema validation; nested list error paths.
+- The package exposes the required task API paths `featurelifted.Validator`, `featurelifted.Validator.document`, `featurelifted.Validator.errors`, `featurelifted.Validator.validate`, `featurelifted.DocumentError`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `cerberus`
+- Forbidden imports: `cerberus`.
+- Do not implement schema_registry and rules_set_registry named schema indirection.
+- Do not implement normalization rename/default pipelines beyond coerce in tests.
+- Do not implement benchmarks, upstream tests, docs, and packaging metadata.
+- Do not implement original cerberus import at runtime.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — validate dict documents against nested schema definitions
-- **B002** — enforce required fields and type rules on nested mappings and lists
-- **B003** — coerce field values during validation and reflect coerced document
-- **B004** — aggregate nested validation failures into structured error trees
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: cerberus
+- **B001** — The extracted feature must support this observable behavior: validate dict documents against nested schema definitions. Required observable cases include validate returns bool; nested schema validation; coerce updates document; deep nested schema and coerce combo.
+- **B002** — The extracted feature must support this observable behavior: enforce required fields and type rules on nested mappings and lists. Required observable cases include required field rejects missing; type rule rejects wrong type; nested list error paths.
+- **B003** — The extracted feature must support this observable behavior: coerce field values during validation and reflect coerced document. Required observable cases include coerce updates document.
+- **B004** — The extracted feature must support this observable behavior: aggregate nested validation failures into structured error trees. Required observable cases include nested schema validation; nested list error paths.
+- **B005** — The package exposes the required task API paths `featurelifted.Validator`, `featurelifted.Validator.document`, `featurelifted.Validator.errors`, `featurelifted.Validator.validate`, `featurelifted.DocumentError`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: cerberus.
 <!-- featureliftbench:behavior-clauses:end -->

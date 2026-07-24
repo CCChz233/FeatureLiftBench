@@ -2,6 +2,8 @@
 
 FeatureLiftBench tasks use the filesystem schema implemented by the current evaluator, not a `task.yaml` schema.
 
+**Agent-visible contract and test–spec consistency：** 以 [`TASK_DESIGN_RULES.md`](TASK_DESIGN_RULES.md) 为准（`public_spec` / `evaluation_spec`、禁止双轨手写 TASK）。本文描述包布局；与宪法冲突时回修本文并服从宪法。
+
 Canonical lifecycle and promotion rules: [`07_incremental_task_rules.md`](07_incremental_task_rules.md).
 Split registry: [`../benchmark/manifest.json`](../benchmark/manifest.json).
 
@@ -11,7 +13,7 @@ Split registry: [`../benchmark/manifest.json`](../benchmark/manifest.json).
 benchmark/<split>/<task_id>/
   metadata.json
   requirements.lock
-  TASK.md                      # human-readable feature spec (recommended)
+  TASK.md                      # generated from metadata.public_spec for compliant tasks
   repo/                        # sole formal upstream snapshot for this task
   public_tests/
   hidden_tests/
@@ -25,22 +27,33 @@ Batch-3 pilots currently live under `benchmark/batch3_pilot/<task_id>/` and may 
 
 | Path | Role |
 |---|---|
-| `metadata.json` | Machine-readable task metadata, source, feature, output, difficulty/status, forbidden imports, test paths. |
+| `metadata.json` | Machine-readable task metadata, source, feature, output, difficulty/status, forbidden imports, test paths. Compliant tasks add `public_spec`, `evaluation_spec`, `spec_status`, `spec_hash`, `generated_task_hash`, `task_revision`. |
 | `requirements.lock` | Task runtime dependencies. Empty or comment-only files are valid for stdlib-only tasks. |
 | `repo/` | **The only formal upstream snapshot** for evaluation and test authoring. Pinned commit content lives here. |
-| `public_tests/` | Visible pytest tests. Import **`featurelifted`**, not `submission`. |
-| `hidden_tests/` | Hidden pytest tests for behavior preservation. Same import rules as public tests. |
+| `public_tests/` | Private basic evaluator tier (historical name; not Agent-visible in Main). Imports **`featurelifted`**. |
+| `hidden_tests/` | Private held-out evaluator tier. Same import rules as the basic tier. |
 | `evaluation/` | Evaluator support: `forbidden_imports.txt`, `oracle_manifest.json`, and related probes. |
 
 ### Optional paths (Python)
 
 | Path | Role |
 |---|---|
-| `TASK.md` | Human spec: included/excluded behavior, target API, calibration notes. |
+| `TASK.md` | Compliant tasks: **generated** from `metadata.public_spec`. Legacy tasks may still use hand-written TASK until migrated. |
 | `reference_solution/` | Inline reference implementation for pilots; production oracle may also live under `benchmark/submissions/<task_id>/`. |
 | `evaluator_config.yaml` | Pilot-local evaluator overrides (batch-3). |
 
-Neither `TASK.md` nor `reference_solution/` is strictly required by every legacy main task, but **new tasks must include `TASK.md`** per the Task Package Gate.
+Neither `TASK.md` nor `reference_solution/` is strictly required by every legacy main task, but **new tasks must include `TASK.md`** per the Task Package Gate. Compliant main tasks must use **generated** `TASK.md` from `public_spec` (see [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)).
+
+### Constitution fields (`metadata.json`)
+
+| Field | Role |
+| --- | --- |
+| `spec_status` | `legacy` or `compliant` |
+| `public_spec` | Agent-visible contract (required for compliant) |
+| `evaluation_spec` | Private test/API mapping (required for compliant) |
+| `spec_hash` | `sha256(canonical_json(public_spec))` |
+| `generated_task_hash` | `sha256(render(public_spec))` |
+| `task_revision` | Integer revision for spec changes |
 
 ## Canonical Go Task Package
 

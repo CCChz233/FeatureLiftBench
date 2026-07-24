@@ -90,5 +90,381 @@
     "public": "public_tests/",
     "hidden": "hidden_tests/",
     "command": "pytest"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "HTTP request model and offline request builder",
+    "summary": "Extract a task-scoped subset of `httpx` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.URL",
+        "kind": "constant"
+      },
+      {
+        "path": "featurelifted.QueryParams",
+        "kind": "class",
+        "signature": "(*args: 'QueryParamTypes | None', **kwargs: 'typing.Any') -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.QueryParams.multi_items",
+            "kind": "method",
+            "signature": "(self) -> 'list[tuple[str, str]]'"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Headers",
+        "kind": "class",
+        "signature": "(headers: 'HeaderTypes | None' = None, encoding: 'str | None' = None) -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.Headers.raw",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Cookies",
+        "kind": "class",
+        "signature": "(cookies: 'CookieTypes | None' = None) -> 'None'"
+      },
+      {
+        "path": "featurelifted.Request",
+        "kind": "class",
+        "signature": "(method: 'str | bytes', url: 'URL | str', *, params: 'QueryParamTypes | None' = None, headers: 'HeaderTypes | None' = None, cookies: 'CookieTypes | None' = None, content: 'RequestContent | None' = None, data: 'RequestData | None' = None, files: 'RequestFiles | None' = None, json: 'typing.Any | None' = None, stream: 'SyncByteStream | AsyncByteStream | None' = None, extensions: 'RequestExtensions | None' = None) -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.Request.content",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Request.headers",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Request.url",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.build_request",
+        "kind": "function",
+        "signature": "(method: 'str', url: 'URLTypes', *, base_url: 'str | URL' = '', params: 'QueryParamTypes | None' = None, headers: 'HeaderTypes | None' = None, cookies: 'CookieTypes | None' = None, default_params: 'QueryParamTypes | None' = None, default_headers: 'HeaderTypes | None' = None, default_cookies: 'CookieTypes | None' = None, content: 'typing.Any' = None, data: 'typing.Any' = None, json: 'typing.Any' = None, files: 'typing.Any' = None) -> 'Request'"
+      },
+      {
+        "path": "featurelifted.InvalidURL",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: construct and join URL objects with base URL and query parameters. Required observable cases include url path and query; base url join and duplicate query params; url idna and percent encoding."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: preserve query parameter ordering and duplicate keys in QueryParams. Required observable cases include query params from mapping; query params duplicate and empty value."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: case-insensitive header lookup with raw header preservation. Required observable cases include headers case insensitive lookup; url idna and percent encoding."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: merge default and per-request headers, query params, and cookies. Required observable cases include query params from mapping; cookies simple header; build request merges defaults; headers cookie merge and request object; build request merges client defaults; query params duplicate and empty value."
+      },
+      {
+        "id": "B005",
+        "text": "The extracted feature must support this observable behavior: build Request objects with content, data, and json body helpers. Required observable cases include build request merges defaults; request content data json headers."
+      },
+      {
+        "id": "B006",
+        "text": "The extracted feature must support this observable behavior: raise compatible errors for invalid URL and request input. Required observable cases include url idna and percent encoding; invalid url raises."
+      },
+      {
+        "id": "B007",
+        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "httpx.URL",
+      "httpx.QueryParams",
+      "httpx.Headers",
+      "httpx.Cookies",
+      "httpx.Request",
+      "httpx.Client.build_request",
+      "httpx._client.BaseClient._merge_url",
+      "httpx._client.BaseClient._merge_headers",
+      "httpx._client.BaseClient._merge_cookies",
+      "httpx._client.BaseClient._merge_queryparams"
+    ],
+    "exclusions": [
+      "network I/O, transports, connection pools, proxies, redirects",
+      "Client.send, AsyncClient, response parsing and streaming",
+      "authentication flows beyond request header construction",
+      "original httpx package import at runtime",
+      "CLI, docs, CI, and original tests"
+    ],
+    "forbidden": {
+      "imports": [
+        "httpx"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: httpx."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: construct and join URL objects with base URL and query parameters. Required observable cases include url path and query; base url join and duplicate query params; url idna and percent encoding."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: preserve query parameter ordering and duplicate keys in QueryParams. Required observable cases include query params from mapping; query params duplicate and empty value."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: case-insensitive header lookup with raw header preservation. Required observable cases include headers case insensitive lookup; url idna and percent encoding."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: merge default and per-request headers, query params, and cookies. Required observable cases include query params from mapping; cookies simple header; build request merges defaults; headers cookie merge and request object; build request merges client defaults; query params duplicate and empty value."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: build Request objects with content, data, and json body helpers. Required observable cases include build request merges defaults; request content data json headers."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: raise compatible errors for invalid URL and request input. Required observable cases include url idna and percent encoding; invalid url raises."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B008",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: httpx"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_url_path_and_query",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_query_params_from_mapping",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_headers_case_insensitive_lookup",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_cookies_simple_header",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_build_request_merges_defaults",
+        "behavior_ids": [
+          "B004",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_base_url_join_and_duplicate_query_params",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_headers_cookie_merge_and_request_object",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_build_request_merges_client_defaults",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_request_content_data_json_headers",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_url_idna_and_percent_encoding",
+        "behavior_ids": [
+          "B001",
+          "B006",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_query_params_duplicate_and_empty_value",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_url_raises",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_network_api_surface",
+        "behavior_ids": [
+          "B007"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B007"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.URL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.QueryParams",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.QueryParams.multi_items",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_base_url_join_and_duplicate_query_params",
+          "hidden_tests/test_hidden_behavior.py::test_query_params_duplicate_and_empty_value"
+        ]
+      },
+      {
+        "path": "featurelifted.Headers",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Headers.raw",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_headers_cookie_merge_and_request_object"
+        ]
+      },
+      {
+        "path": "featurelifted.Cookies",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Request",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Request.content",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_headers_cookie_merge_and_request_object",
+          "hidden_tests/test_hidden_behavior.py::test_request_content_data_json_headers"
+        ]
+      },
+      {
+        "path": "featurelifted.Request.headers",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_build_request_merges_client_defaults",
+          "hidden_tests/test_hidden_behavior.py::test_headers_cookie_merge_and_request_object",
+          "hidden_tests/test_hidden_behavior.py::test_request_content_data_json_headers"
+        ]
+      },
+      {
+        "path": "featurelifted.Request.url",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_base_url_join_and_duplicate_query_params",
+          "hidden_tests/test_hidden_behavior.py::test_build_request_merges_client_defaults",
+          "hidden_tests/test_hidden_behavior.py::test_url_idna_and_percent_encoding"
+        ]
+      },
+      {
+        "path": "featurelifted.build_request",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidURL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 2,
+  "spec_hash": "55f45b33f55ccb66992a311ae7c16f34572312af6075aa740e1ace34034c9f75",
+  "generated_task_hash": "998a593cd19ffda7d2f3a73ef962dfe9fa342d3960b6574b2a3adad88241868f"
 }

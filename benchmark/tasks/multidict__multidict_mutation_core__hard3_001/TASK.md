@@ -1,45 +1,63 @@
 # FeatureLift Task: Case-insensitive multidict mutation and proxy behavior
 
-Extract a pure-Python subset of aio-libs/multidict into a standalone `featurelifted` package.
+Extract a task-scoped subset of `multidict` into a standalone `featurelifted` package.
 
-The implementation must not import `multidict`, must not read from `repo/`, must not use the network, and must use only the standard library.
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
 ```python
-from featurelifted import MultiDict, CIMultiDict, MultiDictProxy, CIMultiDictProxy
+from featurelifted import (
+    CIMultiDict,
+    CIMultiDictProxy,
+    MultiDict,
+    MultiDictProxy,
+)
 ```
+
+## Required API Details
+
+- `MultiDict(*args, **kwargs) -> 'None'` class constructor
+  - `MultiDict.add(self, key: 'str', value: 'object') -> 'None'`
+  - `MultiDict.popall(self, key: 'str') -> 'list[object]'`
+  - `MultiDict.popone(self, key: 'str', default=Ellipsis)`
+- `CIMultiDict(*args, **kwargs) -> 'None'` class constructor
+  - `CIMultiDict.add(self, key: 'str', value: 'object') -> 'None'`
+  - `CIMultiDict.getall(self, key: 'str') -> 'list[object]'`
+- `MultiDictProxy(base: 'MultiDict') -> 'None'` class constructor
+- `CIMultiDictProxy(base: 'CIMultiDict') -> 'None'` class constructor
+  - `CIMultiDictProxy.add(self, key: 'str', value: 'object') -> 'None'`
 
 ## Required Behavior
 
-- `MultiDict` stores duplicate keys in insertion order; `__getitem__` returns the most recent value.
-- `add` appends another value for a key; `getall` returns all values for a key.
-- `popone` removes and returns the most recent value; `popall` removes and returns every value.
-- `CIMultiDict` compares keys case-insensitively and stores case-insensitive string keys.
-- `MultiDictProxy` and `CIMultiDictProxy` mutate their underlying base mapping.
-- Equality compares stored key/value pairs (case-insensitively for `CIMultiDict`).
+- MultiDict preserves repeated values and insertion order while CIMultiDict applies the same mutations using case-insensitive string keys.
+- getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value.
+- MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state.
+- CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations.
+- The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
 - Forbidden imports: `multidict`.
-- Forbidden path access: `repo/`, `multidict/`.
-- Do not depend on the C extension implementation.
+- Forbidden path access: `repo/, multidict/`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement C extension implementation.
+- Do not implement typing-only modules.
 
 ## Public vs Hidden Tests
 
-Public tests cover basic mutation, duplicate keys, and proxy writes.
-Hidden tests cover `popone`/`popall`, case-insensitive lookup/equality, and proxy reflection semantics.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — MultiDict and CIMultiDict mutation semantics
-- **B002** — getall, getone, popone, popall
-- **B003** — MultiDictProxy and CIMultiDictProxy view mutation
-- **B004** — case-insensitive key folding for CIMultiDict
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: multidict
+- **B001** — MultiDict preserves repeated values and insertion order while CIMultiDict applies the same mutations using case-insensitive string keys.
+- **B002** — getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value.
+- **B003** — MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state.
+- **B004** — CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations.
+- **B005** — The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: multidict.
 <!-- featureliftbench:behavior-clauses:end -->

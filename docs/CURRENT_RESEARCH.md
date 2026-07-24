@@ -1,87 +1,106 @@
 # 当前研究入口
 
-更新时间：2026-07-23
+更新时间：2026-07-24
 
-这是论文创新、当前实验结果和下一轮实验的**唯一入口**。原始运行、审计材料和历史 sprint 仍保留，但日常讨论不再从那些目录逐个查找。
+这是论文创新、当前实验结果和下一轮实验的**唯一入口**。
 
 ## 一句话结论
 
-FeatureLiftBench 当前最有潜力的论文创新是 **Budgeted Executable Closure State Machine（Budgeted ECSM）**：把功能解耦建模为 obligation–artifact–evidence 的闭包过程，用可执行证据、freshness/invalidation 和单位 token 的 hidden-risk reduction 决定 expand、probe、prune 与 stop。
+FeatureLiftBench 上，在 **entrypoint-conditioned OpenHands** 基线下，Agent 通常能找到实现，但卡在入口之后的 **API/行为契约完成与紧凑解耦**。规格、测试与 Agent 可见信息现已在 150/150 任务上完成工程统一；下一步优先独立人工审核与 compliant 模型校准，而不是扩题或调 start-here 检索。
 
-2026-07-23 修订的 [Repository Semantic Graph Final Design v1.1](research_analysis/REPOSITORY_SEMANTIC_GRAPH_DESIGN.md) 是 ECSM 的可插拔仓库数据与工具层：静态骨架解决候选依赖，task/submission overlay 解决闭包对照，evidence ledger 解决 freshness。RSG tool augmentation 与原生 ECSM enforcement 分开实验；V1 不启用跨任务长期记忆。
+论文目标仍是 **Benchmark + 方法**：
 
-RSG Phase 1 离线实现已通过 checkpoint：Python-150 为 150/150 build、0 parse error、definition/import recall 100%、source-entrypoint mapping 96.73%；host/container digest 一致，exact-edge 分层 provenance 抽样为 100/100。Phase 2/3 现已接入 opt-in runner、三类 Agent、task closure、submission delta、claim/evidence/freshness 和 FeatureLiftAgent native stopping guard。详见 [Phase 1 checkpoint](../reports/repo_graph_phase1/README.md) 与 [实现计划](research_analysis/REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md)。
+- **Benchmark 基础主线：** 冻结规格、任务质量与评测口径。  
+- **方法研究主线：** 在合规任务上验证 Contract/API closure recovery；具体方案由失败分析与先导实验决定。
 
-Phase 4 已在 2026-07-23 启动真实 OpenHands 付费门控，但 `rsg-pilot-v1-20260723-clean1` 在 2/12 cells 后停止：P3 只采用了 final `submission-check`，没有采用初始 `task-closure`。这说明 CLI 可用性不等于 Agent 采用率；当前必须先将两个操作暴露为 OpenHands 原生 tools，并通过新的 mechanism smoke，才恢复剩余 Pilot。该门控不提供 RSG 增益或退化的因果结论。
+**先读：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) → [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) → [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) → [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)
 
-Token efficiency 应作为方法的第二目标，而不是单独的“上下文压缩”贡献。
+**服务器跑最新 engineering-compliant Python-150：**
+[SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md)。正式默认已改为
+test-blind Main；当前 spec freeze 已通过实验门禁，独立人工审核留到
+150 题实验之后。
 
-## 当前证据
+## 当前最高优先级
 
-- Python 主榜：150 个 hard tasks。
-- 当前分析：550 个 model-task runs，225 个 formal passes。
-- Verified tokens：1,092,030,197，其中 98.65% 是 prompt。
-- 63.72% tokens 消耗在最终没有 formal pass 的运行上。
-- 65.27% runs 出现重复文件读取。
-- 现有 OpenHands **已经有通用上下文压缩**：288/550 runs 触发 552 次 `Condensation`。
+> 主榜已达到 **150/150 experiment-ready、0 legacy**。契约与 hidden 已对齐，
+> Oracle freeze `7c042d5528b7d0fd` 完成 450/450 Docker 复验，spec freeze
+> `f7c616edb47ea533` 已生成。现在可运行 compliant Python-150 模型实验；
+> 独立人工审核按计划在实验后进行，只影响 paper-ready 发布。
 
-因此研究问题不是“要不要加入 summary”，而是：**带可执行证据和失效规则的状态压缩，能否优于 OpenHands 默认 `LLMSummarizingCondenser`？**
+| # | 项 | 状态 |
+| --- | --- | --- |
+| 1 | Validate + 生成器 + CLI | ✅ |
+| 2 | 试点 isort / transitions / scrapy + hidden 重判 | ✅ |
+| 3 | Hard-50 宪法迁移 + API surface + Oracle 复验 | ✅ 50/50 |
+| 4 | Python-150 分批规格迁移 | ✅ **150/150 已验收** |
+| 5 | Hard-50 compliant 可见性配对重跑 | ✅ 历史 Public-feedback **11/50**；test-blind Main **4/50** |
+| 6 | Compliant Python-150 test-blind Main 模型实验 | ⏳ **现在可启动** |
+| 7 | Python-150 独立人工 paper-gold 审核 | ⏸ **实验后；0/150** |
+| 8 | Contract Checklist / Probe / Reference Support Set | ⏳ |
 
-## 今天只需要读的文件
+150 题工程合规结果：
+[compliant150_migration_20260724.md](../reports/constitution/compliant150_migration_20260724.md)
+（全量校验、Oracle、生命周期与 harness 验收证据）。
+
+## 方法线怎么放
+
+| 路线 | 状态 |
+| --- | --- |
+| Benchmark 规格宪法与任务迁移 | ✅ **150/150 engineering-compliant** |
+| Contract/API closure recovery | **当前方法候选**（在 compliant 子集上验证） |
+| Repository Fact Graph | **基础设施保留** |
+| 当前 RSG start-here / support retrieval | **降级为实验基线** |
+| ECSM / 强制 task-closure | **废弃** |
+
+- **不做** ECSM / 强制状态机 / claim·stopping / 强制 `task-closure`。  
+- **评测** Pass@1 = evaluator `functional_gate`；与 Agent `run_status` 分离。  
+- **legacy 与 compliant 实验分报**（见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)）。
+
+## 当前证据（带边界）
+
+- Python-150：工程合规 **150/150**；完整非模板化契约
+  **150/150**；experiment-ready **150/150**；逐题 validation **150/150**。  
+- Oracle freeze `7c042d5528b7d0fd`：canary **15/15**、full
+  **450/450**、150 stable、0 quarantine；spec freeze
+  `f7c616edb47ea533`。  
+- `repo/` 含可发现上游测试 **48/150**，这是 Agent 可用证据统计而非
+  硬门禁，因为任务允许 Agent 自行构造测试。独立人工审核 **0/150**，
+  所以 benchmark 可做正式实验，但仍不是 paper-ready release。  
+- 历史 550 OpenHands runs 仍按 legacy 规格口径；不得与 compliant rerun 混报。  
+- Compliant hard-50 的旧命名结果：可见 evaluator tests 的历史 `Main`
+  （现称 Public-feedback）**11/50（22%）**；不可见 evaluator tests 的历史
+  `No-public`（现称 test-blind Main）**4/50（8%）**。配对净差 +7 题，
+  0 个 test-blind-Main-only pass。  
+- 定位很少成最早失败；public→hidden 条件失败约 43%（非严格因果）。  
+- RSG hard A/B：start-here 无 hidden 通过率收益。  
+- 规格缺陷例：isort 双轨 API（试点已 compliant 修复）。  
+- 报告：`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` · `reports/failure_attribution_20260720/` · `reports/repo_graph_phase2/rsg_hard_ab_20260724.md`
+
+## 今天只读
 
 | 目的 | 文件 |
 | --- | --- |
-| 看当前结论和实验设计 | [`reports/token_efficiency_20260720/README.md`](../reports/token_efficiency_20260720/README.md) |
-| 复现 550-run 分析 | [`reports/token_efficiency_20260720/token_efficiency_analysis.ipynb`](../reports/token_efficiency_20260720/token_efficiency_analysis.ipynb) |
-| 看数据质量与结论边界 | [`reports/token_efficiency_20260720/validation.md`](../reports/token_efficiency_20260720/validation.md) |
-| 看创新定位 | [`research_analysis/ICLR_INNOVATION_ROADMAP.md`](research_analysis/ICLR_INNOVATION_ROADMAP.md) |
-| 看 ECSM 方法定义 | [`research_analysis/ECSM_METHOD_SPEC.md`](research_analysis/ECSM_METHOD_SPEC.md) |
-| 看仓库语义骨架图设计 | [`research_analysis/REPOSITORY_SEMANTIC_GRAPH_DESIGN.md`](research_analysis/REPOSITORY_SEMANTIC_GRAPH_DESIGN.md) |
-| 看仓库语义图实现路线 | [`research_analysis/REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md`](research_analysis/REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md) |
-| 看 RSG Phase 1 验收 | [`reports/repo_graph_phase1/README.md`](../reports/repo_graph_phase1/README.md) |
-| 看最新 RSG 付费门控 | [EXPERIMENTS.md §4.1](EXPERIMENTS.md#41-openhands-rsg-pilot-门控) |
-| 看实验 arms 与范围 | [`research_analysis/EXPERIMENT_SCOPE_AND_ARM_RATIONALE.md`](research_analysis/EXPERIMENT_SCOPE_AND_ARM_RATIONALE.md) |
-| 看扩展/停止门禁 | [`research_analysis/PILOT_DECISION_RULES.md`](research_analysis/PILOT_DECISION_RULES.md) |
+| **整体思路** | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
+| **规格宪法** | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
+| **迁移怎么操作** | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) |
+| **实验臂** | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) |
+| 状态 / 实验 | [STATUS.md](STATUS.md) · [EXPERIMENTS.md](EXPERIMENTS.md) |
+| 怎么跑 | [../RUN.md](../RUN.md) |
 
-## 两条实验线的下一步
+## 已废弃 / 降级
 
-### RSG：先恢复工具采用门
-
-当前不继续 clean1 的剩余 10 cells。先把 `task-closure` 与
-`submission-check` 注册为 OpenHands 原生 tools，运行新的真实 mechanism
-smoke；只有两次必需调用均进入 query audit、freshness 正确且无 protocol /
-context violation，才使用新的 experiment ID 恢复 12-run Pilot。
-
-### ECSM：后续 resource gate
-
-先做 16-cell resource gate，不直接启动大规模多臂实验：
-
-| Arm | 作用 |
+| 项 | 说明 |
 | --- | --- |
-| Default OpenHands condenser | 当前强基线，已经具备 generic summarization |
-| Tuned generic condenser | 分离“更早/更强摘要”带来的收益 |
-| Executable Evidence Memory | 测试 hash、freshness、invalidation 与证据复用 |
-| ECSM + Evidence Memory | 测试完整状态控制和 evidence-gain-per-token 决策 |
-
-统一使用 4 个冻结任务、同一模型/工具/温度、3M token guard、1 seed。只有 hidden correctness 不退步且 median verified tokens 至少下降 20%，才扩展到 Pilot-10。
+| ECSM | superseded |
+| 当前 RSG start-here 提分主线 | retrieval baseline |
+| 「最小闭包 / Oracle Closure」严格宣称 | 紧凑代理 + Reference Support Set |
+| 理想 Agent 工作流入库规范 | 禁止 |
 
 ## 目录职责
 
 | 目录 | 放什么 |
 | --- | --- |
-| `docs/` | 长期规范、当前入口和人类可读研究设计 |
-| `reports/token_efficiency_20260720/` | 当前可复现分析 |
-| `reports/paper_analysis/` | 冻结论文结果表、切片和案例 |
-| `reports/audits/` | task lifecycle、integrity 和 repo audit |
-| `reports/archive/` | 已完成 sprint 的历史快照 |
-| `artifacts/research_analysis/` | 脚本生成的 JSON/CSV 审计证据 |
-| `experiments/registry/` | 全部实验的统一机器索引 |
-| `experiments/python/openhands/` | Python agent 原始运行，路径保持不动 |
-| `experiments/ecsm_pilot/` | ECSM 机制实验配置与 runner |
-
-## 明确不作为入口的内容
-
-- `reports/archive/`：历史过程记录，不代表当前结论。
-- `artifacts/research_analysis/`：机器证据，不适合从这里开始阅读。
-- `docs/task_designs/`：逐题维护笔记，不是论文分析文档。
-- `experiments/python/openhands/`：原始证据，不手工浏览；优先通过 `experiments/registry/` 和分析 notebook 使用。
+| `docs/` | 规范与入口；宪法 + 迁移手册优先 |
+| `harness/featureliftbench/` | 评测、校验、迁移 |
+| `experiments/` | 原始运行（标注 legacy/compliant） |
+| `reports/constitution/` | 迁移与 hidden 重判 |

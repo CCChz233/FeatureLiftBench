@@ -17,6 +17,8 @@ from .evaluator import evaluate_submission
 from .paths import DEFAULT_AGENT_CONFIG
 from .paths import DEFAULT_LOCAL_CONFIG
 from .paths import resolve_task_input
+from .task_render import render_agent_workspace_task, render_public_task
+from .task_spec_migrate import annotate_legacy_status, migrate_task_to_compliant
 from .validate import validate_task
 
 
@@ -27,6 +29,32 @@ def main(argv: list[str] | None = None) -> int:
     validate_parser = subparsers.add_parser("validate-task", help="validate a task directory")
     validate_parser.add_argument("task_dir", type=Path)
     validate_parser.add_argument("--json", action="store_true", help="print machine-readable output")
+
+    render_parser = subparsers.add_parser(
+        "render-task",
+        help="render TASK.md from metadata.public_spec",
+    )
+    render_parser.add_argument("task_dir", type=Path)
+    render_parser.add_argument(
+        "--write",
+        action="store_true",
+        help="write rendered TASK.md into the task directory",
+    )
+
+    migrate_parser = subparsers.add_parser(
+        "migrate-task-spec",
+        help="migrate a legacy pilot task to constitution-compliant public_spec",
+    )
+    migrate_parser.add_argument("task_dir", type=Path)
+    migrate_parser.add_argument("--dry-run", action="store_true")
+    migrate_parser.add_argument("--json", action="store_true")
+
+    annotate_parser = subparsers.add_parser(
+        "annotate-spec-status",
+        help="mark tasks without public_spec as spec_status=legacy",
+    )
+    annotate_parser.add_argument("tasks_root", type=Path)
+    annotate_parser.add_argument("--dry-run", action="store_true")
 
     eval_parser = subparsers.add_parser("eval", help="evaluate a submission")
     eval_parser.add_argument("task_dir", type=Path)
@@ -72,6 +100,25 @@ def main(argv: list[str] | None = None) -> int:
     run_agent_parser.add_argument(
         "--agent-profile",
         help="profile name in --agent-config; defaults to config profile or 'default'",
+    )
+    test_visibility = run_agent_parser.add_mutually_exclusive_group()
+    test_visibility.add_argument(
+        "--agent-public-tests",
+        dest="mount_public_tests",
+        action="store_true",
+        help="public-feedback ablation: mount benchmark public_tests/ for agent self-testing",
+    )
+    test_visibility.add_argument(
+        "--no-agent-public-tests",
+        dest="mount_public_tests",
+        action="store_false",
+        help="deprecated compatibility flag; evaluator tests are hidden by default",
+    )
+    run_agent_parser.set_defaults(mount_public_tests=None)
+    run_agent_parser.add_argument(
+        "--prompt-style",
+        choices=("standard", "short"),
+        help="standard keeps How-to/Closure Discipline; short keeps the functional contract only",
     )
     run_agent_parser.add_argument(
         "--env-file",
@@ -269,6 +316,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "validate-task":
         return _cmd_validate_task(args)
+    if args.command == "render-task":
+        return _cmd_render_task(args)
+    if args.command == "migrate-task-spec":
+        return _cmd_migrate_task_spec(args)
+    if args.command == "annotate-spec-status":
+        return _cmd_annotate_spec_status(args)
     if args.command == "eval":
         return _cmd_eval(args)
     if args.command == "score":
@@ -297,16 +350,64 @@ def _cmd_validate_task(args: argparse.Namespace) -> int:
             "task_id": result.task_id,
             "valid": result.valid,
             "errors": result.errors,
+            "warnings": result.warnings,
         }
         print(json.dumps(payload, indent=2, sort_keys=True))
     elif result.valid:
         print(f"valid task: {result.task_id}")
+        for warning in result.warnings:
+            print(f"warning: {warning}")
     else:
         print(f"invalid task: {args.task_dir}", file=sys.stderr)
         for error in result.errors:
             print(f"- {error}", file=sys.stderr)
+        for warning in result.warnings:
+            print(f"warning: {warning}", file=sys.stderr)
 
     return 0 if result.valid else 1
+
+
+def _load_task_metadata(task_dir: Path) -> dict:
+    metadata_path = task_dir / "metadata.json"
+    return json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
+def _cmd_render_task(args: argparse.Namespace) -> int:
+    metadata = _load_task_metadata(args.task_dir)
+    rendered = render_public_task(metadata)
+    if args.write:
+        (args.task_dir / "TASK.md").write_text(rendered, encoding="utf-8")
+        print(f"wrote {args.task_dir / 'TASK.md'}")
+    else:
+        print(rendered, end="" if rendered.endswith("\n") else "\n")
+    return 0
+
+
+def _cmd_migrate_task_spec(args: argparse.Namespace) -> int:
+    try:
+        payload = migrate_task_to_compliant(args.task_dir, dry_run=args.dry_run)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+    else:
+        action = "validated" if args.dry_run else "migrated"
+        print(f"{action} {payload['task_id']}")
+        print(f"spec_hash={payload['spec_hash']}")
+    return 0
+
+
+def _cmd_annotate_spec_status(args: argparse.Namespace) -> int:
+    updated = 0
+    for task_dir in sorted(path for path in args.tasks_root.iterdir() if path.is_dir()):
+        if not (task_dir / "metadata.json").is_file():
+            continue
+        if annotate_legacy_status(task_dir, dry_run=args.dry_run):
+            updated += 1
+            print(task_dir.name)
+    print(f"annotated={updated} dry_run={args.dry_run}")
+    return 0
 
 
 def _cmd_eval(args: argparse.Namespace) -> int:
@@ -372,6 +473,8 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             config_path=args.agent_config,
             profile_name=args.agent_profile,
             env_file=args.env_file,
+            mount_public_tests=args.mount_public_tests,
+            prompt_style=args.prompt_style,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

@@ -1,119 +1,60 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "feda098f5be78903c893cbe5e58f088f62e413a7c9e2fc125d5cf7d1a7a418f1"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "a2a8c5cf99987bc7f488319f1cf71b40a1edbefe76fb50f07fd50e990f170b00"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "a49b503249d743efdd6108a77683ffa94bc454756d42de40bc946faa088dcaeb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "0cacf30a98cbe473d1cd2da3def59dfd1472bca059cacd494c258a9414ccfb5b"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "7f0ea2aa9df38b956f65de24c3643fdaaa22c1ab6f5bfec077712cb88dc68934"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "fada626ef27fa8d682ecbe1e48f83c0603fe80401d0aaec550a39f151e6ce9c1"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
       "public_clause_ids": [
         "B007"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "70cd164aa3a2f465a97bafda56efd946ffda9c09af3a4c199c60ded213cd1906"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -121,100 +62,68 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "LRU eviction order with touch-on-get and maxsize enforcement"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: LRU eviction order with touch-on-get and maxsize enforcement. Required observable cases include lru cache basic get set; lru eviction order; lru maxsize enforced."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "LFU frequency buckets and least-frequent eviction"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: LFU frequency buckets and least-frequent eviction. Required observable cases include lfu evicts lowest frequency."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "TTL expiry with injectable timer and doubly-linked expiry list"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: TTL expiry with injectable timer and doubly-linked expiry list. Required observable cases include ttl expiry with mock timer."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "cached decorator memoization with optional cache_info hits/misses"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: cached decorator memoization with optional cache_info hits/misses. Required observable cases include ttl cache stores value; cached decorator memoizes; cached info tracks hits and misses."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "hashkey and typedkey cache key functions for decorator kwargs and types"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: hashkey and typedkey cache key functions for decorator kwargs and types. Required observable cases include ttl cache stores value; typedkey distinguishes value types."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.TTLCache`, `featurelifted.LFUCache`, `featurelifted.cached`, `featurelifted.hashkey`, `featurelifted.typedkey` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: cachetools"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_lru_cache_basic_get_set",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "4061165a69204f67bda9552872b9edea218f259fee9f79bd4cef854faf4240ee"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_ttl_cache_stores_value",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "4f1f12e74456046f1994dbfb74d214b41c382e2a74460214f5a58d3c1c377e40"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_cached_decorator_memoizes",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "ca379e340ac8d68bbf686371fbda391dcbd9a75eb91eaeaa6017d0e62e63cd3c"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -247,7 +156,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "3eaaedc6e49b270c0b7d3f724206bc0f6e9de8e6b1380245104e962e19818cb4",
+  "spec_sha256": "6f02c1d59a1d5f5c8b293ea2ff6b73ad0e6b4ce7c997466d1c56eebed81d4ec9",
   "task_id": "cachetools__cache_eviction_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

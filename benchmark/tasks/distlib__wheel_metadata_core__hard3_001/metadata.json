@@ -76,5 +76,195 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Resource finder and wheel RECORD path normalization",
+    "summary": "Extract a task-scoped subset of `distlib` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.to_posix",
+        "kind": "function",
+        "signature": "(path: 'str') -> 'str'"
+      },
+      {
+        "path": "featurelifted.normalize_record_path",
+        "kind": "function",
+        "signature": "(path: 'str') -> 'str'"
+      },
+      {
+        "path": "featurelifted.parse_record",
+        "kind": "function",
+        "signature": "(content: 'str') -> 'list[tuple[str, str | None, int | None]]'"
+      },
+      {
+        "path": "featurelifted.validate_record_hash",
+        "kind": "function",
+        "signature": "(path: 'str', digest: 'str | None') -> 'bool'"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`parse_record` parses CSV RECORD rows into `(path, digest, size)` tuples."
+      },
+      {
+        "id": "B002",
+        "text": "`normalize_record_path` applies posix normalization and strips `./` prefixes."
+      },
+      {
+        "id": "B003",
+        "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes the required task API paths `featurelifted.to_posix`, `featurelifted.normalize_record_path`, `featurelifted.parse_record`, `featurelifted.validate_record_hash` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "distlib.wheel",
+      "distlib.resources"
+    ],
+    "exclusions": [
+      "network access",
+      "installers/locators",
+      "script generation"
+    ],
+    "forbidden": {
+      "imports": [
+        "distlib"
+      ],
+      "paths": [
+        "repo/",
+        "distlib/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: distlib."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`parse_record` parses CSV RECORD rows into `(path, digest, size)` tuples."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`normalize_record_path` applies posix normalization and strips `./` prefixes."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.to_posix`, `featurelifted.normalize_record_path`, `featurelifted.parse_record`, `featurelifted.validate_record_hash` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: distlib"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_parse_record_row",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_to_posix_converts_separators",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_normalize_record_path_strips_dot_prefix",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_parse_record_handles_missing_hash_and_size",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_validate_record_hash",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.to_posix",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.normalize_record_path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parse_record",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validate_record_hash",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "1f0be576d7af13a36c45994e3a0cc5611c8eb599146e6d5c58f2fcc40504e466",
+  "generated_task_hash": "c687f3c842bfaccedb89ac1b78992f6d63c6d56178b53eed30906bb6fa0daa7d"
 }

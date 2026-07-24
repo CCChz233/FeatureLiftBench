@@ -6,16 +6,21 @@
 
 **Windows 用户**：请在 WSL2（Ubuntu）+ Docker Desktop 内按本文命令执行；日志路径与 Linux 相同，后台跑时终端无 Rich 进度条。
 
-当前正式实验口径：**Agent 用可选 Docker 边界跑题，Eval 默认用独立 Docker 容器评分**。Docker 的目的不是维护 100 套环境，而是限制 submission/eval 的内存、进程数、日志和网络，并防止 agent 改到宿主 benchmark 仓库或读取 hidden tests。
+当前 compliant Python-150 正式实验口径：**OpenHands + 指定模型 +
+test-blind Main + Agent/Eval 双 Docker + 每题一次 Pass@1**。Main 不向
+Agent 挂载任何 Benchmark evaluator tests；Agent 只能使用 TASK、`repo/`
+中的上游源码/测试/文档以及自己编写的测试。
 
 ## 0. 一次性准备
 
 ```bash
 cd /path/to/FeatureLiftBench
-./setup.sh
+PYTHON=python3.12 SKIP_MINI=1 ./setup.sh
 nano .env
 
-docker/build_agent_image.sh featureliftbench-agent:latest
+FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim \
+FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \
+  docker/build_agent_image.sh featureliftbench-agent:latest
 docker/build_eval_image.sh featureliftbench-eval:latest
 ```
 
@@ -26,33 +31,91 @@ FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim docker/build_agent_image.sh
 FEATURELIFTBENCH_EVAL_PYTHON_BASE=python:3.12-slim docker/build_eval_image.sh
 ```
 
-## 1. 先跑单题 smoke
+## 1. 先跑单题 OpenHands smoke
 
-先用 1 道题确认 agent Docker + eval Docker 串起来没问题：
+先用 1 道 compliant 题确认与正式实验相同的 OpenHands + test-blind Main +
+agent/eval Docker 链路没有基础设施问题：
 
 ```bash
+export FEATURELIFTBENCH_MOUNT_PUBLIC_TESTS=0
+export FEATURELIFTBENCH_PROMPT_STYLE=standard
+export FEATURELIFTBENCH_OPENHANDS_MAX_STEPS=120
+
 PYTHONPATH=harness .venv/bin/python -B -m featureliftbench.cli run-agent \
-  benchmark/tasks/<task_id> \
-  --agent mini-swe-agent \
+  benchmark/tasks \
+  --agent openhands-agent \
   --agent-config harness/config/agents.toml \
-  --agent-profile deepseek_v4_flash \
+  --agent-profile openhands_deepseek_v4_flash \
+  --agent-command "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json" \
+  --no-agent-public-tests \
   --env-file .env \
-  --yolo \
+  --num-workers 1 \
+  --timeout-seconds 3600 \
+  --extra-agent-passes 0 \
+  --max-task-attempts 1 \
+  --retry-rate-limit 5 \
   --agent-docker \
+  --agent-docker-image featureliftbench-agent:latest \
   --eval-docker \
-  --output experiments/mini-swe-agent/smoke-<task_id>-$(date +%Y%m%d-%H%M%S)
+  --eval-docker-image featureliftbench-eval:latest \
+  --task-id arrow__parse_format_core__001 \
+  --output experiments/smoke/compliant150-openhands-main
 ```
 
 通过标准：
 
 - `run.json` 里 `agent_backend == "docker"`
 - `run.json` 里 `eval_backend == "docker"`
+- `run.json` 里 `ablation.ablation_arm == "main"`
+- `run.json` 里 `ablation.mount_public_tests == false`
+- workspace 中不存在顶层 `public_tests/` / `hidden_tests/`
 - `evaluation.result_json` 指向 `eval/result.json`
 - 失败也必须是结构化失败，不能卡死或打爆机器
 
-## 2. 跑正式 suite
+## 1.5 OpenHands 实验臂（Main / Public-feedback / Short-prompt）
 
-推荐用 `run.sh`，它默认跑 `benchmark/tasks` 下当前主榜任务：
+机器无关入口（相对路径，自动定位仓库根、Python、`PYTHONPATH`）：
+
+```bash
+./run_experiment.sh --help
+
+./run_experiment.sh --arm main --tasks iniconfig__parse_config__001
+./run_experiment.sh --arm public_feedback --tasks transitions__state_machine_core__hard3_001
+./run_experiment.sh --compare-arms main,public_feedback,short_prompt \
+  --tasks iniconfig__parse_config__001
+```
+
+默认 Main 为评分测试全盲；`public_feedback` 才显式挂载基础 evaluator
+tests。默认启用 agent+eval Docker，结果写到 `experiments/ablation/`。
+细节见 [docs/EXPERIMENT_ARMS.md](docs/EXPERIMENT_ARMS.md)。
+
+**当前主榜：** **150/150 compliant、0 legacy**。新正式结果统一标记为 compliant；历史 legacy runs 仍须分报。服务器正式全榜运行优先使用 [docs/SERVER_RUNBOOK_COMPLIANT150.md](docs/SERVER_RUNBOOK_COMPLIANT150.md)。
+
+## 1.6 规格宪法 CLI（validate / migrate）
+
+```bash
+# 合规统计
+python3 scripts/report_spec_compliance.py benchmark/tasks
+
+# 校验单题（compliant 自动跑宪法门禁）
+PYTHONPATH=harness python -B -m featureliftbench.cli validate-task benchmark/tasks/<task_id>
+
+# 迁移 dry-run（试点模板）
+PYTHONPATH=harness python -B -m featureliftbench.cli migrate-task-spec benchmark/tasks/<task_id> --dry-run
+
+# 渲染 TASK.md
+PYTHONPATH=harness python -B -m featureliftbench.cli render-task benchmark/tasks/<task_id> --write
+```
+
+完整流程：[docs/CONSTITUTION_MIGRATION.md](docs/CONSTITUTION_MIGRATION.md)
+
+## 2. 旧版 mini-swe-agent suite（仅历史复现/调试）
+
+`run.sh` 是旧版 mini-swe-agent 入口，用于复现历史结果或调试 harness；
+它**不是**当前 compliant Python-150 正式默认。新正式实验请直接使用
+[§6.1](#61-compliant-python-150-正式实验服务器) 的 OpenHands 入口。
+
+旧版命令示例：
 
 ```bash
 FEATURELIFTBENCH_AGENT_DOCKER=1 \
@@ -99,7 +162,7 @@ minimax_m2_5
 qwen3_coder_30b_vllm
 ```
 
-## 3. 只跑 batch-1 Docker Flash
+## 3. 历史 batch-1 Docker Flash（仅复现）
 
 如果当前目标是服务器上跑 **batch-1 新增 50 题的 Flash Docker 实验**，用专门脚本，不要用旧的 batch-1 review 脚本：
 
@@ -160,7 +223,7 @@ export FEATURELIFTBENCH_DOCKER_EVAL_TIMEOUT_SECONDS=600   # 默认
 | Linux 服务器（≥16GB 可用） | 默认 agent 8g + eval 4g 串行即可 |
 | macOS Docker Desktop | Settings → Resources → Memory **≥16GB**；避免同 OUTPUT 双 runner |
 
-## 4. 续跑完整主榜
+## 4. 旧版 mini-swe-agent suite 续跑
 
 100 题长跑**不必一口气跑完**。每题结束会写 `<task_id>/run.json` 并增量更新 `suite.json`（`checkpoint: true`）。中断后用**同一输出目录** `--resume` 即可接上。
 
@@ -286,38 +349,47 @@ PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
 
 输出目录：`reports/paper_analysis/`。
 
-## 6.1 补齐 Python-150 正式实验（服务器）
+## 6.1 Compliant Python-150 正式实验（服务器）
 
-**现状：** 主榜 150 题 + Oracle 已齐，可跑。Flash 已有完整 150；另外三个模型只缺 **hard-extension-50**（core-100 已冻结）。
+**当前口径：**
 
-**推荐（省成本，对齐论文口径）：** 只补三模型的 hard50，再与各自已有 core-100 拼成 Python-150。
+> OpenHands + 指定模型 + test-blind Main + agent/eval Docker +
+> 150 compliant tasks + 每题一次 Pass@1。
 
-```bash
-# 服务器上
-git pull
-./setup.sh                    # 如需；会从 agents.example.toml 生成 agents.toml
-# 确认 .env 里有对应 API key / base；agents.toml 含 paper profiles
-
-# 先 dry-run（不调 API）
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_35b_a3b_fp8_paper
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper
-
-# 确认选中 50 题后执行（会外发公开 TASK/源码/prompt）
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_27b_fp8_paper --execute
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_6_35b_a3b_fp8_paper --execute
-./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper --execute
-```
-
-**可选：整榜重跑 150 题**（更贵；Flash 一般不必重跑）：
+统一入口默认只做 plan 和 150/150 合规校验，不调用外部 API：
 
 ```bash
-./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper
-./harness/scripts/run_python150_paper.sh openhands_qwen3_6_27b_fp8_paper --execute
-# 同理：openhands_qwen3_6_35b_a3b_fp8_paper / openhands_qwen3_coder_30b_paper / openhands_deepseek_v4_flash
+./harness/scripts/run_python150_paper.sh \
+  openhands_deepseek_v4_flash \
+  compliant150-flash-main-001
 ```
 
-中断后续跑：对同一 `--output` 目录加 `--resume`（见上文 `run-agent`）。跑完后更新 `docs/paper_runs_frozen.md` 并 regenerate paper analysis。
+确认 profile、模型、test-blind Main、150 题、镜像和输出目录后显式执行：
+
+```bash
+./harness/scripts/run_python150_paper.sh \
+  openhands_deepseek_v4_flash \
+  compliant150-flash-main-001 \
+  --workers 1 \
+  --execute
+```
+
+中断后使用同一 profile 和输出目录续跑：
+
+```bash
+./harness/scripts/run_python150_paper.sh \
+  openhands_deepseek_v4_flash \
+  --resume experiments/python/openhands/deepseek-v4-flash/compliant150-flash-main-001 \
+  --workers 1 \
+  --execute
+```
+
+正式入口固定 `--max-task-attempts 1`：续跑只补尚未完成的题，已经产生
+`run.json` 的通过或失败结果都不会再次调用模型，因此仍是严格 Pass@1。
+
+完整部署、镜像构建、单题 smoke、监控与验收步骤见
+[docs/SERVER_RUNBOOK_COMPLIANT150.md](docs/SERVER_RUNBOOK_COMPLIANT150.md)。
+历史 core-100 / hard-50 legacy 结果不得与本次 compliant 全榜结果直接拼接。
 
 ## 7. 资源与安全默认值
 

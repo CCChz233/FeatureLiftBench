@@ -52,6 +52,7 @@ class TaskFinding:
     has_hidden_tests: bool
     has_evaluation: bool
     has_task_md: bool
+    spec_status: str
     metadata_fields_ok: bool
     issues: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
@@ -129,6 +130,7 @@ def audit_task(split_id: str, split: dict[str, Any], task_dir: Path) -> TaskFind
                 has_hidden_tests=False,
                 has_evaluation=False,
                 has_task_md=False,
+                spec_status="unknown",
                 metadata_fields_ok=False,
                 issues=[f"metadata.json parse error: {exc}"],
             )
@@ -144,6 +146,10 @@ def audit_task(split_id: str, split: dict[str, Any], task_dir: Path) -> TaskFind
     has_task_md = (task_dir / "TASK.md").is_file()
     has_lock = has_dependency_lock(task_dir, lang, split_id)
 
+    spec_status = str(metadata.get("spec_status") or "")
+    if not spec_status:
+        spec_status = "compliant" if isinstance(metadata.get("public_spec"), dict) else "legacy"
+
     finding = TaskFinding(
         split_id=split_id,
         split_root=split["root"],
@@ -158,6 +164,7 @@ def audit_task(split_id: str, split: dict[str, Any], task_dir: Path) -> TaskFind
         has_hidden_tests=has_hidden,
         has_evaluation=has_eval,
         has_task_md=has_task_md,
+        spec_status=spec_status,
         metadata_fields_ok=False,
     )
 
@@ -186,6 +193,11 @@ def audit_task(split_id: str, split: dict[str, Any], task_dir: Path) -> TaskFind
 
     finding.issues.extend(check_split_specific_rules(split_id, split, task_dir, metadata, status))
     finding.warnings.extend(check_test_import_warnings(task_dir, lang))
+
+    if split_id == "python_main_candidate" and spec_status == "legacy":
+        finding.warnings.append("spec_status=legacy (constitution migration pending)")
+    if spec_status == "compliant" and not isinstance(metadata.get("public_spec"), dict):
+        finding.issues.append("spec_status=compliant but metadata.public_spec is missing")
 
     return finding
 
@@ -374,6 +386,7 @@ def write_csv(findings: list[TaskFinding]) -> None:
                 "has_hidden_tests",
                 "has_evaluation",
                 "has_task_md",
+                "spec_status",
                 "metadata_fields_ok",
                 "issue_count",
                 "warning_count",
@@ -396,6 +409,7 @@ def write_csv(findings: list[TaskFinding]) -> None:
                     row.has_hidden_tests,
                     row.has_evaluation,
                     row.has_task_md,
+                    row.spec_status,
                     row.metadata_fields_ok,
                     len(row.issues),
                     len(row.warnings),

@@ -75,5 +75,222 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Server extension discovery and enable/disable config merge",
+    "summary": "Extract a task-scoped subset of `jupyter_server` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.ExtensionConfigStore",
+        "kind": "class",
+        "signature": "(config_dir: 'str | Path') -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.ExtensionConfigStore.disable",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'None'"
+          },
+          {
+            "path": "featurelifted.ExtensionConfigStore.enabled",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'bool'"
+          },
+          {
+            "path": "featurelifted.ExtensionConfigStore.get_extensions",
+            "kind": "method",
+            "signature": "(self) -> 'dict[str, bool]'"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.merge_extension_configs",
+        "kind": "function",
+        "signature": "(config_paths: 'list[str | Path]') -> 'dict[str, bool]'"
+      },
+      {
+        "path": "featurelifted.filter_enabled_extensions",
+        "kind": "function",
+        "signature": "(entry_points: 'list[str]', extensions: 'dict[str, bool]') -> 'list[str]'"
+      },
+      {
+        "path": "featurelifted.recursive_update",
+        "kind": "function",
+        "signature": "(target: 'dict[str, Any]', new: 'dict[str, Any]') -> 'None'"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "When extension config fragments are merged, recursive_update combines nested mappings while later fragments override earlier scalar values."
+      },
+      {
+        "id": "B002",
+        "text": "When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state."
+      },
+      {
+        "id": "B003",
+        "text": "When entry-point extensions are filtered, explicitly disabled names are omitted and enabled or unspecified names remain discoverable."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes the required task API paths `featurelifted.ExtensionConfigStore`, `featurelifted.ExtensionConfigStore.disable`, `featurelifted.ExtensionConfigStore.enabled`, `featurelifted.ExtensionConfigStore.get_extensions`, `featurelifted.merge_extension_configs`, `featurelifted.filter_enabled_extensions`, `featurelifted.recursive_update` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "jupyter_server.extension.config.ExtensionConfigManager"
+    ],
+    "exclusions": [
+      "network access",
+      "server process",
+      "Tornado handlers"
+    ],
+    "forbidden": {
+      "imports": [
+        "jupyter_server"
+      ],
+      "paths": [
+        "repo/",
+        "jupyter_server/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: jupyter_server."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "When extension config fragments are merged, recursive_update combines nested mappings while later fragments override earlier scalar values."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When entry-point extensions are filtered, explicitly disabled names are omitted and enabled or unspecified names remain discoverable."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.ExtensionConfigStore`, `featurelifted.ExtensionConfigStore.disable`, `featurelifted.ExtensionConfigStore.enabled`, `featurelifted.ExtensionConfigStore.get_extensions`, `featurelifted.merge_extension_configs`, `featurelifted.filter_enabled_extensions`, `featurelifted.recursive_update` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: jupyter_server"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_recursive_update_and_enable",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_config_precedence_and_disable",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_filter_enabled_extensions_masks_disabled",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_recursive_update_prunes_empty_nested_dicts",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ExtensionConfigStore",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtensionConfigStore.disable",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_config_precedence_and_disable"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtensionConfigStore.enabled",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_config_precedence_and_disable"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtensionConfigStore.get_extensions",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_config_precedence_and_disable"
+        ]
+      },
+      {
+        "path": "featurelifted.merge_extension_configs",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.filter_enabled_extensions",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.recursive_update",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "968163167bbbbe44a670e1b7b93890e785b885ddaa7db100b6dd60688b837c7b",
+  "generated_task_hash": "196e32517670209c03abf29be92fbc9986be0e0a90cd79b4c740ceb945a9c802"
 }

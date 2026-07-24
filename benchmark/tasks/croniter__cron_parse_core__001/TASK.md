@@ -1,38 +1,61 @@
 # FeatureLift Task: Cron expression parse and next/prev iteration
 
-Extract croniter cron parsing with field expansion and naive datetime next/prev iteration without original croniter import.
+Extract a task-scoped subset of `croniter` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `import featurelifted; from featurelifted import croniter, datetime_to_timestamp, CroniterBadCronError, CroniterBadDateError, CroniterNotAlphaError`
-- Callable: `featurelifted.croniter`
-- Signature: `croniter(expr_format, start_time=None, ret_type=...)`
+```python
+from featurelifted import (
+    croniter,
+    CroniterBadCronError,
+    CroniterBadDateError,
+    CroniterNotAlphaError,
+    datetime_to_timestamp,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- croniter_range generator
-- hash/random H() field expansion
-- match_range and is_valid helpers
-- original croniter import at runtime
-- timezone/DST-aware scheduling (tests use naive datetimes only)
+- `croniter(expr_format, start_time=None, ret_type=<class 'float'>, day_or=True, max_years_between_matches=None, is_prev=False, hash_id=None, implement_cron_bug=False, second_at_beginning=None, expand_from_start_time=False)`
+- `datetime_to_timestamp(d)`
+- `CroniterBadCronError` must be importable and raisable
+- `CroniterBadDateError` must be importable and raisable
+- `CroniterNotAlphaError` must be importable and raisable
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: parse standard 5-field cron expressions. Required observable cases include weekday field parses; step and range fields.
+- The extracted feature must support this observable behavior: compute next matching naive datetime from a base time. Required observable cases include daily noon next; daily noon prev; hourly on base minute; combined next prev walk; dom dow union next.
+- The extracted feature must support this observable behavior: compute previous matching naive datetime from a base time. Required observable cases include daily noon prev; hourly on base minute; step and range fields.
+- The extracted feature must support this observable behavior: step and range field expansion (e.g. */15, 9-17). Required observable cases include step and range fields.
+- The extracted feature must support this observable behavior: reject invalid field values with CroniterBadCronError. Required observable cases include invalid minute raises.
+- The package exposes the required task API paths `featurelifted.croniter`, `featurelifted.datetime_to_timestamp`, `featurelifted.CroniterBadCronError`, `featurelifted.CroniterBadDateError`, `featurelifted.CroniterNotAlphaError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `croniter`
+- Forbidden imports: `croniter`.
+- Do not implement croniter_range generator.
+- Do not implement hash/random H() field expansion.
+- Do not implement match_range and is_valid helpers.
+- Do not implement original croniter import at runtime.
+- Do not implement timezone/DST-aware scheduling (tests use naive datetimes only).
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — parse standard 5-field cron expressions
-- **B002** — compute next matching naive datetime from a base time
-- **B003** — compute previous matching naive datetime from a base time
-- **B004** — step and range field expansion (e.g. */15, 9-17)
-- **B005** — reject invalid field values with CroniterBadCronError
-- **B006** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B007** — the submitted package does not import forbidden upstream packages: croniter
+- **B001** — The extracted feature must support this observable behavior: parse standard 5-field cron expressions. Required observable cases include weekday field parses; step and range fields.
+- **B002** — The extracted feature must support this observable behavior: compute next matching naive datetime from a base time. Required observable cases include daily noon next; daily noon prev; hourly on base minute; combined next prev walk; dom dow union next.
+- **B003** — The extracted feature must support this observable behavior: compute previous matching naive datetime from a base time. Required observable cases include daily noon prev; hourly on base minute; step and range fields.
+- **B004** — The extracted feature must support this observable behavior: step and range field expansion (e.g. */15, 9-17). Required observable cases include step and range fields.
+- **B005** — The extracted feature must support this observable behavior: reject invalid field values with CroniterBadCronError. Required observable cases include invalid minute raises.
+- **B006** — The package exposes the required task API paths `featurelifted.croniter`, `featurelifted.datetime_to_timestamp`, `featurelifted.CroniterBadCronError`, `featurelifted.CroniterBadDateError`, `featurelifted.CroniterNotAlphaError` with the kinds and callable signatures listed in this contract.
+- **B007** — the submitted package does not import forbidden upstream packages: croniter.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -16,11 +16,12 @@ from .builder import GraphBuilder
 from .hashing import digest_json
 from .protocol import dumps_response, response_payload
 from .query import GraphQueryEngine
-from .policy import QUERY_MAX_CHARS_ENV, ROOT_ENV
+from .policy import INSPECT_MAX_CHARS_ENV, QUERY_MAX_CHARS_ENV, ROOT_ENV
 from .ledger import RepoGraphLedger
 from .storage import JsonlGraphStore
 from .submission import compare_submission, sync_submission
 from .runtime import task_closure_result
+from .support import build_operational_support
 
 
 DEFAULT_QUERY_BUDGET = 12_000
@@ -40,6 +41,7 @@ def main(argv: list[str] | None = None) -> int:
         "bootstrap",
         "search",
         "inspect",
+        "support",
         "paths",
         "closure",
         "risks",
@@ -62,6 +64,21 @@ def main(argv: list[str] | None = None) -> int:
         elif command == "inspect":
             query_parser.add_argument("node")
             query_parser.add_argument("--neighbor-limit", type=int, default=30)
+        elif command == "support":
+            query_parser.add_argument(
+                "--seed",
+                action="append",
+                dest="seeds",
+                required=True,
+                help="seed stable_id or symbol name (repeatable)",
+            )
+            query_parser.add_argument(
+                "--budget-tokens",
+                type=int,
+                default=int(os.environ.get("FEATURELIFTBENCH_RSG_BUDGET_TOKENS", "8000") or "8000"),
+            )
+            query_parser.add_argument("--max-depth", type=int, default=4)
+            query_parser.add_argument("--max-nodes", type=int, default=80)
         elif command == "paths":
             query_parser.add_argument("source")
             query_parser.add_argument("target")
@@ -185,6 +202,14 @@ def _query(args: argparse.Namespace) -> int:
         result = engine.search(args.query, kinds=args.kind, limit=args.limit, offset=args.offset)
     elif args.command == "inspect":
         result = engine.inspect(args.node, neighbor_limit=args.neighbor_limit)
+    elif args.command == "support":
+        result = build_operational_support(
+            engine,
+            args.seeds,
+            budget_tokens=args.budget_tokens,
+            max_depth=args.max_depth,
+            max_nodes=args.max_nodes,
+        )
     elif args.command == "paths":
         result = engine.paths(
             args.source,
@@ -359,13 +384,25 @@ def _resolve_submission_dir() -> Path:
 def _max_chars(command: str, explicit: int | None) -> int:
     if explicit is not None:
         return explicit
+    if command == "inspect":
+        configured_inspect = os.environ.get(INSPECT_MAX_CHARS_ENV, "").strip()
+        if configured_inspect:
+            try:
+                return int(configured_inspect)
+            except ValueError as exc:
+                raise ValueError(f"{INSPECT_MAX_CHARS_ENV} must be an integer") from exc
     configured = os.environ.get(QUERY_MAX_CHARS_ENV, "").strip()
     if configured:
         try:
             return int(configured)
         except ValueError as exc:
             raise ValueError(f"{QUERY_MAX_CHARS_ENV} must be an integer") from exc
-    return {"bootstrap": 6_000, "risks": 8_000}.get(command, DEFAULT_QUERY_BUDGET)
+    return {
+        "bootstrap": 6_000,
+        "risks": 8_000,
+        "inspect": 4_000,
+        "support": 12_000,
+    }.get(command, DEFAULT_QUERY_BUDGET)
 
 
 def _append_query_audit(

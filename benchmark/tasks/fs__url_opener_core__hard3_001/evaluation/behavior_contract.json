@@ -1,48 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_default_protocol_injection",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "b8346188ab65bb2015821c6ca6e11c292d3746e6652e7f397923912c22b982d5"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_unknown_protocol_raises",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "b564cdae55d57c87cb1bdedef5a40ba4fc6b7ca344d494547829be1b13664a86"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_path_control_characters",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "484122a27d1356428d7836e2175284a4107f1792e38c13edbb61f32efab29e21"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -50,51 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "FS URL parsing"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`parse_fs_url` parses `scheme://resource!path` URLs and query parameters."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "opener registry"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`FSOpenerRegistry` registers opener factories and opens URLs."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "path normalization"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: fs"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_parse_fs_url_and_open",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "3c923ae3fee5597158bb1e11495d9e285f9c637248c7849a3743a8e4e2d3cd2a"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -126,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "0545a3423486c99dec843b3b0247a1c49dafaf9464695fbece103813a6554798",
+  "spec_sha256": "14bf7d785c788aecd790bdeb1bc9168c47c08f9d8dac4020f048ff6beb0f3802",
   "task_id": "fs__url_opener_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

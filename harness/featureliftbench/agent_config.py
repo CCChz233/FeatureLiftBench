@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .ablation import resolve_ablation_options
 from .agent_adapters import AgentRunConfig
 from .openhands_usage import CONDENSER_KEEP_FIRST_ENV
 from .openhands_usage import CONDENSER_MAX_EVENTS_ENV
@@ -19,11 +20,15 @@ from .openhands_usage import RESERVED_OUTPUT_ENV
 from .paths import DEFAULT_AGENT_CONFIG
 from .repo_graph.policy import BOOTSTRAP_MAX_CHARS_ENV
 from .repo_graph.policy import BOOTSTRAP_MAX_NODES_ENV
+from .repo_graph.policy import BOOTSTRAP_STYLE_ENV
+from .repo_graph.policy import BUDGET_TOKENS_ENV
 from .repo_graph.policy import CACHE_DIR_ENV as REPO_GRAPH_CACHE_DIR_ENV
 from .repo_graph.policy import FAIL_FAST_ENV
+from .repo_graph.policy import INSPECT_MAX_CHARS_ENV
 from .repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
 from .repo_graph.policy import QUERY_MAX_CHARS_ENV
 from .repo_graph.policy import TRANSPORT_ENV
+from .repo_graph.policy import VIEW_ENV
 from .repo_graph.policy import RepoGraphPolicy
 
 
@@ -51,6 +56,8 @@ def load_agent_run_config(
     config_path: str | Path | None = None,
     profile_name: str | None = None,
     env_file: str | Path | None = None,
+    mount_public_tests: bool | None = None,
+    prompt_style: str | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
 
@@ -64,9 +71,17 @@ def load_agent_run_config(
     profile = profiles.get(selected_profile, {}) if isinstance(profiles, dict) else {}
     if not isinstance(profile, dict):
         raise ValueError(f"agent profile must be a table: {selected_profile}")
+    rsg_table = data.get("rsg") if isinstance(data.get("rsg"), dict) else {}
 
     config_env_file = env_file or _string_value(data.get("env_file")) or ".env"
     env_values = _read_env_file(config_env_file)
+    ablation = resolve_ablation_options(
+        profile=profile,
+        env_values=env_values,
+        process_env=os.environ,
+        mount_public_tests=mount_public_tests,
+        prompt_style=prompt_style,
+    )
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
     api_base_env = _string_value(profile.get("api_base_env")) or DEFAULT_API_BASE_ENV
@@ -234,8 +249,57 @@ def load_agent_run_config(
             env_name=REPO_GRAPH_CACHE_DIR_ENV,
             profile_value=profile.get("repo_graph_cache_dir"),
         ),
+        BOOTSTRAP_STYLE_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=BOOTSTRAP_STYLE_ENV,
+            profile_value=_coalesce_profile_value(
+                profile.get("rsg_bootstrap"),
+                rsg_table.get("bootstrap"),
+            ),
+        ),
+        VIEW_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=VIEW_ENV,
+            profile_value=_coalesce_profile_value(
+                profile.get("rsg_view"),
+                rsg_table.get("view"),
+            ),
+        ),
+        BUDGET_TOKENS_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=BUDGET_TOKENS_ENV,
+            profile_value=_coalesce_profile_value(
+                profile.get("rsg_budget_tokens"),
+                rsg_table.get("budget_tokens"),
+            ),
+        ),
+        INSPECT_MAX_CHARS_ENV: _resolve_profile_env_value(
+            base_config=base_config,
+            env_values=env_values,
+            env_name=INSPECT_MAX_CHARS_ENV,
+            profile_value=_coalesce_profile_value(
+                profile.get("rsg_inspect_max_chars"),
+                rsg_table.get("inspect_max_chars"),
+            ),
+        ),
     }
     explicit_repo_graph = any(value for value in repo_graph_values.values())
+    # Top-level [rsg] enabled=true implies mode=static when no legacy mode is set.
+    if (
+        not repo_graph_values[REPO_GRAPH_MODE_ENV]
+        and _truthy(rsg_table.get("enabled"))
+    ):
+        repo_graph_values[REPO_GRAPH_MODE_ENV] = "static"
+        explicit_repo_graph = True
+    if (
+        not repo_graph_values[TRANSPORT_ENV]
+        and _string_value(rsg_table.get("transport"))
+    ):
+        repo_graph_values[TRANSPORT_ENV] = _string_value(rsg_table.get("transport"))
+        explicit_repo_graph = True
     repo_graph_policy = RepoGraphPolicy.from_env(repo_graph_values)
     if explicit_repo_graph:
         env[REPO_GRAPH_MODE_ENV] = repo_graph_policy.mode
@@ -244,6 +308,10 @@ def load_agent_run_config(
         env[BOOTSTRAP_MAX_NODES_ENV] = str(repo_graph_policy.bootstrap_max_nodes)
         env[BOOTSTRAP_MAX_CHARS_ENV] = str(repo_graph_policy.bootstrap_max_chars)
         env[QUERY_MAX_CHARS_ENV] = str(repo_graph_policy.query_max_chars)
+        env[BOOTSTRAP_STYLE_ENV] = repo_graph_policy.bootstrap
+        env[VIEW_ENV] = repo_graph_policy.view
+        env[BUDGET_TOKENS_ENV] = str(repo_graph_policy.budget_tokens)
+        env[INSPECT_MAX_CHARS_ENV] = str(repo_graph_policy.inspect_max_chars)
         if repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]:
             env[REPO_GRAPH_CACHE_DIR_ENV] = repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]
 
@@ -263,6 +331,8 @@ def load_agent_run_config(
     )
     if _is_openhands_agent(base_config.agent) and openhands_max_steps is not None:
         env[OPENHANDS_MAX_STEPS_ENV] = str(openhands_max_steps)
+
+    env.update(ablation.to_env())
 
     extra_args = _merge_extra_args(
         _featurelift_profile_extra_args(profile, agent=base_config.agent),
@@ -337,6 +407,13 @@ def load_agent_run_config(
         "repo_graph_bootstrap_max_chars": repo_graph_policy.bootstrap_max_chars,
         "repo_graph_query_max_chars": repo_graph_policy.query_max_chars,
         "repo_graph_cache_configured": bool(repo_graph_values[REPO_GRAPH_CACHE_DIR_ENV]),
+        "rsg_bootstrap": repo_graph_policy.bootstrap,
+        "rsg_view": repo_graph_policy.view,
+        "rsg_budget_tokens": repo_graph_policy.budget_tokens,
+        "rsg_inspect_max_chars": repo_graph_policy.inspect_max_chars,
+        "ablation_arm": ablation.ablation_arm,
+        "mount_public_tests": ablation.mount_public_tests,
+        "prompt_style": ablation.prompt_style,
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 
@@ -500,6 +577,16 @@ def _resolve_profile_env_value(
         env_values.get(env_name),
         profile_text,
     )
+
+
+def _coalesce_profile_value(*values: Any) -> Any:
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, str) and not value.strip():
+            continue
+        return value
+    return None
 
 
 def _is_featurelift_agent(agent: str) -> bool:

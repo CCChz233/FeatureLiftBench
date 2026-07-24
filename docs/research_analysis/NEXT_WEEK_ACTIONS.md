@@ -1,10 +1,18 @@
 # FeatureLiftBench 下一周执行清单
 
-**最后更新：** 2026-07-19 · 当前状态摘要：[../STATUS.md](../STATUS.md)
+**最后更新：** 2026-07-24 · 当前状态摘要：[../STATUS.md](../STATUS.md)
 
-## 当前起点（2026-07-19）
+> **方向覆盖（2026-07-23）**  
+> ECSM Pilot（下文 P0-4 / P0-5 / Stage A–C）**全部停止**。  
+> 当前优先：按 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md) **重设计通用 RSG**；补齐 leaderboard 缺口；推进独立人工标注门禁。  
+> 下文 2026-07-19 清单中与 ECSM 执行相关的条目仅作历史。
 
-- Python150 的 Oracle freeze **`5f9012f6dc748c90`** 已完成 450/450 runs：**150 题稳定通过，0 题 quarantine**（revision 3 ledger）。历史 freeze `607e70aee2394d48`（137+13）已 supersede。
+## 当前起点（2026-07-19 快照 + 2026-07-23 修订）
+
+- Python150 当前 Oracle freeze **`7c042d5528b7d0fd`** 已完成 canary
+  15/15 和 full 450/450：**150 题稳定通过，0 题 quarantine**。对应
+  spec freeze 为 **`f7c616edb47ea533`**；旧 freeze
+  `5f9012f6dc748c90` 只保留作历史证据。
 - **P0-2（13 quarantine 修复）已完成** — 证据见 [ORACLE_REVALIDATION_REPORT.md](ORACLE_REVALIDATION_REPORT.md) 与 `experiments/v1_1_oracle_validation/5f9012f6dc748c90/`。
 - 150/150 行为契约已映射 328 public + 643 hidden nodeids；状态仍为 `ai_assisted_reviewed`，**不能**写成独立人工 gold。
 - Diagnostic-40 file scope 40/40 complete（AI-assisted）；**0/40** 独立人工 adjudication。
@@ -25,7 +33,9 @@
 
 ## P0-2：修复并重验 quarantine 任务 — **已完成（2026-07-19）**
 
-- **结果：** 13 题全部修复；新 freeze `5f9012f6dc748c90`；450/450 全过；ledger `benchmark/quarantine/python_v1_1_revision_3.json`。
+- **历史结果：** 13 题全部修复；freeze `5f9012f6dc748c90`
+  450/450 全过；ledger `benchmark/quarantine/python_v1_1_revision_3.json`。
+  当前 contract-hardened freeze 已更新为 `7c042d5528b7d0fd`。
 - **报告：** [ORACLE_REVALIDATION_REPORT.md](ORACLE_REVALIDATION_REPORT.md)
 - **主要改动：** `harness/scripts/build_oracle_submission.py`（relocation、vendor、grammar、babel/environs 等）
 

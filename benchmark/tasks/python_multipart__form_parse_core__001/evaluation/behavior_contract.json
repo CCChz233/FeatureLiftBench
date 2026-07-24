@@ -1,143 +1,69 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_incremental_chunked_parsing",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "410f4c914657b4ad209ac490debd05d676b52a249b69fccf77de5633b2d5257a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_base64_content_transfer_encoding",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "d665bf363d4e4f18c26e65e18f991db604841bbb8446217f81aab0db0562c528"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_preamble_before_first_boundary",
       "public_clause_ids": [
-        "B005"
+        "B005",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "86e195fcf4ca07d5676942ca7d5e9bc808752366262c64d9845a34082b4fc027"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_epilogue_after_closing_boundary",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "f97dda0ecac4c0fa1ec67e3bcfebd1860c66897a19ef17965d2f520afdf4ce7c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_field_name_raises",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "c1970d3586768fb66298ec6af074505724a1d1412ec4bd5a8f2224533ec46c7c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_max_memory_file_size_spills_to_disk",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "ecacd9db7b3340984bcb93742717072c159d76a000992b529b6506a34f6d0e99"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_max_header_size_exceeded",
       "public_clause_ids": [
         "B006",
         "B007"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006",
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B006",
-          "B007"
-        ],
-        "test_source_sha256": "acee61cdb0e606725b7dcf4461771ebc3cb8befad374f567f45c8e3dc7e17c10"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_python_multipart_import_surface",
       "public_clause_ids": [
         "B009"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "f6d296e968d0fc322bf605dc0cf1f8d6d83f467fdb2fb746cd8298a2ec0cc237"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -145,150 +71,95 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "incremental multipart/form-data parsing via FormParser.write/finalize"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: incremental multipart/form-data parsing via FormParser.write/finalize. Required observable cases include parse form helper; create form parser from headers; incremental chunked parsing."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "field and file parts with Content-Disposition, Content-Type, and filename"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: field and file parts with Content-Disposition, Content-Type, and filename. Required observable cases include parse simple text field; missing field name raises."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "parse_options_header boundary extraction from Content-Type"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: parse_options_header boundary extraction from Content-Type. Required observable cases include parse simple text field; parse options header boundary; parse form helper; preamble before first boundary."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "base64 and quoted-printable Content-Transfer-Encoding"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: base64 and quoted-printable Content-Transfer-Encoding. Required observable cases include base64 content transfer encoding."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "preamble before first boundary and epilogue after closing boundary"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: preamble before first boundary and epilogue after closing boundary. Required observable cases include preamble before first boundary; epilogue after closing boundary."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "MAX_MEMORY_FILE_SIZE spill to disk and configurable upload directory"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: MAX_MEMORY_FILE_SIZE spill to disk and configurable upload directory. Required observable cases include parse file upload metadata; max memory file size spills to disk; max header size exceeded."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "MAX_HEADER_COUNT and MAX_HEADER_SIZE enforcement"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The extracted feature must support this observable behavior: MAX_HEADER_COUNT and MAX_HEADER_SIZE enforcement. Required observable cases include max header size exceeded."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.Field`, `featurelifted.File`, `featurelifted.FormParser`, `featurelifted.FormParser.write`, `featurelifted.FormParser.finalize`, `featurelifted.parse_form`, `featurelifted.create_form_parser`, `featurelifted.parse_options_header`, `featurelifted.exceptions`, `featurelifted.exceptions.FormParserError`, `featurelifted.exceptions.MultipartParseError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: python_multipart, multipart"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_simple_text_field",
       "public_clause_ids": [
         "B002",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B003"
-        ],
-        "test_source_sha256": "e9343c9dfd4a54ee4ab4a3c44bcf4f44f3234d34622f5d1dd92b681bc2af069a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_file_upload_metadata",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "02dc48134f56f01bbb70b42eddbf1cd356dca3e8381da09a966c28fad5121036"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_options_header_boundary",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "8152404f8664f91fd7a6c6218a15d142840a91e78c9d40ea705470e0726330bb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_form_helper",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "43dad9d27c5946bc575962bd6823c962e202aea4fd1064270717c93d0a0492ba"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_create_form_parser_from_headers",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "e1ee6c2e1ea8bf24b624dd017ce8975b04eb8531050976dd055ed3561e676473"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -321,7 +192,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "66fb70149c87ea78356fae418ea4486c05c666227aad5d820181703279977810",
+  "spec_sha256": "a308ad31321851f0f345ed572f91618c218e59d9e5fe9bd214939b643d2fda66",
   "task_id": "python_multipart__form_parse_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

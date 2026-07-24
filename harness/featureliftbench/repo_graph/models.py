@@ -10,7 +10,9 @@ SNAPSHOT_SCHEMA_VERSION = "featureliftbench.repo_graph.snapshot.v1"
 QUERY_SCHEMA_VERSION = "featureliftbench.repo_graph.query.v1"
 BUILDER_VERSION = "rsg-tree-sitter-v1"
 
-RESOLUTION_LEVELS = frozenset({"exact", "probable", "candidate", "unresolved"})
+RESOLUTION_LEVELS = frozenset(
+    {"exact", "probable", "candidate", "unresolved", "unresolved_dynamic"}
+)
 
 
 @dataclass(frozen=True)

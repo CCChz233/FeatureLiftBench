@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from featureliftbench.ablation import AblationOptions
 from featureliftbench.agent_runner import prepare_agent_workspace
 from featureliftbench.evaluator import evaluate_submission
 from featureliftbench.metadata import validate_metadata_shape
@@ -106,7 +107,7 @@ class GoEvaluatorTests(unittest.TestCase):
             self.assertEqual(result["status"], "failed")
             self.assertIn("go.work is not allowed", "\n".join(result["errors"]))
 
-    def test_prepare_go_agent_workspace_uses_go_prompt_and_public_runner(self) -> None:
+    def test_prepare_go_agent_workspace_is_test_blind_by_default(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             task_dir = _make_go_task(root / "sample_go_task")
@@ -114,6 +115,25 @@ class GoEvaluatorTests(unittest.TestCase):
             workspace_dir = root / "workspace"
 
             task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+
+            prompt = task_file.read_text(encoding="utf-8")
+            self.assertIn("Benchmark evaluator tests are not mounted", prompt)
+            self.assertFalse((workspace_dir / "run_public_tests.sh").exists())
+            self.assertFalse((workspace_dir / "public_tests").exists())
+
+    def test_prepare_go_public_feedback_workspace_uses_public_runner(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_go_task(root / "sample_go_task")
+            metadata = json.loads((task_dir / "metadata.json").read_text(encoding="utf-8"))
+            workspace_dir = root / "workspace"
+
+            task_file = prepare_agent_workspace(
+                task_dir,
+                workspace_dir,
+                metadata,
+                ablation=AblationOptions(mount_public_tests=True),
+            )
 
             prompt = task_file.read_text(encoding="utf-8")
             self.assertIn("FeatureLiftBench Go Task", prompt)

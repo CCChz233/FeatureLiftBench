@@ -1,142 +1,73 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_timestamp_roundtrip",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "fe4662c223bf54a137c8cced5fda4a677b80e188c8389a992d3f8866f0db65b8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_ext_type_roundtrip",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "79c87663f2de18820e76ad03c1af45b298b8b5534775240e4d865a4bb2b7a6e5"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_strict_map_key_allows_int_keys",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "b3f022416feaa5828eb73f8fa92004151fff4fdd90e45938cda694e3d746f4a5"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_extra_data_raises",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "84716de456361688c06ad72a33e9a48ca8b8c4991139316bb07c6cbce53df960"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_ext_hook_transforms_extension",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "076c12c8fc0a4a186f08a22e17456b00eea70c035df8ef2011c7d01c2cc8ec29"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_format_error_on_invalid_bytes",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "f2b107666798c70001419aa48d012df60f12ff73008bc8ae2073f3ed663d113e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_unpack_stream_reads_filelike",
       "public_clause_ids": [
-        "B003"
+        "B003",
+        "B002",
+        "B005",
+        "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "c1f2aefa3d2bb049cb2883d00482e19a1b32da8ac034c1a654126901fe52c0f8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_msgpack_import_surface",
       "public_clause_ids": [
         "B008"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "b155cfe8320ae00eac0d23575e1aa35bc51018dbb62f9f1dc37a3b6771de33c2"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B007"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -144,142 +75,90 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "packb/unpackb roundtrip for nil, bool, int, float, str, bytes, list, tuple, dict"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: packb/unpackb roundtrip for nil, bool, int, float, str, bytes, list, tuple, dict. Required observable cases include pack unpack none bool int; pack unpack string and bytes; pack unpack list and dict; timestamp roundtrip; ext type roundtrip; strict map key allows int keys; extra data raises; ext hook transforms extension; format error on invalid bytes."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "Packer options: use_bin_type, use_single_float, default hook, datetime timestamps"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: Packer options: use_bin_type, use_single_float, default hook, datetime timestamps. Required observable cases include unpack stream reads filelike."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "Unpacker streaming feed/unpack, strict_map_key, raw/bin decoding, ext_hook"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: Unpacker streaming feed/unpack, strict_map_key, raw/bin decoding, ext_hook. Required observable cases include packer unpacker streaming; strict map key allows int keys; ext hook transforms extension; unpack stream reads filelike."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "Timestamp extension type pack/unpack (32/64/96-bit encodings)"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: Timestamp extension type pack/unpack (32/64/96-bit encodings). Required observable cases include pack unpack none bool int; pack unpack string and bytes; pack unpack list and dict; timestamp roundtrip."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "ExtType custom extension payloads"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: ExtType custom extension payloads. Required observable cases include unpack stream reads filelike."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "ExtraData, FormatError, StackError, OutOfData exception semantics"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: ExtraData, FormatError, StackError, OutOfData exception semantics. Required observable cases include unpack stream reads filelike."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The package exposes the required task API paths `featurelifted.packb`, `featurelifted.unpackb`, `featurelifted.pack`, `featurelifted.unpack`, `featurelifted.dumps`, `featurelifted.loads`, `featurelifted.Packer`, `featurelifted.Unpacker`, `featurelifted.ExtType`, `featurelifted.Timestamp`, `featurelifted.ExtraData`, `featurelifted.FormatError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
       "text": "the submitted package does not import forbidden upstream packages: msgpack"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_pack_unpack_none_bool_int",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "03c894c841f80ba839f20291919a4f251dd43988e08dc50e1197bf69233c337a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_pack_unpack_string_and_bytes",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "10a457abfe836e547044723f6e8d6848722f5ecf661b206e82cd9c40218081a7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_pack_unpack_list_and_dict",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "8b5ec92725b40c37a96ad0af14e0c1d04aac62ba2b0a46e92e3c646d794a604d"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_packer_unpacker_streaming",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "6b7cb336b0809c452b2820b0b545c544d50b71498f3ebf4895544fdb0afea945"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_dumps_loads_aliases",
       "public_clause_ids": [
         "B007"
       ],
-      "review_evidence": {
-        "decision": "declared_api_scope_fallback",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "92cf3a2623645cecdf69171c9e9b0ed920217f08ab7c2ca7dac0be606f4728a8"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -312,7 +191,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "c859e7e499e53e51fc8aa239f230fc666edaa27e3aa8eec1806ec1b89fca3c0e",
+  "spec_sha256": "b24bebd258dc6f5b15e61093958e891dd2d9a54fd57354eae77b4d4cb661850c",
   "task_id": "msgpack__pack_unpack_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

@@ -75,5 +75,184 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "parse_spec match_version",
+    "summary": "Extract a task-scoped subset of `virtualenv` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.parse_spec",
+        "kind": "function",
+        "signature": "(spec: 'str') -> 'tuple[str | None, tuple[str, ...]]'"
+      },
+      {
+        "path": "featurelifted.match_version",
+        "kind": "function",
+        "signature": "(version: 'str', constraint: 'str | None') -> 'bool'"
+      },
+      {
+        "path": "featurelifted.discover_paths",
+        "kind": "function",
+        "signature": "(candidates: 'list[str]', spec: 'str') -> 'list[str]'"
+      },
+      {
+        "path": "featurelifted.InvalidInterpreterSpec",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`parse_spec` parses version constraints and path globs from interpreter specs."
+      },
+      {
+        "id": "B002",
+        "text": "`match_version` evaluates constraint operators including `~=`."
+      },
+      {
+        "id": "B003",
+        "text": "`discover_paths` filters candidate paths by spec."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes the required task API paths `featurelifted.parse_spec`, `featurelifted.match_version`, `featurelifted.discover_paths`, `featurelifted.InvalidInterpreterSpec` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "virtualenv.discovery.py_info.parse_spec"
+    ],
+    "exclusions": [
+      "network access",
+      "environment creation",
+      "process spawning"
+    ],
+    "forbidden": {
+      "imports": [
+        "virtualenv"
+      ],
+      "paths": [
+        "repo/",
+        "virtualenv/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: virtualenv."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`parse_spec` parses version constraints and path globs from interpreter specs."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`match_version` evaluates constraint operators including `~=`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`discover_paths` filters candidate paths by spec."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.parse_spec`, `featurelifted.match_version`, `featurelifted.discover_paths`, `featurelifted.InvalidInterpreterSpec` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: virtualenv"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_discover_paths_by_glob",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_match_version_operators",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_version_constraint_filters_candidates",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_spec_raises",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.parse_spec",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.match_version",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.discover_paths",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidInterpreterSpec",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "fa0965593b6a76a43bbf7b4acf1131d4ed329978f16689343e47d0f21a58f0e6",
+  "generated_task_hash": "8df5d947717083579c7c56cf4b087f89ce4d2ca237e8e67fafb5300cad3fb732"
 }

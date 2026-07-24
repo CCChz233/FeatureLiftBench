@@ -1,5 +1,11 @@
 # Evaluator and Scoring
 
+**Contract / visibility rules:** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) · **Arms:** [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) · **Migration:** [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+
+Compactness terms are a **proxy**, not a proof of unique minimal closure. The
+default Main workspace omits both Benchmark evaluator test tiers; evaluator
+still runs both after submission.
+
 ## Evaluation Pipeline
 
 The evaluator should remain shared across language splits at the concept level, with language-specific build/test adapters.
@@ -8,10 +14,11 @@ Pipeline:
 
 1. Create a clean evaluation environment.
 2. Mount or copy the source repository as task input, not as runtime dependency.
-3. Run the agent in an agent workspace that hides hidden tests and scoring artifacts.
+3. Run the agent in a Main workspace that hides both Benchmark evaluator test
+   tiers and all scoring artifacts; upstream tests inside `repo/` remain visible.
 4. Collect `submission/`.
 5. Install or build the submission.
-6. Check the target API.
+6. Check the target / required API.
 7. Check forbidden imports and forbidden dependencies.
 8. Check for direct source repo path reliance where the evaluator supports it.
 9. Run public tests.
@@ -26,20 +33,24 @@ Python uses `pytest` and package installation/import checks. Go uses `go test`, 
 The current implemented scoring contract in `harness/featureliftbench/scoring.py` is:
 
 ```text
-FunctionalGate = BuildPass and TestPass and OriginalImportPass
+TestPass = PublicTestsPass ∧ HiddenTestsPass
+
+FunctionalGate = BuildPass ∧ TestPass ∧ OriginalImportPass
 ```
 
 Where:
 
 - `BuildPass`: submission installs/imports or builds in the clean eval environment.
-- `TestPass`: public and hidden tests pass.
-- `OriginalImportPass`: forbidden imports/dependencies/modules are not used, and the submission is not inside the source repo.
+- `TestPass`: public **and** hidden tests pass.
+- `OriginalImportPass`: forbidden imports/dependencies/modules are not used, and the submission is not inside / dependent on the source repo path as checked by the harness.
 
 Functional gate is binary:
 
 ```text
 functional_gate = 1.0 if all functional gates pass else 0.0
 ```
+
+**Reporting:** Pass@1 on the main leaderboard uses this evaluator `functional_gate`, **not** OpenHands suite `run_status` (whether the agent workflow exited cleanly). Keep these metrics separate.
 
 ## Compactness
 

@@ -1,40 +1,27 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_context_hash_includes_rounds",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "406e0fd39eaa0363f0416f6549479a051058f4ace36e2a9952439ef0a91bea71"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_context_verify_and_update_roundtrip",
       "public_clause_ids": [
-        "B001"
+        "B001",
+        "B002",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "ddcd5f7be28e0a2ebaa760f4e19cd05b19b9cce5c3f77ea0d73f4c4ee6785b47"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -42,51 +29,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "CryptContext hash and verify for pbkdf2_sha256"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: CryptContext hash and verify for pbkdf2_sha256. Required observable cases include hash and verify pbkdf2; context hash includes rounds; context verify and update roundtrip."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "scheme options like default_rounds and deprecated schemes"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: scheme options like default_rounds and deprecated schemes. Required observable cases include context verify and update roundtrip."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "needs_update and identify handlers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: needs_update and identify handlers. Required observable cases include context verify and update roundtrip."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.CryptContext`, `featurelifted.CryptContext.hash`, `featurelifted.CryptContext.identify`, `featurelifted.CryptContext.verify` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: passlib"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_hash_and_verify_pbkdf2",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "de3f201bbb09e8a0dbea2fda0d90a617f70a7cae0014bde77a54200c069c4c2b"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -119,7 +96,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "86cc61a01c28de7b168ff4dad1d38bd9953e305b2b3f9f4b0a0f138c5096c37e",
+  "spec_sha256": "69255e143848d8c9a0883d7f0561acbadc74fdafd30380fd9734079fdb3bd94b",
   "task_id": "passlib__hash_context_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

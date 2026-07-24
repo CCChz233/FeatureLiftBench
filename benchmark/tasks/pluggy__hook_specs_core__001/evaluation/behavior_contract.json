@@ -1,56 +1,36 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_historic_hook_replays_for_late_registration",
       "public_clause_ids": [
         "B007"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B007"
-        ],
-        "test_source_sha256": "b706509c68a0824f22a4f5aabc8c33ac03a54a6ac122819f5c03f571b6aec9ae"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_hookwrapper_must_be_generator",
       "public_clause_ids": [
-        "B003"
+        "B003",
+        "B001",
+        "B002",
+        "B005",
+        "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "a8fe03ed10e5577b79372c4af0177d388cc7a7e3420e4448085fc906579321e0"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_historic_hookwrapper_combination_rejected",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "605a3b357390bc057b6582b39286b760742b8b0632961ce0c1fcabf9298103af"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -58,92 +38,72 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "declare hook specifications with HookspecMarker including firstresult and historic flags"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: declare hook specifications with HookspecMarker including firstresult and historic flags. Required observable cases include hookwrapper must be generator."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "reject hook implementations with unknown arguments during registration"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: reject hook implementations with unknown arguments during registration. Required observable cases include unknown hook argument rejected; hookwrapper must be generator."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "reject hookwrapper implementations that are not generator functions"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: reject hookwrapper implementations that are not generator functions. Required observable cases include hookwrapper must be generator."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "reject historic hookwrapper combinations via PluginValidationError"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: reject historic hookwrapper combinations via PluginValidationError. Required observable cases include historic hookwrapper combination rejected."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "check_pending raises for unknown non-optional hook implementations"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: check_pending raises for unknown non-optional hook implementations. Required observable cases include check pending requires optional for unknown hooks; hookwrapper must be generator."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "support optionalhook implementations for undeclared hooks"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: support optionalhook implementations for undeclared hooks. Required observable cases include hookwrapper must be generator."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "replay historic hook calls for plugins registered after the first dispatch"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The extracted feature must support this observable behavior: replay historic hook calls for plugins registered after the first dispatch. Required observable cases include historic hook replays for late registration."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.PluginManager`, `featurelifted.PluginManager.check_pending`, `featurelifted.PluginManager.add_hookspecs`, `featurelifted.PluginManager.hook`, `featurelifted.PluginManager.register`, `featurelifted.HookspecMarker`, `featurelifted.HookimplMarker`, `featurelifted.PluginValidationError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: pluggy"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_unknown_hook_argument_rejected",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "6d4aa3813e0418b87550ab9f8fd29c04b39a763542f7406ebf68ede5b9acd1e7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_check_pending_requires_optional_for_unknown_hooks",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "93a15033899928ae2604a86e54cbae72fd6babda43bc98bb8b8e6a99e0b23f1b"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -176,7 +136,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "fe36bc8d079de77e0bdfc607ffcb9dfe93578e22a670abbc9f3ecc7984fa9327",
+  "spec_sha256": "b7f011b7b37b1b162062d89cc1d97b2d83cb63cf6cfaa400ebd7e4956e448df1",
   "task_id": "pluggy__hook_specs_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

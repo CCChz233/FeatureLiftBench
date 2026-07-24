@@ -1,5 +1,8 @@
 # ECSM-Prompt Pilot 预注册判定规则
 
+> **SUPERSEDED（2026-07-23）**  
+> ECSM Pilot **已废弃**，本规则不再执行。见 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。
+
 ## 1. 冻结范围
 
 本规则在运行第一个 pilot cell 之前随 `pilot_freeze_manifest.json` 冻结。实验定义来自 `experiments/ecsm_pilot/pilot_manifest.yaml`，运行器为 `run_pilot.py`，分析器为 `analyze_pilot.py`。任何阈值变更或冻结资产变更必须增加 `pilot_revision`，保留旧结果和 change ledger，不能覆盖历史 cell。

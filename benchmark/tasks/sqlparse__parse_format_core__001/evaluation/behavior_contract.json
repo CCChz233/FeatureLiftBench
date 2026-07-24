@@ -1,91 +1,47 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_split_handles_comments_and_embedded_semicolons",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "cb8379c552e7682fb0f9e52dbf79e714a87f623bf39dccfe13c169b0ab813994"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_cte_aliases_and_identifier_helpers",
       "public_clause_ids": [
         "B003",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B005"
-        ],
-        "test_source_sha256": "d8299063e38a62b7b1cb822a0db4f7d94b2d5d84eabc21546c4fbf08895c8a6f"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_token_navigation_and_ancestor_relationships",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "7560a0f5b57581a4df196d014b1e8987463bc27f80129e10cfafbb67a4f41fc1"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_formatter_comment_stripping_and_spacing",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "ff887aea8f496f0d9b8797bd7aa549d0fb57f28b70092bf9f146a27f8b8e53b4"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_formatter_rejects_invalid_options",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "3c51649af0a82608fd85510ce19c29a05c0a087a46e44bd62881dba41c3101e1"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -93,100 +49,68 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse SQL text into Statement token trees"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse SQL text into Statement token trees. Required observable cases include parse returns statement tokens; token navigation and ancestor relationships."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "split multi-statement SQL scripts while respecting strings, comments, and nesting"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: split multi-statement SQL scripts while respecting strings, comments, and nesting. Required observable cases include split respects quoted semicolons; split handles comments and embedded semicolons."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "support common token tree traversal and identifier helpers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: support common token tree traversal and identifier helpers. Required observable cases include format supports common options; cte aliases and identifier helpers."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "format common SQL with keyword case, identifier case, comment stripping, reindentation, indentation width, and operator spacing"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: format common SQL with keyword case, identifier case, comment stripping, reindentation, indentation width, and operator spacing. Required observable cases include format supports common options; formatter comment stripping and spacing; formatter rejects invalid options."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "preserve original behavior for comments, whitespace, string literals, aliases, functions, nested expressions, CTEs, CASE expressions, and common DDL/DML"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: preserve original behavior for comments, whitespace, string literals, aliases, functions, nested expressions, CTEs, CASE expressions, and common DDL/DML. Required observable cases include cte aliases and identifier helpers."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.tokens`, `featurelifted.exceptions`, `featurelifted.exceptions.SQLParseError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: sqlparse"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_returns_statement_tokens",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "fa8375b713997ab502cb9f8a5afbedc69f8e960bd998eb4f82373fea6730d31a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_split_respects_quoted_semicolons",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "51bfe72305a2b9aa82b292a864cab2833bd843dd0d1a5183e44a2569d960b0bb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_format_supports_common_options",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "411d3d7348585d938d3f9a8c49d4afdc72d536128175745c2647857152dfba33"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -219,7 +143,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "954b3a6106dfac176130141b0eada3eb6825337d95d924cbd9b49f8f61dead53",
+  "spec_sha256": "ee0f72f04fdacccd186cab43ac7ffb937ec7ca08b2bf16dcbe7f025ff64a7c90",
   "task_id": "sqlparse__parse_format_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

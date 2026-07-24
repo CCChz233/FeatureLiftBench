@@ -352,6 +352,12 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
     if graph_runs:
         summary["repo_graph"] = {
             "enabled_runs": len(graph_runs),
+            "optional_tool_used_runs": sum(
+                graph.get("optional_tool_used") is True for graph in graph_runs
+            ),
+            "support_queried_runs": sum(
+                graph.get("support_queried") is True for graph in graph_runs
+            ),
             "adoption_compliant_runs": sum(
                 graph.get("adoption_compliant") is True for graph in graph_runs
             ),
@@ -506,15 +512,22 @@ def compact_repo_graph_usage(usage: dict[str, Any]) -> dict[str, Any]:
         "task_closure_queried",
         "fresh_submission_check",
         "adoption_compliant",
+        "optional_tool_used",
+        "support_queried",
+        "search_queried",
+        "inspect_queried",
         "protocol_violation",
     ):
         value = usage.get(key)
         if isinstance(value, bool):
             compact[key] = value
-    for key in ("status", "mechanism_status", "snapshot_id"):
+    for key in ("status", "mechanism_status", "snapshot_id", "rsg_bootstrap"):
         value = usage.get(key)
         if isinstance(value, str) and value:
             compact[key] = value
+    budget = usage.get("rsg_budget_tokens")
+    if isinstance(budget, int):
+        compact["rsg_budget_tokens"] = budget
     return compact
 
 

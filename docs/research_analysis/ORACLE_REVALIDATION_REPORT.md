@@ -1,6 +1,7 @@
 # Oracle revalidation report
 
-Freeze: `5f9012f6dc748c90`
+Oracle freeze: `7c042d5528b7d0fd`  
+Spec freeze: `f7c616edb47ea533`
 
 | Outcome | Count |
 | --- | ---: |

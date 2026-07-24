@@ -1,70 +1,63 @@
 # FeatureLiftBench Overview
 
+**整体思路（优先阅读）：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)  
+**出题宪法：** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)  
+**研究入口：** [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)
+
 ## Benchmark Goal
 
-FeatureLiftBench evaluates whether code agents can extract compact, standalone, behavior-preserving reusable features from real-world repositories.
+FeatureLiftBench evaluates whether coding agents can **decouple a target feature** from a real repository and produce a **behavior-complete, independently installable, and compact** module, given **source entrypoints** and a **public functional contract**.
 
-给定一个 pinned source repository snapshot 和一个 feature specification，Agent 需要理解目标功能在原仓库中的实现、恢复必要的 dependency closure，并把功能封装成可独立安装和测试的 standalone package。核心能力不是写新代码，而是从已有耦合代码中做 feature extraction、behavior preservation 和 compactness tradeoff。
+目标功能可带不同类型的仓库级耦合；不要求整个 upstream「处处高度纠缠」。紧凑性由 `extraction_ratio` **代理**；评测**不声称**证明唯一最小闭包。Benchmark **不规定** Agent 的探索/测试/停止流程。
+
+论文路线：**Benchmark 基础（规格/门禁）+ 方法研究（Contract/API closure recovery）**。当前工程优先冻结评测基础；方法在合规任务上验证。
 
 ## Core Difference from SWE-bench
 
-SWE-bench asks agents to modify a repository; FeatureLiftBench asks agents to separate a reusable capability from a repository.
-
-| Dimension | SWE-bench style issue repair | FeatureLiftBench |
+| Dimension | SWE-bench style | FeatureLiftBench |
 |---|---|---|
-| Input | GitHub issue and source repo | Feature specification and source repo snapshot |
-| Output | Patch applied to the original repo | New standalone package under `submission/` |
-| Main skill | Locate and fix issue in place | Locate, extract, decouple, package, and preserve behavior |
-| Runtime dependency | Original repo remains the target | Extracted package must run without importing the original repo |
-| Anti-gaming | Tests | Tests plus forbidden import, path leakage checks, and compactness |
+| Input | Issue + repo | Entrypoints + public contract + repo snapshot |
+| Output | Patch to original repo | Standalone package under `submission/` |
+| Main skill | Fix in place | Extract, decouple, package, preserve behavior |
+| Runtime | Original repo remains target | Must run without importing original package |
+| Anti-gaming | Tests | Public+hidden, forbidden import, compactness |
 
-FeatureLiftBench is not a bug-fixing benchmark, code completion benchmark, or greenfield coding benchmark. It is a repository-level feature extraction benchmark.
+## Information Layers
+
+- **Agent-visible:** `public_spec` → generated TASK, `repo/` including retained upstream tests/docs/examples, lockfiles.  
+- **Agent-hidden in Main:** Benchmark `public_tests/`, `hidden_tests/`,
+  `evaluation_spec`, entanglement analysis tags, reference.  
+- **Post-submit eval:** always both private evaluator tiers + isolation + compactness.
+
+详见 [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)。
 
 ## Current Scope
 
-FeatureLiftBench is one benchmark with multiple language splits. Python and Go are language splits, not independent benchmarks, and they share the same task semantics, research questions, evaluator philosophy, and reporting concepts.
+- Python main: **150** tasks in `benchmark/tasks/` — **150 compliant** / **0 legacy**（2026-07-24）。见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)。
+- Go: calibration / seed under `benchmark/go/`（非 paper-ready main）。  
+- 状态：[STATUS.md](STATUS.md)
 
-- Python split: current implemented main split. Metadata scan on 2026-07-19 finds **150** tasks in `benchmark/tasks/`, **121** unique sources, all marked `hard`, plus **3** smoke tasks in `benchmark/sanity/`. See [STATUS.md](STATUS.md) and [python/02_python_repo_task_inventory.md](python/02_python_repo_task_inventory.md).
-- Go split: work in progress. The repo contains Go smoke, seed, and calibration task directories under `benchmark/go/`, but current Go planning docs still distinguish calibration or seed tasks from paper-ready hard gold tasks.
-- Future splits should reuse the same core task definition instead of creating separate RQ, scoring, or experiment protocols.
+## Expected Output
 
-## Expected Output of Agents
-
-Agents produce a standalone package under `submission/`.
-
-Python submissions currently target:
+Python（典型）：
 
 ```text
 submission/
-  pyproject.toml
   featurelifted/
     ...
 ```
 
-Go submissions currently target:
+（`pyproject.toml` 非必须；evaluator 常经 `PYTHONPATH` 导入。）
 
-```text
-submission/
-  go.mod
-  *.go
-```
-
-The exact package layout is language-specific, but the invariant is shared: the submitted package must expose the required target API and must not import, vendor wholesale, symlink to, or rely on the original source repository at runtime.
+Go：`submission/go.mod` + 源码。不变量：独立于原仓运行时，暴露 `required_api`。
 
 ## Evaluation Philosophy
 
-FeatureLiftBench evaluates two axes together:
+1. **Functional gate：** build/install、API、public、hidden、forbidden/isolation。  
+2. **Compactness proxy：** `final_score = gate × max(0, 1 − extraction_ratio)`。  
 
-1. Functional success: the package installs or builds, exposes the target API, avoids forbidden imports and dependencies, and passes public plus hidden tests.
-2. Extraction quality: the package is compact relative to the source repository or reference closure, rather than being a copy-heavy solution.
+Public 与 hidden **共享同一公开行为契约**；hidden 可加深覆盖，不得新增未声明义务（宪法 §4）。
 
-Public tests guide the visible API and common behaviors. Hidden tests check behavior preservation, edge cases, dynamic dependency recovery, and overfitting. Compactness prevents a copy-all strategy from being scored as a high-quality feature extraction.
+## Current Priority
 
-## Current Status
-
-Living summary: [STATUS.md](STATUS.md). Generated v1.1 gates: [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md).
-
-- Canonical core docs: `docs/00_*` through `docs/07_*`, indexed in [README.md](README.md).
-- Python design: [python/](python/). Go design: [go/](go/).
-- Run experiments: root [RUN.md](../RUN.md). Frozen formal runs: [paper_runs_frozen.md](paper_runs_frozen.md).
-- Historical engineering backlog (batch-1 era): root [TODO.md](../TODO.md), [BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md) — not current sprint truth.
+规格迁移与 validate 已完成 **150/150**。当前优先独立人工 paper-gold 审核与新合规 core-100 模型校准；见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) · [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。

@@ -1,37 +1,53 @@
 # FeatureLift Task: Run-section config merge
 
-Extract coverage.py configuration reading and merging for the run section from rc files, environment, and constructor arguments.
+Extract a task-scoped subset of `coverage` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `from featurelifted import CoverageConfig, read_run_config`
-- Callable: `featurelifted.read_run_config`
-- Signature: `read_run_config(config_file: bool | str = True, warn=None, **kwargs) -> CoverageConfig`
+```python
+from featurelifted import (
+    CoverageConfig,
+    read_run_config,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- glob matching and file selection
-- path alias remapping
-- coverage collection, data storage, and reporting
-- plugin loading and HTML/XML report sections beyond parsing
-- original project tests and CLI
+- `CoverageConfig() -> 'None'` class constructor
+- `read_run_config(config_file: bool | str = True, warn=None, **kwargs)`
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: read .coveragerc and prefixed sections from setup.cfg or tox.ini. Required observable cases include read run config from coveragerc; read run config from setup cfg; read run config relative files section.
+- The extracted feature must support this observable behavior: parse run include, omit, source, branch, and related list options. Required observable cases include read run config multiline lists; read run config relative files section.
+- The extracted feature must support this observable behavior: merge constructor kwargs and COVERAGE_* environment overrides. Required observable cases include read run config kwargs override; read run config env data file.
+- The extracted feature must support this observable behavior: apply post-processing such as user path expansion. Required observable cases include read run config relative files section.
+- The package exposes the required task API paths `featurelifted.CoverageConfig`, `featurelifted.read_run_config` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `coverage`
+- Forbidden imports: `coverage`.
+- Do not implement glob matching and file selection.
+- Do not implement path alias remapping.
+- Do not implement coverage collection, data storage, and reporting.
+- Do not implement plugin loading and HTML/XML report sections beyond parsing.
+- Do not implement original project tests and CLI.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — read .coveragerc and prefixed sections from setup.cfg or tox.ini
-- **B002** — parse run include, omit, source, branch, and related list options
-- **B003** — merge constructor kwargs and COVERAGE_* environment overrides
-- **B004** — apply post-processing such as user path expansion
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: coverage
+- **B001** — The extracted feature must support this observable behavior: read .coveragerc and prefixed sections from setup.cfg or tox.ini. Required observable cases include read run config from coveragerc; read run config from setup cfg; read run config relative files section.
+- **B002** — The extracted feature must support this observable behavior: parse run include, omit, source, branch, and related list options. Required observable cases include read run config multiline lists; read run config relative files section.
+- **B003** — The extracted feature must support this observable behavior: merge constructor kwargs and COVERAGE_* environment overrides. Required observable cases include read run config kwargs override; read run config env data file.
+- **B004** — The extracted feature must support this observable behavior: apply post-processing such as user path expansion. Required observable cases include read run config relative files section.
+- **B005** — The package exposes the required task API paths `featurelifted.CoverageConfig`, `featurelifted.read_run_config` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: coverage.
 <!-- featureliftbench:behavior-clauses:end -->

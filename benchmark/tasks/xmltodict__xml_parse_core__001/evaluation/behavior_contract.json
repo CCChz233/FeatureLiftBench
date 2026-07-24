@@ -1,111 +1,57 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_namespace_collapse_map",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "744104749855b6d2b7599a6fdbfc3d6f3f34b3fce94fe5b2ab846334265a8292"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_attr_prefix_parse",
       "public_clause_ids": [
         "B001",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B006"
-        ],
-        "test_source_sha256": "caa6b3ee77070d9b98dc79b1636e22ed51c9c82578de4a2e6d81eec21a139a28"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_semi_structured_mixed_content",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "73d07aa84e4f16860e826978b2ca158529409512bdfabb1b0a6ee0bd8e9ff223"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_unparse_custom_attr_prefix_roundtrip",
       "public_clause_ids": [
         "B002",
-        "B006"
+        "B006",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B006"
-        ],
-        "test_source_sha256": "55cc00672550f74e482783df88b6528d4d1bf83f96e1a0a31c000f4b6e542434"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_force_cdata_wraps_text_nodes",
       "public_clause_ids": [
         "B005",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B005",
-          "B006"
-        ],
-        "test_source_sha256": "f9bafabbd2fd3b2dd2ed92deb51ab8658326d3091d2819559d35d51fda9a752c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_xmltodict_import_surface",
       "public_clause_ids": [
         "B008"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "9e3ff37ded135a13642f7f00adcec6cd3312529deadb73dd39ccde1866f456f4"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B007"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -113,145 +59,91 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse XML strings into ordered dicts with @ attribute prefix"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse XML strings into ordered dicts with @ attribute prefix. Required observable cases include simple parse text node; parse attributes default prefix; parse repeated siblings become list; roundtrip simple document; custom attr prefix parse."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "unparse dicts back to XML with matching attr_prefix and cdata_key"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: unparse dicts back to XML with matching attr_prefix and cdata_key. Required observable cases include unparse simple element; roundtrip simple document; unparse custom attr prefix roundtrip."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "duplicate sibling elements become lists"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: duplicate sibling elements become lists. Required observable cases include parse repeated siblings become list; unparse custom attr prefix roundtrip."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "process_namespaces with optional namespace URI collapse map"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: process_namespaces with optional namespace URI collapse map. Required observable cases include namespace collapse map."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "mixed content via #text alongside child elements"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: mixed content via #text alongside child elements. Required observable cases include simple parse text node; unparse simple element; semi structured mixed content; force cdata wraps text nodes."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "custom attr_prefix and cdata_key options"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: custom attr_prefix and cdata_key options. Required observable cases include custom attr prefix parse; unparse custom attr prefix roundtrip; force cdata wraps text nodes."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.unparse`, `featurelifted.ParsingInterrupted` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
       "text": "the submitted package does not import forbidden upstream packages: xmltodict"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_simple_parse_text_node",
       "public_clause_ids": [
         "B001",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "36cae5b4523b69d31eb43a7f9b0b2e02215eed0d4235ea70aeca62ee5ab7aacc"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_attributes_default_prefix",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "0b159543b5b82c884e19deef9383903b59b5ae8c1ec897b79b664af38bf9edad"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_repeated_siblings_become_list",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "b2b496c1e8942c9430a05dacf1831f7e07343b2f26f0cc0957140a6dd1e82554"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_unparse_simple_element",
       "public_clause_ids": [
         "B002",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B005"
-        ],
-        "test_source_sha256": "7d98dc84e29d44cd9079c1e06df3fc34c20fa2a6b9180d7044f5a6ccd72a3863"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_roundtrip_simple_document",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "97d439a4fe75294ec9a1aba6518f4e2ec55fb4823f68d1ac1bcf5fddee05ba1b"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -284,7 +176,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "d4a421c93008fd2354b2b79f2312b3517cf3ee2a22d01add42be4e62c2da97cb",
+  "spec_sha256": "0a9685f54e199adf7b9e9e3fed34c025e9938b0cc84d772aed3cf27bf0b0c493",
   "task_id": "xmltodict__xml_parse_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

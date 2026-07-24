@@ -1,36 +1,63 @@
 # FeatureLift Task: Mako template lexer and expression parse core
 
-Extract Mako template lexing into a parse tree plus Python expression/control fragment analysis without original mako import or template runtime rendering.
+Extract a task-scoped subset of `mako` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `import featurelifted; from featurelifted import Lexer, parsetree, PythonCode, PythonFragment, SyntaxException, CompileException`
-- Callable: `featurelifted.Lexer.parse`
-- Signature: `Lexer(text: str, filename: str | None = None).parse() -> parsetree.TemplateNode`
+```python
+from featurelifted import (
+    CompileException,
+    Lexer,
+    parsetree,
+    PythonCode,
+    PythonFragment,
+    SyntaxException,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- template compilation, codegen, and runtime rendering
-- TemplateLookup, caching, and filesystem loading
-- CLI, extensions, babel/beaker plugins
-- original mako import at runtime
+- `Lexer(text, filename=None, input_encoding=None, preprocessor=None)` class constructor
+  - `Lexer.parse(self)`
+- `parsetree` module must be importable
+- `PythonCode(code, **exception_kwargs)` class constructor
+- `PythonFragment(code, **exception_kwargs)` class constructor
+  - `PythonFragment.declared_identifiers` attribute must exist on instances
+  - `PythonFragment.undeclared_identifiers` attribute must exist on instances
+- `SyntaxException` must be importable and raisable
+- `CompileException` must be importable and raisable
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: lex template source into parsetree nodes (text, expression, control, tags). Required observable cases include parse text and expression; def tag parses; percent escape in template; unclosed tag raises syntax; expression filter escapes; invalid partial control raises compile.
+- The extracted feature must support this observable behavior: parse ${...} expressions and % control lines. Required observable cases include parse text and expression; parse control line; def tag parses; expression filter escapes; elif partial control identifiers; invalid partial control raises compile.
+- The extracted feature must support this observable behavior: analyze Python fragments for declared and undeclared identifiers. Required observable cases include python code undeclared; python fragment for loop; elif partial control identifiers.
+- The extracted feature must support this observable behavior: report SyntaxException and CompileException with line positions. Required observable cases include unclosed tag raises syntax.
+- The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `mako`
+- Forbidden imports: `mako`.
+- Do not implement template compilation, codegen, and runtime rendering.
+- Do not implement TemplateLookup, caching, and filesystem loading.
+- Do not implement CLI, extensions, babel/beaker plugins.
+- Do not implement original mako import at runtime.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — lex template source into parsetree nodes (text, expression, control, tags)
-- **B002** — parse ${...} expressions and % control lines
-- **B003** — analyze Python fragments for declared and undeclared identifiers
-- **B004** — report SyntaxException and CompileException with line positions
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: mako
+- **B001** — The extracted feature must support this observable behavior: lex template source into parsetree nodes (text, expression, control, tags). Required observable cases include parse text and expression; def tag parses; percent escape in template; unclosed tag raises syntax; expression filter escapes; invalid partial control raises compile.
+- **B002** — The extracted feature must support this observable behavior: parse ${...} expressions and % control lines. Required observable cases include parse text and expression; parse control line; def tag parses; expression filter escapes; elif partial control identifiers; invalid partial control raises compile.
+- **B003** — The extracted feature must support this observable behavior: analyze Python fragments for declared and undeclared identifiers. Required observable cases include python code undeclared; python fragment for loop; elif partial control identifiers.
+- **B004** — The extracted feature must support this observable behavior: report SyntaxException and CompileException with line positions. Required observable cases include unclosed tag raises syntax.
+- **B005** — The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: mako.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -79,5 +79,279 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Case-insensitive multidict mutation and proxy behavior",
+    "summary": "Extract a task-scoped subset of `multidict` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.MultiDict",
+        "kind": "class",
+        "signature": "(*args, **kwargs) -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.MultiDict.add",
+            "kind": "method",
+            "signature": "(self, key: 'str', value: 'object') -> 'None'"
+          },
+          {
+            "path": "featurelifted.MultiDict.popall",
+            "kind": "method",
+            "signature": "(self, key: 'str') -> 'list[object]'"
+          },
+          {
+            "path": "featurelifted.MultiDict.popone",
+            "kind": "method",
+            "signature": "(self, key: 'str', default=Ellipsis)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict",
+        "kind": "class",
+        "signature": "(*args, **kwargs) -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.CIMultiDict.add",
+            "kind": "method",
+            "signature": "(self, key: 'str', value: 'object') -> 'None'"
+          },
+          {
+            "path": "featurelifted.CIMultiDict.getall",
+            "kind": "method",
+            "signature": "(self, key: 'str') -> 'list[object]'"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.MultiDictProxy",
+        "kind": "class",
+        "signature": "(base: 'MultiDict') -> 'None'"
+      },
+      {
+        "path": "featurelifted.CIMultiDictProxy",
+        "kind": "class",
+        "signature": "(base: 'CIMultiDict') -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.CIMultiDictProxy.add",
+            "kind": "method",
+            "signature": "(self, key: 'str', value: 'object') -> 'None'"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "MultiDict preserves repeated values and insertion order while CIMultiDict applies the same mutations using case-insensitive string keys."
+      },
+      {
+        "id": "B002",
+        "text": "getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value."
+      },
+      {
+        "id": "B003",
+        "text": "MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state."
+      },
+      {
+        "id": "B004",
+        "text": "CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "multidict.MultiDict",
+      "multidict.CIMultiDict",
+      "multidict.MultiDictProxy"
+    ],
+    "exclusions": [
+      "network access",
+      "original repository import at runtime",
+      "C extension implementation",
+      "typing-only modules"
+    ],
+    "forbidden": {
+      "imports": [
+        "multidict"
+      ],
+      "paths": [
+        "repo/",
+        "multidict/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: multidict."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "MultiDict preserves repeated values and insertion order while CIMultiDict applies the same mutations using case-insensitive string keys."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: multidict"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_multidict_duplicate_keys_and_getall",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_proxy_reflects_base_mutations",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_case_insensitive_lookup_and_equality",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.MultiDict",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MultiDict.add",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics"
+        ]
+      },
+      {
+        "path": "featurelifted.MultiDict.popall",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics"
+        ]
+      },
+      {
+        "path": "featurelifted.MultiDict.popone",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict.add",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_cimultidict_case_insensitive_lookup_and_equality"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict.getall",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base"
+        ]
+      },
+      {
+        "path": "featurelifted.MultiDictProxy",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDictProxy",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDictProxy.add",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "d14da365c2a596ea5f192754da0c5531a7a4ee5590c47ad62567c66a90bc9b0b",
+  "generated_task_hash": "e174d8b7871a7a8cfbc6e21b5b9cbeeea2f0301ade113ec9641824ac4cea17a5"
 }

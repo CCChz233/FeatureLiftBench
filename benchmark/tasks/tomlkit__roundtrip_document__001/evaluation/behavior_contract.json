@@ -1,78 +1,43 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiline_literal_strings_and_trailing_comma_arrays_roundtrip",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "4f9c18172cae03ba52a7fb8e8bd40021330cf63373b9d31ffd1bc3b386755e27"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_arrays_of_tables_and_inline_tables_dump_correctly",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "9360a396df7e1f7a45e6475cbd17039cbdeee9e4cda4ab49c1347de8bc54d038"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_dotted_keys_table_redefinition_and_unicode_errors",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "ab7d178d050feb0de404f56bdbe8b7e1ca58e3bbca0f3ffcbf4963da8d329159"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_string_constructor_and_sorted_dump_preserve_expected_format",
       "public_clause_ids": [
         "B004",
-        "B005"
+        "B005",
+        "B001",
+        "B007"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "f549565ae788c41d079764ef0e33d275b4735692000708d3bbb157cae8e90da3"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -80,135 +45,89 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse TOML strings and bytes into mutable TOMLDocument objects"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse TOML strings and bytes into mutable TOMLDocument objects. Required observable cases include string constructor and sorted dump preserve expected format."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "preserve comments, blank lines, table order, inline tables, literal strings, multiline strings, and array formatting when dumping parsed documents"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: preserve comments, blank lines, table order, inline tables, literal strings, multiline strings, and array formatting when dumping parsed documents. Required observable cases include parse document values and roundtrip layout; editing preserves table order and comments; inline table array and parse errors; multiline literal strings and trailing comma arrays roundtrip."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "dump plain mappings, nested mappings, arrays, inline tables, and arrays of tables"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: dump plain mappings, nested mappings, arrays, inline tables, and arrays of tables. Required observable cases include dump plain mappings and build document; arrays of tables and inline tables dump correctly."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "support document/table/inline_table/array/aot/string/item constructors"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: support document/table/inline_table/array/aot/string/item constructors. Required observable cases include inline table array and parse errors; arrays of tables and inline tables dump correctly; string constructor and sorted dump preserve expected format."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "support sorted-key dumping for mappings and parsed documents"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: support sorted-key dumping for mappings and parsed documents. Required observable cases include parse document values and roundtrip layout; dump plain mappings and build document; string constructor and sorted dump preserve expected format."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "support datetime, date, time, integers, floats, booleans, arrays, tables, dotted keys, and unicode strings"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: support datetime, date, time, integers, floats, booleans, arrays, tables, dotted keys, and unicode strings. Required observable cases include dotted keys table redefinition and unicode errors."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "raise stable ParseError subclasses with line and column information for malformed TOML"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The extracted feature must support this observable behavior: raise stable ParseError subclasses with line and column information for malformed TOML. Required observable cases include string constructor and sorted dump preserve expected format."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.loads`, `featurelifted.dumps`, `featurelifted.document`, `featurelifted.table`, `featurelifted.inline_table`, `featurelifted.array`, `featurelifted.aot`, `featurelifted.string`, `featurelifted.item`, `featurelifted.exceptions`, `featurelifted.exceptions.InvalidUnicodeValueError`, and 2 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: tomlkit"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_document_values_and_roundtrip_layout",
       "public_clause_ids": [
         "B002",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B005"
-        ],
-        "test_source_sha256": "5f9f4b9a3827ec056984c3caf10a8e32a8d0ff9ffa398112e58d53bdeee4911c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_editing_preserves_table_order_and_comments",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "066d20b5298ba4b47fcbbbd971e78c8cf802b5acff676e45ca3d5d22633e97f4"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_dump_plain_mappings_and_build_document",
       "public_clause_ids": [
         "B003",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B005"
-        ],
-        "test_source_sha256": "d7942eb45f862fc03ed074cce3dbb99ed6c6a4952533e57ea520a3cf20c6b3e8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_inline_table_array_and_parse_errors",
       "public_clause_ids": [
         "B002",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "6b50be076611304a66c5f631f9de13f8e34de239a5362792016172c49ecbb38f"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -241,7 +160,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "3ffa14c312a00b7ba870a1b2f3e69b8c671fdb84e865c8e9e317067a835eb6f0",
+  "spec_sha256": "40ee90eec81a407ffc7784c836f596368df71ac84a416e20fe55f2e697026f23",
   "task_id": "tomlkit__roundtrip_document__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

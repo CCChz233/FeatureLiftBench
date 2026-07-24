@@ -1,83 +1,44 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_aliases_multiple_rules",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "c9f2fab34f6b7198bbd7b67e5d1cc4a1cda0e759788b38b065741971aab3c068"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_aliases_rejects_trailing_wildcards",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "6830f80d0ddfb89d0711890d0c086fa970b14ca9874d26cbdb9a2821ddf1d62c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_aliases_skips_nonexistent_targets",
       "public_clause_ids": [
         "B001",
-        "B005"
+        "B005",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "8d76c1d27e0262f27d3393f8ecab932c7ac547f7ffdfdb5dc59a7ba05139ad2b"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_aliases_relative_pattern",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "421a16ccd716828a3a4e1bd57c67a2478a64e4888a17aa135b1d6cd589a97270"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -85,85 +46,62 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "register glob-style path prefix aliases"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: register glob-style path prefix aliases. Required observable cases include path aliases maps wildcard prefix; path aliases leaves unmatched paths; path aliases multiple rules; path aliases rejects trailing wildcards; path aliases skips nonexistent targets; path aliases relative pattern."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "map absolute and relative paths through the first matching alias"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: map absolute and relative paths through the first matching alias. Required observable cases include path aliases maps wildcard prefix; path aliases leaves unmatched paths; path aliases multiple rules; path aliases relative pattern."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "normalize path separators to the alias result style"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: normalize path separators to the alias result style. Required observable cases include path aliases skips nonexistent targets."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "reject alias patterns ending in wildcards with ConfigError (message: must not end with wildcards)"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: reject alias patterns ending in wildcards with ConfigError (message: must not end with wildcards). Required observable cases include path aliases rejects trailing wildcards."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "skip mappings when the mapped target path does not exist"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: skip mappings when the mapped target path does not exist. Required observable cases include path aliases skips nonexistent targets."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.PathAliases`, `featurelifted.PathAliases.map`, `featurelifted.PathAliases.add`, `featurelifted.exceptions`, `featurelifted.exceptions.ConfigError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: coverage"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_path_aliases_maps_wildcard_prefix",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "40fad5c49d6b1dac1ffbecced312f4b402dbb2b37bbdab06329414576f97123a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_path_aliases_leaves_unmatched_paths",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "ed64f39fbea8e5e8187ccf8c693e211dffa23c515dc8898d3abce5789fcad0ae"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -196,7 +134,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "3d5f78ca88daba9d7f3603a05a9cb9932fe4fc15716f619a95bfefdab7921c67",
+  "spec_sha256": "64fc7e58cb0982edd31bd2d41d756ddd764cc1faedadecbb58b93f2091c40d6a",
   "task_id": "coverage__path_remap_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

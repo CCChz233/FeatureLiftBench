@@ -1,53 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_for_loop_structure",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "89c2d8a2723c56d3a4e5a93c6a285d1b908f129fec845a5c2390e317fc5288f7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_lexer_module_required_for_raw_blocks",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "5de428adbb4ed4302f216184228f45fb10008332019994bc8333665ff37b5645"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parser_module_required_for_if_elif",
       "public_clause_ids": [
-        "B002"
+        "B002",
+        "B001",
+        "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "540b1f48d366f5878c48e9e5b61d81a63e184c9f65d0bffd9b070f235c4245ba"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -55,75 +36,54 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "tokenize template source into token streams"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: tokenize template source into token streams. Required observable cases include lex returns token types; parser module required for if elif."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "parse templates into AST node trees"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: parse templates into AST node trees. Required observable cases include parse variable output; parse for loop structure; parser module required for if elif."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "support block, variable, comment, and statement delimiters"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: support block, variable, comment, and statement delimiters. Required observable cases include lexer module required for raw blocks."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "preserve syntax error reporting with line numbers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: preserve syntax error reporting with line numbers. Required observable cases include parser module required for if elif."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.parse`, `featurelifted.nodes`, `featurelifted.lexer`, `featurelifted.lexer.Lexer`, `featurelifted.lexer.Lexer.tokenize`, `featurelifted.parser`, `featurelifted.parser.Parser` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: jinja2, jinja"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_parse_variable_output",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "8b408726bc60dd8cc1695553a434e5c0e82361fbca8c628a2d7afeb655fa873e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_lex_returns_token_types",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "4a15a7183474b2d013c5ca431cc6f0bfbc272b3537cf86f3b411ead1178a70fe"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -156,7 +116,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "890900fa4352b5c327b73d4b77c601d4142460f5f28a214d06c38c67f0f86bba",
+  "spec_sha256": "a7aa3d6bdd8cba183a5047d0c5675bfb2b46559ee21465a4681af84d9d28b727",
   "task_id": "jinja2__lexer_parser_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

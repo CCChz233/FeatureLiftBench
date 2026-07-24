@@ -1,126 +1,61 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_server_decodes_masked_client_frame",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "92c8a55105e0f383e0580610d0270fccb1cda24c1544c52beef66fb7cc7e619b"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_fragmented_message_reassembly",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "565ffeb98037b849273d5e0b6ea4a23d73f5a202b48b016591d738e76e09c89f"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_close_frame_code_and_reason",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "23b55c96f611b331a4b0f246f1275ec12678ff5f5e7fbdcfc9dc24cd5e0b0531"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_binary_frame_extended_payload_length",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "ed30433e8eff157b5c8d7e36b6fd08db7e5718f9744aba7b4f3ea335879093ac"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_close_frame_rejects_one_byte_payload",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "9ed50750545ec3bd84c82a76e0ac864161fc1bb9ea4f8db29d9ecefffbb49fa6"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_reserved_bit_set_on_data_frame",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "51cf0f4b9ce54ce0af00d9404847f20ffa9152022be618e4ad34a8b3ccfdd53f"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_role_masking_validation",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "e455c4555bb25e22b70e1c7b295296fc32bb1cbdd05aed61ac64c68d352e57ef"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -128,77 +63,55 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse and serialize text/binary WebSocket frames"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse and serialize text/binary WebSocket frames. Required observable cases include client receives unmasked text; binary frame extended payload length."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "client/server masking rules and XOR payload decoding"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: client/server masking rules and XOR payload decoding. Required observable cases include client receives unmasked text; client send data; server decodes masked client frame; role masking validation."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "fragmented message reassembly across continuation frames"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: fragmented message reassembly across continuation frames. Required observable cases include fragmented message reassembly; reserved bit set on data frame."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "ping/pong/close control frames with close codes"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: ping/pong/close control frames with close codes. Required observable cases include close frame code and reason; close frame rejects one byte payload; reserved bit set on data frame."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.frame_protocol`, `featurelifted.frame_protocol.CloseReason`, `featurelifted.frame_protocol.FrameProtocol`, `featurelifted.frame_protocol.FrameProtocol.close`, `featurelifted.frame_protocol.FrameProtocol.receive_bytes`, `featurelifted.frame_protocol.FrameProtocol.received_frames`, `featurelifted.frame_protocol.ParseFailed` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: wsproto"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_client_receives_unmasked_text",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "f8151557c41cb334c46d3649ffd3bac72dd6e5610ddf69e2beed84373bb12139"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_client_send_data",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "bbe469b39470e703e9febd9410c1540405d983a57c11bec2b691a6c6fd5adde5"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -231,7 +144,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "5bb237a8f68a7258531f1e1aa68610415175893648a13d7ac6b73efabebdb5a8",
+  "spec_sha256": "98e8e892c95ae9f232b9dfc1e8ed0324f31841f78bf5282951fad2e2011e11de",
   "task_id": "wsproto__frame_parse_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

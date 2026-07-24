@@ -1,79 +1,65 @@
 # FeatureLift Task Definition
 
+**权威细则：** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)  
+**整体思路：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)
+
 ## Task Summary
 
-A FeatureLift task asks an agent to extract one reusable feature from an entangled repository snapshot and package it as an independent library. The target behavior already exists in the source repository; the agent's job is to recover and decouple the minimal useful closure.
+A FeatureLift task asks an agent to extract one reusable feature from a repository snapshot and package it as an independent library. The target behavior already exists in the source; the agent must **decouple** it into a **behavior-complete, independently installable, compact** package under the **public functional contract** (`required_api` surface, behaviors, exclusions, forbidden) and given **source entrypoints**.
 
-## Input
+评测**不要求**证明唯一最小闭包；**不规定** Agent 工作流。论文保留 Benchmark + 方法双线：先规格合规，再在合规题上验证契约恢复方法。
 
-Each task provides a language-specific workspace with the following logical inputs:
+## Input (Agent-visible)
 
-- Source repository snapshot: a pinned commit or curated snapshot mounted as read-only task input.
-- Feature specification: natural-language description of included and excluded behavior.
-- Target API requirement: package name, import path, callable or type surface, and expected signature.
-- Public tests: visible tests that exercise the intended API and representative behaviors.
-- Packaging requirement: instructions for an installable or buildable package under `submission/`.
-- Metadata: machine-readable task information such as language, source, dependency lock, timeout, forbidden imports, and test command.
+逻辑输入（**compliant 题：** 由 `public_spec` 生成唯一 TASK；**legacy 题：** 仍可能双轨，见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)）：
 
-Hidden tests, oracle manifests, and scoring references are evaluation artifacts, not agent-visible input.
+- Source repository snapshot (`repo/`)，pinned commit  
+- Generated feature specification / TASK（含 `required_api`、behaviors、exclusions、forbidden、entrypoints）  
+- Packaging / output layout requirements under `submission/`  
+- Redacted public metadata（legacy harness prompt 仍可能含 entanglement 等；compliant 用 `render(public_spec)`）  
+- **Repository evidence:** upstream tests/docs/examples retained inside `repo/` when available  
+- Dependency lock / language environment files as applicable  
+
+**Not agent-visible in Main:** Benchmark `public_tests/`, `hidden_tests/`,
+`evaluation_spec`, entanglement analysis fields, reference/oracle internals.
+
+**Public-feedback arm:** explicit ablation that mounts the basic evaluator tier.
+The default Main remains test-blind. See [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md).
 
 ## Output
 
-The agent must create a standalone package under `submission/`.
-
-For Python, the current output package is usually:
-
-```text
-submission/
-  pyproject.toml
-  featurelifted/
-```
-
-For Go, the current output package is usually:
-
-```text
-submission/
-  go.mod
-  *.go
-```
-
-Language-specific docs define exact layout expectations. The core benchmark requirement is unchanged across languages: the output must be independent from the source repo and must expose the target API.
+Standalone package under `submission/` (Python: typically `submission/featurelifted/`). Must expose every `required_api` symbol and must not import the original package or rely on `repo/` at runtime.
 
 ## Constraints
 
-- Must not import the original repository or its top-level package.
-- Must not depend on source repository paths, symlinks, hidden tests, evaluator files, or local machine paths.
-- Must not use network access.
-- Must pass hidden tests during evaluation.
-- Must be compact rather than copy-heavy.
-- Must honor the public target API rather than exposing only an internal helper.
-- Must not add hidden-only behavior by reading test files or evaluator artifacts.
+- No original-package imports; no path/symlink leakage to source or hidden/eval artifacts  
+- No network (unless a future task explicitly allows and documents reproducibility)  
+- Must satisfy evaluator gates including **hidden** tests  
+- Prefer compact extraction (scored via compactness proxy)  
+- Must not learn hidden-only behavior by reading hidden/eval files  
 
-## Functional Success Criteria
+## API contract shape
 
-A submission is functionally successful only when all required gates pass:
+- `required_api`: must all exist; hidden must cover each  
+- `optional_api`: may exist; hidden must not require  
+- public/hidden may only use declared API  
 
-- It installs, imports, or builds in a clean evaluation environment.
-- The target API is importable and callable by tests.
-- Public tests pass.
-- Hidden tests pass.
-- Forbidden import and forbidden dependency checks pass.
-- No direct reliance on the source repo path is detected by the evaluator.
+Do **not** treat “target API” as an optional export superset.
 
-Functional success is binary. Compactness is scored separately and then combined with the functional gate.
+## Behaviors
 
-## Difference from Issue Repair
+Each required behavior is an observable obligation (precondition · action · observable result). Public and hidden tests map to behavior IDs; every required behavior must be covered by at least one hidden test.
 
-Issue repair modifies the original repository to satisfy a bug report or feature request. FeatureLift produces a new package and leaves the original repository unchanged. The difficult step is not merely finding a line to edit; it is deciding which parts of the original implementation are necessary, which coupling must be removed, and how to preserve runtime behavior outside the original environment.
+## Functional Success
 
-## Difference from Code Generation
+Binary gate (implementation-defined conjuncts), typically including: clean install/import/build, public tests, hidden tests, forbidden/isolation checks. Compactness is separate and combined into `final_score`.
 
-Greenfield code generation can implement behavior from a specification alone. FeatureLift requires reading the existing source implementation and preserving its observable behavior, including edge cases, parser state, exception behavior, global state, or dependency semantics that may not be fully specified in the prompt.
+## Difference from Issue Repair / Greenfield / Completion
 
-## Difference from Code Completion
+- **Issue repair:** patches the original repo; FeatureLift emits a new package.  
+- **Greenfield generation:** can ignore upstream; FeatureLift must preserve upstream-observable behavior under the public contract.  
+- **Completion:** local prediction; FeatureLift is repository-level decoupling under explicit API/behavior obligations.
 
-Code completion predicts local code in an existing context. FeatureLift is repository-level: it requires cross-file understanding, dependency closure recovery, import rewriting, packaging, and verification in a clean runtime environment.
+## Stable Contract Across Languages
 
-## Stable Contract
-
-Task semantics must remain stable across language splits. Python and Go may differ in packaging, dependency metadata, and build tooling, but they should not define separate versions of FeatureLift, separate scoring concepts, or separate RQs.
+Python and Go share task semantics, RQs, and scoring philosophy; packaging differs. Spec visibility rules in TASK_DESIGN_RULES apply to all splits unless a language doc explicitly narrows an engineering detail (not the scientific contract).

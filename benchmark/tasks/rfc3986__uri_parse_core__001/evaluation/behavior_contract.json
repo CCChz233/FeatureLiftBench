@@ -1,113 +1,57 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_authority_userinfo_host_port",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "42817ad0a8b82b0e03f6f06a2e716cfd6feee567e25bff5d62471355322f1bb0"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_normalize_uri_path_dots",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "863b4ec60a131804d956f628c795433a1906d85d3bcb967950cde360c615b858"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_builder_from_uri_roundtrip",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "41cc5ffe6c239f9689cbd977bb9657123292170bd078d10447b63b6abcf66207"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_uri_reference_ipv6_host",
       "public_clause_ids": [
         "B002",
-        "B004"
+        "B004",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "192239471f0951192597f47db2f0255048a0920368b4bba575675f6b4d4801c1"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_normalize_preserves_fragment",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "0a399271654db11cd333a677444b4c3a2ac53ef34539de9687c694d0c02b890e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_rfc3986_import_surface",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "b2b9073d63337c3f0d6e19940860e2294b143b9e257f7ca8c757e7bd131cd564"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -115,92 +59,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse URI components and authority subcomponents"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse URI components and authority subcomponents. Required observable cases include uri reference components; authority userinfo host port; builder from uri roundtrip."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "normalize scheme/host/path"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: normalize scheme/host/path. Required observable cases include authority userinfo host port; normalize uri path dots; uri reference ipv6 host; normalize preserves fragment."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "URIBuilder compose and finalize"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: URIBuilder compose and finalize. Required observable cases include uri builder finalize; uri reference ipv6 host."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "is_valid_uri convenience check"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: is_valid_uri convenience check. Required observable cases include is valid uri https; builder from uri roundtrip; uri reference ipv6 host."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: rfc3986"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_uri_reference_components",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "abb355d8c427798fcce5121e365b59376de2dc5a0ef6a2247d73057c43f33ca5"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_is_valid_uri_https",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "416bcb93472e2ce8972f5d3916177c516bfbcb6678421b7836e07a464223a89e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_uri_builder_finalize",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "8a42390cbf622a2bc231a673e646546b6deb62ba2ad8ab02961cc883e9bf4930"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -232,7 +145,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "9afe8feec3eae37045f9c7486f87a3f0f7e85457b0f829d836560d6e407d496c",
+  "spec_sha256": "0b98b47cce5b1ec8b36e4529da2cddd19b47598fc5efc406fc09255401901097",
   "task_id": "rfc3986__uri_parse_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

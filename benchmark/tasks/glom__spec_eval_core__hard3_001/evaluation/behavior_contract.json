@@ -1,40 +1,27 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_coalesce_and_default",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "fde2501898d29380426ba3d8faa985e029aab99af93caf6c16fe41c606e87330"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_nested_path_error",
       "public_clause_ids": [
         "B001",
-        "B004"
+        "B004",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "5a8fb848e66dafce37a48fa2a6a24f815721056d2a45f68fd2c8f6266dcac99b"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -42,57 +29,47 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "glom path evaluation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`glom` evaluates dict/list/tuple specs, dotted path strings, callables, `T`, and `Coalesce`."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "Coalesce"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`Coalesce` returns the first successful child spec or a configured default."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "T target reference"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When a T expression is evaluated, attribute and item traversal start from the current target and compose in expression order."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "path access errors"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "When dotted-path or T traversal cannot access a requested component, glom raises PathAccessError unless a declared default handles the failure."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes the required task API paths `featurelifted.glom`, `featurelifted.T`, `featurelifted.Coalesce`, `featurelifted.PathAccessError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: glom"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_glom_path_and_t",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "0f221274e1b098b765e608d45677938e243449a5e55960048e7f613c2d512acc"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -124,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "7aa11ec2d4bb8502a1bd8a9ef26d5e8d2345e977068fad982636e431546c7ca9",
+  "spec_sha256": "79c02d0e995f84ef0c185cd248a27210ffe456c8928c6db454b91d1b6829e665",
   "task_id": "glom__spec_eval_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

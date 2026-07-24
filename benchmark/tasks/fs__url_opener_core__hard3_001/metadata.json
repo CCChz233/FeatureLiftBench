@@ -76,5 +76,220 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "parse_fs_url FSOpenerRegistry",
+    "summary": "Extract a task-scoped subset of `fs` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.parse_fs_url",
+        "kind": "function",
+        "signature": "(fs_url: 'str') -> 'tuple[str, str | None, dict[str, str]]'"
+      },
+      {
+        "path": "featurelifted.FSOpenerRegistry",
+        "kind": "class",
+        "signature": "(default_protocol: 'str' = 'osfs') -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.FSOpenerRegistry.open",
+            "kind": "method",
+            "signature": "(self, fs_url: 'str') -> 'tuple[Any, str | None]'"
+          },
+          {
+            "path": "featurelifted.FSOpenerRegistry.register",
+            "kind": "method",
+            "signature": "(self, protocol: 'str', factory: 'Callable[[dict[str, str]], Any] | None' = None)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.ParseError",
+        "kind": "exception"
+      },
+      {
+        "path": "featurelifted.UnsupportedProtocolError",
+        "kind": "exception"
+      },
+      {
+        "path": "featurelifted.normalize_fs_path",
+        "kind": "function",
+        "signature": "(path: 'str | None') -> 'str | None'"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`parse_fs_url` parses `scheme://resource!path` URLs and query parameters."
+      },
+      {
+        "id": "B002",
+        "text": "`FSOpenerRegistry` registers opener factories and opens URLs."
+      },
+      {
+        "id": "B003",
+        "text": "Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "fs.opener.parse.parse_fs_url",
+      "fs.opener.registry.FSOpenerRegistry"
+    ],
+    "exclusions": [
+      "network access",
+      "real filesystem backends",
+      "OS mount operations"
+    ],
+    "forbidden": {
+      "imports": [
+        "fs"
+      ],
+      "paths": [
+        "repo/",
+        "fs/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: fs."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`parse_fs_url` parses `scheme://resource!path` URLs and query parameters."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`FSOpenerRegistry` registers opener factories and opens URLs."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: fs"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_parse_fs_url_and_open",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_default_protocol_injection",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_unknown_protocol_raises",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_path_control_characters",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.parse_fs_url",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FSOpenerRegistry",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FSOpenerRegistry.open",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_default_protocol_injection",
+          "hidden_tests/test_hidden_contract.py::test_unknown_protocol_raises"
+        ]
+      },
+      {
+        "path": "featurelifted.FSOpenerRegistry.register",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_default_protocol_injection"
+        ]
+      },
+      {
+        "path": "featurelifted.ParseError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.UnsupportedProtocolError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.normalize_fs_path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "0c550c16571f1e17211b38bb2c2cc8d24469de5a8a6e5f3ca9934521eea1756a",
+  "generated_task_hash": "14bf7d785c788aecd790bdeb1bc9168c47c08f9d8dac4020f048ff6beb0f3802"
 }

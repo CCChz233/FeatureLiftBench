@@ -14,9 +14,15 @@ BOOTSTRAP_MAX_CHARS_ENV = "FEATURELIFTBENCH_REPO_GRAPH_BOOTSTRAP_MAX_CHARS"
 QUERY_MAX_CHARS_ENV = "FEATURELIFTBENCH_REPO_GRAPH_QUERY_MAX_CHARS"
 ROOT_ENV = "FEATURELIFTBENCH_REPO_GRAPH_ROOT"
 CACHE_DIR_ENV = "FEATURELIFTBENCH_REPO_GRAPH_CACHE_DIR"
+BOOTSTRAP_STYLE_ENV = "FEATURELIFTBENCH_RSG_BOOTSTRAP"
+BUDGET_TOKENS_ENV = "FEATURELIFTBENCH_RSG_BUDGET_TOKENS"
+INSPECT_MAX_CHARS_ENV = "FEATURELIFTBENCH_RSG_INSPECT_MAX_CHARS"
+VIEW_ENV = "FEATURELIFTBENCH_RSG_VIEW"
 
 VALID_MODES = frozenset({"disabled", "static", "closure", "evidence"})
 VALID_TRANSPORTS = frozenset({"cli", "inprocess"})
+VALID_BOOTSTRAPS = frozenset({"tool_only", "auto_support"})
+VALID_VIEWS = frozenset({"operational_support", "none"})
 
 
 @dataclass(frozen=True)
@@ -27,6 +33,11 @@ class RepoGraphPolicy:
     bootstrap_max_nodes: int = 30
     bootstrap_max_chars: int = 4_096
     query_max_chars: int = 12_000
+    # Design v2 orthogonal fields (OpenHands formal default: tool_only).
+    bootstrap: str = "tool_only"
+    view: str = "operational_support"
+    budget_tokens: int = 8_000
+    inspect_max_chars: int = 4_000
 
     @property
     def enabled(self) -> bool:
@@ -34,7 +45,7 @@ class RepoGraphPolicy:
 
     def to_dict(self) -> dict[str, object]:
         return {
-            "schema_version": "featureliftbench.repo_graph.policy.v1",
+            "schema_version": "featureliftbench.repo_graph.policy.v2",
             **asdict(self),
             "enabled": self.enabled,
         }
@@ -64,10 +75,35 @@ class RepoGraphPolicy:
             default=12_000,
             name="repo_graph_query_max_chars",
         )
+        bootstrap = (
+            values.get(BOOTSTRAP_STYLE_ENV, "tool_only").strip().lower() or "tool_only"
+        )
+        view = (
+            values.get(VIEW_ENV, "operational_support").strip().lower()
+            or "operational_support"
+        )
+        if bootstrap not in VALID_BOOTSTRAPS:
+            raise ValueError(f"unknown rsg bootstrap style: {bootstrap}")
+        if view not in VALID_VIEWS:
+            raise ValueError(f"unknown rsg view: {view}")
+        budget_tokens = _parse_positive_int(
+            values.get(BUDGET_TOKENS_ENV),
+            default=8_000,
+            name="rsg_budget_tokens",
+        )
+        inspect_max_chars = _parse_positive_int(
+            values.get(INSPECT_MAX_CHARS_ENV),
+            default=4_000,
+            name="rsg_inspect_max_chars",
+        )
         if query_max_chars < 512:
             raise ValueError("repo_graph_query_max_chars must be at least 512")
         if bootstrap_max_chars < 1_024:
             raise ValueError("repo_graph_bootstrap_max_chars must be at least 1024")
+        if budget_tokens < 256:
+            raise ValueError("rsg_budget_tokens must be at least 256")
+        if inspect_max_chars < 256:
+            raise ValueError("rsg_inspect_max_chars must be at least 256")
         return cls(
             mode=mode,
             transport=transport,
@@ -75,6 +111,10 @@ class RepoGraphPolicy:
             bootstrap_max_nodes=bootstrap_max_nodes,
             bootstrap_max_chars=bootstrap_max_chars,
             query_max_chars=query_max_chars,
+            bootstrap=bootstrap,
+            view=view,
+            budget_tokens=budget_tokens,
+            inspect_max_chars=inspect_max_chars,
         )
 
 

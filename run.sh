@@ -3,25 +3,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$ROOT"
+# shellcheck source=scripts/lib/flb_env.sh
+source "${ROOT}/scripts/lib/flb_env.sh"
+flb_cd_root
+PYTHON="$(flb_resolve_python)"
 
 if grep -qi microsoft /proc/version 2>/dev/null && [[ -f "$ROOT/harness/scripts/wsl_docker_setup.sh" ]]; then
   # shellcheck source=harness/scripts/wsl_docker_setup.sh
   source "$ROOT/harness/scripts/wsl_docker_setup.sh"
-fi
-
-export PYTHONPATH="${PYTHONPATH:-$ROOT/harness}"
-
-if [[ -n "${PYTHON:-}" ]]; then
-  :
-elif [[ -n "${CONDA_PREFIX:-}" && -x "${CONDA_PREFIX}/bin/python" ]]; then
-  PYTHON="${CONDA_PREFIX}/bin/python"
-elif [[ -x "$ROOT/.venv/bin/python" ]]; then
-  PYTHON="$ROOT/.venv/bin/python"
-elif command -v python3.12 >/dev/null 2>&1; then
-  PYTHON=python3.12
-else
-  PYTHON=python3
 fi
 
 export PATH="$ROOT/.venv/bin:${PATH}"

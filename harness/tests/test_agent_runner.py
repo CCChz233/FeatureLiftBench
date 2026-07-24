@@ -17,9 +17,11 @@ from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_adapters import FeatureLiftAgentAdapter
 from featureliftbench.agent_adapters import MiniSweAgentAdapter
 from featureliftbench.agent_adapters import OpenHandsAgentAdapter
+from featureliftbench.ablation import AblationOptions
 from featureliftbench.agent_runner import _collect_agent_usage
 from featureliftbench.agent_runner import _is_rate_limit_failure
 from featureliftbench.agent_runner import _merge_suite_runs
+from featureliftbench.agent_runner import _progress
 from featureliftbench.agent_runner import _sum_agent_usage
 from featureliftbench.agent_runner import build_task_prompt
 from featureliftbench.agent_runner import discover_task_dirs
@@ -36,6 +38,10 @@ from featureliftbench.repo_graph.runtime import initialize_repo_graph
 
 
 class AgentRunnerTests(unittest.TestCase):
+    def test_progress_broken_pipe_does_not_fail_task(self) -> None:
+        with mock.patch("builtins.print", side_effect=BrokenPipeError):
+            _progress(True, "detached progress")
+
     def test_build_task_prompt_includes_workflow_and_forbidden_gate(self) -> None:
         task_dir = (
             Path(__file__).resolve().parents[2]
@@ -51,11 +57,12 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertIn("## Closure Discipline", prompt)
         self.assertIn("not a toy rewrite for public tests", prompt)
         self.assertIn("Forbidden imports are a hard gate", prompt)
-        self.assertIn("Public tests passing does not mean you are done", prompt)
+        self.assertIn("Benchmark evaluator tests are not mounted", prompt)
+        self.assertIn("write your own tests", prompt)
         self.assertIn("submission/featurelifted", prompt)
         self.assertIn("Do **not** put your package in `featurelifted/` at the workspace root", prompt)
         self.assertIn("final_score = functional_gate", prompt)
-        self.assertIn("pytest public_tests/", prompt)
+        self.assertNotIn("pytest public_tests/", prompt)
 
     def test_build_task_prompt_go_uses_go_test_and_submission_module(self) -> None:
         task_dir = (
@@ -68,7 +75,7 @@ class AgentRunnerTests(unittest.TestCase):
         metadata = load_metadata(task_dir).data
         prompt = build_task_prompt(metadata)
 
-        self.assertIn("go test ./public_tests/", prompt)
+        self.assertNotIn("go test ./public_tests/", prompt)
         self.assertIn("submission/go.mod", prompt)
         self.assertNotIn("submission/featurelifted/", prompt)
         self.assertNotIn("pytest public_tests/", prompt)
@@ -146,24 +153,29 @@ class AgentRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             task_dir = _make_task(root / "sample_task")
+            upstream_test = task_dir / "repo" / "tests" / "test_upstream.py"
+            upstream_test.parent.mkdir(parents=True)
+            upstream_test.write_text("def test_upstream():\\n    assert True\\n", encoding="utf-8")
             metadata = load_metadata(task_dir).data
             workspace_dir = root / "output" / "workspace"
 
             task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
 
             self.assertTrue((workspace_dir / "repo" / "sample.py").exists())
-            self.assertTrue((workspace_dir / "public_tests" / "test_public.py").exists())
+            self.assertTrue((workspace_dir / "repo" / "tests" / "test_upstream.py").exists())
+            self.assertFalse((workspace_dir / "public_tests").exists())
             self.assertTrue((workspace_dir / "submission").is_dir())
             self.assertFalse((workspace_dir / "hidden_tests").exists())
             self.assertFalse((workspace_dir / "evaluation").exists())
 
             redacted = json.loads((workspace_dir / "metadata.json").read_text(encoding="utf-8"))
             self.assertNotIn("scoring_reference", redacted)
-            self.assertNotIn("hidden", redacted["tests"])
-            self.assertEqual(redacted["entanglement"]["level"], "low")
-            self.assertEqual(redacted["tests"]["public"], "public_tests/")
+            self.assertNotIn("tests", redacted)
+            self.assertNotIn("entanglement", redacted)
+            self.assertNotIn("difficulty", redacted)
             task_text = task_file.read_text(encoding="utf-8")
             self.assertIn("## Entanglement Context", task_text)
+            self.assertIn("Benchmark evaluator tests", task_text)
             self.assertIn("COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT", task_text)
 
     def test_command_agent_run_creates_submission_and_evaluates(self) -> None:
@@ -831,7 +843,12 @@ class AgentRunnerTests(unittest.TestCase):
             task_dir = _make_task(root / "sample_task")
             workspace_dir = root / "workspace"
             metadata = load_metadata(task_dir).data
-            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            task_file = prepare_agent_workspace(
+                task_dir,
+                workspace_dir,
+                metadata,
+                ablation=AblationOptions(mount_public_tests=True),
+            )
             agent_output_dir = root / "agent"
 
             closure_response = _FakeHttpResponse(
@@ -968,7 +985,12 @@ class AgentRunnerTests(unittest.TestCase):
             task_dir = _make_task(root / "sample_task")
             workspace_dir = root / "workspace"
             metadata = load_metadata(task_dir).data
-            task_file = prepare_agent_workspace(task_dir, workspace_dir, metadata)
+            task_file = prepare_agent_workspace(
+                task_dir,
+                workspace_dir,
+                metadata,
+                ablation=AblationOptions(mount_public_tests=True),
+            )
             agent_output_dir = root / "agent"
 
             closure_response = _FakeHttpResponse(

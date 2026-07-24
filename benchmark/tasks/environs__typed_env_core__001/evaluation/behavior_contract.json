@@ -1,153 +1,75 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_list_subcast_int",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "68f983a15d55804fd078f1085b1f40317490f2e36d74082d19fdd3f53245bc0e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_dict_subcast_values",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "6e71f0dfc88de767bd1b783acc40fc65e887020f04ee2143007741f6861f96c7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_expand_vars_with_default",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "4b33f562d70386c07ab958038fd09664ed6f5adb2befef9287f545e5a21a63ce"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_expand_vars_multiple_in_string",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "64322701b03090e49c5af75c567631d49e1f1bbeb1b04aa157475f30a6d3e09a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_marshmallow_range_validator",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "78257864bba0a34057131e306aec08823eb47c161698d07e93ab6fc3c39a91ae"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_deferred_seal_aggregates_errors",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "671c74906efef2baf68941f95f2891018bc35819dbdb8ca05976ed7cf2c83379"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_timedelta_gep2257_duration",
       "public_clause_ids": [
-        "B007"
+        "B007",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B007"
-        ],
-        "test_source_sha256": "6c47c616df4914bcd8d91bfca62c40442cccd0dc720b3cc07c7500010ac8e10a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_prefixed_context_manager",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "4d8730b68932c329cb0a3f93b7ad5cf8a1614284d6632658828f7475949224fe"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_environs_import_surface",
       "public_clause_ids": [
         "B009"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "bc2dfe45f0c55ded768abe6b381a6355e6b6dc0776ed737fcc90cb4992ba02d6"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -155,124 +77,86 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "typed casting for int, bool, str with defaults and eager errors"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: typed casting for int, bool, str with defaults and eager errors. Required observable cases include int cast; bool cast; str default when unset; missing required raises; timedelta gep2257 duration."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "marshmallow validate= callables and validators on parsed fields"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: marshmallow validate= callables and validators on parsed fields. Required observable cases include marshmallow range validator."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "list and dict env strings with delimiter/subcast preprocessing"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: list and dict env strings with delimiter/subcast preprocessing. Required observable cases include list subcast int; dict subcast values."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "expand_vars ${VAR:-default} substitution in env values"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: expand_vars ${VAR:-default} substitution in env values. Required observable cases include expand vars with default; expand vars multiple in string."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "constructor and context-manager prefix for env key names"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: constructor and context-manager prefix for env key names. Required observable cases include prefixed context manager."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "deferred validation via eager=False and seal() error aggregation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: deferred validation via eager=False and seal() error aggregation. Required observable cases include deferred seal aggregates errors."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "custom timedelta duration strings via fields.TimeDelta"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The extracted feature must support this observable behavior: custom timedelta duration strings via fields.TimeDelta. Required observable cases include timedelta gep2257 duration."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: environs"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_int_cast",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "ebca98dddc59b8387e9aaf19b97556e4452c0df6e3b0536aefdc5a71ce261e63"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_bool_cast",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "5be1820bb97ed2e7a8528e0ed604c2c28a6a3022caa16b2f5c0a4e669b1994a2"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_str_default_when_unset",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "b6ce717d307362b05d4f9bd1a9e32f5a381a4281206d508ae5ad4854abb72c1e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_missing_required_raises",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "2fff3a67780d4f7b7a3feccc79b89590c5acb5bbecb42c1dada1e23b51bd2e51"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -305,7 +189,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "7e9306fb135d86b457051c7bd64489a43e0c9960b1dedc957917d71cab347a4c",
+  "spec_sha256": "f02706e51ef044ea3976f047e50935bf3b4264b0eea0ea0ab5e9cd23a47bf5f7",
   "task_id": "environs__typed_env_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

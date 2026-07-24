@@ -4,6 +4,7 @@ This document defines the **canonical lifecycle** and **promotion gates** for ad
 
 Related:
 
+- [`TASK_DESIGN_RULES.md`](TASK_DESIGN_RULES.md) — **规格宪法**（可见契约、API/behavior 覆盖、生成 TASK；与本文冲突时以宪法为准）
 - [`benchmark/README.md`](../benchmark/README.md) — directory layout
 - [`benchmark/manifest.json`](../benchmark/manifest.json) — split registry
 - [`06_task_schema.md`](06_task_schema.md) — per-task package schema
@@ -174,6 +175,7 @@ Never move or delete the pilot directory unless explicitly archiving; prefer cop
 ## Checklist Before Any Promotion
 
 - [ ] `python3 scripts/check_task_lifecycle.py` passes or only documents known grandfathered issues
+- [ ] For **main promotion claiming constitution compliance:** `spec_status: compliant`, `public_spec` + `evaluation_spec` present, `validate-task` passes constitution gates
 - [ ] `task_id` not already in target split
 - [ ] Oracle in `benchmark/submissions/<task_id>/` if harness expects it
 - [ ] No fabricated commits, LOC, or experiment results

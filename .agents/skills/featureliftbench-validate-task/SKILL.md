@@ -17,13 +17,17 @@ description: Audit FeatureLiftBench task packages and decide whether a task can 
 
 Read these before a promotion-readiness review:
 
+- `docs/BENCHMARK_DESIGN.md`
+- `docs/TASK_DESIGN_RULES.md`（规格宪法；API/behavior 双向覆盖与生成 TASK）
+- `docs/CONSTITUTION_MIGRATION.md`（迁移 CLI；compliant vs legacy）
+- `docs/EXPERIMENT_ARMS.md`
 - `docs/07_incremental_task_rules.md`
 - `docs/06_task_schema.md`
 - `docs/python/01_python_repo_selection_criteria.md`
 - `docs/python/03_python_difficulty_rubric.md`
 - `benchmark/README.md`
 
-Use `scripts/check_task_lifecycle.py` as the repository-level audit and `scripts/audit_featurelift_task.py` in this skill for a task-local preflight.
+Use `scripts/check_task_lifecycle.py` as the repository-level audit and `scripts/audit_featurelift_task.py` in this skill for a task-local preflight. For compliant tasks, `validate-task` runs constitution gates when `spec_status: compliant`. See `docs/CONSTITUTION_MIGRATION.md`.
 
 ## Review Workflow
 

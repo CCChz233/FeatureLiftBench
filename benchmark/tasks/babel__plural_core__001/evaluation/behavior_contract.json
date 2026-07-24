@@ -1,56 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_plural_rule_expression_edges",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "83b520b125d93256edc15e1432b832d6a1ec326b722d4e951f3e12a241770060"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_locale_plural_categories_multilingual",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "9bd5356c2853a2f1e1083cc0aed9f029b4c6753d12686680ded084eb0cbe8dcb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_plural_rule_string_and_float_operands",
       "public_clause_ids": [
-        "B003"
+        "B003",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "eaaec125a719f9c2f029738570d0a9f182b560b5df105a4acb2dacd477ab9bfe"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -58,52 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "evaluate PluralRule expressions for numeric operands"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: evaluate PluralRule expressions for numeric operands. Required observable cases include plural rule string and float operands."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "resolve Locale plural categories for en, ru, fr, ja, and pl"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: resolve Locale plural categories for en, ru, fr, ja, and pl. Required observable cases include locale plural categories multilingual."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "load plural rules from packaged locale-data .dat resources"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: load plural rules from packaged locale-data .dat resources. Required observable cases include plural rule and english locale; plural rule expression edges; plural rule string and float operands."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: babel"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_plural_rule_and_english_locale",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "ffcf9fc2ac946fd3da3f8c0e56261a719667417ebd270f4da1746d7fa9024a73"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -136,7 +102,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "19b871cfb3e05d77ee461a6a33cefb11fa70e1ec2f4c1bc5aad69eb3ac482f54",
+  "spec_sha256": "399a2e9c0e65929420af42406feebc5c19d5557d25b9c2a6f379967520ca0dde",
   "task_id": "babel__plural_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

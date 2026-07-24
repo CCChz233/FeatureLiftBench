@@ -1,5 +1,10 @@
 # ECSM 方法规范：Executable Closure-State Machine
 
+> **SUPERSEDED（2026-07-23）**  
+> ECSM（由状态机决定 expand / probe / prune / stop）**已废弃**，不再作为 FeatureLiftBench 研究主线。  
+> 当前定位：大模型自主决策；可选通用 RSG 工具。见 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。  
+> 下文仅作历史设计存档，**不要按本文实现或排实验。**
+
 ## 0. 方法边界与当前实现状态
 
 ECSM 是一个**显式状态机控制器**，目标不是生成更长的提示，而是把 feature lifting 中不可见的“完成程度”变成可执行、可更新、可审计的状态，并用该状态选择 expand、probe、prune 或 stop。

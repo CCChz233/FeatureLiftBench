@@ -1,8 +1,8 @@
 # FeatureLift Task: Backend discovery, priority sorting, and failover selection
 
-Extract a task-scoped subset of `keyring` backend selection into a standalone `featurelifted` package.
+Extract a task-scoped subset of `keyring` into a standalone `featurelifted` package.
 
-The implementation must not import `keyring`, must not read from `repo/`, must not use the network, and must not access OS keychains. Use only the standard library.
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
@@ -21,50 +21,66 @@ from featurelifted import (
 )
 ```
 
-Required behavior:
+## Required API Details
 
-- `select_backend(backends, env=None) -> Backend`
-- `ChainerBackend(backends).get_password(service, username)`
-- `ChainerBackend(backends).set_password(service, username, password)`
-- `MemoryBackend.get_credential(service, username=None)`
+- `ChainerBackend(backends: 'list[Backend] | tuple[Backend, ...]') -> 'None'` class constructor
+  - `ChainerBackend.get_password(self, service: 'str', username: 'str') -> 'str | None'`
+  - `ChainerBackend.set_password(self, service: 'str', username: 'str', password: 'str') -> 'None'`
+- `MemoryBackend(label: 'str', priority: 'float' = 1.0, data: 'dict[tuple[str, str], str]' = <factory>) -> None` class constructor
+  - `MemoryBackend.get_credential(self, service: 'str', username: 'str | None' = None) -> 'Credential | None'`
+  - `MemoryBackend.get_password(self, service: 'str', username: 'str') -> 'str | None'`
+  - `MemoryBackend.set_password(self, service: 'str', username: 'str', password: 'str') -> 'None'`
+- `select_backend(backends: 'list[Any] | tuple[Any, ...]', env: 'dict[str, str] | None' = None) -> 'Backend'`
+- `Backend()` class constructor
+- `BackendNotFound` must be importable and raisable
+- `Credential(username: 'str', password: 'str') -> None` class constructor
+- `ErrorBackend(label: 'str' = 'error', priority: 'float' = 1.0, error: 'Exception' = <factory>) -> None` class constructor
+- `FailBackend()` class constructor
+- `PasswordDeleteError` must be importable and raisable
+- `PasswordSetError` must be importable and raisable
 
 ## Required Behavior
 
-- Select the highest-priority viable backend by default.
-- Exclude negative-priority backends from automatic selection.
-- Return `FailBackend` when no viable backend exists.
-- Honor `PYTHON_KEYRING_BACKEND` in `env` by matching backend name, class path, or class name.
-- Raise `BackendNotFound` when an override requests an unavailable or non-viable backend.
-- `ChainerBackend` sorts viable backends by priority descending.
-- `ChainerBackend.get_password()` skips backend exceptions and returns the first non-`None` password.
-- `ChainerBackend.set_password()` falls back after backend failures and raises `PasswordSetError` if all fail.
-- `MemoryBackend.get_credential(service, None)` may discover a stored username.
+- Backend implementations expose priority and the declared password and credential operations used by selection and chaining.
+- MemoryBackend stores deterministic credentials and can discover a stored username when get_credential is called without one.
+- When no viable backend exists, selection returns FailBackend and its password operations fail through the declared error API.
+- ErrorBackend raises its configured failure so ChainerBackend fallback paths can be observed.
+- ChainerBackend sorts viable backends by descending priority, skips backend failures, and returns the first successful password result.
+- select_backend chooses the highest-priority non-negative viable backend and falls back to FailBackend when none qualifies.
+- When PYTHON_KEYRING_BACKEND is provided, select_backend matches the requested backend name or class and raises BackendNotFound if it is unavailable.
+- Credential values and password set/delete failures use the declared Credential, PasswordSetError, and PasswordDeleteError types.
+- The package exposes the required task API paths `featurelifted.ChainerBackend`, `featurelifted.ChainerBackend.get_password`, `featurelifted.ChainerBackend.set_password`, `featurelifted.MemoryBackend`, `featurelifted.MemoryBackend.get_credential`, `featurelifted.MemoryBackend.get_password`, `featurelifted.MemoryBackend.set_password`, `featurelifted.select_backend`, `featurelifted.Backend`, `featurelifted.BackendNotFound`, `featurelifted.Credential`, `featurelifted.ErrorBackend`, and 3 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
 - Forbidden imports: `keyring`.
-- Forbidden path access: `repo/`, `keyring/`.
-- Do not access macOS Keychain, Windows credential vault, SecretService, KWallet, config files, or CLI behavior.
+- Forbidden path access: `repo/, keyring/`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement source repo path access.
+- Do not implement macOS Keychain.
+- Do not implement Windows credential vault.
+- Do not implement SecretService.
+- Do not implement KWallet.
+- Do not implement CLI and config file writes.
 
 ## Public vs Hidden Tests
 
-Public tests cover highest-priority selection, environment override, and basic chained password lookup.
-Hidden tests cover negative priority exclusion, non-viable override rejection, backend error fallback, set-password fallback/failure, and credential username discovery.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — Backend base API
-- **B002** — MemoryBackend for deterministic storage
-- **B003** — FailBackend
-- **B004** — ErrorBackend for failure-path tests
-- **B005** — ChainerBackend priority sorting and fallback
-- **B006** — select_backend priority selection
-- **B007** — PYTHON_KEYRING_BACKEND override
-- **B008** — Credential and password set/delete errors
-- **B009** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B010** — the submitted package does not import forbidden upstream packages: keyring
+- **B001** — Backend implementations expose priority and the declared password and credential operations used by selection and chaining.
+- **B002** — MemoryBackend stores deterministic credentials and can discover a stored username when get_credential is called without one.
+- **B003** — When no viable backend exists, selection returns FailBackend and its password operations fail through the declared error API.
+- **B004** — ErrorBackend raises its configured failure so ChainerBackend fallback paths can be observed.
+- **B005** — ChainerBackend sorts viable backends by descending priority, skips backend failures, and returns the first successful password result.
+- **B006** — select_backend chooses the highest-priority non-negative viable backend and falls back to FailBackend when none qualifies.
+- **B007** — When PYTHON_KEYRING_BACKEND is provided, select_backend matches the requested backend name or class and raises BackendNotFound if it is unavailable.
+- **B008** — Credential values and password set/delete failures use the declared Credential, PasswordSetError, and PasswordDeleteError types.
+- **B009** — The package exposes the required task API paths `featurelifted.ChainerBackend`, `featurelifted.ChainerBackend.get_password`, `featurelifted.ChainerBackend.set_password`, `featurelifted.MemoryBackend`, `featurelifted.MemoryBackend.get_credential`, `featurelifted.MemoryBackend.get_password`, `featurelifted.MemoryBackend.set_password`, `featurelifted.select_backend`, `featurelifted.Backend`, `featurelifted.BackendNotFound`, `featurelifted.Credential`, `featurelifted.ErrorBackend`, and 3 listed members with the kinds and callable signatures listed in this contract.
+- **B010** — the submitted package does not import forbidden upstream packages: keyring.
 <!-- featureliftbench:behavior-clauses:end -->

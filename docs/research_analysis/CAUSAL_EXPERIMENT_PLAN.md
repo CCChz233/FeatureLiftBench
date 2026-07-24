@@ -1,5 +1,8 @@
 # FeatureLiftBench 因果实验计划
 
+> **SUPERSEDED（2026-07-23）**  
+> 以 ECSM 强制控制为前提的因果臂 **已废弃**。当前方向见 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。
+
 ## 1. 实验目标
 
 目标不是再测一次“哪个 prompt 更好”，而是区分 `MECHANISM_HYPOTHESES.md` 预注册的六种解释：定位、closure、行为契约、停止、workflow，以及工具/harness 噪声。

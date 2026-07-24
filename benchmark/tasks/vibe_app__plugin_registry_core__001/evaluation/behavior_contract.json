@@ -1,58 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_metaclass_registers_plugin_classes",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "e93841b8329d2c23ef1932dd1c5f7b31e26ef00bfe31402e3b2d2c1eb11b6c02"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_register_tracks_names_in_global_state",
       "public_clause_ids": [
         "B003",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B005"
-        ],
-        "test_source_sha256": "1394aa658a7b78c5a250af746af44036b08e3efa86dc1e5b40e62c78925ad009"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_run_raises_for_disabled_plugin",
       "public_clause_ids": [
-        "B002"
+        "B002",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "0f31249c67c823a06318aa25e7b1bfb85e61261509ca36439b79334336b9a3c2"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -60,84 +36,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "register plugin instances and resolve them by name"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: register plugin instances and resolve them by name. Required observable cases include register and run plugin; list plugins returns registered names; run raises for disabled plugin."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "dispatch run(payload) on registered plugins"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: dispatch run(payload) on registered plugins. Required observable cases include register and run plugin; run raises for disabled plugin."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "auto-register plugin subclasses via PluginMeta into GLOBAL_STATE"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: auto-register plugin subclasses via PluginMeta into GLOBAL_STATE. Required observable cases include register tracks names in global state."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "discover plugin classes registered by metaclass"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: discover plugin classes registered by metaclass. Required observable cases include metaclass registers plugin classes."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "track plugin names in GLOBAL_STATE plugin_names list"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: track plugin names in GLOBAL_STATE plugin_names list. Required observable cases include register tracks names in global state."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.BasePlugin`, `featurelifted.PluginMeta`, `featurelifted.PluginRegistry`, `featurelifted.PluginRegistry.register`, `featurelifted.PluginRegistry.discover_classes`, `featurelifted.PluginRegistry.run`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: vibe_app"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_register_and_run_plugin",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "a8ddf02f67a446e17ae32b569f789f69ad660cc9fee7fa4635e29136483b8419"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_list_plugins_returns_registered_names",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "b70b668872a26c2a94c9fc5cdb396bf630e76a3a0f2e8e7b47ee33f1d6db5df1"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -170,7 +123,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "c3bdf2eab20e5ad63853398eb093b9c4fe37e1f6bf442d84334fa4aa490874b8",
+  "spec_sha256": "4ea09a032d4b616c7db5999aa3b26a7a32add6b225a86ae6d93b5407a5df96ea",
   "task_id": "vibe_app__plugin_registry_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

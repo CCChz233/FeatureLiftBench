@@ -17,6 +17,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .task_render import render_agent_workspace_task
+from .task_spec import SPEC_STATUS_COMPLIANT, get_spec_status
+from .ablation import AblationOptions, ablation_options_from_env
 from .active_agent_processes import terminate_active_agent_processes
 from .agent_adapters import AgentRunConfig
 from .agent_adapters import AgentRunContext
@@ -407,8 +410,14 @@ def run_agent_on_task(
     stdout_log = agent_output_dir / "stdout.log"
     stderr_log = agent_output_dir / "stderr.log"
 
+    ablation = ablation_options_from_env(config.env)
     if validation.valid:
-        task_file = prepare_agent_workspace(task_path, workspace_dir, metadata)
+        task_file = prepare_agent_workspace(
+            task_path,
+            workspace_dir,
+            metadata,
+            ablation=ablation,
+        )
         run_config = config
         agent_ready = True
         try:
@@ -559,9 +568,11 @@ def run_agent_on_task(
         "agent_backend": "docker" if agent_docker else "local",
         "agent_docker_image": agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
+        "ablation": ablation.summary(),
         "workspace": {
             "dir": str(workspace_dir),
             "task_file": str(workspace_dir / "TASK.md"),
+            "public_tests_mounted": ablation.mount_public_tests,
         },
         "submission": submission_payload,
         "evaluation": evaluation_payload,
@@ -896,7 +907,12 @@ def _exception_run_result(
 
 def _progress(enabled: bool, message: str) -> None:
     if enabled:
-        print(message, file=sys.stderr, flush=True)
+        try:
+            print(message, file=sys.stderr, flush=True)
+        except BrokenPipeError:
+            # The run may outlive an attached terminal or API tool stream.
+            # Progress output is best-effort and must never invalidate a task.
+            pass
 
 
 def discover_task_dirs(input_path: str | Path, task_ids: list[str] | None = None) -> list[Path]:
@@ -1184,16 +1200,42 @@ def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
     return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
 
 
-def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, metadata: dict[str, Any]) -> Path:
+def prepare_agent_workspace(
+    task_dir: str | Path,
+    workspace_dir: str | Path,
+    metadata: dict[str, Any],
+    *,
+    ablation: AblationOptions | None = None,
+) -> Path:
     """Build the redacted workspace visible to the agent and return TASK.md."""
 
+    options = ablation or AblationOptions()
     task_path = Path(task_dir).resolve()
     workspace_path = Path(workspace_dir).resolve()
     workspace_path.mkdir(parents=True, exist_ok=True)
 
     _copy_path(task_path / "repo", workspace_path / "repo")
-    _copy_path(task_path / _test_path(metadata, "public", "public_tests/"), workspace_path / "public_tests")
     language = str(metadata.get("language", "python"))
+    if options.mount_public_tests:
+        _copy_path(
+            task_path / _test_path(metadata, "public", "public_tests/"),
+            workspace_path / "public_tests",
+        )
+        if language == "go":
+            public_runner = workspace_path / "run_public_tests.sh"
+            public_runner.write_text(
+                "#!/bin/sh\n"
+                "set -eu\n"
+                "test -f submission/go.mod || { echo 'missing submission/go.mod' >&2; exit 2; }\n"
+                "tmp_dir=$(mktemp -d)\n"
+                "trap 'rm -rf \"$tmp_dir\"' EXIT INT TERM\n"
+                "cp -R submission/. \"$tmp_dir/\"\n"
+                "cp public_tests/*_test.go \"$tmp_dir/\"\n"
+                "cd \"$tmp_dir\"\n"
+                "CGO_ENABLED=0 GOPROXY=off GOSUMDB=off go test ./...\n",
+                encoding="utf-8",
+            )
+            public_runner.chmod(0o755)
     if language == "go":
         go_mod = task_path / "environment" / "go.mod"
         if go_mod.is_file():
@@ -1201,20 +1243,6 @@ def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, met
         go_sum = task_path / "environment" / "go.sum"
         if go_sum.is_file():
             shutil.copy2(go_sum, workspace_path / "go.sum")
-        public_runner = workspace_path / "run_public_tests.sh"
-        public_runner.write_text(
-            "#!/bin/sh\n"
-            "set -eu\n"
-            "test -f submission/go.mod || { echo 'missing submission/go.mod' >&2; exit 2; }\n"
-            "tmp_dir=$(mktemp -d)\n"
-            "trap 'rm -rf \"$tmp_dir\"' EXIT INT TERM\n"
-            "cp -R submission/. \"$tmp_dir/\"\n"
-            "cp public_tests/*_test.go \"$tmp_dir/\"\n"
-            "cd \"$tmp_dir\"\n"
-            "CGO_ENABLED=0 GOPROXY=off GOSUMDB=off go test ./...\n",
-            encoding="utf-8",
-        )
-        public_runner.chmod(0o755)
     else:
         lock_path = task_path / _dependency_lock(metadata)
         if lock_path.exists():
@@ -1229,7 +1257,14 @@ def prepare_agent_workspace(task_dir: str | Path, workspace_dir: str | Path, met
     )
     (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
-    task_file.write_text(build_task_prompt(redacted_metadata), encoding="utf-8")
+    if get_spec_status(metadata) == SPEC_STATUS_COMPLIANT:
+        task_markdown = render_agent_workspace_task(
+            metadata,
+            mount_public_tests=options.mount_public_tests,
+        )
+    else:
+        task_markdown = build_task_prompt(redacted_metadata, ablation=options)
+    task_file.write_text(task_markdown, encoding="utf-8")
     return task_file
 
 
@@ -1237,7 +1272,6 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
     """Return the metadata subset that is safe and useful for an agent."""
 
     environment = metadata.get("environment") if isinstance(metadata.get("environment"), dict) else {}
-    tests = metadata.get("tests") if isinstance(metadata.get("tests"), dict) else {}
     language = str(metadata.get("language", "python"))
     environment_payload: dict[str, Any] = {
         "network": environment.get("network", False),
@@ -1264,26 +1298,24 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
     return {
         "task_id": metadata.get("task_id", ""),
         "language": language,
-        "difficulty": metadata.get("difficulty", ""),
-        "tags": metadata.get("tags", []),
         "source": metadata.get("source", {}),
         "feature": metadata.get("feature", {}),
-        "entanglement": metadata.get("entanglement", {}),
         "output": metadata.get("output", {}),
         "environment": environment_payload,
-        "tests": {
-            "public": "public_tests/",
-            "command": tests.get("command", "pytest" if language != "go" else "go test"),
-        },
     }
 
 
-def build_task_prompt(metadata: dict[str, Any]) -> str:
+def build_task_prompt(
+    metadata: dict[str, Any],
+    *,
+    ablation: AblationOptions | None = None,
+) -> str:
     """Build the task prompt given to the agent."""
 
+    options = ablation or AblationOptions()
     if str(metadata.get("language", "python")) == "go":
-        return _build_go_task_prompt(metadata)
-    return _build_python_task_prompt(metadata)
+        return _build_go_task_prompt(metadata, ablation=options)
+    return _build_python_task_prompt(metadata, ablation=options)
 
 
 def _shared_task_prompt_sections(metadata: dict[str, Any]) -> dict[str, str]:
@@ -1328,7 +1360,12 @@ def _shared_task_prompt_sections(metadata: dict[str, Any]) -> dict[str, str]:
     }
 
 
-def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
+def _build_go_task_prompt(
+    metadata: dict[str, Any],
+    *,
+    ablation: AblationOptions | None = None,
+) -> str:
+    options = ablation or AblationOptions()
     sections = _shared_task_prompt_sections(metadata)
     environment = (
         metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
@@ -1338,39 +1375,22 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
     package_name = sections["output_package"]
     symbols = _format_list(output.get("symbols", []))
     go_version = str(environment.get("go", "1.22"))
-    return (
+    parts = [
         f"# FeatureLiftBench Go Task: {sections['task_id']}\n\n"
         "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
         f"`repo/` into a standalone Go module under `submission/` (package `{package_name}`).\n\n"
-        "## How to work\n\n"
-        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
-        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
-        f"into `submission/` as package `{package_name}`.\n"
-        f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
-        f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "
-        "never the original module path.\n"
-        f"5. Before submitting, grep your submission for forbidden imports, e.g. "
-        f"`grep -R '\"' submission/*.go | grep -E '({sections['forbidden_grep']})'` — "
-        "any match fails evaluation.\n"
-        "6. Run `./run_public_tests.sh` in the workspace (the isolated equivalent of "
-        "`go test ./public_tests/...`) "
-        "and fix failures.\n"
-        "7. **Public tests passing does not mean you are done.** Hidden tests and extraction "
-        "scoring apply after submit.\n"
-        "8. Write all deliverables under `submission/` only (`*.go` + `go.mod`).\n"
-        "9. When confident, submit with the command at the bottom.\n\n"
-        "## Workspace\n\n"
-        "- `repo/`: source repository snapshot for the fixed commit.\n"
-        "- `public_tests/`: tests you may run while developing.\n"
-        "- `go.mod`: eval harness module (add `replace` for your submission).\n"
-        "- `run_public_tests.sh`: isolated public-test runner for your submission.\n"
-        "- `metadata.json`: redacted task metadata. Hidden tests are not present.\n"
-        "- `submission/`: write your final Go module here.\n\n"
-        "## Closure Discipline\n\n"
-        "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
-        "- Start from source entrypoints, follow helpers, constants, tables, and error handling "
-        "needed for included behaviors, then trim unrelated package areas.\n"
-        "- Remove tests, CLI, and unrelated subsystems unless the feature spec needs them.\n\n"
+    ]
+    parts.append(_go_howto_section(sections, module_path, package_name, go_version, options))
+    parts.append(_go_workspace_section(options))
+    if options.prompt_style == "standard":
+        parts.append(
+            "## Closure Discipline\n\n"
+            "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
+            "- Start from source entrypoints, follow helpers, constants, tables, and error handling "
+            "needed for included behaviors, then trim unrelated package areas.\n"
+            "- Remove tests, CLI, and unrelated subsystems unless the feature spec needs them.\n\n"
+        )
+    parts.append(
         "## Source\n\n"
         f"- Name: {sections['source_name']}\n"
         f"- URL: {sections['source_url']}\n"
@@ -1384,11 +1404,16 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
         f"- Source entrypoints:\n{sections['entrypoints']}\n"
         f"- Included behaviors:\n{sections['included']}\n"
         f"- Excluded behaviors:\n{sections['excluded']}\n"
-        "## Entanglement Context\n\n"
-        f"- Level: {sections['entanglement_level']}\n"
-        f"- Types:\n{sections['entanglement_types']}\n"
-        f"- Description: {sections['entanglement_description']}\n"
-        f"- Signals:\n{sections['entanglement_signals']}\n"
+    )
+    if options.prompt_style == "standard":
+        parts.append(
+            "## Entanglement Context\n\n"
+            f"- Level: {sections['entanglement_level']}\n"
+            f"- Types:\n{sections['entanglement_types']}\n"
+            f"- Description: {sections['entanglement_description']}\n"
+            f"- Signals:\n{sections['entanglement_signals']}\n"
+        )
+    parts.append(
         "## Required Output API\n\n"
         f"- Package: `{sections['output_package']}`\n"
         f"- Import: `{sections['output_import']}`\n"
@@ -1402,63 +1427,53 @@ def _build_go_task_prompt(metadata: dict[str, Any]) -> str:
         + "\n"
         "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
-        "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
+        "- Do not modify `repo/`"
+        + (" or `public_tests/`" if options.mount_public_tests else "")
+        + " as your final deliverable.\n"
         "- Do not import the original source module at runtime.\n"
         "- **Forbidden imports are a hard gate.**\n"
         "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "
         "Whole-repo copy scores near zero.\n"
         f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
-        "When finished, run:\n\n"
-        "```bash\n"
-        "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
-        "```\n"
+        + _finish_footer(options)
     )
+    return "".join(parts)
 
 
-def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
+def _build_python_task_prompt(
+    metadata: dict[str, Any],
+    *,
+    ablation: AblationOptions | None = None,
+) -> str:
+    options = ablation or AblationOptions()
     sections = _shared_task_prompt_sections(metadata)
     environment = (
         metadata.get("environment", {}) if isinstance(metadata.get("environment"), dict) else {}
     )
     allowed_dependencies = _format_list(environment.get("allowed_dependencies", []))
     forbidden_dependencies = _format_list(environment.get("forbidden_dependencies", []))
-    return (
+    parts = [
         f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
         "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
         "`repo/` into a standalone, installable Python package under `submission/`.\n\n"
-        "## How to work\n\n"
-        "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
-        "listed import path, not just the primary callable.\n"
-        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
-        "into `submission/featurelifted/`.\n"
-        "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
-        f"4. Before submitting, grep your submission for forbidden imports, e.g. "
-        f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'` — any match fails evaluation.\n"
-        "5. Run `pytest public_tests/` in the workspace and fix failures.\n"
-        "6. **Public tests passing does not mean you are done.** The evaluator also runs hidden tests "
-        "and stricter checks you cannot see here.\n"
-        "7. Before submitting, verify your package is under `submission/featurelifted/`, e.g. "
-        "`test -d submission/featurelifted && ls submission/featurelifted | head`.\n"
-        "8. Do **not** put your package in `featurelifted/` at the workspace root — only "
-        "`submission/featurelifted/` counts.\n"
-        "9. When confident, submit with the command at the bottom.\n\n"
-        "## Workspace\n\n"
-        "- `repo/`: source repository snapshot for the fixed commit.\n"
-        "- `public_tests/`: tests you may run while developing.\n"
-        "- `requirements.lock`: locked third-party runtime dependencies allowed by the task.\n"
-        "- `metadata.json`: redacted task metadata. Hidden tests and evaluator internals are not present.\n"
-        "- `submission/`: write your final package here.\n\n"
-        "## Closure Discipline\n\n"
-        "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
-        "- Start from source entrypoints, follow imports, helpers, constants, data files, "
-        "exceptions, and resources needed for the included behaviors, then trim unrelated "
-        "package areas.\n"
-        "- Every copied file should support target behavior, public API compatibility, an "
-        "exception/type/resource, or a transitive helper used by that behavior.\n"
-        "- Remove tests, docs, CLI, network/runtime subsystems, and unrelated adapters unless "
-        "the feature specification needs them.\n"
-        "- If public tests pass with a shallow rewrite, still inspect included behaviors and "
-        "hidden-risk edge cases before submitting.\n\n"
+    ]
+    parts.append(_python_howto_section(sections, options))
+    parts.append(_python_workspace_section(options))
+    if options.prompt_style == "standard":
+        parts.append(
+            "## Closure Discipline\n\n"
+            "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
+            "- Start from source entrypoints, follow imports, helpers, constants, data files, "
+            "exceptions, and resources needed for the included behaviors, then trim unrelated "
+            "package areas.\n"
+            "- Every copied file should support target behavior, public API compatibility, an "
+            "exception/type/resource, or a transitive helper used by that behavior.\n"
+            "- Remove tests, docs, CLI, network/runtime subsystems, and unrelated adapters unless "
+            "the feature specification needs them.\n"
+            "- After covering included behaviors and the Required Output API, prune unrelated code "
+            "before submitting.\n\n"
+        )
+    parts.append(
         "## Source\n\n"
         f"- Name: {sections['source_name']}\n"
         f"- URL: {sections['source_url']}\n"
@@ -1472,11 +1487,16 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         f"- Source entrypoints:\n{sections['entrypoints']}\n"
         f"- Included behaviors:\n{sections['included']}\n"
         f"- Excluded behaviors:\n{sections['excluded']}\n"
-        "## Entanglement Context\n\n"
-        f"- Level: {sections['entanglement_level']}\n"
-        f"- Types:\n{sections['entanglement_types']}\n"
-        f"- Description: {sections['entanglement_description']}\n"
-        f"- Signals:\n{sections['entanglement_signals']}\n"
+    )
+    if options.prompt_style == "standard":
+        parts.append(
+            "## Entanglement Context\n\n"
+            f"- Level: {sections['entanglement_level']}\n"
+            f"- Types:\n{sections['entanglement_types']}\n"
+            f"- Description: {sections['entanglement_description']}\n"
+            f"- Signals:\n{sections['entanglement_signals']}\n"
+        )
+    parts.append(
         "## Required Output API\n\n"
         f"- Package: `{sections['output_package']}`\n"
         f"- Import: `{sections['output_import']}`\n"
@@ -1486,7 +1506,9 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         "the import line lists the public surface your package must expose.\n\n"
         "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
-        "- Do not modify `repo/` or `public_tests/` as your final deliverable.\n"
+        "- Do not modify `repo/`"
+        + (" or `public_tests/`" if options.mount_public_tests else "")
+        + " as your final deliverable.\n"
         "- Do not import from the original source package or rely on the original repo path at runtime.\n"
         "- Do not symlink or copy hidden/evaluator files. They are intentionally unavailable.\n"
         "- Keep only behavior-relevant code and dependencies needed for the target feature; "
@@ -1498,12 +1520,212 @@ def _build_python_task_prompt(metadata: dict[str, Any]) -> str:
         f"- Allowed dependencies:\n{allowed_dependencies}\n"
         f"- Forbidden dependencies:\n{forbidden_dependencies}\n"
         f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
-        "You may run the public tests during development. The evaluator will later run public and "
-        "hidden tests in a clean environment. When finished, run:\n\n"
-        "```bash\n"
-        "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
-        "```\n"
+        + _finish_footer(options)
     )
+    return "".join(parts)
+
+
+def _python_howto_section(sections: dict[str, str], options: AblationOptions) -> str:
+    if options.prompt_style == "short":
+        lines = [
+            "## How to work\n\n",
+            "1. Implement every symbol in **Required Output API** and every included behavior "
+            "from `repo/` into `submission/featurelifted/`.\n",
+            "2. Rewrite imports so runtime code uses `featurelifted` only.\n",
+            f"3. Grep for forbidden imports before submit, e.g. "
+            f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'`.\n",
+            "4. Verify `submission/featurelifted/` exists, then submit.\n\n",
+        ]
+        if not options.mount_public_tests:
+            lines.insert(
+                3,
+                "3. Benchmark evaluator tests are not available; inspect upstream tests under "
+                "`repo/` when present or write your own tests.\n",
+            )
+            # renumber roughly - keep simple
+            lines = [
+                "## How to work\n\n",
+                "1. Implement every symbol in **Required Output API** and every included behavior "
+                "from `repo/` into `submission/featurelifted/`.\n",
+                "2. Rewrite imports so runtime code uses `featurelifted` only.\n",
+                "3. Benchmark evaluator tests are not available; inspect upstream tests under "
+                "`repo/` when present or write your own tests.\n",
+                f"4. Grep for forbidden imports before submit, e.g. "
+                f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'`.\n",
+                "5. Verify `submission/featurelifted/` exists, then submit.\n\n",
+            ]
+        return "".join(lines)
+
+    if options.mount_public_tests:
+        return (
+            "## How to work\n\n"
+            "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
+            "listed import path, not just the primary callable.\n"
+            "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+            "into `submission/featurelifted/`.\n"
+            "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
+            f"4. Before submitting, grep your submission for forbidden imports, e.g. "
+            f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'` — any match fails evaluation.\n"
+            "5. Run `pytest public_tests/` in the workspace and fix failures.\n"
+            "6. **Public tests passing does not mean you are done.** The evaluator also runs hidden tests "
+            "and stricter checks you cannot see here.\n"
+            "7. Before submitting, verify your package is under `submission/featurelifted/`, e.g. "
+            "`test -d submission/featurelifted && ls submission/featurelifted | head`.\n"
+            "8. Do **not** put your package in `featurelifted/` at the workspace root — only "
+            "`submission/featurelifted/` counts.\n"
+            "9. When confident, submit with the command at the bottom.\n\n"
+        )
+    return (
+        "## How to work\n\n"
+        "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
+        "listed import path, not just the primary callable.\n"
+        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        "into `submission/featurelifted/`.\n"
+        "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
+        "4. **Benchmark evaluator tests are not mounted.** Inspect relevant upstream tests, docs, "
+        "and examples under `repo/` when present; adapt them or write your own tests for the submission.\n"
+        "5. Implement against the complete public contract; do not attempt to locate evaluator tests.\n"
+        f"6. Before submitting, grep your submission for forbidden imports, e.g. "
+        f"`grep -R \"import \" submission/ | grep -E '({sections['forbidden_grep']})'` — any match fails evaluation.\n"
+        "7. Before submitting, verify your package is under `submission/featurelifted/`, e.g. "
+        "`test -d submission/featurelifted && ls submission/featurelifted | head`.\n"
+        "8. Do **not** put your package in `featurelifted/` at the workspace root — only "
+        "`submission/featurelifted/` counts.\n"
+        "9. When confident, submit with the command at the bottom.\n\n"
+    )
+
+
+def _python_workspace_section(options: AblationOptions) -> str:
+    lines = [
+        "## Workspace\n\n",
+        "- `repo/`: source repository snapshot for the fixed commit.\n",
+    ]
+    if options.mount_public_tests:
+        lines.append("- `public_tests/`: tests you may run while developing.\n")
+    else:
+        lines.append(
+            "- Benchmark-authored evaluator tests are not provided. Upstream tests/docs/examples "
+            "inside `repo/` remain visible, and you may write and run your own tests.\n"
+        )
+    lines.extend(
+        [
+            "- `requirements.lock`: locked third-party runtime dependencies allowed by the task.\n",
+            "- `metadata.json`: redacted task metadata. Hidden tests and evaluator internals are not present.\n",
+            "- `submission/`: write your final package here.\n\n",
+        ]
+    )
+    return "".join(lines)
+
+
+def _go_howto_section(
+    sections: dict[str, str],
+    module_path: str,
+    package_name: str,
+    go_version: str,
+    options: AblationOptions,
+) -> str:
+    if options.prompt_style == "short":
+        body = (
+            "## How to work\n\n"
+            "1. Implement Required Output API symbols from `repo/` into `submission/`.\n"
+            f"2. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
+            f"3. Rewrite imports to package `{package_name}` only.\n"
+        )
+        if not options.mount_public_tests:
+            body += (
+                "4. Benchmark evaluator tests are unavailable; inspect upstream tests under "
+                "`repo/` or write your own.\n5. Grep forbidden imports, then submit.\n\n"
+            )
+        else:
+            body += "4. Grep forbidden imports, then submit.\n\n"
+        return body
+    if options.mount_public_tests:
+        return (
+            "## How to work\n\n"
+            "1. Read `source entrypoints` and the full **Required Output API** below.\n"
+            "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+            f"into `submission/` as package `{package_name}`.\n"
+            f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
+            f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "
+            "never the original module path.\n"
+            f"5. Before submitting, grep your submission for forbidden imports, e.g. "
+            f"`grep -R '\"' submission/*.go | grep -E '({sections['forbidden_grep']})'` — "
+            "any match fails evaluation.\n"
+            "6. Run `./run_public_tests.sh` in the workspace (the isolated equivalent of "
+            "`go test ./public_tests/...`) "
+            "and fix failures.\n"
+            "7. **Public tests passing does not mean you are done.** Hidden tests and extraction "
+            "scoring apply after submit.\n"
+            "8. Write all deliverables under `submission/` only (`*.go` + `go.mod`).\n"
+            "9. When confident, submit with the command at the bottom.\n\n"
+        )
+    return (
+        "## How to work\n\n"
+        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
+        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        f"into `submission/` as package `{package_name}`.\n"
+        f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
+        f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "
+        "never the original module path.\n"
+        "5. **Benchmark evaluator tests are not mounted.** Inspect upstream tests/docs/examples "
+        "under `repo/` when present, or write and run your own tests.\n"
+        "6. Implement from the complete public contract; do not seek evaluator tests.\n"
+        f"7. Before submitting, grep your submission for forbidden imports, e.g. "
+        f"`grep -R '\"' submission/*.go | grep -E '({sections['forbidden_grep']})'` — "
+        "any match fails evaluation.\n"
+        "8. Write all deliverables under `submission/` only (`*.go` + `go.mod`).\n"
+        "9. When confident, submit with the command at the bottom.\n\n"
+    )
+
+
+def _go_workspace_section(options: AblationOptions) -> str:
+    lines = [
+        "## Workspace\n\n",
+        "- `repo/`: source repository snapshot for the fixed commit.\n",
+    ]
+    if options.mount_public_tests:
+        lines.extend(
+            [
+                "- `public_tests/`: tests you may run while developing.\n",
+                "- `go.mod`: eval harness module (add `replace` for your submission).\n",
+                "- `run_public_tests.sh`: isolated public-test runner for your submission.\n",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "- Benchmark evaluator tests are not provided. Upstream repository tests remain "
+                "visible under `repo/` when present.\n",
+                "- `go.mod`: eval harness module (add `replace` for your submission).\n",
+            ]
+        )
+    lines.extend(
+        [
+            "- `metadata.json`: redacted task metadata. Hidden tests are not present.\n",
+            "- `submission/`: write your final Go module here.\n\n",
+        ]
+    )
+    return "".join(lines)
+
+
+def _finish_footer(options: AblationOptions) -> str:
+    if options.mount_public_tests:
+        preface = (
+            "You may run the public tests during development. The evaluator will later run public and "
+            "hidden tests in a clean environment. When finished, run:\n\n"
+        )
+    else:
+        preface = (
+            "Benchmark evaluator tests are unavailable during development. The evaluator runs both "
+            "test tiers in a clean environment only after submit. When finished, run:\n\n"
+        )
+    return (
+        preface
+        + "```bash\n"
+        + "echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT\n"
+        + "```\n"
+    )
+
 
 
 def _copy_path(src: Path, dst: Path) -> None:

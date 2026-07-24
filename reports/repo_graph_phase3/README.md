@@ -1,28 +1,37 @@
-# Repository Semantic Graph Phase 3 Checkpoint
+# Phase 3 MVP 关系族落地（2026-07-23）
 
-Date: 2026-07-22
+## 交付
 
-Phase 3 adds run-local semantic claims, runtime evidence, revision freshness,
-risk-triggered probe suggestions, and a native FeatureLiftAgent stopping guard.
+Python adapter `python-adapter-v2` 补齐设计预注册 10 类关系：
 
-Mechanism guarantees covered by tests:
+| Kind | 提取方式 |
+| --- | --- |
+| `EXPORTS` | `__all__` 字符串列表 |
+| `PROVIDES_MEMBER` | class → 公开方法/成员 |
+| `RETURNS_TYPE` | 函数返回注解 |
+| `RAISES` | `raise` 语句 |
+| `LOADS_RESOURCE` | 既有 open/Path/resources/`__file__` |
+| `PACKAGED_BY` | `pyproject.toml` package-data + `MANIFEST.in` |
+| `READS_CONFIG` | 配置后缀路径的 open/load/read |
+| `DEFAULT_DEFINED_BY` | 参数默认值表达式 |
+| `REGISTERS` | `.register/.subscribe/.connect` + register/route decorator |
+| `RESOLVES_VIA` | registry 下标 + getattr 动态分派（`unresolved_dynamic`） |
 
-- claims start as `hypothesis`;
-- `observed` requires one supporting evidence record at the current revision;
-- `verified` requires two independent evidence classes at the current revision;
-- failed/inconclusive probes remain in the append-only ledger;
-- evidence stores bounded summaries and hashes, not complete command output or
-  credentials;
-- a submission content change increments revision and marks prior claims stale;
-- stale claims/evidence cannot satisfy the stopping guard;
-- detectors expose source cues, a suggested probe, and a rationale; unmatched
-  low-precision cues are not exposed;
-- repeated identical FeatureLiftAgent graph queries at one revision are marked
-  `deprioritized`;
-- FeatureLiftAgent syncs after write/copy/prune, records public/final evidence,
-  and requires a fresh final verification before completion;
-- OpenHands/mini-swe-agent remain advisory; their post-run audit is explicitly
-  labeled and is not reported as online enforcement.
+## 测试
 
-This checkpoint demonstrates state-machine correctness, not causal benchmark
-gain. P4 versus N1 effects must remain separate in the Phase 4 analysis.
+```bash
+PYTHONPATH=harness python -m unittest tests.test_repo_graph_relations tests.test_repo_graph
+```
+
+Fixture：`harness/tests/fixtures/repo_graph_phase3/`
+
+## 离线比较脚手架
+
+```bash
+PYTHONPATH=harness python harness/scripts/compare_support_baselines.py \
+  --repo benchmark/sanity/iniconfig__parse_config__001/repo \
+  --seed IniConfig --budget-tokens 2000 \
+  --output reports/repo_graph_phase3/iniconfig_support_compare.json
+```
+
+Phase 4 仍需人工标注集与约定指标门；本目录仅存放脚手架输出。

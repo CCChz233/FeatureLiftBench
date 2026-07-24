@@ -11,8 +11,8 @@
 | `python/openhands/<model>/<run_id>/` | leaderboard | Python core-100、hard50 与完整榜实验 |
 | `GO/openhands/<model>/<run_id>/` | calibration | Go pilot / calibration，非 Python 主榜 |
 | `smoke/` | smoke | 烟囱、调试和并发验证 |
-| `ecsm_pilot/` | mechanism | ECSM 机制实验；运行输出仍默认忽略 |
-| `rsg_pilot/openhands/deepseek-v4-flash/<experiment_id>/` | mechanism | 冻结的 P0/P3、2 tasks × 3 repeats OpenHands RSG Pilot |
+| `ecsm_pilot/` | archive | **已废弃** ECSM 脚手架；不再推进 |
+| `rsg_pilot/openhands/deepseek-v4-flash/<experiment_id>/` | mechanism | RSG 历史诊断；正式工具实验待重设计后另开 |
 | `v1_1_*` | validation | v1.1 修复、隔离与 infra re-evaluation 的历史证据 |
 | `batch3-*` | materialization | batch3 reference / task materialization 历史证据 |
 | `bundles/incoming/` | transport | 收到的原始压缩包和可追溯 SHA-256；压缩包本身不进 Git |
@@ -20,17 +20,15 @@
 
 历史目录的路径已被 quarantine ledger、报告和脚本引用，因此不为“看起来整齐”而批量移动。统一入口是 `registry/`，原始目录保持可追溯。
 
-## 当前 RSG Pilot 状态
+## 当前 RSG 相关状态
 
-- `rsg-pilot-v1-20260723`：控制器重试分类错误暴露后的审计目录，已标记
-  `invalidated`，不得进入分析。
-- `rsg-pilot-v1-20260723-clean1`：修复后的干净付费门控；完成 P0/P3
-  2/12 cells 后以 `paid_pair_rsg_adoption_gate_failed` 停止。
-- clean1 的 P3 采用了 fresh `submission-check`，但没有调用
-  `task-closure`；剩余 10 cells 未运行。
-- 恢复 Pilot 前必须完成 OpenHands 原生 RSG tools 和新的 mechanism smoke。
+研究主线见 [docs/CURRENT_RESEARCH.md](../docs/CURRENT_RESEARCH.md)：通用可选 RSG + 模型自主决策；**ECSM 已废弃**。
 
-这两批均不是完整 Pilot，也不能用于 RSG 效果或因果结论。
+- `rsg-pilot-v1-20260723`：已 `invalidated`，不得进入分析。
+- `rsg-pilot-v1-20260723-clean1`：历史诊断（2/12）；旧强制采用门协议**不再恢复**。
+- 后续实验在 RSG **重设计**后再开，工具对模型应为可选，不以「必调某命令」为门禁。
+
+上述均不是正式效果 Pilot。
 
 ## 当前 Python-150 视图
 

@@ -296,8 +296,12 @@ class RepositoryGraphTests(unittest.TestCase):
             self.assertIn("Repository Semantic Graph", task_file.read_text(encoding="utf-8"))
             bootstrap = (state.root / "bootstrap.md").read_text(encoding="utf-8")
             self.assertLessEqual(len(bootstrap), 4096)
-            self.assertIn("flb-rsg task-closure", bootstrap)
-            self.assertIn("flb-rsg submission-check", bootstrap)
+            self.assertIn("flb-rsg search", bootstrap)
+            self.assertIn("flb-rsg inspect", bootstrap)
+            self.assertIn("flb-rsg support", bootstrap)
+            self.assertNotIn("flb-rsg submission-check", bootstrap)
+            self.assertIn("Bootstrap: `tool_only`", bootstrap)
+            self.assertIn("prefer `flb-rsg support", bootstrap)
             build = json.loads((agent_output / "repo_graph_build.json").read_text(encoding="utf-8"))
             self.assertFalse(build["cache"]["hit"])
             self.assertEqual(build["input_scope"]["hidden_test_inputs"], 0)
@@ -332,10 +336,18 @@ class RepositoryGraphTests(unittest.TestCase):
                 },
                 clear=False,
             ), contextlib.redirect_stdout(stdout):
-                closure_code = graph_cli(["task-closure"])
-            self.assertEqual(closure_code, 0)
-            closure_result = json.loads(stdout.getvalue())["result"]
-            self.assertIn("pkg.core.helper", closure_result["entrypoint_mappings"])
+                support_code = graph_cli(
+                    ["support", "--seed", "pkg.core.helper", "--budget-tokens", "2000"]
+                )
+            self.assertEqual(support_code, 0)
+            support_result = json.loads(stdout.getvalue())["result"]
+            self.assertEqual(support_result["status"], "ok")
+            self.assertTrue(support_result["core"])
+            self.assertIn("budget", support_result)
+            self.assertLessEqual(
+                support_result["budget"]["used_tokens"],
+                support_result["budget"]["limit_tokens"],
+            )
 
             package = workspace / "submission" / "featurelifted"
             package.mkdir()
@@ -368,9 +380,12 @@ class RepositoryGraphTests(unittest.TestCase):
             self.assertEqual(comparison["classification_counts"]["copied"], 1)
             self.assertEqual(comparison["gaps"]["missing_providers"], [])
             usage = finalize_repo_graph(state, submission_dir=workspace / "submission")
-            self.assertTrue(usage["task_closure_queried"])
-            self.assertTrue(usage["fresh_submission_check"])
+            self.assertTrue(usage["search_queried"])
+            self.assertTrue(usage["support_queried"])
+            self.assertTrue(usage["optional_tool_used"])
             self.assertTrue(usage["adoption_compliant"])
+            self.assertEqual(usage["mechanism_status"], "optional_tools_used")
+            self.assertTrue(usage["fresh_submission_check"])
             audit_rows = [
                 json.loads(line)
                 for line in (agent_output / "repo_graph_queries.jsonl").read_text().splitlines()
@@ -555,6 +570,58 @@ class RepositoryGraphTests(unittest.TestCase):
             self.assertFalse(guard["ready"])
             self.assertIn("stale_claims", guard["blockers"])
             self.assertIn("missing_fresh_final_verification", guard["blockers"])
+
+    def test_operational_support_respects_budget_and_seed_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            repository = self._repository(Path(temporary))
+            snapshot = GraphBuilder().build(repository)
+            engine = GraphQueryEngine(snapshot)
+            from featureliftbench.repo_graph.support import build_operational_support
+
+            result = build_operational_support(
+                engine,
+                ["helper"],
+                budget_tokens=1_500,
+                max_nodes=40,
+            )
+            self.assertEqual(result["status"], "ok")
+            self.assertTrue(result["seeds"])
+            self.assertTrue(result["core"])
+            self.assertLessEqual(
+                result["budget"]["used_tokens"],
+                result["budget"]["limit_tokens"],
+            )
+            ambiguous = build_operational_support(
+                engine,
+                ["definitely_missing_symbol_xyz"],
+                budget_tokens=1_500,
+            )
+            self.assertEqual(ambiguous["status"], "ambiguous_seeds")
+            self.assertTrue(ambiguous["ambiguous_seeds"])
+
+            # Prefer class/function symbols over dependency/module name ties.
+            class_hits = [
+                node
+                for node in snapshot.nodes
+                if node.kind == "class" and node.name == "Service"
+            ]
+            if class_hits:
+                preferred = build_operational_support(
+                    engine,
+                    ["Service"],
+                    budget_tokens=1_500,
+                )
+                self.assertEqual(preferred["status"], "ok")
+            self.assertTrue(
+                any(seed.endswith(":class") for seed in preferred["seeds"])
+            )
+            self.assertIn("guidance", preferred)
+            self.assertTrue(preferred["guidance"].get("start_here_files"))
+            from featureliftbench.repo_graph.support import render_compact_guidance
+
+            md = render_compact_guidance(preferred)
+            self.assertIn("RSG start-here", md)
+            self.assertIn("Files", md)
 
 
 if __name__ == "__main__":

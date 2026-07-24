@@ -1,54 +1,62 @@
-# FeatureLift Task: Jupyter Config/Data/Runtime Path Resolution
+# FeatureLift Task: Jupyter config/data/runtime path resolution
 
-Extract the selected path-resolution behavior from `jupyter_core` into a
-standalone Python package named `featurelifted`.
+Extract a task-scoped subset of `jupyter_core` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- `jupyter_config_dir(env=None, home=None, platform="linux") -> str`
-- `jupyter_data_dir(env=None, home=None, platform="linux") -> str`
-- `jupyter_runtime_dir(env=None, home=None, platform="linux") -> str`
-- `jupyter_path(*subdirs, env=None, home=None, platform="linux", sys_prefix="/usr", user_site_base=None, enable_user_site=True) -> list[str]`
-- `jupyter_config_path(env=None, home=None, platform="linux", sys_prefix="/usr", user_site_base=None, enable_user_site=True) -> list[str]`
+```python
+from featurelifted import (
+    jupyter_config_dir,
+    jupyter_config_path,
+    jupyter_data_dir,
+    jupyter_path,
+    jupyter_runtime_dir,
+)
+```
 
-## Feature Specification
+## Required API Details
 
-Preserve Jupyter path precedence for config, data, and runtime paths:
+- `jupyter_config_dir(env: 'Mapping[str, str] | None' = None, home: 'str | None' = None, platform: 'str' = 'linux') -> 'str'`
+- `jupyter_config_path(env: 'Mapping[str, str] | None' = None, home: 'str | None' = None, platform: 'str' = 'linux', sys_prefix: 'str' = '/usr', user_site_base: 'str | None' = None, enable_user_site: 'bool' = True) -> 'list[str]'`
+- `jupyter_data_dir(env: 'Mapping[str, str] | None' = None, home: 'str | None' = None, platform: 'str' = 'linux') -> 'str'`
+- `jupyter_path(*subdirs: 'str', env: 'Mapping[str, str] | None' = None, home: 'str | None' = None, platform: 'str' = 'linux', sys_prefix: 'str' = '/usr', user_site_base: 'str | None' = None, enable_user_site: 'bool' = True) -> 'list[str]'`
+- `jupyter_runtime_dir(env: 'Mapping[str, str] | None' = None, home: 'str | None' = None, platform: 'str' = 'linux') -> 'str'`
 
-- explicit `JUPYTER_CONFIG_PATH` and `JUPYTER_PATH` entries are highest priority;
-- `JUPYTER_CONFIG_DIR`, `JUPYTER_DATA_DIR`, and `JUPYTER_RUNTIME_DIR` override user defaults;
-- Linux, macOS, and Windows have distinct default data path behavior;
-- `JUPYTER_NO_CONFIG` returns an isolated clean config dir and suppresses broader config search;
-- `JUPYTER_PREFER_ENV_PATH` moves environment-level paths before user-level paths;
-- requested `jupyter_path("kernels")` subdirectories are appended to each search root.
+## Required Behavior
 
-The API accepts explicit `env`, `home`, and `platform` inputs so tests do not
-depend on the host machine.
+- When JUPYTER_CONFIG_PATH or JUPYTER_PATH is set, its entries are ordered ahead of the applicable default search paths.
+- When JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, or JUPYTER_RUNTIME_DIR is set, the corresponding resolver returns that explicit directory.
+- Without overrides, the path resolvers return deterministic Linux, macOS, and Windows user and system defaults for the selected platform.
+- When JUPYTER_NO_CONFIG is enabled, normal user and environment config paths are suppressed according to isolated-config behavior.
+- When JUPYTER_PREFER_ENV_PATH changes preference, environment-level paths move before or after user paths without dropping either group.
+- The package exposes the required task API paths `featurelifted.jupyter_config_dir`, `featurelifted.jupyter_config_path`, `featurelifted.jupyter_data_dir`, `featurelifted.jupyter_path`, `featurelifted.jupyter_runtime_dir` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Do not import `jupyter_core` or `platformdirs`.
-- Do not read from `repo/` or any original source snapshot path at runtime.
-- Do not use network, databases, Redis, browsers, remote APIs, or host-specific home directories.
-- Keep the extraction focused on path resolution; do not copy CLI, migration, application, or troubleshooting modules.
+- Forbidden imports: `jupyter_core, platformdirs`.
+- Forbidden path access: `repo/, jupyter_core/paths.py`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement filesystem ownership probing.
+- Do not implement platformdirs integration.
+- Do not implement Jupyter CLI, migration, application, and troubleshoot modules.
 
-## Public vs Hidden Test Intent
+## Public vs Hidden Tests
 
-Public tests cover basic path precedence and platform defaults. Hidden tests
-cover disabled config behavior, runtime fallback, environment-over-user order,
-Windows path separators, and system-path exclusion.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — JUPYTER_CONFIG_PATH and JUPYTER_PATH precedence
-- **B002** — JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, and JUPYTER_RUNTIME_DIR overrides
-- **B003** — Linux, macOS, and Windows path defaults
-- **B004** — JUPYTER_NO_CONFIG isolated config behavior
-- **B005** — JUPYTER_PREFER_ENV_PATH ordering
-- **B006** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B007** — the submitted package does not import forbidden upstream packages: jupyter_core, platformdirs
+- **B001** — When JUPYTER_CONFIG_PATH or JUPYTER_PATH is set, its entries are ordered ahead of the applicable default search paths.
+- **B002** — When JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, or JUPYTER_RUNTIME_DIR is set, the corresponding resolver returns that explicit directory.
+- **B003** — Without overrides, the path resolvers return deterministic Linux, macOS, and Windows user and system defaults for the selected platform.
+- **B004** — When JUPYTER_NO_CONFIG is enabled, normal user and environment config paths are suppressed according to isolated-config behavior.
+- **B005** — When JUPYTER_PREFER_ENV_PATH changes preference, environment-level paths move before or after user paths without dropping either group.
+- **B006** — The package exposes the required task API paths `featurelifted.jupyter_config_dir`, `featurelifted.jupyter_config_path`, `featurelifted.jupyter_data_dir`, `featurelifted.jupyter_path`, `featurelifted.jupyter_runtime_dir` with the kinds and callable signatures listed in this contract.
+- **B007** — the submitted package does not import forbidden upstream packages: jupyter_core, platformdirs.
 <!-- featureliftbench:behavior-clauses:end -->

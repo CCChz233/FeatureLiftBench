@@ -1,55 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_visitor_hidden.py::test_discard_removes_nodes",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "0fa6947a32de3560dab80fbee4eff9d94f049ec2fc96afc6f0916ae0e9972878"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_visitor_hidden.py::test_visitor_walks_tree_nodes",
       "public_clause_ids": [
-        "B001"
+        "B001",
+        "B002",
+        "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "e0832d116d3b40b7a68c754937e976b5c164bab3f2acf3240878f073c1fcf6c8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_visitor_hidden.py::test_v_args_tree_mode",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "3f02d444b15b3776b720f52844221ef68de28a9158793432b1a5ec9b41fdcc95"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -57,85 +36,62 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "walk trees with Visitor callbacks"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: walk trees with Visitor callbacks. Required observable cases include visitor walks tree nodes."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "transform trees bottom-up with Transformer"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: transform trees bottom-up with Transformer. Required observable cases include transformer evaluates expression; v args inline transform; visitor walks tree nodes."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "decorate transformer methods with v_args inline and tree modes"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: decorate transformer methods with v_args inline and tree modes. Required observable cases include transformer evaluates expression; v args inline transform; v args tree mode."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "discard nodes using Discard sentinel"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: discard nodes using Discard sentinel. Required observable cases include discard removes nodes."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "parse grammars needed to produce trees for transformation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: parse grammars needed to produce trees for transformation. Required observable cases include visitor walks tree nodes."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.Lark`, `featurelifted.Lark.parse`, `featurelifted.Tree`, `featurelifted.Transformer`, `featurelifted.Transformer.transform`, `featurelifted.Visitor`, `featurelifted.v_args`, `featurelifted.Discard` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: lark"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_visitor_public.py::test_transformer_evaluates_expression",
       "public_clause_ids": [
         "B002",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B003"
-        ],
-        "test_source_sha256": "eabbbcd8b210a9001bba3ea0111d903596603e4267c691637b95faf9b6da682e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_visitor_public.py::test_v_args_inline_transform",
       "public_clause_ids": [
         "B002",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B003"
-        ],
-        "test_source_sha256": "aceda008c528176e89f37eddc1669852b8ac57da804338b8d82561ed4b749ab8"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -168,7 +124,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "06f1ee79efc74ad8c3fd0d7ed55d590752bd72b36df4d2d6a015c7564fbe02a4",
+  "spec_sha256": "0161c656dc7830d0e333cc30c05bea78e3f5d4e5e6eeea1444115e205dc5f755",
   "task_id": "lark__visitor_transform_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

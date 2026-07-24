@@ -1,58 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_formatter_hidden.py::test_linenos_and_cssclass_options",
       "public_clause_ids": [
-        "B003"
+        "B003",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "80682decc7a605f3d6f521a333a11b0319a11ee74f0f6cd5c672839d41c45880"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_formatter_hidden.py::test_html_escapes_angle_brackets_in_source",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "305c94beea5d6138696aadbcc3accb53c47c520b1a6d0121e3b0809189199bda"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_formatter_hidden.py::test_full_document_and_keyword_highlighting",
       "public_clause_ids": [
         "B002",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B005"
-        ],
-        "test_source_sha256": "5b770d6cf39081861522a91cb647abd766dff3718f7db87335b4cfa9980e473e"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -60,83 +36,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "render token streams to HTML spans with HtmlFormatter"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: render token streams to HTML spans with HtmlFormatter. Required observable cases include html formatter wraps tokens; linenos and cssclass options."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "highlight source with highlight(code, lexer, formatter)"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: highlight source with highlight(code, lexer, formatter). Required observable cases include full document and keyword highlighting."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "support nowrap, linenos, cssclass, and title options"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: support nowrap, linenos, cssclass, and title options. Required observable cases include nowrap option omits outer div; linenos and cssclass options."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "escape HTML in source text and preserve token class names"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: escape HTML in source text and preserve token class names. Required observable cases include html formatter wraps tokens; html escapes angle brackets in source."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "resolve Python lexer for integrated highlighting"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: resolve Python lexer for integrated highlighting. Required observable cases include full document and keyword highlighting."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.highlight`, `featurelifted.HtmlFormatter`, `featurelifted.get_lexer_by_name` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: pygments"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_formatter_public.py::test_html_formatter_wraps_tokens",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "17fc980b806f894a5906456fac877039a881dc689b6b582a3f550216188d1702"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_formatter_public.py::test_nowrap_option_omits_outer_div",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "2562556f59b26785dbb710fe6b957c67efcba9f629a3711aaba7d53942964003"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -169,7 +123,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "2b900b518825f56f08448dd71b583def5959500350e75b7b90fce3bd00fb30ea",
+  "spec_sha256": "d6beb01425f6d8524deb377136db52d409ec07ab338839e101837e09a9927b7e",
   "task_id": "pygments__formatter_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

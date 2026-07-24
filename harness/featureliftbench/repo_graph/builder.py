@@ -110,6 +110,10 @@ class GraphBuilder:
                 for edge in edge_specs
             ]
 
+        from .packaging import add_packaging_edges
+
+        add_packaging_edges(root, node_specs, edge_specs)
+
         nodes = self._materialize_nodes(node_specs)
         node_ids = {node.stable_id: node.id for node in nodes}
         edges = self._materialize_edges(edge_specs, node_ids)

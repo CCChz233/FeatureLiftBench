@@ -6,7 +6,11 @@ This protocol turns the four-week hardening plan into executable gates. It does 
 
 The live status is generated in `V11_IMPLEMENTATION_STATUS.md`; this protocol remains the normative gate definition. As of the current repository state:
 
-- Oracle freeze `5f9012f6dc748c90` produced 450/450 results: 150 stable passes and 0 versioned quarantine tasks, with no unstable or incomplete tasks. Prior freeze `607e70aee2394d48` (137+13 quarantine) is superseded; see `benchmark/quarantine/python_v1_1_revision_3.json` and [ORACLE_REVALIDATION_REPORT.md](ORACLE_REVALIDATION_REPORT.md).
+- Oracle freeze `7c042d5528b7d0fd` produced 450/450 results after contract
+  hardening: 150 stable passes and 0 versioned quarantine tasks, with no
+  unstable, incomplete, or invalid-artifact tasks. The tracked spec freeze is
+  `f7c616edb47ea533`. Prior freeze `5f9012f6dc748c90` is superseded for new
+  compliant runs.
 - Diagnostic-40 has file-level closure marked complete by AI-assisted review, but 0/40 has completed the required independent human adjudication. Symbol/runtime/minimality conclusions remain scope-limited.
 - All 150 behavior contracts map public and hidden test nodeids to public clauses; all 150 still require independent human review for paper release.
 - The engineering Pilot is frozen at revision 5 (`c94764ed110992a6`) with provisional AI-assisted annotations. This permits pipeline diagnostics, not paper-ready annotation claims.

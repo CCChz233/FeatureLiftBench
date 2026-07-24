@@ -1,58 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_errors_paths_combinators_and_messages",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "850b3309ddbb743361157b48a2a9bdc1f1af6351d277d27e0eb7eb1d1cec6bb5"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_format_checker_schema_errors_and_additional_properties",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "02f8b49967189c3231fbfea397e5b2461cda6a729364077e2d1e5966c7092675"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_oneof_and_const_keyword",
       "public_clause_ids": [
-        "B002"
+        "B002",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "a391be6c2933eb91d3954eec82f5c35711e2b978cb5538f1bfabefd00afadf87"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -60,83 +36,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "validate object, array, string, integer, number, boolean, and null types"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: validate object, array, string, integer, number, boolean, and null types. Required observable cases include validate object required properties and minimum; oneof and const keyword."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "support required, properties, additionalProperties, minimum, minLength, pattern, enum, anyOf, oneOf, and allOf"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: support required, properties, additionalProperties, minimum, minLength, pattern, enum, anyOf, oneOf, and allOf. Required observable cases include validate object required properties and minimum; oneof and const keyword."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "iterate ValidationError objects with path, schema_path, validator, validator_value, and message"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: iterate ValidationError objects with path, schema_path, validator, validator_value, and message. Required observable cases include iter errors exposes paths and validity; nested errors paths combinators and messages."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "perform format validation when a FormatChecker is provided"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: perform format validation when a FormatChecker is provided. Required observable cases include format checker schema errors and additional properties."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "validate schemas and raise SchemaError for invalid schemas"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: validate schemas and raise SchemaError for invalid schemas. Required observable cases include format checker schema errors and additional properties."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.Draft202012Validator`, `featurelifted.Draft202012Validator.check_schema`, `featurelifted.Draft202012Validator.is_valid`, `featurelifted.Draft202012Validator.iter_errors`, `featurelifted.validate`, `featurelifted.ValidationError`, `featurelifted.SchemaError`, `featurelifted.FormatChecker` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: jsonschema"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_validate_object_required_properties_and_minimum",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "517bc3b30ac18923707eda4f1483edbe1995c606b6f26fc13df0f4ee8d0c69da"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_iter_errors_exposes_paths_and_validity",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "72e07db1db6f99866413fb89e6465a907d639b68056aca4ac5e2f9f33f7d0d4d"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -169,7 +123,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "d52387aad96bd631f93bf921bb9a3f8a3e933eef681e4acca665f1d4f5ef8071",
+  "spec_sha256": "351c88c31413413a0b3002887bfa8030d39594d9c8da64fd8246e3d16045ce28",
   "task_id": "jsonschema__validator_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

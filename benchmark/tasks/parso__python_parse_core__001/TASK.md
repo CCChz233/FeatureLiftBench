@@ -1,35 +1,53 @@
 # FeatureLift Task: Python parser grammar core
 
-Extract parso parse/load_grammar with error recovery and get_code roundtrip.
+Extract a task-scoped subset of `parso` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `import featurelifted; from featurelifted import parse, load_grammar, Grammar`
-- Callable: `featurelifted.parse`
-- Signature: `parse(code=None, *, version=None, **kwargs)`
+```python
+from featurelifted import (
+    Grammar,
+    load_grammar,
+    parse,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- diff parser
-- pep8 normalizer
-- original parso import
+- `parse(code=None, **kwargs)`
+- `load_grammar(*, version: str = None, path: str = None)`
+- `Grammar(text: str, *, tokenizer, parser=<class 'BaseParser'>, diff_parser=None)` class constructor
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: parse Python source to syntax tree. Required observable cases include parse simple expr; parse version 39; error recovery partial tree.
+- The extracted feature must support this observable behavior: get_code round-trip on nodes. Required observable cases include name node positions; get code roundtrip.
+- The extracted feature must support this observable behavior: iter_errors for multiple syntax issues. Required observable cases include iter errors multiple; error recovery partial tree.
+- The extracted feature must support this observable behavior: version-specific grammars. Required observable cases include parse version 39.
+- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.load_grammar`, `featurelifted.Grammar` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `parso`
+- Forbidden imports: `parso`.
+- Do not implement diff parser.
+- Do not implement pep8 normalizer.
+- Do not implement original parso import.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — parse Python source to syntax tree
-- **B002** — get_code round-trip on nodes
-- **B003** — iter_errors for multiple syntax issues
-- **B004** — version-specific grammars
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: parso
+- **B001** — The extracted feature must support this observable behavior: parse Python source to syntax tree. Required observable cases include parse simple expr; parse version 39; error recovery partial tree.
+- **B002** — The extracted feature must support this observable behavior: get_code round-trip on nodes. Required observable cases include name node positions; get code roundtrip.
+- **B003** — The extracted feature must support this observable behavior: iter_errors for multiple syntax issues. Required observable cases include iter errors multiple; error recovery partial tree.
+- **B004** — The extracted feature must support this observable behavior: version-specific grammars. Required observable cases include parse version 39.
+- **B005** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.load_grammar`, `featurelifted.Grammar` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: parso.
 <!-- featureliftbench:behavior-clauses:end -->

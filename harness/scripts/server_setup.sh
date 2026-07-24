@@ -4,10 +4,11 @@
 # Usage:
 #   ./setup.sh
 #   # edit .env with API keys if preflight warns
-#   ./run.sh
+#   ./harness/scripts/run_python150_paper.sh <openhands-profile>
 #
 # Optional env:
 #   PYTHON=python3.12  VENV_DIR=.venv  SKIP_MINI=1  MINI_BIN=/path/to/mini
+#   INSTALL_OPENHANDS=1  # only needed for non-Docker local OpenHands runs
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -67,10 +68,11 @@ fi
 source "$VENV_DIR/bin/activate"
 python -m pip install -U pip wheel
 
-echo "Installing harness deps + mini-swe-agent..."
+echo "Installing harness dependencies..."
 python -m pip install pytest==7.4.4 rich
 
 if [[ "${SKIP_MINI:-0}" != "1" ]]; then
+  echo "Installing optional mini-swe-agent..."
   python -m pip install mini-swe-agent
 fi
 
@@ -83,25 +85,32 @@ elif [[ "${INSTALL_OPENHANDS:-0}" == "1" ]]; then
   echo "WARNING: INSTALL_OPENHANDS=1 requires Python 3.12+; skipping openhands install." >&2
 fi
 
-if [[ -n "${MINI_BIN:-}" ]]; then
-  MINI="$MINI_BIN"
-elif [[ -x "$VENV_DIR/bin/mini" ]]; then
-  MINI="$VENV_DIR/bin/mini"
-else
-  MINI="$(command -v mini || true)"
-fi
-if [[ -z "$MINI" || ! -x "$MINI" ]]; then
-  echo "ERROR: mini CLI not found. pip install mini-swe-agent in $VENV_DIR or set MINI_BIN." >&2
-  exit 1
-fi
-echo "Using mini: $MINI"
-
 export PYTHONPATH="$ROOT/harness"
 export PATH="$VENV_DIR/bin:$PATH"
-python "$ROOT/harness/scripts/preflight.py" --bootstrap --mini-bin "$MINI" || true
+if [[ "${SKIP_MINI:-0}" == "1" ]]; then
+  echo "Skipping host mini-swe-agent; formal OpenHands runs use the agent Docker image."
+  python "$ROOT/harness/scripts/preflight.py" \
+    --bootstrap \
+    --agent openhands-agent \
+    --agent-profile openhands_deepseek_v4_flash || true
+else
+  if [[ -n "${MINI_BIN:-}" ]]; then
+    MINI="$MINI_BIN"
+  elif [[ -x "$VENV_DIR/bin/mini" ]]; then
+    MINI="$VENV_DIR/bin/mini"
+  else
+    MINI="$(command -v mini || true)"
+  fi
+  if [[ -z "$MINI" || ! -x "$MINI" ]]; then
+    echo "ERROR: mini CLI not found. pip install mini-swe-agent in $VENV_DIR or set MINI_BIN." >&2
+    exit 1
+  fi
+  echo "Using mini: $MINI"
+  python "$ROOT/harness/scripts/preflight.py" --bootstrap --mini-bin "$MINI" || true
+fi
 
 if [[ ! -f "$ROOT/.env" ]]; then
-  echo "Created .env from example — add API keys before ./run.sh"
+  echo "Created .env from example — add API keys before executing a benchmark run"
 fi
 
 python -m pytest harness/tests/ -q --tb=no 2>/dev/null | tail -3 || true
@@ -110,22 +119,19 @@ cat <<EOF
 
 Setup complete.
 
-  ./run.sh
+Canonical compliant Python-150 plan (no API call):
 
-Or manually:
-  source $VENV_DIR/bin/activate
-  export PYTHONPATH=$ROOT/harness
-  # ensure .env has API keys
-  ./run.sh
+  ./harness/scripts/run_python150_paper.sh openhands_deepseek_v4_flash
 
-Long runs (recommended):
-  tmux new -s flb
-  ./run.sh
+Build the OpenHands agent and evaluator images before execution:
 
-Resume after interrupt:
-  RESUME_DIR=experiments/mini-swe-agent/<previous-run> ./run.sh
+  FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim \\
+  FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \\
+    docker/build_agent_image.sh featureliftbench-agent:latest
+  docker/build_eval_image.sh featureliftbench-eval:latest
 
-Optional automatic second pass:
-  EXTRA_AGENT_PASSES=1 ./run.sh
+Full server runbook:
+
+  docs/SERVER_RUNBOOK_COMPLIANT150.md
 
 EOF

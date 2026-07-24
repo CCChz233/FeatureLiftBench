@@ -1,58 +1,34 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_deduplicate_names_keeps_first_occurrence_order",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "8ce3df2b24c58bab63f4917027eecc11a065521621d877b9199b08830f07f18a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_closure_sorted_by_scope_descending",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "e80e1c2895bb8cc1abf8a83a2d9b70490987697a686591dceb870f96255cb78e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_fixture_lookup_error_lists_available",
       "public_clause_ids": [
         "B001",
-        "B005"
+        "B005",
+        "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "3d33b1cab366b14fd30024a04304ef20cec1dda143fe87b360c845512c8c0dd3"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -60,83 +36,62 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "resolve transitive fixture name closure from initial argnames"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: resolve transitive fixture name closure from initial argnames. Required observable cases include resolve closure adds fixture dependencies; fixture lookup error lists available."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "match fixture definitions to parent nodeids"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: match fixture definitions to parent nodeids. Required observable cases include fixture lookup error lists available."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "deduplicate fixture name sequences preserving order"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: deduplicate fixture name sequences preserving order. Required observable cases include deduplicate names keeps first occurrence order."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "sort closure fixtures by scope (session before function)"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: sort closure fixtures by scope (session before function). Required observable cases include resolve closure adds fixture dependencies; getfixturemarker on decorated function; closure sorted by scope descending."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "detect missing fixtures via FixtureLookupError"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: detect missing fixtures via FixtureLookupError. Required observable cases include getfixturemarker on decorated function; fixture lookup error lists available."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.FixtureDef`, `featurelifted.FixtureLookupError`, `featurelifted.FixtureRegistry`, `featurelifted.FixtureRegistry.register`, `featurelifted.deduplicate_names`, `featurelifted.fixture`, `featurelifted.getfixturemarker`, `featurelifted.resolve_fixture_closure` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: pytest, _pytest"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_resolve_closure_adds_fixture_dependencies",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "5df24b8c9432ccad920c2f14266af9bbf7f7bb5d944200ef1c67010b4467fb3d"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_getfixturemarker_on_decorated_function",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "ab345fa9257d817fd277044068e7bfb46c925c2e663412c5439834985500c704"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -169,7 +124,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "62c96014e2d1c71c5132e9137c23b5512a4e7649d0b01657b303368b70b05b1b",
+  "spec_sha256": "7e12e586d364b05ce23a7582a1cecfe1a730132669e7a388b20fa597d2ad378b",
   "task_id": "pytest__fixture_resolve_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

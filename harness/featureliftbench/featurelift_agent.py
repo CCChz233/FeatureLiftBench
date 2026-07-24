@@ -931,10 +931,12 @@ def _repo_graph_query_action(
         "bootstrap",
         "search",
         "inspect",
+        "support",
         "paths",
         "closure",
         "risks",
         "self-check",
+        "task-closure",
         "sync-submission",
         "compare",
         "detectors",
@@ -958,6 +960,20 @@ def _repo_graph_query_action(
         if not target:
             raise FeatureLiftAgentError("repo_graph_query inspect requires node or target")
         argv.append(target)
+    elif command == "support":
+        seeds = action.get("seeds")
+        values = (
+            [str(item) for item in seeds if isinstance(item, str) and item]
+            if isinstance(seeds, list)
+            else ([target] if target else [])
+        )
+        if not values:
+            raise FeatureLiftAgentError("repo_graph_query support requires seeds or target")
+        for seed in values:
+            argv.extend(["--seed", seed])
+        budget = action.get("budget_tokens")
+        if isinstance(budget, int) and budget > 0:
+            argv.extend(["--budget-tokens", str(budget)])
     elif command == "paths":
         source = _action_text_field(action, "source")
         destination = _action_text_field(action, "destination")
@@ -1195,7 +1211,7 @@ def _final_check_action(
         "success"
         if import_probe.returncode == 0
         and not forbidden_hits
-        and public_tests["status"] == "success"
+        and public_tests["status"] in {"success", "unavailable"}
         else "failed"
     )
     output = {
@@ -1306,6 +1322,18 @@ def _repo_graph_native_stopping_guard(
 
 
 def _run_public_tests_command(config: FeatureLiftAgentConfig) -> dict[str, Any]:
+    public_dir = config.workspace / "public_tests"
+    if not public_dir.is_dir():
+        return {
+            "command": [],
+            "status": "unavailable",
+            "summary": (
+                "benchmark evaluator tests are not mounted; inspect upstream tests under "
+                "repo/ or run agent-authored tests"
+            ),
+            "output": "",
+            "returncode": None,
+        }
     python = _ensure_agent_tool_python(config)
     command = [str(python), "-m", "pytest", "-q", "public_tests"]
     try:

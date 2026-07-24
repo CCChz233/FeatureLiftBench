@@ -211,7 +211,12 @@ def _check_run_lock(output_dir: Path) -> str | None:
     return message
 
 
-def _check_docker_suite(*, output_dir: Path | None) -> int:
+def _check_docker_suite(
+    *,
+    output_dir: Path | None,
+    agent_image: str = DEFAULT_AGENT_IMAGE,
+    eval_image: str = DEFAULT_EVAL_IMAGE,
+) -> int:
     if shutil.which("docker") is None:
         return _fail("docker CLI not found on PATH")
 
@@ -225,7 +230,7 @@ def _check_docker_suite(*, output_dir: Path | None) -> int:
         detail = (completed.stderr or completed.stdout or "").strip()
         return _fail(f"docker info failed: {detail or 'unknown error'}")
 
-    for image in (DEFAULT_AGENT_IMAGE, DEFAULT_EVAL_IMAGE):
+    for image in (agent_image, eval_image):
         if not _docker_image_exists(image):
             return _fail(
                 f"Docker image {image} not found; build with "
@@ -260,7 +265,7 @@ def _check_docker_suite(*, output_dir: Path | None) -> int:
         )
 
     print(
-        f"preflight: docker ok images={DEFAULT_AGENT_IMAGE},{DEFAULT_EVAL_IMAGE}",
+        f"preflight: docker ok images={agent_image},{eval_image}",
         file=sys.stderr,
     )
     return 0
@@ -378,6 +383,16 @@ def main(argv: list[str] | None = None) -> int:
         "--output-dir",
         default="",
         help="suite output directory (used with --docker-suite for lock checks)",
+    )
+    parser.add_argument(
+        "--agent-docker-image",
+        default=DEFAULT_AGENT_IMAGE,
+        help=f"agent image to validate (default: {DEFAULT_AGENT_IMAGE})",
+    )
+    parser.add_argument(
+        "--eval-docker-image",
+        default=DEFAULT_EVAL_IMAGE,
+        help=f"evaluator image to validate (default: {DEFAULT_EVAL_IMAGE})",
     )
     parser.add_argument(
         "--llm-health-check",
@@ -498,9 +513,9 @@ def main(argv: list[str] | None = None) -> int:
                 "set openhands_command in agents.toml or FEATURELIFTBENCH_OPENHANDS_COMMAND"
             )
         if args.docker_suite:
-            if not _openhands_available_in_docker(DEFAULT_AGENT_IMAGE):
+            if not _openhands_available_in_docker(args.agent_docker_image):
                 return _fail(
-                    f"openhands CLI not found in Docker image {DEFAULT_AGENT_IMAGE}; "
+                    f"openhands CLI not found in Docker image {args.agent_docker_image}; "
                     "rebuild with FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim "
                     "FEATURELIFTBENCH_INSTALL_OPENHANDS=1 ./docker/build_agent_image.sh"
                 )
@@ -529,7 +544,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.docker_suite:
         output_dir = Path(args.output_dir).resolve() if args.output_dir else None
-        docker_status = _check_docker_suite(output_dir=output_dir)
+        docker_status = _check_docker_suite(
+            output_dir=output_dir,
+            agent_image=args.agent_docker_image,
+            eval_image=args.eval_docker_image,
+        )
         if docker_status != 0:
             return docker_status
 

@@ -1,51 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_unknown_media_type_falls_back_to_plain",
       "public_clause_ids": [
-        "B001"
+        "B001",
+        "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "f8c242aa21d20ae7fa38eb2c8a0237a1df2ec054995b5a5a83a2aac680786295"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_plain_text_renders_with_line_breaks",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "declared_api_scope_fallback",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "011480cab633120b2b81062f4b03dda933e4da664a781de0f0cad75d56dd1b7e"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_unknown_charset_warns",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "1997b3398ba0302451dc5cae1b90696f734b1c8d78df79551b4207be4ceb4f19"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -53,51 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "content-type parsing"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`render_readme(content, content_type)` selects plain, markdown, or reST renderers."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "renderer selection"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Unknown media types fall back to plain text with warnings."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "warning capture"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Unsupported charset parameters produce warnings."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.render_readme` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: readme_renderer"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_render_markdown_content_type",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "1f7683ad32361645eebad9e8f607ead83c7c98feba1140c0f5862e05e596f665"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -129,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "42a0993c0f53c4260f3220eae4b12dba88f6a6e26d4a935dcb303fdee7976506",
+  "spec_sha256": "462dc45d32eca0d9fb50ad30602b90a69951622d7c58e47de4d4ffbb7b33c90f",
   "task_id": "readme_renderer__content_type_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

@@ -1,81 +1,42 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_anchors_aliases_merge_keys_and_dates",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "7d1ef1b68280d4c74cff17576cc5423e4b7a182861c665d6c5669301b149d133"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_multi_document_dump_load_and_unsafe_tags_rejected",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "91d9092657eb09f1a12e81eff8c0300a69fa0a8e72d307128fb1d355fac71b8a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_errors_and_flow_style_dumping",
       "public_clause_ids": [
         "B003",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B003",
-          "B004"
-        ],
-        "test_source_sha256": "350b71374334b8592dbafad9f3b8858c29931fa0cec42c5ccda2e817dbc6018f"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_unicode_scalar_and_timestamp_tag",
       "public_clause_ids": [
         "B001",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "5231a8a224a6481c1e8e49c0adb2fb93ea15e88fca2efd1f83c48074440fb8c7"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -83,83 +44,61 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "parse mappings, sequences, scalars, booleans, nulls, integers, floats, and nested documents"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: parse mappings, sequences, scalars, booleans, nulls, integers, floats, and nested documents. Required observable cases include safe load basic mapping sequence and scalars; unicode scalar and timestamp tag."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "support anchors, aliases, and merge keys with SafeLoader semantics"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: support anchors, aliases, and merge keys with SafeLoader semantics. Required observable cases include anchors aliases merge keys and dates."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "dump plain Python data through SafeDumper with deterministic sort_keys behavior"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: dump plain Python data through SafeDumper with deterministic sort_keys behavior. Required observable cases include safe dump sort keys output; parse errors and flow style dumping."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "load and dump multi-document streams"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: load and dump multi-document streams. Required observable cases include multi document dump load and unsafe tags rejected; parse errors and flow style dumping."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "reject unsafe Python object tags under safe_load"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: reject unsafe Python object tags under safe_load. Required observable cases include safe load basic mapping sequence and scalars; multi document dump load and unsafe tags rejected; unicode scalar and timestamp tag."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes the required task API paths `featurelifted.safe_load`, `featurelifted.safe_load_all`, `featurelifted.safe_dump`, `featurelifted.safe_dump_all`, `featurelifted.YAMLError`, `featurelifted.constructor`, `featurelifted.constructor.ConstructorError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
       "text": "the submitted package does not import forbidden upstream packages: yaml"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_safe_load_basic_mapping_sequence_and_scalars",
       "public_clause_ids": [
         "B001",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "8bdd9c1397b2246943c43df81143a84f034e0d56f7a019de3abd2a8d3e17a859"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_safe_dump_sort_keys_output",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "cdff6797f22c661d8de59894621d4d87bdd3363f8af5b46442bbfd3d9a3c5069"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -192,7 +131,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "a42f203befd5458bfee26b85adc42712bb806c74cc78209074450ab0d1d2c644",
+  "spec_sha256": "988604b927a4fb465ad734485a54870ffe96a269c390fc0330eb0a71c9c92b4f",
   "task_id": "pyyaml__safe_load_dump__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

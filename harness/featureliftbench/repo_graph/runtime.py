@@ -11,7 +11,6 @@ import shutil
 import sys
 import tempfile
 import time
-from copy import deepcopy
 from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
@@ -20,7 +19,14 @@ from typing import Any, Mapping
 from .builder import GraphBuilder
 from .detectors import detect_runtime_risks
 from .hashing import canonical_json, digest_json
-from .policy import CACHE_DIR_ENV, ROOT_ENV, RepoGraphPolicy
+from .policy import (
+    BUDGET_TOKENS_ENV,
+    CACHE_DIR_ENV,
+    INSPECT_MAX_CHARS_ENV,
+    QUERY_MAX_CHARS_ENV,
+    ROOT_ENV,
+    RepoGraphPolicy,
+)
 from .protocol import dumps_response, response_payload
 from .query import DEPENDENCY_EDGE_KINDS, GraphQueryEngine
 from .ledger import RepoGraphLedger
@@ -179,8 +185,14 @@ def initialize_repo_graph(
             "task_closure_queried": False,
             "fresh_submission_check": False,
             "adoption_compliant": False,
+            "optional_tool_used": False,
+            "support_queried": False,
+            "search_queried": False,
+            "inspect_queried": False,
             "mechanism_status": "not_queried",
             "protocol_violation": False,
+            "rsg_bootstrap": policy.bootstrap,
+            "rsg_budget_tokens": policy.budget_tokens,
         },
     )
     return RepoGraphRunState(
@@ -190,7 +202,12 @@ def initialize_repo_graph(
         bootstrap_path=bootstrap_path,
         source_repository=repository,
         initial_artifact_hashes=initial_hashes,
-        env={ROOT_ENV: str(root)},
+        env={
+            ROOT_ENV: str(root),
+            QUERY_MAX_CHARS_ENV: str(policy.query_max_chars),
+            INSPECT_MAX_CHARS_ENV: str(policy.inspect_max_chars),
+            BUDGET_TOKENS_ENV: str(policy.budget_tokens),
+        },
     )
 
 
@@ -226,14 +243,26 @@ def finalize_repo_graph(state: RepoGraphRunState, *, submission_dir: Path) -> di
     query_chars = sum(int(row.get("response_chars", 0)) for row in query_rows)
     successful_rows = [row for row in query_rows if row.get("status", "success") == "success"]
     failure_rows = [row for row in query_rows if row.get("status") == "failed"]
-    task_closure_queried = any(row.get("command") == "task-closure" for row in successful_rows)
+    successful_commands = {
+        str(row.get("command")) for row in successful_rows if row.get("command")
+    }
+    task_closure_queried = "task-closure" in successful_commands
+    support_queried = "support" in successful_commands
+    search_queried = "search" in successful_commands
+    inspect_queried = "inspect" in successful_commands
+    optional_tool_used = bool(
+        successful_commands
+        & {"search", "inspect", "support", "task-closure", "closure", "paths", "risks"}
+    )
     final_revision = int(sync.get("revision", 0))
     fresh_submission_check = any(
         row.get("command") == "submission-check"
         and row.get("revision") == final_revision
         for row in successful_rows
     )
-    adoption_compliant = task_closure_queried and fresh_submission_check
+    # Legacy pilot field: historical forced gate. Formal v2 treats optional tool
+    # use as observational only (never a suite blocker).
+    adoption_compliant = optional_tool_used
     evidence_audit: dict[str, Any] = {}
     if (state.root / "semantic_claims.jsonl").is_file():
         ledger = RepoGraphLedger(state.root)
@@ -245,6 +274,12 @@ def finalize_repo_graph(state: RepoGraphRunState, *, submission_dir: Path) -> di
                 state.root / "stopping_guard.json"
             ).is_file(),
         }
+    if graph_modified or invalid_query_rows > 0:
+        mechanism_status = "protocol_violation"
+    elif optional_tool_used:
+        mechanism_status = "optional_tools_used"
+    else:
+        mechanism_status = "not_queried"
     usage = {
         "schema_version": RUN_SCHEMA_VERSION,
         "status": "finalized",
@@ -265,16 +300,14 @@ def finalize_repo_graph(state: RepoGraphRunState, *, submission_dir: Path) -> di
         "invalid_query_audit_rows": invalid_query_rows,
         "task_closure_queried": task_closure_queried,
         "fresh_submission_check": fresh_submission_check,
+        "support_queried": support_queried,
+        "search_queried": search_queried,
+        "inspect_queried": inspect_queried,
+        "optional_tool_used": optional_tool_used,
         "adoption_compliant": adoption_compliant,
-        "mechanism_status": (
-            "protocol_violation"
-            if graph_modified or invalid_query_rows > 0
-            else "adopted"
-            if adoption_compliant
-            else "task_closure_missing"
-            if not task_closure_queried
-            else "submission_check_missing_or_stale"
-        ),
+        "mechanism_status": mechanism_status,
+        "rsg_bootstrap": state.policy.bootstrap,
+        "rsg_budget_tokens": state.policy.budget_tokens,
         "evidence_control": evidence_audit,
     }
     _write_json(state.root.parent.parent / "repo_graph_usage.json", usage)
@@ -322,7 +355,10 @@ def _validate_input_scope(
     workspace: Path,
 ) -> None:
     blocked_parts = {"hidden_tests", "evaluation", "reference_solution"}
-    for path in (repository, metadata, public_tests):
+    paths = [repository, metadata]
+    if public_tests.exists():
+        paths.append(public_tests)
+    for path in paths:
         try:
             relative = path.resolve().relative_to(workspace.resolve())
         except ValueError as exc:
@@ -525,38 +561,118 @@ def _build_bootstrap(
     closure: dict[str, Any] | None,
     policy: RepoGraphPolicy,
 ) -> str:
-    closure_result = task_closure_result(
-        engine=engine,
-        overlay=overlay,
-        closure=closure,
-        max_files=policy.bootstrap_max_nodes,
-    )
+    """Build the optional-tool contract appended to TASK.md (Design v2)."""
+
+    del closure  # retained for call-site compatibility; formal path no longer injects it
+    if policy.bootstrap == "auto_support":
+        return _build_auto_support_bootstrap(engine=engine, overlay=overlay, policy=policy)
+
+    # tool_only: short contract + strong usage cue for hard failures.
     prefix = (
         f"{PROMPT_MARKER}\n\n"
-        "A deterministic task-focused repository graph is available as an advisory tool. "
-        "Before broad source reads, run `flb-rsg task-closure` "
-        "once. After the last meaningful submission change, run "
-        "`flb-rsg submission-check`. The graph is a localization "
-        "and dependency clue; source code and runtime observations remain authoritative. "
-        "Probable edges are hypotheses. Do not edit graph files.\n\n"
-        f"Mode: `{policy.mode}`. Query responses are capped at "
-        f"{policy.query_max_chars} characters.\n\n"
-        "### Initial task closure\n\n```json\n"
+        "A deterministic repository fact graph is available as **optional** advisory tools.\n"
+        "- `flb-rsg search <query>`\n"
+        "- `flb-rsg inspect <stable_id>`\n"
+        "- `flb-rsg support --seed <stable_id_or_name> [--budget-tokens N]`\n\n"
+        "Efficiency cue: after identifying the task entrypoint, prefer "
+        "`flb-rsg support --seed <entrypoint>` once before broad recursive search. "
+        "Use support again when public tests fail on missing API, config, resource, "
+        "or registry/dispatch behavior. Source code remains authoritative; "
+        "probable edges are hypotheses. Do not edit graph files.\n\n"
+        f"Mode: `{policy.mode}`. Bootstrap: `{policy.bootstrap}`. "
+        f"Default support budget: `{policy.budget_tokens}` tokens. "
+        f"Query responses capped at {policy.query_max_chars} characters "
+        f"(inspect default: {policy.inspect_max_chars}).\n"
     )
-    suffix = "\n```\n"
-    payload_budget = policy.bootstrap_max_chars - len(prefix) - len(suffix)
-    if payload_budget < 512:
-        raise ValueError("repo graph bootstrap budget is too small for the required contract")
-    payload = response_payload(
-        command="task-closure",
-        snapshot_id=engine.snapshot.manifest.get("snapshot_id"),
-        result=deepcopy(closure_result),
-        max_chars=payload_budget,
-    )
-    rendered = prefix + dumps_response(payload) + suffix
-    if len(rendered) > policy.bootstrap_max_chars:
+    if len(prefix) > policy.bootstrap_max_chars:
         raise ValueError("repo graph bootstrap exceeded configured character budget")
+    return prefix
+
+
+def _build_auto_support_bootstrap(
+    *,
+    engine: GraphQueryEngine,
+    overlay: dict[str, Any],
+    policy: RepoGraphPolicy,
+) -> str:
+    from .support import build_operational_support, render_compact_guidance
+
+    seeds = _seeds_from_overlay(overlay)
+    header = (
+        f"{PROMPT_MARKER}\n\n"
+        "**Token-efficient workflow (follow this):**\n"
+        "1. Open ONLY the files listed under start-here below.\n"
+        "2. Do not run broad `find`/`grep`/recursive listing of the whole repo first.\n"
+        "3. Implement from those files; expand search only after public tests fail.\n"
+        "4. If failures mention missing API/config/resource/dispatch, run "
+        "`flb-rsg support --seed <entrypoint>` once and continue.\n"
+        "Source remains authoritative. Do not edit graph files.\n\n"
+        f"Mode: `{policy.mode}`. Bootstrap: `auto_support`. "
+        f"Budget: `{policy.budget_tokens}` tokens.\n\n"
+    )
+    if not seeds:
+        rendered = header + (
+            "`auto_support` had no resolvable entrypoints; "
+            "call `flb-rsg support --seed ...` yourself.\n"
+        )
+        if len(rendered) > policy.bootstrap_max_chars:
+            raise ValueError("repo graph bootstrap exceeded configured character budget")
+        return rendered
+
+    support_result = build_operational_support(
+        engine,
+        seeds,
+        budget_tokens=min(policy.budget_tokens, 4_000),
+        max_nodes=max(policy.bootstrap_max_nodes * 2, 40),
+    )
+    guidance = render_compact_guidance(support_result)
+    # Keep a tiny JSON appendix for machine use if space remains.
+    compact_json = {
+        "seeds": support_result.get("seeds"),
+        "guidance": support_result.get("guidance"),
+        "covered_categories": support_result.get("covered_categories"),
+        "status": support_result.get("status"),
+    }
+    appendix = (
+        "\n<details><summary>RSG support summary (compact)</summary>\n\n```json\n"
+    )
+    suffix = "\n```\n</details>\n"
+    remaining = policy.bootstrap_max_chars - len(header) - len(guidance) - len(appendix) - len(suffix)
+    if remaining < 256:
+        rendered = header + guidance
+    else:
+        payload = response_payload(
+            command="support",
+            snapshot_id=engine.snapshot.manifest.get("snapshot_id"),
+            result=compact_json,
+            max_chars=remaining,
+        )
+        rendered = header + guidance + appendix + dumps_response(payload) + suffix
+    if len(rendered) > policy.bootstrap_max_chars:
+        # Last resort: guidance only.
+        rendered = (header + guidance)[: policy.bootstrap_max_chars]
     return rendered
+
+
+def _seeds_from_overlay(overlay: dict[str, Any]) -> list[str]:
+    seeds: list[str] = []
+    for item in overlay.get("entrypoint_mapping", []):
+        if not isinstance(item, dict):
+            continue
+        node = item.get("node") if isinstance(item.get("node"), dict) else {}
+        stable_id = node.get("stable_id")
+        if isinstance(stable_id, str) and stable_id.strip():
+            seeds.append(stable_id.strip())
+            continue
+        entrypoint = item.get("entrypoint")
+        if isinstance(entrypoint, str) and entrypoint.strip():
+            seeds.append(entrypoint.strip())
+    if seeds:
+        return seeds
+    for entrypoint in overlay.get("source_entrypoints", []):
+        if isinstance(entrypoint, str) and entrypoint.strip():
+            seeds.append(entrypoint.strip())
+    return seeds
 
 
 def task_closure_result(

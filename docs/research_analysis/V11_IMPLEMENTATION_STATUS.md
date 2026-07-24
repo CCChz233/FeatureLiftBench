@@ -7,7 +7,7 @@
 | Python tasks / TASK.md | 150 / 150 | yes |
 | Behavior contracts | 150/150 | yes (AI-assisted, provisional) |
 | Public test mappings / unmapped | 328 / 0 | yes |
-| Hidden nodeid mappings / unmapped | 643 / 0 | yes |
+| Hidden nodeid mappings / unmapped | 793 / 0 | yes |
 | Human-reviewed behavior tasks | 0/150 | no |
 | Diagnostic file closure marked complete | 40/40 | yes (AI-assisted, provisional) |
 | Diagnostic closure independently adjudicated | 0/40 | no |

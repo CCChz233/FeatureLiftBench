@@ -25,6 +25,25 @@ call_limit = "0"
 
 # Opt-in Repository Semantic Graph profiles. These can be used with
 # mini-swe-agent, OpenHands, or FeatureLiftAgent; existing profiles stay disabled.
+#
+# Design v2 formal OpenHands surface: optional search|inspect|support
+# (bootstrap = tool_only). Legacy repo_graph_mode still enables the graph.
+[profiles.deepseek_v4_flash_rsg_tool_only]
+model = "deepseek/deepseek-v4-flash"
+agent_bin = "mini"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+repo_graph_mode = "static"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+rsg_bootstrap = "tool_only"
+rsg_view = "operational_support"
+rsg_budget_tokens = 8000
+rsg_inspect_max_chars = 4000
+repo_graph_query_max_chars = 12000
+
 [profiles.deepseek_v4_flash_rsg_static]
 model = "deepseek/deepseek-v4-flash"
 agent_bin = "mini"
@@ -37,6 +56,8 @@ repo_graph_transport = "cli"
 repo_graph_fail_fast = true
 repo_graph_bootstrap_max_nodes = 30
 repo_graph_query_max_chars = 12000
+rsg_bootstrap = "tool_only"
+rsg_budget_tokens = 8000
 
 [profiles.deepseek_v4_flash_rsg_closure]
 model = "deepseek/deepseek-v4-flash"
@@ -50,6 +71,8 @@ repo_graph_transport = "cli"
 repo_graph_fail_fast = true
 repo_graph_bootstrap_max_nodes = 30
 repo_graph_query_max_chars = 12000
+rsg_bootstrap = "tool_only"
+rsg_budget_tokens = 8000
 
 [profiles.deepseek_v4_flash_rsg_evidence]
 model = "deepseek/deepseek-v4-flash"
@@ -63,6 +86,8 @@ repo_graph_transport = "cli"
 repo_graph_fail_fast = true
 repo_graph_bootstrap_max_nodes = 30
 repo_graph_query_max_chars = 12000
+rsg_bootstrap = "tool_only"
+rsg_budget_tokens = 8000
 # Applied only when --agent featurelift-agent is selected.
 featurelift_enable_llm = true
 featurelift_execute_actions = true
@@ -165,6 +190,78 @@ openhands_condenser_max_events = 1000000
 openhands_max_steps = 120
 openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
 
+# Experiment arms (docs/EXPERIMENT_ARMS.md). Same model/budget; only
+# benchmark-test feedback and prompt verbosity differ. Evaluator runs both
+# private test tiers after submit for every arm.
+[profiles.openhands_deepseek_v4_flash_main]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+
+# Historical alias for the new test-blind Main arm.
+[profiles.openhands_deepseek_v4_flash_nopublic]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+
+[profiles.openhands_deepseek_v4_flash_public_feedback]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = true
+prompt_style = "standard"
+
+[profiles.openhands_deepseek_v4_flash_short_prompt]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "short"
+
 [profiles.openhands_deepseek_v4_flash_rsg_pilot_p3]
 model = "deepseek/deepseek-v4-flash"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
@@ -185,6 +282,89 @@ repo_graph_fail_fast = true
 repo_graph_bootstrap_max_nodes = 30
 repo_graph_bootstrap_max_chars = 4096
 repo_graph_query_max_chars = 12000
+rsg_bootstrap = "tool_only"
+rsg_budget_tokens = 8000
+rsg_inspect_max_chars = 4000
+
+# Tuned profiles for the dual goal:
+# - efficient: compact start-here injection to cut exploration tokens on easy tasks
+# - hard: same injection + larger support neighborhood for dependency/API closure
+[profiles.openhands_deepseek_v4_flash_rsg_tuned_efficient]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 80
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+repo_graph_mode = "closure"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 20
+repo_graph_bootstrap_max_chars = 2200
+repo_graph_query_max_chars = 6000
+rsg_bootstrap = "auto_support"
+rsg_view = "operational_support"
+rsg_budget_tokens = 1500
+rsg_inspect_max_chars = 2500
+
+[profiles.openhands_deepseek_v4_flash_rsg_tuned_hard]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+repo_graph_mode = "closure"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 40
+repo_graph_bootstrap_max_chars = 3600
+repo_graph_query_max_chars = 12000
+rsg_bootstrap = "auto_support"
+rsg_view = "operational_support"
+rsg_budget_tokens = 5000
+rsg_inspect_max_chars = 4000
+
+# Diagnostic arm only: auto-inject operational support into TASK.
+# Do not mix results with formal optional-tool (tool_only) arms.
+[profiles.openhands_deepseek_v4_flash_rsg_pilot_d0_auto_support]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+repo_graph_mode = "closure"
+repo_graph_transport = "cli"
+repo_graph_fail_fast = true
+repo_graph_bootstrap_max_nodes = 30
+repo_graph_bootstrap_max_chars = 4096
+repo_graph_query_max_chars = 12000
+rsg_bootstrap = "auto_support"
+rsg_view = "operational_support"
+rsg_budget_tokens = 8000
+rsg_inspect_max_chars = 4000
 
 [profiles.openhands_qwen3_6_27b_fp8_paper]
 model = "openai/Qwen3.6-27B-FP8"

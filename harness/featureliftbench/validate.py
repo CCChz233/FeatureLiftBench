@@ -8,9 +8,11 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from .constitution_validate import validate_constitution
 from .dependency_audit import validate_lock_allowed_consistency
 from .closure_gold import load_closure_gold
 from .metadata import MetadataError, load_metadata, validate_metadata_shape
+from .task_spec import SPEC_STATUS_COMPLIANT, get_spec_status
 
 
 @dataclass(frozen=True)
@@ -20,6 +22,7 @@ class ValidationResult:
     task_dir: Path
     task_id: str
     errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
     @property
     def valid(self) -> bool:
@@ -54,6 +57,7 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
 
     root = Path(task_dir)
     errors: list[str] = []
+    warnings: list[str] = []
 
     if not root.exists():
         return ValidationResult(task_dir=root, task_id="", errors=[f"task dir not found: {root}"])
@@ -109,7 +113,12 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
         if behavior_path.exists():
             errors.extend(_validate_behavior_contract(root, behavior_path))
 
-    return ValidationResult(task_dir=root, task_id=task_id, errors=errors)
+    if metadata is not None and get_spec_status(metadata.data) == SPEC_STATUS_COMPLIANT:
+        errors.extend(validate_constitution(root, metadata.data))
+    elif metadata is not None and isinstance(metadata.data.get("public_spec"), dict):
+        warnings.append("metadata.public_spec present but spec_status is not compliant")
+
+    return ValidationResult(task_dir=root, task_id=task_id, errors=errors, warnings=warnings)
 
 
 def _validate_behavior_contract(root: Path, path: Path) -> list[str]:

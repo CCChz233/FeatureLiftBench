@@ -1,18 +1,18 @@
 # FeatureLift Task: Retry state machine with stop/wait/retry predicates
 
-Extract a synchronous subset of Tenacity's retry runtime into a standalone `featurelifted` package.
+Extract a task-scoped subset of `tenacity` into a standalone `featurelifted` package.
 
-The implementation must not import `tenacity`, must not read from `repo/`, must not use the network, and must not depend on external services. Use only the standard library.
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
 ```python
 from featurelifted import (
-    Retrying,
-    RetryCallState,
-    RetryError,
     retry_if_exception_type,
     retry_if_result,
+    RetryCallState,
+    RetryError,
+    Retrying,
     stop_after_attempt,
     stop_after_delay,
     stop_before_delay,
@@ -24,71 +24,63 @@ from featurelifted import (
 )
 ```
 
-Required call shape:
+## Required API Details
 
-```python
-Retrying(
-    stop=None,
-    wait=None,
-    retry=None,
-    sleep=None,
-    before_sleep=None,
-    reraise=False,
-    retry_error_callback=None,
-).__call__(fn, *args, **kwargs)
-```
+- `Retrying(*, stop: 'StopBase | None' = None, wait: 'WaitBase | None' = None, retry: 'RetryBase | None' = None, sleep: 'Callable[[float], None] | None' = None, before_sleep: 'Callable[[RetryCallState], None] | None' = None, reraise: 'bool' = False, retry_error_cls: 'type[RetryError]' = <class 'RetryError'>, retry_error_callback: 'Callable[[RetryCallState], Any] | None' = None) -> 'None'` class constructor
+- `RetryError` must be importable and raisable
+- `retry_if_exception_type(exception_types: 'type[BaseException] | tuple[type[BaseException], ...]' = <class 'Exception'>) -> 'None'`
+- `retry_if_result(predicate: 'Callable[[Any], bool]') -> 'None'`
+- `stop_after_attempt(max_attempt_number: 'int') -> 'None'`
+- `wait_fixed(wait: 'float') -> 'None'`
+- `wait_chain(*strategies: 'WaitBase') -> 'None'`
+- `wait_exponential(multiplier: 'float' = 1, max: 'float' = 3600.0, exp_base: 'float' = 2, min: 'float' = 0) -> 'None'`
+- `RetryCallState(retry_object: "'Retrying'", fn: 'Callable[..., Any]', args: 'tuple[Any, ...]', kwargs: 'dict[str, Any]')` class constructor
+- `stop_after_delay(max_delay: 'float') -> 'None'`
+- `stop_before_delay(max_delay: 'float') -> 'None'`
+- `wait_combine(*strategies: 'WaitBase') -> 'None'`
+- `wait_none() -> 'None'`
 
 ## Required Behavior
 
-- Execute `fn` until the retry predicate returns false or the stop predicate triggers.
+- Retrying repeatedly calls the function while the retry predicate requests another attempt and stops when the function succeeds or a stop policy triggers.
 - Track a `RetryCallState` with `attempt_number`, `outcome`, `idle_for`, `upcoming_sleep`, and `seconds_since_start`.
-- Support retry predicates:
-  - `retry_if_exception_type`
-  - `retry_if_result`
-  - `|` and `&` composition through `retry_any` and `retry_all`
-- Support stop policies:
-  - `stop_after_attempt`
-  - `stop_after_delay`
-  - `stop_before_delay`
-- Support wait policies:
-  - `wait_fixed`
-  - `wait_none`
-  - `wait_chain`
-  - `wait_combine`
-  - `wait_exponential`
-- `wait_chain()` with no strategies must raise `ValueError`.
-- `before_sleep` must receive the state after `upcoming_sleep` is computed and before `idle_for` is incremented.
-- When retries are exhausted:
-  - use `retry_error_callback` when provided;
-  - raise the last exception directly when `reraise=True` and the last outcome failed;
-  - otherwise raise `RetryError`.
+- When retries are exhausted, Retrying calls retry_error_callback if configured, reraises the final exception when requested, or raises RetryError.
+- retry_if_exception_type retries matching exceptions and retry_if_result retries matching returned results.
+- Retry predicates composed with | or & apply retry-any or retry-all semantics in operand order.
+- stop_after_attempt, stop_after_delay, and stop_before_delay stop according to attempt count and elapsed or upcoming delay boundaries.
+- wait_fixed, wait_none, wait_chain, wait_combine, and wait_exponential compute deterministic upcoming sleep durations; an empty wait_chain raises ValueError.
+- before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state.
+- The package exposes the required task API paths `featurelifted.Retrying`, `featurelifted.RetryError`, `featurelifted.retry_if_exception_type`, `featurelifted.retry_if_result`, `featurelifted.stop_after_attempt`, `featurelifted.wait_fixed`, `featurelifted.wait_chain`, `featurelifted.wait_exponential`, `featurelifted.RetryCallState`, `featurelifted.stop_after_delay`, `featurelifted.stop_before_delay`, `featurelifted.wait_combine`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
 - Forbidden imports: `tenacity`.
-- Forbidden path access: `repo/`, `tenacity/`.
-- Do not implement async, Tornado, decorator overloads, or logging helper APIs.
-- Do not actually sleep in tests unless the caller provides a sleep function that does so.
+- Forbidden path access: `repo/, tenacity/`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement source repo path access.
+- Do not implement asyncio retrying.
+- Do not implement tornado retrying.
+- Do not implement decorator overloads.
+- Do not implement logging callbacks.
 
 ## Public vs Hidden Tests
 
-Public tests cover exception retries, result retries, fixed waits, and exhausted retry errors.
-Hidden tests cover wait-chain validation and exhaustion, callback state timing, `reraise`, retry predicate composition, and exponential wait behavior.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — Retrying callable execution loop
-- **B002** — RetryCallState with attempt number, outcome, idle_for, and upcoming_sleep
-- **B003** — RetryError and reraise behavior
-- **B004** — retry_if_exception_type and retry_if_result
-- **B005** — retry_any/retry_all composition via | and &
-- **B006** — stop_after_attempt, stop_after_delay, stop_before_delay
-- **B007** — wait_fixed, wait_none, wait_chain, wait_combine, wait_exponential
-- **B008** — before_sleep and retry_error_callback
-- **B009** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B010** — the submitted package does not import forbidden upstream packages: tenacity
+- **B001** — Retrying repeatedly calls the function while the retry predicate requests another attempt and stops when the function succeeds or a stop policy triggers.
+- **B002** — Track a `RetryCallState` with `attempt_number`, `outcome`, `idle_for`, `upcoming_sleep`, and `seconds_since_start`.
+- **B003** — When retries are exhausted, Retrying calls retry_error_callback if configured, reraises the final exception when requested, or raises RetryError.
+- **B004** — retry_if_exception_type retries matching exceptions and retry_if_result retries matching returned results.
+- **B005** — Retry predicates composed with | or & apply retry-any or retry-all semantics in operand order.
+- **B006** — stop_after_attempt, stop_after_delay, and stop_before_delay stop according to attempt count and elapsed or upcoming delay boundaries.
+- **B007** — wait_fixed, wait_none, wait_chain, wait_combine, and wait_exponential compute deterministic upcoming sleep durations; an empty wait_chain raises ValueError.
+- **B008** — before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state.
+- **B009** — The package exposes the required task API paths `featurelifted.Retrying`, `featurelifted.RetryError`, `featurelifted.retry_if_exception_type`, `featurelifted.retry_if_result`, `featurelifted.stop_after_attempt`, `featurelifted.wait_fixed`, `featurelifted.wait_chain`, `featurelifted.wait_exponential`, `featurelifted.RetryCallState`, `featurelifted.stop_after_delay`, `featurelifted.stop_before_delay`, `featurelifted.wait_combine`, and 1 listed members with the kinds and callable signatures listed in this contract.
+- **B010** — the submitted package does not import forbidden upstream packages: tenacity.
 <!-- featureliftbench:behavior-clauses:end -->

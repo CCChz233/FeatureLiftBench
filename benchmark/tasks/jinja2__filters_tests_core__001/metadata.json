@@ -82,5 +82,278 @@
     "import": "from featurelifted import Environment, filters, tests; from featurelifted.runtime import Undefined",
     "callable": "featurelifted.Environment.call_filter",
     "signature": "call_filter(name: str, value: object, *args, **kwargs) -> object"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Jinja2 filters and tests core",
+    "summary": "Extract a task-scoped subset of `jinja2` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.Environment",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Environment.call_filter",
+            "kind": "method",
+            "signature": "(self, name: str, value: Any, args: Optional[Sequence[Any]] = None, kwargs: Optional[Mapping[str, Any]] = None, context: Optional[Context] = None, eval_ctx: Optional[EvalContext] = None) -> Any"
+          },
+          {
+            "path": "featurelifted.Environment.call_test",
+            "kind": "method",
+            "signature": "(self, name: str, value: Any, args: Optional[Sequence[Any]] = None, kwargs: Optional[Mapping[str, Any]] = None, context: Optional[Context] = None, eval_ctx: Optional[EvalContext] = None) -> Any"
+          },
+          {
+            "path": "featurelifted.Environment.from_string",
+            "kind": "method",
+            "signature": "(self, source: Union[str, Template], globals: Optional[MutableMapping[str, Any]] = None, template_class: Optional[Type[ForwardRef('Template')]] = None) -> 'Template'"
+          }
+        ],
+        "signature": "(block_start_string: str = '{%', block_end_string: str = '%}', variable_start_string: str = '{{', variable_end_string: str = '}}', comment_start_string: str = '{#', comment_end_string: str = '#}', line_statement_prefix: Optional[str] = None, line_comment_prefix: Optional[str] = None, trim_blocks: bool = False, lstrip_blocks: bool = False, newline_sequence: \"te.Literal['\\\\n', '\\\\r\\\\n', '\\\\r']\" = '\\n', keep_trailing_newline: bool = False, extensions: Sequence[Union[str, Type[ForwardRef('Extension')]]] = (), optimized: bool = True, undefined: Type[Undefined] = <class 'Undefined'>, finalize: Optional[Callable[..., Any]] = None, autoescape: Union[bool, Callable[[Optional[str]], bool]] = False, loader: Optional[ForwardRef('BaseLoader')] = None, cache_size: int = 400, auto_reload: bool = True, bytecode_cache: Optional[ForwardRef('BytecodeCache')] = None, enable_async: bool = False)"
+      },
+      {
+        "path": "featurelifted.filters",
+        "kind": "module"
+      },
+      {
+        "path": "featurelifted.tests",
+        "kind": "module"
+      },
+      {
+        "path": "featurelifted.runtime",
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.runtime.Undefined",
+            "kind": "class",
+            "signature": "(hint: Optional[str] = None, obj: Any = missing, name: Optional[str] = None, exc: Type[TemplateRuntimeError] = <class 'UndefinedError'>) -> None"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: apply built-in filters in templates and via call_filter. Required observable cases include capitalize filter in template; call filter directly; defined test in template."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: evaluate built-in tests in templates and via call_test. Required observable cases include defined test in template."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: support common filters: capitalize, default, length, join, map, select. Required observable cases include capitalize filter in template; default filter with boolean; filters module required for join."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: support common tests: defined, undefined, even, odd, number, string. Required observable cases include tests module required for even."
+      },
+      {
+        "id": "B005",
+        "text": "The extracted feature must support this observable behavior: default filter honors boolean true to treat falsey values as missing. Required observable cases include default filter with boolean."
+      },
+      {
+        "id": "B006",
+        "text": "The extracted feature must support this observable behavior: runtime Undefined and filters/tests registries must be available for call_filter/call_test. Required observable cases include call filter directly; tests module required for even."
+      },
+      {
+        "id": "B007",
+        "text": "The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.tests`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "jinja2.filters.FILTERS",
+      "jinja2.tests.TESTS",
+      "jinja2.environment.Environment.call_filter",
+      "jinja2.environment.Environment.call_test"
+    ],
+    "exclusions": [
+      "custom extension filters",
+      "async filter variants",
+      "loaders and template inheritance beyond from_string",
+      "CLI, original tests, docs, packaging metadata"
+    ],
+    "forbidden": {
+      "imports": [
+        "jinja2",
+        "jinja"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: jinja2, jinja."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: apply built-in filters in templates and via call_filter. Required observable cases include capitalize filter in template; call filter directly; defined test in template."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: evaluate built-in tests in templates and via call_test. Required observable cases include defined test in template."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: support common filters: capitalize, default, length, join, map, select. Required observable cases include capitalize filter in template; default filter with boolean; filters module required for join."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: support common tests: defined, undefined, even, odd, number, string. Required observable cases include tests module required for even."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: default filter honors boolean true to treat falsey values as missing. Required observable cases include default filter with boolean."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: runtime Undefined and filters/tests registries must be available for call_filter/call_test. Required observable cases include call filter directly; tests module required for even."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.tests`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B008",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: jinja2, jinja"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_capitalize_filter_in_template",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_call_filter_directly",
+        "behavior_ids": [
+          "B001",
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_default_filter_with_boolean",
+        "behavior_ids": [
+          "B003",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_defined_test_in_template",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_filters_module_required_for_join",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_tests_module_required_for_even",
+        "behavior_ids": [
+          "B004",
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B007"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Environment",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Environment.call_filter",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_filters_module_required_for_join"
+        ]
+      },
+      {
+        "path": "featurelifted.Environment.call_test",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_defined_test_in_template",
+          "hidden_tests/test_hidden_behavior.py::test_tests_module_required_for_even"
+        ]
+      },
+      {
+        "path": "featurelifted.Environment.from_string",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_default_filter_with_boolean"
+        ]
+      },
+      {
+        "path": "featurelifted.filters",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.tests",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.runtime",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.runtime.Undefined",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 2,
+  "spec_hash": "ac4598f2d834c970ad11f8e0e027f96c35359121055f566df8c153e01bb3b4c5",
+  "generated_task_hash": "abb6f320c3836c51f21b106a1846e9aa65bd9de048a2c68f7586924820462281"
 }

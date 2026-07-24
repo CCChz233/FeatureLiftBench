@@ -15,6 +15,7 @@ from ..common import (
     nearest_ancestor,
     node_key,
     node_text,
+    pathish_string_literal,
     query_pack_hash,
     source_span,
 )
@@ -24,11 +25,12 @@ from .resolver import PythonResolver
 class PythonAdapter(LanguageAdapter):
     language = "python"
     extensions = (".py", ".pyi")
-    version = "python-adapter-v1"
+    version = "python-adapter-v2"
     capability = LanguageCapability(
         language="python",
         node_kinds=(
             "class",
+            "config",
             "dependency",
             "environment_variable",
             "file",
@@ -37,21 +39,33 @@ class PythonAdapter(LanguageAdapter):
             "method",
             "module",
             "resource",
+            "type",
             "working_directory",
         ),
         edge_kinds=(
             "CALLS",
             "DECORATED_BY",
+            "DEFAULT_DEFINED_BY",
             "DEFINES",
             "DYNAMIC_GETATTR",
             "DYNAMIC_IMPORT",
+            "DYNAMIC_SETATTR",
+            "EXPORTS",
+            "IMPORTS_MODULE",
+            "IMPORT_TIME_CALL",
             "INHERITS",
             "LOADS_RESOURCE",
             "MODULE_STATE",
             "MUTABLE_GLOBAL",
+            "PACKAGED_BY",
+            "PROVIDES_MEMBER",
+            "RAISES",
+            "READS_CONFIG",
             "READS_CWD",
             "READS_ENV",
             "REGISTERS",
+            "RESOLVES_VIA",
+            "RETURNS_TYPE",
             "WRITES_CWD",
         ),
         limitations=("no type inference", "dynamic dispatch remains candidate/unresolved"),
@@ -157,6 +171,42 @@ class PythonAdapter(LanguageAdapter):
             )
             owner = parent_stable or module_id
             parsed.edges.append(EdgeSpec(owner, stable_id, "DEFINES", "exact", self.version))
+            if parent_kind == "class" and not name.startswith("_"):
+                parsed.edges.append(
+                    EdgeSpec(
+                        owner,
+                        stable_id,
+                        "PROVIDES_MEMBER",
+                        "exact",
+                        self.version,
+                        {
+                            "member": name,
+                            "module": module_name,
+                            "scope_qualified": qualified,
+                            "path": relative_path,
+                            "line": definition.start_point[0] + 1,
+                        },
+                    )
+                )
+            if raw_kind == "function":
+                self._add_return_type_edge(
+                    parsed,
+                    definition,
+                    source,
+                    stable_id,
+                    module_name,
+                    qualified,
+                    relative_path,
+                )
+                self._add_default_defined_by_edges(
+                    parsed,
+                    definition,
+                    source,
+                    stable_id,
+                    module_name,
+                    qualified,
+                    relative_path,
+                )
             if raw_kind == "class":
                 superclasses = definition.child_by_field_name("superclasses")
                 if superclasses is not None:
@@ -191,7 +241,30 @@ class PythonAdapter(LanguageAdapter):
             relative_path,
         )
         self._add_globals(parsed, backend, root, source, module_id, module_name, relative_path)
+        self._add_exports(parsed, backend, root, source, module_id, module_name, relative_path)
         self._add_calls_and_risks(
+            parsed,
+            backend,
+            root,
+            source,
+            module_id,
+            module_name,
+            relative_path,
+            definition_keys,
+            stable_by_key,
+        )
+        self._add_raises(
+            parsed,
+            backend,
+            root,
+            source,
+            module_id,
+            module_name,
+            relative_path,
+            definition_keys,
+            stable_by_key,
+        )
+        self._add_resolves_via(
             parsed,
             backend,
             root,
@@ -421,7 +494,9 @@ class PythonAdapter(LanguageAdapter):
             target_id: str | None = None
             resolution = "unresolved"
             lowered = expression.lower()
-            literal = first_string_literal(node_text(call, source))
+            literal = pathish_string_literal(node_text(call, source)) or first_string_literal(
+                node_text(call, source)
+            )
             if expression in {"getattr", "setattr", "hasattr"} or lowered.endswith(
                 (".getattr", ".setattr", ".hasattr")
             ):
@@ -468,6 +543,37 @@ class PythonAdapter(LanguageAdapter):
                         NodeSpec(target_id, "resource", Path(literal).name, literal, self.language)
                     )
                     resolution = "candidate"
+            elif literal and self._looks_like_config_path(literal) and (
+                expression
+                in {
+                    "open",
+                    "Path",
+                    "pathlib.Path",
+                    "toml.load",
+                    "tomllib.load",
+                    "yaml.safe_load",
+                    "yaml.load",
+                    "json.load",
+                    "configparser.ConfigParser.read",
+                }
+                or lowered.endswith(
+                    (
+                        ".open",
+                        ".read_text",
+                        ".read_bytes",
+                        ".load",
+                        ".safe_load",
+                        ".read",
+                    )
+                )
+            ):
+                kind = "READS_CONFIG"
+                target_id = f"config:{module_name}:{literal}:config"
+                parsed.nodes.append(
+                    NodeSpec(target_id, "config", Path(literal).name, literal, self.language)
+                )
+                resolution = "candidate"
+                attributes["risk_category"] = "config_environment_coupling"
             elif literal and (
                 expression in {"open", "Path", "pathlib.Path"}
                 or lowered.endswith((".open", ".read_text", ".read_bytes"))
@@ -485,6 +591,22 @@ class PythonAdapter(LanguageAdapter):
             elif source_id == module_id:
                 kind = "IMPORT_TIME_CALL"
                 attributes["risk_category"] = "import_side_effect"
+            # Dual-emit RESOLVES_VIA for getattr-style dynamic attribute selection.
+            if kind == "DYNAMIC_GETATTR":
+                parsed.edges.append(
+                    EdgeSpec(
+                        source_id,
+                        None,
+                        "RESOLVES_VIA",
+                        "unresolved_dynamic",
+                        self.version,
+                        {
+                            **attributes,
+                            "dispatch_style": "getattr",
+                            "risk_category": "framework_coupling",
+                        },
+                    )
+                )
             parsed.edges.append(
                 EdgeSpec(source_id, target_id, kind, resolution, self.version, attributes)
             )
@@ -633,10 +755,267 @@ class PythonAdapter(LanguageAdapter):
                 continue
             expression = node_text(decorator, source).lstrip("@").strip()
             attributes = {"target_expression": expression[:300]}
-            if any(token in expression.lower() for token in ("register", "route", "plugin", "hook")):
+            is_register = any(
+                token in expression.lower() for token in ("register", "route", "plugin", "hook")
+            )
+            if is_register:
                 attributes["risk_category"] = "framework_coupling"
             elif any(token in expression.lower() for token in ("cache", "memo", "singleton")):
                 attributes["risk_category"] = "parser_state_coupling"
             parsed.edges.append(
                 EdgeSpec(source_id, None, "DECORATED_BY", "unresolved", self.version, attributes)
             )
+            if is_register:
+                parsed.edges.append(
+                    EdgeSpec(
+                        source_id,
+                        None,
+                        "REGISTERS",
+                        "unresolved_dynamic",
+                        self.version,
+                        {
+                            **attributes,
+                            "dispatch_style": "decorator",
+                            "risk_category": "framework_coupling",
+                        },
+                    )
+                )
+
+    @staticmethod
+    def _looks_like_config_path(path_text: str) -> bool:
+        lowered = path_text.casefold()
+        return any(
+            lowered.endswith(suffix)
+            for suffix in (".toml", ".yaml", ".yml", ".ini", ".cfg", ".conf", ".json")
+        )
+
+    def _add_return_type_edge(
+        self,
+        parsed: ParsedFile,
+        definition: Any,
+        source: bytes,
+        stable_id: str,
+        module_name: str,
+        qualified: str,
+        relative_path: str,
+    ) -> None:
+        return_type = definition.child_by_field_name("return_type")
+        if return_type is None:
+            return
+        expression = "".join(node_text(return_type, source).split())
+        if not expression:
+            return
+        parsed.edges.append(
+            EdgeSpec(
+                stable_id,
+                None,
+                "RETURNS_TYPE",
+                "unresolved",
+                self.version,
+                {
+                    "target_expression": expression[:300],
+                    "module": module_name,
+                    "scope_qualified": qualified,
+                    "path": relative_path,
+                    "line": return_type.start_point[0] + 1,
+                },
+            )
+        )
+
+    def _add_default_defined_by_edges(
+        self,
+        parsed: ParsedFile,
+        definition: Any,
+        source: bytes,
+        stable_id: str,
+        module_name: str,
+        qualified: str,
+        relative_path: str,
+    ) -> None:
+        parameters = definition.child_by_field_name("parameters")
+        if parameters is None:
+            return
+        for child in parameters.named_children:
+            if child.type not in {"default_parameter", "typed_default_parameter"}:
+                continue
+            name_node = child.child_by_field_name("name")
+            value_node = child.child_by_field_name("value")
+            if name_node is None or value_node is None:
+                continue
+            param_name = node_text(name_node, source)
+            expression = "".join(node_text(value_node, source).split())
+            if not expression:
+                continue
+            parsed.edges.append(
+                EdgeSpec(
+                    stable_id,
+                    None,
+                    "DEFAULT_DEFINED_BY",
+                    "unresolved",
+                    self.version,
+                    {
+                        "parameter": param_name,
+                        "target_expression": expression[:300],
+                        "module": module_name,
+                        "scope_qualified": qualified,
+                        "path": relative_path,
+                        "line": value_node.start_point[0] + 1,
+                    },
+                )
+            )
+
+    def _add_exports(
+        self,
+        parsed: ParsedFile,
+        backend: TreeSitterBackend,
+        root: Any,
+        source: bytes,
+        module_id: str,
+        module_name: str,
+        relative_path: str,
+    ) -> None:
+        captures = backend.captures(
+            self.language,
+            load_query(self.query_dir, "exports.scm"),
+            root,
+        )
+        names = captures.get("exports.name", [])
+        values = captures.get("exports.value", [])
+        for name_node, value_node in zip(names, values):
+            if node_text(name_node, source) != "__all__":
+                continue
+            exported = self._string_literals(node_text(value_node, source))
+            for symbol in exported:
+                if not symbol or symbol.startswith("_"):
+                    continue
+                parsed.edges.append(
+                    EdgeSpec(
+                        module_id,
+                        None,
+                        "EXPORTS",
+                        "unresolved",
+                        self.version,
+                        {
+                            "target_expression": symbol,
+                            "module": module_name,
+                            "scope_qualified": module_name,
+                            "path": relative_path,
+                            "line": name_node.start_point[0] + 1,
+                        },
+                    )
+                )
+
+    def _add_raises(
+        self,
+        parsed: ParsedFile,
+        backend: TreeSitterBackend,
+        root: Any,
+        source: bytes,
+        module_id: str,
+        module_name: str,
+        relative_path: str,
+        definition_keys: set[tuple[int, int, str]],
+        stable_by_key: dict[tuple[int, int, str], str],
+    ) -> None:
+        captures = backend.captures(
+            self.language,
+            load_query(self.query_dir, "raises.scm"),
+            root,
+        )
+        for statement in captures.get("raise.statement", []):
+            text = "".join(node_text(statement, source).split())
+            if text == "raise" or text.startswith("raisefrom"):
+                continue
+            expression = text[len("raise") :]
+            if expression.startswith("("):
+                expression = expression.strip("()")
+            expression = expression.split(",", 1)[0]
+            if not expression:
+                continue
+            ancestor_key = nearest_ancestor(statement, definition_keys)
+            source_id = stable_by_key.get(ancestor_key, module_id)
+            scope = next(
+                (node.qualified_name for node in parsed.nodes if node.stable_id == source_id),
+                module_name,
+            )
+            parsed.edges.append(
+                EdgeSpec(
+                    source_id,
+                    None,
+                    "RAISES",
+                    "unresolved",
+                    self.version,
+                    {
+                        "target_expression": expression[:300],
+                        "module": module_name,
+                        "scope_qualified": scope,
+                        "path": relative_path,
+                        "line": statement.start_point[0] + 1,
+                    },
+                )
+            )
+
+    def _add_resolves_via(
+        self,
+        parsed: ParsedFile,
+        backend: TreeSitterBackend,
+        root: Any,
+        source: bytes,
+        module_id: str,
+        module_name: str,
+        relative_path: str,
+        definition_keys: set[tuple[int, int, str]],
+        stable_by_key: dict[tuple[int, int, str], str],
+    ) -> None:
+        captures = backend.captures(
+            self.language,
+            load_query(self.query_dir, "dispatch.scm"),
+            root,
+        )
+        markers = ("registry", "handlers", "plugins", "dispatch", "routes", "callbacks")
+        for subscript in captures.get("dispatch.subscript", []):
+            text = "".join(node_text(subscript, source).split())
+            lowered = text.casefold()
+            if not any(marker in lowered for marker in markers):
+                continue
+            ancestor_key = nearest_ancestor(subscript, definition_keys)
+            source_id = stable_by_key.get(ancestor_key, module_id)
+            scope = next(
+                (node.qualified_name for node in parsed.nodes if node.stable_id == source_id),
+                module_name,
+            )
+            parsed.edges.append(
+                EdgeSpec(
+                    source_id,
+                    None,
+                    "RESOLVES_VIA",
+                    "unresolved_dynamic",
+                    self.version,
+                    {
+                        "target_expression": text[:300],
+                        "module": module_name,
+                        "scope_qualified": scope,
+                        "path": relative_path,
+                        "line": subscript.start_point[0] + 1,
+                        "dispatch_style": "subscript",
+                        "risk_category": "framework_coupling",
+                    },
+                )
+            )
+
+    @staticmethod
+    def _string_literals(text: str) -> list[str]:
+        values: list[str] = []
+        for quote in ('"', "'"):
+            start = 0
+            while True:
+                begin = text.find(quote, start)
+                if begin < 0:
+                    break
+                end = text.find(quote, begin + 1)
+                if end < 0:
+                    break
+                values.append(text[begin + 1 : end])
+                start = end + 1
+        return values
+

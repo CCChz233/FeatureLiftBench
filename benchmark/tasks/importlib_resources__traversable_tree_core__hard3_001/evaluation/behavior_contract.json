@@ -1,94 +1,51 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_nested_joinpath_accepts_multiple_segments",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "e0b63ca44361c4210635217ee068f25b48e340dbafb79a8f67171cd2e36bbdec"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_text_encoding_and_binary_open_are_preserved",
       "public_clause_ids": [
-        "B004"
+        "B004",
+        "B001",
+        "B003",
+        "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "1a1eca0bf657bcba3445b8f1a997232e9a7cba67ceb4ac2eb74b2c949d051afc"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_parent_traversal_is_rejected",
       "public_clause_ids": [
         "B005",
         "B007"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B005",
-          "B007"
-        ],
-        "test_source_sha256": "3a629edf89f9523ab18370c3ace70ceaa67346727c2759cb0f95ee9fba26456c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_memory_traversable_matches_filesystem_contract",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "71dbf371302a33b651e8d76a326b79caeb442fd048380d9b5beb82c80de94526"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_missing_resource_raises_traversal_error",
       "public_clause_ids": [
         "B007"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B007"
-        ],
-        "test_source_sha256": "967936df481eded5ffc214ded1cef68cae7e3b00440c32411f560a1856348d0e"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -96,96 +53,73 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "module object and string anchor resolution"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When files receives a module object or importable module-name string, it resolves the same package anchor."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "filesystem-backed Traversable root"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "For filesystem packages, files returns a Traversable rooted at the package directory with stable child names."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "MemoryTraversable test tree"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "For in-memory package trees, MemoryTraversable exposes the same directory, file, open, and read operations as filesystem-backed traversables."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "iterdir, is_file, is_dir, name, open, read_bytes, read_text"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Traversable nodes report name, is_file, and is_dir and implement iterdir, open, read_bytes, and read_text consistently."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "joinpath and / traversal"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "joinpath and the slash operator traverse child resources while preventing escape above the package root."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "read_text and read_binary helpers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "read_text honors the requested encoding and read_binary returns the resource bytes unchanged."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "TraversalError for parent traversal and missing resources"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "Parent traversal and missing-resource reads raise TraversalError instead of accessing paths outside the declared resource tree."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.TraversalError`, `featurelifted.files`, `featurelifted.read_binary`, `featurelifted.read_text`, `featurelifted.MemoryTraversable`, `featurelifted.MemoryTraversable.directory`, `featurelifted.MemoryTraversable.joinpath` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: importlib_resources"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_files_returns_traversable_for_package",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "faa54a667f3d8cb0e8bfc7482c7f85f8fb12903f31076e210c37e49059b11b51"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_read_text_and_binary_from_string_anchor",
       "public_clause_ids": [
         "B001",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B006"
-        ],
-        "test_source_sha256": "7be695c9c5949b70570d07a5a845459bcb705b83b6343c235d4fbd546d627d2d"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -218,7 +152,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "4f73e983787e9fd4e9b90573cf119725eede88c0a3db601be657b6ace0e7bebe",
+  "spec_sha256": "15c639f04298cb58666a9fbd706d2496df8962296e7ea54118f7a7f20deb9813",
   "task_id": "importlib_resources__traversable_tree_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

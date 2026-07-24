@@ -1,35 +1,62 @@
 # FeatureLift Task: Schema load and dump
 
-Extract Marshmallow Schema declaration, field validation, nested schemas, and load/dump round-trips.
+Extract a task-scoped subset of `marshmallow` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `from featurelifted import Schema, fields, ValidationError, EXCLUDE, RAISE; from featurelifted.decorators import post_load, validates_schema`
-- Callable: `featurelifted.Schema.load`
-- Signature: `Schema.load(data, *, many: bool = False, partial=None, unknown=RAISE)`
+```python
+from featurelifted import (
+    decorators,
+    EXCLUDE,
+    fields,
+    RAISE,
+    Schema,
+    ValidationError,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- flask-smorest and web framework integrations
-- original project tests and packaging metadata
-- schema class registry across entry points
+- `Schema(*, only: 'types.StrSequenceOrSet | None' = None, exclude: 'types.StrSequenceOrSet' = (), many: 'bool | None' = None, load_only: 'types.StrSequenceOrSet' = (), dump_only: 'types.StrSequenceOrSet' = (), partial: 'bool | types.StrSequenceOrSet | None' = None, unknown: 'types.UnknownOption | None' = None)` class constructor
+  - `Schema.load(self, data: 'Mapping[str, typing.Any] | Sequence[Mapping[str, typing.Any]]', *, many: 'bool | None' = None, partial: 'bool | types.StrSequenceOrSet | None' = None, unknown: 'types.UnknownOption | None' = None)`
+- `fields` module must be importable
+- `ValidationError` must be importable and raisable
+- `EXCLUDE` constant must exist
+- `RAISE` constant must exist
+- `decorators` module must be importable
+  - `decorators.post_load(fn: 'typing.Callable[..., typing.Any] | None' = None, *, pass_collection: 'bool' = False, pass_original: 'bool' = False) -> 'typing.Callable[..., typing.Any]'`
+  - `decorators.validates_schema(fn: 'typing.Callable[..., typing.Any] | None' = None, *, pass_collection: 'bool' = False, pass_original: 'bool' = False, skip_on_field_errors: 'bool' = True) -> 'typing.Callable[..., typing.Any]'`
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: declare Schema subclasses with typed fields. Required observable cases include unknown exclude post load and nested errors.
+- The extracted feature must support this observable behavior: load dict payloads with validation and nested schemas. Required observable cases include load dump nested schema; unknown exclude post load and nested errors.
+- The extracted feature must support this observable behavior: dump objects to dicts with field selection. Required observable cases include unknown exclude post load and nested errors.
+- The extracted feature must support this observable behavior: handle unknown=EXCLUDE and partial load validation errors. Required observable cases include unknown exclude post load and nested errors; many dump partial and raise unknown.
+- The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, `featurelifted.decorators.validates_schema` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `marshmallow`
+- Forbidden imports: `marshmallow`.
+- Do not implement flask-smorest and web framework integrations.
+- Do not implement original project tests and packaging metadata.
+- Do not implement schema class registry across entry points.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — declare Schema subclasses with typed fields
-- **B002** — load dict payloads with validation and nested schemas
-- **B003** — dump objects to dicts with field selection
-- **B004** — handle unknown=EXCLUDE and partial load validation errors
-- **B005** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B006** — the submitted package does not import forbidden upstream packages: marshmallow
+- **B001** — The extracted feature must support this observable behavior: declare Schema subclasses with typed fields. Required observable cases include unknown exclude post load and nested errors.
+- **B002** — The extracted feature must support this observable behavior: load dict payloads with validation and nested schemas. Required observable cases include load dump nested schema; unknown exclude post load and nested errors.
+- **B003** — The extracted feature must support this observable behavior: dump objects to dicts with field selection. Required observable cases include unknown exclude post load and nested errors.
+- **B004** — The extracted feature must support this observable behavior: handle unknown=EXCLUDE and partial load validation errors. Required observable cases include unknown exclude post load and nested errors; many dump partial and raise unknown.
+- **B005** — The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, `featurelifted.decorators.validates_schema` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: marshmallow.
 <!-- featureliftbench:behavior-clauses:end -->

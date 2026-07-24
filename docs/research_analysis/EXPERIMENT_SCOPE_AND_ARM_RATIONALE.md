@@ -1,5 +1,8 @@
 # 七组实验的作用与规模策略
 
+> **SUPERSEDED（2026-07-23）**  
+> 含 ECSM / 强制机制臂的旧矩阵 **已废弃**。当前方向见 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。
+
 ## 1. 决策结论
 
 七个实验组构成的是一套**机制诊断矩阵**，不是七个都需要在 Python-150 上跑满的最终 leaderboard 方法。

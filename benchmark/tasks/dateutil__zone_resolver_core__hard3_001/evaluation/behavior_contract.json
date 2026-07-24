@@ -1,55 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_alias_resolution",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "96c7212b54d6d498b5e17deaff35df06e84d2c0f47f31f302705298479e164c0"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_circular_alias_raises",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "c1857bb3298d0c392dd7901ecf2326b691ca65aea3fcc504e8786863acbccb11"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_tzfile_header",
       "public_clause_ids": [
-        "B001"
+        "B001",
+        "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "e093763ff836203d9be7b26b7ca54629a55cfea420ee1b0d50eeab4dec4d6d79"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -57,51 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "tzfile parsing boundary"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`parse_tzfile` validates tzfile headers and extracts metadata."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "zone cache"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Aliases resolve to canonical zone names with cycle detection."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "alias resolution"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When a zone alias is resolved, ZoneResolver follows aliases to the canonical zone and raises UnknownZoneError for missing names or alias cycles."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.ZoneResolver`, `featurelifted.ZoneResolver.load_zone`, `featurelifted.ZoneResolver.get`, `featurelifted.ZoneResolver.register_alias`, `featurelifted.parse_tzfile`, `featurelifted.UnknownZoneError`, `featurelifted.InvalidTZFileError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: dateutil"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_load_zone_caches",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "8dfd47c065adb4e1f8d4f32baf579a1a2c5268647b90b3c22dfe7e292a2ab76b"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -133,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "aa016ab6d0aee0433dc313c9258dfe0010d0ff56e515b53dd30cd4d8a9b563be",
+  "spec_sha256": "7ddfcf54883361abde80cd04e574e92bba0009f6adeaadf1f587c33b74ae4e64",
   "task_id": "dateutil__zone_resolver_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

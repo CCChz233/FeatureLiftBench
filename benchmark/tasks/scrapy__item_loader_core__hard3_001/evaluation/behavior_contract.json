@@ -1,38 +1,27 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_compose_output_processor_and_parent_defaults",
       "public_clause_ids": [
-        "B002"
+        "B001",
+        "B002",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "c4cdf79a96248fd9c2a92b5cc79afc92023bc1441055e08aba42d108470a58cb"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_missing_field_raises",
       "public_clause_ids": [
-        "B001"
+        "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "70cb62dba8f16b7798a41b0e0529e15d4103ca055ce62f2a8dd15e336d140df4"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -40,54 +29,66 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "Item/Field metadata"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When an Item declares Field metadata with input or output processors, those processors are attached to the field definition."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "ItemLoader processor pipeline"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "When ItemLoader.add_value runs input processors and load_item runs output processors, the resulting item values reflect the processor pipeline."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "nested loaders"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When a nested ItemLoader is created with parent=..., it inherits the parent default processor types."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.Item`, `featurelifted.Field`, `featurelifted.ItemLoader`, `featurelifted.ItemLoader.__init__`, `featurelifted.ItemLoader.add_value`, `featurelifted.ItemLoader.load_item`, `featurelifted.ItemLoader.default_output_processor`, `featurelifted.Compose`, `featurelifted.TakeFirst` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
-      "text": "the submitted package does not import forbidden upstream packages: scrapy"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The submitted package does not import forbidden upstream packages: scrapy."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_item_loader_applies_processors",
       "public_clause_ids": [
         "B002",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B003"
-        ],
-        "test_source_sha256": "8d9e89df4a8064acf87b0d4123eeedbaf79184014dd763aa2963f60b4d594397"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -119,7 +120,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "00f466a7b5fd145529b0988a45bc4b490d639203c8d21ecfde256d61b567f44f",
+  "spec_sha256": "ac1d9ee9fca690fa9e77e238e068a868a9932788d3ce263124cecb490fc51486",
   "task_id": "scrapy__item_loader_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

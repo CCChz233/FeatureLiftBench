@@ -63,3 +63,35 @@ def first_string_literal(text: str) -> str | None:
         if end > start + 1:
             return text[start + 1 : end]
     return None
+
+
+def pathish_string_literal(text: str) -> str | None:
+    """Prefer path-like string literals over encoding / mode kwargs."""
+
+    literals: list[str] = []
+    for quote in ('"', "'"):
+        start = 0
+        while True:
+            begin = text.find(quote, start)
+            if begin < 0:
+                break
+            end = text.find(quote, begin + 1)
+            if end < 0:
+                break
+            literals.append(text[begin + 1 : end])
+            start = end + 1
+    if not literals:
+        return None
+    skipped = {"utf-8", "utf8", "ascii", "latin-1", "r", "rb", "rt", "w", "wb", "a"}
+    for literal in literals:
+        lowered = literal.casefold()
+        if lowered in skipped:
+            continue
+        if any(token in literal for token in ("/", "\\", ".", "_")) or lowered.endswith(
+            (".json", ".toml", ".yaml", ".yml", ".ini", ".cfg", ".txt", ".py")
+        ):
+            return literal
+    for literal in literals:
+        if literal.casefold() not in skipped:
+            return literal
+    return None

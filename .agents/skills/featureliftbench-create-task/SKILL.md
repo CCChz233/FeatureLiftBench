@@ -18,11 +18,16 @@ description: Create or materialize FeatureLiftBench benchmark tasks from real up
 
 Before creating or materially changing a task, read:
 
+- `docs/BENCHMARK_DESIGN.md`
+- `docs/TASK_DESIGN_RULES.md`（规格宪法；与旧文冲突时以此为准）
+- `docs/EXPERIMENT_ARMS.md`（若涉及臂相关测试布局）
 - `docs/07_incremental_task_rules.md`
 - `docs/06_task_schema.md`
 - `docs/python/01_python_repo_selection_criteria.md`
 - `docs/python/03_python_difficulty_rubric.md`
 - `benchmark/README.md`
+
+New tasks should target `public_spec` / generated TASK (no dual handwritten Agent-visible TASK). Until the generator lands, keep package TASK.md and metadata `output.import` / behaviors **identical** to what hidden tests require.
 
 For examples, inspect a nearby task in the intended split and, for hard-3 pilots, a task design note under `docs/task_designs/`.
 

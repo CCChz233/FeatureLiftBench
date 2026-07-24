@@ -1,51 +1,32 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_or_composition",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "1ffc9c3151976ae59de52eba3a5779b1d4376ac61abc50321b756cb31c4f1d83"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_key_optional_and_dataerror_path",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "d3fb8205ccbd989ec834fbd797ddfc97c1832d0b064498d3eaf06c727e035888"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_forward_recursion",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "53faaaf2a668e9fd2a409647b330a5829aeff4de624fa0cf4460fccf0fb94ad6"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -53,47 +34,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "composable validators"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`Dict`, `Key`, `Or`, `And`, and `Forward` compose validation rules."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "DataError paths"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`DataError` carries a path tuple for nested validation failures."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "Forward references"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "`Forward.set_type` enables recursive schemas."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.Int`, `featurelifted.String`, `featurelifted.Dict`, `featurelifted.Dict.check`, `featurelifted.Key`, `featurelifted.Or`, `featurelifted.Or.check`, `featurelifted.And`, `featurelifted.Forward`, `featurelifted.Forward.set_type`, `featurelifted.Forward.check`, `featurelifted.DataError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: trafaret"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_dict_validates_schema",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "4780083198c69cecea02c8f0be2d2a8efc71eb96c71b3576128391def34657c0"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -125,7 +100,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "d5b027593bccab9638a946f9fc9ca4ba13f526580592c056a0d71825f6ac8c11",
+  "spec_sha256": "bb9ecc4605a802d25a5eab9f332821e19bfb33e18924342ce8b9f53dd07f1bcb",
   "task_id": "trafaret__validation_rules_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

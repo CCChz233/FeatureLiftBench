@@ -1,34 +1,51 @@
 # FeatureLift Task: CLDR plural rules subset
 
-Extract Babel plural rule parsing and locale plural_form selection backed by CLDR locale-data files.
+Extract a task-scoped subset of `babel` into a standalone `featurelifted` package.
+
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
-- Import: `from featurelifted import PluralRule, Locale`
-- Callable: `featurelifted.Locale.parse`
-- Signature: `Locale.parse(identifier: str) -> Locale`
+```python
+from featurelifted import (
+    Locale,
+    PluralRule,
+)
+```
 
-## Excluded Behavior
+## Required API Details
 
-- gettext message catalogs and extraction
-- number/date/currency formatting modules
-- full CLDR locale-data tree
+- `PluralRule(rules)` class constructor
+  - `PluralRule.parse(rules)`
+- `Locale(language, territory=None, script=None, variant=None)` class constructor
+  - `Locale.parse(identifier, sep='_', resolve_likely_subtags=True)`
+
+## Required Behavior
+
+- The extracted feature must support this observable behavior: evaluate PluralRule expressions for numeric operands. Required observable cases include plural rule string and float operands.
+- The extracted feature must support this observable behavior: resolve Locale plural categories for en, ru, fr, ja, and pl. Required observable cases include locale plural categories multilingual.
+- The extracted feature must support this observable behavior: load plural rules from packaged locale-data .dat resources. Required observable cases include plural rule and english locale; plural rule expression edges; plural rule string and float operands.
+- The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Output package: `featurelifted`
-- Network access: `false`
-- Forbidden upstream imports: `babel`
+- Forbidden imports: `babel`.
+- Do not implement gettext message catalogs and extraction.
+- Do not implement number/date/currency formatting modules.
+- Do not implement full CLDR locale-data tree.
+
+## Public vs Hidden Tests
+
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — evaluate PluralRule expressions for numeric operands
-- **B002** — resolve Locale plural categories for en, ru, fr, ja, and pl
-- **B003** — load plural rules from packaged locale-data .dat resources
-- **B004** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B005** — the submitted package does not import forbidden upstream packages: babel
+- **B001** — The extracted feature must support this observable behavior: evaluate PluralRule expressions for numeric operands. Required observable cases include plural rule string and float operands.
+- **B002** — The extracted feature must support this observable behavior: resolve Locale plural categories for en, ru, fr, ja, and pl. Required observable cases include locale plural categories multilingual.
+- **B003** — The extracted feature must support this observable behavior: load plural rules from packaged locale-data .dat resources. Required observable cases include plural rule and english locale; plural rule expression edges; plural rule string and float operands.
+- **B004** — The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract.
+- **B005** — the submitted package does not import forbidden upstream packages: babel.
 <!-- featureliftbench:behavior-clauses:end -->

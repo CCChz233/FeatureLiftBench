@@ -1,59 +1,37 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_firstresult_and_hookwrapper_result_mutation",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "65e77c7431764d5228df4e93ec72696cb0f2e232cb2dc869f42e9b2824c82c16"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_validation_unregister_and_plugin_names",
       "public_clause_ids": [
         "B006",
-        "B007"
+        "B007",
+        "B001",
+        "B003",
+        "B004"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B007"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B007"
-        ],
-        "test_source_sha256": "b91fb6313d5f937e3f678409eac403553769a558a20718a1ce1fc04fdcbe9079"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_hook_historic_and_subset_hooknames",
       "public_clause_ids": [
         "B002",
         "B008"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "3535ac49b7f496bb833138b0183fd466b6c7e26465f80db71a9edde488d75ff2"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B008"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -61,79 +39,67 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "declare hook specifications with HookspecMarker"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: declare hook specifications with HookspecMarker. Required observable cases include basic hook registration and ordering; validation unregister and plugin names."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "register plugins and call hook implementations through PluginManager"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: register plugins and call hook implementations through PluginManager. Required observable cases include basic hook registration and ordering; hook historic and subset hooknames."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "respect tryfirst and trylast ordering"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: respect tryfirst and trylast ordering. Required observable cases include basic hook registration and ordering; validation unregister and plugin names."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "support firstresult hooks"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: support firstresult hooks. Required observable cases include validation unregister and plugin names."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "support hookwrapper implementations that inspect or modify results"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: support hookwrapper implementations that inspect or modify results. Required observable cases include firstresult and hookwrapper result mutation."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "reject unknown hook implementation arguments during validation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: reject unknown hook implementation arguments during validation. Required observable cases include validation unregister and plugin names."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/6",
-      "text": "support unregistering plugins and querying registered plugin names"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The extracted feature must support this observable behavior: support unregistering plugins and querying registered plugin names. Required observable cases include validation unregister and plugin names."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
+      "text": "The package exposes the required task API paths `featurelifted.PluginManager`, `featurelifted.PluginManager.add_hookspecs`, `featurelifted.PluginManager.get_name`, `featurelifted.PluginManager.has_plugin`, `featurelifted.PluginManager.hook`, `featurelifted.PluginManager.register`, `featurelifted.PluginManager.unregister`, `featurelifted.HookspecMarker`, `featurelifted.HookimplMarker`, `featurelifted.PluginValidationError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B009",
       "text": "the submitted package does not import forbidden upstream packages: pluggy"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_basic_hook_registration_and_ordering",
       "public_clause_ids": [
         "B001",
         "B002",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "f2c9359ad7bffb2932fbd6019171a3c825ccf0c79a61698ba29f9ad432850ab9"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -166,7 +132,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "e2e4c896ed58c7ce412a66daf6b393204e986c5122997c50023af7ab5106d9d9",
+  "spec_sha256": "3d4e497c59a4b2327374ca6717c752b3e4879cc68af1ccb28eafe6c778a48f76",
   "task_id": "pluggy__hook_call_order__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

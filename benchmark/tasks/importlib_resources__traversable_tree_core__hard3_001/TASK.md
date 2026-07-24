@@ -1,67 +1,69 @@
 # FeatureLift Task: Traversable resource tree and text/binary reader
 
-Extract a task-scoped subset of `importlib_resources` package resource traversal into a standalone `featurelifted` package.
+Extract a task-scoped subset of `importlib_resources` into a standalone `featurelifted` package.
 
-The implementation must not import `importlib_resources`, must not read from `repo/`, must not use the network, and must not depend on external services. Use only the standard library.
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
 ## Target API
 
 ```python
-from featurelifted import MemoryTraversable, TraversalError, files, read_binary, read_text
-
-files(anchor) -> Traversable
-read_text(anchor, resource, encoding="utf-8", errors="strict") -> str
-read_binary(anchor, resource) -> bytes
+from featurelifted import (
+    files,
+    MemoryTraversable,
+    read_binary,
+    read_text,
+    TraversalError,
+)
 ```
 
-The returned Traversable must support:
+## Required API Details
 
-- `name`
-- `iterdir()`
-- `is_dir()`
-- `is_file()`
-- `joinpath(*descendants)`
-- `/` child traversal
-- `open("r" | "rb", encoding=..., errors=...)`
-- `read_text(...)`
-- `read_bytes()`
+- `TraversalError` must be importable and raisable
+- `files(anchor: 'types.ModuleType | str | MemoryTraversable') -> 'FileTraversable | MemoryTraversable'`
+- `read_binary(anchor: 'types.ModuleType | str | MemoryTraversable', resource: 'str') -> 'bytes'`
+- `read_text(anchor: 'types.ModuleType | str | MemoryTraversable', resource: 'str', encoding: 'str' = 'utf-8', errors: 'str' = 'strict') -> 'str'`
+- `MemoryTraversable(name: 'str', children: "dict[str, 'MemoryTraversable'] | None" = None, data: 'bytes | None' = None) -> 'None'` class constructor
+  - `MemoryTraversable.directory(name: 'str', entries: 'dict[str, Any]') -> "'MemoryTraversable'"`
+  - `MemoryTraversable.joinpath(self, *descendants: 'Any') -> "'MemoryTraversable'"`
 
 ## Required Behavior
 
-- `anchor` may be a module object or a module name string.
-- For filesystem packages, traversal starts at the package root.
-- `joinpath` accepts multiple path segments and slash-separated nested resource names.
-- `read_text` defaults to UTF-8 and honors explicit encodings.
-- `read_binary` preserves byte payloads.
-- Parent traversal with `..` must be rejected with `TraversalError`.
-- Missing resources must raise `TraversalError`.
-- `MemoryTraversable` should provide the same read/traversal contract for in-memory trees.
+- When files receives a module object or importable module-name string, it resolves the same package anchor.
+- For filesystem packages, files returns a Traversable rooted at the package directory with stable child names.
+- For in-memory package trees, MemoryTraversable exposes the same directory, file, open, and read operations as filesystem-backed traversables.
+- Traversable nodes report name, is_file, and is_dir and implement iterdir, open, read_bytes, and read_text consistently.
+- joinpath and the slash operator traverse child resources while preventing escape above the package root.
+- read_text honors the requested encoding and read_binary returns the resource bytes unchanged.
+- Parent traversal and missing-resource reads raise TraversalError instead of accessing paths outside the declared resource tree.
+- The package exposes the required task API paths `featurelifted.TraversalError`, `featurelifted.files`, `featurelifted.read_binary`, `featurelifted.read_text`, `featurelifted.MemoryTraversable`, `featurelifted.MemoryTraversable.directory`, `featurelifted.MemoryTraversable.joinpath` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
 - Forbidden imports: `importlib_resources`.
-- Forbidden path access: `repo/`, `importlib_resources/`.
-- Do not implement zip adapters, `as_file`, deprecated `contents`, or deprecated `path`.
-- Do not expose host-specific absolute source paths in API results.
+- Forbidden path access: `repo/, importlib_resources/`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement source repo path access.
+- Do not implement zip importer adapters.
+- Do not implement as_file temporary extraction.
+- Do not implement deprecated contents/path helpers.
 
 ## Public vs Hidden Tests
 
-Public tests cover module anchors, string anchors, basic `files()` traversal, nested text reads, and binary reads.
-Hidden tests cover multiple joinpath segments, slash-separated nested resource paths, encoding behavior, binary mode open, parent traversal rejection, missing resources, and MemoryTraversable compatibility.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — module object and string anchor resolution
-- **B002** — filesystem-backed Traversable root
-- **B003** — MemoryTraversable test tree
-- **B004** — iterdir, is_file, is_dir, name, open, read_bytes, read_text
-- **B005** — joinpath and / traversal
-- **B006** — read_text and read_binary helpers
-- **B007** — TraversalError for parent traversal and missing resources
-- **B008** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B009** — the submitted package does not import forbidden upstream packages: importlib_resources
+- **B001** — When files receives a module object or importable module-name string, it resolves the same package anchor.
+- **B002** — For filesystem packages, files returns a Traversable rooted at the package directory with stable child names.
+- **B003** — For in-memory package trees, MemoryTraversable exposes the same directory, file, open, and read operations as filesystem-backed traversables.
+- **B004** — Traversable nodes report name, is_file, and is_dir and implement iterdir, open, read_bytes, and read_text consistently.
+- **B005** — joinpath and the slash operator traverse child resources while preventing escape above the package root.
+- **B006** — read_text honors the requested encoding and read_binary returns the resource bytes unchanged.
+- **B007** — Parent traversal and missing-resource reads raise TraversalError instead of accessing paths outside the declared resource tree.
+- **B008** — The package exposes the required task API paths `featurelifted.TraversalError`, `featurelifted.files`, `featurelifted.read_binary`, `featurelifted.read_text`, `featurelifted.MemoryTraversable`, `featurelifted.MemoryTraversable.directory`, `featurelifted.MemoryTraversable.joinpath` with the kinds and callable signatures listed in this contract.
+- **B009** — the submitted package does not import forbidden upstream packages: importlib_resources.
 <!-- featureliftbench:behavior-clauses:end -->

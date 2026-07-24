@@ -1,144 +1,70 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_base_url_join_and_duplicate_query_params",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "28e2ed82d9e16a1f728f59d34cf96c64843f2c95a08fceff58d8888c1dd5ea6c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_headers_cookie_merge_and_request_object",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "5c50943e60d16441668185c2a8b936392dcd3eedda479f4fa93226723acad018"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_build_request_merges_client_defaults",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "02d892dc5d3f77b1eb74dcd2cf065c7ed14c236fbf38e3e66d4af0827563017c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_request_content_data_json_headers",
       "public_clause_ids": [
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B005"
-        ],
-        "test_source_sha256": "b41a01effd0b1a891f5a8c1feec63b2839bf5b5a6ead3b8b345df83b2625f71b"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_url_idna_and_percent_encoding",
       "public_clause_ids": [
         "B001",
-        "B006"
+        "B006",
+        "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B006"
-        ],
-        "test_source_sha256": "7b9ccc6083b1087030486635f2b2cb5574ed9a9b53eeb99afc18b7f6285958d8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_query_params_duplicate_and_empty_value",
       "public_clause_ids": [
         "B002",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "c852857655fb984fe8602fb7855ef11e5df14be93033330fd2378ba7172e4507"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_url_raises",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "86b08f3e9bbff7bda94bf0f386b1f617ec6ab35b02b10fbc4a6447e73b6f5277"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_network_api_surface",
       "public_clause_ids": [
         "B007"
       ],
-      "review_evidence": {
-        "decision": "declared_api_scope_fallback",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "73e35ccd8703eabdb9d6e27e51647f40450713572e6e7468a33b300d7eee19c6"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B007"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -146,142 +72,89 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "construct and join URL objects with base URL and query parameters"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: construct and join URL objects with base URL and query parameters. Required observable cases include url path and query; base url join and duplicate query params; url idna and percent encoding."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "preserve query parameter ordering and duplicate keys in QueryParams"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: preserve query parameter ordering and duplicate keys in QueryParams. Required observable cases include query params from mapping; query params duplicate and empty value."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "case-insensitive header lookup with raw header preservation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: case-insensitive header lookup with raw header preservation. Required observable cases include headers case insensitive lookup; url idna and percent encoding."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "merge default and per-request headers, query params, and cookies"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: merge default and per-request headers, query params, and cookies. Required observable cases include query params from mapping; cookies simple header; build request merges defaults; headers cookie merge and request object; build request merges client defaults; query params duplicate and empty value."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "build Request objects with content, data, and json body helpers"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: build Request objects with content, data, and json body helpers. Required observable cases include build request merges defaults; request content data json headers."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "raise compatible errors for invalid URL and request input"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: raise compatible errors for invalid URL and request input. Required observable cases include url idna and percent encoding; invalid url raises."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
       "text": "the submitted package does not import forbidden upstream packages: httpx"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_url_path_and_query",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "1f4a55e4df85b77b743ecbbeec558a8c1327e15f46497f0ba412e0f71fa7d6b8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_query_params_from_mapping",
       "public_clause_ids": [
         "B002",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B004"
-        ],
-        "test_source_sha256": "aed50f5ea99b514d0ebaf8837189f23b085d2a8341dbba250d38d569fc6d88c8"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_headers_case_insensitive_lookup",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "3abaa5642f11aadfb9c02cd1ae79f4df618b8b3577608e286f2a633623ddfcb4"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_cookies_simple_header",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "ecf004148a3798c0e27ab520a27518625600b0d92ab1416091e338e7d658e53c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_build_request_merges_defaults",
       "public_clause_ids": [
         "B004",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B004",
-          "B005"
-        ],
-        "test_source_sha256": "f762b0e409dccd0bdd8429167cd99137d87e8c9e520918661f35730cad8d5ac3"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -315,7 +188,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "131c782e04a957866aa7e44ac5377317db401e1439e940069815c06ccdbdd4ad",
+  "spec_sha256": "998a593cd19ffda7d2f3a73ef962dfe9fa342d3960b6574b2a3adad88241868f",
   "task_id": "httpx__request_model_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

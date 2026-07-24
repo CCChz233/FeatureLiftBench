@@ -1,162 +1,77 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_normalized_fractional_days",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "76a3fa059e6c521d462b8e0027ec41c2163d6025402ec1c443dc05a7f9d4236c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_weekday_nth_first_monday",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "041977abd303b331e9dd48db5cd8718f8276bae14869bc4e7c4c52be554b41de"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_relativedelta_diff_months",
       "public_clause_ids": [
         "B002",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B005"
-        ],
-        "test_source_sha256": "c0c0bc6a108ecc4fa9182f7781974dd6a254136dd629e785995f4dc90d696aa7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_last_friday_of_month",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "bfd6541c7db0f293dcb628ab76d1e6c4135e5f45332c1c6743f7802bd15df47a"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_yearday_sets_month_day",
       "public_clause_ids": [
         "B002",
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004",
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B002",
-          "B006"
-        ],
-        "test_source_sha256": "6ed310e8d0c66346d24fbb9da0e94daf755eda8fd601c9991847fbe6278fae32"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_leapdays_post_february",
       "public_clause_ids": [
         "B006"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B006"
-        ],
-        "pass_2_ast_mapping": [
-          "B006"
-        ],
-        "test_source_sha256": "62b0bd87c091fa8095c68e0f7b762a19666a43cd185b341941c5f0c7cb6a76b1"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_subtract_relativedelta",
       "public_clause_ids": [
         "B001",
         "B005"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B005"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B005"
-        ],
-        "test_source_sha256": "5ddfe6d68cee83044276f0ce99154bd58a6c4140e37597e65cb0331119ef9faf"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_dateutil_import_surface",
       "public_clause_ids": [
         "B008"
       ],
-      "review_evidence": {
-        "decision": "public_isolation_constraint",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "10a83e7a08f889d386f5b4eafee33a11791163fe9d75616db5e1a51bb5e93e71"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_non_integer_years_months_rejected",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "7e003d985e5282037be457e817ececa2ca5aa3a34da32a17456a24e67a4b7ffd"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B007"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -164,123 +79,81 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "relativedelta construction with relative and absolute fields"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "The extracted feature must support this observable behavior: relativedelta construction with relative and absolute fields. Required observable cases include absolute day replacement; subtract relativedelta."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "datetime/date addition and subtraction with month/year rollover"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "The extracted feature must support this observable behavior: datetime/date addition and subtraction with month/year rollover. Required observable cases include add months to datetime; relativedelta diff months; last friday of month; yearday sets month day; non integer years months rejected."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "weekday nth helpers MO..SU with setpos semantics"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The extracted feature must support this observable behavior: weekday nth helpers MO..SU with setpos semantics. Required observable cases include weekday constant identity; weekday nth first monday."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/3",
-      "text": "normalized() for fractional day/hour cascading"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The extracted feature must support this observable behavior: normalized() for fractional day/hour cascading. Required observable cases include add days and hours; absolute day replacement; normalized fractional days."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/4",
-      "text": "relativedelta(dt1, dt2) difference mode"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The extracted feature must support this observable behavior: relativedelta(dt1, dt2) difference mode. Required observable cases include relativedelta diff months; subtract relativedelta."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/5",
-      "text": "yearday/nlyearday and leapdays adjustments"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The extracted feature must support this observable behavior: yearday/nlyearday and leapdays adjustments. Required observable cases include yearday sets month day; leapdays post february."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
+      "text": "The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B008",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
       "text": "the submitted package does not import forbidden upstream packages: dateutil"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_add_months_to_datetime",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "8a1a89e950f0db9c4ea753793007e63cb0a4baaaec6b10a1f387a7bd762759ef"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_add_days_and_hours",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B004"
-        ],
-        "test_source_sha256": "06f30c72f6ffc554b5b4c70a41e74e48bb990a8745f2db23a2899e6914dff460"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_weekday_constant_identity",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "1999d9dea926c7400f03415fb8b2aa144072512dc75e0d984c4e85a366c9136c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_api.py::test_absolute_day_replacement",
       "public_clause_ids": [
         "B001",
         "B004"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B004"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B004"
-        ],
-        "test_source_sha256": "8527959a15bc8af51f6fa1b3b9ad522a312f7adef77109041a3231f6fb73a1cf"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -312,7 +185,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "aa20c7d0b90eea6183c0e80d5434ab162d571fb73027dd98685be81e42f18c1b",
+  "spec_sha256": "d7a3b26d53bbc39b14ff9d28f7a774794ecc06e2c235031c2d5cf2d004aa3994",
   "task_id": "python_dateutil__relativedelta_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

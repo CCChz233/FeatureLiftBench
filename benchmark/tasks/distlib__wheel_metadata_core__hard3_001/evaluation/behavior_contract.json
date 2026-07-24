@@ -1,77 +1,42 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_to_posix_converts_separators",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "declared_api_scope_fallback",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "0bfaf4e08dadfc882df08e9550e49f4c6d78d7a46062c85b8e6d40a8f3beb1ce"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_normalize_record_path_strips_dot_prefix",
       "public_clause_ids": [
         "B001",
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B002"
-        ],
-        "test_source_sha256": "f17e4234eb5e0f21d1b5cd8415b71ec51270577885bd700e5bee069481a19fde"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_parse_record_handles_missing_hash_and_size",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "7d120e5532b601842a4d5c7f0b271458124996193615553ecff40971ffec7302"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_validate_record_hash",
       "public_clause_ids": [
         "B001",
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001",
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B001",
-          "B003"
-        ],
-        "test_source_sha256": "45d735bd7cc1d1b3775732e1fdd8e83e00762e32fe13327c9ec515a6a30bfca9"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -79,51 +44,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "RECORD parsing"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`parse_record` parses CSV RECORD rows into `(path, digest, size)` tuples."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "path normalization"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`normalize_record_path` applies posix normalization and strips `./` prefixes."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "hash validation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.to_posix`, `featurelifted.normalize_record_path`, `featurelifted.parse_record`, `featurelifted.validate_record_hash` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: distlib"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_parse_record_row",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "5d2b333ddb7733565c800f4a4ab21b31aa23b9543ad365871f1485d8adfc8416"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -155,7 +110,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "787f5ba2f925ae27b2996deb33fdc558f354654b353c3cfc398aa19c4e0b291b",
+  "spec_sha256": "c687f3c842bfaccedb89ac1b78992f6d63c6d56178b53eed30906bb6fa0daa7d",
   "task_id": "distlib__wheel_metadata_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

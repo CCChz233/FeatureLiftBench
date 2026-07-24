@@ -39,10 +39,25 @@ DETECTOR_RULES: dict[str, dict[str, str]] = {
         "probe": "clean_install_resource_lookup",
         "rationale": "Build/install the submission and resolve the resource outside the source tree.",
     },
+    "PACKAGED_BY": {
+        "detector": "packaging_resource_declaration",
+        "probe": "clean_install_resource_lookup",
+        "rationale": "Verify package_data / MANIFEST resources remain available after install.",
+    },
+    "READS_CONFIG": {
+        "detector": "config_file_dependency",
+        "probe": "controlled_config_file",
+        "rationale": "Vary only the named config file contents and compare behavior.",
+    },
     "REGISTERS": {
         "detector": "registry_or_decorator_coupling",
         "probe": "registry_population",
         "rationale": "Inspect registry population before and after the relevant import.",
+    },
+    "RESOLVES_VIA": {
+        "detector": "dynamic_registry_dispatch",
+        "probe": "representative_runtime_trace",
+        "rationale": "Trace representative keys to observe which handler the registry selects.",
     },
     "DYNAMIC_IMPORT": {
         "detector": "dynamic_import",

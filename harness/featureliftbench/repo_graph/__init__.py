@@ -7,6 +7,7 @@ from .models import GraphEdge, GraphNode, GraphSnapshot, SourceSpan
 from .policy import RepoGraphPolicy
 from .query import GraphQueryEngine
 from .storage import JsonlGraphStore
+from .support import build_operational_support
 
 __all__ = [
     "GraphBuilder",
@@ -18,5 +19,6 @@ __all__ = [
     "RepoGraphLedger",
     "RepoGraphPolicy",
     "SourceSpan",
+    "build_operational_support",
     "detect_runtime_risks",
 ]

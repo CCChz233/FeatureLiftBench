@@ -1,66 +1,76 @@
 # FeatureLift Task: RevisionMap graph, branch labels, and head resolution
 
-Status: materialized_candidate.
+Extract a task-scoped subset of `alembic` into a standalone `featurelifted` package.
 
-Official upstream repo: `https://github.com/sqlalchemy/alembic.git`
+The submitted implementation must not import the upstream package or read from `repo/` at runtime, must not use the network, and must not depend on external services. Use only the standard library unless the task lockfile allows otherwise.
 
-Exact commit: `c88fa5afaf2b9783a58a918f3fc73abc44daa0a9`
+## Target API
 
-License: `MIT`
+```python
+from featurelifted import (
+    CycleDetected,
+    MissingRevision,
+    MultipleHeads,
+    Revision,
+    RevisionMap,
+)
+```
 
-## Feature Specification
+## Required API Details
 
-Implement a small standalone revision graph package that preserves the core Alembic `Revision` and `RevisionMap` semantics needed for dependency-aware migration graph resolution.
+- `Revision(revision: 'str', down_revision: 'str | tuple[str, ...] | None' = None, dependencies: 'str | tuple[str, ...] | None' = None, branch_labels: 'set[str] | tuple[str, ...] | list[str] | None' = None) -> None` class constructor
+- `RevisionMap(revisions: 'Iterable[Revision]') -> 'None'` class constructor
+  - `RevisionMap.heads` attribute must exist on instances
+  - `RevisionMap.bases` attribute must exist on instances
+  - `RevisionMap.branch_labels` attribute must exist on instances
+  - `RevisionMap.get_revision(self, identifier: 'str | None') -> 'Revision | None'`
+  - `RevisionMap.get_revisions(self, identifiers) -> 'tuple[Revision | None, ...]'`
+  - `RevisionMap.get_heads(self) -> 'list[str]'`
+  - `RevisionMap.get_current_head(self, branch_label: 'str | None' = None) -> 'str'`
+  - `RevisionMap.ancestors(self, revision_id: 'str', include_dependencies: 'bool' = True) -> 'set[str]'`
+  - `RevisionMap.iterate_revisions(self, upper: 'str', lower: 'str | None' = None) -> 'list[Revision]'`
+- `CycleDetected` must be importable and raisable
+- `MissingRevision` must be importable and raisable
+- `MultipleHeads` must be importable and raisable
 
-The implementation must build a revision map from explicit `Revision` objects, calculate bases and heads, resolve branch labels, track dependency revisions separately from versioned down-revision edges, and raise explicit errors for missing revisions, multiple heads, and cycles.
+## Required Behavior
 
-## Expected Output Package/API
-
-The submitted package must expose `featurelifted` with:
-
-- `Revision(revision, down_revision=None, branch_labels=None, dependencies=None)`
-- `RevisionMap(revisions)`
-- `RevisionMap.heads`
-- `RevisionMap.bases`
-- `RevisionMap.branch_labels`
-- `RevisionMap.get_revision(identifier)`
-- `RevisionMap.get_revisions(identifiers)`
-- `RevisionMap.get_heads()`
-- `RevisionMap.get_current_head(branch_label=None)`
-- `RevisionMap.ancestors(revision_id, include_dependencies=True)`
-- `RevisionMap.iterate_revisions(upper, lower=None)`
-- `MissingRevision`
-- `MultipleHeads`
-- `CycleDetected`
+- When Revision objects are created, scalar and iterable down revisions, branch labels, and dependencies are normalized without losing their distinct graph roles.
+- When RevisionMap is built from explicit revisions, it links versioned parents, dependency edges, and branch labels into a queryable graph.
+- For linear, branched, and merged revision graphs, RevisionMap reports the versioned bases and heads that have no versioned parent or child.
+- When a branch label is assigned, branch-label lookup resolves that revision and propagates the label to eligible descendants.
+- When ancestors are requested, dependency revisions are included only when dependency-aware traversal is enabled.
+- When symbolic identifiers such as head or base are requested, RevisionMap resolves them and rejects ambiguous heads.
+- Missing revisions, multiple-head requests, and revision cycles raise the declared explicit graph errors.
+- The package exposes the required task API paths `featurelifted.Revision`, `featurelifted.RevisionMap`, `featurelifted.RevisionMap.heads`, `featurelifted.RevisionMap.bases`, `featurelifted.RevisionMap.branch_labels`, `featurelifted.RevisionMap.get_revision`, `featurelifted.RevisionMap.get_revisions`, `featurelifted.RevisionMap.get_heads`, `featurelifted.RevisionMap.get_current_head`, `featurelifted.RevisionMap.ancestors`, `featurelifted.RevisionMap.iterate_revisions`, `featurelifted.CycleDetected`, and 2 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
-- Do not import `alembic` or `sqlalchemy`.
-- Do not read from `repo/`, `alembic/`, or any source checkout path at runtime.
-- Do not use network, database, browser, Redis, or other external services.
-- Keep the implementation self-contained in the output package.
+- Forbidden imports: `alembic, sqlalchemy`.
+- Forbidden path access: `repo/, alembic/`.
+- Do not implement network access.
+- Do not implement original repository import at runtime.
+- Do not implement source repo path access.
+- Do not implement SQLAlchemy engine integration.
+- Do not implement migration environment loading.
+- Do not implement filesystem script directory scanning.
 
-## Public Test Intent
+## Public vs Hidden Tests
 
-Public tests cover linear graph construction, merge-head calculation, branch-label resolution, and basic topological traversal from an upper revision toward a lower revision.
-
-## Hidden Test Intent
-
-Hidden tests cover multiple-head rejection, branch-label propagation to descendants, dependency-aware ancestry, missing revision errors, cycle detection, and symbolic `head` / `base` resolution.
+Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.
 
 <!-- featureliftbench:behavior-clauses:start -->
 ## Public Behavior Contract
 
-The stable clause IDs below define the public behavior contract. Hidden tests may exercise
-these clauses but do not introduce additional requirements.
+The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — Revision object normalization
-- **B002** — RevisionMap graph construction
-- **B003** — versioned head and base calculation
-- **B004** — branch label resolution and propagation
-- **B005** — dependency-aware ancestry
-- **B006** — symbolic head/base lookup
-- **B007** — missing revision, multiple head, and cycle errors
-- **B008** — the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope
-- **B009** — the submitted package does not import forbidden upstream packages: alembic, sqlalchemy
+- **B001** — When Revision objects are created, scalar and iterable down revisions, branch labels, and dependencies are normalized without losing their distinct graph roles.
+- **B002** — When RevisionMap is built from explicit revisions, it links versioned parents, dependency edges, and branch labels into a queryable graph.
+- **B003** — For linear, branched, and merged revision graphs, RevisionMap reports the versioned bases and heads that have no versioned parent or child.
+- **B004** — When a branch label is assigned, branch-label lookup resolves that revision and propagates the label to eligible descendants.
+- **B005** — When ancestors are requested, dependency revisions are included only when dependency-aware traversal is enabled.
+- **B006** — When symbolic identifiers such as head or base are requested, RevisionMap resolves them and rejects ambiguous heads.
+- **B007** — Missing revisions, multiple-head requests, and revision cycles raise the declared explicit graph errors.
+- **B008** — The package exposes the required task API paths `featurelifted.Revision`, `featurelifted.RevisionMap`, `featurelifted.RevisionMap.heads`, `featurelifted.RevisionMap.bases`, `featurelifted.RevisionMap.branch_labels`, `featurelifted.RevisionMap.get_revision`, `featurelifted.RevisionMap.get_revisions`, `featurelifted.RevisionMap.get_heads`, `featurelifted.RevisionMap.get_current_head`, `featurelifted.RevisionMap.ancestors`, `featurelifted.RevisionMap.iterate_revisions`, `featurelifted.CycleDetected`, and 2 listed members with the kinds and callable signatures listed in this contract.
+- **B009** — the submitted package does not import forbidden upstream packages: alembic, sqlalchemy.
 <!-- featureliftbench:behavior-clauses:end -->

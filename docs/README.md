@@ -1,98 +1,106 @@
 # FeatureLiftBench Docs
 
-文档入口。按读者角色选择路径；**当前仓库状态**见 [STATUS.md](STATUS.md)（手写摘要）与 [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md)（脚本生成）。
+文档入口。数字状态见 [STATUS.md](STATUS.md)；研究优先级见 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。
 
-## 快速导航
+**规格迁移进度（2026-07-24）：** **150/150 engineering-compliant** · 0 legacy · 迁移后 Oracle 证据 150/150 · 手册 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+
+---
+
+## 先读这四份（2026-07-24 起）
+
+| 顺序 | 文档 | 内容 |
+| --- | --- | --- |
+| 1 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | **整体思路**：测什么、信息分层、打分、方法优先级 |
+| 2 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | **规格宪法**：public_spec、API/behavior、门禁 |
+| 3 | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | **迁移手册**：CLI、compliant/legacy 分报、试点 |
+| 4 | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | **实验臂**：test-blind Main / Public-feedback / Short-prompt |
+
+冲突时以以上四份 + [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) 为准。
+
+---
+
+## 按意图导航
 
 | 我想… | 从这里开始 |
 | --- | --- |
-| 参与当前论文与实验讨论 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
-| 了解 benchmark 是什么 | [00_overview.md](00_overview.md) → [01_task_definition.md](01_task_definition.md) |
-| 跑实验 / 补齐 Python-150 | [../RUN.md](../RUN.md) §6.1 · [EXPERIMENTS.md](EXPERIMENTS.md) |
-| 看已有结果与缺口 | [EXPERIMENTS.md](EXPERIMENTS.md) · [FINDINGS.md](FINDINGS.md) |
-| 看出题 / promote 规则 | [07_incremental_task_rules.md](07_incremental_task_rules.md) · [.agents/skills/](../.agents/skills/) |
-| 查 Python 150 题清单 | [python/02_python_repo_task_inventory.md](python/02_python_repo_task_inventory.md) |
-| 查论文 / v1.1 门禁 | [research_analysis/](research_analysis/) · [06_paper_outline.md](06_paper_outline.md) |
-| 查已知局限 | [limitations.md](limitations.md) |
+| 理解整个 benchmark 设计 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
+| 迁规格 / 跑 validate | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) · [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
+| 做 Public-feedback 等对照 | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) · [../RUN.md](../RUN.md) §1.5 |
+| 看当前优先级与下一步 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
+| 看规模 / Oracle / 合规计数 | [STATUS.md](STATUS.md) · `reports/constitution/spec_compliance_150_20260724.csv` |
+| 跑实验 | [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) · [../RUN.md](../RUN.md) · [EXPERIMENTS.md](EXPERIMENTS.md) |
+| 看结果解读 | [FINDINGS.md](FINDINGS.md) |
+| 生命周期 / promote | [07_incremental_task_rules.md](07_incremental_task_rules.md) |
+| 包布局 schema | [06_task_schema.md](06_task_schema.md) |
 
-## Core Docs（规范层）
+---
 
-长期维护的 benchmark 定义；数字型状态以 [STATUS.md](STATUS.md) 为准，不在此重复。
+## 文档分层地图
+
+```text
+叙事与优先级
+  BENCHMARK_DESIGN.md      ← 整体思路
+  CURRENT_RESEARCH.md      ← 今天做什么
+  STATUS.md / FINDINGS.md / EXPERIMENTS.md
+
+出题与评测规范（权威）
+  TASK_DESIGN_RULES.md     ← 宪法
+  CONSTITUTION_MIGRATION.md ← 迁移操作（CLI / 分报）
+  EXPERIMENT_ARMS.md       ← 实验臂
+  01_task_definition.md … 07_incremental_task_rules.md
+
+编号核心文档（部分内容可能滞后于宪法）
+  00_overview … 05_failure_taxonomy, 02_RQs, 04_protocol
+  → 与宪法冲突时回修并向宪法对齐
+
+方法线（降级 / 历史）
+  research_analysis/REPOSITORY_SEMANTIC_GRAPH_*   ← RSG 基线
+  research_analysis/ECSM_*                       ← 已废弃
+```
+
+---
+
+## Core Docs
 
 | File | Purpose |
 | --- | --- |
-| [00_overview.md](00_overview.md) | Benchmark goal, scope, evaluation philosophy |
-| [01_task_definition.md](01_task_definition.md) | Shared FeatureLift task contract |
-| [02_research_questions.md](02_research_questions.md) | Shared RQs and experimental handles |
-| [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md) | Evaluation and scoring design |
-| [04_experiment_protocol.md](04_experiment_protocol.md) | Shared experiment protocol |
-| [05_failure_taxonomy.md](05_failure_taxonomy.md) | Failure labels and detection notes |
-| [06_task_schema.md](06_task_schema.md) | Canonical task package schema |
-| [07_incremental_task_rules.md](07_incremental_task_rules.md) | Task lifecycle and promotion gates |
-| [06_paper_outline.md](06_paper_outline.md) | Paper outline |
-| [limitations.md](limitations.md) | Known benchmark and evaluator limitations |
-| [STATUS.md](STATUS.md) | Current project status (living summary) |
-| [EXPERIMENTS.md](EXPERIMENTS.md) | Completed runs, gaps, how to finish Python-150 |
-| [FINDINGS.md](FINDINGS.md) | What current results say about agents/LLMs |
-| [REPORTS_INDEX.md](REPORTS_INDEX.md) | Index into local `reports/` (gitignored) |
-
-## Language Splits
-
-Python 与 Go 是 FeatureLiftBench 的 language split，共享同一 task 语义与评分哲学。
-
-- [python/](python/) — 设计原则、repo 筛选、**150 题 inventory**、难度 rubric、示例（索引：[python/README.md](python/README.md)）
-- [go/](go/) — Go split 设计（calibration / seed 阶段；索引：[go/README.md](go/README.md)）
+| [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | 整体设计思路 |
+| [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | 规格宪法 |
+| [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | 规格迁移手册 |
+| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | 实验臂 |
+| [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) | 研究入口 |
+| [STATUS.md](STATUS.md) | 状态摘要 |
+| [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) | 最新 Python-150 服务器正式运行流程 |
+| [06_task_schema.md](06_task_schema.md) | 任务包布局 |
+| [07_incremental_task_rules.md](07_incremental_task_rules.md) | 生命周期 |
+| [limitations.md](limitations.md) | 已知局限 |
 
 ## Task Design Notes
 
-- [task_designs/](task_designs/) — Python 按题设计笔记（106 篇 + `TEMPLATE.md`）
-- [go_task_designs/](go_task_designs/) — Go 按题设计笔记
+- [task_designs/](task_designs/) · [go_task_designs/](go_task_designs/) — maintainer 笔记，**不是** Agent 可见规格  
+- **Compliant 题：** Agent 可见契约 = `render(public_spec)`  
+- **Legacy 题：** 当前 Python main 为 0；历史 legacy runs 仍须按旧口径单独报告
 
-这些是 maintainer 参考，**不是** agent 或论文读者的入口；落地 spec 以 `benchmark/tasks/*/TASK.md` 为准。
+## Research & Methods
 
-## Research & Paper
+| 状态 | 文档 |
+| --- | --- |
+| **当前主线** | Python-150 独立人工 paper-gold 审核 + compliant core-100 校准 |
+| **下一方法候选** | Contract/API closure recovery（compliant 子集上验证） |
+| **降级** | RSG start-here |
+| **废弃** | ECSM |
 
-- [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) — **唯一的当前研究入口**；先读这里，再按需进入方法、实验和分析工件
-- [research_analysis/](research_analysis/) — v1.1 硬化协议、Pilot、ECSM、taxonomy、Oracle 报告
-- [paper_runs_frozen.md](paper_runs_frozen.md) — 冻结 formal run ID 与 leaderboard 口径
-- [paper_tables.md](paper_tables.md) — 论文表格草稿
-- [EXPERIMENTS.md](EXPERIMENTS.md) — 实验完成度与服务器补跑说明
-- [FINDINGS.md](FINDINGS.md) — 当前结果解读（能力与缺陷）
-- [REPORTS_INDEX.md](REPORTS_INDEX.md) — 本地 `reports/` 索引（该目录 gitignore）
-- 本地分析工件：`reports/paper_analysis/`（见 REPORTS_INDEX）
-
-生成型 audit JSON/CSV 在 `artifacts/research_analysis/`；人类可读摘要优先放在 `docs/research_analysis/`。
-
-## Operational & Agent
+## Operational
 
 | Location | Purpose |
 | --- | --- |
-| [../RUN.md](../RUN.md) | 实验运行速查（Docker、suite、env、§6.1 Python-150） |
-| [../experiments/README.md](../experiments/README.md) | 实验结果目录约定 |
-| [../.agents/skills/](../.agents/skills/) | Cursor agent：create / validate / promote / run-eval |
+| [../RUN.md](../RUN.md) | 运行速查（含 `./run_experiment.sh`） |
+| `harness/featureliftbench/cli.py` | validate / migrate / render / annotate |
+| [../.agents/skills/](../.agents/skills/) | create / validate / promote / run-eval |
 
-## Historical Engineering Docs（根目录）
+## 维护规则
 
-以下文档保留 batch-0 / batch-1 扩题历史，**不是**当前 sprint 真相：
-
-| File | Notes |
-| --- | --- |
-| [../TODO.md](../TODO.md) | 2026-06 batch-1 工程 backlog（已归档） |
-| [../BATCH1_PLAYBOOK.md](../BATCH1_PLAYBOOK.md) | 50→100 扩题 playbook（已归档） |
-| [../GO_FEATURELIFTBENCH_DESIGN.md](../GO_FEATURELIFTBENCH_DESIGN.md) | Go v2 早期路线；现行规范见 [go/](go/) |
-
-## Reports & Evidence
-
-| Location | Purpose |
-| --- | --- |
-| [REPORTS_INDEX.md](REPORTS_INDEX.md) | 可提交的 reports 索引 |
-| 本地 `reports/` | Sprint 报告、paper_analysis（gitignore） |
-| [../evidence/](../evidence/) | batch-1 promote 验收证据（只读） |
-| [../experiments/](../experiments/) | 运行输出（非文档源） |
-
-## 文档维护规则
-
-1. **Canonical**（`docs/00–07`）：规范变更时人工更新。
-2. **Living status**（`STATUS.md` + 生成的 `V11_IMPLEMENTATION_STATUS.md`）：freeze / gate 变更时更新。
-3. **Historical**（`reports/`、根目录 backlog）：写入后尽量不 retro-edit；过时处加 banner 或 superseded 链接。
-4. **Task spec**（`benchmark/tasks/*/TASK.md`）：随题目生命周期变更，不与 meta 文档混整理。
+1. **宪法优先**：宪法 / 迁移 / 臂 变更后，回修 `00–07` 与 STATUS。  
+2. **Living status**：合规计数变时更新 STATUS + `spec_compliance.csv`。  
+3. **分报**：legacy 与 compliant 实验不得混报 headline。  
+4. **Historical**：旧报告不 retro-edit；加 banner 说明 legacy 口径。

@@ -1,5 +1,10 @@
 # ICLR 方法创新路线图
 
+> **SUPERSEDED（2026-07-23）**  
+> 本文以 **ECSM** 为主创新候选，该路线**已废弃**。  
+> 当前入口与方向：[../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)（通用 RSG 工具 + 模型自主决策）。  
+> 下文仅历史存档。
+
 ## 1. 与仓库现状的边界
 
 仓库已有 `harness/featureliftbench/featurelift_agent.py`，会生成 `closure_plan.md`、`dependency_manifest.json`、`hidden_boundary_check.md`、`prune_log.md` 和 `final_checklist.md`，并支持 `closure_plan/extraction_plan/final_checklist/repair_plan` 阶段。当前没有正式 experiment 使用该 controller；这些文件大多是计划文本或空 manifest，不构成可执行 closure 方法。

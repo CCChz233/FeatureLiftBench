@@ -1,55 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_select_environment_inheritance",
       "public_clause_ids": [
-        "B002"
+        "B002",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "46cdf245e22f66ee84a7cf7c390c2b2c7bc4a9f94cc8a722b264c16ccc68bd30"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_circular_environment_raises",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "39c13b754b9fe734cf8218a0a4b966f759ee6a1f5c7b1603ec529f5571b6d3f7"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_classifier_raises",
       "public_clause_ids": [
         "B003"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "7863483f410e5667118f0806d9c0bbf9cd23ef99e17dee29f62b0a335e4bd41d"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -57,51 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "project metadata normalization"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`normalize_project_metadata` lowercases names, sorts dependencies, and validates classifiers."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "environment inheritance"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`select_environment` resolves environment inheritance and include chains."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "classifier validation"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Circular inheritance raises `ValueError`; invalid classifiers raise `MetadataValidationError`."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.normalize_project_metadata`, `featurelifted.select_environment`, `featurelifted.MetadataValidationError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: hatch, hatchling"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_normalize_project_metadata",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "04c972a0ddeb55c417226208e8158dd37744152989ef7df8415ab1aeb3848c26"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -133,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "f9ead2232c1b3ee130b17c62dd1cdf603422581ecff49bd02da5b180807f6342",
+  "spec_sha256": "e0f2b9b1a3f463a85704136134936b0c7e257ab436c4fbeeeafc62677eb2e386",
   "task_id": "hatch__project_metadata_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

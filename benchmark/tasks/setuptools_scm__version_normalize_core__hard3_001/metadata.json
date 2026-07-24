@@ -75,5 +75,152 @@
     "command": "pytest",
     "hidden": "hidden_tests/",
     "public": "public_tests/"
-  }
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "version_from_scm",
+    "summary": "Extract a task-scoped subset of `setuptools_scm` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.version_from_scm",
+        "kind": "function",
+        "signature": "(root, *, tag: 'str' = 'v1.0.0', distance: 'int' = 0, dirty: 'bool' = False, node: 'str' = 'g1234567') -> 'str'"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "version_from_scm normalizes SCM-style tags into a valid base version and incorporates distance, dirty state, and node information."
+      },
+      {
+        "id": "B002",
+        "text": "When distance from the tag is positive, version_from_scm appends the corresponding development-distance suffix."
+      },
+      {
+        "id": "B003",
+        "text": "When node or dirty information is present, version_from_scm appends a normalized local version segment."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes the required task API paths `featurelifted.version_from_scm` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "source_entrypoints": [
+      "setuptools_scm.version.version_from_scm"
+    ],
+    "exclusions": [
+      "network access",
+      "subprocess git/hg",
+      "full setuptools integration"
+    ],
+    "forbidden": {
+      "imports": [
+        "setuptools_scm"
+      ],
+      "paths": [
+        "repo/",
+        "setuptools_scm/"
+      ]
+    },
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "isolation_behavior": {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: setuptools_scm."
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "version_from_scm normalizes SCM-style tags into a valid base version and incorporates distance, dirty state, and node information."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When distance from the tag is positive, version_from_scm appends the corresponding development-distance suffix."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When node or dirty information is present, version_from_scm appends a normalized local version segment."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.version_from_scm` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: setuptools_scm"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_contract.py::test_version_from_tag",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_distance_adds_dev_suffix",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_dirty_adds_local_suffix",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_contract.py::test_node_normalization",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.version_from_scm",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "independent_human_review": false,
+      "checklist_passed": true,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending."
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "experiment_contract_hardening": {
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
+      "independent_human_review": false
+    }
+  },
+  "task_revision": 4,
+  "spec_hash": "868ee7f265c7bdb9902432932b1fe1989d2e8d81872c7d048c48f38329fa1328",
+  "generated_task_hash": "ebf469ea8f26e3718e6ce150066982f24ee2362349359c53ccd4f8090bea2088"
 }

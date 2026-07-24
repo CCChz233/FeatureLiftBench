@@ -1,51 +1,33 @@
 {
   "hidden_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_replay_override",
       "public_clause_ids": [
         "B002"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B002"
-        ],
-        "pass_2_ast_mapping": [
-          "B002"
-        ],
-        "test_source_sha256": "369942401b5794ec28985dd80e428b2db3d488974dc2eae681bb1fd03d4b1419"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_nested_template_detection",
       "public_clause_ids": [
         "B004"
       ],
-      "review_evidence": {
-        "decision": "priority_semantic_override",
-        "pass_1_nodeid_mapping": [],
-        "pass_2_ast_mapping": [],
-        "test_source_sha256": "a4ddec4b8c2369d30fe3be33b86ad581e017820f34b1825b0c21fb23c5f5a39c"
-      }
+      "mapping_method": "ai_assisted"
     },
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "hidden_tests/test_hidden_contract.py::test_safe_join_rejects_parent_segments",
       "public_clause_ids": [
-        "B003"
+        "B003",
+        "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B003"
-        ],
-        "pass_2_ast_mapping": [
-          "B003"
-        ],
-        "test_source_sha256": "f7cc99160b76ef90d5958a6462712043ec0c72f4eeda13cd31d60897349978af"
-      }
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
   "mapping_policy": "Public clauses were frozen from metadata before test-node mapping. Nodeids are evaluator-private; no hidden inputs, examples, or assertions are stored here.",
@@ -53,51 +35,41 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/0",
-      "text": "abbreviation expansion"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When a repository abbreviation is supplied, expand_abbreviation and RepoFinder expand it using configured abbreviations before resolving the template path."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/1",
-      "text": "replay override"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Abbreviations expand short repo prefixes; replay overrides take precedence."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "spec_anchor": "metadata.json#/feature/included_behaviors/2",
-      "text": "safe path join"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "`safe_join` rejects path traversal and absolute segments."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "api_surface",
-      "spec_anchor": "metadata.json#/output/import",
-      "text": "the declared target API remains importable and preserves upstream-observable semantics within the included and excluded feature scope"
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "The package exposes the required task API paths `featurelifted.RepoFinder`, `featurelifted.RepoFinder.find_template`, `featurelifted.expand_abbreviation`, `featurelifted.safe_join`, `featurelifted.UnsafePathError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "isolation_constraint",
-      "spec_anchor": "metadata.json#/environment/forbidden_imports",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "the submitted package does not import forbidden upstream packages: cookiecutter"
     }
   ],
   "public_test_mappings": [
     {
-      "mapping_method": "ai_assisted",
       "nodeid": "public_tests/test_public_contract.py::test_find_template_with_abbreviation",
       "public_clause_ids": [
         "B001"
       ],
-      "review_evidence": {
-        "decision": "full_test_ast_semantic_score",
-        "pass_1_nodeid_mapping": [
-          "B001"
-        ],
-        "pass_2_ast_mapping": [
-          "B001"
-        ],
-        "test_source_sha256": "96a16a4dd1cfa533c0db8bdfe87279935b241aa27f5c9d538d6bb3ddaa08b4d0"
-      }
+      "mapping_method": "ai_assisted"
     }
   ],
   "review": {
@@ -129,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "bf12083147b7c4cd75acb1fec7e82f547c5bbd073374e441e9fa30c57ddee6f0",
+  "spec_sha256": "2822cedbc0244358572a8b61cdb7a8a323cce076387ac7305858a9db9ccafee5",
   "task_id": "cookiecutter__repo_finder_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

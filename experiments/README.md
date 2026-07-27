@@ -1,73 +1,83 @@
 # experiments/
 
-这里保存实验的原始证据、可复查索引和传输包。体积较大的 run 默认不进 Git；目录结构、注册表和校验和进 Git。
+本目录保存原始模型运行、传输包和机器索引。大体积 runs 默认不进 Git；
+benchmark 定义不依赖本目录。
 
-论文与当前实验讨论统一从 [docs/CURRENT_RESEARCH.md](../docs/CURRENT_RESEARCH.md) 开始；不要把本目录当作文档入口。
+当前研究入口：
+[`docs/CURRENT_RESEARCH.md`](../docs/CURRENT_RESEARCH.md)。正式结果口径：
+[`docs/EXPERIMENTS.md`](../docs/EXPERIMENTS.md)。
 
-## 目录分区
+## 目录
 
-| 路径 | 类别 | 说明 |
-| --- | --- | --- |
-| `python/openhands/<model>/<run_id>/` | leaderboard | Python core-100、hard50 与完整榜实验 |
-| `GO/openhands/<model>/<run_id>/` | calibration | Go pilot / calibration，非 Python 主榜 |
-| `smoke/` | smoke | 烟囱、调试和并发验证 |
-| `ecsm_pilot/` | archive | **已废弃** ECSM 脚手架；不再推进 |
-| `rsg_pilot/openhands/deepseek-v4-flash/<experiment_id>/` | mechanism | RSG 历史诊断；正式工具实验待重设计后另开 |
-| `v1_1_*` | validation | v1.1 修复、隔离与 infra re-evaluation 的历史证据 |
-| `batch3-*` | materialization | batch3 reference / task materialization 历史证据 |
-| `bundles/incoming/` | transport | 收到的原始压缩包和可追溯 SHA-256；压缩包本身不进 Git |
-| `registry/` | index | 全目录机器可读清单、数据质量报告和跨 run study |
+| 路径 | 内容 |
+| --- | --- |
+| `python/openhands/<model>/<run_id>/` | Python OpenHands runs |
+| `GO/openhands/<model>/<run_id>/` | Go calibration |
+| `smoke/` | smoke/debug |
+| `ablation/` | 显式实验臂 |
+| `rsg_pilot/` | 历史 RSG 证据 |
+| `ecsm_pilot/` | 已废弃 ECSM 原始证据 |
+| `v1_1_*` | 历史 contract/oracle validation |
+| `batch3-*` | 历史 100→150 materialization |
+| `bundles/incoming/` | 外部传输包与 SHA-256 |
+| `registry/` | 跨 run 机器索引 |
 
-历史目录的路径已被 quarantine ledger、报告和脚本引用，因此不为“看起来整齐”而批量移动。统一入口是 `registry/`，原始目录保持可追溯。
+历史目录可能被报告和 ledger 引用，不为视觉整齐而移动。当前入口统一由
+`registry/` 和 `reports/` 提供。
 
-## 当前 RSG 相关状态
+## v3 当前状态
 
-研究主线见 [docs/CURRENT_RESEARCH.md](../docs/CURRENT_RESEARCH.md)：通用可选 RSG + 模型自主决策；**ECSM 已废弃**。
+Full-Repository / No-Hint Python-150 模型 baseline 尚未导入。本目录中的
+现有正式规模结果都必须保留其 `mixed_snapshot_v1` 或其他历史 arm 标签。
 
-- `rsg-pilot-v1-20260723`：已 `invalidated`，不得进入分析。
-- `rsg-pilot-v1-20260723-clean1`：历史诊断（2/12）；旧强制采用门协议**不再恢复**。
-- 后续实验在 RSG **重设计**后再开，工具对模型应为可选，不以「必调某命令」为门禁。
+新 v3 suite 必须记录并匹配 active freeze pointer：
 
-上述均不是正式效果 Pilot。
+```text
+artifacts/research_analysis/v3/current_benchmark_freeze.json
+```
 
-## 当前 Python-150 视图
+并保存 agent/eval image digests、exact task set、attempt policy、逐题 run/eval、
+submission、usage 和 exception ledger。
 
-| 模型 | 状态 | 覆盖 | Pass | Avg final |
-| --- | --- | ---: | ---: | ---: |
-| DeepSeek-V4-Flash | frozen | 150/150 | **91/150** | 0.358817 |
-| Qwen3.6-27B-FP8 | candidate | 150/150 | **58/150** | 0.224684 |
-| Qwen3.6-35B-A3B-FP8 | candidate | 150/150 | **52/150** | 0.210023 |
-| Qwen3-Coder-30B | incomplete | 100/150 | **24/100** | 0.172782 |
+## 2026-07-26 历史四模型视图
 
-`candidate` 表示结果已导入并通过结构检查，但尚未写入论文冻结集。论文表继续以 [docs/paper_runs_frozen.md](../docs/paper_runs_frozen.md) 为准。
+这些 suites 各有 150 tasks，但使用 mixed snapshots。
+
+| 模型 | Evaluator Functional Pass@1 | Agent-completion pass |
+| --- | ---: | ---: |
+| DeepSeek-V4-Flash-DSpark | 87/150 | 84/150 |
+| Qwen3.5-122B-A10B-FP8 | 56/150 | 56/150 |
+| Qwen3.6-35B-A3B-FP8 | 49/150 | 47/150 |
+| gpt-oss-120b | 37/150 | 37/150 |
+
+统一审计：
+[`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/)。
+
+更早的 core-100/hard50/patched Python-150 run set 见
+[`reports/archive/v1_mixed_snapshot_runs_20260712.md`](../reports/archive/v1_mixed_snapshot_runs_20260712.md)。
 
 ## 结果口径
 
-同一任务中，评测分数、build/test 门禁以 `<task_id>/eval/result.json` 为准；任务最终状态以 `<task_id>/run.json` 的 agent + evaluator 组合结论为准。只有 task-local 文件缺失时，才回退到 `suite.json` 的紧凑 run 记录。
-
-`suite.summary` 是可重建缓存，不作为注册表的原始指标来源。平均 final score 的分母是全部 assigned tasks；缺 submission、构建失败和测试失败均计 0。agent 本身失败时，即使残留 submission 通过 evaluator，也不计为任务 pass。
-
-生命周期统一使用 `incoming → candidate → validated → frozen`；被新实验取代但仍需保留的结果标记为 `superseded`，不删除原始证据。
+- Benchmark correctness：逐题 evaluator `functional_gate`；
+- Agent process：completion status、step/context/rate/infra failures；
+- Compactness：reference-relative vector；
+- Cost：tokens、API calls、steps、agent/eval/wall time；
+- `suite.summary` 是可重建缓存，不是唯一事实源；
+- continuation 只能补没有终态 `run.json` 的题，不能重试已完成失败并仍称
+  Pass@1。
 
 ## 常用命令
 
 ```bash
-# 从 task-local 结果重建一个 suite 的可移植索引
+# 重建 suite 索引
 PYTHONPATH=harness python harness/scripts/refresh_suite_from_task_runs.py <suite_dir>
 
-# 扫描整个 experiments 并重建 registry
+# 重建全实验 registry
 PYTHONPATH=harness python harness/scripts/build_experiment_registry.py
 
 # 分析单个 suite
 PYTHONPATH=harness python harness/scripts/analyze_benchmark_suite.py <suite_dir>
-
-# 只冻结、预热并查看 12-run RSG Pilot 顺序（不调用付费 API）
-PYTHONPATH=harness python harness/scripts/run_repo_graph_pilot.py \
-  --experiment-id <experiment_id>
-
-# 通过镜像、profile 和 graph prewarm 门后执行 Pilot
-PYTHONPATH=harness python harness/scripts/run_repo_graph_pilot.py \
-  --experiment-id <experiment_id> --execute
 ```
 
-详细清单见 [registry/INVENTORY.md](registry/INVENTORY.md)，正式实验状态见 [docs/EXPERIMENTS.md](../docs/EXPERIMENTS.md)，运行方法见 [RUN.md](../RUN.md) §6.1。
+正式 Python-150 运行见
+[`docs/SERVER_RUNBOOK_PYTHON150.md`](../docs/SERVER_RUNBOOK_PYTHON150.md)。

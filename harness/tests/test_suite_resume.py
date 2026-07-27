@@ -12,6 +12,7 @@ from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_runner import _archive_previous_run
 from featureliftbench.agent_runner import _read_task_attempt
 from featureliftbench.agent_runner import _task_at_max_attempts
+from featureliftbench.agent_runner import _validate_retained_runs
 from featureliftbench.agent_runner import _write_suite_checkpoint
 from featureliftbench.agent_runner import _SuiteCheckpointContext
 from featureliftbench.agent_runner import load_skipped_runs
@@ -34,6 +35,31 @@ _write_fake_usage_agent = test_agent_runner._write_fake_usage_agent
 
 
 class SuiteResumeTests(unittest.TestCase):
+    def test_resume_rejects_incompatible_experiment_conditions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = _make_task(Path(tmp) / "sample_task")
+            retained = {
+                "sample_task": {
+                    "task_id": "sample_task",
+                    "status": "passed",
+                    "experiment_conditions": {"model": "different-model"},
+                }
+            }
+
+            with self.assertRaisesRegex(
+                ValueError,
+                "resume would mix incompatible",
+            ):
+                _validate_retained_runs(
+                    retained,
+                    task_dirs=[task],
+                    config=AgentRunConfig(agent="command", model="expected-model"),
+                    agent_docker=False,
+                    agent_docker_image="",
+                    eval_docker=False,
+                    eval_docker_image="",
+                )
+
     def test_load_retained_runs_filters_by_status(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             suite_dir = Path(tmp) / "suite"

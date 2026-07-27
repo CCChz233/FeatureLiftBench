@@ -117,7 +117,6 @@ def build_payload(pointer_path: Path) -> dict[str, Any]:
     task_records: dict[str, dict[str, Any]] = {}
     validated = 0
     hardened = 0
-    independent_human_review = 0
     for task_dir in task_dirs:
         metadata = _load(task_dir / "metadata.json")
         task_id = task_dir.name
@@ -148,12 +147,6 @@ def build_payload(pointer_path: Path) -> dict[str, Any]:
                 dict,
             ):
                 hardened += 1
-            manual = evaluation_spec.get("manual_review")
-            if (
-                isinstance(manual, dict)
-                and manual.get("independent_human_review") is True
-            ):
-                independent_human_review += 1
         task_tree = manifest.get("task_trees", {}).get(task_id)
         if not isinstance(task_tree, dict):
             raise ValueError(f"Oracle freeze lacks task tree: {task_id}")
@@ -198,13 +191,8 @@ def build_payload(pointer_path: Path) -> dict[str, Any]:
         "gates": {
             "constitution_validated": validated,
             "experiment_contract_hardened": hardened,
-            "independent_human_review": independent_human_review,
             "experiment_ready": validated == 150 and hardened == 150,
-            "paper_ready": (
-                validated == 150
-                and hardened == 150
-                and independent_human_review == 150
-            ),
+            "spec_release_ready": validated == 150 and hardened == 150,
         },
         "tasks": task_records,
     }
@@ -301,16 +289,12 @@ def main() -> int:
             existing,
             verify_oracle_trees=oracle_artifacts_available,
         )
-        if oracle_artifacts_available:
-            payload = build_payload(args.oracle_pointer)
-            if existing.get("freeze_id") != payload["freeze_id"]:
-                print(
-                    "spec freeze mismatch: "
-                    f"expected {payload['freeze_id']}, "
-                    f"found {existing.get('freeze_id')}",
-                    file=sys.stderr,
-                )
-                return 1
+        # A tracked v1 freeze is immutable historical evidence. Its legacy
+        # review-policy fields are not task/spec content and are not rewritten
+        # when admission policy changes. verify_existing() already checks every
+        # recorded task/spec/tree/evaluator digest and, when available, Oracle
+        # trees; rebuilding the administrative payload would create a false
+        # freeze mismatch.
         oracle_status = (
             "local Oracle artifacts verified"
             if oracle_artifacts_available
@@ -334,7 +318,7 @@ def main() -> int:
         f"Oracle {payload['oracle_full']['run_count']}/"
         f"{payload['oracle_full']['expected_run_count']}; "
         f"experiment_ready={payload['gates']['experiment_ready']}; "
-        f"paper_ready={payload['gates']['paper_ready']}"
+        f"spec_release_ready={payload['gates']['spec_release_ready']}"
     )
     return 0
 

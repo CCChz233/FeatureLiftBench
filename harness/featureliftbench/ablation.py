@@ -1,7 +1,7 @@
-"""Agent experiment arms: Main / Public-feedback / Short-prompt.
+"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt.
 
-See docs/EXPERIMENT_ARMS.md. Semantic contract (API/behaviors/hidden) is unchanged;
-only workspace feedback and prompt verbosity differ.
+See docs/EXPERIMENT_ARMS.md. Semantic contract (API/behaviors/hidden) is unchanged.
+Main is No-Hint by default; source-location hints require explicit opt-in.
 """
 
 from __future__ import annotations
@@ -12,9 +12,12 @@ from typing import Any, Mapping
 
 MOUNT_PUBLIC_TESTS_ENV = "FEATURELIFTBENCH_MOUNT_PUBLIC_TESTS"
 PROMPT_STYLE_ENV = "FEATURELIFTBENCH_PROMPT_STYLE"
+EXPOSE_SOURCE_HINTS_ENV = "FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS"
+SOURCE_CONTEXT_ENV = "FEATURELIFTBENCH_SOURCE_CONTEXT"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
+SOURCE_CONTEXTS = frozenset({"full_repository", "pruned_context"})
 
 
 @dataclass(frozen=True)
@@ -23,27 +26,41 @@ class AblationOptions:
 
     mount_public_tests: bool = False
     prompt_style: str = "standard"
+    expose_source_hints: bool = False
+    source_context: str = "full_repository"
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
         if style not in PROMPT_STYLES:
             raise ValueError(f"prompt_style must be one of {sorted(PROMPT_STYLES)}, got {self.prompt_style!r}")
         object.__setattr__(self, "prompt_style", style)
+        source_context = str(self.source_context or "full_repository").strip().lower()
+        if source_context not in SOURCE_CONTEXTS:
+            raise ValueError(
+                f"source_context must be one of {sorted(SOURCE_CONTEXTS)}, "
+                f"got {self.source_context!r}"
+            )
+        object.__setattr__(self, "source_context", source_context)
 
     @property
     def ablation_arm(self) -> str:
-        if self.mount_public_tests and self.prompt_style == "short":
-            return "public_feedback_short"
+        parts: list[str] = []
+        if self.expose_source_hints:
+            parts.append("entrypoint_hint")
         if self.mount_public_tests:
-            return "public_feedback"
+            parts.append("public_feedback")
         if self.prompt_style == "short":
-            return "short_prompt"
-        return "main"
+            parts.append("short_prompt")
+        if self.source_context == "pruned_context":
+            parts.append("pruned_context")
+        return "_".join(parts) if parts else "main"
 
     def to_env(self) -> dict[str, str]:
         return {
             MOUNT_PUBLIC_TESTS_ENV: "1" if self.mount_public_tests else "0",
             PROMPT_STYLE_ENV: self.prompt_style,
+            EXPOSE_SOURCE_HINTS_ENV: "1" if self.expose_source_hints else "0",
+            SOURCE_CONTEXT_ENV: self.source_context,
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -52,6 +69,8 @@ class AblationOptions:
             "ablation_arm": self.ablation_arm,
             "mount_public_tests": self.mount_public_tests,
             "prompt_style": self.prompt_style,
+            "expose_source_hints": self.expose_source_hints,
+            "source_context": self.source_context,
         }
 
 
@@ -62,7 +81,18 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
     mount_raw = str(values.get(MOUNT_PUBLIC_TESTS_ENV, "0")).strip().lower()
     mount = mount_raw not in {"0", "false", "no", "off"}
     style = str(values.get(PROMPT_STYLE_ENV, "standard")).strip().lower() or "standard"
-    return AblationOptions(mount_public_tests=mount, prompt_style=style)
+    hints_raw = str(values.get(EXPOSE_SOURCE_HINTS_ENV, "0")).strip().lower()
+    expose_hints = hints_raw not in {"0", "false", "no", "off"}
+    source_context = (
+        str(values.get(SOURCE_CONTEXT_ENV, "full_repository")).strip().lower()
+        or "full_repository"
+    )
+    return AblationOptions(
+        mount_public_tests=mount,
+        prompt_style=style,
+        expose_source_hints=expose_hints,
+        source_context=source_context,
+    )
 
 
 def resolve_ablation_options(
@@ -72,6 +102,8 @@ def resolve_ablation_options(
     process_env: Mapping[str, str] | None = None,
     mount_public_tests: bool | None = None,
     prompt_style: str | None = None,
+    expose_source_hints: bool | None = None,
+    source_context: str | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -99,7 +131,32 @@ def resolve_ablation_options(
     else:
         style = str(prompt_style).strip().lower()
 
-    return AblationOptions(mount_public_tests=mount, prompt_style=style)
+    if expose_source_hints is None:
+        expose_hints = _first_bool(
+            process_env.get(EXPOSE_SOURCE_HINTS_ENV),
+            env_values.get(EXPOSE_SOURCE_HINTS_ENV),
+            profile.get("expose_source_hints"),
+            default=False,
+        )
+    else:
+        expose_hints = bool(expose_source_hints)
+
+    if source_context is None:
+        resolved_source_context = _first_string(
+            process_env.get(SOURCE_CONTEXT_ENV),
+            env_values.get(SOURCE_CONTEXT_ENV),
+            profile.get("source_context"),
+            default="full_repository",
+        )
+    else:
+        resolved_source_context = str(source_context).strip().lower()
+
+    return AblationOptions(
+        mount_public_tests=mount,
+        prompt_style=style,
+        expose_source_hints=expose_hints,
+        source_context=resolved_source_context,
+    )
 
 
 def _first_string(*values: Any, default: str) -> str:

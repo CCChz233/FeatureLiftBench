@@ -17,7 +17,7 @@ This inventory tracks the Go language split. Go is part of FeatureLiftBench, not
 
 ## Current Metadata Snapshot
 
-Scanned on 2026-07-06:
+Scanned on 2026-07-26:
 
 - `benchmark/go/tasks/`: 12 directories with `metadata.json`.
 - `benchmark/go_pilot/`: 1 dummy pilot metadata file.
@@ -58,7 +58,7 @@ Scanned on 2026-07-06:
 | uuid__parse_format_core__001 | google/uuid | v1.6.0 | UUID parse/format core | implicit_dependency_coupling | hard | TBD | TBD | seed_placeholder | Metadata currently says `sample.Add`; must be redesigned before use |
 | validator__struct_validate_core__001 | validator | v10.19.0 | struct validate core | implicit_dependency_coupling | hard | TBD | TBD | seed_placeholder | Metadata currently says `sample.Add`; must be redesigned before use |
 
-## TODO
+## Open work
 
 - Decide whether seed placeholders belong in `benchmark/go/tasks/` or should move to staging/calibration.
 - Replace placeholder `sample.Add` metadata before any task is considered a real Go FeatureLift task.

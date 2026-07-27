@@ -481,6 +481,35 @@ def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
         "final_score": scores.get("final_score", 0.0),
         "agent_usage": compact_agent_usage(usage),
     }
+    benchmark_freeze = run.get("benchmark_freeze")
+    if isinstance(benchmark_freeze, dict) and benchmark_freeze:
+        entry["benchmark_freeze"] = {
+            key: benchmark_freeze.get(key)
+            for key in (
+                "policy_id",
+                "freeze_id",
+                "task_revision",
+                "source_snapshot_id",
+                "source_tree_sha256",
+            )
+        }
+    source = run.get("source")
+    if isinstance(source, dict) and source:
+        entry["source"] = {
+            key: source.get(key)
+            for key in (
+                "policy_id",
+                "source_repo_id",
+                "source_snapshot_id",
+                "source_digest",
+                "archive_sha256",
+                "snapshot_scope",
+                "status",
+            )
+        }
+    conditions = run.get("experiment_conditions")
+    if isinstance(conditions, dict) and conditions:
+        entry["experiment_conditions"] = conditions
     if submission.get("recovered") is True:
         entry["submission_recovered"] = True
     for key in ("resource_limited", "log_limit_exceeded", "docker_sandbox_error", "sandbox_backend"):

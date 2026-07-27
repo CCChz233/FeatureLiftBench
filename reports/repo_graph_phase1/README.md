@@ -1,5 +1,8 @@
 # Repository Semantic Graph Phase 1 Checkpoint
 
+> Historical RSG prototype evidence. RSG is not part of the v2 Main baseline,
+> and this checkpoint does not certify the current benchmark freeze.
+
 Date: 2026-07-22
 
 Phase 1 implements an offline Tree-sitter repository graph. It does not inject the

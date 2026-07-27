@@ -1,0 +1,278 @@
+{
+  "benchmark_split": "curated",
+  "difficulty": "hard",
+  "entanglement": {
+    "description": "CSV processing is split across reader, mapper, cleaner, and transform stages with duplicate string helpers and pipeline side effects on GLOBAL_STATE.",
+    "level": "high",
+    "primary": "legacy_vibe_clutter",
+    "signals": [
+      "pipeline orchestrates four transform modules with implicit ordering",
+      "header normalization duplicated in helpers and mapper paths",
+      "transform records last job metadata in GLOBAL_STATE"
+    ],
+    "types": [
+      "legacy_vibe_clutter",
+      "implicit_dependency_coupling",
+      "global_state_registry_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 60
+  },
+  "evaluation_spec": {
+    "experiment_contract_hardening": {
+      "independent_human_review": false,
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "hidden_test_mappings": [
+      {
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_dedupe_keeps_last_sku_row"
+      },
+      {
+        "behavior_ids": [
+          "B002",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_by_aggregates_quantity_and_price"
+      },
+      {
+        "behavior_ids": [
+          "B003",
+          "B001",
+          "B006"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_rows_are_dropped"
+      },
+      {
+        "behavior_ids": [
+          "B007"
+        ],
+        "mapping_method": "generated_required_api_surface",
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      }
+    ],
+    "manual_review": {
+      "checklist_passed": true,
+      "independent_human_review": false,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending.",
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review"
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: parse CSV text into row dicts. Required observable cases include invalid rows are dropped."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: normalize headers and coerce quantity/unit_price fields. Required observable cases include transform normalizes headers and filters min quantity; group by aggregates quantity and price."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: drop invalid rows and enforce minimum quantity. Required observable cases include invalid rows are dropped."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: dedupe rows by sku keeping last occurrence. Required observable cases include dedupe keeps last sku row."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: optionally aggregate rows by a grouping key. Required observable cases include group by aggregates quantity and price."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: sort stable output when not aggregating. Required observable cases include transform sorts by sku when not grouping; invalid rows are dropped."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.TransformOptions`, `featurelifted.transform_csv` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B008",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_transform_normalizes_headers_and_filters_min_quantity"
+      },
+      {
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_transform_sorts_by_sku_when_not_grouping"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.TransformOptions"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.transform_csv"
+      }
+    ]
+  },
+  "feature": {
+    "description": "Extract the VibeShop CSV ingest pipeline (normalize, filter, dedupe, optional aggregate) as a standalone package.",
+    "excluded_behaviors": [
+      "pricing rules and YAML bootstrap",
+      "HTTP routes and catalog services",
+      "CSV writer serialization helpers for responses",
+      "original project tests and CLI entrypoints"
+    ],
+    "included_behaviors": [
+      "parse CSV text into row dicts",
+      "normalize headers and coerce quantity/unit_price fields",
+      "drop invalid rows and enforce minimum quantity",
+      "dedupe rows by sku keeping last occurrence",
+      "optionally aggregate rows by a grouping key",
+      "sort stable output when not aggregating"
+    ],
+    "name": "CSV transform pipeline",
+    "source_entrypoints": [
+      "vibe_app.csv_transform.transform_csv",
+      "vibe_app.csv_transform.pipeline.transform_csv",
+      "vibe_app.csv_transform.pipeline.TransformOptions"
+    ]
+  },
+  "generated_task_hash": "4b08685e199b72ca9d9fd6053cc5fe4bc74394631172b4e0549da202ba96f0f4",
+  "language": "python",
+  "output": {
+    "callable": "featurelifted.transform_csv",
+    "import": "from featurelifted import TransformOptions, transform_csv",
+    "package": "featurelifted",
+    "signature": "transform_csv(csv_text: str, *, options: TransformOptions | None = None) -> list[dict]"
+  },
+  "public_spec": {
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: parse CSV text into row dicts. Required observable cases include invalid rows are dropped."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: normalize headers and coerce quantity/unit_price fields. Required observable cases include transform normalizes headers and filters min quantity; group by aggregates quantity and price."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: drop invalid rows and enforce minimum quantity. Required observable cases include invalid rows are dropped."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: dedupe rows by sku keeping last occurrence. Required observable cases include dedupe keeps last sku row."
+      },
+      {
+        "id": "B005",
+        "text": "The extracted feature must support this observable behavior: optionally aggregate rows by a grouping key. Required observable cases include group by aggregates quantity and price."
+      },
+      {
+        "id": "B006",
+        "text": "The extracted feature must support this observable behavior: sort stable output when not aggregating. Required observable cases include transform sorts by sku when not grouping; invalid rows are dropped."
+      },
+      {
+        "id": "B007",
+        "text": "The package exposes the required task API paths `featurelifted.TransformOptions`, `featurelifted.transform_csv` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "pricing rules and YAML bootstrap",
+      "HTTP routes and catalog services",
+      "CSV writer serialization helpers for responses",
+      "original project tests and CLI entrypoints"
+    ],
+    "forbidden": {
+      "imports": [
+        "vibe_app"
+      ],
+      "paths": []
+    },
+    "isolation_behavior": {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app."
+    },
+    "optional_api": [],
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "required_api": [
+      {
+        "kind": "class",
+        "path": "featurelifted.TransformOptions",
+        "signature": "(group_by: 'str | None' = None, min_quantity: 'int' = 0, dedupe: 'bool' = True) -> None"
+      },
+      {
+        "kind": "function",
+        "path": "featurelifted.transform_csv",
+        "signature": "(csv_text: 'str', *, options: 'TransformOptions | None' = None) -> 'list[dict[str, Any]]'"
+      }
+    ],
+    "source_entrypoints": [
+      "vibe_app.csv_transform.transform_csv",
+      "vibe_app.csv_transform.pipeline.transform_csv",
+      "vibe_app.csv_transform.pipeline.TransformOptions"
+    ],
+    "summary": "Extract a task-scoped subset of `vibe_app` into a standalone `featurelifted` package.",
+    "title": "CSV transform pipeline"
+  },
+  "selection_id": "legacy-curated-v1",
+  "source": {
+    "commit": "curated",
+    "license": "MIT",
+    "name": "vibe_app",
+    "url": "sources/vibe_app/"
+  },
+  "spec_hash": "63790675a40045186583a3447602480c23dfb17171bb2f7b73467b9dd5be8c1c",
+  "spec_status": "compliant",
+  "status": "curated",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "implicit_dependency_coupling",
+    "pure-python"
+  ],
+  "task_id": "vibe_app__csv_transform_core__001",
+  "task_revision": 2,
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

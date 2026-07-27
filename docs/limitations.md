@@ -1,53 +1,81 @@
 # Known Limitations
 
-FeatureLiftBench 的已知局限与评估边界。论文 Limitations 节以此为基础；设计前提见 [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)；实现细节见 [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)。
+## Dataset construction
 
-## Benchmark design
+- **Maintainer task selection.** 150 tasks were maintainer-selected. Current
+  registry proves exact source/revision/content；replacement 7 有固定 21-repo
+  candidate ledger，但原有 143 题的候选池与构建淘汰过程记录仍不完整。
+- **Python library/tooling skew.** 102 library、29 developer-tooling、17
+  framework/plugin、2 application/service tasks。结论主要适用于 Python
+  libraries/tooling，不能自然外推到大型业务系统、GUI、cloud-native、GPU
+  或分布式服务。
+- **Domain and mechanism imbalance.** Parsing 41/150，parser-state 45/150，
+  third-party-dependency primary 仅 3/150。领域多样不等于机制均衡。
+- **Source popularity and contamination.** 题集包含 pytest、Jinja2、
+  SQLAlchemy、Pydantic 等知名项目；尚未完成 popular-vs-long-tail 和潜在
+  training contamination sensitivity analysis。
+- **Task footprint coverage.** active compactness registry 有 150/150
+  reference file/LOC records，但 symbol records 只有 49/150。完整仓库很大
+  不自动证明每题作用域很大。
+- **Application coverage.** 2 application/service tasks 不足以支持“任意真实
+  软件仓库”主张。
 
-- **Curated tasks.** 题目人工筛选与设计，不能代表所有「从仓库抽功能」场景。
-- **Python-heavy main split.** 当前 experiment-ready main 为 Python 150
-  题；独立人工审核尚未完成，因此 paper-ready 发布仍待定。Go split 仍在
-  calibration，不宜与 Python headline 数字直接对比。
-- **Feature type skew.** Python 题集中 parser、validator、config loader、plugin/registry 等可离线测试能力；并发、IO-heavy、分布式场景覆盖有限。
-- **Hard-only main.** 主榜不含 easy/medium 校准梯；难度比较依赖 agent 分层与 extraction 指标，而非多级 split。
-- **Spec migration (2026-07).** 宪法工程已落地（validate / render / migrate CLI），主榜已达 **150/150 engineering-compliant**、0 legacy，并完成迁移后 Oracle 复验。但独立人工 paper-gold 审核仍为 0/150；历史 legacy 模型结果与 compliant rerun **不得混报**。见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)。
-- **Human review gap.** 当前自动内容审计为完整非模板化契约
-  **150/150**、experiment-ready **150/150**；独立人工审核仍为
-  **0/150**。因此可以运行正式模型实验，但不能宣称 paper-ready
-  adjudicated benchmark。
-- **Repository evidence availability.** 默认 Main 鼓励 Agent 自己发现、改写和
-  编写测试；48/150 当前源码快照含可发现的上游测试文件。该比例是 Agent
-  可用证据统计，不是合格门槛，因为 benchmark 明确评估 Agent 自行发现或构造
-  验证用例的能力。
-- **Public feedback asymmetry.** 默认 Main 在提交前不暴露任何 Benchmark
-  evaluator tests；Public-feedback 是显式挂载基础 evaluator tests 的对照臂。
-  历史结果中的 `Main`/`No-public` 使用旧命名，比较时必须按真实可见性重标。
-- **Attribution evidence.** 550-run 失败归因为 entrypoint-conditioned OpenHands 上的自动启发式观察，待人工复核，非严格因果分解。
+## Task design and review
 
-## Evaluation and scoring
+- **AI-assisted provenance.** 契约、taxonomy 和部分 closure 记录由
+  AI-assisted/maintainer workflow 产生。独立人工审核不是准入门槛，这些
+  记录不能写成 independently adjudicated human gold。
+- **Hidden-test completeness.** Public/hidden 都受同一公开契约约束，但有限
+  测试不能证明完整语义等价。未覆盖行为可能造成假阳性。
+- **Evidence asymmetry.** 完整仓库保留 upstream tests/docs/examples，
+  但项目之间证据丰富度差异很大；Agent 的任务难度同时受上游工程质量影响。
+- **Difficulty labels.** 当前 150/150 metadata 为 `hard`，旧 Core-100 /
+  Hard-50 是构造切片，不是 v3 empirical difficulty。必须用首轮 frozen v3
+  baseline 重校准。
+- **No extraction-authenticity proof.** Benchmark 允许复制、裁剪和适配，也
+  允许行为等价重构；当前没有可靠判据证明 submission 一定“理解并提取”
+  而不是基于契约重写。
 
-- **Hidden tests are deeper coverage of the public contract, not a secret second spec**（宪法要求）；若题面违规引入未声明义务，则属出题错误而非 Agent 能力。
-- **Compactness proxy.** `extraction_ratio` 可能惩罚合理 closure，也可能漏检语义 over-copy；**不是**最小闭包证明。
-- **Functional gate is binary.** Build + tests + forbidden-import 全过才计分；部分正确提取与 compact 失败无法细分 partial credit。
-- **Reference LOC variability.** `oracle_loc` / reference closure 并非每题都完整填充；compactness 跨题比较需结合 task-local manifest。
-- **Path leakage checks.** 禁止 import 原仓库路径；symlink、动态 import、资源路径等检测随 harness 演进，未必覆盖所有绕过方式。
+## Evaluation
 
-## Oracle and baselines
+- **Binary functional gate.** Build + public + hidden + isolation 全过才 pass；
+  不提供部分正确性的 headline credit。
+- **Reference-relative proxy.** Frozen reference 是一个可行实现，不是唯一
+  最小解。LOC/file/copy/dependency 指标只能描述紧凑性，不能证明最小闭包。
+- **Copy detection.** Copied LOC 使用保守的 normalized line-sequence
+  heuristic；重排、改名和语义复制可能漏检，常见模板也可能造成误报。
+- **Isolation coverage.** Forbidden imports、paths、dependencies、symlinks、
+  dynamic imports 和 resources 的检查仍可能存在绕过方式。
+- **Public-feedback naming history.** 旧实验曾用 `Main` 表示 public tests
+  可见、`No-public` 表示不可见。历史结果必须按实际可见性重标，不能只读
+  run 名称。
+- **Agent/evaluator status mismatch.** Agent step-limit 后可能留下 evaluator
+  可通过的 submission。Functional Pass、Agent completion 和 process failure
+  必须分别报告。
 
-- **Oracle is a construction baseline, not ground truth.** Oracle submission 由 harness 构建；relocation、vendor、grammar resource 等规则迭代会影响「可复现 oracle」而非 task 语义本身。
-- **Versioned quarantine.** 历史 freeze 可能含 quarantine 题；aggregate 必须使用当前 [STATUS.md](STATUS.md) 中的 freeze 与 ledger 口径。
+## Reproducibility and licensing
 
-## Annotations and paper release
+- **Large archives are not committed.** Canonical archives在本地
+  `benchmark/sources/archives/`，Git 只记录 registry、digest 和
+  materialization logic。复现依赖上游仍可获取或研究者保存已验证 archive。
+- **Upstream licensing.** 126 external sources 有不同许可证；benchmark release
+  需要继续核对源码再分发、reference code 和派生 submission 的许可证义务。
+- **Environment coupling.** 结果依赖 Python、vendor wheels、Docker、
+  OpenHands、模型 provider/router 和资源限制；freeze 能记录条件，但不能
+  消除所有平台差异。
 
-- **AI-assisted annotations.** v1.1 behavior contracts、closure gold、taxonomy 含 AI-assisted 行；在独立人工审阅完成前，不能写成 human gold。
-- **Pilot scope.** ECSM Pilot-10 用于机制诊断，不能外推 Python150 总体表现；Pilot 执行另受数据导出授权约束。
+## Experimental evidence
 
-## Agent and runtime
+- **No v3 model baseline yet.** 当前模型数字全部来自
+  `mixed_snapshot_v1`；不能用于声明 v3 Full-Repository / No-Hint 的绝对
+  性能。
+- **One-attempt variance.** Pass@1 是主要比较口径，但单次轨迹不能回答模型
+  随机性和稳定性。若研究 variance，需要预注册重复实验。
+- **Historical failure attribution.** 550-run trajectory analysis 来自旧
+  source/hint 条件，机制假设可复用，比例不可直接外推。
+- **Go is calibration only.** Go tasks 尚未通过与 Python v3 同等级的
+  source/spec/Oracle/freeze 门禁，不应进入混合 leaderboard。
 
-- **Docker boundary.** Agent/eval 默认 Docker 隔离；宿主机路径、网络、资源限制与真实 IDE 环境可能不同。
-- **Model and harness coupling.** 分数依赖 agent 框架（如 OpenHands）、模型版本与 prompt；跨 run 比较需冻结 [paper_runs_frozen.md](paper_runs_frozen.md) 中的 run ID。
-
-## Related
-
-- 失败标签：[05_failure_taxonomy.md](05_failure_taxonomy.md)
-- 当前 gate 状态：[STATUS.md](STATUS.md) · [research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md)
+当前 gate 状态见 [STATUS.md](STATUS.md)，设计前提见
+[BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)，实验口径见
+[EXPERIMENTS.md](EXPERIMENTS.md)。

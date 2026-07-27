@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Run (or plan) the canonical compliant Python-150 test-blind Main suite.
+# Run (or plan) the canonical Full-Repository / No-Hint Python-150 Main suite.
 #
 # Invariants:
 # - OpenHands with an explicitly selected model profile
-# - all 150 current benchmark/tasks entries, each spec_status=compliant
-# - Main arm (benchmark evaluator tests hidden; standard prompt)
+# - all 150 tasks from verified canonical complete source snapshots
+# - Main arm (no source-location hints; benchmark evaluator tests hidden)
 # - agent Docker + eval Docker
 # - one agent attempt per task (Pass@1; rate-limit retries are infra retries)
 set -euo pipefail
@@ -100,6 +100,14 @@ if not model:
     raise SystemExit(f"Profile has no model: {profile_name}")
 if not command:
     raise SystemExit(f"Profile is not configured for OpenHands: {profile_name}")
+if bool(profile.get("mount_public_tests", False)):
+    raise SystemExit(f"Main profile exposes benchmark public tests: {profile_name}")
+if bool(profile.get("expose_source_hints", False)):
+    raise SystemExit(f"Main profile exposes source hints: {profile_name}")
+if str(profile.get("prompt_style", "standard")).strip().lower() != "standard":
+    raise SystemExit(f"Main profile must use prompt_style=standard: {profile_name}")
+if str(profile.get("source_context", "full_repository")).strip().lower() != "full_repository":
+    raise SystemExit(f"Main profile must use source_context=full_repository: {profile_name}")
 print(model)
 PY
 )"
@@ -232,10 +240,9 @@ if failures:
 print("Compliance preflight: 150/150 compliant and valid")
 PY
 
-"$PYTHON" -B scripts/audit_new_protocol_readiness.py \
-  benchmark/tasks \
-  --strict-experiment \
-  --summary-only
+"$PYTHON" -B scripts/materialize_full_sources.py --check
+"$PYTHON" -B scripts/build_v3_benchmark_freeze.py --check
+"$PYTHON" -B scripts/audit_v3_main_readiness.py --strict --check
 
 if [[ -n "$RESUME_DIR" ]]; then
   OUTPUT_DIR="$(cd "$(dirname "$RESUME_DIR")" && pwd)/$(basename "$RESUME_DIR")"
@@ -254,6 +261,9 @@ COMMAND=(
   --agent-profile "$PROFILE"
   --agent-command "$OPENHANDS_COMMAND"
   --no-agent-public-tests
+  --no-agent-source-hints
+  --prompt-style standard
+  --source-context full_repository
   --env-file .env
   --num-workers "$WORKERS"
   --timeout-seconds "$TIMEOUT"
@@ -273,10 +283,10 @@ COMMAND+=("${TASK_ARGS[@]}")
 
 echo "Profile: $PROFILE"
 echo "Model: $MODEL"
-echo "Arm: main (benchmark evaluator tests hidden; standard prompt)"
+echo "Arm: Full-Repository / No-Hint Main (benchmark evaluator tests hidden)"
 echo "Selected: ${#TASK_IDS[@]} main tasks (Python-150)"
 echo "Pass metric: Pass@1 (one agent attempt per task)"
-echo "Release status: experiment-ready; independent human review remains pending for paper release"
+echo "Release status: v3 hardened benchmark freeze passed; empirical difficulty labels are reported post hoc"
 echo "Workers: $WORKERS"
 echo "Timeout: $TIMEOUT seconds/task"
 echo "Agent image: $AGENT_IMAGE"
@@ -293,6 +303,8 @@ fi
 
 export FEATURELIFTBENCH_MOUNT_PUBLIC_TESTS=0
 export FEATURELIFTBENCH_PROMPT_STYLE=standard
+export FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS=0
+export FEATURELIFTBENCH_SOURCE_CONTEXT=full_repository
 export FEATURELIFTBENCH_OPENHANDS_MAX_STEPS="${FEATURELIFTBENCH_OPENHANDS_MAX_STEPS:-120}"
 
 PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \

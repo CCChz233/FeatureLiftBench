@@ -163,13 +163,14 @@ def initialize_repo_graph(
             "evaluation_inputs": 0,
             "reference_solution_inputs": 0,
         },
-        "entrypoint_mapping": overlay["entrypoint_mapping"],
         "self_check": self_check,
         "duration_seconds": round(time.monotonic() - started, 6),
         "graph_bytes": _directory_bytes(base),
         "rss_peak_bytes": _peak_rss_bytes(),
         "rss_delta_bytes": max(0, _peak_rss_bytes() - rss_before),
     }
+    if "entrypoint_mapping" in overlay:
+        build_record["entrypoint_mapping"] = overlay["entrypoint_mapping"]
     _write_json(agent_output / "repo_graph_build.json", build_record)
     _write_json(
         agent_output / "repo_graph_usage.json",
@@ -419,6 +420,7 @@ def _build_task_overlay(
         metadata.get("environment") if isinstance(metadata.get("environment"), dict) else {}
     )
     entrypoints = _string_list(feature.get("source_entrypoints"))
+    has_source_hints = "source_entrypoints" in feature
     behaviors = _string_list(feature.get("included_behaviors"))
     mappings = [_map_entrypoint(entrypoint, engine) for entrypoint in entrypoints]
     public_inventory = []
@@ -441,8 +443,6 @@ def _build_task_overlay(
             {"id": f"behavior:B{index:03d}", "description": behavior}
             for index, behavior in enumerate(behaviors, start=1)
         ],
-        "source_entrypoints": entrypoints,
-        "entrypoint_mapping": mappings,
         "output_api": {
             key: output.get(key, "")
             for key in ("package", "import", "callable", "module", "signature", "symbols")
@@ -463,7 +463,11 @@ def _build_task_overlay(
         },
         "public_tests": public_inventory,
         "private_to_run": True,
+        "agent_claim_required": True,
     }
+    if has_source_hints:
+        payload["source_entrypoints"] = entrypoints
+        payload["entrypoint_mapping"] = mappings
     payload["overlay_digest"] = digest_json(payload)
     return payload
 
@@ -509,7 +513,6 @@ def _build_closure_overlay(overlay: dict[str, Any], engine: GraphQueryEngine) ->
                 risks.append(engine._compact_edge(edge))
     payload = {
         "schema_version": "featureliftbench.repo_graph.closure_overlay.v1",
-        "entrypoints": [node.stable_id for node in roots],
         "candidate_nodes": [
             engine._compact_node(engine.index.nodes_by_id[node_id]) for node_id in sorted(visited)
         ],
@@ -519,6 +522,8 @@ def _build_closure_overlay(overlay: dict[str, Any], engine: GraphQueryEngine) ->
         "classification": "candidate_only",
         "agent_claim_required": True,
     }
+    if "source_entrypoints" in overlay:
+        payload["entrypoints"] = [node.stable_id for node in roots]
     payload["closure_digest"] = digest_json(payload)
     return payload
 
@@ -533,25 +538,24 @@ def _write_closure_views(
         "",
         "This is an advisory exact-edge candidate, not a completed closure claim.",
         "The Agent must classify required, replaceable, incidental, optional, or excluded artifacts.",
-        "",
-        "## Entrypoints",
     ]
-    lines.extend(f"- `{item}`" for item in closure.get("entrypoints", []))
+    if "source_entrypoints" in overlay:
+        lines.extend(["", "## Entrypoints"])
+        lines.extend(f"- `{item}`" for item in closure.get("entrypoints", []))
     lines.extend(["", "## Candidate nodes"])
     for node in closure.get("candidate_nodes", [])[:100]:
         lines.append(f"- `{node.get('stable_id', '')}`")
     (root / "closure_plan.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    _write_json(
-        root / "dependency_manifest.json",
-        {
-            "schema_version": "featureliftbench.repo_graph.dependency_manifest.v1",
-            "task_id": overlay.get("task_id", ""),
-            "source_entrypoints": overlay.get("source_entrypoints", []),
-            "candidate_nodes": closure.get("candidate_nodes", []),
-            "uncertain_risks": closure.get("uncertain_risks", []),
-            "agent_claim_required": True,
-        },
-    )
+    dependency_manifest = {
+        "schema_version": "featureliftbench.repo_graph.dependency_manifest.v1",
+        "task_id": overlay.get("task_id", ""),
+        "candidate_nodes": closure.get("candidate_nodes", []),
+        "uncertain_risks": closure.get("uncertain_risks", []),
+        "agent_claim_required": True,
+    }
+    if "source_entrypoints" in overlay:
+        dependency_manifest["source_entrypoints"] = overlay["source_entrypoints"]
+    _write_json(root / "dependency_manifest.json", dependency_manifest)
 
 
 def _build_bootstrap(
@@ -568,14 +572,19 @@ def _build_bootstrap(
         return _build_auto_support_bootstrap(engine=engine, overlay=overlay, policy=policy)
 
     # tool_only: short contract + strong usage cue for hard failures.
+    seed_name = (
+        "task entrypoint"
+        if "source_entrypoints" in overlay
+        else "candidate symbol you locate from the functional contract"
+    )
     prefix = (
         f"{PROMPT_MARKER}\n\n"
         "A deterministic repository fact graph is available as **optional** advisory tools.\n"
         "- `flb-rsg search <query>`\n"
         "- `flb-rsg inspect <stable_id>`\n"
         "- `flb-rsg support --seed <stable_id_or_name> [--budget-tokens N]`\n\n"
-        "Efficiency cue: after identifying the task entrypoint, prefer "
-        "`flb-rsg support --seed <entrypoint>` once before broad recursive search. "
+        f"Efficiency cue: after identifying a {seed_name}, prefer "
+        "`flb-rsg support --seed <symbol>` once before broad recursive search. "
         "Use support again when public tests fail on missing API, config, resource, "
         "or registry/dispatch behavior. Source code remains authoritative; "
         "probable edges are hypotheses. Do not edit graph files.\n\n"
@@ -612,8 +621,8 @@ def _build_auto_support_bootstrap(
     )
     if not seeds:
         rendered = header + (
-            "`auto_support` had no resolvable entrypoints; "
-            "call `flb-rsg support --seed ...` yourself.\n"
+            "`auto_support` has no preselected seed in this arm; locate a candidate "
+            "symbol from the contract, then call `flb-rsg support --seed ...` yourself.\n"
         )
         if len(rendered) > policy.bootstrap_max_chars:
             raise ValueError("repo graph bootstrap exceeded configured character budget")

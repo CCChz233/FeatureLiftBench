@@ -24,7 +24,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Audit FeatureLiftBench tasks for the test-blind Main protocol: complete "
-            "contract for experiment readiness, plus independent review for paper readiness."
+            "public contract, repository context, and hidden benchmark evaluators."
         )
     )
     parser.add_argument(
@@ -43,7 +43,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--strict",
         action="store_true",
-        help="backward-compatible alias for --strict-paper",
+        help="backward-compatible alias for --strict-experiment",
     )
     parser.add_argument(
         "--strict-experiment",
@@ -53,7 +53,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--strict-paper",
         action="store_true",
-        help="exit 1 unless every task also has independent human review",
+        help=(
+            "deprecated alias for --strict-experiment; independent human review "
+            "is not a benchmark admission gate"
+        ),
     )
     return parser.parse_args()
 
@@ -146,14 +149,6 @@ def _audit_task(task_dir: Path) -> dict[str, Any]:
         str(path) for path in relative_repo_files if _is_doc_or_example(path)
     ]
 
-    manual_review = (
-        evaluation_spec.get("manual_review")
-        if isinstance(evaluation_spec.get("manual_review"), dict)
-        else {}
-    )
-    independent_human_review = (
-        manual_review.get("independent_human_review") is True
-    )
     source_entrypoints = public_spec.get("source_entrypoints")
     source_entrypoints = (
         [str(item) for item in source_entrypoints if isinstance(item, str) and item]
@@ -166,8 +161,6 @@ def _audit_task(task_dir: Path) -> dict[str, Any]:
         issues.append("not_engineering_compliant")
     if not repo_files:
         issues.append("missing_repository_snapshot")
-    if not source_entrypoints:
-        issues.append("missing_source_entrypoints")
     if not required_api:
         issues.append("missing_required_api")
     if not behaviors:
@@ -176,15 +169,12 @@ def _audit_task(task_dir: Path) -> dict[str, Any]:
         issues.append("generic_behavior_contract")
     if missing_callable_signatures:
         issues.append("missing_callable_signatures")
-    if not independent_human_review:
-        issues.append("independent_human_review_pending")
 
     engineering_ready = not any(
         issue
         in {
             "not_engineering_compliant",
             "missing_repository_snapshot",
-            "missing_source_entrypoints",
             "missing_required_api",
             "missing_behaviors",
         }
@@ -196,7 +186,6 @@ def _audit_task(task_dir: Path) -> dict[str, Any]:
     )
     repository_discovery_ready = bool(upstream_test_files)
     experiment_ready = engineering_ready and contract_ready
-    paper_ready = experiment_ready and independent_human_review
     return {
         "task_id": task_dir.name,
         "spec_status": metadata.get("spec_status"),
@@ -204,18 +193,16 @@ def _audit_task(task_dir: Path) -> dict[str, Any]:
         "upstream_test_file_count": len(upstream_test_files),
         "upstream_test_files_sample": upstream_test_files[:10],
         "doc_or_example_file_count": len(doc_or_example_files),
-        "source_entrypoint_count": len(source_entrypoints),
+        "private_source_entrypoint_count": len(source_entrypoints),
         "required_api_count": len(required_api),
         "behavior_count": len(behaviors),
         "generic_behavior_ids": generic_behavior_ids,
         "missing_callable_signatures": missing_callable_signatures,
-        "independent_human_review": independent_human_review,
-        "reviewer_type": manual_review.get("reviewer_type"),
         "engineering_ready": engineering_ready,
         "contract_ready": contract_ready,
         "experiment_ready": experiment_ready,
+        "content_ready": experiment_ready,
         "repository_discovery_ready": repository_discovery_ready,
-        "paper_ready": paper_ready,
         "issues": issues,
     }
 
@@ -231,12 +218,12 @@ def audit(tasks_root: Path) -> dict[str, Any]:
         issue for task in tasks for issue in task.get("issues", [])
     )
     return {
-        "schema_version": "featureliftbench.new_protocol_readiness.v2",
+        "schema_version": "featureliftbench.new_protocol_readiness.v3",
         "tasks_root": str(tasks_root.resolve()),
         "protocol": {
             "agent_visible": [
                 "generated TASK.md",
-                "pinned repo/ including upstream tests/docs/examples when present",
+                "canonical source-registry workspace (scope/digests audited separately)",
                 "dependency lock and redacted runtime metadata",
                 "writable submission/",
             ],
@@ -245,6 +232,7 @@ def audit(tasks_root: Path) -> dict[str, Any]:
                 "benchmark hidden_tests/",
                 "evaluation/",
                 "reference/oracle artifacts",
+                "source entrypoints and implementation-location hints",
             ],
             "post_submit": [
                 "build/import",
@@ -262,10 +250,7 @@ def audit(tasks_root: Path) -> dict[str, Any]:
             "repository_discovery_ready": sum(
                 task["repository_discovery_ready"] for task in tasks
             ),
-            "independent_human_review": sum(
-                task["independent_human_review"] for task in tasks
-            ),
-            "paper_ready": sum(task["paper_ready"] for task in tasks),
+            "content_ready": sum(task["content_ready"] for task in tasks),
             "issue_counts": dict(sorted(issue_counts.items())),
         },
         "tasks": tasks,
@@ -276,10 +261,16 @@ def _markdown(report: dict[str, Any]) -> str:
     summary = report["summary"]
     task_count = summary["task_count"]
     lines = [
-        "# New Protocol Readiness Audit",
+        "# Test-Blind Task Content Readiness Audit",
         "",
-        "Protocol: complete generated TASK + pinned upstream repository context; "
+        "> Contract/test-blindness sub-audit only. The current v2 release decision "
+        "is `reports/audits/v3_main_readiness.md`.",
+        "",
+        "Protocol: complete generated TASK + canonical pinned source workspace; "
         "all benchmark-authored evaluator tests hidden until one-shot submission.",
+        "",
+        "Scope note: this audit checks task content and test blindness; it does not "
+        "certify Full-Repository source materialization or source digests.",
         "",
         "## Summary",
         "",
@@ -289,8 +280,7 @@ def _markdown(report: dict[str, Any]) -> str:
         f"| Complete non-generic contract | {summary['contract_ready']}/{task_count} |",
         f"| Experiment-ready content | {summary['experiment_ready']}/{task_count} |",
         f"| Upstream tests available in `repo/` (informational) | {summary['repository_discovery_ready']}/{task_count} |",
-        f"| Independent human review | {summary['independent_human_review']}/{task_count} |",
-        f"| Paper-ready for new protocol | {summary['paper_ready']}/{task_count} |",
+        f"| Task content ready (source scope excluded) | {summary['content_ready']}/{task_count} |",
         "",
         "## Issue Counts",
         "",
@@ -304,8 +294,8 @@ def _markdown(report: dict[str, Any]) -> str:
             "",
             "## Per-task Queue",
             "",
-            "| Task | Repo files | Upstream tests | Contract | Human | Issues |",
-            "| --- | ---: | ---: | --- | --- | --- |",
+            "| Task | Repo files | Upstream tests | Contract | Issues |",
+            "| --- | ---: | ---: | --- | --- |",
         ]
     )
     for task in report["tasks"]:
@@ -314,7 +304,7 @@ def _markdown(report: dict[str, Any]) -> str:
             f"| `{task['task_id']}` | {task['repo_file_count']} | "
             f"{task['upstream_test_file_count']} | "
             f"{'ready' if task['contract_ready'] else 'fix'} | "
-            f"{'yes' if task['independent_human_review'] else 'no'} | {issues} |"
+            f"{issues} |"
         )
     lines.append("")
     return "\n".join(lines)
@@ -342,8 +332,7 @@ def main() -> int:
             f"experiment-ready {summary['experiment_ready']}/{task_count}; "
             "upstream-tests "
             f"{summary['repository_discovery_ready']}/{task_count}; "
-            f"human {summary['independent_human_review']}/{task_count}; "
-            f"paper-ready {summary['paper_ready']}/{task_count}"
+            f"content-ready {summary['content_ready']}/{task_count}"
         )
     elif not args.json_out and not args.markdown_out:
         print(payload, end="")
@@ -355,7 +344,7 @@ def main() -> int:
         return 1
     if (
         (args.strict or args.strict_paper)
-        and report["summary"]["paper_ready"] != task_count
+        and report["summary"]["content_ready"] != task_count
     ):
         return 1
     return 0

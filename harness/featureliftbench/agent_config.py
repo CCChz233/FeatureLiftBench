@@ -58,6 +58,8 @@ def load_agent_run_config(
     env_file: str | Path | None = None,
     mount_public_tests: bool | None = None,
     prompt_style: str | None = None,
+    expose_source_hints: bool | None = None,
+    source_context: str | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
 
@@ -81,6 +83,8 @@ def load_agent_run_config(
         process_env=os.environ,
         mount_public_tests=mount_public_tests,
         prompt_style=prompt_style,
+        expose_source_hints=expose_source_hints,
+        source_context=source_context,
     )
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
@@ -414,6 +418,8 @@ def load_agent_run_config(
         "ablation_arm": ablation.ablation_arm,
         "mount_public_tests": ablation.mount_public_tests,
         "prompt_style": ablation.prompt_style,
+        "expose_source_hints": ablation.expose_source_hints,
+        "source_context": ablation.source_context,
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 

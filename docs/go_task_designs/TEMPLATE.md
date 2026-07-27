@@ -1,6 +1,7 @@
 # Task Design: `<task_id>` (Go)
 
-> Machine-readable spec: [GO_TASK_FORMAT.md](../GO_TASK_FORMAT.md). Human design note for Go track.
+> Package schema: [Task Schema](../06_task_schema.md). Human maintainer note for
+> the Go calibration track; not Agent-visible.
 
 Status: draft | design-approved | oracle-verified | agent-calibrated | calibration | paper_ready_hard | redesign | dropped
 
@@ -99,9 +100,9 @@ Go hard 题必须是 **symbol / behavior boundary**，不是文件边界。这�
 ### File-boundary rejection check
 
 - [ ] oracle 不是从 `repo/` 复制一组完整 `.go` 文件得到的
-- [ ] public tests / TASK 不透露目标文件名
+- [ ] public contract / TASK 不透露目标文件名；Main 不向 Agent 暴露评分测试
 - [ ] 文件名和注释不标记 `excluded` / `noise` / `non-target`
-- [ ] copy_all pass 但 extraction 显著高于 oracle
+- [ ] copy_all 功能通过，但 reference-relative compactness 显著差于 reference
 
 ## Environment
 
@@ -133,13 +134,14 @@ Go hard 题必须是 **symbol / behavior boundary**，不是文件边界。这�
 
 ## Baseline Expectations
 
-| Variant | Public | Hidden | Extraction |
+| Variant | Public | Hidden | Reference-relative size |
 | --- | --- | --- | --- |
-| oracle | pass | pass | 0.20–0.60 |
-| naive | pass | **fail** | ≤0.10 |
-| copy_all | pass | pass | ≥0.85, Δ≥0.25 vs oracle |
+| reference | pass | pass | 1.0 |
+| naive | pass | **fail** | report |
+| copy_all | pass | pass | clearly > 1.0 |
 
-若 Flash hidden pass 且 extraction 等于 oracle，或接近 copy_all，本题只能是 calibration。
+若 Flash 直接达到 reference 行为与体量，或仅靠 copy-all 过关，本题只能保留为
+calibration，不能据此宣称高难度。
 
 ## Oracle Closure Estimate
 
@@ -149,7 +151,7 @@ Go hard 题必须是 **symbol / behavior boundary**，不是文件边界。这�
 
 ## Agent Calibration（promote 前填）
 
-| Model | Public | Hidden | Extraction | Final | Tier |
+| Model | Public | Hidden | Compactness | Functional Pass | Tier |
 | --- | --- | --- | --- | --- | --- |
 | deepseek_v4_flash | | | | | A/B/C |
 
@@ -165,5 +167,5 @@ Decision: promote_calibration | paper_ready_hard | redesign | drop
 
 ## References
 
-- [GO_PILOT_PLAYBOOK.md](../GO_PILOT_PLAYBOOK.md)
-- [GO_QUALITY_RUBRIC.md](../GO_QUALITY_RUBRIC.md)
+- [Go split docs](../go/README.md)
+- [Go difficulty rubric](../go/03_go_difficulty_rubric.md)

@@ -1,6 +1,10 @@
 # Failure attribution audit — 2026-07-20
 
-This directory contains the strict failure-attribution analysis for the frozen 550-run Python OpenHands corpus.
+> Historical analysis of the frozen 550-run v1/mixed-snapshot Python OpenHands
+> corpus. Failure categories remain useful, but rates are not v2 Main results.
+
+This directory contains the strict failure-attribution analysis for that
+historical corpus.
 
 Primary deliverables:
 

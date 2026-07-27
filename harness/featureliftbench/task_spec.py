@@ -128,10 +128,6 @@ def validate_public_spec_shape(public_spec: dict[str, Any]) -> list[str]:
                     errors.append(f"duplicate behavior id: {entry['id']}")
                 ids.add(entry["id"])
 
-    entrypoints = public_spec.get("source_entrypoints")
-    if not isinstance(entrypoints, list) or not entrypoints:
-        errors.append("public_spec.source_entrypoints must be a non-empty list")
-
     exclusions = public_spec.get("exclusions")
     if not isinstance(exclusions, list):
         errors.append("public_spec.exclusions must be a list")

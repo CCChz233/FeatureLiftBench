@@ -620,7 +620,6 @@ def harden_task(task_dir: Path, *, write: bool) -> dict[str, Any]:
     evaluation_spec["experiment_contract_hardening"] = {
         "method": "existing_contract_and_test_mapping_review",
         "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-        "independent_human_review": False,
     }
 
     surface_source = _render_required_api_surface_test(

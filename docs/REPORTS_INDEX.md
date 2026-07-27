@@ -1,85 +1,81 @@
-# Reports index（可提交版）
+# Reports index
 
-`reports/` 默认属于本地生成物；只有 freeze、发布门禁和小型 audit 摘要进入
-Git。本文件区分已跟踪的发布证据与不提交的本地实验结果。
+数字状态以 [STATUS.md](STATUS.md) 为准。`reports/` 保存机器审计、结果摘要和
+历史证据；大体积原始运行保存在本地 `experiments/`，默认不提交。
 
-数字型当前状态以 [STATUS.md](STATUS.md) 为准，不以 sprint 报告为准。
-
-## 规格宪法（2026-07-24）
-
-| 本地路径 | 内容 |
-| --- | --- |
-| `reports/audits/spec_compliance_frozen_20260724.csv` | 已跟踪的主榜冻结合规清单（150 compliant / 0 legacy） |
-| `reports/audits/new_protocol_readiness.md` | Test-blind 新协议内容就绪度与逐题修订队列 |
-| `artifacts/research_analysis/v1_1/current_spec_freeze.json` | 已跟踪的 spec 与 Oracle 内容冻结标识 |
-| [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | 迁移 CLI 与 rebaseline 手册 |
-
-`reports/constitution/`、`experiments/`、Agent 轨迹与原始模型输出不进入 Git。
-历史结果只在文档中标明口径，不作为当前 benchmark source of truth。
-
-## 当前分析
-
-| 本地路径 | 内容 |
-| --- | --- |
-| `reports/token_efficiency_20260720/README.md` | 550-run token / 过程分析（历史文中或仍提 ECSM，以 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) 为准） |
-| `reports/token_efficiency_20260720/token_efficiency_analysis.ipynb` | 550-run 可复现分析 |
-| `reports/token_efficiency_20260720/validation.md` | 数据质量、spot checks 与结论边界 |
-
-## RSG mechanism evidence
+## v3 当前权威证据
 
 | 路径 | 内容 |
 | --- | --- |
-| `experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/` | 干净的 2-cell P0/P3 付费采用门控；因缺 `task-closure` 停止 |
-| `experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723/` | 控制器错误审计目录；已 invalidated，不进入分析 |
+| [`reports/audits/v3_main_readiness.md`](../reports/audits/v3_main_readiness.md) | Python-150 × 八原则逐题验收 |
+| [`reports/audits/v3_main_readiness.json`](../reports/audits/v3_main_readiness.json) | 机器可读 readiness |
+| [`reports/audits/v3_oracle_revalidation/summary.md`](../reports/audits/v3_oracle_revalidation/summary.md) | 150 × 3 Docker Oracle 稳定性 |
+| [`reports/audits/v3_adversarial_canaries.json`](../reports/audits/v3_adversarial_canaries.json) | 12 个 isolation/compactness 对抗样例 |
+| [`benchmark/sources/registry.json`](../benchmark/sources/registry.json) | 126 external repos / 132 snapshots / 150 task mappings |
+| [`artifacts/research_analysis/v3/current_benchmark_freeze.json`](../artifacts/research_analysis/v3/current_benchmark_freeze.json) | active v3 source/spec/reference/evaluator/environment freeze |
+| [`reports/audits/task_lifecycle_report.md`](../reports/audits/task_lifecycle_report.md) | task package lifecycle |
+| [`reports/audits/new_protocol_readiness.md`](../reports/audits/new_protocol_readiness.md) | 公开契约与 evaluation mapping 工程门禁 |
 
-当前还没有正式「可选通用 RSG 工具」效果报告。上述 clean1 证据只支持「旧强制采用门 fragile」的历史诊断，不支持效果归因。
+旧的 source/no-hint 预审、Pilot-16 计划和整改 checklist 已被
+`v3_main_readiness` 与 active freeze 取代，不再保留为并列入口。
 
-## Paper analysis（本地 `reports/paper_analysis/`）
+## 当前模型结果
 
-| 本地路径 | 内容 |
+v3 Full-Repository / No-Hint baseline 尚未运行。
+
+| 路径 | 口径 |
 | --- | --- |
-| `reports/paper_analysis/executive_summary.md` | 一页结果摘要 |
-| `reports/paper_analysis/rq1_main_table.md` | RQ1 主表 |
-| `reports/paper_analysis/failure_taxonomy*.json/csv` | 失败分布 |
-| `reports/paper_analysis/rq4_compactness.json` | Compactness |
-| `reports/paper_analysis/rq5_slices.json` | 切片通过率 |
-| `reports/paper_analysis/case_studies/` | 案例 |
-| `reports/paper_analysis/formal-runs-summary.json` | 正式 run 汇总 |
+| [`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/) | `mixed_snapshot_v1` 四模型 candidate；非 v3 |
+| [`reports/archive/v1_mixed_snapshot_runs_20260712.md`](../reports/archive/v1_mixed_snapshot_runs_20260712.md) | 2026-07-12 更早冻结 run 集；历史复现 |
+| [`reports/paper_analysis/`](../reports/paper_analysis/) | 上述 2026-07-12 run set 的生成分析；历史 |
 
-规范口径与冻结 run：[paper_runs_frozen.md](paper_runs_frozen.md) · 表草稿：[paper_tables.md](paper_tables.md) · 实验清单：[EXPERIMENTS.md](EXPERIMENTS.md)
+## 历史失败与成本分析
 
-重建：
-
-```bash
-PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
-```
-
-## Batch-3 sprint 归档（本地 `reports/archive/batch3_202607/`）
-
-| 本地路径 | 角色 |
+| 路径 | 作用 |
 | --- | --- |
-| `reports/archive/batch3_202607/python_hard_batch3_sprint_summary.md` | 100→150 摘要（历史） |
-| `reports/archive/batch3_202607/python_hard_batch3_plan.md` | 计划 |
-| `reports/archive/batch3_202607/python_hard_batch3_pilot.md` | Pilot |
-| `reports/archive/batch3_202607/python_hard_batch3_materialization.md` | 材料化 |
-| `reports/archive/batch3_202607/python_hard_batch3_eval_verification.md` | Eval 验证 |
-| `reports/archive/batch3_202607/batch3_promotion_readiness.md` | Promote 门禁快照 |
-| `reports/archive/batch3_202607/batch3_next_stage_implementation_20260708.md` | 下一阶段笔记 |
+| [`reports/failure_attribution_20260720/`](../reports/failure_attribution_20260720/) | 550-run failure attribution |
+| [`reports/token_efficiency_20260720/`](../reports/token_efficiency_20260720/) | token/context/process analysis |
+| [`docs/research_analysis/TRAJECTORY_FINDINGS.md`](research_analysis/TRAJECTORY_FINDINGS.md) | 轨迹案例与机制线索 |
 
-## Task audit / lifecycle（本地 `reports/audits/`）
+这些报告来自 v1/mixed conditions。分类方法可复用，绝对数字不能当作 v3
+结果。
 
-| 本地路径 | 角色 |
+## 已降级方法证据
+
+| 路径 | 状态 |
 | --- | --- |
-| `reports/audits/python_task_audit.md` | Task audit |
-| `reports/audits/task_lifecycle_report.md` | Lifecycle |
-| `reports/audits/missing_high_value_repos.md` | Repo 缺口 |
-| `reports/audits/benchmark_integrity_audit/` | Integrity |
+| [`reports/repo_graph_phase1/`](../reports/repo_graph_phase1/) | RSG 基础设施检查 |
+| [`reports/repo_graph_phase2/`](../reports/repo_graph_phase2/) | RSG smoke/hard A/B；未见 hidden-pass 增益 |
+| [`reports/repo_graph_phase3/`](../reports/repo_graph_phase3/) | 关系族原型 |
 
-## Related tracked docs
+RSG 不再是当前提分主线；ECSM 已废弃。旧方法规划文档已删除，原始实验结果
+保留用于复查。
 
-| Doc | Role |
-| --- | --- |
-| [research_analysis/TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md) | 轨迹分析（tracked） |
-| [research_analysis/BENCHMARK_TAXONOMY_REPORT.md](research_analysis/BENCHMARK_TAXONOMY_REPORT.md) | 题集 taxonomy |
-| [research_analysis/expert_review/](research_analysis/expert_review/) | 专家审阅包 |
-| [EXPERIMENTS.md](EXPERIMENTS.md) | 实验完成度与缺口 |
+## 归档
+
+[`reports/archive/`](../reports/archive/) 只保存仍有 provenance 价值的历史
+材料：
+
+- `batch3_202607/`：100→150 的构造、materialization 和 promotion 快照；
+- `v1_mixed_snapshot_runs_20260712.md`：旧 paper run freeze。
+
+完成的 sprint 和迁移计划不应重新链接为当前操作说明。
+
+## 新结果入库规则
+
+一个新的 v3 report 至少要记录：
+
+- active benchmark freeze ID；
+- model/agent/profile/arm；
+- agent/eval image digests；
+- exact task set 和 attempt policy；
+- evaluator Functional Pass@1；
+- agent completion/status mismatch；
+- compactness vector；
+- token/step/latency；
+- context/rerun/infra exception ledger；
+- suite checksum 和数据质量结果。
+
+运行流程见
+[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)，实验口径见
+[EXPERIMENTS.md](EXPERIMENTS.md)。

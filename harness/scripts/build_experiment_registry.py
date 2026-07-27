@@ -87,6 +87,8 @@ def _scope(path: Path, task_count: int) -> str:
         return "smoke"
     if "v1_1_infra_reevaluation" in parts:
         return "infra-reevaluation"
+    if task_count == 150 and "main" in name:
+        return "python150"
     if task_count == 100 and ("main" in name or "core" in name):
         return "core100"
     if task_count == 50 and ("hard50" in name or "batch3" in name):
@@ -299,7 +301,10 @@ def render_inventory(records: list[dict[str, Any]], study: dict[str, Any]) -> st
         "",
         "Generated from task-local `run.json` and `eval/result.json`; `suite.summary` is not trusted as a primary metric source.",
         "",
-        "## Python-150 composition",
+        "> The composition below is the historical `mixed_snapshot_v1` study. "
+        "No Full-Repository / No-Hint v2 model suite has been frozen yet.",
+        "",
+        "## Historical mixed-snapshot Python-150 composition",
         "",
         "| Model | Status | Coverage | Pass | Pass rate | Avg final |",
         "| --- | --- | ---: | ---: | ---: | ---: |",

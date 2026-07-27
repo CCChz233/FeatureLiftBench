@@ -1,95 +1,142 @@
 # Experiment Protocol
 
-## Goal
+## Official Main
 
-The experiment protocol measures end-to-end FeatureLift performance and diagnoses the roles of localization, dependency closure recovery, behavior preservation, packaging, and compactness. It is shared by Python and Go language splits.
+```text
+Agent: OpenHands
+Model: exact specified identifier/profile
+Arm: Main
+Source: canonical full-repository snapshot
+Hints: none
+Benchmark tests visible to Agent: none
+Sandbox: agent Docker + evaluator Docker
+Split: Python-150
+Attempts: 1 per task
+Primary: evaluator Functional Pass@1
+Secondary: reference-relative compactness
+```
 
-## Agents and Baselines
+Active benchmark freeze 和执行状态见 [STATUS.md](STATUS.md)。服务器操作见
+[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)。
 
-Recommended systems:
+## Required baselines
 
-- Single-shot LLM: prompt-only baseline without iterative tool use.
-- LLM with public test feedback: basic repair loop over visible tests.
-- mini-swe-agent: lightweight code-agent baseline.
-- OpenHands or SWE-agent: stronger repository-level agent baseline.
-- Oracle-locate agent: receives reference-related file hints to reduce localization burden.
-- Copy-all baseline: copies broad source packages or relevant repo regions to test compactness scoring.
+| Baseline | Purpose | Main table? |
+| --- | --- | --- |
+| OpenHands + target model | End-to-end Agent ability | Yes |
+| Multiple model strengths | Model discrimination | Yes |
+| Copy-all control | Compactness sanity check | No, diagnostic |
+| Frozen reference | Evaluator/oracle and compactness reference | No, construction control |
+| Naive/stub control | Hidden-test discrimination | No, task-quality control |
 
-Do not report copy-all as a normal agent. It is a diagnostic baseline for RQ4.
+Single-shot LLM、mini-swe-agent 或其他 Agent 可以作为扩展 baseline，但必须
+单独记录 agent harness，不能只按模型名比较。
 
-## Models
+## Ablations
 
-Use a small but diverse model set:
+| Arm | Changes from Main |
+| --- | --- |
+| Entrypoint-Hint | Adds frozen source-location hints |
+| Public-feedback | Exposes basic evaluator tests |
+| Pruned-Context | Replaces full source with declared pruned snapshot |
+| Short-prompt | Compresses prompt wording only |
+| Reference Support Set | Upper-bound closure information, if run |
 
-- Strong closed model.
-- Strong open code model.
-- Medium open model.
-- Local baseline model if operationally feasible.
+除声明变量外，task/spec/model/agent/evaluator/environment 必须保持一致。详细
+定义见 [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)。
 
-For published results, record exact model identifiers, dates, decoding settings, agent commit, harness commit, Docker image hash, and environment flags.
+## Before execution
 
-## Settings
+1. Checkout exact code revision。
+2. Verify active benchmark freeze。
+3. Materialize and digest-check 132 source snapshots。
+4. Validate all 150 tasks and No-Hint workspaces。
+5. Verify 450/450 Oracle evidence or rerun if freeze changed。
+6. Build fixed agent/eval images and record digests。
+7. Freeze model profile、prompt arm、timeouts、workers 和 attempt policy。
+8. Run one end-to-end smoke with the same images and visibility。
 
-| Setting | Description | RQ use |
-|---|---|---|
-| Standard | Agent receives task prompt, public tests, and full source repo | RQ1 |
-| Hint | Agent receives a small list of likely relevant files | RQ3 |
-| Oracle-Locate | Agent receives reference-related files or closure hints | RQ3 |
-| Copy-All | Baseline copies large source regions or packages | RQ4 |
+Runner plan mode must complete without calling the model. Any source/spec/
+evaluator/environment change invalidates the old freeze.
 
-The same setting names should be used for Python and Go.
+## During execution
 
-## Main Comparisons
+- One task gets at most one model attempt。
+- Resume only tasks without terminal `run.json`。
+- Do not retry a completed model failure and still label the suite Pass@1。
+- Log context-limit、step-limit、rate-limit、infra failure and manual intervention。
+- Do not inspect hidden failures to tune the running model/prompt。
+- Do not expose benchmark root、hidden/public evaluator assets、reference、
+  Docker socket、host home or secrets to the Agent container。
 
-- Standard versus hint versus oracle-locate.
-- Pass rate versus final score.
-- Public pass versus hidden pass.
-- Copy-all versus normal agents.
-- Easy, medium, hard, and very hard slices when calibrated.
-- Python versus Go as language splits, reported side by side only after each split has stable task quality.
+## Required artifacts
 
-## Reporting Tables
+Per task:
 
-Minimum paper tables:
+```text
+run.json
+submission/
+eval/result.json
+agent trajectory/stdout/stderr
+usage and timing
+```
 
-- Overall performance by agent and model.
-- Public-hidden gap by agent.
-- Oracle-locate ablation.
-- Compactness analysis with copy-all baseline.
-- Failure taxonomy distribution.
-- Task difficulty or property analysis.
+Per suite:
 
-Language split tables should use the same metric names. Avoid a mixed leaderboard if one split is mature and another is pilot-only.
+```text
+suite.json
+benchmark freeze ID
+task ID set
+agent/eval image digests
+model/profile/arm
+attempt and resume policy
+exception ledger
+checksums/data-quality report
+```
 
-## Run Protocol
+## Reporting
 
-For each official run:
+Primary table:
 
-1. Freeze benchmark task list and harness commit.
-2. Validate all task metadata and task directories.
-3. Build or verify oracle submissions where required by construction workflow.
-4. Run agents in clean workspaces without hidden tests.
-5. Evaluate submissions in Docker or an equivalent clean environment.
-6. Save per-task `run.json`, trajectory logs, submission, and eval `result.json`.
-7. Generate suite-level summaries.
-8. Separate infrastructure failures from agent/model failures.
+- evaluator Functional Pass@1；
+- assigned/completed；
+- confidence interval；
+- model/agent/profile；
+- context/infra exception counts。
 
-## Data Hygiene
+Secondary tables:
 
-- Never expose hidden tests, oracle manifests, scoring references, or evaluator configs to the agent.
-- Do not tune prompts on hidden failures from the final test split.
-- Keep public tests strong enough to specify the API but weak enough that hidden tests remain meaningful.
-- Report retries and failed infrastructure attempts explicitly.
+- build→public→hidden→isolation funnel；
+- compactness vector；
+- tokens、steps、API calls、latency；
+- repository/domain/entanglement/source-size/task-footprint slices；
+- paired ablations。
 
-## Operational pointers
+`run.status`、agent completion 和 evaluator functional gate must be shown
+separately when they disagree.
 
-- Living experiment inventory and gaps: [EXPERIMENTS.md](EXPERIMENTS.md)
-- Frozen paper run IDs: [paper_runs_frozen.md](paper_runs_frozen.md)
-- Server commands for hard50 / Python-150: [RUN.md](../RUN.md) §6.1
-- Result interpretation: [FINDINGS.md](FINDINGS.md)
+## Repeats
 
-## TODO
+Default paper comparison is one Pass@1 attempt per task, not 100 repeated suite
+runs. Additional repetitions answer variance/stability questions and must be
+reported as a separate experiment:
 
-- Complete matched hard-extension-50 for the three non-Flash models (see EXPERIMENTS.md).
-- Decide whether additional seeds/repeats are required beyond Pass@1 for paper tables.
-- Mark RQ3 Hint / Oracle-Locate as implemented only after harness settings exist and Pilot/ablation runs land.
+- same frozen task set；
+- same model/profile/arm；
+- independent run IDs/seeds when available；
+- Pass@k or variance estimator specified before execution。
+
+Repeated model runs are not required to establish benchmark validity; Oracle
+repetition and deterministic gates establish benchmark execution stability.
+
+## Data hygiene
+
+- Main never exposes benchmark public/hidden tests before submission。
+- Hidden never becomes a tuning set。
+- Exact protocol differences are visible labels, not footnotes。
+- Historical `mixed_snapshot_v1` results remain historical。
+- Raw results remain in `experiments/`; tracked summaries include checksums and
+  provenance but no secrets。
+
+Living experiment inventory: [EXPERIMENTS.md](EXPERIMENTS.md). Result
+interpretation: [FINDINGS.md](FINDINGS.md)。

@@ -1,6 +1,11 @@
-# Paper analysis artifacts
+# Historical v1 paper analysis
 
-Formal run 分析与论文表格工件。冻结 run ID 的规范来源：[docs/paper_runs_frozen.md](../../docs/paper_runs_frozen.md)。表格草稿：[docs/paper_tables.md](../../docs/paper_tables.md)。
+> Historical `mixed_snapshot_v1` output generated from the 2026-07-12 run set.
+> It is not the v2 paper analysis directory and must not be refreshed as though
+> it represented Full-Repository / No-Hint results.
+
+Frozen run provenance:
+[`reports/archive/v1_mixed_snapshot_runs_20260712.md`](../archive/v1_mixed_snapshot_runs_20260712.md).
 
 ## Key files
 
@@ -15,6 +20,6 @@ Formal run 分析与论文表格工件。冻结 run ID 的规范来源：[docs/p
 
 ## Scope notes
 
-- **Core-100** leaderboard：四模型共享子集（见 `paper_runs_frozen.md`）。
+- **Core-100** leaderboard：四模型共享历史子集。
 - **Python-150** full split：Flash 完整 150 题结果需合并 core-100 与 hard50 extension waves。
 - 当前 benchmark 规模与 Oracle 状态：[docs/STATUS.md](../../docs/STATUS.md)

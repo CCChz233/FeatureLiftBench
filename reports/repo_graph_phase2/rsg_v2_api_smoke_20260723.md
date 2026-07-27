@@ -1,5 +1,8 @@
 # RSG v2 真实 API 烟雾验收（2026-07-23）
 
+> 这里的 “v2” 是 RSG 原型 API 版本，不是当前 FeatureLiftBench v2 Main
+> freeze；本报告仅作历史基础设施证据。
+
 - 状态：同日验收通过（基础设施 + 可选工具路径）
 - 模型：`deepseek/deepseek-v4-flash` via DeepSeek API
 - Agent：OpenHands（`featureliftbench-agent:openhands-rsg-pilot-v1`，宿主 harness 挂载）

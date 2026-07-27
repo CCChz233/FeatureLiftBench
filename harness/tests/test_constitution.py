@@ -123,6 +123,14 @@ class ConstitutionPilotTests(unittest.TestCase):
         for task_id in CORE100_API_REGENERATION_TASKS:
             with self.subTest(task_id=task_id):
                 task_dir = self.repo_root / "benchmark" / "tasks" / task_id
+                if not task_dir.is_dir():
+                    task_dir = (
+                        self.repo_root
+                        / "benchmark"
+                        / "curated"
+                        / "tasks"
+                        / task_id
+                    )
                 payload = migrate_task_to_compliant(task_dir, dry_run=True)
                 self.assertEqual(payload["errors"], [])
 
@@ -144,7 +152,10 @@ class ConstitutionPilotTests(unittest.TestCase):
             if not metadata_path.is_file():
                 continue
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
-            if metadata.get("status") == "main":
+            if (
+                metadata.get("status") == "main"
+                and metadata.get("benchmark_split") != "external_main"
+            ):
                 task_dirs.append(task_dir)
         self.assertEqual(len(task_dirs), 50)
 

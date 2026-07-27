@@ -1,6 +1,6 @@
 # Task Lifecycle Report
 
-Generated: 2026-07-24
+Generated: 2026-07-27
 
 Read-only audit from `scripts/check_task_lifecycle.py`. No files were modified.
 
@@ -18,8 +18,8 @@ Read-only audit from `scripts/check_task_lifecycle.py`. No files were modified.
 | implicit_archived | 1 |
 | implicit_sanity | 4 |
 | implicit_validated_candidate | 12 |
-| legacy_main_implicit | 100 |
-| main | 50 |
+| legacy_main_implicit | 93 |
+| main | 57 |
 
 ## Manifest splits
 

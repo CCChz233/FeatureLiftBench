@@ -1,5 +1,9 @@
 # Token Efficiency and Method Innovation — 2026-07-20
 
+> Historical analysis of v1/mixed-snapshot trajectories. It is useful for
+> resource diagnosis but does not report a Full-Repository / No-Hint v2 run.
+> Budgeted ECSM is a retired proposal, not the current benchmark method.
+
 ## Decision
 
 FeatureLiftBench should optimize token use, but token reduction should be a measurable secondary objective of the method rather than the paper's standalone novelty.

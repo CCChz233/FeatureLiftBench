@@ -1,183 +1,170 @@
 # Incremental Task Rules
 
-This document defines the **canonical lifecycle** and **promotion gates** for adding FeatureLiftBench tasks. It applies to all language splits unless a language-specific doc explicitly overrides a detail.
-
-Related:
-
-- [`TASK_DESIGN_RULES.md`](TASK_DESIGN_RULES.md) — **规格宪法**（可见契约、API/behavior 覆盖、生成 TASK；与本文冲突时以宪法为准）
-- [`benchmark/README.md`](../benchmark/README.md) — directory layout
-- [`benchmark/manifest.json`](../benchmark/manifest.json) — split registry
-- [`06_task_schema.md`](06_task_schema.md) — per-task package schema
-- [`python/01_python_repo_selection_criteria.md`](python/01_python_repo_selection_criteria.md) — upstream repo criteria
-- [`STATUS.md`](STATUS.md) — current main-split size and Oracle freeze
+本文规定新任务进入 Python Main 的生命周期。出题宪法见
+[TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)，package schema 见
+[06_task_schema.md](06_task_schema.md)。
 
 ## Principles
 
-1. **New work starts in staging or pilot**, never directly in a main split.
-2. **Each task owns its upstream snapshot** in `<task_id>/repo/`. Do not point evaluators at `benchmark/sources/` or live upstream checkouts.
-3. **Lifecycle status is explicit** in `metadata.json` for all new tasks. Legacy main tasks without `status` are grandfathered by split membership only.
-4. **Promotion is evidence-based.** A task advances only when named gates pass and evidence is recorded (gate logs, calibration runs, inventory updates).
-5. **Read-only audit first.** Run `python3 scripts/check_task_lifecycle.py` before and after materialization changes.
+1. 新任务先进入 `benchmark/staging/` 或 `benchmark/batch3_pilot/`，不直接写
+   `benchmark/tasks/`。
+2. 来源必须先进入 canonical source registry；Main 不接受 target-aware
+   source slice。
+3. `public_spec` 是唯一公开契约，`TASK.md` 由它生成。
+4. public/hidden/evaluation/reference 都是 private evaluator assets。
+5. promotion 依赖可执行证据，不依赖文档宣称。
+6. 独立人工审核不是硬门禁；若使用人工复核，按真实 provenance 报告。
+7. 任务或 source 变化后必须生成新的 benchmark freeze。
 
-## Task Lifecycle
+## Lifecycle
 
-| Status | Definition |
-|---|---|
-| `design_only` | Feature selected and documented (`TASK.md`, design note, metadata draft). No complete runnable package yet; `repo/` may be missing or incomplete. |
-| `blocked` | Materialization cannot proceed without fabricating source, behavior, or results. **Must** include `blocked_reason` (and `blocked_evidence` when available). |
-| `needs_review` | Runnable package present but human review pending (spec clarity, scope, license, entanglement audit). |
-| `materialized_candidate` | Source snapshot, tests, evaluator metadata, and reference/oracle artifacts exist. Calibration and gates may still be TODO. |
-| `validated_candidate` | All structural gates pass; oracle/reference verified; public/hidden tests aligned with spec. Awaiting difficulty calibration or batch acceptance. |
-| `hard_candidate` | Difficulty gate passed for `hard` label (strong-model calibration recorded). Ready for main-split promotion review. |
-| `main` | Task is a member of a main paper split (`benchmark/tasks/` for Python). Implicit for legacy tasks without `status`. |
-| `sanity` | Smoke/harness task in `benchmark/sanity/` or `benchmark/go/sanity/`. Never on main leaderboard. |
-| `archived` | Retired or superseded task kept for history. Not scheduled for promotion. |
+| Status | Meaning |
+| --- | --- |
+| `design_only` | 功能和契约草案；尚不可运行 |
+| `materialized_candidate` | source、task package、tests、reference 已存在 |
+| `validated_candidate` | source/contract/reference/isolation gates 通过 |
+| `hard_candidate` | 设计难度和 calibration evidence 已记录 |
+| `main` | 已 promotion 且进入 active freeze |
+| `blocked` | 无法在不伪造来源/行为/结果的情况下继续 |
+| `sanity` | harness smoke；永不进入 leaderboard |
+| `archived` | 退休或被替代 |
 
-### Allowed transitions
-
-```text
-design_only → needs_review | blocked
-needs_review → materialized_candidate | blocked
-materialized_candidate → validated_candidate | blocked | needs_review
-validated_candidate → hard_candidate | staging retention
-hard_candidate → main (via promotion)
-any → archived (explicit retirement)
-sanity → (no promotion to main)
-```
-
-**Hard rule:** `design_only`, `needs_review`, and `materialized_candidate` tasks **must not** be added directly under `benchmark/tasks/`.
-
-## Where New Tasks May Land
-
-| Goal | First landing zone | May promote to |
-|---|---|---|
-| New Python feature lift | `benchmark/staging/` or `benchmark/batch3_pilot/` | `benchmark/tasks/` |
-| Python hard-3 pilot | `benchmark/batch3_pilot/` | `benchmark/staging/` → `benchmark/tasks/` |
-| Python smoke | `benchmark/sanity/` | (none) |
-| Go calibration | `benchmark/go/tasks/` | Go hard split (TODO — not paper-ready yet) |
-| Oracle / gold only | `benchmark/submissions/<task_id>/` | (harness artifact, not a task split) |
-| Shared upstream template | `benchmark/sources/` | copied into per-task `repo/` |
-
-**Do not use as eval input:** `benchmark/sources/`, live git clones, agent `submission/` trees.
-
-## Promotion Gates
-
-A task promotes **one gate at a time**. Record evidence under `evidence/` or the relevant gate review directory before changing split membership.
-
-### 1. Source Gate
-
-**Purpose:** Prove the task is grounded in a real, pinned upstream snapshot.
-
-Pass when:
-
-- `metadata.json` records `source.name`, `source.url`, `source.commit` (or equivalent flat `repo` + `commit` for pilot schema).
-- License recorded and compatible with benchmark use.
-- Task-local `repo/` contains the pinned snapshot used to author tests and oracle.
-- `blocked` tasks are not promoted; they must remain in pilot/staging with `blocked_reason`.
-
-### 2. Task Package Gate
-
-**Purpose:** Ensure the directory is a complete evaluator-ready package.
-
-Pass when (Python):
-
-- `metadata.json`, `requirements.lock`, `repo/`, `public_tests/`, `hidden_tests/`, `evaluation/` present.
-- `TASK.md` documents included/excluded behavior and target API.
-- `metadata.json` includes `task_id`, `language`, `source`, `feature`, `output`, `tests`, `environment`.
-- `task_id` matches directory name.
-
-Pass when (Go):
-
-- `metadata.json`, `repo/`, `public_tests/`, `hidden_tests/`, `evaluation/`, `environment/go.mod` present.
-- Go module and output package fields documented in metadata.
-
-### 3. Reference Gate
-
-**Purpose:** Prove the feature is extractable and tests are trustworthy.
-
-Pass when:
-
-- Oracle or `reference_solution/` passes public and hidden tests locally.
-- `evaluation/oracle_manifest.json` lists required source files consistent with `repo/`.
-- `evaluation/forbidden_imports.txt` (and metadata forbidden paths) match isolation intent.
-- Hidden tests exercise **documented** behaviors only — no hidden-only API requirements.
-
-### 4. Isolation Gate
-
-**Purpose:** Ensure agents cannot trivially re-import the original package.
-
-Pass when:
-
-- Forbidden imports/paths enforced and verified (audit-output-imports, copy-all, module probes as applicable).
-- Tests import **`featurelifted`** (Python), not `submission` and not the upstream package name.
-- Agent deliverable path is `submission/featurelifted/` (Python package name **`featurelifted`**).
-- No evaluator or hidden-test dependency on undisclosed files outside `repo/` closure.
-
-### 5. Difficulty Gate
-
-**Purpose:** Prevent hand-waved `hard` labels.
-
-Pass when:
-
-- Declared difficulty recorded in metadata (`difficulty`, `difficulty_initial` for pilots).
-- For `hard` tasks: strong-model calibration run completed (e.g. OpenHands + tier-A/B model) with results archived under `experiments/` or `evidence/`.
-- Calibration summary documents pass rate band, failure modes, and whether the task discriminates models.
-- `hard_reason` (or `entanglement` + `expected_hidden_behaviors`) explains why the closure is hard.
-- **Manual `hard` labels alone are insufficient** — calibration evidence required before `hard_candidate` → `main`.
-
-## Python-Specific Rules
-
-### Output layout
+允许路径：
 
 ```text
-submission/
-  pyproject.toml          # or setup.cfg/setup.py as task allows
-  featurelifted/
-    __init__.py
-    ...
+design_only
+  → materialized_candidate
+  → validated_candidate
+  → hard_candidate
+  → main
+
+any candidate → blocked | archived
 ```
 
-- Canonical package name: **`featurelifted`**.
-- `metadata.output.package` must be `featurelifted`.
+Main membership 由目录、manifest 和 benchmark freeze 共同定义。历史任务
+metadata 可没有 `status=main`；新任务应显式记录。
 
-### Tests
+## Landing zones
 
-- Public and hidden tests import from `featurelifted`.
-- Do **not** import `submission` in tests.
-- Hidden tests must not require behaviors absent from `feature.included_behaviors`, `TASK.md`, or documented `expected_hidden_behaviors`.
+| Work | Location |
+| --- | --- |
+| New Python task | local `benchmark/staging/<task_id>/` |
+| Larger pilot/calibration | local `benchmark/batch3_pilot/<task_id>/` |
+| Python smoke | `benchmark/sanity/<task_id>/` |
+| Go calibration | `benchmark/go/tasks/<task_id>/` |
+| Oracle/reference | `benchmark/submissions/<task_id>/` |
+| Canonical source metadata | `benchmark/sources/registry.json` |
+| Source archive cache | `benchmark/sources/archives/`（ignored） |
 
-### Blocked tasks
+## Promotion gates
 
-When status is `blocked`, metadata **must** include:
+### 1. Selection gate
 
-```json
-"blocked_reason": "..."
+- 真实可复用 feature；
+- extraction，不是 bug fixing 或 prompt-only toy rewrite；
+- behavior 可离线确定性测试；
+- 依赖、资源和时间预算有界；
+- 许可证和再分发方案明确；
+- 记录 candidate 来源、纳入/排除原因和淘汰状态。
+
+### 2. Source gate
+
+- canonical URL/source kind；
+- immutable resolved revision；
+- source/archive digest；
+- license path；
+- full tracked tree 或 policy 允许的 curated source tree；
+- 统一、非目标相关的 exclusion policy；
+- upstream tests/docs/examples/config/resources 被保留；
+- 同 repo+revision 共享 digest；
+- registry `status=ready`。
+
+### 3. Contract gate
+
+- `required_api` surface 完整；
+- behaviors 可观察、编号、可测试；
+- exclusions/forbidden/isolation 明确；
+- `evaluation_spec` 双向映射；
+- hidden 不引入新 API/behavior；
+- `TASK.md` hash 与 `public_spec` 一致；
+- Main workspace 无 entrypoints、paths、symbols、lines 或 closure hints。
+
+### 4. Package gate
+
+Python candidate 至少有：
+
+```text
+metadata.json
+TASK.md
+requirements.lock
+repo/                    # staging provenance; not canonical v3 source proof
+public_tests/
+hidden_tests/
+evaluation/
 ```
 
-Optional but recommended: `blocked_evidence` with upstream URL, commit, and what failed (clone, license, missing sources, etc.).
+Tests import `featurelifted`，不 import `submission` 或原项目包。
 
-## Promoting a Batch-3 Pilot to Main
+### 5. Reference gate
 
-Example path for `benchmark/batch3_pilot/<task_id>`:
+- reference/oracle 在干净环境通过 public+hidden；
+- repeated run deterministic；
+- reference 不依赖 Agent 不可获得的 runtime service；
+- compactness reference record 已生成；
+- naive/stub 失败；
+- copy-all 的 compactness 明显差。
 
-1. **Unblock or finish materialization** — status `materialized_candidate`, full `repo/`, not `blocked`.
-2. **Run lifecycle checker** — `python3 scripts/check_task_lifecycle.py`; fix all errors.
-3. **Pass gates 1–4** — source, package, reference, isolation (local oracle + audit scripts).
-4. **Pass gate 5** — run strong-model calibration; archive results; set `hard_candidate` in metadata.
-5. **Copy to staging** — `benchmark/staging/<task_id>/` for batch review (do not skip if batch policy requires staging).
-6. **Inventory update** — add row to `docs/python/02_python_repo_task_inventory.md`.
-7. **Promote to main** — copy approved task tree to `benchmark/tasks/<task_id>/`; set `status` to `main` (or omit only if matching legacy convention deliberately).
-8. **Update manifest counts** — refresh `benchmark/manifest.json` scanned counts after promotion.
-9. **Re-run checker** — confirm no overlap, no missing metadata, no ID collision.
+### 6. Isolation gate
 
-Never move or delete the pilot directory unless explicitly archiving; prefer copy-on-promote to preserve pilot history.
+- forbidden imports/dependencies/paths 生效；
+- submission 不在 source tree 中运行；
+- evaluator network off；
+- hidden/public/reference/evaluation 不进入 Agent workspace；
+- symlink、absolute path、runtime source loading 有对应检查。
 
-## Checklist Before Any Promotion
+### 7. Difficulty/calibration gate
 
-- [ ] `python3 scripts/check_task_lifecycle.py` passes or only documents known grandfathered issues
-- [ ] For **main promotion claiming constitution compliance:** `spec_status: compliant`, `public_spec` + `evaluation_spec` present, `validate-task` passes constitution gates
-- [ ] `task_id` not already in target split
-- [ ] Oracle in `benchmark/submissions/<task_id>/` if harness expects it
-- [ ] No fabricated commits, LOC, or experiment results
-- [ ] Design note or `TASK.md` linked from inventory
-- [ ] Difficulty calibration evidence on file for `hard` tasks
+- 记录 source size、task footprint 和 entanglement；
+- `hard` 先作为设计标签，不伪装成经验结果；
+- strong-agent calibration 用固定协议记录，不按期望通过率反复改 hidden；
+- empirical difficulty 在冻结 baseline 后重新计算；
+- 不因“太容易/太难”在看过最终模型结果后静默删题。
+
+### 8. Freeze gate
+
+Promotion 后必须：
+
+- 更新 manifest/registry/reference records；
+- 全量 lifecycle 和 v3 readiness 通过；
+- 重新运行受影响的 Oracle/isolation/determinism；
+- 生成新的 content-addressed benchmark freeze；
+- 旧 freeze 保持可追溯但不再 active。
+
+## Required commands
+
+```bash
+PYTHONPATH=harness .venv/bin/python -B -m featureliftbench.cli \
+  validate-task benchmark/staging/<task_id>
+
+python3 scripts/check_task_lifecycle.py
+python3 scripts/build_source_registry.py --check
+python3 scripts/materialize_full_sources.py --check
+python3 scripts/audit_v3_main_readiness.py --strict
+python3 scripts/build_v3_benchmark_freeze.py --check
+```
+
+具体 task creation/validation/promotion 应使用仓库中的
+`featureliftbench-create-task`、`featureliftbench-validate-task` 和
+`featureliftbench-promote-task` skills；promotion skill 只在所有 gate 证据
+已齐时运行。
+
+## Never do
+
+- 直接把新目录复制进 Main；
+- 按目标功能白名单裁剪“完整仓库”；
+- 向 Main Agent 暴露 source entrypoints；
+- 让 hidden 要求未公开义务；
+- 为了提高区分度而事后改答案；
+- 伪造 commit、LOC、测试、Oracle 或模型结果；
+- 把 AI-assisted review 写成 independent human review；
+- 不重建 freeze 就修改 task/source/evaluator。

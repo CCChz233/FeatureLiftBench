@@ -61,6 +61,16 @@ def main(argv: list[str] | None = None) -> int:
     eval_parser.add_argument("submission_dir", type=Path)
     eval_parser.add_argument("--output", type=Path, required=True)
     eval_parser.add_argument(
+        "--functional-only",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+    eval_parser.add_argument(
+        "--trusted-evaluation-capsule",
+        action="store_true",
+        help=argparse.SUPPRESS,
+    )
+    eval_parser.add_argument(
         "--docker",
         action="store_true",
         help="run evaluation inside the featureliftbench-eval Docker image",
@@ -115,10 +125,29 @@ def main(argv: list[str] | None = None) -> int:
         help="deprecated compatibility flag; evaluator tests are hidden by default",
     )
     run_agent_parser.set_defaults(mount_public_tests=None)
+    source_hint_visibility = run_agent_parser.add_mutually_exclusive_group()
+    source_hint_visibility.add_argument(
+        "--agent-source-hints",
+        dest="expose_source_hints",
+        action="store_true",
+        help="Entrypoint-Hint ablation: expose frozen source entrypoints to the agent",
+    )
+    source_hint_visibility.add_argument(
+        "--no-agent-source-hints",
+        dest="expose_source_hints",
+        action="store_false",
+        help="No-Hint Main (default): remove source entrypoints from the agent workspace",
+    )
+    run_agent_parser.set_defaults(expose_source_hints=None)
     run_agent_parser.add_argument(
         "--prompt-style",
         choices=("standard", "short"),
         help="standard keeps How-to/Closure Discipline; short keeps the functional contract only",
+    )
+    run_agent_parser.add_argument(
+        "--source-context",
+        choices=("full_repository", "pruned_context"),
+        help="source workspace arm; Main requires full_repository",
     )
     run_agent_parser.add_argument(
         "--env-file",
@@ -425,7 +454,23 @@ def _cmd_eval(args: argparse.Namespace) -> int:
             use_docker=True,
         )
     else:
-        result = evaluate_submission(args.task_dir, args.submission_dir, args.output)
+        result = evaluate_submission(
+            args.task_dir,
+            args.submission_dir,
+            args.output,
+            functional_only=args.functional_only,
+            trusted_capsule=args.trusted_evaluation_capsule,
+            isolation_context=(
+                {
+                    "source_filesystem_absent": True,
+                    "network_disabled": True,
+                    "mount_allowlist_pass": True,
+                    "verification_mode": "trusted_capsule_pending_host_verification",
+                }
+                if args.functional_only and args.trusted_evaluation_capsule
+                else None
+            ),
+        )
     result_path = args.output / "result.json"
     print(json.dumps(result, indent=2, sort_keys=True))
     print(f"wrote result: {result_path}", file=sys.stderr)
@@ -475,6 +520,8 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             env_file=args.env_file,
             mount_public_tests=args.mount_public_tests,
             prompt_style=args.prompt_style,
+            expose_source_hints=args.expose_source_hints,
+            source_context=args.source_context,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

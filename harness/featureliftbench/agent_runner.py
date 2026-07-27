@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import subprocess
 import sys
 import time
 import traceback
@@ -14,6 +15,7 @@ from dataclasses import dataclass
 from dataclasses import replace
 from datetime import UTC
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -26,11 +28,14 @@ from .agent_adapters import AgentRunContext
 from .agent_adapters import get_agent_adapter
 from .agent_docker import DEFAULT_AGENT_IMAGE
 from .agent_docker import run_agent_in_docker
+from .benchmark_freeze import benchmark_freeze_provenance
 from .docker_eval import DEFAULT_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
 from .metadata import load_metadata
 from .paths import resolve_task_input
+from .pruned_source import materialize_pruned_task_source
+from .pruned_source import pruned_source_provenance
 from .repo_graph.policy import RepoGraphPolicy
 from .repo_graph.runtime import RepoGraphRunState
 from .repo_graph.runtime import append_repo_graph_prompt
@@ -43,6 +48,10 @@ from .suite_utils import evaluation_payload as _evaluation_payload
 from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
 from .suite_utils import run_status as _run_status
+from .source_archive import (
+    materialize_task_source,
+    source_provenance_for_task,
+)
 from .task_discovery import discover_main_task_dirs
 from .suite_progress import SuiteBatchProgressManager
 from .suite_progress import live_suite_progress
@@ -132,6 +141,7 @@ def run_agent_on_path(
             progress=progress,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
+            evaluation=eval_result,
             agent_docker=agent_docker,
             agent_docker_image=agent_docker_image,
         )
@@ -195,6 +205,15 @@ def run_agent_on_suite(
         retry_only_statuses=retry_only_statuses,
     )
     retained_runs = load_retained_runs(suite_source_dir, retain_statuses=retain_statuses)
+    _validate_retained_runs(
+        retained_runs,
+        task_dirs=task_dirs,
+        config=config,
+        agent_docker=agent_docker,
+        agent_docker_image=agent_docker_image,
+        eval_docker=eval_docker,
+        eval_docker_image=eval_docker_image,
+    )
     skipped_max_attempts = _tasks_at_max_attempts(
         task_dirs,
         output_path,
@@ -391,14 +410,40 @@ def run_agent_on_task(
         _reset_dir(path)
 
     errors: list[str] = []
+    ablation = ablation_options_from_env(config.env)
     validation = validate_task(task_path)
     task_id = validation.task_id
     metadata: dict[str, Any] = {}
+    source_provenance: dict[str, Any] | None = None
+    freeze_provenance: dict[str, Any] | None = None
     if not validation.valid:
         errors.extend(f"invalid task: {error}" for error in validation.errors)
     else:
         metadata = load_metadata(task_path).data
         task_id = metadata.get("task_id", task_id)
+        source_provenance = (
+            pruned_source_provenance(str(task_id))
+            if ablation.source_context == "pruned_context"
+            else source_provenance_for_task(str(task_id))
+        )
+        freeze_provenance = benchmark_freeze_provenance(
+            str(task_id),
+            require=_is_python_main_task(task_path),
+        )
+        if freeze_provenance is not None:
+            if freeze_provenance.get("spec_hash") != metadata.get("spec_hash"):
+                raise ValueError(f"{task_id}: active benchmark freeze spec hash mismatch")
+            if (
+                ablation.source_context == "full_repository"
+                and (
+                    source_provenance is None
+                    or freeze_provenance.get("source_snapshot_id")
+                    != source_provenance.get("source_snapshot_id")
+                    or freeze_provenance.get("source_tree_sha256")
+                    != source_provenance.get("source_digest")
+                )
+            ):
+                raise ValueError(f"{task_id}: active benchmark freeze source mismatch")
 
     agent_result = None
     eval_result = None
@@ -410,7 +455,6 @@ def run_agent_on_task(
     stdout_log = agent_output_dir / "stdout.log"
     stderr_log = agent_output_dir / "stderr.log"
 
-    ablation = ablation_options_from_env(config.env)
     if validation.valid:
         task_file = prepare_agent_workspace(
             task_path,
@@ -569,6 +613,18 @@ def run_agent_on_task(
         "agent_docker_image": agent_docker_image if agent_docker else "",
         "agent_config": agent_config_summary or {},
         "ablation": ablation.summary(),
+        "benchmark_freeze": freeze_provenance or {},
+        "experiment_conditions": _experiment_conditions(
+            config=config,
+            ablation=ablation.summary(),
+            benchmark_freeze=freeze_provenance,
+            source=source_provenance,
+            agent_docker=agent_docker,
+            agent_docker_image=agent_docker_image,
+            eval_docker=eval_docker,
+            eval_docker_image=eval_docker_image,
+        ),
+        "source": source_provenance or {},
         "workspace": {
             "dir": str(workspace_dir),
             "task_file": str(workspace_dir / "TASK.md"),
@@ -587,6 +643,167 @@ def run_agent_on_task(
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     return result
+
+
+@lru_cache(maxsize=16)
+def _docker_image_identity(image: str) -> str:
+    completed = subprocess.run(
+        ["docker", "image", "inspect", image, "--format", "{{.Id}}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.stdout.strip()
+
+
+def _experiment_conditions(
+    *,
+    config: AgentRunConfig,
+    ablation: dict[str, Any],
+    benchmark_freeze: dict[str, Any] | None,
+    source: dict[str, Any] | None,
+    agent_docker: bool,
+    agent_docker_image: str,
+    eval_docker: bool,
+    eval_docker_image: str,
+    evaluation: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    env = config.env or {}
+    return {
+        "schema_version": "featureliftbench.experiment_conditions.v2",
+        "benchmark_policy_id": (
+            benchmark_freeze.get("policy_id") if benchmark_freeze else None
+        ),
+        "benchmark_freeze_id": (
+            benchmark_freeze.get("freeze_id") if benchmark_freeze else None
+        ),
+        "source_snapshot_id": (
+            source.get("source_snapshot_id") if source else None
+        ),
+        "source_tree_sha256": source.get("source_digest") if source else None,
+        "source_scope": source.get("snapshot_scope") if source else None,
+        "model": config.model or "",
+        "agent": config.agent,
+        "agent_profile": config.profile,
+        "agent_timeout_seconds": config.timeout_seconds,
+        "agent_max_steps": env.get("FEATURELIFTBENCH_OPENHANDS_MAX_STEPS", ""),
+        "ablation": ablation,
+        "agent_runtime": {
+            "backend": "docker" if agent_docker else "local",
+            "image": agent_docker_image if agent_docker else "",
+            "image_id": (
+                _docker_image_identity(agent_docker_image)
+                if agent_docker
+                else ""
+            ),
+        },
+        "evaluator_runtime": {
+            "backend": "docker" if eval_docker else "local",
+            "image": eval_docker_image if eval_docker else "",
+            "image_id": (
+                _docker_image_identity(eval_docker_image)
+                if eval_docker
+                else ""
+            ),
+            "network": "none" if eval_docker else "host",
+        },
+        "benchmark_tests_visible_to_agent": bool(
+            ablation.get("mount_public_tests")
+        ),
+        "source_hints_visible_to_agent": bool(
+            ablation.get("expose_source_hints")
+        ),
+        "evaluation_capsule_digest": (
+            evaluation.get("evaluation_capsule_digest")
+            if isinstance(evaluation, dict)
+            else None
+        ),
+    }
+
+
+def _validate_retained_runs(
+    retained_runs: dict[str, dict[str, Any]],
+    *,
+    task_dirs: list[Path],
+    config: AgentRunConfig,
+    agent_docker: bool,
+    agent_docker_image: str,
+    eval_docker: bool,
+    eval_docker_image: str,
+) -> None:
+    if not retained_runs:
+        return
+    task_paths = {path.name: path for path in task_dirs}
+    expected_ablation = ablation_options_from_env(config.env).summary()
+    expected_common = {
+        "model": config.model or "",
+        "agent": config.agent,
+        "agent_profile": config.profile,
+        "agent_timeout_seconds": config.timeout_seconds,
+        "agent_max_steps": (config.env or {}).get(
+            "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS",
+            "",
+        ),
+        "ablation": expected_ablation,
+        "agent_runtime": {
+            "backend": "docker" if agent_docker else "local",
+            "image": agent_docker_image if agent_docker else "",
+            "image_id": (
+                _docker_image_identity(agent_docker_image)
+                if agent_docker
+                else ""
+            ),
+        },
+        "evaluator_runtime": {
+            "backend": "docker" if eval_docker else "local",
+            "image": eval_docker_image if eval_docker else "",
+            "image_id": (
+                _docker_image_identity(eval_docker_image)
+                if eval_docker
+                else ""
+            ),
+            "network": "none" if eval_docker else "host",
+        },
+        "benchmark_tests_visible_to_agent": bool(
+            expected_ablation.get("mount_public_tests")
+        ),
+        "source_hints_visible_to_agent": bool(
+            expected_ablation.get("expose_source_hints")
+        ),
+    }
+    failures: list[str] = []
+    for task_id, run in sorted(retained_runs.items()):
+        task_path = task_paths.get(task_id)
+        require_freeze = bool(task_path and _is_python_main_task(task_path))
+        active = benchmark_freeze_provenance(task_id, require=require_freeze)
+        recorded = run.get("benchmark_freeze")
+        if active is not None:
+            if not isinstance(recorded, dict):
+                failures.append(f"{task_id}: retained run lacks benchmark freeze")
+                continue
+            for key in (
+                "freeze_id",
+                "task_revision",
+                "spec_hash",
+                "source_snapshot_id",
+                "source_tree_sha256",
+            ):
+                if recorded.get(key) != active.get(key):
+                    failures.append(f"{task_id}: retained {key} differs")
+        conditions = run.get("experiment_conditions")
+        if require_freeze and not isinstance(conditions, dict):
+            failures.append(f"{task_id}: retained run lacks experiment conditions")
+            continue
+        if not isinstance(conditions, dict):
+            continue
+        for key, expected in expected_common.items():
+            if conditions.get(key) != expected:
+                failures.append(f"{task_id}: retained experiment {key} differs")
+    if failures:
+        raise ValueError(
+            "resume would mix incompatible benchmark/experiment conditions:\n"
+            + "\n".join(failures[:20])
+        )
 
 
 def _write_repo_graph_initialization_failure(
@@ -1214,7 +1431,19 @@ def prepare_agent_workspace(
     workspace_path = Path(workspace_dir).resolve()
     workspace_path.mkdir(parents=True, exist_ok=True)
 
-    _copy_path(task_path / "repo", workspace_path / "repo")
+    if options.source_context == "pruned_context":
+        source_provenance = materialize_pruned_task_source(
+            task_path.name,
+            workspace_path / "repo",
+        )
+    else:
+        source_provenance = materialize_task_source(
+            task_path.name,
+            workspace_path / "repo",
+            require_registered=_is_python_main_task(task_path),
+        )
+    if source_provenance is None:
+        _copy_path(task_path / "repo", workspace_path / "repo")
     language = str(metadata.get("language", "python"))
     if options.mount_public_tests:
         _copy_path(
@@ -1250,7 +1479,10 @@ def prepare_agent_workspace(
         else:
             (workspace_path / "requirements.lock").write_text("", encoding="utf-8")
 
-    redacted_metadata = redact_task_metadata(metadata)
+    redacted_metadata = redact_task_metadata(
+        metadata,
+        expose_source_hints=options.expose_source_hints,
+    )
     (workspace_path / "metadata.json").write_text(
         json.dumps(redacted_metadata, indent=2, sort_keys=True),
         encoding="utf-8",
@@ -1261,17 +1493,56 @@ def prepare_agent_workspace(
         task_markdown = render_agent_workspace_task(
             metadata,
             mount_public_tests=options.mount_public_tests,
+            source_entrypoints=(
+                _source_entrypoints_from_metadata(metadata)
+                if options.expose_source_hints
+                else None
+            ),
         )
     else:
         task_markdown = build_task_prompt(redacted_metadata, ablation=options)
     task_file.write_text(task_markdown, encoding="utf-8")
+    if not options.expose_source_hints:
+        leaks = audit_no_hint_workspace(workspace_path)
+        if leaks:
+            raise ValueError(
+                "No-Hint Main workspace contains source-location metadata: "
+                + ", ".join(leaks)
+            )
     return task_file
 
 
-def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
+def redact_task_metadata(
+    metadata: dict[str, Any],
+    *,
+    expose_source_hints: bool = False,
+) -> dict[str, Any]:
     """Return the metadata subset that is safe and useful for an agent."""
 
     environment = metadata.get("environment") if isinstance(metadata.get("environment"), dict) else {}
+    feature = metadata.get("feature") if isinstance(metadata.get("feature"), dict) else {}
+    if get_spec_status(metadata) == SPEC_STATUS_COMPLIANT:
+        # The generated TASK is the sole Agent-visible functional contract.
+        # Legacy feature prose can repeat upstream symbols even after the
+        # dedicated entrypoint fields are removed.
+        feature_payload: dict[str, Any] = {}
+        if expose_source_hints:
+            feature_payload["source_entrypoints"] = (
+                _source_entrypoints_from_metadata(metadata)
+            )
+    else:
+        feature_payload = dict(feature)
+    if not expose_source_hints:
+        for key in (
+            "source_entrypoints",
+            "source_hints",
+            "entrypoints",
+            "repo_files",
+            "source_files",
+            "target_files",
+            "implementation_hints",
+        ):
+            feature_payload.pop(key, None)
     language = str(metadata.get("language", "python"))
     environment_payload: dict[str, Any] = {
         "network": environment.get("network", False),
@@ -1299,10 +1570,92 @@ def redact_task_metadata(metadata: dict[str, Any]) -> dict[str, Any]:
         "task_id": metadata.get("task_id", ""),
         "language": language,
         "source": metadata.get("source", {}),
-        "feature": metadata.get("feature", {}),
+        "feature": feature_payload,
         "output": metadata.get("output", {}),
         "environment": environment_payload,
     }
+
+
+def _is_python_main_task(task_path: Path) -> bool:
+    return (
+        task_path.parent.name == "tasks"
+        and task_path.parent.parent.name == "benchmark"
+        and (task_path / "metadata.json").is_file()
+    )
+
+
+def _source_entrypoints_from_metadata(metadata: dict[str, Any]) -> list[str]:
+    """Return frozen private source hints for the explicit Entrypoint-Hint arm."""
+
+    candidates: list[Any] = []
+    evaluation_spec = (
+        metadata.get("evaluation_spec")
+        if isinstance(metadata.get("evaluation_spec"), dict)
+        else {}
+    )
+    public_spec = (
+        metadata.get("public_spec")
+        if isinstance(metadata.get("public_spec"), dict)
+        else {}
+    )
+    feature = metadata.get("feature") if isinstance(metadata.get("feature"), dict) else {}
+    candidates.extend(
+        (
+            evaluation_spec.get("source_entrypoints"),
+            public_spec.get("source_entrypoints"),
+            feature.get("source_entrypoints"),
+            metadata.get("source_hints"),
+        )
+    )
+    for candidate in candidates:
+        if not isinstance(candidate, list):
+            continue
+        values = [str(item) for item in candidate if isinstance(item, str) and item.strip()]
+        if values:
+            return values
+    return []
+
+
+def audit_no_hint_workspace(workspace_dir: str | Path) -> list[str]:
+    """Return Agent-facing source-hint leaks outside the upstream repository."""
+
+    workspace = Path(workspace_dir)
+    leaks: list[str] = []
+    metadata_path = workspace / "metadata.json"
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        metadata = {}
+    banned_keys = {
+        "source_entrypoints",
+        "source_hints",
+        "entrypoints",
+        "repo_files",
+        "source_files",
+        "target_files",
+        "implementation_hints",
+    }
+
+    def walk(value: Any, path: str) -> None:
+        if isinstance(value, dict):
+            for key, item in value.items():
+                child_path = f"{path}.{key}" if path else str(key)
+                if key in banned_keys:
+                    leaks.append(child_path)
+                walk(item, child_path)
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                walk(item, f"{path}[{index}]")
+
+    walk(metadata, "metadata")
+    task_path = workspace / "TASK.md"
+    try:
+        task_text = task_path.read_text(encoding="utf-8")
+    except OSError:
+        task_text = ""
+    if "Source Entrypoints — Entrypoint-Hint Ablation" in task_text:
+        leaks.append("TASK.md:entrypoint_hint_section")
+    return sorted(set(leaks))
 
 
 def build_task_prompt(
@@ -1360,6 +1713,18 @@ def _shared_task_prompt_sections(metadata: dict[str, Any]) -> dict[str, str]:
     }
 
 
+def _source_hint_prompt_section(
+    sections: dict[str, str],
+    options: AblationOptions,
+) -> str:
+    if not options.expose_source_hints:
+        return ""
+    return (
+        "## Source Entrypoints — Entrypoint-Hint Ablation\n\n"
+        f"{sections['entrypoints']}\n"
+    )
+
+
 def _build_go_task_prompt(
     metadata: dict[str, Any],
     *,
@@ -1383,12 +1748,18 @@ def _build_go_task_prompt(
     parts.append(_go_howto_section(sections, module_path, package_name, go_version, options))
     parts.append(_go_workspace_section(options))
     if options.prompt_style == "standard":
+        localization = (
+            "- Start from the provided source entrypoints, then follow helpers, constants, "
+            "tables, and error handling needed for the public contract.\n"
+            if options.expose_source_hints
+            else "- Search the complete repository from the functional contract and required "
+            "output API; locate the implementation and its supporting closure yourself.\n"
+        )
         parts.append(
             "## Closure Discipline\n\n"
             "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
-            "- Start from source entrypoints, follow helpers, constants, tables, and error handling "
-            "needed for included behaviors, then trim unrelated package areas.\n"
-            "- Remove tests, CLI, and unrelated subsystems unless the feature spec needs them.\n\n"
+            + localization
+            + "- Remove tests, CLI, and unrelated subsystems unless the feature spec needs them.\n\n"
         )
     parts.append(
         "## Source\n\n"
@@ -1401,8 +1772,8 @@ def _build_go_task_prompt(
         f"- Difficulty: {sections['difficulty']}\n"
         f"- Tags:\n{sections['tags']}\n"
         f"- Description: {sections['feature_description']}\n"
-        f"- Source entrypoints:\n{sections['entrypoints']}\n"
-        f"- Included behaviors:\n{sections['included']}\n"
+        + _source_hint_prompt_section(sections, options)
+        + f"- Included behaviors:\n{sections['included']}\n"
         f"- Excluded behaviors:\n{sections['excluded']}\n"
     )
     if options.prompt_style == "standard":
@@ -1432,8 +1803,9 @@ def _build_go_task_prompt(
         + " as your final deliverable.\n"
         "- Do not import the original source module at runtime.\n"
         "- **Forbidden imports are a hard gate.**\n"
-        "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "
-        "Whole-repo copy scores near zero.\n"
+        "- **Scoring:** Functional Pass@1 is the primary gate. Compactness is "
+        "reported independently relative to the frozen reference implementation; "
+        "whole-repo copying remains visible in that secondary metric.\n"
         f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
         + _finish_footer(options)
     )
@@ -1460,13 +1832,18 @@ def _build_python_task_prompt(
     parts.append(_python_howto_section(sections, options))
     parts.append(_python_workspace_section(options))
     if options.prompt_style == "standard":
+        localization = (
+            "- Start from the provided source entrypoints, then follow imports, helpers, "
+            "constants, data files, exceptions, and resources needed by the contract.\n"
+            if options.expose_source_hints
+            else "- Search the complete repository from the functional contract and required "
+            "output API; locate the implementation and its supporting closure yourself.\n"
+        )
         parts.append(
             "## Closure Discipline\n\n"
             "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
-            "- Start from source entrypoints, follow imports, helpers, constants, data files, "
-            "exceptions, and resources needed for the included behaviors, then trim unrelated "
-            "package areas.\n"
-            "- Every copied file should support target behavior, public API compatibility, an "
+            + localization
+            + "- Every copied file should support target behavior, public API compatibility, an "
             "exception/type/resource, or a transitive helper used by that behavior.\n"
             "- Remove tests, docs, CLI, network/runtime subsystems, and unrelated adapters unless "
             "the feature specification needs them.\n"
@@ -1484,8 +1861,8 @@ def _build_python_task_prompt(
         f"- Difficulty: {sections['difficulty']}\n"
         f"- Tags:\n{sections['tags']}\n"
         f"- Description: {sections['feature_description']}\n"
-        f"- Source entrypoints:\n{sections['entrypoints']}\n"
-        f"- Included behaviors:\n{sections['included']}\n"
+        + _source_hint_prompt_section(sections, options)
+        + f"- Included behaviors:\n{sections['included']}\n"
         f"- Excluded behaviors:\n{sections['excluded']}\n"
     )
     if options.prompt_style == "standard":
@@ -1502,9 +1879,16 @@ def _build_python_task_prompt(
         f"- Import: `{sections['output_import']}`\n"
         f"- Callable: `{sections['output_callable']}`\n"
         f"- Signature: `{sections['output_signature']}`\n"
-        "- Implementation scope: use **Source entrypoints** above to locate code in `repo/`; "
-        "the import line lists the public surface your package must expose.\n\n"
-        "## Constraints\n\n"
+        + (
+            "- Implementation scope: use the explicitly provided **Source entrypoints** to "
+            "locate code in `repo/`; the import line lists the public surface your package "
+            "must expose.\n\n"
+            if options.expose_source_hints
+            else "- Implementation scope: locate the upstream implementation yourself from "
+            "the functional contract and required output API; the import line lists the "
+            "public surface your package must expose.\n\n"
+        )
+        + "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
         "- Do not modify `repo/`"
         + (" or `public_tests/`" if options.mount_public_tests else "")
@@ -1515,8 +1899,9 @@ def _build_python_task_prompt(
         "prefer a compact closure, but do not remove helpers/resources required by edge cases.\n"
         "- **Forbidden imports are a hard gate:** if your submission imports a forbidden name, "
         "`functional_gate` is 0 even when tests pass.\n"
-        "- **Scoring:** `final_score = functional_gate × (1 - extraction_ratio)`. "
-        "Passing with a whole-repo copy scores near zero — extract only what the feature needs.\n"
+        "- **Scoring:** Functional Pass@1 is the primary gate. Compactness is "
+        "reported independently relative to the frozen reference implementation; "
+        "extract only what the feature needs.\n"
         f"- Allowed dependencies:\n{allowed_dependencies}\n"
         f"- Forbidden dependencies:\n{forbidden_dependencies}\n"
         f"- Forbidden imports:\n{sections['forbidden_imports']}\n\n"
@@ -1556,12 +1941,18 @@ def _python_howto_section(sections: dict[str, str], options: AblationOptions) ->
             ]
         return "".join(lines)
 
+    localization_step = (
+        "1. Read the provided `source entrypoints` and the full **Required Output API** "
+        "below — implement every listed import path, not just the primary callable.\n"
+        if options.expose_source_hints
+        else "1. Use the functional contract and **Required Output API** to search `repo/` "
+        "and locate the upstream implementation yourself; implement every listed output path.\n"
+    )
     if options.mount_public_tests:
         return (
             "## How to work\n\n"
-            "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
-            "listed import path, not just the primary callable.\n"
-            "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+            + localization_step
+            + "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
             "into `submission/featurelifted/`.\n"
             "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
             f"4. Before submitting, grep your submission for forbidden imports, e.g. "
@@ -1577,9 +1968,8 @@ def _python_howto_section(sections: dict[str, str], options: AblationOptions) ->
         )
     return (
         "## How to work\n\n"
-        "1. Read `source entrypoints` and the full **Required Output API** below — implement every "
-        "listed import path, not just the primary callable.\n"
-        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        + localization_step
+        + "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
         "into `submission/featurelifted/`.\n"
         "3. Rewrite imports so runtime code uses `featurelifted` only — never the original package.\n"
         "4. **Benchmark evaluator tests are not mounted.** Inspect relevant upstream tests, docs, "
@@ -1639,11 +2029,17 @@ def _go_howto_section(
         else:
             body += "4. Grep forbidden imports, then submit.\n\n"
         return body
+    localization_step = (
+        "1. Read the provided `source entrypoints` and the full **Required Output API** below.\n"
+        if options.expose_source_hints
+        else "1. Use the functional contract and **Required Output API** to search `repo/` "
+        "and locate the upstream implementation yourself.\n"
+    )
     if options.mount_public_tests:
         return (
             "## How to work\n\n"
-            "1. Read `source entrypoints` and the full **Required Output API** below.\n"
-            "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+            + localization_step
+            + "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
             f"into `submission/` as package `{package_name}`.\n"
             f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
             f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "
@@ -1661,8 +2057,8 @@ def _go_howto_section(
         )
     return (
         "## How to work\n\n"
-        "1. Read `source entrypoints` and the full **Required Output API** below.\n"
-        "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
+        + localization_step
+        + "2. Copy the smallest **behavior-complete** implementation closure from `repo/` "
         f"into `submission/` as package `{package_name}`.\n"
         f"3. Add `submission/go.mod` with `module {module_path}` and `go {go_version}`.\n"
         f"4. Rewrite package names/imports so runtime code uses `{package_name}` only — "

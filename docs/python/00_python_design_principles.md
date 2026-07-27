@@ -21,14 +21,17 @@ Good tasks require dependency closure recovery:
 Good tasks require behavior preservation:
 
 - Hidden tests should cover edge cases, error types, ordering, formatting, parser state, object identity, global state, or compatibility behavior.
-- Public tests should specify the API and representative cases without revealing the full hidden boundary.
+- The public contract should specify the API and representative behavior without
+  revealing source locations; benchmark public and hidden tests remain
+  Agent-invisible in Main.
 - The target should be a feature with stable observable behavior, not just internal structure.
 
 Good tasks require compact extraction:
 
 - Copying the whole package should be possible enough to expose the copy-all baseline, but obviously larger than a clean closure.
 - Oracle or reference solutions should remove unrelated code.
-- Task review should examine both functional pass and extraction ratio.
+- Task review should report functional pass and reference-relative compactness
+  separately.
 
 Good tasks require standalone packaging:
 
@@ -88,7 +91,8 @@ Runtime behavior:
 
 Hidden tests:
 
-- Should cover behavior combinations and edge cases that public tests imply but do not enumerate.
+- Should cover behavior combinations and edge cases implied by the public
+  contract but not exhaustively enumerated there.
 - Should avoid hidden-only API requirements unless the API is clearly in the task spec.
 - Should distinguish faithful extraction from narrow stubs.
 
@@ -96,11 +100,12 @@ Hidden tests:
 
 - Would a strong agent need to read source code rather than implement from the prompt alone?
 - Is the dependency closure nontrivial but bounded?
-- Can public tests guide the target API without giving away all hidden behavior?
-- Can copy-all pass but receive a low final score?
+- Does the public contract fully define the target API without source-location hints?
+- Can copy-all remain functional while being clearly worse on the separately
+  reported compactness metric?
 - Does the task test Python runtime behavior rather than only file copying?
 
-## TODO
+## Open work
 
 - Add per-task difficulty annotations beyond the current all-`hard` metadata if the paper needs easy/medium/hard stratification.
 - Audit hidden tests for hidden-only requirements.

@@ -17,6 +17,7 @@ from .eval_config import EVAL_PYTEST_VERSION
 from .checks import find_forbidden_dependencies
 from .checks import find_forbidden_imports
 from .checks import read_forbidden_imports
+from .compactness import analyze_submission_footprint
 from .metadata import load_metadata
 from .metrics import count_files
 from .metrics import count_python_loc
@@ -24,8 +25,10 @@ from .metrics import count_runtime_dependencies
 from .metrics import count_suspicious_files
 from .metrics import dependency_name
 from .metrics import directory_size_bytes
+from .isolation_checks import find_isolation_attack_patterns
 from .scoring import functional_gate
 from .scoring import score_submission
+from .source_archive import materialize_task_source
 from .resource_limits import command_result_resource_fields
 from .resource_limits import eval_memory_limit_mb
 from .resource_limits import run_captured_command
@@ -62,6 +65,10 @@ def evaluate_submission(
     task_dir: str | Path,
     submission_dir: str | Path,
     output_dir: str | Path,
+    *,
+    functional_only: bool = False,
+    trusted_capsule: bool = False,
+    isolation_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate a submission and write ``result.json`` under ``output_dir``."""
 
@@ -69,13 +76,24 @@ def evaluate_submission(
         from .go_evaluator import evaluate_go_submission
 
         return evaluate_go_submission(task_dir, submission_dir, output_dir)
-    return _evaluate_python_submission(task_dir, submission_dir, output_dir)
+    return _evaluate_python_submission(
+        task_dir,
+        submission_dir,
+        output_dir,
+        functional_only=functional_only,
+        trusted_capsule=trusted_capsule,
+        isolation_context=isolation_context,
+    )
 
 
 def _evaluate_python_submission(
     task_dir: str | Path,
     submission_dir: str | Path,
     output_dir: str | Path,
+    *,
+    functional_only: bool = False,
+    trusted_capsule: bool = False,
+    isolation_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate a submission and write ``result.json`` under ``output_dir``."""
 
@@ -96,8 +114,8 @@ def _evaluate_python_submission(
     logs_path.mkdir(parents=True, exist_ok=True)
 
     errors: list[str] = []
-    validation = validate_task(task_path)
-    if not validation.valid:
+    validation = None if trusted_capsule else validate_task(task_path)
+    if validation is not None and not validation.valid:
         errors.extend(f"invalid task: {error}" for error in validation.errors)
 
     if not submission_path.exists():
@@ -109,7 +127,12 @@ def _evaluate_python_submission(
         metadata = load_metadata(task_path).data
     except Exception:
         metadata = {}
-    task_id = metadata.get("task_id", validation.task_id) if isinstance(metadata, dict) else validation.task_id
+    fallback_task_id = validation.task_id if validation is not None else task_path.name
+    task_id = (
+        metadata.get("task_id", fallback_task_id)
+        if isinstance(metadata, dict)
+        else fallback_task_id
+    )
     submission_name = submission_path.name
 
     source_repo = task_path / "repo"
@@ -128,13 +151,26 @@ def _evaluate_python_submission(
         if submission_path.exists() and submission_path.is_dir()
         else []
     )
+    isolation_attack_issues = (
+        find_isolation_attack_patterns(submission_path)
+        if submission_path.exists() and submission_path.is_dir()
+        else []
+    )
+    forbidden_imports_pass = not forbidden_issues
+    forbidden_dependencies_pass = not forbidden_dependency_issues
+    static_isolation_pass = not isolation_attack_issues
+    forbidden_runtime_capabilities_pass = static_isolation_pass
+    runtime_audit_events: list[str] = []
+    submission_location_pass = not _is_relative_to(submission_path, source_repo)
     original_import_pass = (
-        not forbidden_issues
-        and not forbidden_dependency_issues
-        and not _is_relative_to(submission_path, source_repo)
+        forbidden_imports_pass
+        and forbidden_dependencies_pass
+        and forbidden_runtime_capabilities_pass
+        and submission_location_pass
     )
     errors.extend(issue.format(submission_path) for issue in forbidden_issues)
     errors.extend(issue.format() for issue in forbidden_dependency_issues)
+    errors.extend(issue.format() for issue in isolation_attack_issues)
 
     metrics = _collect_metrics(submission_path, source_repo=source_repo)
 
@@ -151,6 +187,8 @@ def _evaluate_python_submission(
     hidden_result = None
     build_pass = False
     test_pass = False
+    public_tests_pass = False
+    hidden_tests_pass = False
 
     if submission_path.exists() and submission_path.is_dir():
         timeout_seconds = _timeout_seconds(metadata)
@@ -167,10 +205,13 @@ def _evaluate_python_submission(
             environment_info["python"] = str(venv_python)
             environment_info["runtime_submission_dir"] = str(runtime_submission_path)
             output_package = _output_package(metadata)
+            isolation_audit_log = run_cwd / "isolation-audit.log"
             import_guard_dir = _write_import_guard(
                 run_cwd=run_cwd,
                 output_package=output_package,
                 allowed_roots=[runtime_submission_path, venv_dir],
+                forbidden_imports=forbidden_names,
+                isolation_audit_log=isolation_audit_log,
             )
 
             venv_python, venv_result, eval_tooling_result, venv_errors = _prepare_eval_venv(
@@ -272,17 +313,121 @@ def _evaluate_python_submission(
                         )
                         _write_command_logs(logs_path, "hidden", hidden_result)
 
-                        test_pass = public_result.passed and hidden_result.passed
+                        public_tests_pass = public_result.passed
+                        hidden_tests_pass = hidden_result.passed
+                        test_pass = public_tests_pass and hidden_tests_pass
                         if public_result.resource_limited:
                             errors.append("public tests exceeded memory limit")
                         if hidden_result.resource_limited:
                             errors.append("hidden tests exceeded memory limit")
+            if isolation_audit_log.is_file():
+                runtime_audit_events = [
+                    line
+                    for line in isolation_audit_log.read_text(
+                        encoding="utf-8", errors="replace"
+                    ).splitlines()
+                    if line.strip()
+                ]
 
+    boundary = isolation_context or {}
+    forbidden_runtime_capabilities_pass = (
+        static_isolation_pass and not runtime_audit_events
+    )
+    original_import_pass = (
+        forbidden_imports_pass
+        and forbidden_dependencies_pass
+        and forbidden_runtime_capabilities_pass
+        and submission_location_pass
+    )
+    errors.extend(
+        f"runtime isolation audit blocked: {event}" for event in runtime_audit_events
+    )
+    source_filesystem_absent = bool(
+        boundary.get("source_filesystem_absent", not functional_only)
+    )
+    network_disabled = bool(boundary.get("network_disabled", not functional_only))
+    mount_allowlist_pass = bool(boundary.get("mount_allowlist_pass", not functional_only))
+    runtime_import_origin_pass = bool(build_result and build_result.passed)
+    isolation_pass = all(
+        (
+            forbidden_imports_pass,
+            forbidden_dependencies_pass,
+            forbidden_runtime_capabilities_pass,
+            runtime_import_origin_pass,
+            source_filesystem_absent,
+            network_disabled,
+            submission_location_pass,
+            mount_allowlist_pass,
+        )
+    )
+    isolation = {
+        "pass": isolation_pass,
+        "forbidden_imports_pass": forbidden_imports_pass,
+        "forbidden_dependencies_pass": forbidden_dependencies_pass,
+        "forbidden_runtime_capabilities_pass": forbidden_runtime_capabilities_pass,
+        "runtime_audit_pass": not runtime_audit_events,
+        "runtime_audit_events": runtime_audit_events,
+        "runtime_import_origin_pass": runtime_import_origin_pass,
+        "source_filesystem_absent": source_filesystem_absent,
+        "network_disabled": network_disabled,
+        "submission_location_pass": submission_location_pass,
+        "mount_allowlist_pass": mount_allowlist_pass,
+        "verification_mode": str(
+            boundary.get(
+                "verification_mode",
+                "functional_capsule_pending_host_verification"
+                if functional_only
+                else "local_development_compatibility_not_for_paper",
+            )
+        ),
+    }
     gate = functional_gate(
         build_pass=build_pass,
-        test_pass=test_pass,
-        original_import_pass=original_import_pass,
+        public_tests_pass=public_tests_pass,
+        hidden_tests_pass=hidden_tests_pass,
+        isolation_pass=isolation_pass,
     )
+    compactness: dict[str, Any] = {
+        "status": "unavailable",
+        "reason": "submission directory is missing",
+    }
+    if functional_only:
+        compactness = {
+            "status": "not_run",
+            "reason": "functional container cannot access source or reference data",
+        }
+    elif submission_path.is_dir():
+        try:
+            with tempfile.TemporaryDirectory(
+                prefix="featureliftbench-source-metrics-"
+            ) as source_tmp:
+                full_source = Path(source_tmp) / "repo"
+                provenance = materialize_task_source(
+                    str(task_id),
+                    full_source,
+                    require_registered=_is_python_main_task(task_path),
+                )
+                compactness = analyze_submission_footprint(
+                    task_path,
+                    submission_path,
+                    source_path=(
+                        full_source if provenance is not None else source_repo
+                    ),
+                    functional_pass=bool(gate),
+                )
+                compactness["status"] = "ok"
+                compactness["source_provenance"] = provenance or {
+                    "snapshot_scope": "task_local"
+                }
+                reference_loc = compactness.get("reference_loc")
+                if isinstance(reference_loc, int):
+                    metrics["reference_loc"] = reference_loc
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            compactness = {
+                "status": "error",
+                "reason": f"{type(exc).__name__}: {exc}",
+            }
+            errors.append(f"compactness analysis failed: {exc}")
     scores = score_submission(
         metrics=metrics,
         metadata=metadata,
@@ -294,8 +439,14 @@ def _evaluate_python_submission(
         "submission": submission_name,
         "status": "passed" if gate else "failed",
         "build_pass": build_pass,
+        "public_tests_pass": public_tests_pass,
+        "hidden_tests_pass": hidden_tests_pass,
+        "isolation_pass": isolation_pass,
+        "isolation": isolation,
         "test_pass": test_pass,
         "original_import_pass": original_import_pass,
+        "evaluation_capsule_digest": str(boundary.get("evaluation_capsule_digest", "")),
+        "compactness_status": str(compactness.get("status", "unavailable")),
         "environment": environment_info,
         "dependency_install": _command_result_payload(dependency_install_result),
         "eval_tooling": _command_result_payload(eval_tooling_result),
@@ -304,6 +455,7 @@ def _evaluate_python_submission(
         "public_tests": _command_result_payload(public_result),
         "hidden_tests": _command_result_payload(hidden_result),
         "metrics": metrics,
+        "compactness": compactness,
         "scores": scores,
         "logs": {
             "dir": str(logs_path),
@@ -314,6 +466,103 @@ def _evaluate_python_submission(
     result_path = output_path / "result.json"
     result_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
     return result
+
+
+def attach_compactness_metrics(
+    result: dict[str, Any],
+    task_dir: str | Path,
+    submission_dir: str | Path,
+    output_dir: str | Path,
+) -> dict[str, Any]:
+    """Attach private static metrics after functional execution has ended.
+
+    This function deliberately performs no import, package installation,
+    pytest invocation, or submission subprocess.  It only reads files through
+    the compactness analyzer and may therefore access source/reference data
+    without exposing those data to untrusted code.
+    """
+
+    task_path = Path(task_dir).resolve()
+    submission_path = Path(submission_dir).resolve()
+    output_path = Path(output_dir).resolve()
+    metadata = load_metadata(task_path).data
+    metrics = result.get("metrics")
+    if not isinstance(metrics, dict):
+        metrics = _collect_metrics(submission_path, source_repo=task_path / "repo")
+        result["metrics"] = metrics
+    errors = result.get("errors")
+    if not isinstance(errors, list):
+        errors = []
+        result["errors"] = errors
+
+    compactness: dict[str, Any]
+    if not submission_path.is_dir():
+        compactness = {
+            "status": "unavailable",
+            "reason": "submission directory is missing",
+        }
+    else:
+        try:
+            with tempfile.TemporaryDirectory(
+                prefix="featureliftbench-source-metrics-"
+            ) as source_tmp:
+                full_source = Path(source_tmp) / "repo"
+                provenance = materialize_task_source(
+                    str(result.get("task_id") or task_path.name),
+                    full_source,
+                    require_registered=_is_python_main_task(task_path),
+                )
+                compactness = analyze_submission_footprint(
+                    task_path,
+                    submission_path,
+                    source_path=full_source if provenance is not None else task_path / "repo",
+                    functional_pass=bool(result.get("scores", {}).get("functional_gate", 0.0)),
+                )
+                compactness["status"] = "ok"
+                compactness["execution_policy"] = "static_read_only_no_submission_execution"
+                compactness["source_provenance"] = provenance or {
+                    "snapshot_scope": "task_local"
+                }
+                reference_loc = compactness.get("reference_loc")
+                if isinstance(reference_loc, int):
+                    metrics["reference_loc"] = reference_loc
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            compactness = {
+                "status": "error",
+                "reason": f"{type(exc).__name__}: {exc}",
+                "execution_policy": "static_read_only_no_submission_execution",
+            }
+            errors.append(f"compactness analysis failed: {exc}")
+
+    functional_score = float(
+        result.get("scores", {}).get(
+            "functional_gate",
+            functional_gate(
+                build_pass=bool(result.get("build_pass")),
+                public_tests_pass=bool(result.get("public_tests_pass")),
+                hidden_tests_pass=bool(result.get("hidden_tests_pass")),
+                isolation_pass=bool(result.get("isolation_pass")),
+            ),
+        )
+    )
+    result["compactness"] = compactness
+    result["compactness_status"] = str(compactness.get("status", "unavailable"))
+    result["scores"] = score_submission(
+        metrics=metrics,
+        metadata=metadata,
+        functional_gate_score=functional_score,
+    )
+    result_path = output_path / "result.json"
+    result_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+    return result
+
+
+def _is_python_main_task(task_path: Path) -> bool:
+    return (
+        task_path.parent.name == "tasks"
+        and task_path.parent.parent.name == "benchmark"
+        and (task_path / "metadata.json").is_file()
+    )
 
 
 def _load_forbidden_names(task_path: Path, metadata: dict[str, Any]) -> list[str]:
@@ -438,13 +687,25 @@ def _write_import_guard(
     run_cwd: Path,
     output_package: str,
     allowed_roots: list[Path],
+    forbidden_imports: list[str],
+    isolation_audit_log: Path,
 ) -> Path:
-    """Install sitecustomize that blocks stale system-site editable packages."""
+    """Install sitecustomize with import-origin and runtime capability guards."""
 
     guard_dir = run_cwd / "_featureliftbench_import_guard"
     guard_dir.mkdir(parents=True, exist_ok=True)
     top_level = output_package.split(".", 1)[0]
     allowed = [str(path.resolve()) for path in allowed_roots]
+    forbidden = sorted({name for name in forbidden_imports if name})
+    forbidden_paths = (
+        "/workspace/tasks",
+        "/workspace/benchmark/sources",
+        "/workspace/benchmark/references",
+        "/workspace/submissions",
+        "reference_solution",
+        "compactness.json",
+        "source_registry",
+    )
     (guard_dir / "sitecustomize.py").write_text(
         (
             "from __future__ import annotations\n"
@@ -452,6 +713,15 @@ def _write_import_guard(
             "import sys\n\n"
             f"_PACKAGE = {top_level!r}\n"
             f"_ALLOWED_ROOTS = {allowed!r}\n\n"
+            f"_SUBMISSION_ROOT = {str(allowed_roots[0].resolve())!r}\n"
+            f"_FORBIDDEN_IMPORTS = {forbidden!r}\n"
+            f"_FORBIDDEN_PATHS = {forbidden_paths!r}\n"
+            f"_AUDIT_LOG = {str(isolation_audit_log)!r}\n"
+            "_BLOCKED_EVENTS = {\n"
+            "    'subprocess.Popen', 'os.system', 'os.posix_spawn',\n"
+            "    'socket.connect', 'socket.connect_ex', 'socket.getaddrinfo',\n"
+            "    'urllib.Request',\n"
+            "}\n\n"
             "def _is_relative_to(path: str, root: str) -> bool:\n"
             "    try:\n"
             "        return os.path.commonpath([path, root]) == root\n"
@@ -469,7 +739,42 @@ def _write_import_guard(
             "sys.path[:] = [\n"
             "    entry for entry in sys.path\n"
             "    if not (_entry_defines_package(entry) and not _entry_allowed(entry))\n"
-            "]\n"
+            "]\n\n"
+            "def _record(event: str, detail: object) -> None:\n"
+            "    text = str(detail).replace('\\n', ' ')[:500]\n"
+            "    with open(_AUDIT_LOG, 'a', encoding='utf-8') as handle:\n"
+            "        handle.write(f'{event}: {text}\\n')\n\n"
+            "def _forbidden_import(name: str) -> bool:\n"
+            "    return any(name == item or name.startswith(item + '.') for item in _FORBIDDEN_IMPORTS)\n\n"
+            "def _originates_from_submission() -> bool:\n"
+            "    try:\n"
+            "        frame = sys._getframe(2)\n"
+            "    except ValueError:\n"
+            "        return False\n"
+            "    while frame is not None:\n"
+            "        filename = os.path.realpath(frame.f_code.co_filename)\n"
+            "        if _is_relative_to(filename, _SUBMISSION_ROOT):\n"
+            "            return True\n"
+            "        frame = frame.f_back\n"
+            "    return False\n\n"
+            "def _audit(event: str, args: tuple[object, ...]) -> None:\n"
+            "    path_event = event in {'open', 'os.listdir', 'os.scandir'}\n"
+            "    if event != 'import' and event not in _BLOCKED_EVENTS and not path_event:\n"
+            "        return\n"
+            "    from_submission = _originates_from_submission()\n"
+            "    if event == 'import' and args and from_submission and _forbidden_import(str(args[0])):\n"
+            "        _record(event, args[0])\n"
+            "        raise PermissionError(f'forbidden upstream import: {args[0]}')\n"
+            "    if event in _BLOCKED_EVENTS and from_submission:\n"
+            "        _record(event, args[:2])\n"
+            "        raise PermissionError(f'blocked evaluation capability: {event}')\n"
+            "    if path_event and args and from_submission:\n"
+            "        path = str(args[0])\n"
+            "        lowered = path.lower()\n"
+            "        if any(item.lower() in lowered for item in _FORBIDDEN_PATHS):\n"
+            "            _record(event, path)\n"
+            "            raise PermissionError(f'blocked evaluator-private path: {path}')\n\n"
+            "sys.addaudithook(_audit)\n"
         ),
         encoding="utf-8",
     )

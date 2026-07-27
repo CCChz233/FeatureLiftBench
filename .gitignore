@@ -71,6 +71,23 @@ reports/failure_attribution_20260720/__pycache__/
 reports/audits/*
 !reports/audits/new_protocol_readiness.json
 !reports/audits/new_protocol_readiness.md
+!reports/audits/v2_main_readiness.json
+!reports/audits/v2_main_readiness.csv
+!reports/audits/v2_main_readiness.md
+!reports/audits/v2_source_nohint_gate.json
+!reports/audits/v2_source_nohint_gate.md
+!reports/audits/v2_oracle_revalidation/
+reports/audits/v2_oracle_revalidation/*
+!reports/audits/v2_oracle_revalidation/summary.json
+!reports/audits/v2_oracle_revalidation/summary.md
+!reports/audits/v3_main_readiness.json
+!reports/audits/v3_main_readiness.csv
+!reports/audits/v3_main_readiness.md
+!reports/audits/v3_adversarial_canaries.json
+!reports/audits/v3_oracle_revalidation/
+reports/audits/v3_oracle_revalidation/*
+!reports/audits/v3_oracle_revalidation/summary.json
+!reports/audits/v3_oracle_revalidation/summary.md
 !reports/audits/spec_compliance_frozen_20260724.csv
 !reports/audits/task_lifecycle_report.csv
 !reports/audits/task_lifecycle_report.md
@@ -78,6 +95,21 @@ scripts/*
 !scripts/check_task_lifecycle.py
 !scripts/audit_new_protocol_readiness.py
 !scripts/build_spec_freeze.py
+!scripts/build_source_registry.py
+!scripts/materialize_full_sources.py
+!scripts/audit_v2_main_readiness.py
+!scripts/revalidate_v2_oracles.py
+!scripts/build_v2_benchmark_freeze.py
+!scripts/build_compactness_registry.py
+!scripts/audit_v3_main_readiness.py
+!scripts/revalidate_v3_oracles.py
+!scripts/run_v3_adversarial_canaries.py
+!scripts/build_v3_benchmark_freeze.py
+!scripts/build_external150_selection_ledger.py
+!scripts/scaffold_external150_replacements.py
+!scripts/populate_external150_pruned_sources.py
+!scripts/promote_external150_replacements.py
+!scripts/build_pruned_source_registry.py
 !scripts/harden_experiment_contracts.py
 !scripts/promote_batch3_task.py
 !scripts/report_spec_compliance.py
@@ -96,3 +128,7 @@ benchmark/submissions/*
 
 # Nested git metadata copied into task repo snapshots.
 benchmark/tasks/**/repo/.git/
+
+# Reproducible canonical source archives are rebuilt from registry revisions.
+# Their checksums are tracked; the archive bytes remain a local/server cache.
+benchmark/sources/archives/

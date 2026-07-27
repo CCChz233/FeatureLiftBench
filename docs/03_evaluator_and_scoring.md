@@ -1,144 +1,191 @@
 # Evaluator and Scoring
 
-**Contract / visibility rules:** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) · **Arms:** [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) · **Migration:** [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+契约与可见性以 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 为准；实验臂
+以 [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) 为准。
 
-Compactness terms are a **proxy**, not a proof of unique minimal closure. The
-default Main workspace omits both Benchmark evaluator test tiers; evaluator
-still runs both after submission.
+## 原则
 
-## Evaluation Pipeline
+- 唯一 headline：evaluator Functional Pass@1；
+- compactness 是 reference-relative 次指标，不与功能门相乘；
+- Agent completion、step/context limit、token 和 infra failure 单列；
+- public/hidden 都是 submission 后运行的 evaluator tiers；
+- 完整 upstream LOC 不作为 compactness 分母。
 
-The evaluator should remain shared across language splits at the concept level, with language-specific build/test adapters.
+## Main pipeline
 
-Pipeline:
+1. 校验 task、active freeze 和 canonical source mapping。
+2. 从 immutable archive 物化完整 pinned source tree。
+3. 构造只含 `TASK.md`、完整 source、锁定依赖和空 `submission/` 的
+   No-Hint workspace。
+4. 在 agent Docker 中运行一次 Agent。
+5. 收集 `submission/`；不把原仓库加入 runtime `PYTHONPATH`。
+6. 为功能评测构造 source-free capsule，只复制 sanitized metadata、
+   dependency lock、public/hidden tests、forbidden import list 和 harness。
+7. 在 functional eval Docker 中只挂载 capsule、submission、允许 wheels、
+   harness 和输出目录；不挂载 task `repo/`、source archives/registry、
+   reference/oracle 或 compactness registry。
+8. 在 `--network none`、只读 rootfs、`cap-drop ALL` 环境中运行 build、
+   private public tier、private hidden tier和结构化 isolation gates；运行时
+   audit hook 记录并阻断 submission 发起的 subprocess、socket、DNS、HTTP、
+   evaluator-private path 和 forbidden upstream import。
+9. functional container 退出后，trusted metrics stage 只读分析 submission、
+   source/reference；该阶段不 import、安装或执行 submission。
+10. 写逐题 `result.json`、logs 和 suite index。metrics 失败不改变
+    FunctionalPass，但结果标为 `compactness_status != ok`，不得进入论文表。
 
-1. Create a clean evaluation environment.
-2. Mount or copy the source repository as task input, not as runtime dependency.
-3. Run the agent in a Main workspace that hides both Benchmark evaluator test
-   tiers and all scoring artifacts; upstream tests inside `repo/` remain visible.
-4. Collect `submission/`.
-5. Install or build the submission.
-6. Check the target / required API.
-7. Check forbidden imports and forbidden dependencies.
-8. Check for direct source repo path reliance where the evaluator supports it.
-9. Run public tests.
-10. Run hidden tests.
-11. Compute LOC and compactness metrics.
-12. Write result JSON and logs.
+## Functional Pass
 
-Python uses `pytest` and package installation/import checks. Go uses `go test`, `go.mod`, and static Go import/module checks. These are adapters under the same evaluator semantics.
-
-## Functional Gate
-
-The current implemented scoring contract in `harness/featureliftbench/scoring.py` is:
-
-```text
-TestPass = PublicTestsPass ∧ HiddenTestsPass
-
-FunctionalGate = BuildPass ∧ TestPass ∧ OriginalImportPass
-```
-
-Where:
-
-- `BuildPass`: submission installs/imports or builds in the clean eval environment.
-- `TestPass`: public **and** hidden tests pass.
-- `OriginalImportPass`: forbidden imports/dependencies/modules are not used, and the submission is not inside / dependent on the source repo path as checked by the harness.
-
-Functional gate is binary:
+实现位于 `harness/featureliftbench/scoring.py`：
 
 ```text
-functional_gate = 1.0 if all functional gates pass else 0.0
+FunctionalPass =
+  BuildPass
+  ∧ PublicTestsPass
+  ∧ HiddenTestsPass
+  ∧ IsolationPass
 ```
 
-**Reporting:** Pass@1 on the main leaderboard uses this evaluator `functional_gate`, **not** OpenHands suite `run_status` (whether the agent workflow exited cleanly). Keep these metrics separate.
+- `BuildPass`：submission 在干净环境中可安装或导入；
+- `PublicTestsPass`：基础 regression layer 全过；
+- `HiddenTestsPass`：更深边界/组合行为 layer 全过；
+- `IsolationPass`：forbidden imports/dependencies、runtime audit、
+  runtime import origin、source filesystem absence、network disabled、
+  submission location 和 functional mount allowlist 全部通过。
+
+兼容字段 `test_pass = public_tests_pass ∧ hidden_tests_pass`，
+`original_import_pass = isolation_pass`；`final_score = functional_gate`。
+
+`functional_gate` 为 0/1。一次完整 task attempt 对应一次 Pass@1 观察。
+
+OpenHands `run.status` 还会编码 Agent 是否正常结束工作流。若 Agent
+step-limit 后留下 evaluator 可通过的 submission：
+
+- evaluator Functional Pass = pass；
+- Agent completion = fail；
+- step-limit = true。
+
+三者必须分别报告，不能用 `run.status` 覆盖 benchmark correctness。
 
 ## Compactness
 
-The current implemented compactness proxy is extraction ratio:
+每题从 frozen reference registry 获取 reference LOC/file measurements，
+然后报告：
 
 ```text
-ExtractionRatio = SubmittedRuntimeLOC / SourceRepoRuntimeLOC
+reference_relative_loc_ratio = submitted_loc / reference_loc
+compactness_score = min(1, reference_loc / submitted_loc)
 ```
 
-For Python, runtime LOC counts Python source while excluding tests according to the harness metrics. For Go, runtime LOC should count submitted Go runtime files and exclude tests; Go LOC details must stay synchronized with the Go evaluator implementation.
+以及：
 
-Lower extraction ratio is better. A whole-repo copy can pass tests but should score near zero.
+- submitted/reference file count；
+- copied file count；
+- copied LOC/fraction；
+- runtime/external dependency count；
+- unapproved external dependencies；
+- path leakage / forbidden source import；
+- excess copied LOC（仅 closure file gold 完整时）；
+- compactness class。
 
-## Final Score
+Reference 是一个可行紧凑实现，不是唯一最小解。因此这些值用于比较和诊断，
+不能解释为数学最小性证明。
 
-The current implemented formula is:
+兼容字段：
 
-```text
-FinalScore = FunctionalGate * max(0, 1 - ExtractionRatio)
-```
+- `extraction_ratio` = `reference_relative_loc_ratio`；
+- `final_score` = `functional_gate`。
 
-If `FunctionalGate = 0`, final score is `0` regardless of compactness.
+它们不再使用完整源仓库 LOC，也不再形成
+`functional × (1 - extraction_ratio)` composite。
 
-This formula is canonical for current documents because it matches the evaluator. Any future reference-LOC formula, such as `min(1, (alpha * reference_LOC + beta) / submitted_LOC)`, must be introduced only with a synchronized evaluator change, migration note, and paper metric definition.
+## 逐题结果
 
-## Reported Metrics
-
-Core metrics:
-
-- Install or build pass
-- Public pass
-- Hidden pass
-- Pass@1
-- Functional gate
-- Final score
-- Submitted LOC
-- Source LOC
-- Extraction ratio or LOC ratio
-- Forbidden import rate
-- Forbidden dependency or forbidden module rate
-- Public-hidden gap
-
-Optional or future metrics:
-
-- Path leakage rate if implemented as a distinct detector.
-- Copy-heavy pass rate.
-- Compact pass rate under a declared extraction threshold.
-- Environment failure rate separated from model failure.
-
-## Result JSON Shape
-
-Illustrative result fields:
+当前 Python evaluator 的主要字段：
 
 ```json
 {
   "task_id": "example__feature_core__001",
-  "language": "python",
+  "status": "passed",
   "build_pass": true,
+  "public_tests_pass": true,
+  "hidden_tests_pass": true,
+  "isolation_pass": true,
   "test_pass": true,
-  "public_pass": true,
-  "hidden_pass": true,
   "original_import_pass": true,
-  "scores": {
-    "functional_gate": 1.0,
-    "extraction_ratio": 0.25,
-    "final_score": 0.75
+  "evaluation_capsule_digest": "<sha256>",
+  "compactness_status": "ok",
+  "isolation": {
+    "forbidden_imports_pass": true,
+    "forbidden_dependencies_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "network_disabled": true,
+    "submission_location_pass": true,
+    "mount_allowlist_pass": true,
+    "verification_mode": "docker_functional_capsule_v1"
   },
+  "public_tests": {"passed": true},
+  "hidden_tests": {"passed": true},
   "metrics": {
     "loc": 500,
-    "source_loc": 2000
+    "reference_loc": 400
   },
-  "errors": []
+  "compactness": {
+    "status": "ok",
+    "reference_loc": 400,
+    "submitted_loc": 500,
+    "reference_file_count": 4,
+    "submitted_file_count": 5,
+    "copied_loc": 250,
+    "copied_fraction": 0.5,
+    "runtime_dependency_count": 2
+  },
+  "scores": {
+    "functional_gate": 1.0,
+    "extraction_ratio": 1.25,
+    "reference_relative_loc_ratio": 1.25,
+    "compactness_score": 0.8,
+    "final_score": 1.0
+  }
 }
 ```
 
-Exact field names should be read from current evaluator output before paper tables are generated.
+实际 paper table 必须读取当前 JSON，不应依赖这段示例字段的完整性。
 
-## Scoring Invariants
+## Suite metrics
 
-- RQ, scoring, and evaluator concepts must not be duplicated into Python and Go variants.
-- Language splits may have different build/test adapters but must report comparable conceptual metrics.
-- Hidden tests are part of functional success, not a separate bonus.
-- Compactness should penalize copy-heavy success without rewarding tiny incorrect submissions.
+### Headline
 
-Known limitations: [limitations.md](limitations.md). Current benchmark status: [STATUS.md](STATUS.md).
+- assigned/completed；
+- Functional Pass@1；
+- pass rate 和 uncertainty；
+- paired task-level deltas。
 
-## TODO
+### Correctness funnel
 
-- Audit current Python and Go evaluator output fields and align table-generation scripts with this document.
-- Decide whether to expose `path_leakage` as an explicit result field.
-- Document how symlinks, vendored modules, generated files, and test files count toward LOC in each language.
+- build/import；
+- public；
+- hidden；
+- isolation；
+- agent/evaluator mismatch；
+- infra/context/step failures。
+
+### Compactness and cost
+
+- reference-relative LOC/file/copy/dependency vector；
+- tokens、API calls、steps；
+- agent/eval/wall-clock time；
+- copy-heavy functional passes。
+
+## Scoring invariants
+
+- Hidden 是功能成功的一部分，不是 bonus。
+- Hidden 不得引入公开契约之外的新义务。
+- Compactness 不得让小而错误的 submission 获得功能分。
+- Copy-all 可以 functional pass，但 compactness 必须很差。
+- 不同 source/visibility/attempt 条件不得合并成同一 leaderboard。
+- Python 和未来 Go 可以使用不同 build adapters，但概念指标必须同名。
+
+已知限制见 [limitations.md](limitations.md)，当前状态见
+[STATUS.md](STATUS.md)。

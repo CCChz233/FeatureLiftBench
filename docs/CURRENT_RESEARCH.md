@@ -1,108 +1,100 @@
 # 当前研究入口
 
-更新时间：2026-07-24
+**更新时间：** 2026-07-27
 
-这是论文创新、当前实验结果和下一轮实验的**唯一入口**。
+## 一句话
 
-## 一句话结论
+Benchmark 工程已经闭环；当前最高优先级是按 frozen Full-Repository /
+No-Hint Python-150 跑正式 baseline，而不是继续改题、恢复人工审核或推进
+旧方法线。
 
-FeatureLiftBench 上，在 **entrypoint-conditioned OpenHands** 基线下，Agent 通常能找到实现，但卡在入口之后的 **API/行为契约完成与紧凑解耦**。规格、测试与 Agent 可见信息现已在 150/150 任务上完成工程统一；下一步优先运行冻结后的 compliant Python-150 模型实验，而不是扩题或调 start-here 检索。独立人工审核按计划在完整模型实验之后进行。
+## 当前判断
 
-论文目标仍是 **Benchmark + 方法**：
+FeatureLiftBench 测量 Agent 能否在完整真实仓库和完整功能契约下，自主定位
+实现、恢复 API/行为/依赖闭包，并交付独立且紧凑的功能模块。
 
-- **Benchmark 基础主线：** 冻结规格、任务质量与评测口径。  
-- **方法研究主线：** 在合规任务上验证 Contract/API closure recovery；具体方案由失败分析与先导实验决定。
+Python-150 已满足八条核心原则：
 
-**先读：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) → [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) → [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) → [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)
+- 150/150 完整公开契约；
+- 150/150 No-Hint；
+- 150/150 canonical full-repository input；
+- 150/150 reference-relative compactness records；
+- 450/450 Docker Oracle；
+- 12/12 adversarial isolation canaries；
+- source/spec/reference/evaluator/environment 已内容寻址冻结。
 
-**服务器跑最新 engineering-compliant Python-150：**
-[SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md)。正式默认已改为
-test-blind Main；当前 spec freeze 已通过实验门禁，独立人工审核留到
-150 题实验之后。
+现有四模型结果使用 `mixed_snapshot_v1`，可以支持早期失败模式分析，但不能
+回答 v3 Full-Repository / No-Hint 下的最终性能。
 
-## 当前最高优先级
+## 下一步
 
-> 主榜已达到 **150/150 experiment-ready、0 legacy**。契约与 hidden 已对齐，
-> Oracle freeze `7c042d5528b7d0fd` 完成 450/450 Docker 复验，spec freeze
-> `f7c616edb47ea533` 已生成。现在可运行 compliant Python-150 模型实验；
-> 独立人工审核按计划在实验后进行，只影响 paper-ready 发布。
-
-| # | 项 | 状态 |
+| 优先级 | 工作 | 完成标准 |
 | --- | --- | --- |
-| 1 | Validate + 生成器 + CLI | ✅ |
-| 2 | 试点 isort / transitions / scrapy + hidden 重判 | ✅ |
-| 3 | Hard-50 宪法迁移 + API surface + Oracle 复验 | ✅ 50/50 |
-| 4 | Python-150 分批规格迁移 | ✅ **150/150 已验收** |
-| 5 | Hard-50 compliant 可见性配对重跑 | ✅ 历史 Public-feedback **11/50**；test-blind Main **4/50** |
-| 6 | Compliant Python-150 test-blind Main 模型实验 | ⏳ **现在可启动** |
-| 7 | Python-150 独立人工 paper-gold 审核 | ⏸ **实验后；0/150** |
-| 8 | Contract Checklist / Probe / Reference Support Set | ⏳ |
+| P0 | v3 baseline | 每个目标模型完整 150 题、attempt=1、freeze/image/protocol 可审计 |
+| P1 | v3 结果分析 | Functional Pass@1、compactness、token、step、latency、failure taxonomy |
+| P2 | 难度重校准 | 基于首轮 v3 empirical success，不把旧 hard 标签当实证结论 |
+| P3 | 方法研究 | 在冻结 v3 子集上验证 Contract/API closure recovery |
 
-150 题工程合规结果：
-[new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md)
-（逐题协议就绪度）与
-[spec_compliance_frozen_20260724.csv](../reports/audits/spec_compliance_frozen_20260724.csv)
-（冻结合规清单）。
+正式默认：
 
-## 方法线怎么放
+```text
+OpenHands
++ specified model
++ Full-Repository / No-Hint Main
++ agent Docker
++ evaluator Docker
++ Python-150
++ one attempt per task
++ evaluator Functional Pass@1
+```
+
+操作见
+[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)。
+
+## 论文主线
+
+1. **Benchmark contribution**：把 feature extraction 定义为完整仓库、
+   完整公开契约、No-Hint、submission 后私有评测的独立任务。
+2. **Dataset contribution**：150 External Main tasks、126 external
+   repositories、132 immutable snapshots，以及独立 Curated-7 split。
+3. **Evaluation contribution**：Functional Pass@1 与 reference-relative
+   compactness 分离，并记录 isolation、copy/dependency footprint。
+4. **Empirical contribution**：比较模型在正确性、紧凑性、成本和失败机制上
+   的差异。
+5. **Method contribution（后置）**：验证面向 API/behavior completion 的
+   closure recovery 是否改善 Main，而不是只提升文件定位。
+
+## 现有证据的边界
+
+历史 `mixed_snapshot_v1` 四模型 evaluator Functional Pass@1 为
+87/150、56/150、49/150、37/150。它们提示：
+
+- 强模型和弱模型存在明显区分；
+- 常见失败发生在 API/行为完成、依赖/资源遗漏和 copy-heavy；
+- 单纯提供定位或 RSG start-here 尚未显示稳定 hard-task 增益；
+- public-feedback 与 test-blind 条件不能混报。
+
+这些是方向性证据。完整仓库会增加 localization 和上下文负担，No-Hint 会
+去掉旧 entrypoints，因此 v3 通过率、token 和失败分布必须重新测量。
+
+## 方法状态
 
 | 路线 | 状态 |
 | --- | --- |
-| Benchmark 规格宪法与任务迁移 | ✅ **150/150 engineering-compliant** |
-| Contract/API closure recovery | **当前方法候选**（在 compliant 子集上验证） |
-| Repository Fact Graph | **基础设施保留** |
-| 当前 RSG start-here / support retrieval | **降级为实验基线** |
-| ECSM / 强制 task-closure | **废弃** |
+| Benchmark v3 工程 | 完成 |
+| Contract/API closure recovery | 下一方法候选 |
+| Repository Fact Graph 基础设施 | 保留 |
+| RSG start-here/support retrieval | 降级为历史基线 |
+| ECSM / 强制 task-closure 状态机 | 废弃 |
+| 独立人工审核门禁 | 取消 |
 
-- **不做** ECSM / 强制状态机 / claim·stopping / 强制 `task-closure`。  
-- **评测** Pass@1 = evaluator `functional_gate`；与 Agent `run_status` 分离。  
-- **legacy 与 compliant 实验分报**（见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)）。
-
-## 当前证据（带边界）
-
-- Python-150：工程合规 **150/150**；完整非模板化契约
-  **150/150**；experiment-ready **150/150**；逐题 validation **150/150**。  
-- Oracle freeze `7c042d5528b7d0fd`：canary **15/15**、full
-  **450/450**、150 stable、0 quarantine；spec freeze
-  `f7c616edb47ea533`。  
-- `repo/` 含可发现上游测试 **48/150**，这是 Agent 可用证据统计而非
-  硬门禁，因为任务允许 Agent 自行构造测试。独立人工审核 **0/150**，
-  所以 benchmark 可做正式实验，但仍不是 paper-ready release。  
-- 历史 550 OpenHands runs 仍按 legacy 规格口径；不得与 compliant rerun 混报。  
-- Compliant hard-50 的旧命名结果：可见 evaluator tests 的历史 `Main`
-  （现称 Public-feedback）**11/50（22%）**；不可见 evaluator tests 的历史
-  `No-public`（现称 test-blind Main）**4/50（8%）**。配对净差 +7 题，
-  0 个 test-blind-Main-only pass。  
-- 定位很少成最早失败；public→hidden 条件失败约 43%（非严格因果）。  
-- RSG hard A/B：start-here 无 hidden 通过率收益。  
-- 规格缺陷例：isort 双轨 API（试点已 compliant 修复）。  
-- 报告：`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` · `reports/failure_attribution_20260720/` · `reports/repo_graph_phase2/rsg_hard_ab_20260724.md`
+废弃路线的规划文档和取消的审核包已经从当前文档树移除；原始实验结果仍保留
+在 `experiments/` / `reports/`，用于复查而非指导当前路线。
 
 ## 今天只读
 
-| 目的 | 文件 |
-| --- | --- |
-| **整体思路** | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
-| **规格宪法** | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
-| **迁移怎么操作** | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) |
-| **实验臂** | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) |
-| 状态 / 实验 | [STATUS.md](STATUS.md) · [EXPERIMENTS.md](EXPERIMENTS.md) |
-| 怎么跑 | [../RUN.md](../RUN.md) |
-
-## 已废弃 / 降级
-
-| 项 | 说明 |
-| --- | --- |
-| ECSM | superseded |
-| 当前 RSG start-here 提分主线 | retrieval baseline |
-| 「最小闭包 / Oracle Closure」严格宣称 | 紧凑代理 + Reference Support Set |
-| 理想 Agent 工作流入库规范 | 禁止 |
-
-## 目录职责
-
-| 目录 | 放什么 |
-| --- | --- |
-| `docs/` | 规范与入口；宪法 + 迁移手册优先 |
-| `harness/featureliftbench/` | 评测、校验、迁移 |
-| `experiments/` | 原始运行（标注 legacy/compliant） |
-| `reports/audits/` | 已跟踪的冻结合规与协议就绪度摘要 |
+- [设计原则](BENCHMARK_DESIGN_PRINCIPLES.md)
+- [当前状态](STATUS.md)
+- [实验清单](EXPERIMENTS.md)
+- [服务器运行手册](SERVER_RUNBOOK_PYTHON150.md)
+- [报告索引](REPORTS_INDEX.md)

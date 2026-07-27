@@ -1,0 +1,452 @@
+{
+  "cases": {
+    "dns": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [
+          "runtime isolation audit blocked: socket.getaddrinfo: ('example.com', 80)"
+        ],
+        "extraction_ratio_to_reference": 0.051282,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [
+            "socket.getaddrinfo: ('example.com', 80)"
+          ],
+          "runtime_audit_pass": false,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 2
+      }
+    },
+    "dynamic_import": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 0.051282,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 2
+      }
+    },
+    "empty": {
+      "expected": {
+        "functional_gate": 0.0
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 0.0,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 0,
+        "submitted_loc": 0
+      }
+    },
+    "http": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [
+          "runtime isolation audit blocked: urllib.Request: ('http://example.com', None)"
+        ],
+        "extraction_ratio_to_reference": 0.051282,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [
+            "urllib.Request: ('http://example.com', None)"
+          ],
+          "runtime_audit_pass": false,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 2
+      }
+    },
+    "oracle": {
+      "expected": {
+        "functional_gate": 1.0,
+        "isolation_pass": true
+      },
+      "pass": true,
+      "result": {
+        "build_pass": true,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 1.0,
+        "functional_gate": 1.0,
+        "hidden_tests_pass": true,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": true,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": true,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": true,
+        "public_tests_pass": true,
+        "reference_loc": 39,
+        "status": "passed",
+        "submitted_file_count": 1,
+        "submitted_loc": 39
+      }
+    },
+    "public_only": {
+      "expected": {
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "public_tests_pass": true
+      },
+      "pass": true,
+      "result": {
+        "build_pass": true,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 0.948718,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": true,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": true,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": true,
+        "public_tests_pass": true,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 37
+      }
+    },
+    "repository_scale_copy": {
+      "expected": {
+        "functional_gate": 1.0,
+        "isolation_pass": true
+      },
+      "pass": true,
+      "result": {
+        "build_pass": true,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 77.923077,
+        "functional_gate": 1.0,
+        "hidden_tests_pass": true,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": true,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": true,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": true,
+        "public_tests_pass": true,
+        "reference_loc": 39,
+        "status": "passed",
+        "submitted_file_count": 1,
+        "submitted_loc": 3039
+      }
+    },
+    "socket": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [
+          "runtime isolation audit blocked: socket.connect: (<socket.socket fd=3, family=2, type=1, proto=0, laddr=('0.0.0.0', 0)>, ('127.0.0.1', 9))"
+        ],
+        "extraction_ratio_to_reference": 0.051282,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [
+            "socket.connect: (<socket.socket fd=3, family=2, type=1, proto=0, laddr=('0.0.0.0', 0)>, ('127.0.0.1', 9))"
+          ],
+          "runtime_audit_pass": false,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 2
+      }
+    },
+    "source_read": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": true,
+        "compactness_status": "ok",
+        "errors": [
+          "featurelifted/__init__.py:1: isolation violation: references forbidden evaluator/source path '/workspace/tasks'"
+        ],
+        "extraction_ratio_to_reference": 1.025641,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": true,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": true,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": true,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 40
+      }
+    },
+    "stub": {
+      "expected": {
+        "functional_gate": 0.0
+      },
+      "pass": true,
+      "result": {
+        "build_pass": true,
+        "compactness_status": "ok",
+        "errors": [],
+        "extraction_ratio_to_reference": 0.0,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": true,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": true,
+          "runtime_audit_events": [],
+          "runtime_audit_pass": true,
+          "runtime_import_origin_pass": true,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": true,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 0
+      }
+    },
+    "subprocess": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [
+          "runtime isolation audit blocked: subprocess.Popen: ('/bin/true', ['/bin/true'])"
+        ],
+        "extraction_ratio_to_reference": 0.051282,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": true,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [
+            "subprocess.Popen: ('/bin/true', ['/bin/true'])"
+          ],
+          "runtime_audit_pass": false,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 2
+      }
+    },
+    "upstream_import": {
+      "expected": {
+        "functional_gate": 0.0,
+        "isolation_pass": false
+      },
+      "pass": true,
+      "result": {
+        "build_pass": false,
+        "compactness_status": "ok",
+        "errors": [
+          "featurelifted/__init__.py:1: imports from forbidden module 'itsdangerous'",
+          "runtime isolation audit blocked: import: itsdangerous"
+        ],
+        "extraction_ratio_to_reference": 0.025641,
+        "functional_gate": 0.0,
+        "hidden_tests_pass": false,
+        "isolation": {
+          "forbidden_dependencies_pass": true,
+          "forbidden_imports_pass": false,
+          "forbidden_runtime_capabilities_pass": false,
+          "mount_allowlist_pass": true,
+          "network_disabled": true,
+          "pass": false,
+          "runtime_audit_events": [
+            "import: itsdangerous"
+          ],
+          "runtime_audit_pass": false,
+          "runtime_import_origin_pass": false,
+          "source_filesystem_absent": true,
+          "submission_location_pass": true,
+          "verification_mode": "docker_functional_capsule_v1"
+        },
+        "isolation_pass": false,
+        "public_tests_pass": false,
+        "reference_loc": 39,
+        "status": "failed",
+        "submitted_file_count": 1,
+        "submitted_loc": 1
+      }
+    }
+  },
+  "compactness_separation_pass": true,
+  "gate_pass": true,
+  "generated_at": "2026-07-27T03:24:51+00:00",
+  "policy_id": "featureliftbench.full_repository_no_hint_main.v3",
+  "schema_version": "featureliftbench.v3_adversarial_canaries.v1",
+  "task_id": "itsdangerous__timed_serializer_core__001"
+}

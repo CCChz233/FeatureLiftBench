@@ -1,23 +1,30 @@
 # FeatureLiftBench Task Design Rules（规格宪法）
 
-- **状态：** Adopted v1.1（2026-07-24，test-blind Main）
+- **状态：** 当前 v3（2026-07-27，External-150 / Full-Repository / No-Hint Main）
 - **效力：** 主榜入库与新题/晋升的权威规则；与旧文档冲突时以本文为准
-- **迁移：** Python-150 **150/150 engineering-compliant**、0 legacy（2026-07-24）；全量任务已完成工程迁移、逐题校验与 Oracle 复验，独立人工 paper-gold 审核仍待完成。手册：[CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+- **当前：** Python-150 **150/150 spec-compliant**、150/150
+  Full-Repository/No-Hint，450/450 Oracle 与 12/12 adversarial canaries
+  已完成，v3 freeze 由严格 readiness 门禁生成；见
+  [STATUS.md](STATUS.md)。
 - **相关：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)（整体思路）· [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)（臂）· [06_task_schema.md](06_task_schema.md)（包布局）· [07_incremental_task_rules.md](07_incremental_task_rules.md)（生命周期）· [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)（计分）
 
 ---
 
 ## 0. Benchmark 定义（方法无关）
 
-FeatureLiftBench 评估：在提供完整公开功能契约与 pinned 上游仓库上下文
-的条件下，Agent 能否自行检查实现与上游测试证据、解耦目标功能，构造
-独立可安装、行为完整且尽量紧凑的功能模块。
+FeatureLiftBench 评估：在提供完整公开功能契约与完整 pinned 上游仓库、
+但不提供上游实现位置提示的条件下，Agent 能否自行搜索和定位实现、检查
+上游测试证据、发现依赖并解耦目标功能，构造独立可安装、行为完整且尽量
+紧凑的功能模块。
 
 Benchmark **不规定** Agent 的探索、推理、测试或停止流程；任何方法只要遵守相同的可见信息、工具环境与输出约束，均可参与评测。
 
 论文路线是 **Benchmark 基础 + 方法研究**：先冻结规格与评测口径，再在合规任务上验证 Contract/API closure recovery；不提前承诺某一工具有效。
 
-`extraction_ratio` / `final_score` 中的紧凑项是 **紧凑性代理指标**，不是“唯一最小闭包”或“每一行都必要”的证明。不得将评测目标表述为“行为完备的最小闭包提取”之严格意义。方法上界实验宜称 **Reference Support Set / Contract Checklist**，避免 “Oracle Closure” 歧义。
+紧凑性是功能正确性之外的**独立次要指标**，不是“唯一最小闭包”或
+“每一行都必要”的证明。不得使用完整 upstream LOC 作为分母，也不得将
+功能与紧凑性合成唯一 headline。方法上界实验宜称
+**Reference Support Set / Contract Checklist**，避免 “Oracle Closure” 歧义。
 
 推荐的失败分析框架（规格账本 → 闭包 → 改写 → 验证 → prune）可用于归因与方法讨论，**不得**写入入库规范或强制 Agent 工作流。
 
@@ -113,9 +120,18 @@ optional_api: []
 
 ### 2.3 其它公开字段
 
-- `source_entrypoints`：≥1，且在 pinned `repo/` commit 可解析。  
 - `exclusions`：明确不做的能力；hidden 不得要求 exclusions 内行为。  
 - `forbidden`：原包 import / 外部依赖等，与 evaluator 门一致。
+
+Main 的 `public_spec`、TASK、redacted metadata 和初始 prompt **不得暴露**：
+
+- `source_entrypoints`、`source_hints`；
+- 上游文件路径、内部符号名或行号；
+- 调用链、依赖闭包或目标相关文件清单。
+
+source entrypoints 若为维护、reference 审核或 provenance 所需，应存放在
+Agent 不可见的 evaluator 私有字段；向 Agent 暴露它们只能属于显式
+`Entrypoint-Hint` ablation。
 
 ### 2.4 默认不对 Agent 可见的分析字段
 
@@ -126,7 +142,8 @@ optional_api: []
 - `hidden_behavior_category`  
 - 其它直接暗示 hidden 重点或解法类型的标签  
 
-Agent 默认只见正常功能规格（entrypoint、API、behaviors、exclusions、forbidden、输出布局与评分一句说明）。
+Agent 默认只见正常功能规格（目标提交 API、behaviors、exclusions、
+forbidden、输出布局与功能门说明），不见上游实现定位。
 
 ---
 
@@ -178,10 +195,10 @@ Benchmark 只规定：
 
 | 维度 | 内容 |
 | --- | --- |
-| 输入 | `repo/`（含保留下来的上游 tests/docs/examples）、由 `public_spec` 生成的 TASK、redacted 运行元数据、依赖锁等 |
+| 输入 | 完整 pinned `repo/`（含上游 tests/docs/examples/config/resources）、由 `public_spec` 生成的 TASK、无定位提示的 redacted 运行元数据、依赖锁等 |
 | 允许工具/环境 | 与 harness 配置一致；方法专用工具须标明为可选且不改变可见契约 |
 | 输出 | `submission/` 下独立可安装包（Python：`submission/featurelifted/`） |
-| 指标 | `functional_gate = BuildPass ∧ TestPass ∧ OriginalImportPass`（`TestPass = Public ∧ Hidden`）；`final_score = gate × max(0, 1−extraction_ratio)`。Pass@1 用 evaluator 功能门，不用 Agent `run_status` |
+| 指标 | `functional_gate = BuildPass ∧ Public ∧ Hidden ∧ Isolation`；Pass@1 用 evaluator 功能门，不用 Agent `run_status`。Compactness 独立、reference-relative 报告 |
 
 不规定 Agent 必须维护何种中间状态或采用何种推理顺序。
 
@@ -189,13 +206,18 @@ Benchmark 只规定：
 
 ## 6. 实验臂（语义契约不变）
 
-| 臂 | 允许改变 |
-| --- | --- |
-| Main | 两级 Benchmark evaluator 测试全盲；标准生成 TASK |
-| Public-feedback | 显式挂载基础 `public_tests/` |
-| Short-prompt | Main 可见性不变；删除方法建议与冗余说明，保留完整契约 |
+| 臂 | 仓库上下文 | 定位提示 | Benchmark tests |
+| --- | --- | --- | --- |
+| Main | 完整 | 无 | 两级全盲 |
+| Entrypoint-Hint | 完整 | 有 | 两级全盲 |
+| Public-feedback | 完整 | 无 | public 可见 |
+| Pruned-Context | 裁剪 | 按臂定义 | 两级全盲 |
+| Short-prompt | 完整 | 无 | 两级全盲；仅压缩文案 |
 
-**不得**在臂之间改变：`required_api`、behaviors、exclusions、entrypoints、forbidden、hidden tests、evaluator。否则不是 ablation，而是不同任务。
+所有臂必须保持 `required_api`、behaviors、exclusions、forbidden、hidden
+tests 和 evaluator 不变。只允许按臂定义改变 source context、entrypoint
+visibility、public-test feedback 或非语义文风；每次只能归因于明确记录的
+实验变量。
 
 ---
 
@@ -222,35 +244,39 @@ Benchmark 只规定：
 
 ### 7.3 可执行性
 
-12. entrypoint 在 pinned commit 可解析。  
-13. reference 在干净、无网络环境通过。  
-14. public、hidden、isolation、forbidden 全过。  
-15. evaluator 连续运行确定。  
-16. reference 不依赖原仓运行时路径。
+12. Main `repo/` 与 canonical source registry 中的完整 pinned tree 一致。
+13. `snapshot_scope=full`、source revision 与 archive SHA-256 已记录。
+14. 同一 canonical source + revision 的任务使用同一 source digest。
+15. reference 在干净、无网络环境通过。
+16. public、hidden、isolation、forbidden 全过。
+17. evaluator 连续运行确定。
+18. reference 不依赖原仓运行时路径。
 
 ### 7.4 泄漏检查
 
-17. `public_tests/`、hidden 与 evaluation 均不在默认 Main workspace。  
-18. private metadata 不进 TASK。  
-19. TASK 不含 hidden 的具体 I/O 样本。  
-20. public fixture 不间接加载 hidden。  
-21. 日志/缓存不暴露 hidden 内容。
-22. `repo/` 快照记录上游 tests/docs/examples 的保留情况；若缺失，须说明
-    Agent 依靠何种公开证据自建测试。
+19. `public_tests/`、hidden 与 evaluation 均不在默认 Main workspace。
+20. private metadata 不进 TASK。
+21. TASK、redacted metadata、初始 prompt、辅助状态和日志不含 source
+    entrypoints、文件/符号/行号或 closure 提示。
+22. TASK 不含 hidden 的具体 I/O 样本。
+23. public fixture 不间接加载 hidden。
+24. 日志/缓存不暴露 hidden 内容。
+25. 完整 `repo/` 保留 upstream tracked tests/docs/examples/config/resources；
+    所有排除都服从统一、非目标相关规则。
 
 ### 7.5 任务有效性
 
-23. 空实现 / 简单 stub 必须失败。  
-24. 仅拟合浅层基础测试的方案应被 hidden 区分。  
-25. 直接 import 原仓必须失败。  
-26. 整仓复制可以 functional pass，但须受明确 compactness 惩罚。  
-27. 不依赖随机网络、墙钟时间或机器特定环境（除非规格显式声明且可复现）。
+26. 空实现 / 简单 stub 必须失败。
+27. 仅拟合浅层基础测试的方案应被 hidden 区分。
+28. 直接 import 原仓必须失败。
+29. 整仓复制可以 functional pass，但须在独立 compactness 指标中明显差。
+30. 不依赖随机网络、墙钟时间或机器特定环境（除非规格显式声明且可复现）。
 
 ---
 
-## 8. 人工审核（主榜逐题，非仅抽检）
+## 8. 内容与契约审核（工程准入）
 
-每道主榜题至少一次明确审核，回答：
+每道主榜题必须通过可审计的工程检查，回答：
 
 - 题面是否足以唯一确定预期行为？  
 - hidden 是否完全属于公开契约？  
@@ -261,7 +287,10 @@ Benchmark 只规定：
 - public 是否过强或过弱？  
 - 是否主要测解耦/契约实现，而非环境偶然性？  
 
-高风险题（framework lifecycle、nested state、resource/package、dynamic registry、config/environment）建议 **双人复核**。
+检查可由 maintainer、自动验证与 AI-assisted 审核共同完成。独立人工审核
+不是 promotion、实验或 release 的硬门禁；若未来对高风险题
+（framework lifecycle、nested state、resource/package、dynamic registry、
+config/environment）安排额外人工复核，应单独报告，不改变主榜定义。
 
 ---
 
@@ -274,10 +303,14 @@ Benchmark 只规定：
 | 3 | 试点 isort / transitions / scrapy + hidden 重判 | ✅ |
 | 4 | 生成器 `public_spec → TASK.md` | ✅ `render-task`；compliant agent workspace 已接入 |
 | 5 | 主榜分批迁移；`spec_status: legacy` 标注 | ✅ 150/150 compliant；0 legacy |
-| 6 | Compliant Python-150 重跑 OpenHands 基线 → 方法实验 | 🚧 全榜 test-blind Main 正式实验待运行 |
-| 7 | RSG start-here 仅 retrieval baseline；扩题低优先级 | ✅ 政策已冻结 |
+| 6 | `mixed_snapshot_v1` 基线 | ⚠️ 可作历史/消融证据 |
+| 7 | Full-repository / No-Hint workspace、source freeze、compactness | ✅ |
+| 8 | v3 全量 Oracle / isolation | ✅ 450/450；12/12 canaries |
+| 9 | v3 model baseline | ⏳ |
+| 10 | RSG start-here 仅 retrieval baseline；扩题低优先级 | ✅ 政策已冻结 |
 
-操作细节：[CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+操作细节：[07_incremental_task_rules.md](07_incremental_task_rules.md)；
+正式运行：[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)。
 
 ---
 

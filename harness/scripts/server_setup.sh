@@ -132,6 +132,6 @@ Build the OpenHands agent and evaluator images before execution:
 
 Full server runbook:
 
-  docs/SERVER_RUNBOOK_COMPLIANT150.md
+  docs/SERVER_RUNBOOK_V2_PYTHON150.md
 
 EOF

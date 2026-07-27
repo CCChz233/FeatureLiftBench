@@ -177,10 +177,17 @@ def render_agent_workspace_task(
     metadata: dict[str, Any],
     *,
     mount_public_tests: bool = False,
+    source_entrypoints: list[str] | None = None,
 ) -> str:
     """Render the TASK.md content placed in an agent workspace for compliant tasks."""
 
     text = render_public_task(metadata)
+    if source_entrypoints:
+        text += (
+            "\n## Source Entrypoints — Entrypoint-Hint Ablation\n\n"
+            "This diagnostic arm provides frozen upstream implementation anchors:\n\n"
+            + "".join(f"- `{item}`\n" for item in source_entrypoints)
+        )
     if not mount_public_tests:
         text += (
             "\n## Agent Workspace Note\n\n"

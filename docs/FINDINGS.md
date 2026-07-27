@@ -1,70 +1,88 @@
-# 实验结果能说明什么（Findings）
+# 当前结果能说明什么
 
-基于已冻结 OpenHands 实验（详见 [EXPERIMENTS.md](EXPERIMENTS.md) 与 [TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md)）。
+**最后更新：** 2026-07-27
 
-**设计前提（2026-07-24）：** 见 [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)。决策权在大模型；Benchmark 不规定工作流。ECSM 已废弃。RSG 文件导航臂**降级**（非当前提分主线）。规格统一优先于扩方法。
+## 最重要的结论
 
-## 完成度如何
+Benchmark 的工程合格性已经由任务、source、Oracle、isolation、compactness
+和 freeze 门禁证明，不需要靠某个模型跑 100 次来证明。
 
-| 口径 | 结果 |
-| --- | --- |
-| 最强 Flash · core-100 | **83/100（83%）**，avg score **0.52** |
-| 最强 Flash · 全 150 | **91/150（60.7%）**，avg **0.36** |
-| Flash · hard50（legacy 冻结口径） | **8/50（16%）** |
-| Flash · compliant hard50 Public-feedback（旧标签 Main） | **11/50（22%）** |
-| Flash · compliant hard50 test-blind Main（旧标签 No-public） | **4/50（8%）** |
-| 开源最好 Qwen3.6-27B · core-100 | **54/100** |
-| Qwen3-Coder-30B · core-100 | **24/100** |
+模型能力结论则相反：当前还没有 v3 Full-Repository / No-Hint baseline，
+所以不能把历史通过率写成新版 benchmark 的最终性能。
 
-强模型在常规 hard 题上可用；一到 hard3 / 强缠绕切片就断崖下跌。
+## 已经可以支持的结论
 
-2026-07-24 的 compliant hard-50 配对重跑中，Public-feedback 比
-test-blind Main 多通过 7 题（+14 percentage points；11/50 vs 4/50），
-4 个 test-blind Main pass 全部也是 Public-feedback pass，0 个
-test-blind-Main-only pass。精确配对 McNemar
-`p=0.015625`，支持「可运行 public feedback 对本设置有帮助」。两臂均
-无缺提交、限流或 Docker/evaluator 基建失败。
+### 1. Python-150 是可执行且稳定的 v3 benchmark
 
-与 legacy hard-50 的 8/50 相比，compliant Public-feedback 为
-11/50（+6 points）；逐题为 4 个 compliant-only、1 个 legacy-only，配对
-`p=0.375`。由于规格、测试与单次随机轨迹均有变化，这只能视为方向性改善，
-不能宣称迁移必然提分。
-配对报告：
-`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md`。
+- 150/150 任务通过八原则审计；
+- 132/132 canonical snapshots ready；
+- 450/450 Docker Oracle runs 通过；
+- 150/150 tasks 三次结果稳定；
+- 0 active quarantine；
+- source/spec/reference/evaluator/environment 已冻结。
 
-该批运行发生在实验臂改名前：旧 `Main` 挂载 evaluator public tests，旧
-`No-public` 不挂载。当前默认 `Main` 是后一种 test-blind 条件。
+### 2. 历史条件下有明显模型区分度
 
-2026-07-20 新导入但尚未冻结的同任务集 candidate 结果为：Qwen3.6-27B **58/150（38.7%）**、Qwen3.6-35B **52/150（34.7%）**。两者 hard50 分别只有 4/50 和 3/50，与上述难度断崖一致；论文正式表在 re-freeze 前仍不使用这两个结果。
+`mixed_snapshot_v1` 四模型 evaluator Functional Pass@1 从 24.7% 到
+58.0%。这说明任务不是全过或全挂，并能区分模型能力。
 
-## RSG 说明什么（含 2026-07-24）
+但 source context、定位提示和 exact freeze provenance 与 v3 不同，因此
+不能把这些数值外推成 v3 通过率。
 
-- 旧强制 `task-closure` / `submission-check` Pilot：只能说明强制采用门脆，**不能**因果断言图工具增益。  
-- RSG v2 可选工具 + hard3×P0/tuned A/B（transitions / isort / scrapy）：**6/6 hidden fail**，tuned 无通过率提升且 token 更高。失败模式为契约/行为（缺导出、嵌套态、KeyError），非「找不到文件」。  
-- 结论：把 RSG 当 **start-here 导航** 对主损失不对齐 → **降级**；若再做须服务 `required_api`/behavior 清单，而非扩搜文件。报告：`reports/repo_graph_phase2/rsg_hard_ab_20260724.md`。
+### 3. Functional Pass 与 Agent completion 必须分开
 
-## 主要缺陷
+五个历史任务在 Agent step-limit 后仍留下 evaluator 可通过的 submission。
+按 benchmark correctness，它们 functional pass；按 agent process，它们未
+正常完成。二者混成单一 `run.status` 会改变模型排名数字。
 
-1. **Public 过、Hidden 挂** — 行为保真不足（hard50 上 public→hidden 失败极高）。
-2. **依赖闭包不完整** — 找得到入口，收不齐 helper / 资源 / 注册。
-3. **Over-copy** — 功能门过了但 extraction 接近整仓，final score 接近 0。
-4. **框架 / 资源缠绕更难**；vibe clutter 反而相对容易。
-5. **过程质量差** — 重复读文件、过早宣称完成；弱模型还有更高环境噪声。
+论文应把 evaluator Functional Pass@1 作为 headline，把 step-limit、
+completion 和 token 作为过程指标。
 
-这些缺陷支持「公开契约下的 API/行为完成与紧凑解耦」是主问题，**不支持**「用状态机替模型决定步骤」，也**不支持**「仅加强文件定位/RSG start-here 即可抬 hard 通过率」。下一步见 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。
+### 4. Public-feedback 会改变结果
 
-## 分析边界
+历史 hard-50 配对中，Public-feedback 11/50，test-blind 4/50。因此
+public evaluator tests 是否对 Agent 可见是关键实验变量，不能用同一个
+“Main”名称混报。
 
-- 同一 agent（OpenHands）+ 特定模型；不可外推所有框架。
-- 三模型已有完整 150 覆盖（Flash frozen，两个 Qwen candidate）；Qwen-Coder 仍缺 hard50。
-- 不做 ECSM 因果结论（该线已废弃）。
-- 现有 RSG 轨迹不足以评价通用工具增强效果。
+### 5. 失败不只是定位失败
 
-## 延伸阅读
+已有轨迹反复出现：
 
-- 当前研究入口：[CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)
-- 数字表：[paper_tables.md](paper_tables.md)
-- 一页摘要：`reports/paper_analysis/executive_summary.md`（本地）
-- 轨迹证据：[TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md)
-- 失败标签定义：[05_failure_taxonomy.md](05_failure_taxonomy.md)
-- 报告索引：[REPORTS_INDEX.md](REPORTS_INDEX.md)
+- required API/export 缺失；
+- public behavior 通过但 hidden 边界失败；
+- helper、resource、registry 或 external dependency 漏带；
+- framework/global-state 隔离失败；
+- copy-heavy 解法功能通过但不紧凑；
+- 重复探索、step/context budget 耗尽。
+
+旧 RSG start-here A/B 没有在小规模 hard tasks 上提升 hidden pass，提示
+“告诉模型先看哪里”不足以解决 API/behavior completion。
+
+## 尚不能支持的结论
+
+- 不能声称任一模型在 v3 Main 的通过率；
+- 不能声称 Full-Repository 一定比旧 slice 更难或更容易；
+- 不能声称 source entrypoint hint 的因果效应，除非在 v3 同源配对臂重跑；
+- 不能把 AI-assisted 标注写成 independent human gold；
+- 不能把 150 个 `hard` 标签解释为经验难度等级；
+- 不能外推到任意语言、应用型服务、GUI、云原生或大型系统；
+- 不能用旧 composite `final_score` 代替 Functional Pass@1；
+- 不能从单次模型轨迹推断稳定性。
+
+## v3 baseline 完成后优先回答
+
+1. 不同模型的 Functional Pass@1 和置信区间；
+2. full-repository 下 localization、closure 和 behavior failure 的占比；
+3. 正确方案的 reference-relative compactness；
+4. repository size、domain、archetype、entanglement 与 task footprint 的关系；
+5. token、step、latency 和 context-limit 对通过率的关系；
+6. Main、Entrypoint-Hint、Public-feedback 和 Pruned-Context 的配对差异。
+
+## 证据
+
+- [v3 readiness](../reports/audits/v3_main_readiness.md)
+- [v3 Oracle](../reports/audits/v3_oracle_revalidation/summary.md)
+- [历史四模型结果](../reports/python150_compliant_20260726/)
+- [轨迹证据](research_analysis/TRAJECTORY_FINDINGS.md)
+- [失败归因](../reports/failure_attribution_20260720/)
+- [实验清单](EXPERIMENTS.md)

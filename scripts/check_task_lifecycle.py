@@ -371,7 +371,7 @@ def detect_cross_split_overlaps(splits: dict[str, Any], exclude_map: dict[str, A
 
 def write_csv(findings: list[TaskFinding]) -> None:
     with CSV_PATH.open("w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f)
+        writer = csv.writer(f, lineterminator="\n")
         writer.writerow(
             [
                 "split_id",

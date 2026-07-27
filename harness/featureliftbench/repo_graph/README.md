@@ -3,9 +3,9 @@
 Deterministic repository fact graph (Tree-sitter) plus budgeted
 **Operational Support Subgraph** queries for coding agents.
 
-**Design (authoritative):**  
-`docs/research_analysis/REPOSITORY_SEMANTIC_GRAPH_DESIGN.md` (v2)  
-**Plan:** `docs/research_analysis/REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md`
+This component is retained as optional infrastructure and a historical
+retrieval baseline. It is not the current benchmark or method priority; see
+`docs/CURRENT_RESEARCH.md` and `reports/repo_graph_phase*/`.
 
 ## Install
 

@@ -1,6 +1,6 @@
 # FeatureLiftBench Python-150 Benchmark Taxonomy Report
 
-- Taxonomy version: `v1`
+- Taxonomy version: `v2`
 - Task-level rows: **150**
 - Evidence boundary: metadata, oracle manifests, source snapshots, public tests, hidden tests.
 - Explicitly excluded: trajectories, submissions, evaluation results, and historical pass/fail labels.
@@ -11,58 +11,58 @@
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `library` | 97 | 64.7% |
+| `library` | 102 | 68.0% |
 | `developer_tooling` | 29 | 19.3% |
-| `framework_plugin` | 16 | 10.7% |
-| `application_service` | 8 | 5.3% |
+| `framework_plugin` | 17 | 11.3% |
+| `application_service` | 2 | 1.3% |
 
 ## Repository provenance
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `real_oss_mature` | 143 | 95.3% |
-| `curated_vibe` | 7 | 4.7% |
+| `real_oss_mature` | 150 | 100.0% |
+| `curated_vibe` | 0 | 0.0% |
 | `real_oss_legacy` | 0 | 0.0% |
 
-`real_oss_legacy` is empty in v1 because project age/maintenance is not inferable from the local task package. The label is reserved for future tasks carrying explicit provenance evidence.
+`real_oss_legacy` is empty in v2 because project age/maintenance is not inferable from the local task package. The label is reserved for future tasks carrying explicit provenance evidence.
 
 ## Repository domain
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `parsing` | 40 | 26.7% |
-| `general_utility` | 34 | 22.7% |
-| `application` | 15 | 10.0% |
-| `configuration` | 14 | 9.3% |
+| `parsing` | 41 | 27.3% |
+| `general_utility` | 38 | 25.3% |
+| `configuration` | 15 | 10.0% |
 | `data_modeling` | 13 | 8.7% |
 | `networking` | 12 | 8.0% |
 | `packaging` | 11 | 7.3% |
 | `testing` | 11 | 7.3% |
+| `application` | 9 | 6.0% |
 
 ## Feature family
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `parse_tokenize_decode` | 30 | 20.0% |
-| `registry_plugin_dispatch` | 21 | 14.0% |
+| `parse_tokenize_decode` | 31 | 20.7% |
+| `registry_plugin_dispatch` | 22 | 14.7% |
 | `serialize_format_render` | 19 | 12.7% |
 | `config_resolve_discover` | 18 | 12.0% |
 | `validate_normalize_construct` | 15 | 10.0% |
 | `resource_metadata_loading` | 12 | 8.0% |
 | `algorithm_data_structure` | 11 | 7.3% |
-| `cache_retry_policy` | 10 | 6.7% |
 | `protocol_state_transition` | 9 | 6.0% |
+| `cache_retry_policy` | 8 | 5.3% |
 | `workflow_session_orchestration` | 5 | 3.3% |
 
 ## Feature statefulness
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `local_state` | 51 | 34.0% |
-| `stateless` | 41 | 27.3% |
-| `lifecycle_state` | 38 | 25.3% |
-| `global_state` | 10 | 6.7% |
-| `session_state` | 10 | 6.7% |
+| `local_state` | 53 | 35.3% |
+| `stateless` | 42 | 28.0% |
+| `lifecycle_state` | 40 | 26.7% |
+| `session_state` | 11 | 7.3% |
+| `global_state` | 4 | 2.7% |
 
 ## Normalized entanglement mechanisms (multi-label)
 
@@ -70,16 +70,16 @@ Percentages use all 150 tasks as denominator and therefore sum above 100%.
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `static_transitive_dependency` | 127 | 84.7% |
-| `implicit_runtime_dependency` | 100 | 66.7% |
-| `data_model_invariant` | 93 | 62.0% |
-| `parser_state` | 63 | 42.0% |
+| `static_transitive_dependency` | 123 | 82.0% |
+| `data_model_invariant` | 98 | 65.3% |
+| `implicit_runtime_dependency` | 93 | 62.0% |
+| `parser_state` | 64 | 42.7% |
 | `dynamic_import_plugin` | 51 | 34.0% |
-| `framework_lifecycle` | 42 | 28.0% |
-| `config_environment` | 32 | 21.3% |
-| `global_state_registry` | 22 | 14.7% |
-| `resource_packaging` | 22 | 14.7% |
+| `framework_lifecycle` | 44 | 29.3% |
+| `config_environment` | 33 | 22.0% |
+| `resource_packaging` | 24 | 16.0% |
 | `third_party_contract` | 18 | 12.0% |
+| `global_state_registry` | 15 | 10.0% |
 
 ## Behavioral hidden-risk tags (multi-label)
 
@@ -87,52 +87,52 @@ Tags are deterministic lexical/AST audits of hidden tests; they describe tested 
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `boundary_cases` | 129 | 86.0% |
-| `exception_semantics` | 89 | 59.3% |
-| `lifecycle_semantics` | 43 | 28.7% |
-| `mutation_side_effects` | 38 | 25.3% |
-| `ordering_semantics` | 35 | 23.3% |
-| `platform_variation` | 11 | 7.3% |
+| `boundary_cases` | 130 | 86.7% |
+| `exception_semantics` | 92 | 61.3% |
+| `lifecycle_semantics` | 41 | 27.3% |
+| `mutation_side_effects` | 34 | 22.7% |
+| `ordering_semantics` | 33 | 22.0% |
+| `platform_variation` | 10 | 6.7% |
 
 ## Codebase condition tags (multi-label)
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `weak_module_boundaries` | 60 | 40.0% |
-| `dead_code_distractors` | 8 | 5.3% |
-| `duplicated_implementation` | 7 | 4.7% |
-| `legacy_clutter` | 6 | 4.0% |
+| `weak_module_boundaries` | 53 | 35.3% |
+| `dead_code_distractors` | 1 | 0.7% |
+| `duplicated_implementation` | 0 | 0.0% |
 | `generated_code` | 0 | 0.0% |
+| `legacy_clutter` | 0 | 0.0% |
 
 ## Repository archetype × feature family
 
 | repo_archetype_primary | `algorithm_data_structure` | `cache_retry_policy` | `config_resolve_discover` | `parse_tokenize_decode` | `protocol_state_transition` | `registry_plugin_dispatch` | `resource_metadata_loading` | `serialize_format_render` | `validate_normalize_construct` | `workflow_session_orchestration` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `application_service` | 0 | 2 | 1 | 0 | 0 | 2 | 0 | 1 | 0 | 2 | 8 |
+| `application_service` | 0 | 0 | 0 | 0 | 0 | 2 | 0 | 0 | 0 | 0 | 2 |
 | `developer_tooling` | 1 | 1 | 8 | 5 | 0 | 5 | 6 | 2 | 1 | 0 | 29 |
-| `framework_plugin` | 0 | 0 | 0 | 1 | 0 | 11 | 1 | 2 | 0 | 1 | 16 |
-| `library` | 10 | 7 | 9 | 24 | 9 | 3 | 5 | 14 | 14 | 2 | 97 |
+| `framework_plugin` | 0 | 0 | 0 | 1 | 0 | 12 | 1 | 2 | 0 | 1 | 17 |
+| `library` | 10 | 7 | 10 | 25 | 9 | 3 | 5 | 15 | 14 | 4 | 102 |
 
 ## Feature family × entanglement mechanism
 
 | feature_family_primary | `config_environment` | `data_model_invariant` | `dynamic_import_plugin` | `framework_lifecycle` | `global_state_registry` | `implicit_runtime_dependency` | `parser_state` | `resource_packaging` | `static_transitive_dependency` | `third_party_contract` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | `algorithm_data_structure` | 0 | 11 | 2 | 0 | 0 | 8 | 5 | 0 | 9 | 1 | 11 |
-| `cache_retry_policy` | 3 | 6 | 0 | 1 | 3 | 7 | 3 | 2 | 7 | 2 | 10 |
-| `config_resolve_discover` | 15 | 5 | 7 | 3 | 3 | 11 | 3 | 6 | 16 | 2 | 18 |
-| `parse_tokenize_decode` | 2 | 22 | 10 | 5 | 1 | 20 | 26 | 3 | 27 | 4 | 30 |
+| `cache_retry_policy` | 2 | 6 | 0 | 1 | 1 | 5 | 3 | 2 | 5 | 2 | 8 |
+| `config_resolve_discover` | 15 | 5 | 7 | 3 | 2 | 10 | 3 | 7 | 15 | 2 | 18 |
+| `parse_tokenize_decode` | 2 | 23 | 10 | 5 | 1 | 20 | 27 | 3 | 27 | 4 | 31 |
 | `protocol_state_transition` | 1 | 5 | 1 | 0 | 1 | 8 | 8 | 1 | 7 | 0 | 9 |
-| `registry_plugin_dispatch` | 3 | 5 | 15 | 18 | 7 | 11 | 1 | 1 | 18 | 3 | 21 |
+| `registry_plugin_dispatch` | 3 | 7 | 15 | 20 | 6 | 10 | 1 | 1 | 19 | 3 | 22 |
 | `resource_metadata_loading` | 3 | 9 | 7 | 1 | 1 | 5 | 3 | 7 | 10 | 1 | 12 |
-| `serialize_format_render` | 2 | 15 | 6 | 8 | 1 | 14 | 10 | 2 | 17 | 3 | 19 |
+| `serialize_format_render` | 3 | 16 | 6 | 7 | 0 | 13 | 10 | 2 | 17 | 3 | 19 |
 | `validate_normalize_construct` | 3 | 14 | 3 | 4 | 3 | 11 | 4 | 0 | 12 | 1 | 15 |
-| `workflow_session_orchestration` | 0 | 1 | 0 | 2 | 2 | 5 | 0 | 0 | 4 | 1 | 5 |
+| `workflow_session_orchestration` | 1 | 2 | 0 | 3 | 0 | 3 | 0 | 1 | 2 | 1 | 5 |
 
 ## Core100 × Hard50
 
 | split | `algorithm_data_structure` | `cache_retry_policy` | `config_resolve_discover` | `parse_tokenize_decode` | `protocol_state_transition` | `registry_plugin_dispatch` | `resource_metadata_loading` | `serialize_format_render` | `validate_normalize_construct` | `workflow_session_orchestration` | Total |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| `core100` | 8 | 6 | 13 | 26 | 7 | 6 | 4 | 18 | 9 | 3 | 100 |
+| `core100` | 8 | 4 | 13 | 27 | 7 | 7 | 4 | 18 | 9 | 3 | 100 |
 | `hard50` | 3 | 4 | 5 | 4 | 2 | 15 | 8 | 1 | 6 | 2 | 50 |
 
 ### Split totals
@@ -146,11 +146,10 @@ Hard50 is not a scaled copy of Core100: registry/plugin features are 15/50 in Ha
 
 ## Source repository concentration
 
-There are **121** unique upstream source groups.
+There are **127** unique upstream source groups.
 
 | Source repo | Tasks | Share |
 |---|---:|---:|
-| `vibe_app` | 7 | 4.7% |
 | `coveragepy` | 5 | 3.3% |
 | `jinja2` | 5 | 3.3% |
 | `pytest` | 5 | 3.3% |
@@ -173,6 +172,7 @@ There are **121** unique upstream source groups.
 | `babel` | 1 | 0.7% |
 | `bidict` | 1 | 0.7% |
 | `bleach` | 1 | 0.7% |
+| `blinker` | 1 | 0.7% |
 | `boltons` | 1 | 0.7% |
 | `build` | 1 | 0.7% |
 | `cachetools` | 1 | 0.7% |
@@ -185,13 +185,16 @@ There are **121** unique upstream source groups.
 | `croniter` | 1 | 0.7% |
 | `dataclasses-json` | 1 | 0.7% |
 | `dateutil` | 1 | 0.7% |
+| `decorator` | 1 | 0.7% |
 | `deepdiff` | 1 | 0.7% |
 | `diskcache` | 1 | 0.7% |
 | `distlib` | 1 | 0.7% |
 | `dynaconf` | 1 | 0.7% |
 | `email-validator` | 1 | 0.7% |
 | `environs` | 1 | 0.7% |
+| `filelock` | 1 | 0.7% |
 | `flake8` | 1 | 0.7% |
+| `flask` | 1 | 0.7% |
 | `fs` | 1 | 0.7% |
 | `fsspec` | 1 | 0.7% |
 | `glom` | 1 | 0.7% |
@@ -206,6 +209,7 @@ There are **121** unique upstream source groups.
 | `intervaltree` | 1 | 0.7% |
 | `isodate` | 1 | 0.7% |
 | `isort` | 1 | 0.7% |
+| `itsdangerous` | 1 | 0.7% |
 | `json5` | 1 | 0.7% |
 | `json_logic` | 1 | 0.7% |
 | `jsonpath-ng` | 1 | 0.7% |
@@ -223,6 +227,7 @@ There are **121** unique upstream source groups.
 | `multidict` | 1 | 0.7% |
 | `networkx` | 1 | 0.7% |
 | `packaging` | 1 | 0.7% |
+| `parse` | 1 | 0.7% |
 | `parsel` | 1 | 0.7% |
 | `parso` | 1 | 0.7% |
 | `passlib` | 1 | 0.7% |
@@ -234,6 +239,7 @@ There are **121** unique upstream source groups.
 | `pydantic-settings` | 1 | 0.7% |
 | `pyramid` | 1 | 0.7% |
 | `python-box` | 1 | 0.7% |
+| `python-decouple` | 1 | 0.7% |
 | `python-dotenv` | 1 | 0.7% |
 | `python-frontmatter` | 1 | 0.7% |
 | `python-multipart` | 1 | 0.7% |
@@ -278,17 +284,17 @@ Depth is the maximum shortest import path from located source entrypoint files, 
 
 | 类别 | 任务数 | 占比 |
 |---|---:|---:|
-| `shallow_0_1` | 98 | 65.3% |
-| `medium_2` | 29 | 19.3% |
-| `deep_3_plus` | 23 | 15.3% |
+| `shallow_0_1` | 96 | 64.0% |
+| `medium_2` | 32 | 21.3% |
+| `deep_3_plus` | 22 | 14.7% |
 
 ## Dynamic import, global state, registry, and lifecycle signals
 
 | Signal | true | false | NA |
 |---|---:|---:|---:|
 | `has_dynamic_import` | 50 | 100 | 0 |
-| `has_global_state` | 58 | 92 | 0 |
-| `has_registry` | 93 | 57 | 0 |
+| `has_global_state` | 52 | 98 | 0 |
+| `has_registry` | 89 | 61 | 0 |
 | `has_framework_lifecycle` | 58 | 92 | 0 |
 
 ## Sparse and imbalanced categories
@@ -297,11 +303,16 @@ A category with fewer than five tasks must not support a standalone performance 
 
 | Field | Category | N | Allowed use |
 |---|---|---:|---|
+| `codebase_condition_tags` | `dead_code_distractors` | 1 | descriptive only |
+| `codebase_condition_tags` | `duplicated_implementation` | 0 | descriptive only |
 | `codebase_condition_tags` | `generated_code` | 0 | descriptive only |
+| `codebase_condition_tags` | `legacy_clutter` | 0 | descriptive only |
+| `repo_archetype_primary` | `application_service` | 2 | descriptive only |
+| `repo_provenance` | `curated_vibe` | 0 | descriptive only |
 | `repo_provenance` | `real_oss_legacy` | 0 | descriptive only |
 
-The dominant feature family is `parse_tokenize_decode` (30/150); the dominant repository domain is `parsing` (40/150).
-11 source repositories contribute more than one task. The largest single source contributes 7/150 tasks, below 5% but not independent for uncertainty estimates.
+The dominant feature family is `parse_tokenize_decode` (31/150); the dominant repository domain is `parsing` (41/150).
+10 source repositories contribute more than one task. The largest single source contributes 5/150 tasks, below 5% but not independent for uncertainty estimates.
 Paper-scale comparisons should cluster uncertainty by `source_group_id` and report source-disjoint sensitivity.
 
 ## Near-duplicate candidates
@@ -316,15 +327,13 @@ This is a conservative review queue: same source repository and same primary fea
 | `pydantic / validate_normalize_construct` | `pydantic__field_validator_core__hard3_001`, `pydantic_v1__validation_error_core__001` |
 | `pytest / registry_plugin_dispatch` | `pytest__fixture_resolve_core__001`, `pytest__marker_registry_core__hard3_001` |
 | `sqlparse / parse_tokenize_decode` | `sqlparse__parse_format_core__001`, `sqlparse__parse_split_core__001`, `sqlparse__token_tree_core__001` |
-| `vibe_app / workflow_session_orchestration` | `vibe_app__csv_transform_core__001`, `vibe_app__session_registry_core__001` |
-| `vibe_app / cache_retry_policy` | `vibe_app__pricing_rules_core__001`, `vibe_app__rules_engine_core__001` |
 
 ## Review status
 
-- `reviewed_v1`: **150**
+- reviewed without unresolved taxonomy ambiguity: **150**
 - `needs_review`: **0**
 
-The following tasks have cross-family/domain ambiguity. Their v1 labels are usable for pilot stratification but must be adjudicated before making a narrow per-category paper claim:
+The following tasks have cross-family/domain ambiguity. Their provisional labels are usable for pilot stratification but must be adjudicated before making a narrow per-category paper claim:
 
 
 ## Statistical-use guidance
@@ -339,14 +348,14 @@ The following tasks have cross-family/domain ambiguity. Their v1 labels are usab
 
 | Field | NA rows | Reason |
 |---|---:|---|
-| `reference_file_count` | 21 | no explicit reliable evidence; not imputed |
+| `reference_file_count` | 28 | no explicit reliable evidence; not imputed |
 | `reference_symbol_count` | 101 | no explicit reliable evidence; not imputed |
-| `reference_loc` | 21 | no explicit reliable evidence; not imputed |
+| `reference_loc` | 28 | no explicit reliable evidence; not imputed |
 | `direct_internal_dependency_count` | 0 | no explicit reliable evidence; not imputed |
 | `transitive_internal_dependency_count` | 0 | no explicit reliable evidence; not imputed |
 | `external_dependency_count` | 0 | no explicit reliable evidence; not imputed |
 | `static_file_closure_depth` | 0 | no explicit reliable evidence; not imputed |
-| `resource_file_count` | 21 | no explicit reliable evidence; not imputed |
+| `resource_file_count` | 28 | no explicit reliable evidence; not imputed |
 | `adapter_required` | 148 | no explicit reliable evidence; not imputed |
 
 ## Reproduction

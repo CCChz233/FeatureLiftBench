@@ -1,5 +1,8 @@
 # RSG hard3 A/B — P0 vs tuned_hard (2026-07-24)
 
+> Historical RSG ablation on a pre-v2 profile. It is not a
+> Full-Repository / No-Hint Main result.
+
 Real DeepSeek v4 flash + OpenHands (`featureliftbench-agent:openhands-rsg-pilot-v1`).
 
 **Root:** `experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447`

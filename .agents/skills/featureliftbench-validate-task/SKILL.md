@@ -18,8 +18,8 @@ description: Audit FeatureLiftBench task packages and decide whether a task can 
 Read these before a promotion-readiness review:
 
 - `docs/BENCHMARK_DESIGN.md`
-- `docs/TASK_DESIGN_RULES.md`（规格宪法；API/behavior 双向覆盖与生成 TASK）
-- `docs/CONSTITUTION_MIGRATION.md`（迁移 CLI；compliant vs legacy）
+- `docs/TASK_DESIGN_RULES.md`（API/behavior 双向覆盖与生成 TASK）
+- `docs/FULL_REPOSITORY_SOURCE_POLICY.md`
 - `docs/EXPERIMENT_ARMS.md`
 - `docs/07_incremental_task_rules.md`
 - `docs/06_task_schema.md`
@@ -27,7 +27,11 @@ Read these before a promotion-readiness review:
 - `docs/python/03_python_difficulty_rubric.md`
 - `benchmark/README.md`
 
-Use `scripts/check_task_lifecycle.py` as the repository-level audit and `scripts/audit_featurelift_task.py` in this skill for a task-local preflight. For compliant tasks, `validate-task` runs constitution gates when `spec_status: compliant`. See `docs/CONSTITUTION_MIGRATION.md`.
+Use `scripts/check_task_lifecycle.py` as the repository-level audit and
+`scripts/audit_featurelift_task.py` in this skill for a task-local preflight.
+For `spec_status: compliant`, `validate-task` checks the generated public
+contract and evaluator mapping. v2 Main readiness additionally requires the
+canonical source, No-Hint, compactness, Oracle/isolation and freeze audits.
 
 ## Review Workflow
 
@@ -38,7 +42,9 @@ Use `scripts/check_task_lifecycle.py` as the repository-level audit and `scripts
 
 2. Source gate.
    - Verify source name, URL, commit, and license are recorded.
-   - Verify task-local `repo/` exists and is the formal upstream snapshot.
+   - Verify task-local `repo/` exists as staging provenance.
+   - Verify the task maps to a `ready` canonical source registry entry with an
+     immutable revision, scope, archive/tree digests and license evidence.
    - Reject fabricated or vague source claims.
 
 3. Package gate.
@@ -57,7 +63,8 @@ Use `scripts/check_task_lifecycle.py` as the repository-level audit and `scripts
    - Check for accidental hidden dependencies on local files, network, random state, wall-clock time, or undisclosed data.
 
 6. Difficulty gate.
-   - Require hard calibration evidence for hard main promotion: strong-agent run results, pass/fail band, failure modes, and compactness or extraction-ratio notes when available.
+   - Require hard calibration evidence for hard main promotion: strong-agent run
+     results, pass/fail band, failure modes, and separately reported compactness.
    - Prefer evidence under `experiments/`, `evidence/`, or named reports, but remember those directories may be ignored in public clones.
 
 ## Commands
@@ -72,6 +79,8 @@ Run repository lifecycle audit:
 
 ```bash
 python3 scripts/check_task_lifecycle.py
+python3 scripts/build_source_registry.py --check
+python3 scripts/materialize_full_sources.py --check
 ```
 
 Run harness validation:
@@ -81,6 +90,8 @@ PYTHONPATH=harness python3 -B -m featureliftbench.cli validate-task <task_dir> -
 ```
 
 When a reference solution exists and the environment is available, evaluate it with the harness and, for promotion review, Docker as well.
+Before a Main verdict, also run strict v2 readiness and freeze checks after the
+candidate has a provisional registry mapping.
 
 ## Verdict Format
 

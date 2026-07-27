@@ -1,33 +1,18 @@
-# Research analysis docs
+# Research analysis evidence
 
-生成型 JSON/CSV 在 `artifacts/research_analysis/`。日常从 [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md) 进入。
+本目录只保留仍可复查的历史分析证据，不再承担当前研究路线规划。
+当前优先级见 [CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md)。
 
-**Benchmark 设计主线（2026-07-24）：** [../BENCHMARK_DESIGN.md](../BENCHMARK_DESIGN.md) · [../TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md) · [../EXPERIMENT_ARMS.md](../EXPERIMENT_ARMS.md)
-
-**RSG：** 当前 **start-here/support retrieval** 降级为实验基线；**Repository Fact Graph** 基建保留。ECSM 已废弃。
-
-## 当前应读
-
-| Doc | Role |
+| 文档 | 口径 |
 | --- | --- |
-| [../CURRENT_RESEARCH.md](../CURRENT_RESEARCH.md) | 唯一研究入口 |
-| [../BENCHMARK_DESIGN.md](../BENCHMARK_DESIGN.md) | 整体思路 |
-| [../TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md) | 规格宪法 |
-| [../EXPERIMENT_ARMS.md](../EXPERIMENT_ARMS.md) | Test-blind Main / Public-feedback / Short-prompt |
-| [../CONSTITUTION_MIGRATION.md](../CONSTITUTION_MIGRATION.md) | 规格迁移 CLI 与分报 |
-| [CAUSAL_EXPERIMENT_PLAN.md](CAUSAL_EXPERIMENT_PLAN.md) | 闭包类因果臂（与宪法对齐时使用） |
-| [TRAJECTORY_FINDINGS.md](TRAJECTORY_FINDINGS.md) | 基线轨迹 |
-| [../../reports/failure_attribution_20260720/README.md](../../reports/failure_attribution_20260720/README.md) | 纯 Agent 失败归因 |
+| [BENCHMARK_TAXONOMY_SPEC.md](BENCHMARK_TAXONOMY_SPEC.md) | External Python-150 v2 taxonomy 方法 |
+| [BENCHMARK_TAXONOMY_REPORT.md](BENCHMARK_TAXONOMY_REPORT.md) | v2 taxonomy 生成报告 |
+| [TRAJECTORY_FINDINGS.md](TRAJECTORY_FINDINGS.md) | mixed-snapshot 历史轨迹 |
 
-## 方法线（降级 / 历史）
+这些材料的分类方法和案例可复用，但 source snapshots、entrypoint visibility、
+绝对通过率和成本数字不代表 Full-Repository / No-Hint v3。
 
-| Doc | Role |
-| --- | --- |
-| [REPOSITORY_SEMANTIC_GRAPH_DESIGN.md](REPOSITORY_SEMANTIC_GRAPH_DESIGN.md) | RSG v2 设计（降级） |
-| [REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md](REPOSITORY_SEMANTIC_GRAPH_IMPLEMENTATION_PLAN.md) | RSG 实现计划（主线 paused） |
-| [BENCHMARK_TAXONOMY_REPORT.md](BENCHMARK_TAXONOMY_REPORT.md) | 题集 taxonomy |
-| ECSM_* | superseded |
-
-## Benchmark 硬化（仍有效）
-
-见各 V11 / Oracle / taxonomy / expert_review 文档；**规格合规**以 TASK_DESIGN_RULES 为新上位约束。
+已废弃的 ECSM、旧因果计划、RSG 路线图、weekly TODO、v1.1 hardening
+protocol 和取消的独立审核包已删除。RSG 的可执行代码和原始报告仍保留在
+`harness/featureliftbench/repo_graph/` 与 `reports/repo_graph_phase*/`，
+仅作历史基线。

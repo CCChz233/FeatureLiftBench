@@ -1,0 +1,279 @@
+{
+  "benchmark_split": "curated",
+  "difficulty": "hard",
+  "entanglement": {
+    "description": "Correct pricing lives behind duplicate helpers in utils.py and pulls tier/category rules from YAML-backed global config spread across pricing modules.",
+    "level": "high",
+    "primary": "legacy_vibe_clutter",
+    "signals": [
+      "three similarly named pricing functions with only one correct semantics",
+      "pricing rules read merged config from GLOBAL_STATE by default",
+      "routes and services import pricing through mixed indirection paths"
+    ],
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 60
+  },
+  "evaluation_spec": {
+    "experiment_contract_hardening": {
+      "independent_human_review": false,
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "hidden_test_mappings": [
+      {
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_tier_boundary_uses_highest_applicable"
+      },
+      {
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B004",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_category_falls_back_to_default"
+      },
+      {
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "generated_required_api_surface",
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      }
+    ],
+    "manual_review": {
+      "checklist_passed": true,
+      "independent_human_review": false,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending.",
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review"
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: compute line totals from unit price, quantity, and category. Required observable cases include unknown category falls back to default."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: apply category multipliers from pricing config. Required observable cases include category multiplier applied; unknown category falls back to default."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: apply highest applicable quantity tier multiplier. Required observable cases include tier boundary uses highest applicable."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: apply membership discount when PricingContext.is_member is true. Required observable cases include member discount with tier; unknown category falls back to default."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: round totals using configured decimal precision. Required observable cases include unknown category falls back to default."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.PricingContext`, `featurelifted.PricingContext.is_member`, `featurelifted.compute_line_price` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_category_multiplier_applied"
+      },
+      {
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_member_discount_with_tier"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.PricingContext"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.PricingContext.is_member"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.compute_line_price"
+      }
+    ]
+  },
+  "feature": {
+    "description": "Extract VibeShop line-item pricing rules (category, tier, membership) as a standalone package.",
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and config merge",
+      "CSV import pipeline",
+      "legacy calc_price_v1 and calc_price_legacy helpers",
+      "global app factory and middleware clutter",
+      "original project tests and CLI entrypoints"
+    ],
+    "included_behaviors": [
+      "compute line totals from unit price, quantity, and category",
+      "apply category multipliers from pricing config",
+      "apply highest applicable quantity tier multiplier",
+      "apply membership discount when PricingContext.is_member is true",
+      "round totals using configured decimal precision"
+    ],
+    "name": "Pricing rules engine",
+    "source_entrypoints": [
+      "vibe_app.utils.compute_line_price",
+      "vibe_app.pricing.rules.PricingContext",
+      "vibe_app.pricing.rules.compute_line_price"
+    ]
+  },
+  "generated_task_hash": "1f5f4ed267bc09b97da726d53130f54b8ecd36f8467035b99f801281fd5d97ef",
+  "language": "python",
+  "output": {
+    "callable": "featurelifted.compute_line_price",
+    "import": "from featurelifted import PricingContext, compute_line_price",
+    "package": "featurelifted",
+    "signature": "compute_line_price(unit_price: float, quantity: int, category: str, *, context: PricingContext | None = None) -> float"
+  },
+  "public_spec": {
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: compute line totals from unit price, quantity, and category. Required observable cases include unknown category falls back to default."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: apply category multipliers from pricing config. Required observable cases include category multiplier applied; unknown category falls back to default."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: apply highest applicable quantity tier multiplier. Required observable cases include tier boundary uses highest applicable."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: apply membership discount when PricingContext.is_member is true. Required observable cases include member discount with tier; unknown category falls back to default."
+      },
+      {
+        "id": "B005",
+        "text": "The extracted feature must support this observable behavior: round totals using configured decimal precision. Required observable cases include unknown category falls back to default."
+      },
+      {
+        "id": "B006",
+        "text": "The package exposes the required task API paths `featurelifted.PricingContext`, `featurelifted.PricingContext.is_member`, `featurelifted.compute_line_price` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and config merge",
+      "CSV import pipeline",
+      "legacy calc_price_v1 and calc_price_legacy helpers",
+      "global app factory and middleware clutter",
+      "original project tests and CLI entrypoints"
+    ],
+    "forbidden": {
+      "imports": [
+        "vibe_app"
+      ],
+      "paths": []
+    },
+    "isolation_behavior": {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app."
+    },
+    "optional_api": [],
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "required_api": [
+      {
+        "kind": "class",
+        "members": [
+          {
+            "kind": "attribute",
+            "path": "featurelifted.PricingContext.is_member"
+          }
+        ],
+        "path": "featurelifted.PricingContext",
+        "signature": "(is_member: 'bool' = False, customer_tier: 'str | None' = None, config: 'dict[str, Any] | None' = None) -> None"
+      },
+      {
+        "kind": "function",
+        "path": "featurelifted.compute_line_price",
+        "signature": "(unit_price: 'float', quantity: 'int', category: 'str', *, context: 'PricingContext | None' = None) -> 'float'"
+      }
+    ],
+    "source_entrypoints": [
+      "vibe_app.utils.compute_line_price",
+      "vibe_app.pricing.rules.PricingContext",
+      "vibe_app.pricing.rules.compute_line_price"
+    ],
+    "summary": "Extract a task-scoped subset of `vibe_app` into a standalone `featurelifted` package.",
+    "title": "Pricing rules engine"
+  },
+  "selection_id": "legacy-curated-v1",
+  "source": {
+    "commit": "curated",
+    "license": "MIT",
+    "name": "vibe_app",
+    "url": "sources/vibe_app/"
+  },
+  "spec_hash": "36661ee2f7950627c4460cb9c001dae55d7e05d6561ca4709a5f405572234e85",
+  "spec_status": "compliant",
+  "status": "curated",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "config_environment_coupling",
+    "pure-python"
+  ],
+  "task_id": "vibe_app__pricing_rules_core__001",
+  "task_revision": 2,
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

@@ -1,0 +1,317 @@
+{
+  "benchmark_split": "curated",
+  "difficulty": "hard",
+  "entanglement": {
+    "description": "Config bootstrap mutates GLOBAL_STATE while loading multiple YAML layers and depends on deep merge helpers co-located with loader side effects.",
+    "level": "high",
+    "primary": "legacy_vibe_clutter",
+    "signals": [
+      "YAML load increments counters and appends config_paths in GLOBAL_STATE",
+      "bootstrap wires four config files with nested merge semantics",
+      "duplicate merge helpers with incorrect shallow variant"
+    ],
+    "types": [
+      "config_environment_coupling",
+      "global_state_registry_coupling",
+      "legacy_vibe_clutter",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 60
+  },
+  "evaluation_spec": {
+    "experiment_contract_hardening": {
+      "independent_human_review": false,
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "hidden_test_mappings": [
+      {
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_env_placeholder_expansion"
+      },
+      {
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_bootstrap_records_side_effects"
+      },
+      {
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_merge_does_not_mutate_inputs"
+      },
+      {
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface",
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      }
+    ],
+    "manual_review": {
+      "checklist_passed": true,
+      "independent_human_review": false,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending.",
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review"
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: deep-merge layered config dicts with later overrides. Required observable cases include merge config layers deep merges nested keys; bootstrap config loads repo layers; merge does not mutate inputs."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: bootstrap default/app/pricing/tiers YAML layers from a directory. Required observable cases include bootstrap config loads repo layers; merge does not mutate inputs."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: expand ${ENV:-default} placeholders while loading YAML. Required observable cases include env placeholder expansion."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: record bootstrap side effects in process registry state. Required observable cases include bootstrap records side effects."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.bootstrap_config`, `featurelifted.merge_config_layers`, `featurelifted.config_loader`, `featurelifted.config_loader.load_yaml_config`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_merge_config_layers_deep_merges_nested_keys"
+      },
+      {
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_bootstrap_config_loads_repo_layers"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.bootstrap_config"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.merge_config_layers"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.config_loader"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.config_loader.load_yaml_config"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.GLOBAL_STATE"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.reset_state"
+      }
+    ]
+  },
+  "feature": {
+    "description": "Extract layered YAML config loading, env expansion, and deep merge bootstrap used by VibeShop.",
+    "excluded_behaviors": [
+      "pricing computation and CSV transforms",
+      "HTTP routes and app factory",
+      "broken bootstrap_config_fast shortcut",
+      "legacy shallow merge helper for production use",
+      "original project tests and CLI entrypoints"
+    ],
+    "included_behaviors": [
+      "deep-merge layered config dicts with later overrides",
+      "bootstrap default/app/pricing/tiers YAML layers from a directory",
+      "expand ${ENV:-default} placeholders while loading YAML",
+      "record bootstrap side effects in process registry state"
+    ],
+    "name": "YAML config bootstrap",
+    "source_entrypoints": [
+      "vibe_app.config_loader.bootstrap_config",
+      "vibe_app.config_loader.load_yaml_config",
+      "vibe_app.config_merge.merge_config_layers"
+    ]
+  },
+  "generated_task_hash": "4e2d10c83f458faf7759ca91403b2c1c404bd2667e402dba3d03e4a8edf50b90",
+  "language": "python",
+  "output": {
+    "callable": "featurelifted.bootstrap_config",
+    "import": "from featurelifted import bootstrap_config, merge_config_layers; from featurelifted.config_loader import load_yaml_config; from featurelifted.state import GLOBAL_STATE, reset_state",
+    "package": "featurelifted",
+    "signature": "bootstrap_config(config_dir: str | Path) -> dict"
+  },
+  "public_spec": {
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: deep-merge layered config dicts with later overrides. Required observable cases include merge config layers deep merges nested keys; bootstrap config loads repo layers; merge does not mutate inputs."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: bootstrap default/app/pricing/tiers YAML layers from a directory. Required observable cases include bootstrap config loads repo layers; merge does not mutate inputs."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: expand ${ENV:-default} placeholders while loading YAML. Required observable cases include env placeholder expansion."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: record bootstrap side effects in process registry state. Required observable cases include bootstrap records side effects."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.bootstrap_config`, `featurelifted.merge_config_layers`, `featurelifted.config_loader`, `featurelifted.config_loader.load_yaml_config`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "pricing computation and CSV transforms",
+      "HTTP routes and app factory",
+      "broken bootstrap_config_fast shortcut",
+      "legacy shallow merge helper for production use",
+      "original project tests and CLI entrypoints"
+    ],
+    "forbidden": {
+      "imports": [
+        "vibe_app"
+      ],
+      "paths": []
+    },
+    "isolation_behavior": {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app."
+    },
+    "optional_api": [],
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "required_api": [
+      {
+        "kind": "function",
+        "path": "featurelifted.bootstrap_config",
+        "signature": "(config_dir: 'str | Path') -> 'dict[str, Any]'"
+      },
+      {
+        "kind": "function",
+        "path": "featurelifted.merge_config_layers",
+        "signature": "(*layers: 'dict[str, Any]') -> 'dict[str, Any]'"
+      },
+      {
+        "kind": "module",
+        "members": [
+          {
+            "kind": "function",
+            "path": "featurelifted.config_loader.load_yaml_config",
+            "signature": "(path: 'str | Path') -> 'dict[str, Any]'"
+          }
+        ],
+        "path": "featurelifted.config_loader"
+      },
+      {
+        "kind": "module",
+        "members": [
+          {
+            "kind": "constant",
+            "path": "featurelifted.state.GLOBAL_STATE"
+          },
+          {
+            "kind": "function",
+            "path": "featurelifted.state.reset_state",
+            "signature": "() -> 'None'"
+          }
+        ],
+        "path": "featurelifted.state"
+      }
+    ],
+    "source_entrypoints": [
+      "vibe_app.config_loader.bootstrap_config",
+      "vibe_app.config_loader.load_yaml_config",
+      "vibe_app.config_merge.merge_config_layers"
+    ],
+    "summary": "Extract a task-scoped subset of `vibe_app` into a standalone `featurelifted` package.",
+    "title": "YAML config bootstrap"
+  },
+  "selection_id": "legacy-curated-v1",
+  "source": {
+    "commit": "curated",
+    "license": "MIT",
+    "name": "vibe_app",
+    "url": "sources/vibe_app/"
+  },
+  "spec_hash": "4561415b11dd5d0ea4f0e953e5b0ae9a86ebd2ccf717a42a6ef30635619097ee",
+  "spec_status": "compliant",
+  "status": "curated",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "config_environment_coupling",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "task_id": "vibe_app__yaml_config_bootstrap__001",
+  "task_revision": 2,
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

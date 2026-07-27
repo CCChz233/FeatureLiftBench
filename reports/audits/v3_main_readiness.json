@@ -1,0 +1,3578 @@
+{
+  "gate_pass": true,
+  "gates": {
+    "adversarial_docker_canaries": true,
+    "curated_exact_7": true,
+    "external_main_exact_150": true,
+    "functional_mount_allowlist": true,
+    "oracle_450_stable": true,
+    "selection_protocol": true,
+    "split_and_registry": true,
+    "static_isolation_canaries": true,
+    "task_readiness_150": true,
+    "workspace_materialized_150": true
+  },
+  "generated_at": "2026-07-27T04:06:02+00:00",
+  "global_evidence": {
+    "adversarial_canaries": {
+      "gate_pass": true,
+      "path": "reports/audits/v3_adversarial_canaries.json",
+      "sha256": "49bc80523fcc6adbc8d52a203f837ea0f026da9b511e6d05347a36117624bc8c"
+    },
+    "compactness_registry_id": "5ad48b0e6199e2549a0fba03561b00efd32aff50709285b51a34288175532df3",
+    "mount_allowlist": {
+      "allowed_targets_pass": true,
+      "forbidden_target_count": 5,
+      "forbidden_target_rejections": 5,
+      "gate_pass": true
+    },
+    "oracle_revalidation": {
+      "gate_pass": true,
+      "path": "reports/audits/v3_oracle_revalidation/summary.json",
+      "sha256": "2151c8ab13162c746c0832a48e7639941030bd345dfb5c2f5737c92c58dff393"
+    },
+    "pruned_registry_freeze_id": "206c3febe340c383716e4d0315a14d6fa5b0268dee6e9082c8cede902c76b19b",
+    "selection": {
+      "candidate_count": 21,
+      "domain_counts": {
+        "application_service": 2,
+        "configuration": 1,
+        "filesystem_resource": 1,
+        "language_runtime": 1,
+        "parser": 1,
+        "plugin_registry": 1
+      },
+      "entanglement_counts": {
+        "config_resource_coupling": 1,
+        "framework_coupling": 1,
+        "parser_state_coupling": 1,
+        "reflection_signature_coupling": 1,
+        "registry_state_coupling": 1,
+        "resource_coupling": 1,
+        "serialization_crypto_coupling": 1
+      },
+      "gate_pass": true,
+      "model_results_consulted": false,
+      "ranking_snapshot": {
+        "last_update": "2026-07-01 06:34:06",
+        "row_count": 15000,
+        "sha256": "c40ccdde2a07d48c25c31a9d9d8fcbfe8c166987b1b43aa47e02b695a01c71f1",
+        "source": "ClickHouse",
+        "url": "https://hugovk.github.io/top-pypi-packages/top-pypi-packages-30-days.min.json"
+      },
+      "selected_count": 7
+    },
+    "source_registry": {
+      "curated_repository_count": 0,
+      "external_repository_count": 126,
+      "pending_snapshot_count": 0,
+      "ready_snapshot_count": 132,
+      "repository_count": 126,
+      "snapshot_count": 132,
+      "task_count": 150
+    },
+    "static_isolation_canaries": {
+      "cases": {
+        "oracle_read": {
+          "issues": [
+            "attack.py:1: isolation violation: references forbidden evaluator/source path '/workspace/submissions'"
+          ],
+          "pass": true
+        },
+        "reference_read": {
+          "issues": [
+            "attack.py:1: isolation violation: references forbidden evaluator/source path '/workspace/benchmark/references'"
+          ],
+          "pass": true
+        },
+        "source_archive_read": {
+          "issues": [
+            "attack.py:1: isolation violation: references forbidden evaluator/source path '/workspace/benchmark/sources'"
+          ],
+          "pass": true
+        },
+        "symlink": {
+          "issues": [
+            "escape: isolation violation: symbolic links are not allowed"
+          ],
+          "pass": true
+        },
+        "task_mount_read": {
+          "issues": [
+            "attack.py:1: isolation violation: references forbidden evaluator/source path '/workspace/tasks'"
+          ],
+          "pass": true
+        }
+      },
+      "gate_pass": true
+    }
+  },
+  "policy_id": "featureliftbench.full_repository_no_hint_main.v3",
+  "schema_version": "featureliftbench.v3_main_readiness.v1",
+  "source_policy_id": "featureliftbench.full_repository_source.v2",
+  "status": "ready",
+  "summary": {
+    "capsule_pass": 150,
+    "compactness_pass": 150,
+    "contract_pass": 150,
+    "curated_task_count": 7,
+    "main_task_count": 150,
+    "source_pass": 150,
+    "split_pass": 150,
+    "task_pass_count": 150,
+    "validation_pass": 150,
+    "workspace_pass": 150
+  },
+  "tasks": [
+    {
+      "capsule": {
+        "digest": "ebedd98e59f6b9d8aad9073b4c5aa7edce2bedb5b05d1a01bc6b676b0af931af"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__aio_libs__aiohttp__f9b96545c5f4",
+      "split_pass": true,
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fcc0952d62555ddcb6ef0ce5712044afe1e982685b08cc4337f4de77bf30bf94",
+        "test_blind": true,
+        "tracked_file_count": 538
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ceb69d1778576555cca3b1fbbbaca2f9c8956fc0a6fea5ae256ea567e72eae75"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sqlalchemy__alembic__56669fdd1c0f",
+      "split_pass": true,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "cc8633eab8a867e4d9cb20ca56041faa2b82e805703e11944e702bd8f9fb9d95",
+        "test_blind": true,
+        "tracked_file_count": 188
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c78837e0e5880f3d12bde7b22d01bcd0325ad865608b89db44165a4cd73a2775"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__agronholm__apscheduler__8b02f96b57dc",
+      "split_pass": true,
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4674cd6ed92cac4a5912b0ffca9d1b5db99b3e07b841d7c92117a9c1790c9a6d",
+        "test_blind": true,
+        "tracked_file_count": 100
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "6adb475379575995bf64706e9d25ddc1d3dd72ca32f4ffc3923d1c5d2941d755"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__arrow_py__arrow__c130ffb9980a",
+      "split_pass": true,
+      "task_id": "arrow__parse_format_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "27055b50d0a85d1d7f9c0ae45fd905af58fc1f6a605c45e86bb2d50baddf5a0f",
+        "test_blind": true,
+        "tracked_file_count": 45
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "0b2a0336cf40c7cfb3090147d8c0498a1f23a4734c482aa84f6390b369a816df"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pycqa__astroid__d140cd4da9d6",
+      "split_pass": true,
+      "task_id": "astroid__nodes_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "1dfa8316c57b3ce2dd71adf55365c49a4ab0bd3bb0ffec0579b97ee706da351f",
+        "test_blind": true,
+        "tracked_file_count": 290
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "54b8cfad158cb32433a6baff55c65900c25934e74039891cb521411cc2b9817b"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_attrs__attrs__48bfb491ee6a",
+      "split_pass": true,
+      "task_id": "attrs__validators_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "79e2028fbb6de15a661fac9f7825d4ce485d887d9bffadd23d40f224858aada6",
+        "test_blind": true,
+        "tracked_file_count": 114
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "6ef75c903ced5d510abf9dd6b0f0c6a6f5748968aeb9c4393053c551b5a9eb16"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_babel__babel__daa7160174ce",
+      "split_pass": true,
+      "task_id": "babel__plural_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "dcce23ceaac03aa8a2e1461efd08d5444dcd71a687b71482e79b8cb7f880177a",
+        "test_blind": true,
+        "tracked_file_count": 137
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "a798958c37bf228b93eea1455c527c91db08a759e281fe455fdb8bfef656d173"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__jab__bidict__dbbb0ca3e3ea",
+      "split_pass": true,
+      "task_id": "bidict__bidirectional_map_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "cba402cbb164f34ae9e3cc398f424e543f2a9bb47d16e445b532c2600d95c77c",
+        "test_blind": true,
+        "tracked_file_count": 86
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "35593a1e1c3aed902fcb1f793b18afad40dde4fd5f204ec6f8f44181d168b79a"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__mozilla__bleach__985ad60b8e4f",
+      "split_pass": true,
+      "task_id": "bleach__sanitize_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "c88b7493d05e105ac0623049e1cb3227ccf015967f527de2440a60c15d41cced",
+        "test_blind": true,
+        "tracked_file_count": 115
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "58e684a8f070bc95527e9fae7d25ccad196585b2a72a44e45c3ff7c489247ed5"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets_eco__blinker__845796dd4cca",
+      "split_pass": true,
+      "task_id": "blinker__signal_registry_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "412cc94895314af3042f6584df8a7c9792193e20516fc1ff8bd05b962aaf79fe",
+        "test_blind": true,
+        "tracked_file_count": 33
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f47379fc3cfcc55168522f8925910c37783db2a0545af5e11ea6000f1a528c88"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__mahmoud__boltons__a4adb0d5e558",
+      "split_pass": true,
+      "task_id": "boltons__iterutils_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "3257027babaf33046254a2bfe18b2b602fce87c1e4806739cc03313245401b16",
+        "test_blind": true,
+        "tracked_file_count": 113
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "39db458ee2ed9d0aaceff60c30b6b6311a2141251795902cd063f64a0e42df76"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__build__0dd08861015a",
+      "split_pass": true,
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "af10ad11633a7cbfe555859e04fbaf56348539a7d91710c8008a0d65a315c461",
+        "test_blind": true,
+        "tracked_file_count": 126
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "5ac20983096dee3b4efb76b7770edf0d6ae0f1e58f22238685ee49a05632cfb4"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__tkem__cachetools__b6ff34e99c6f",
+      "split_pass": true,
+      "task_id": "cachetools__cache_eviction_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4236365087028e32f0f902ea82d83322e3a35e2ab361326689ad4cbcaf76f64f",
+        "test_blind": true,
+        "tracked_file_count": 43
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "7d836a4d11d6c2832bbd0e2bf226a9c05996c3a3187fd4b4b2ad2c8777263717"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_attrs__cattrs__5f60dbb75a07",
+      "split_pass": true,
+      "task_id": "cattrs__structure_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "feed04e2e0375bb5ad906b7ee4a178d6ce32a8e5761beed2a473d042ca97f25e",
+        "test_blind": true,
+        "tracked_file_count": 142
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f9cb1b97e4fd0b65ad3a92ee5294f463c96fc5d8c6d87675b49345a0f63a5b09"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__celery__celery__ca877f3bafb2",
+      "split_pass": true,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f0a5d8f7fc5cff420a368694c646d6689940ba1bd031e854a9c89c64a7514ba3",
+        "test_blind": true,
+        "tracked_file_count": 821
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "1a8acce5f05c99df53b55c8acbf534b6ec0330d10182b140685d5f4701223306"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pyeve__cerberus__f94b31d35afd",
+      "split_pass": true,
+      "task_id": "cerberus__schema_validate_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "45e6e3e38921958ca311c0bab4366ca9de1ab2d29c0729eedcbd886bbde8c60e",
+        "test_blind": true,
+        "tracked_file_count": 65
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "e97c4bdeccc431d1d7cf0cdf36fb73f00ba69bb8fb4d6567792b438fbead2d38"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__malthe__chameleon__4718452f9233",
+      "split_pass": true,
+      "task_id": "chameleon__template_compile_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "82eb3c2aea504b7c34149bad06d3a140303bf8e65f94903c2aeb9c448be22ec3",
+        "test_blind": true,
+        "tracked_file_count": 416
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ff44377c0edd0b556acec03834e3554bea586055d3d21e69be6e2c0b3f9c5855"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__click__eadb3ec6941c",
+      "split_pass": true,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6e1b0dbe0f941e2beceaaa9b0bc904aaa965746fcf9f27c4ee2063613a077235",
+        "test_blind": true,
+        "tracked_file_count": 150
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "fb3b0c91867bd69dee5d762b6824017ada9986d278530d00b07004957f30cb2d"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__click__a7cce6785c62",
+      "split_pass": true,
+      "task_id": "click__option_parser__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "14d0fec40e2b240b9682bd784bb7fdc3aada23521eed978c55eda2245bf323fd",
+        "test_blind": true,
+        "tracked_file_count": 146
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "9ab4e3bba25dec3b07182e35e18ee2839cd9a50beeacecb64e9e12570ddb4a6e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__diffsk__configobj__38e58dce2418",
+      "split_pass": true,
+      "task_id": "configobj__roundtrip_config_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b27367c2f527aa425439eec349b28410248e849523ab26b65e903c667f42ea49",
+        "test_blind": true,
+        "tracked_file_count": 33
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "db76e0a162e05f8714bddf3aefc10fda1ce8d7af2902ee6767c4d2a263daa09c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__cookiecutter__cookiecutter__4a97d92d7fa3",
+      "split_pass": true,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d5cef2fd88ede6458535fd4ced2c26b2c91c1e83e59af908e7d7cc5e64bc1710",
+        "test_blind": true,
+        "tracked_file_count": 333
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "65aa17ac0efb7f50b1224b1b6b8e0227dfa13ffca15ed22e854c981d2b874edf"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "split_pass": true,
+      "task_id": "coverage__config_merge_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b5440415a1689f3a18fd3369fa14f18ff91c4f8454ffd981170e6b2903be9adf",
+        "test_blind": true,
+        "tracked_file_count": 404
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4351862932af792ea5a12ebf4b474cb337c0b04fe5e10131e4db33fc3f9f36d5"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "split_pass": true,
+      "task_id": "coverage__glob_matcher_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b5440415a1689f3a18fd3369fa14f18ff91c4f8454ffd981170e6b2903be9adf",
+        "test_blind": true,
+        "tracked_file_count": 404
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "bbd3f0ef3afee41645ab13042475bdbb9312c9aaf14c17700011e830ddc1e5a2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "split_pass": true,
+      "task_id": "coverage__path_remap_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b5440415a1689f3a18fd3369fa14f18ff91c4f8454ffd981170e6b2903be9adf",
+        "test_blind": true,
+        "tracked_file_count": 404
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f07b538a17be349e0fd37cbecf05e8569231136ce16aa2efef84774c383ac43f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "split_pass": true,
+      "task_id": "coverage__report_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b5440415a1689f3a18fd3369fa14f18ff91c4f8454ffd981170e6b2903be9adf",
+        "test_blind": true,
+        "tracked_file_count": 404
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "b148ebabad8b84dc29026b5c5470f463ecc597af46e5cf6c00e9db7a802624be"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "split_pass": true,
+      "task_id": "coverage__source_selection_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b5440415a1689f3a18fd3369fa14f18ff91c4f8454ffd981170e6b2903be9adf",
+        "test_blind": true,
+        "tracked_file_count": 404
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "fdbf76284f6171f253e992b5fd7b0d7f46650b790df3d8fef1ec1797fd331388"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets_eco__croniter__c013dd29183a",
+      "split_pass": true,
+      "task_id": "croniter__cron_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "8a082f76abb5bd6d64686e3918a024bc9cd4aa2d829ad39c5466cfdabbf8cb9b",
+        "test_blind": true,
+        "tracked_file_count": 25
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "895c6020869327f497cc66e005a11c8623d3637f887a4f1683ceebd1c649dee3"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__lidatong__dataclasses_json__3c5b2884e083",
+      "split_pass": true,
+      "task_id": "dataclasses_json__serde_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "ecf72d773c2afd1209a8072f9938b7023f4e9fe4d99678a9dadcc06da0374209",
+        "test_blind": true,
+        "tracked_file_count": 51
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f99fa4855f342d2ace961cb336ccdd951e0cb2e08f384169b1dd0736782dc0d4"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dateutil__dateutil__908960127252",
+      "split_pass": true,
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "aa4ea60facd51a2e1d01504ca697914fa360a0ff33c3ce8b855f371b1e7b559f",
+        "test_blind": true,
+        "tracked_file_count": 97
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "71c9e961f4706b6f3a4a3b55995022d2150de4b3c698fc3e1ff16957a170d33b"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__micheles__decorator__09e3124ed957",
+      "split_pass": true,
+      "task_id": "decorator__signature_preserving_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bbbfca1166c63e9272e9aba3ad5155dfda161d10f27fbe4a6767fba53331c584",
+        "test_blind": true,
+        "tracked_file_count": 19
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3e6dc57743b2377330c7e05b77a12dbc2ec48cc09dd8d50dd19a7c7fbf8af2d3"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__qlustered__deepdiff__94c962c3cc12",
+      "split_pass": true,
+      "task_id": "deepdiff__deep_compare_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "67bd0f72cf71ef7e172a61c1e0302d1b53c3fbdefe2cb3c4e6bccc520ebfab40",
+        "test_blind": true,
+        "tracked_file_count": 183
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "befab96b33585a700e2699dfcc3e7624c7c94c66ba93540650ee934d877245b5"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__grantjenks__python_diskcache__0ac33411f2a9",
+      "split_pass": true,
+      "task_id": "diskcache__eviction_policy_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "74ec45a811d6a1e86049b21a762c67a8e8e60829336d03a9037ca4b0216c164f",
+        "test_blind": true,
+        "tracked_file_count": 81
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f31031bc752362521bb79e48b99499f4f588f80b8b6465c175bfa86edd853534"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__distlib__e71700d90bff",
+      "split_pass": true,
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f50344d025537316a149ed35b8fa62983214d1ca82a4f0d3f2b05d62ed06f413",
+        "test_blind": true,
+        "tracked_file_count": 199
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "2fc246441fe786c0abc13759ed8f8f69ad68d9dcb38ba9f48d4f21d6395966ef"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dynaconf__dynaconf__038e0439fdf2",
+      "split_pass": true,
+      "task_id": "dynaconf__settings_merge_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d8f020f5a3afbed14eb74d28d8a6b117d6fc091d5eb2fcc08718915d6304df55",
+        "test_blind": true,
+        "tracked_file_count": 982
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "e3a96ebab4471f268d0a62542202344f36c262b542105646ae42a6ec797ab6ad"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__joshdata__python_email_validator__e49b867521a5",
+      "split_pass": true,
+      "task_id": "email_validator__validate_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f36aedd9974aead7f2187e894fd60e16a4f820c9f02dfc9c336c96bdd15b3532",
+        "test_blind": true,
+        "tracked_file_count": 28
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3622eacc9baabfa6bdede29542dafac7357833a76706b0a60f6299b9ae972e89"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sloria__environs__562bcbac41b7",
+      "split_pass": true,
+      "task_id": "environs__typed_env_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b299f2c0afd60de5bd76aca8eac4b5c12150987d9669388628b37a72acaa5d86",
+        "test_blind": true,
+        "tracked_file_count": 31
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "870e2cd6983441afdba3f4a53668349e447855f29ef8d60fea4ed7156413cf5a"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__joke2k__faker__2d3753ae9184",
+      "split_pass": true,
+      "task_id": "faker__provider_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "44ca8653daf2073db99d6404a65face572ff872b57531d1cae2f6147f017d43c",
+        "test_blind": true,
+        "tracked_file_count": 837
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8419764a8a4ce620bb17a7c6d3008541b0cf20b6a1de8981bdfcd4a41904cab2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__tox_dev__filelock__206f5893cac6",
+      "split_pass": true,
+      "task_id": "filelock__reentrant_lock_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f39d6186b5fc39311b6a05e49476edf5316ae8a640423117d039857e1abc487a",
+        "test_blind": true,
+        "tracked_file_count": 32
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "e98ba7be2cca09e6d1d5e7e1dcf8be044c42177ee22b5e9eb85772f526985dd2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pycqa__flake8__4f658626a87a",
+      "split_pass": true,
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "0b78102ba42dea4e26fd847360c5653b2efaf66e6521ef23223d2c48ca32c961",
+        "test_blind": true,
+        "tracked_file_count": 215
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "b51665f6f8f8c2e994f23c001dd4143195bcf5825713a67d8cd73a45220063e0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__flask__9cb579f98b54",
+      "split_pass": true,
+      "task_id": "flask__route_dispatch_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fb145dcd8d68fab8ed7da33801a29cae2c3ef91817d8eeeb25219f59d7b025e5",
+        "test_blind": true,
+        "tracked_file_count": 249
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "65ddaf661e4388ee46ccf54aa4e9e54d3122e94a6dce13ec61a3b7b71d1f0ca7"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pyfilesystem__pyfilesystem2__317adb352ae7",
+      "split_pass": true,
+      "task_id": "fs__url_opener_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "a4172c950058aa24d20d51bb38f2aba0a4862cba6bc7406c86295e4e88817ff4",
+        "test_blind": true,
+        "tracked_file_count": 176
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "a235cc3c390e74897476ee61ae95526b55ab95dd6a4794200536127876552e80"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__fsspec__filesystem_spec__49231b1c487c",
+      "split_pass": true,
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "5899e13bf967f082998b075796e766494ded33eac71a3fff8bf6e0c6adec055d",
+        "test_blind": true,
+        "tracked_file_count": 156
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "d0eb3a59dea4d95dffeb27e0cf1524b4ee538d190fff2ada2b2c176db1ce4b61"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__mahmoud__glom__2250f02139ca",
+      "split_pass": true,
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "764361577271f0aeb0766f40598b2eb02dad11eca08ab4a05e0aa33c375e8597",
+        "test_blind": true,
+        "tracked_file_count": 71
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "2dfb4a7b3cc1b76df0a07926ee920aaa78b9aa90502a66f2ff31c77b1564b66c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_hyper__h11__5c23411f14fa",
+      "split_pass": true,
+      "task_id": "h11__message_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f98e2ce196bcf44721f9ad1cf26d813fba6916cb56c5717af71ab9c8cd75bfe6",
+        "test_blind": true,
+        "tracked_file_count": 68
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "264f0001bb67a25eda6e68eabcacabb5e8ad77ff51b401a4d79c41f6ff8c28f8"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_hyper__h2__bbdbf7654624",
+      "split_pass": true,
+      "task_id": "h2__frame_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "06c1237717a7f2fba75e7701f07103c74e9213e2ed05c735a3ca2a40a7065bd5",
+        "test_blind": true,
+        "tracked_file_count": 107
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "9c5c6cd6c7506b6f197236f928c41089610363da01fc49d7e82da6d353dc6684"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__hatch__1c66b30e80a7",
+      "split_pass": true,
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "868cdcc9b7dac3de0cecccf29c5dbde169ff7781d3f87d1ed0c742a8c6da5e9f",
+        "test_blind": true,
+        "tracked_file_count": 537
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "87609f47be721bcb60c85c23db4e85d1bf1cd0fb594395a86aa500082af11956"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__encode__httpx__3fdce099a597",
+      "split_pass": true,
+      "task_id": "httpx__request_model_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6d0a86693588795af9e2f73619f0ffc39f37ae1a25542f5c35b5b85fea7895ea",
+        "test_blind": true,
+        "tracked_file_count": 123
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "abba08d6d83ff683968c6baa7610ce3c724e3dac3b0da735a15822275906275d"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_humanize__humanize__7edd04a349f2",
+      "split_pass": true,
+      "task_id": "humanize__naturaltime_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "66521c2d40e11e118a4c4bc1eef09b76f3c7a47fc710ccafefca9cdb4007fc0f",
+        "test_blind": true,
+        "tracked_file_count": 84
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "cf06227366e8b8f26f1c06ba43c20a690391d18779ef9bf9952fef0d85ae5dfc"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python__importlib_metadata__ba1c0026121e",
+      "split_pass": true,
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bdda7b9883e5a80b3f77173a06691ddb0bc7dd25bc4869ae27e48def4408451c",
+        "test_blind": true,
+        "tracked_file_count": 55
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8243bd8aca11bc4e5e8a34fd66700884a03381759153e847f4232d75e1f09407"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python__importlib_resources__001958068578",
+      "split_pass": true,
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f4fb6be001d3faa5469db7622f660fe78dee08a91610bbc393571cf5c16aa334",
+        "test_blind": true,
+        "tracked_file_count": 55
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "d2e5e537aac3a44eab405bc47aa9a5b3865031afef95d61bd3703937f5e0c7e0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__installer__648a0b9a91d0",
+      "split_pass": true,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "9d8f537533a52ca57622ea01a9bba99c42128939a043397a46a88acb1a7a309a",
+        "test_blind": true,
+        "tracked_file_count": 57
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "644fcc2b7a1a7107c16d9212dbcdecc597208fb5a9f8e76064bce07e4b7b020a"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__chaimleib__intervaltree__9741eb324c97",
+      "split_pass": true,
+      "task_id": "intervaltree__interval_tree_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "ccbc9b6dd5c55c750fe61693df2024885536792cdd90de37ab2776c0f11f5ff4",
+        "test_blind": true,
+        "tracked_file_count": 62
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "dc17b573d55d4ab92d577f68dc3c1ee9b37835ae4e071414f8509860a4b142fb"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__gweis__isodate__f4373f2cf435",
+      "split_pass": true,
+      "task_id": "isodate__duration_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4a6ab75b1632229617baf49164aa6cdbd312bd89edd3faef541b0c52ab148d8a",
+        "test_blind": true,
+        "tracked_file_count": 26
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "a8df7692ed536d2af63d5afeeff7522bf1f3ca6e80ccd4038d3bbd3531c82ea5"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pycqa__isort__8422ea593a22",
+      "split_pass": true,
+      "task_id": "isort__settings_resolver_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d348e2461a87363c7d7e443f39585986c411a1ea67846d1300337bb1c7736f95",
+        "test_blind": true,
+        "tracked_file_count": 190
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "a8e3c8a59515208d133504256e1b2e4fdc7d0ecdedd5657b09f15ab110c8df92"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__itsdangerous__ec2acee1e8b4",
+      "split_pass": true,
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "12e8bc9c7d546afb153de67f97cb04d1bfe61bc6a6c715d51204191136c52b4d",
+        "test_blind": true,
+        "tracked_file_count": 60
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "882d4696c3934e9b87c916b14eee30467058af8371f823fc3e21f7e61009cd54"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "split_pass": true,
+      "task_id": "jinja2__compile_render_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa1ab63adb4f18b6f1c7a156c31c4e0fc8e4b705806089f883655c7c297b4dcd",
+        "test_blind": true,
+        "tracked_file_count": 117
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "74a9863cac7fe9aa3772a30868ac8da469e3aabd695823a5e97ed5016be57808"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "split_pass": true,
+      "task_id": "jinja2__extensions_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa1ab63adb4f18b6f1c7a156c31c4e0fc8e4b705806089f883655c7c297b4dcd",
+        "test_blind": true,
+        "tracked_file_count": 117
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "bb564f04c5997b1fd4f4457a2a64c64db9149f0dc7f4a801c693ae0456fd4d67"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "split_pass": true,
+      "task_id": "jinja2__filters_tests_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa1ab63adb4f18b6f1c7a156c31c4e0fc8e4b705806089f883655c7c297b4dcd",
+        "test_blind": true,
+        "tracked_file_count": 117
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "fc49b025d362c05311f77481f878fff7b196ef706a810df0fcaa5b9bba568c35"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "split_pass": true,
+      "task_id": "jinja2__lexer_parser_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa1ab63adb4f18b6f1c7a156c31c4e0fc8e4b705806089f883655c7c297b4dcd",
+        "test_blind": true,
+        "tracked_file_count": 117
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "49f386ad1e34f3d2db74da5c476e24fd01596e904719e315235d14a230a20032"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "split_pass": true,
+      "task_id": "jinja2__loader_inheritance_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa1ab63adb4f18b6f1c7a156c31c4e0fc8e4b705806089f883655c7c297b4dcd",
+        "test_blind": true,
+        "tracked_file_count": 117
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ac580f7fda8f56e685bb501b09afa427359b2a347aae3a5136f06baee810854e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dpranke__pyjson5__31c7118aa7ba",
+      "split_pass": true,
+      "task_id": "json5__parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "2c52430ca03f4375d32da6d11bfecd15d5cbdda9d3ecfa0f7716c80447fe0042",
+        "test_blind": true,
+        "tracked_file_count": 29
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f95e797b9f135919c7e5cd4c38c919edf720d16b66bc7a2bb4e26e986a0c48d1"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__nadirizr__json_logic_py__ba7f0a8e6175",
+      "split_pass": true,
+      "task_id": "json_logic__evaluator_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "272fd6cbcea69e2ba36edb2ad56c5cac2b0f7a98a4bb4dbc82476a25d2cac448",
+        "test_blind": true,
+        "tracked_file_count": 12
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "66db6328dd057c2a0272345296fe221a389ffe50eed656e1dfc92981a789546f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__h2non__jsonpath_ng__8d7356dcb6f2",
+      "split_pass": true,
+      "task_id": "jsonpath_ng__expression_eval_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "092e915f7d99d6cfc044edce7acb06868a7f4c97643c52090d850d85a8387413",
+        "test_blind": true,
+        "tracked_file_count": 49
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "84494ac72bd31bc9916ef022d3e2a13e6e2939462cc091c1abe90c8d73bfbf7d"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__stefankoegl__python_json_pointer__362d9007ed9e",
+      "split_pass": true,
+      "task_id": "jsonpointer__resolve_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bb3c43d61622cd297989b4134f51e301f9edf74936fe0960a49ee876d796ddd1",
+        "test_blind": true,
+        "tracked_file_count": 22
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3a9904e646fcc5b85fff3eabe59aefa0c37643861dc675f164fc3ddc86106e51"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_jsonschema__jsonschema__032f23149b5a",
+      "split_pass": true,
+      "task_id": "jsonschema__validator_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "c33bc06665412f3770fcd54b18d1f965376e7ccd49dab81f968b409bd68fe290",
+        "test_blind": true,
+        "tracked_file_count": 602
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "53bb22f2c2dc91b61e833bf51e9c2712c3b8245d63c1e458802ac38614dc85ad"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__jupyter__jupyter_core__23116e7ef136",
+      "split_pass": true,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "0458e506793936f4d395253e20ce0b1ecc00ec02776a2039737da57de184733a",
+        "test_blind": true,
+        "tracked_file_count": 64
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ba1bb4dccffbfc78e7c3cda90db3bdb00bfa8b0db00cf2f4a72b3d8f950121b1"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__jupyter_server__jupyter_server__5d69754e9c60",
+      "split_pass": true,
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "a971b89c2fe20cfcbf2c314c4cf92d806c1735f7b269a3cf2dc200ff6d832777",
+        "test_blind": true,
+        "tracked_file_count": 342
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ce0eaa21045832eb86d8c7b6a164b574d3283307e99b35d973dc02dd29cf3c65"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__jaraco__keyring__4c51f18f5ba6",
+      "split_pass": true,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "cb090f6df5b5de3f152a849fee5eb57ba12726aac5084cee7798aa1cb90f2c31",
+        "test_blind": true,
+        "tracked_file_count": 67
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3fa5540fa04831c387dc1b4db9d8b0ab4a8c75b9cdb513816d564db19395da6f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__lark_parser__lark__c80e589ad9d9",
+      "split_pass": true,
+      "task_id": "lark__grammar_loader_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "88e484a509312cf7b118b92411fc89d02a9a5b1a0ddff074fc6cda07782fb0d3",
+        "test_blind": true,
+        "tracked_file_count": 316
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "aeb537b679003478fc305ed00070ed121b86a38cd3a5f4d7bc91eaec9a4cd8c3"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__lark_parser__lark__702440140c56",
+      "split_pass": true,
+      "task_id": "lark__parse_tree_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "50541d2a757457573ba17722edc45c8ceb3d7df74b06b2830f52c5af349b4747",
+        "test_blind": true,
+        "tracked_file_count": 316
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "72b8289a5d819502628b1fdeef3492e6173b0d713066b271e3192e74bf21c918"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__lark_parser__lark__702440140c56",
+      "split_pass": true,
+      "task_id": "lark__visitor_transform_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "50541d2a757457573ba17722edc45c8ceb3d7df74b06b2830f52c5af349b4747",
+        "test_blind": true,
+        "tracked_file_count": 316
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "437af5fb15c342960f44d57c1c81ce03030010af324e804023b4d6fa1471898c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__aboutcode_org__license_expression__d9952b0e2bc0",
+      "split_pass": true,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7a2f6deccf860c37fa6a8761a746b10bd90eebb212dd8fd4b059ac56e289aa74",
+        "test_blind": true,
+        "tracked_file_count": 72
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "7e7d0ba6a8b4e0a702679abbfec250c043b696fec2f3a1f546066228433e4aee"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sqlalchemy__mako__8e2a8cd3a196",
+      "split_pass": true,
+      "task_id": "mako__lexer_expression_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "e92081aaa403138ec22dfc87087be024c7b8d23d5cab832ad84243ba9f0a26b7",
+        "test_blind": true,
+        "tracked_file_count": 151
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "888ba2b588e0f190163e78e9b15f7c3ff43c5e3e804c46b59e14726d1851b13f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_markdown__markdown__73b4842a1e1c",
+      "split_pass": true,
+      "task_id": "markdown__extensions_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "c359a3ce41aee6d79672c9e9de2b334cae56150881fc01a7ffed52396765a397",
+        "test_blind": true,
+        "tracked_file_count": 498
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "da85fa815e52d1e311937db30f45a86c936d6932f68dac40ab286d5da8c292cd"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__executablebooks__markdown_it_py__4c5e1b22e6a4",
+      "split_pass": true,
+      "task_id": "markdown_it__commonmark_render__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "2ae6b62722a74a0186165cd154a8cdb02c266fac703cb4c1ed47772ac74def28",
+        "test_blind": true,
+        "tracked_file_count": 156
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c4b009d68367ae15a35ebd50edaa957296c9f165caf17ef73b4e9930c4a50cae"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__marshmallow_code__marshmallow__a4ceae103333",
+      "split_pass": true,
+      "task_id": "marshmallow__schema_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "eafc451c1a31eec0559fb66ea29ff1c6f63b3999560e40568ae0b96c08a0f1a0",
+        "test_blind": true,
+        "tracked_file_count": 107
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "5f0450328d3891ab8561ca0c444e78bc7d313d78d2009d409c1004f372e02e27"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__mkdocs__mkdocs__b396880fcfb1",
+      "split_pass": true,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "cd5ba993bae3afa8fd06d30c970f453bbc7b71aa513d100842a8c12151be12dc",
+        "test_blind": true,
+        "tracked_file_count": 280
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "e64ff9dff57c1519c0c0addc88a2b487596878360944c99863779d5e846b70ad"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__msgpack__msgpack_python__6a3273526c81",
+      "split_pass": true,
+      "task_id": "msgpack__pack_unpack_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4370969a432103951b54e38933487f2b9c8288ada2101f4a70af51e6326f4b6b",
+        "test_blind": true,
+        "tracked_file_count": 61
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4362273c4d58cb45cbb79f96368b2038b51acdd921429230c20df1d598bc4d45"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__aio_libs__multidict__083c5e312e59",
+      "split_pass": true,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7f8e1938ee2d8c53520a12bb977509776a7a534dba0fa2be2e295b734132499e",
+        "test_blind": true,
+        "tracked_file_count": 157
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "fca9e20b69d375c662998bf10f109a11dd2add068b12fc991e5bc4893f5ebeb9"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__networkx__networkx__10a1adf783f3",
+      "split_pass": true,
+      "task_id": "networkx__dag_topo_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "0e6f24b61b300b145a14a064953d2eb4197487e5a64f2fbe9700bb8e154a0891",
+        "test_blind": true,
+        "tracked_file_count": 923
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "9041dfbf9749034760670513d83f7ab2acb963c83b178e4973b3a8755a846534"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__packaging__0bfdf1744eb5",
+      "split_pass": true,
+      "task_id": "packaging__requirement_marker_specifier__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bc2e3f29d331e5a0beb2a6ec7d6d628e974d4e61b00a02a26385a0900754c624",
+        "test_blind": true,
+        "tracked_file_count": 85
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "7250342f47df437dd1375082ad9363be15414994867efceeadf21db05c39cb9d"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__r1chardj0n3s__parse__d51d2fbb4275",
+      "split_pass": true,
+      "task_id": "parse__format_parser_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "78db819312a60fdf69e6f9a0c7b80764b78923c84e21af35727a0db3e8115768",
+        "test_blind": true,
+        "tracked_file_count": 17
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "e1fcbb9c157ed99cda8197bc4d3be4573ecded7e1007c0d598f218e2b080caa1"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__scrapy__parsel__a14385bf15d8",
+      "split_pass": true,
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "39a43f15f268999156d8cc9f7ef6668b2e981fa3c949101afbf9b1da07ffa2fb",
+        "test_blind": true,
+        "tracked_file_count": 43
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "66bf469713bb78d02065912df64231d8274afcece9838cd0c61beb33c51648c2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__davidhalter__parso__f28d112ed2c9",
+      "split_pass": true,
+      "task_id": "parso__python_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6fadc7e80ff7c4458aa0ee8b6132214357f3d35df146f5e287c8af2d8cdea313",
+        "test_blind": true,
+        "tracked_file_count": 118
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "7b60ee0e31f8c03664ec4b8110e1395a81c75ca7285e023e1fcfd3e4561c07e8"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "source__foss_heptapod_net__fff35bde6fd1__d316cb7bd61f",
+      "split_pass": true,
+      "task_id": "passlib__hash_context_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7f400228d626406de273b4b4356106c5733da438bb56d490edfabdff868803ec",
+        "test_blind": true,
+        "tracked_file_count": 222
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "fa17913988abab4027de74d115b9212966e4f5b1bedeba56a4401470ea4011e0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__thombashi__pathvalidate__20e86fb22690",
+      "split_pass": true,
+      "task_id": "pathvalidate__sanitize_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "fa658897297f72a09f2758846d21b82e4bad8a9e7ccd6fae24f931e12b0a814d",
+        "test_blind": true,
+        "tracked_file_count": 96
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "223af643b3dbc65256184d5231986703a6322462a2d5d3705c80c962dfdc5786"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sdispater__pendulum__970a8c189aaa",
+      "split_pass": true,
+      "task_id": "pendulum__parse_format_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6ef250dec75d8a4c3c3228a1307782a45a3ff2cea3b087b22530c07b7482b915",
+        "test_blind": true,
+        "tracked_file_count": 284
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "13a82b5b1dd5c1f8a8553152569db350f52b68c20eaf33da8758480255227436"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__daviddrysdale__python_phonenumbers__a72d28a419ff",
+      "split_pass": true,
+      "task_id": "phonenumbers__parse_format_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f3255dfee298cf55e6b41d1c773b8c5aaef1e93684cf27e17e6e7069800dbbb0",
+        "test_blind": true,
+        "tracked_file_count": 1236
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8e8e585f8d9e5d41c3dfdf8d7ba7a714df873b57103f428310926ee52b831ad8"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__tox_dev__platformdirs__d6eab461f0cf",
+      "split_pass": true,
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d807412ce87ad92f1388ca8b8d4991484e712e038bbadc24fc28aa0869e2a1fe",
+        "test_blind": true,
+        "tracked_file_count": 44
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ee06b2363caaaf4e11fdb4742fe90d9e915a30c3ee76a1adf07b75ba95d96a8e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pluggy__c62999277ecb",
+      "split_pass": true,
+      "task_id": "pluggy__hook_call_order__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "03ab909fed6b4889216d066ceabfe8287315e927ec209eca6b80fae2ca827a17",
+        "test_blind": true,
+        "tracked_file_count": 46
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "9894c02e79ac3f0c560ddc82e9d08f346ecd973da30926ad7fb639fe657257db"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pluggy__c62999277ecb",
+      "split_pass": true,
+      "task_id": "pluggy__hook_specs_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "03ab909fed6b4889216d066ceabfe8287315e927ec209eca6b80fae2ca827a17",
+        "test_blind": true,
+        "tracked_file_count": 46
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8119f22eac409fa827b6b79eebbc860bfc001b14c6deb67b09e727a0e4bc74fd"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pluggy__0d767d1d9c54",
+      "split_pass": true,
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bd0aee4782f8e08015f4c17efc7a6c4ac8fcf8089397e73efdbbf449d0e0dc0d",
+        "test_blind": true,
+        "tracked_file_count": 78
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "eaea2ba6e05a904973b68fe177b48265d433991576dc20651c56b629880a778b"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_poetry__poetry_core__e0b3981cde6a",
+      "split_pass": true,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "952663fd3e310362cf9163970377afd486f21f173141cf86a6b87cc30b123806",
+        "test_blind": true,
+        "tracked_file_count": 618
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "487c5b7d66a30ca1cad7ec9750d76516847830dc044ebb3ecbe5576f052a8287"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pydantic__pydantic__4a1b25d08f22",
+      "split_pass": true,
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "ae4d49f746b89ce7e151785f541406111a38e97ce5d57528f3a39137507c96ec",
+        "test_blind": true,
+        "tracked_file_count": 778
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "13d363af1d9ce46d1e153e4c1cff20fd60d078521d7d00dd4a262fed5147696c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pydantic__pydantic_settings__656b6174508d",
+      "split_pass": true,
+      "task_id": "pydantic_settings__env_source_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "48744ad399fdf6ae5977a5f570a173e6479c8a679b4f9fd0f17680ab54d6cb1c",
+        "test_blind": true,
+        "tracked_file_count": 56
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "17b90a126f4e6720678b84d4853a569bbdb06a9b9a3dbc01405c56aa4cdbe25c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pydantic__pydantic__5642e78c15f5",
+      "split_pass": true,
+      "task_id": "pydantic_v1__validation_error_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "f22260d4a96cccac215727a68675bccb8e75f359d37f4025e380f48eb3a2f67e",
+        "test_blind": true,
+        "tracked_file_count": 355
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c77078ce5eecb8a224468ec930e25a72576a73ad95d0511685a224f897653b1c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pygments__pygments__4330994af0fe",
+      "split_pass": true,
+      "task_id": "pygments__formatter_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "715466d124017769245d5ed3a2816c574b582cfe74992472611a86cdb4ff4300",
+        "test_blind": true,
+        "tracked_file_count": 2306
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "810f0d719762da7b73970f8a0e76581747ad504a613b7347ae23a6cd95722b61"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pygments__pygments__4330994af0fe",
+      "split_pass": true,
+      "task_id": "pygments__lexer_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "715466d124017769245d5ed3a2816c574b582cfe74992472611a86cdb4ff4300",
+        "test_blind": true,
+        "tracked_file_count": 2306
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "9841f7852e78cb1ff9c695d42d022bda5d025b90abc6f1b5d94d169431ec0eca"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pylons__pyramid__d99a36b679fa",
+      "split_pass": true,
+      "task_id": "pyramid__configurator_action_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6859c7bccb362c304b0c315f0054caa311385e8347c9f22f07e9ae20eaae4aa6",
+        "test_blind": true,
+        "tracked_file_count": 1128
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "0038c0df9145e5f18a76e77c5991f8ced8cdd6e8bfa53b9d5485045e66797d7b"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "split_pass": true,
+      "task_id": "pytest__fixture_resolve_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7ef207b7b99ae8fb841efc176326be2dcd83bb58ff7ddc31f527d29fa0e5d153",
+        "test_blind": true,
+        "tracked_file_count": 601
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "be609145946c1cd201aae44a651b6e83f9202d1e04efdaa61694ba15bb12e058"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "split_pass": true,
+      "task_id": "pytest__ini_markers_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7ef207b7b99ae8fb841efc176326be2dcd83bb58ff7ddc31f527d29fa0e5d153",
+        "test_blind": true,
+        "tracked_file_count": 601
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8fd1022cab202de4b47f74abe4db6bbcbaea86af2124641635a4505fbbde81df"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "split_pass": true,
+      "task_id": "pytest__mark_expression_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7ef207b7b99ae8fb841efc176326be2dcd83bb58ff7ddc31f527d29fa0e5d153",
+        "test_blind": true,
+        "tracked_file_count": 601
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "163f6f2bfa611437bfdfa03c14fa10c1552881c0b6bd9155dfac448a0a28f4c6"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pytest__41b75f32604d",
+      "split_pass": true,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "0e90021eba7b4f6b8ec44d6383ba494917f8ffd151accb51615bd19000a5335b",
+        "test_blind": true,
+        "tracked_file_count": 633
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "cbab18e159d67f4e31e1a55dc2163f8082e83ccf2f715794c4509656956021c8"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "split_pass": true,
+      "task_id": "pytest__skipif_eval_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7ef207b7b99ae8fb841efc176326be2dcd83bb58ff7ddc31f527d29fa0e5d153",
+        "test_blind": true,
+        "tracked_file_count": 601
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8986e374475cce354faff412db9c4b46cb1fcdc7b3a6c79fc584b41351587938"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__cdgriffith__box__8256206601ad",
+      "split_pass": true,
+      "task_id": "python_box__config_box_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d11cf74fdee6591f93313743357300e819512ab83eae61a35841937841a4a96c",
+        "test_blind": true,
+        "tracked_file_count": 51
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "267045568ed02d10e85a05cf4b5162b8c55bc984af354ca731b3b441928917a2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dateutil__dateutil__8f9462716028",
+      "split_pass": true,
+      "task_id": "python_dateutil__relativedelta_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "045a886f5ecd31fa0de5002428f3bbdc99108330beee26f20961915691ef62e4",
+        "test_blind": true,
+        "tracked_file_count": 85
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c3d739701b658ccb99865cf4da662850352ce7ced6c654f725cd7a71f847c5da"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dateutil__dateutil__8f9462716028",
+      "split_pass": true,
+      "task_id": "python_dateutil__rrule_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "045a886f5ecd31fa0de5002428f3bbdc99108330beee26f20961915691ef62e4",
+        "test_blind": true,
+        "tracked_file_count": 85
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "41f06edd39ad25374ef0bff1f0d98a0d7cb1640a4ad036378dc159a3bb00309e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__hbnetwork__python_decouple__b7c6532fe5fa",
+      "split_pass": true,
+      "task_id": "python_decouple__config_repository_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "98e12ab5f18a74720ae43c7b74489f2621fe1be99be91069938a9875ace11b58",
+        "test_blind": true,
+        "tracked_file_count": 30
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "72f99c32a930310699ab530e74c1d2d6e4fff34ff9adf16a982d67680f26a651"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__theskumar__python_dotenv__e50d0b4faa5c",
+      "split_pass": true,
+      "task_id": "python_dotenv__env_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "e7dda8065f7aa013dd3aaea4748cd06e6d08312e39863fcf67b7e5a980833974",
+        "test_blind": true,
+        "tracked_file_count": 46
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "7dad365928389b104c624f1738b96aea77325b00f0b1bf2769f1939ecadd8b0a"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__eyeseast__python_frontmatter__d4da767cde15",
+      "split_pass": true,
+      "task_id": "python_frontmatter__roundtrip_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "72f22ca12d3412027d4a813ad64b4dec357c008e6c01ad09e09ec1596ae6290f",
+        "test_blind": true,
+        "tracked_file_count": 54
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "1fa1a8add8884a0a9ed98d01bb891c498965239e51966adfc7929e6b7a431ac7"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__kludex__python_multipart__d9b56a41df65",
+      "split_pass": true,
+      "task_id": "python_multipart__form_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "5e128a2312a4aff3d6454ed740d3d4221e9cf3c81308505d30493dd3424c943d",
+        "test_blind": true,
+        "tracked_file_count": 114
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c8be11e9009baa6634cd0511469f149126f25955dd982c2fe257f229020364bc"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__yaml__pyyaml__ef4ac31bcdcc",
+      "split_pass": true,
+      "task_id": "pyyaml__safe_load_dump__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "216f27684e88e8d32066c4c91b0e031e9d4e8f3eb6108737cd531879b33ebb63",
+        "test_blind": true,
+        "tracked_file_count": 638
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "158a97602f21d11e4609dd795d8dc95d7af5273fbbb51fc9c2af0e8135a2dbb2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__readme_renderer__6d94d0128c4f",
+      "split_pass": true,
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6210f7915e36d4fadd688728f6710d59432754765143a8fd036ad8b00964f42b",
+        "test_blind": true,
+        "tracked_file_count": 171
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "132be3db4011abc705e887910d57302d55ec79496913487abc3be9959e22f6f4"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__redis__redis_py__5a532a3c39e1",
+      "split_pass": true,
+      "task_id": "redis__resp_parser_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "6e4d77033da8b96e7b0c41561ecc703345e64bda4760c64901b398eb4e287754",
+        "test_blind": true,
+        "tracked_file_count": 401
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "94599e922ac033f5db94a001d7690efb285ed35cfae9f48d55704b93a2a67fb9"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_jsonschema__referencing__1f0abc56e32e",
+      "split_pass": true,
+      "task_id": "referencing__json_schema_refs_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "e559bca0669a51943d674f0bb81d1b7051b123dbc414e7a6bf45fb0c48aad1d8",
+        "test_blind": true,
+        "tracked_file_count": 325
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "d493a558edd8a3facd9483d46cf38a39746ddc0576346b5c3e2eb2c7a57fd1f0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__requests_cache__requests_cache__c116dd5c841c",
+      "split_pass": true,
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d11f8e5638fd5ef7ee5717013ae7a9c521074b333646d56fb5b9ceda956da611",
+        "test_blind": true,
+        "tracked_file_count": 197
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "1bfda9dfba33d179aa591eaf6fa864d562049c0c35230329852f721460b67925"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__getsentry__responses__f5ae59453877",
+      "split_pass": true,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "070197a0d0b0d665c85b7c206de65e1af51abf9223bcc27cd827c0aaba630f77",
+        "test_blind": true,
+        "tracked_file_count": 36
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4bc65cf2038d564a3dd5c1fe7802e4426b121f4471a1bb2e8bb25cce4adcfff4"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__dry_python__returns__885bf999e2df",
+      "split_pass": true,
+      "task_id": "returns__result_pipeline_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "04f5ae261cfdffbf7b079b9e10f5399940098b2ab25c78812a16def471f0660f",
+        "test_blind": true,
+        "tracked_file_count": 409
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "0b1281ba6a53c883e544194753d048e98c28cc27bff50c9015773a063af3aea3"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_hyper__rfc3986__667bc45c9d13",
+      "split_pass": true,
+      "task_id": "rfc3986__uri_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4e9e2e2160d904ad064d89fec8ab3e444ec09d6602e6adc589b0de4618b5e969",
+        "test_blind": true,
+        "tracked_file_count": 74
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "184aad43382db8a0a27a06ec7382f7360d97a1387bfbd3e9e1d6af9d04bec03e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__textualize__rich__76b5cd071400",
+      "split_pass": true,
+      "task_id": "rich__markup_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "875aaad78058af3563b438788a35fe28dc0efd0f585f45fa9fc42c399c328ceb",
+        "test_blind": true,
+        "tracked_file_count": 524
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3f6ce4b65f68e87c10e9a0a90b90845b7f218d8ebadaa7fa8ef0e7895f27d9a0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "source__sourceforge_net__a935d43b47a4__608d9dbf5085",
+      "split_pass": true,
+      "task_id": "ruamel_yaml__roundtrip_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "36b6e1424c54612c0d66de6439f2edc8659669630405e6a11280eb4076b46c83",
+        "test_blind": true,
+        "tracked_file_count": 684
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "93c375a460cfbce60728ad2854c17d9b500b96f7944447572d4037e740b0eed0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__keleshev__schema__981d7e089474",
+      "split_pass": true,
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "78a6a19d51be4d92711325578a9d8b6c6fa0805e407f8c45d63cbd1d31d9d357",
+        "test_blind": true,
+        "tracked_file_count": 20
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "5c47dc9610dfc54790f53fbc4f66c5935567591db4c9b228edc9726832c950e0"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__scrapy__scrapy__32a8a88ac60c",
+      "split_pass": true,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "711382d6df886bb4e9250a7b71d5173c702072878d8f8bac45a17bc9a8c1797a",
+        "test_blind": true,
+        "tracked_file_count": 633
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "26d85bbe3b1a0ef04503b28ebcf85729becc227afd1a3bc7b63cccfa81b63a9f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__setuptools_scm__3d1b8ef01b27",
+      "split_pass": true,
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "e0b9a836e4462f46347794a7cb2c3b3e351fb0ce702ea37687ce11fd9aa3d73d",
+        "test_blind": true,
+        "tracked_file_count": 184
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "c3bccde6f3c9acd989670f1ca470e0a0c40c61ddac8d7b83de42527972e4b042"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__grantjenks__python_sortedcontainers__a28aa11f1858",
+      "split_pass": true,
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "2c64f787089a2cdebe6515ab79314c43d909ef67cd2158b25cf1761fe535780b",
+        "test_blind": true,
+        "tracked_file_count": 260
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4b95068f874e6af8dadc22a25add62efbd482ef5c9f1c1244f4c4bd8343dbad2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sphinx_doc__sphinx__60f7a239569e",
+      "split_pass": true,
+      "task_id": "sphinx__extension_registry_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "c98d671e2d501dbc8b72f32417e13e0193f83baf702986a0c2ba5456725289ce",
+        "test_blind": true,
+        "tracked_file_count": 2059
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "d2402fbd7cf4ef2ec5b4521a93a44c023e7029b5986819ae80c05f0cd70d0506"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__sqlalchemy__sqlalchemy__73ee4dfeb1da",
+      "split_pass": true,
+      "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "7b851a1707e2f97b58228e546cf54395ad7bf9de98d794b255179611907c460e",
+        "test_blind": true,
+        "tracked_file_count": 910
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4f2553f775b69f3f080da3d31b453949b6f587b019896abd36406c11a932305c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "split_pass": true,
+      "task_id": "sqlparse__format_filters_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4fc38e077e19ae6144475efb2965da8dbecfffbf08314c2d502361ccada37d93",
+        "test_blind": true,
+        "tracked_file_count": 88
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "00140f53843c9bdd5d382772eeae692fa3176aaad0841ff9520336a45459c164"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "split_pass": true,
+      "task_id": "sqlparse__parse_format_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4fc38e077e19ae6144475efb2965da8dbecfffbf08314c2d502361ccada37d93",
+        "test_blind": true,
+        "tracked_file_count": 88
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "028977ea5d12a360b449551fa9ca5f5f0c4a6cefe242ed2dc6d360afcf7df6ec"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "split_pass": true,
+      "task_id": "sqlparse__parse_split_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4fc38e077e19ae6144475efb2965da8dbecfffbf08314c2d502361ccada37d93",
+        "test_blind": true,
+        "tracked_file_count": 88
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "becbb70e0d734fab40212055a0bcf3dfe652e655d1020241c47e26b2aa486213"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "split_pass": true,
+      "task_id": "sqlparse__token_tree_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "4fc38e077e19ae6144475efb2965da8dbecfffbf08314c2d502361ccada37d93",
+        "test_blind": true,
+        "tracked_file_count": 88
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "deeb8856658109ea33197564c31c3d3eda00a6f59f652340ac0212b992420ebe"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__encode__starlette__6d2bfb8578e1",
+      "split_pass": true,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "b9ae032da8c430b802a84f2fd230ece3e868921ac9e0045dfa196fa92feb6c89",
+        "test_blind": true,
+        "tracked_file_count": 129
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "d151494b09f5ae9c82f524867315bb1e41f514ff1e515ee0ca0869df8307968b"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__openstack__stevedore__839bbf1a774f",
+      "split_pass": true,
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "c560a442da8a78a80758dc7ca39e0e0cfefe090fe592069d720ab15ae4eae567",
+        "test_blind": true,
+        "tracked_file_count": 114
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "2222d51219327b122554fa01cd90ffb43fb1fbe6d58bfafe80a176aef5350f54"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__astanin__python_tabulate__ac7439e4e6c6",
+      "split_pass": true,
+      "task_id": "tabulate__table_format_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "478958c3ce8f9c39b7d48b864c2b3b5bc5a09043e05183040ce383ae2b10a7b0",
+        "test_blind": true,
+        "tracked_file_count": 26
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "1d9b3c7e6e52f752dc5d47d175c8111d84fb770cae2bc1ab3c9b6a98d08ebe66"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__jd__tenacity__b55c0e6d91cc",
+      "split_pass": true,
+      "task_id": "tenacity__retry_state_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d1d898a11d221ed0ca69323f797ecb4dbe1989be2212f51e83c7f3a18949ebac",
+        "test_blind": true,
+        "tracked_file_count": 84
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "da29762b62af245b7670a9494ba927a813d322287b8c69dc0bdc045134d4f51e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_poetry__tomlkit__b4d3e4a77252",
+      "split_pass": true,
+      "task_id": "tomlkit__roundtrip_document__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d01f6f045f1b17f2de931960fa2a8836f745c07a9c2404591b72bad5b2e2ae05",
+        "test_blind": true,
+        "tracked_file_count": 1122
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "3a9e973e2ca4f202275b2729065d07b1e2f7c1fce46b2896289c8fd7561879f4"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__tox_dev__tox__81ed66625063",
+      "split_pass": true,
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d7a4c7a533f9c1c1b12fdfc5d1407fda4118e38fdce2697f599aa03442308ec6",
+        "test_blind": true,
+        "tracked_file_count": 314
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "78e6d14543cc0eb4e195b9da212cdeab4f3ecd64d319a963d68fe3e0d5d08c8a"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__deepwalker__trafaret__2ea93bdc50c6",
+      "split_pass": true,
+      "task_id": "trafaret__validation_rules_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "9c5cdbe00ead6e8b61c4f993df57a5db7366e178326be423040fe12f07b67132",
+        "test_blind": true,
+        "tracked_file_count": 482
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "adfa965a9c76cf578491d87a83ff67ad6054b6ff47c6dae3c3588a7a69c8509c"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pytransitions__transitions__95166dc4eec7",
+      "split_pass": true,
+      "task_id": "transitions__state_machine_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "e6a2c14ab5ddf89919583de22e83717d57ea1a687b20f99bea7869c9d524ad9d",
+        "test_blind": true,
+        "tracked_file_count": 82
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "161480067371f60294070fd9e5891991f4528b8a5ca0be0f713fa6853cca584f"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__fastapi__typer__83e7087f95e1",
+      "split_pass": true,
+      "task_id": "typer__command_parser_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "801ebf2cf695535279126fa4c2387ca78ab899e5f097715c2d172628dd33a551",
+        "test_blind": true,
+        "tracked_file_count": 737
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "4dd3a691b26600f5e37db983c46793d26f04ac37a5616ebc0e59feb8dc43ac52"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__urllib3__urllib3__7b3d85e01e1d",
+      "split_pass": true,
+      "task_id": "urllib3__retry_backoff_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "ec9fc2ffe504e7891417d8df92bd043d1936a15def715e901a31c319e6bd532c",
+        "test_blind": true,
+        "tracked_file_count": 158
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "33e8dd5a7067f302dd35998f2868ece879af030c05f48addffde409188cdcc38"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__virtualenv__9a5e7c46d9cb",
+      "split_pass": true,
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "d17db9f12a3ee36b406b7a3d0abc438844db5a28652bf5be7b1be32d75acbca2",
+        "test_blind": true,
+        "tracked_file_count": 225
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "8fd47695cb54f263ee679b38416578de5da60ad6813081d3566cbc7f732bad7e"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__alecthomas__voluptuous__bfa173f9f008",
+      "split_pass": true,
+      "task_id": "voluptuous__schema_validate_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "cb51a641b520d9067dcd09e8028de94cd2d58f035fe683068d526d7c0e4aa221",
+        "test_blind": true,
+        "tracked_file_count": 38
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "ffb2ef8595fa5708827ed514ba2b10dccb21e328ed3ab0db8ac217b98d558b61"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_websockets__websockets__1c71295d05ff",
+      "split_pass": true,
+      "task_id": "websockets__handshake_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "8a9b786e92f1b2d1fc28ad5532904adbeb7bc3c8db3d83b6314d2efdf197c2a8",
+        "test_blind": true,
+        "tracked_file_count": 339
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "2e9f4115c834c551db87525fec66f3f4f849dfc4cfcc9588ca70ad7b275f2754"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pallets__werkzeug__5dfbd7817e00",
+      "split_pass": true,
+      "task_id": "werkzeug__routing_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "bc9e5f24ff794b478e3c22124ea94bf250e40953c6389c4e484de370d21fea78",
+        "test_blind": true,
+        "tracked_file_count": 311
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "10aa679704524ee110ab45c23ebd7d9f4e530a429dea111f75a5a1b0fd50f483"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__pypa__wheel__39d64ea4597b",
+      "split_pass": true,
+      "task_id": "wheel__metadata_normalize_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "debe3e56176908b56a008d681c60188921eaa78a37b0ecc5c2bb6213ec5b2f3e",
+        "test_blind": true,
+        "tracked_file_count": 53
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "446dba3d67de95552542c06bc52051d1ff5c552a15b715e6381b09fea3f50bd3"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__python_hyper__wsproto__1cf5c7095c49",
+      "split_pass": true,
+      "task_id": "wsproto__frame_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "28a832930a5c01dcc74b4fad5734a600c26fe2521ed6609b19941ac5c82bbaf7",
+        "test_blind": true,
+        "tracked_file_count": 39
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "772e544c0366de744e91fa9874b6496d9749d713dfe615da161f285e54181b5d"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__martinblech__xmltodict__a3d8ab67d4af",
+      "split_pass": true,
+      "task_id": "xmltodict__xml_parse_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "03b1d5c51433b4fe3fba3273e568197447b0159539eb9a9c9814d45eba94d563",
+        "test_blind": true,
+        "tracked_file_count": 22
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "eca89a125c4031fbea7c57183b968516a2eac178ca7b24db21a02ef6446b8cf5"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__23andme__yamale__db8654ca554b",
+      "split_pass": true,
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "a91f00ca52010cbbc62d929daf66a1e188dc4fa93054fab4f59b0c34b49234c6",
+        "test_blind": true,
+        "tracked_file_count": 168
+      },
+      "workspace_pass": true
+    },
+    {
+      "capsule": {
+        "digest": "f74ae0f5194a64c9fba9d1b26e49a32643a8c86284d53a245bd911c6b006aca2"
+      },
+      "capsule_pass": true,
+      "compactness_pass": true,
+      "contract_pass": true,
+      "issues": [],
+      "pass": true,
+      "source_pass": true,
+      "source_snapshot_id": "github__aio_libs__yarl__dae78c0d8fc6",
+      "split_pass": true,
+      "task_id": "yarl__url_model_core__001",
+      "validation_pass": true,
+      "workspace": {
+        "materialized": true,
+        "no_hint": true,
+        "source_tree_sha256": "476bcd2493e03d9c276ce8401388af3fcfdd7176c24eae97112f34827357dd64",
+        "test_blind": true,
+        "tracked_file_count": 103
+      },
+      "workspace_pass": true
+    }
+  ]
+}

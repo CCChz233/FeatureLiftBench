@@ -1,6 +1,7 @@
 # FeatureLiftBench 整体设计思路
 
-- **状态：** 权威叙事 v1.1（2026-07-24，test-blind Main）
+- **状态：** 当前 v3（2026-07-27，External-150 / Full-Repository / No-Hint Main）
+- **简明原则：** [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
 - **规格细则：** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)（宪法）
 - **研究入口：** [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)
 - **文档地图：** [README.md](README.md)
@@ -15,8 +16,9 @@
 
 ### 1.1 一句话
 
-在提供 **完整公开功能契约** 与 pinned 上游仓库上下文的条件下，Agent
-能否自行检查源码、上游 tests/docs/examples，解耦目标功能，并构造
+在提供 **完整公开功能契约** 与完整 pinned 上游仓库、但**不提供上游实现
+位置提示**的条件下，Agent 能否自行搜索和定位实现、检查上游
+tests/docs/examples、恢复依赖并解耦目标功能，最终构造
 **独立可安装、行为完整且尽量紧凑** 的功能模块。
 
 目标功能可带有不同类型的仓库级耦合（依赖、配置、状态、注册、资源等）；并不要求整个 upstream 仓库「处处高度纠缠」。
@@ -33,13 +35,19 @@
 
 ### 1.3 与当前实验环境的关系
 
-当前采用的 **OpenHands** 配置已具备仓库搜索、代码编辑、测试执行及上下文管理等通用能力。FeatureLift 仍然有意义，因为主损失在：
+当前采用的 **OpenHands** 配置已具备仓库搜索、代码编辑、测试执行及上下文管理等通用能力。v3 Main 同时测量自主定位、契约完成、依赖发现、解耦与验证。
 
-1. **从完整契约与上游证据自行构造验证**  
-2. **解耦约束**（forbidden import、独立安装）  
-3. **紧凑性**（整仓拷贝可过功能门但分数近 0）
+1. **从完整仓库自主定位实现**
+2. **从完整契约与上游证据自行构造验证**
+3. **解耦约束**（forbidden import、独立安装）
+4. **紧凑性**（作为功能正确性之外的独立次要指标）
 
-**证据边界（须保留）：** 在当前 **entrypoint-conditioned** 的 **OpenHands** 基线中，**自动启发式**归因审计显示入口定位很少成为最早失败点；public 通过后仍约有 **43%** 运行无法通过 hidden。该归因为观察性分析，**待人工复核**，**不能**解释为严格因果分解。另：hard A/B 中当前 RSG start-here/support retrieval 未改善 hidden 通过率。
+**证据边界（须保留）：** 当前历史基线属于
+`mixed_snapshot_v1`，且 Agent-visible metadata 含 source entrypoints。
+其中自动启发式归因显示入口定位很少成为最早失败点、public 通过后仍约有
+43% 运行无法通过 hidden；该观察不能外推为 No-Hint Full-Repository Main
+中的定位不重要，也不能解释为严格因果分解。另：hard A/B 中当前 RSG
+start-here/support retrieval 未改善 hidden 通过率。
 
 ---
 
@@ -48,7 +56,9 @@
 ```text
                     ┌─────────────────────────────┐
   Agent 可见        │  public_spec → 生成 TASK     │
-                    │  repo/（含上游自带测试/文档） │
+                    │  完整 repo/（源码/测试/文档/  │
+                    │  配置/资源）                  │
+                    │  redacted metadata（无定位提示）│
                     │  requirements.lock 等         │
                     └─────────────────────────────┘
                     ┌─────────────────────────────┐
@@ -59,8 +69,8 @@
                     └─────────────────────────────┘
                     ┌─────────────────────────────┐
   交卷后评测        │  BuildPass ∧ Public ∧ Hidden │
-                    │  ∧ OriginalImportPass        │
-                    │  + compactness scoring         │
+                    │  ∧ IsolationPass             │
+                    │  + 独立 compactness metrics  │
                     └─────────────────────────────┘
 ```
 
@@ -68,11 +78,16 @@
 
 - `required_api` / `optional_api`（强制 vs 可选；禁止模糊「导出超集」）  
 - behaviors：前置条件 · 操作 · 可观察结果  
-- entrypoints、exclusions、forbidden  
+- exclusions、forbidden
 
 `required_api` **不能只是符号名单**。应覆盖导出路径、实体类型、函数/方法签名、默认参数、必需成员、必要异常类型等 **API surface**。Hidden 不得要求未声明的 surface（例如只声明 `State` 却要求未声明的 `State.parent`）。
 
 `optional_api`：Agent 可以实现，但 **public 与 hidden 均不得依赖**。
+
+Main 的公开契约**不得**包含 source entrypoints、上游源文件/符号/行号、
+调用链或依赖文件清单。目标提交 API 用于统一交付接口，不等同于上游实现定位。
+source entrypoints 若作为维护 provenance 保留，必须位于 evaluator 私有层；
+若向 Agent 暴露，只能作为单独的 `Entrypoint-Hint` ablation。
 
 **不能**把 TASK 糊成一句「把这功能抽出来」——那会把 hidden 变成唯一规格，变成猜题。
 
@@ -88,54 +103,62 @@
   - 每个 required behavior 至少被一个 **hidden** test 覆盖。  
 - 默认 Main：workspace 不可访问两级 evaluator 测试；提交后运行同一组测试。
 
-### 2.3 当前缺陷与迁移状态（2026-07-24）
+### 2.3 当前缺陷与迁移状态（2026-07-27）
 
 历史实现存在双轨：包内手写 `TASK.md`、metadata、`build_task_prompt` 不一致（例：isort agent 可见 API 缺 `ProfileDoesNotExist`，hidden 却要求）。
 
-**已落地：** `public_spec` 唯一源 → `render()` 生成 TASK → `spec_hash` 门禁（见 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)）。
+**已落地：** `public_spec` 唯一源 → `render()` 生成 TASK → `spec_hash`
+门禁。操作与准入规则见 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 和
+[07_incremental_task_rules.md](07_incremental_task_rules.md)。
 
-**进度：** **150/150 experiment-ready**，**0 legacy**。契约与 hidden
-已完成自动一致性门禁；Oracle freeze `7c042d5528b7d0fd` 为 450/450，
-spec freeze `f7c616edb47ea533` 已生成。独立人工 paper-gold 审核仍为
-0/150；历史 legacy run 与 compliant run **不得混报**。
+**当前进度：** **150/150 spec-compliant、150/150 Full-Repository、
+150/150 No-Hint**。契约与 hidden 的自动双向门禁通过；canonical registry
+包含 126 个外部 OSS repositories / 132 个 immutable snapshots，全部
+`ready`。Python-150 Oracle 已在 Docker 中完成 150 × 3 重验，
+compactness 已改为 frozen-reference-relative 独立指标。新的 v3 freeze
+由严格 readiness、Oracle 与对抗性 canary 门禁共同生成。
 
-**新协议内容审计：** 完整非模板化契约 **150/150**；
-experiment-ready **150/150**。`repo/` 中含可发现上游测试 **48/150**
-是信息项，因为 Agent 允许自行发现或构造测试。独立人工审核 **0/150**，
-所以可做正式模型实验，但 paper-ready 仍为 **0/150**。逐题队列由
-`scripts/audit_new_protocol_readiness.py` 生成。
+历史任务目录中的 pruned/mixed `repo/` 保留作 provenance 和旧协议复现，
+但 v3 Agent workspace 只从经 digest 校验的 canonical source archive
+生成。独立人工审核不是正式准入门槛；历史 `mixed_snapshot_v1` 模型结果
+仍不得冒充 v3 Main 结果。详见
+[v3_main_readiness.md](../reports/audits/v3_main_readiness.md)。
 
 ---
 
 ## 3. 打分在量什么
 
-与当前实现（`harness/featureliftbench/scoring.py` + evaluator）一致：
+v3 headline 定义：
 
 ```text
-TestPass = PublicTestsPass ∧ HiddenTestsPass
-
-functional_gate =
+FunctionalPass =
     BuildPass
-    ∧ TestPass
-    ∧ OriginalImportPass
-
-final_score =
-    functional_gate × max(0, 1 − extraction_ratio)
+    ∧ PublicTestsPass
+    ∧ HiddenTestsPass
+    ∧ IsolationPass
 ```
 
 其中：
 
 - **BuildPass：** 干净环境中安装/导入（或语言对应的 build）成功。  
 - **PublicTestsPass / HiddenTestsPass：** 对应 pytest（或 Go 等价）通过。  
-- **OriginalImportPass：** 无 forbidden import/dependency，且 submission 不依赖原仓路径（含「不在 source repo 内」等 harness 检查）。  
+- **IsolationPass：** forbidden import/dependency、运行时 import origin、source
+  filesystem absence、禁用网络和 submission location 等隔离子门全部通过。
 
 网络隔离、allowlist 安装等若失败，通常表现为 BuildPass/环境失败，计入 gate 失败路径；不另设省略号项。
 
 **口径分离：** `functional_gate` 与 OpenHands suite 的 `run_status`（Agent 是否正常结束工作流）**分开计算**。主榜 **Pass@1** 采用 evaluator 功能门，不采用 Agent 工作流是否正常结束。这避免「hidden 通过数」与「formal pass」因工作流状态被混淆。
 
 - Gate：行为是否在干净环境成立（含 Agent 交卷前可能从未跑过的 hidden）  
-- 紧凑项：惩罚整仓拷贝；**不是**最小性证明  
+- 紧凑项：功能结果之外独立报告，使用 reference/reference-support-set
+  相对指标；**不是**最小性证明
 
+**实现口径：** `final_score` 仅作为兼容字段，恒等于 `functional_gate`。
+紧凑性单独报告 `reference_relative_loc_ratio`、`compactness_score`、文件数、
+复制比例和依赖指标；完整 upstream LOC 不参与紧凑性分母。
+
+Functional 阶段只挂载 submission、测试、锁定依赖、允许 wheels、harness 和
+输出目录；source/reference 只进入不执行 submission 的只读 metrics 阶段。
 详情：[03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)
 
 ---
@@ -144,20 +167,25 @@ final_score =
 
 完整规定见 [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)。
 
-| 臂 | Agent 侧 | 不变 |
-| --- | --- | --- |
-| **Main** | 两级 evaluator 测试全盲；标准生成 TASK | API/behaviors/evaluator |
-| **Public-feedback** | 显式挂载基础 `public_tests/` 供反馈 | 同上 |
-| **Short-prompt** | Main 可见性不变；砍方法建议/冗余 | 同上 |
+| 臂 | 仓库上下文 | 定位提示 | Benchmark tests |
+| --- | --- | --- | --- |
+| **Main** | 完整仓库 | 无 | 两级全盲 |
+| **Entrypoint-Hint** | 完整仓库 | 有 | 两级全盲 |
+| **Public-feedback** | 完整仓库 | 无 | public 可见 |
+| **Pruned-Context** | 裁剪快照 | 按臂定义 | 两级全盲 |
+| **Short-prompt** | 完整仓库 | 无 | 两级全盲；仅压缩文案 |
 
 **Main 严谨表述：** 任务包中的 `public_tests/` 与 `hidden_tests/` 均为
 evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/` 内
 原本属于上游项目的 tests/docs/examples 仍是仓库上下文，允许 Agent
-检查、改写和运行。交卷后 evaluator 再运行两级 Benchmark 测试。
+检查、改写和运行。TASK、redacted metadata 和辅助状态均不暴露上游实现
+位置。交卷后 evaluator 再运行两级 Benchmark 测试。
 
-臂实现已落地：profiles `…_main` / `…_public_feedback` /
-`…_short_prompt`，以及显式 opt-in `--agent-public-tests`。
-历史 `no_public` 名称保留为 test-blind Main 的兼容别名。
+实验框架已实现 test visibility / prompt-style profiles：
+`…_main` / `…_public_feedback` / `…_short_prompt`，以及显式 opt-in
+`--agent-public-tests`。可验证的 No-Hint Main 与 Entrypoint-Hint 切换已
+落地；Full-Repository materialization 已完成 150/150。历史 `no_public`
+名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。
 
 ---
 
@@ -178,7 +206,9 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 - 「降级」的是 **当前 start-here retrieval 产品形态**，不是否定整个 Fact Graph / 关系抽取基建。  
 - 闭包类干预宜称 **Contract Checklist / Probe / Reference Support Set（上界）**，避免「Oracle Closure / 唯一最小闭包」用语。
 
-RSG 设计文档仍见 `research_analysis/REPOSITORY_SEMANTIC_GRAPH_*`（已标优先级降级）。
+RSG 的当前可执行说明见
+[`harness/featureliftbench/repo_graph/README.md`](../harness/featureliftbench/repo_graph/README.md)；
+实验报告保存在 `reports/repo_graph_phase*/`。
 
 ---
 
@@ -204,11 +234,14 @@ RSG 设计文档仍见 `research_analysis/REPOSITORY_SEMANTIC_GRAPH_*`（已标�
 | 3 | 试点 isort、transitions、scrapy + hidden 重判 | ✅ |
 | 4 | 主榜 `spec_status: legacy` 标注 + 分批迁移 | ✅ 150/150 compliant；0 legacy |
 | 5 | Test-blind Main / Public-feedback / Short-prompt 工程 | ✅ |
-| 6 | Compliant Python-150 重跑 OpenHands 基线 | 🚧 全榜 test-blind Main 正式实验待运行 |
-| 7 | Contract Checklist / Probe / Reference Support Set | ⏳ |
-| 8 | RSG start-here 仅 retrieval baseline | ✅ 政策 |
+| 6 | `mixed_snapshot_v1` OpenHands 基线 | ⚠️ 已有候选结果；仅作历史/消融证据 |
+| 7 | Full-repository source + No-Hint workspace + compactness 迁移 | ✅ 150/150 |
+| 8 | v3 Oracle / isolation / controls / freeze | ✅ 450/450；12/12 canaries |
+| 9 | v3 Full-Repository / No-Hint Main baseline | ⏳ |
+| 10 | Contract Checklist / Probe / Reference Support Set | ⏳ |
+| 11 | RSG start-here 仅 retrieval baseline | ✅ 政策 |
 
-手册：[CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+手册：[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)
 
 ---
 
@@ -216,11 +249,12 @@ RSG 设计文档仍见 `research_analysis/REPOSITORY_SEMANTIC_GRAPH_*`（已标�
 
 | 文档 | 角色 |
 | --- | --- |
+| [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) | v3 简明权威原则 |
 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | 出题与门禁宪法 |
-| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | Test-blind Main / Public-feedback / Short-prompt |
-| [01_task_definition.md](01_task_definition.md) | 任务语义摘要 |
+| [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) | canonical source policy |
+| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | Main 与消融臂 |
 | [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md) | 评测与打分（实现口径） |
 | [06_task_schema.md](06_task_schema.md) | 包布局 |
 | [07_incremental_task_rules.md](07_incremental_task_rules.md) | 生命周期 |
-| [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | 规格迁移操作手册 |
+| [SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md) | v3 正式运行手册 |
 | [FINDINGS.md](FINDINGS.md) | 已有实验结果解读 |

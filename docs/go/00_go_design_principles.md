@@ -65,8 +65,9 @@ Requirements:
 
 - At least two source files should contain both target and non-target code, or the task should otherwise require symbol-level pruning.
 - Oracle should require cutting, reorganizing, or rewriting code, not merely copying files.
-- Copy-all should be functional but clearly less compact than oracle.
-- Public tests should not reveal target filenames.
+- Copy-all should be functional but clearly less compact than the reference.
+- The public contract must not reveal target filenames; benchmark public and
+  hidden tests are Agent-invisible in Main.
 - Hidden tests should force preservation of cross-function state, ordering, error types, reflection/tag behavior, interface contracts, or module semantics.
 
 ## Difficulty Criteria
@@ -79,7 +80,7 @@ Requirements:
 | `go.mod` work | none | module name only | dependency pruning | replace/vendor/forbidden module risk |
 | Behavior complexity | simple | edge cases | errors/state | reflection/global/compatibility |
 
-## TODO
+## Open work
 
 - Promote only paper-ready hard Go tasks after evidence packets prove they are not file-boundary copies.
 - Update seed tasks whose metadata still describes `sample.Add`.

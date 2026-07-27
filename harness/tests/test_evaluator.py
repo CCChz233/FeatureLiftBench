@@ -51,7 +51,7 @@ class EvaluatorTests(unittest.TestCase):
             self.assertTrue(result["test_pass"])
             self.assertTrue(result["original_import_pass"])
             self.assertEqual(result["scores"]["functional_gate"], 1.0)
-            self.assertEqual(result["scores"]["extraction_ratio"], 0.5)
+            self.assertEqual(result["scores"]["extraction_ratio"], 0.2)
             self.assertEqual(result["environment"]["install_mode"], "path")
             self.assertTrue(result["dependency_install"]["skipped"])
             self.assertTrue(result["submission_install"]["skipped"])
@@ -221,6 +221,76 @@ class EvaluatorTests(unittest.TestCase):
             self.assertEqual(result["status"], "failed")
             self.assertFalse(result["original_import_pass"])
             self.assertIn("declares forbidden dependency 'forbiddenpkg'", result["errors"])
+
+    def test_isolation_attack_canaries_fail_closed(self) -> None:
+        payloads = {
+            "workspace_tasks": "TARGET = '/workspace/tasks/sample/repo/secret.py'\nVALUE = 1\n",
+            "source_archives": "TARGET = '/workspace/benchmark/sources/archives/x.tar.gz'\nVALUE = 1\n",
+            "oracle_reference": "TARGET = '/workspace/submissions/sample/oracle/reference_solution'\nVALUE = 1\n",
+            "absolute_glob": (
+                "from pathlib import Path\n"
+                "TARGET = list(Path('/workspace/benchmark/references').glob('*'))\n"
+                "VALUE = 1\n"
+            ),
+            "subprocess": (
+                "import subprocess\n"
+                "subprocess.run(['/bin/true'], check=True)\n"
+                "VALUE = 1\n"
+            ),
+            "dynamic_import": (
+                "import importlib\n"
+                "name = 'forbiddenpkg'\n"
+                "module = importlib.import_module(name)\n"
+                "VALUE = 1\n"
+            ),
+            "socket": (
+                "import socket\n"
+                "socket.socket().connect(('127.0.0.1', 9))\n"
+                "VALUE = 1\n"
+            ),
+            "http": (
+                "from urllib.request import urlopen\n"
+                "urlopen('http://example.com')\n"
+                "VALUE = 1\n"
+            ),
+        }
+        for name, source in payloads.items():
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    task_dir = _make_task(root / "sample_task")
+                    submission_dir = root / "submission"
+                    package = submission_dir / "featurelifted"
+                    package.mkdir(parents=True)
+                    (package / "__init__.py").write_text(source, encoding="utf-8")
+
+                    result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+                    self.assertFalse(result["isolation_pass"])
+                    self.assertTrue(
+                        not result["isolation"]["forbidden_runtime_capabilities_pass"]
+                        or not result["isolation"]["runtime_import_origin_pass"]
+                    )
+                    self.assertEqual(result["scores"]["functional_gate"], 0.0)
+
+    def test_submission_symlink_fails_isolation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task_dir = _make_task(root / "sample_task")
+            submission_dir = root / "submission"
+            package = submission_dir / "featurelifted"
+            package.mkdir(parents=True)
+            target = package / "real.py"
+            target.write_text("VALUE = 1\n", encoding="utf-8")
+            (package / "__init__.py").symlink_to(target.name)
+
+            result = evaluate_submission(task_dir, submission_dir, root / "output")
+
+            self.assertFalse(result["isolation_pass"])
+            self.assertFalse(result["isolation"]["forbidden_runtime_capabilities_pass"])
+            self.assertTrue(
+                any("symbolic links are not allowed" in error for error in result["errors"])
+            )
 
     def test_evaluate_submission_fails_when_lock_contains_unallowed_dependency(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

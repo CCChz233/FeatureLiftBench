@@ -32,7 +32,7 @@ if str(HARNESS_ROOT) not in sys.path:
 from featureliftbench.closure_gold import load_closure_gold  # noqa: E402
 
 
-TAXONOMY_VERSION = "v1"
+TAXONOMY_VERSION = "v2"
 NA = "NA"
 
 REPO_ARCHETYPES = {
@@ -163,7 +163,7 @@ TRIAL_TASK_IDS = {
     "pydantic_v1__validation_error_core__001",
     "requests_cache__cache_key_core__hard3_001",
     "sqlparse__parse_format_core__001",
-    "vibe_app__plugin_registry_core__001",
+    "blinker__signal_registry_core__001",
     "yarl__url_model_core__001",
 }
 
@@ -175,7 +175,7 @@ SOURCE_DOMAINS: dict[str, tuple[str, ...]] = {
         "arrow", "astroid", "bleach", "chameleon", "croniter", "email-validator",
         "isodate", "jinja2", "json5", "jsonpath-ng", "jsonpointer", "lark",
         "license_expression", "mako", "Markdown", "markdown-it-py", "msgpack-python",
-        "parsel", "parso", "pendulum", "pygments", "python-frontmatter",
+        "parse", "parsel", "parso", "pendulum", "pygments", "python-frontmatter",
         "python-multipart", "PyYAML", "rfc3986", "rich", "ruamel.yaml", "sqlparse",
         "tomlkit", "xmltodict",
     ),
@@ -187,7 +187,7 @@ SOURCE_DOMAINS: dict[str, tuple[str, ...]] = {
     "configuration": (
         "click", "configobj", "dynaconf", "environs", "isort", "jupyter_core",
         "pathvalidate", "platformdirs", "pydantic-settings", "python-box", "python-dotenv",
-        "tox", "virtualenv",
+        "python-decouple", "tox", "virtualenv",
     ),
     "packaging": (
         "build", "distlib", "hatch", "importlib_metadata", "importlib_resources",
@@ -199,12 +199,13 @@ SOURCE_DOMAINS: dict[str, tuple[str, ...]] = {
     ),
     "application": (
         "alembic", "celery", "jupyter_server", "mkdocs", "pyramid", "scrapy", "sphinx",
-        "sqlalchemy", "vibe_app",
+        "flask", "sqlalchemy",
     ),
     "general_utility": (
-        "apscheduler", "babel", "bidict", "boltons", "cachetools", "cookiecutter", "dateutil",
-        "deepdiff", "diskcache", "Faker", "flake8", "fs", "fsspec", "glom", "humanize",
-        "intervaltree", "json_logic", "keyring", "multidict", "networkx", "passlib",
+        "apscheduler", "babel", "bidict", "blinker", "boltons", "cachetools", "cookiecutter",
+        "dateutil", "decorator", "deepdiff", "diskcache", "Faker", "filelock", "flake8",
+        "fs", "fsspec", "glom", "humanize", "intervaltree", "itsdangerous", "json_logic",
+        "keyring", "multidict", "networkx", "passlib",
         "phonenumbers", "pluggy", "python-dateutil", "returns", "sortedcontainers", "stevedore",
         "tabulate", "tenacity", "transitions", "typer",
     ),
@@ -217,9 +218,9 @@ DEVELOPER_TOOLING_SOURCES = {
 }
 FRAMEWORK_PLUGIN_SOURCES = {
     "celery", "jinja2", "keyring", "pluggy", "pyramid", "scrapy", "sqlalchemy", "starlette",
-    "stevedore", "werkzeug",
+    "stevedore", "werkzeug", "blinker",
 }
-APPLICATION_SERVICE_SOURCES = {"jupyter_server", "vibe_app"}
+APPLICATION_SERVICE_SOURCES = {"flask", "jupyter_server"}
 
 REPO_DOMAIN_SECONDARY: dict[str, tuple[str, ...]] = {
     "coveragepy": ("configuration",),
@@ -227,7 +228,7 @@ REPO_DOMAIN_SECONDARY: dict[str, tuple[str, ...]] = {
     "packaging": ("parsing",),
     "jinja2": ("general_utility",),
     "requests_cache": ("general_utility",),
-    "vibe_app": ("configuration",),
+    "flask": ("general_utility",),
     "starlette": ("application",),
     "werkzeug": ("application",),
 }
@@ -244,7 +245,8 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
         "lark__parse_tree_core__001", "license_expression__policy_core__hard3_001",
         "mako__lexer_expression_core__001", "markdown__extensions_core__001",
         "markdown_it__commonmark_render__001", "packaging__requirement_marker_specifier__001",
-        "parsel__selector_namespace_core__hard3_001", "parso__python_parse_core__001",
+        "parse__format_parser_core__001", "parsel__selector_namespace_core__hard3_001",
+        "parso__python_parse_core__001",
         "pendulum__parse_format_core__001", "phonenumbers__parse_format_core__001",
         "pygments__lexer_core__001", "pytest__mark_expression_core__001",
         "python_multipart__form_parse_core__001", "rfc3986__uri_parse_core__001",
@@ -279,7 +281,7 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
         "pyyaml__safe_load_dump__001", "readme_renderer__content_type_core__hard3_001",
         "ruamel_yaml__roundtrip_core__001", "sqlparse__format_filters_core__001",
         "tabulate__table_format_core__001", "tomlkit__roundtrip_document__001",
-        "vibe_app__orm_query_ast_core__001", "xmltodict__xml_parse_core__001",
+        "itsdangerous__timed_serializer_core__001", "xmltodict__xml_parse_core__001",
     ),
     "registry_plugin_dispatch": (
         "celery__signal_dispatch_core__hard3_001", "click__lazy_command_core__hard3_001",
@@ -292,7 +294,8 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
         "responses__request_matcher_core__hard3_001", "scrapy__item_loader_core__hard3_001",
         "sphinx__extension_registry_core__hard3_001", "sqlalchemy__event_dispatch_core__hard3_001",
         "starlette__route_matching_core__hard3_001", "stevedore__extension_manager_core__hard3_001",
-        "vibe_app__plugin_registry_core__001", "werkzeug__routing_core__001",
+        "blinker__signal_registry_core__001", "flask__route_dispatch_core__001",
+        "werkzeug__routing_core__001",
     ),
     "config_resolve_discover": (
         "configobj__roundtrip_config_core__001", "cookiecutter__repo_finder_core__hard3_001",
@@ -302,8 +305,8 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
         "fsspec__url_chain_core__hard3_001", "isort__settings_resolver_core__hard3_001",
         "jupyter_core__paths_resolver_core__hard3_001", "platformdirs__app_dirs_core__hard3_001",
         "pydantic_settings__env_source_core__001", "pytest__ini_markers_core__001",
-        "python_box__config_box_core__001", "python_dotenv__env_parse_core__001",
-        "referencing__json_schema_refs_core__001", "vibe_app__yaml_config_bootstrap__001",
+        "python_box__config_box_core__001", "python_decouple__config_repository_core__001",
+        "python_dotenv__env_parse_core__001", "referencing__json_schema_refs_core__001",
     ),
     "resource_metadata_loading": (
         "dateutil__zone_resolver_core__hard3_001", "distlib__wheel_metadata_core__hard3_001",
@@ -327,13 +330,12 @@ FEATURE_GROUPS: dict[str, tuple[str, ...]] = {
         "diskcache__eviction_policy_core__hard3_001", "glom__spec_eval_core__hard3_001",
         "json_logic__evaluator_core__hard3_001", "pytest__skipif_eval_core__001",
         "requests_cache__cache_key_core__hard3_001", "tenacity__retry_state_core__hard3_001",
-        "urllib3__retry_backoff_core__001", "vibe_app__pricing_rules_core__001",
-        "vibe_app__rules_engine_core__001",
+        "urllib3__retry_backoff_core__001",
     ),
     "workflow_session_orchestration": (
+        "decorator__signature_preserving_core__001", "filelock__reentrant_lock_core__001",
         "pyramid__configurator_action_core__hard3_001", "returns__result_pipeline_core__hard3_001",
-        "typer__command_parser_core__001", "vibe_app__csv_transform_core__001",
-        "vibe_app__session_registry_core__001",
+        "typer__command_parser_core__001",
     ),
 }
 
@@ -363,12 +365,13 @@ FEATURE_SECONDARY: dict[str, tuple[str, ...]] = {
     "sqlparse__parse_format_core__001": ("serialize_format_render",),
     "tenacity__retry_state_core__hard3_001": ("protocol_state_transition",),
     "tomlkit__roundtrip_document__001": ("parse_tokenize_decode",),
+    "flask__route_dispatch_core__001": ("workflow_session_orchestration",),
+    "itsdangerous__timed_serializer_core__001": ("validate_normalize_construct",),
     "typer__command_parser_core__001": ("parse_tokenize_decode",),
-    "vibe_app__session_registry_core__001": ("registry_plugin_dispatch",),
     "xmltodict__xml_parse_core__001": ("parse_tokenize_decode",),
 }
 
-# These cases retain a v1 label but are genuinely cross-family/domain and need
+# These cases retain a provisional label but are genuinely cross-family/domain and need
 # a human domain-expert adjudication before a paper uses the exact label.
 NEEDS_REVIEW_TASKS = {
     "aiohttp__url_params_core__hard3_001",
@@ -388,7 +391,7 @@ NEEDS_REVIEW_TASKS = {
     "wheel__metadata_normalize_core__hard3_001",
 }
 
-# v1.1 AI-assisted adjudication.  These overrides are based only on task
+# AI-assisted adjudication inherited from v1.1. These overrides are based only on task
 # metadata, source entrypoints, source snapshots, and tests; no trajectory or
 # evaluation outcome is used.  The status is intentionally distinct from a
 # human adjudication and remains subject to paper-release double review.
@@ -462,17 +465,14 @@ ORIGINAL_ENTANGLEMENT_MAP = {
 }
 
 GLOBAL_STATE_FEATURES = {
-    "celery__signal_dispatch_core__hard3_001", "faker__provider_core__001",
-    "pytest__marker_registry_core__hard3_001", "vibe_app__csv_transform_core__001",
-    "vibe_app__orm_query_ast_core__001", "vibe_app__plugin_registry_core__001",
-    "vibe_app__pricing_rules_core__001", "vibe_app__rules_engine_core__001",
-    "vibe_app__session_registry_core__001", "vibe_app__yaml_config_bootstrap__001",
+    "blinker__signal_registry_core__001", "celery__signal_dispatch_core__hard3_001",
+    "faker__provider_core__001", "pytest__marker_registry_core__hard3_001",
 }
 SESSION_STATE_FEATURES = {
     task_id
     for task_id in FEATURE_GROUPS["protocol_state_transition"]
 } | {
-    "tenacity__retry_state_core__hard3_001", "vibe_app__session_registry_core__001",
+    "filelock__reentrant_lock_core__001", "tenacity__retry_state_core__hard3_001",
 }
 LIFECYCLE_STATE_FEATURES = set(FEATURE_GROUPS["registry_plugin_dispatch"]) | {
     "pydantic_v1__validation_error_core__001", "pyramid__configurator_action_core__hard3_001",
@@ -616,7 +616,7 @@ def repo_archetype(source: str) -> str:
 def repo_provenance(source: str, metadata: dict[str, Any]) -> str:
     if source == "vibe_app":
         return "curated_vibe"
-    # v1 does not infer project age or maintenance from reputation.  A pinned
+    # The taxonomy does not infer project age or maintenance from reputation. A pinned
     # upstream URL/commit without an explicit legacy flag uses the benchmark's
     # nominal real_oss_mature bucket; real_oss_legacy remains intentionally empty.
     tags = {str(tag).lower() for tag in metadata.get("tags") or []}
@@ -1126,13 +1126,15 @@ def build_row(
             root, task_dir, hidden_files, source_analysis.source_evidence
         ),
         "classification_confidence": "medium" if task_id in NEEDS_REVIEW_TASKS else "high",
-        "review_status": "needs_review" if task_id in NEEDS_REVIEW_TASKS else "reviewed_v1",
+        "review_status": (
+            "needs_review" if task_id in NEEDS_REVIEW_TASKS else "maintainer_reviewed_v2"
+        ),
         "taxonomy_version": TAXONOMY_VERSION,
     }
     if task_id in AI_REVIEW_OVERRIDES:
         row.update(AI_REVIEW_OVERRIDES[task_id])
         row["classification_confidence"] = "medium"
-        row["review_status"] = "ai_assisted_reviewed_v1"
+        row["review_status"] = "ai_assisted_reviewed_v2"
     return row
 
 
@@ -1187,7 +1189,7 @@ def validate_rows(rows: list[dict[str, Any]], task_dirs: list[Path]) -> list[str
 def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(handle, fieldnames=FIELDNAMES, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -1289,7 +1291,7 @@ def render_report(rows: list[dict[str, Any]], csv_path: Path, errors: list[str])
         "",
         *markdown_count_table(count_primary(rows, "repo_provenance"), total, REPO_PROVENANCE),
         "",
-        "`real_oss_legacy` is empty in v1 because project age/maintenance is not inferable from the local task package. "
+        "`real_oss_legacy` is empty in v2 because project age/maintenance is not inferable from the local task package. "
         "The label is reserved for future tasks carrying explicit provenance evidence.",
         "",
         "## Repository domain",
@@ -1442,10 +1444,10 @@ def render_report(rows: list[dict[str, Any]], csv_path: Path, errors: list[str])
         "",
         "## Review status",
         "",
-        f"- `reviewed_v1`: **{total - len(review_tasks)}**",
+        f"- reviewed without unresolved taxonomy ambiguity: **{total - len(review_tasks)}**",
         f"- `needs_review`: **{len(review_tasks)}**",
         "",
-        "The following tasks have cross-family/domain ambiguity. Their v1 labels are usable for pilot stratification but "
+        "The following tasks have cross-family/domain ambiguity. Their provisional labels are usable for pilot stratification but "
         "must be adjudicated before making a narrow per-category paper claim:",
         "",
         *[f"- `{task_id}`" for task_id in review_tasks],

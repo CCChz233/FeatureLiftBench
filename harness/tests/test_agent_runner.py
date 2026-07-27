@@ -61,7 +61,8 @@ class AgentRunnerTests(unittest.TestCase):
         self.assertIn("write your own tests", prompt)
         self.assertIn("submission/featurelifted", prompt)
         self.assertIn("Do **not** put your package in `featurelifted/` at the workspace root", prompt)
-        self.assertIn("final_score = functional_gate", prompt)
+        self.assertIn("Functional Pass@1 is the primary gate", prompt)
+        self.assertIn("reported independently", prompt)
         self.assertNotIn("pytest public_tests/", prompt)
 
     def test_build_task_prompt_go_uses_go_test_and_submission_module(self) -> None:
@@ -173,10 +174,12 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertNotIn("tests", redacted)
             self.assertNotIn("entanglement", redacted)
             self.assertNotIn("difficulty", redacted)
+            self.assertNotIn("source_entrypoints", redacted["feature"])
             task_text = task_file.read_text(encoding="utf-8")
             self.assertIn("## Entanglement Context", task_text)
             self.assertIn("Benchmark evaluator tests", task_text)
             self.assertIn("COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT", task_text)
+            self.assertNotIn("sample.VALUE", task_text)
 
     def test_command_agent_run_creates_submission_and_evaluates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -197,7 +200,7 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertFalse(result["submission"]["recovered"])
             self.assertEqual(result["evaluation"]["status"], "passed")
             self.assertEqual(result["evaluation"]["scores"]["functional_gate"], 1.0)
-            self.assertEqual(result["evaluation"]["scores"]["extraction_ratio"], 0.5)
+            self.assertEqual(result["evaluation"]["scores"]["extraction_ratio"], 0.2)
             self.assertEqual(result["agent"]["usage"]["assistant_steps"], 3)
             self.assertEqual(result["agent"]["usage"]["total_tokens"], 125)
             self.assertNotIn("cost_usd", result["agent"]["usage"])
@@ -334,6 +337,20 @@ class AgentRunnerTests(unittest.TestCase):
             )
             self.assertIn("repo_graph/bootstrap.md", user_prompt)
             self.assertIn("repo_graph_query", user_prompt)
+            self.assertNotIn("source_entrypoints", user_prompt)
+            self.assertFalse(
+                (agent_output / "state" / "source_entrypoints.json").exists()
+            )
+            task_overlay = json.loads(
+                (
+                    agent_output
+                    / "state"
+                    / "repo_graph"
+                    / "task_overlay.json"
+                ).read_text(encoding="utf-8")
+            )
+            self.assertNotIn("source_entrypoints", task_overlay)
+            self.assertNotIn("entrypoint_mapping", task_overlay)
             observation = featurelift_agent._execute_action(
                 config,
                 "closure_plan",
@@ -503,18 +520,21 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertTrue((root / "output" / "agent" / "context_audit.jsonl").is_file())
             self.assertTrue((root / "output" / "agent" / "state" / "closure_plan.md").is_file())
             self.assertTrue((root / "output" / "agent" / "state" / "repo_map.md").is_file())
-            source_entrypoints = json.loads(
-                (root / "output" / "agent" / "state" / "source_entrypoints.json").read_text(
-                    encoding="utf-8"
-                )
+            self.assertFalse(
+                (
+                    root
+                    / "output"
+                    / "agent"
+                    / "state"
+                    / "source_entrypoints.json"
+                ).exists()
             )
-            self.assertEqual(source_entrypoints["entrypoints"], ["sample.VALUE"])
             manifest = json.loads(
                 (root / "output" / "agent" / "state" / "dependency_manifest.json").read_text(
                     encoding="utf-8"
                 )
             )
-            self.assertEqual(manifest["source_entrypoints"], ["sample.VALUE"])
+            self.assertNotIn("source_entrypoints", manifest)
             self.assertTrue(
                 (root / "output" / "workspace" / "submission" / "featurelifted" / "__init__.py").is_file()
             )

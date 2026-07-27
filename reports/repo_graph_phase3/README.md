@@ -1,5 +1,7 @@
 # Phase 3 MVP 关系族落地（2026-07-23）
 
+> 历史 RSG 原型证据；该方法不属于 v2 Main，下面命令和指标只用于追溯。
+
 ## 交付
 
 Python adapter `python-adapter-v2` 补齐设计预注册 10 类关系：

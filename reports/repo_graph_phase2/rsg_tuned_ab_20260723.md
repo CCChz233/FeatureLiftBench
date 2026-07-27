@@ -1,5 +1,8 @@
 # RSG tuned 版本对照（DeepSeek v4 flash）
 
+> 历史 RSG 消融，使用 pre-v2 profile；不是 Full-Repository / No-Hint
+> Main 结果。
+
 更新：2026-07-23
 
 ## 目标

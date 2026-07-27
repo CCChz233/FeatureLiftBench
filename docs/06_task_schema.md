@@ -1,218 +1,165 @@
 # Task Schema
 
-FeatureLiftBench tasks use the filesystem schema implemented by the current evaluator, not a `task.yaml` schema.
+任务包是 maintainer/evaluator 资产，不等于 Agent workspace。公开契约和门禁
+见 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)，source 规则见
+[FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md)。
 
-**Agent-visible contract and test–spec consistency：** 以 [`TASK_DESIGN_RULES.md`](TASK_DESIGN_RULES.md) 为准（`public_spec` / `evaluation_spec`、禁止双轨手写 TASK）。本文描述包布局；与宪法冲突时回修本文并服从宪法。
-
-Canonical lifecycle and promotion rules: [`07_incremental_task_rules.md`](07_incremental_task_rules.md).
-Split registry: [`../benchmark/manifest.json`](../benchmark/manifest.json).
-
-## Canonical Python Task Package
+## Python task package
 
 ```text
-benchmark/<split>/<task_id>/
+benchmark/tasks/<task_id>/
   metadata.json
+  TASK.md
   requirements.lock
-  TASK.md                      # generated from metadata.public_spec for compliant tasks
-  repo/                        # sole formal upstream snapshot for this task
+  repo/                    # historical task-local snapshot/provenance
   public_tests/
   hidden_tests/
   evaluation/
-  reference_solution/          # optional inline oracle notes / pilot reference
+    forbidden_imports.txt
+    oracle_manifest.json
 ```
 
-Batch-3 pilots currently live under `benchmark/batch3_pilot/<task_id>/` and may also include `evaluator_config.yaml` and `reference_solution/featurelifted/` during materialization.
+部分 staging/pilot 还可以包含 `reference_solution/` 或
+`evaluator_config.yaml`。Main reference 通常由
+`benchmark/submissions/<task_id>/oracle/` 和 frozen reference registry 管理。
 
-### Required paths (Python)
+## Required metadata
 
-| Path | Role |
-|---|---|
-| `metadata.json` | Machine-readable task metadata, source, feature, output, difficulty/status, forbidden imports, test paths. Compliant tasks add `public_spec`, `evaluation_spec`, `spec_status`, `spec_hash`, `generated_task_hash`, `task_revision`. |
-| `requirements.lock` | Task runtime dependencies. Empty or comment-only files are valid for stdlib-only tasks. |
-| `repo/` | **The only formal upstream snapshot** for evaluation and test authoring. Pinned commit content lives here. |
-| `public_tests/` | Private basic evaluator tier (historical name; not Agent-visible in Main). Imports **`featurelifted`**. |
-| `hidden_tests/` | Private held-out evaluator tier. Same import rules as the basic tier. |
-| `evaluation/` | Evaluator support: `forbidden_imports.txt`, `oracle_manifest.json`, and related probes. |
-
-### Optional paths (Python)
-
-| Path | Role |
-|---|---|
-| `TASK.md` | Compliant tasks: **generated** from `metadata.public_spec`. Legacy tasks may still use hand-written TASK until migrated. |
-| `reference_solution/` | Inline reference implementation for pilots; production oracle may also live under `benchmark/submissions/<task_id>/`. |
-| `evaluator_config.yaml` | Pilot-local evaluator overrides (batch-3). |
-
-Neither `TASK.md` nor `reference_solution/` is strictly required by every legacy main task, but **new tasks must include `TASK.md`** per the Task Package Gate. Compliant main tasks must use **generated** `TASK.md` from `public_spec` (see [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)).
-
-### Constitution fields (`metadata.json`)
+核心字段：
 
 | Field | Role |
 | --- | --- |
-| `spec_status` | `legacy` or `compliant` |
-| `public_spec` | Agent-visible contract (required for compliant) |
-| `evaluation_spec` | Private test/API mapping (required for compliant) |
-| `spec_hash` | `sha256(canonical_json(public_spec))` |
-| `generated_task_hash` | `sha256(render(public_spec))` |
-| `task_revision` | Integer revision for spec changes |
+| `task_id` | 全局唯一任务 ID |
+| `language` | 当前 Main 为 `python` |
+| `difficulty` | 设计标签；不是自动生成的经验等级 |
+| `source` | display name、URL、revision、license |
+| `feature` | maintainer-private feature provenance |
+| `output` | canonical `featurelifted` output surface |
+| `environment` | Python、network、timeout、dependency constraints |
+| `tests` | evaluator test paths/command |
+| `entanglement` | private analysis labels |
+| `public_spec` | Agent-visible semantic contract 的唯一事实源 |
+| `evaluation_spec` | private API/behavior→test mapping |
+| `spec_status` | Main 必须 `compliant` |
+| `spec_hash` | canonical `public_spec` digest |
+| `generated_task_hash` | rendered `TASK.md` digest |
+| `task_revision` | spec revision |
 
-## Canonical Go Task Package
+`metadata.json` 位于 benchmark private layer。Main workspace 只复制 redacted
+metadata（若 runner 需要）并递归移除 entrypoints、source hints、难度、纠缠、
+evaluation 和 reference 信息。
+
+## `public_spec`
+
+必须声明：
+
+- title/summary；
+- `required_api` 和 `optional_api`；
+- observable behaviors；
+- exclusions；
+- forbidden/isolation requirements；
+- public-vs-hidden note。
+
+历史 metadata 中可能仍有 `public_spec.source_entrypoints` 或
+`feature.source_entrypoints` 作为 maintainer provenance/ablation input。
+它们不得渲染进 Main `TASK.md`，也不得进入 redacted metadata、prompt、
+辅助状态或日志。
+
+`TASK.md` 必须由 `public_spec` 生成；不允许手写第二份冲突规格。
+
+## Evaluator assets
+
+| Path | Visibility in Main | Role |
+| --- | --- | --- |
+| `public_tests/` | private | 基础 regression layer |
+| `hidden_tests/` | private | 边界、组合和深层 behavior layer |
+| `evaluation/` | private | forbidden、oracle、mapping、probes |
+| reference/oracle | private | construction and compactness reference |
+
+Public 和 hidden 都必须映射到已公开 API/behaviors；hidden 不得引入第二份
+秘密规格。
+
+## Canonical source registry
+
+v3 Main source 不以 `<task>/repo/` 是否看起来完整来判断。事实源：
 
 ```text
-benchmark/go/<split>/<task_id>/
-  metadata.json
+benchmark/sources/registry.json
+benchmark/sources/registry.schema.json
+benchmark/sources/archives/<content-addressed>.tar.gz  # local/ignored
+```
+
+每个 task mapping 必须解析到：
+
+- `source_repo_id`；
+- `source_snapshot_id`；
+- canonical URL/source kind；
+- requested and resolved revision；
+- `full_tracked_tree` 或受 policy 定义的 curated scope；
+- archive SHA-256 和 source-tree SHA-256；
+- license path；
+- file/LOC/depth/byte statistics；
+- `status=ready`。
+
+同一 canonical source + revision 的任务共享同一 snapshot digest。
+
+## Agent workspace
+
+正式 Main：
+
+```text
+workspace/
   TASK.md
-  repo/
-  environment/go.mod
-  public_tests/
-  hidden_tests/
-  evaluation/
+  repo/                    # registry archive 物化的完整 source tree
+  requirements.lock
+  submission/
 ```
 
-Go tasks use `environment/go.mod` instead of `requirements.lock`. Output module is typically `featurelifted` under agent `submission/`.
+不复制：
 
-## Upstream Snapshots vs Shared Sources
-
-| Location | Purpose |
-|---|---|
-| `<task_id>/repo/` | **Formal eval input.** Every task must carry its own snapshot. |
-| `benchmark/sources/` | Shared or curated master copies (e.g. `vibe_app/`, `networkx_dag_curated/`). Used when **building** tasks, **not** as runtime eval input. |
-| Live git clone | Materialization workflow only; content must be copied into `repo/` before promotion. |
-
-## Agent Submission vs Oracle Submissions
-
-| Path | Owner | Purpose |
-|---|---|---|
-| `submission/` (per run workspace) | Agent | Deliverable tree created during a benchmark run. |
-| `submission/featurelifted/` | Agent (Python) | Canonical extracted package name. |
-| `benchmark/submissions/<task_id>/` | Maintainers / harness | Oracle, gold reference, and baseline artifacts for evaluation. **Not** agent output. |
-
-## Example `metadata.json` (Python pilot style)
-
-```json
-{
-  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
-  "language": "python",
-  "difficulty": "hard",
-  "difficulty_initial": "hard",
-  "status": "materialized_candidate",
-  "repo": "https://github.com/jupyter/jupyter_core",
-  "commit": "ad6b4aea233a9634ffcd6ad553ecd63129ab5f6e",
-  "license": "BSD-3-Clause",
-  "feature_name": "Jupyter config/data/runtime path resolution",
-  "feature_type": "path/resource resolver",
-  "target_api": [
-    "jupyter_config_dir(env=None, home=None, platform='linux') -> str",
-    "jupyter_path(*subdirs, env=None, home=None, platform='linux') -> list[str]"
-  ],
-  "source_hints": [
-    "repo/jupyter_core/paths.py"
-  ],
-  "forbidden_imports": [
-    "jupyter_core"
-  ],
-  "forbidden_paths": [
-    "repo/",
-    "jupyter_core/paths.py"
-  ],
-  "hard_reason": "The target requires preserving path precedence across environment variables, platform defaults, user paths, and runtime fallbacks.",
-  "expected_hidden_behaviors": [
-    "explicit JUPYTER_* paths take precedence",
-    "JUPYTER_NO_CONFIG suppresses normal config search",
-    "Windows path separator behavior is preserved"
-  ],
-  "environment": {
-    "python": "3.11",
-    "network": false,
-    "timeout_seconds": 90,
-    "dependency_lock": "requirements.lock",
-    "allowed_dependencies": [],
-    "forbidden_dependencies": [
-      "jupyter_core"
-    ],
-    "forbidden_imports": [
-      "jupyter_core"
-    ],
-    "forbidden_paths": [
-      "repo/",
-      "jupyter_core/paths.py"
-    ]
-  },
-  "tests": {
-    "public": "public_tests/",
-    "hidden": "hidden_tests/",
-    "command": "pytest"
-  },
-  "output": {
-    "package": "featurelifted",
-    "import": "import featurelifted",
-    "callable": "jupyter_config_dir",
-    "signature": "jupyter_config_dir(env=None, home=None, platform='linux') -> str"
-  }
-}
+```text
+public_tests/
+hidden_tests/
+evaluation/
+reference/oracle/
+source entrypoints or hints
 ```
 
-## Example `metadata.json` (Python main style)
+上游仓库自身的 tests/docs/examples/config/resources 属于完整 source tree，
+仍可见。
 
-Main tasks often nest `source`, `feature`, and `output`:
+## Submission
 
-```json
-{
-  "task_id": "jinja2__compile_render_core__001",
-  "source": {
-    "name": "jinja2",
-    "url": "https://github.com/pallets/jinja",
-    "commit": "15206881c006c79667fe5154fe80c01c65410679",
-    "license": "BSD-3-Clause"
-  },
-  "language": "python",
-  "difficulty": "hard",
-  "feature": {
-    "name": "Jinja2 compile and render core",
-    "description": "Extract Jinja2 template compilation and rendering as a standalone package."
-  },
-  "output": {
-    "package": "featurelifted",
-    "import": "from featurelifted import Environment",
-    "callable": "featurelifted.Environment.from_string"
-  },
-  "environment": { "...": "..." },
-  "tests": {
-    "public": "public_tests/",
-    "hidden": "hidden_tests/",
-    "command": "pytest"
-  }
-}
+Python：
+
+```text
+submission/
+  pyproject.toml           # 推荐
+  featurelifted/
+    __init__.py
+    ...
 ```
 
-Legacy main tasks may omit `status`; split membership in `benchmark/tasks/` implies `main`.
+Evaluator 从 submission 构建/导入，不把 source repo 加入 `PYTHONPATH`。
+Tests import `featurelifted`，不 import `submission.featurelifted`。
 
-## Status Values
+Go calibration 使用：
 
-See [`07_incremental_task_rules.md`](07_incremental_task_rules.md) for the full lifecycle enum. Common values in repo today:
-
-| Status | Meaning |
-|---|---|
-| `design_only` | Planning pack; not a runnable benchmark task. |
-| `needs_review` | Runnable package awaiting human review. |
-| `materialized_candidate` | Snapshot, tests, and evaluator metadata present; calibration may be TODO. |
-| `validated_candidate` | Structural gates passed; awaiting difficulty acceptance. |
-| `hard_candidate` | Hard calibration recorded; ready for main promotion review. |
-| `blocked` | Cannot complete without fabrication. Requires `blocked_reason`. |
-| `main` | Member of main paper split. |
-| `sanity` | Smoke task only. |
-| `archived` | Retired. |
-
-Do not report `materialized_candidate` tasks as validated benchmark tasks until oracle, public/hidden tests, forbidden import/path checks, copy-all, and model calibration have run and been recorded.
-
-## Test Import Convention (Python)
-
-```python
-# correct
-from featurelifted import SomeApi
-
-# incorrect for new tasks
-from submission.featurelifted import SomeApi
-import jinja2  # upstream forbidden at runtime
+```text
+submission/
+  go.mod
+  featurelifted/
+    ...
 ```
 
-Hidden tests must not introduce behaviors that are absent from the task spec (`TASK.md`, `feature.included_behaviors`, or documented `expected_hidden_behaviors`).
+Go 尚不是 paper-ready Main。
+
+## Lifecycle
+
+新任务先进入本地 `benchmark/staging/` 或 `benchmark/batch3_pilot/`。通过
+source、contract、reference、isolation、No-Hint、difficulty/calibration
+和 freeze 门禁后，才可 promotion 到 `benchmark/tasks/`。
+
+Main membership 以 split + current freeze 为准，不依赖旧 metadata 中是否有
+`status=main`。完整流程见
+[07_incremental_task_rules.md](07_incremental_task_rules.md)。

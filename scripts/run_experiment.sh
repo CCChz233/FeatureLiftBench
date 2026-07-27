@@ -3,7 +3,7 @@
 #
 # Usage (from anywhere, after cloning the repo):
 #   ./run_experiment.sh --arm main --tasks iniconfig__parse_config__001
-#   ./run_experiment.sh --compare-arms main,public_feedback,short_prompt \
+#   ./run_experiment.sh --compare-arms main,entrypoint_hint,public_feedback,short_prompt \
 #       --tasks iniconfig__parse_config__001,transitions__state_machine_core__hard3_001
 #   ./run_experiment.sh --suite sanity --arm main
 #
@@ -25,7 +25,7 @@ Usage:
   ./run_experiment.sh [options]
 
 Arms / profiles:
-  --arm main|public_feedback|short_prompt|p0
+  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|p0
       Map to OpenHands DeepSeek profiles (uses harness/config/agents.example.toml)
   --profile NAME
       Explicit --agent-profile (overrides --arm mapping)
@@ -45,8 +45,9 @@ Agent / eval:
   --agent-config REL_PATH      Default: agents.example.toml for arms; else agents.toml
   --env-file REL_PATH          Default: .env
   --docker / --no-docker       Default: --docker (agent+eval docker)
-  --agent-image NAME           Default: featureliftbench-agent:openhands-rsg-pilot-v1
+  --agent-image NAME           Default: featureliftbench-agent:latest
                                (or FEATURELIFTBENCH_AGENT_DOCKER_IMAGE)
+  --eval-image NAME            Default: featureliftbench-eval:latest
   --workers N                  Default: 1
   --timeout SEC                Default: 3600
   --retry-only-status LIST    Resume-only statuses to rerun
@@ -59,7 +60,7 @@ Output:
 
 Examples:
   ./run_experiment.sh --arm main --tasks iniconfig__parse_config__001
-  ./run_experiment.sh --compare-arms main,public_feedback,short_prompt \
+  ./run_experiment.sh --compare-arms main,entrypoint_hint,public_feedback,short_prompt \
       --tasks iniconfig__parse_config__001,transitions__state_machine_core__hard3_001
   ./run_experiment.sh --suite sanity --arm main --docker
 EOF
@@ -76,7 +77,8 @@ AGENT="openhands-agent"
 AGENT_CONFIG=""
 ENV_FILE=".env"
 USE_DOCKER=1
-AGENT_IMAGE="${FEATURELIFTBENCH_AGENT_DOCKER_IMAGE:-featureliftbench-agent:openhands-rsg-pilot-v1}"
+AGENT_IMAGE="${FEATURELIFTBENCH_AGENT_DOCKER_IMAGE:-featureliftbench-agent:latest}"
+EVAL_IMAGE="${FEATURELIFTBENCH_EVAL_DOCKER_IMAGE:-featureliftbench-eval:latest}"
 WORKERS="${NUM_WORKERS:-1}"
 TIMEOUT="${TIMEOUT_SECONDS:-3600}"
 RETRY_ONLY_STATUS=""
@@ -101,6 +103,7 @@ while [[ $# -gt 0 ]]; do
     --docker) USE_DOCKER=1; shift ;;
     --no-docker) USE_DOCKER=0; shift ;;
     --agent-image) AGENT_IMAGE="$2"; shift 2 ;;
+    --eval-image) EVAL_IMAGE="$2"; shift 2 ;;
     --workers) WORKERS="$2"; shift 2 ;;
     --timeout) TIMEOUT="$2"; shift 2 ;;
     --retry-only-status) RETRY_ONLY_STATUS="$2"; shift 2 ;;
@@ -119,12 +122,14 @@ done
 arm_to_profile() {
   case "$1" in
     main) echo "openhands_deepseek_v4_flash_main" ;;
+    entrypoint_hint|entrypoint-hint|hints) echo "openhands_deepseek_v4_flash_entrypoint_hint" ;;
     public_feedback|public-feedback|public) echo "openhands_deepseek_v4_flash_public_feedback" ;;
     nopublic|no_public|no-public) echo "openhands_deepseek_v4_flash_main" ;;
     short|short_prompt|short-prompt) echo "openhands_deepseek_v4_flash_short_prompt" ;;
+    pruned|pruned_context|pruned-context) echo "openhands_deepseek_v4_flash_main" ;;
     p0) echo "openhands_deepseek_v4_flash_rsg_pilot_p0" ;;
     *)
-      echo "Unknown arm: $1 (use main|public_feedback|short_prompt|p0 or --profile)" >&2
+      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|p0 or --profile)" >&2
       return 2
       ;;
   esac
@@ -196,7 +201,12 @@ fi
 
 DOCKER_FLAGS=()
 if [[ "${USE_DOCKER}" -eq 1 ]]; then
-  DOCKER_FLAGS+=(--agent-docker --eval-docker --agent-docker-image "${AGENT_IMAGE}")
+  DOCKER_FLAGS+=(
+    --agent-docker
+    --eval-docker
+    --agent-docker-image "${AGENT_IMAGE}"
+    --eval-docker-image "${EVAL_IMAGE}"
+  )
 fi
 
 PROGRESS_FLAGS=()
@@ -218,6 +228,24 @@ run_one() {
   local profile="$1"
   local arm_label="$2"
   local out="$3"
+  local arm_flags=()
+  case "${arm_label}" in
+    entrypoint_hint|entrypoint-hint|hints)
+      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository)
+      ;;
+    public_feedback|public-feedback|public)
+      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository)
+      ;;
+    short|short_prompt|short-prompt)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository)
+      ;;
+    pruned|pruned_context|pruned-context)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context)
+      ;;
+    *)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository)
+      ;;
+  esac
 
   mkdir -p "$out"
   echo "============================================================"
@@ -242,8 +270,11 @@ run_one() {
     --env-file "${ENV_FILE}"
     --num-workers "${WORKERS}"
     --timeout-seconds "${TIMEOUT}"
+    --extra-agent-passes 0
+    --max-task-attempts 1
     --output "${out}"
   )
+  run_command+=("${arm_flags[@]}")
   if [[ "${#DOCKER_FLAGS[@]}" -gt 0 ]]; then
     run_command+=("${DOCKER_FLAGS[@]}")
   fi

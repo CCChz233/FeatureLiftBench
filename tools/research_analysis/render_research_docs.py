@@ -210,6 +210,9 @@ def render_findings(stats: dict[str, Any]) -> str:
     dynamic_table = group_table(stats["by_dynamic_state"])
     return f"""# FeatureLiftBench Python 轨迹证据（自动生成）
 
+> 历史 `mixed_snapshot_v1` 轨迹证据。失败机制可作为 v3 假设来源，但绝对
+> 通过率、token 和定位行为不能直接外推到 Full-Repository / No-Hint。
+
 > 本文件由 `python tools/research_analysis/render_research_docs.py` 从 `artifacts/research_analysis/trajectory_records.csv` 与 `trajectory_statistics.json` 生成。禁止手工修改比例；定性 case 注释在生成脚本中受版本控制。
 
 ## 1. 审计范围与完整性

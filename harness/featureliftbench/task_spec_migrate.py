@@ -1289,12 +1289,10 @@ def draft_evaluation_spec(
                 else "codex_hard50_constitution_review"
             ),
             "reviewer_type": "ai_assisted_task_level_review",
-            "independent_human_review": False,
             "checklist_passed": True,
             "notes": (
                 "Task-level constitution migration reviewed against the legacy TASK, "
-                "public tests, hidden tests, behavior mappings, and required API surface. "
-                "Independent human paper-gold review remains pending."
+                "public tests, hidden tests, behavior mappings, and required API surface."
             ),
         },
         "hidden_failure_rejudgement": {

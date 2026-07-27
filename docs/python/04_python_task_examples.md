@@ -113,8 +113,8 @@ Design risk:
 
 - Curated tasks need strong documentation to show they are not toy problems.
 
-## TODO
+## Open work
 
 - Add one audited mini case study per pattern after official experiments.
 - Add examples of public-hidden gap without exposing hidden assertions.
-- Link each example to its task design note after the canonical docs structure is finalized.
+- Link each example to executable task metadata and audit evidence.

@@ -54,12 +54,13 @@ A Go task should be counted as paper-ready hard only if:
 - It is not a smoke or placeholder task.
 - Oracle passes public and hidden tests.
 - Naive baseline exposes hidden-test discrimination when possible.
-- Copy-all baseline passes but has much worse extraction ratio than oracle.
+- Copy-all baseline passes but has much worse reference-relative compactness
+  than the reference.
 - Public tests do not reveal source filenames.
 - Hidden tests exercise type, interface, package, error, reflection, or module behavior.
 - A strong agent does not trivially solve it by copying complete files and changing `package`.
 
-## TODO
+## Open work
 
 - Add automated classification of compile-time failures into taxonomy labels.
 - Add Go module closure metrics from `go list`.

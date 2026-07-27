@@ -1,106 +1,93 @@
-# FeatureLiftBench Docs
+# FeatureLiftBench 文档
 
-文档入口。数字状态见 [STATUS.md](STATUS.md)；研究优先级见 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)。
+这里是项目文档的唯一入口。上游仓库自带的 README/RST、任务 `TASK.md` 和
+实验轨迹属于输入或证据，不属于项目说明书，不在本索引中维护。
 
-**规格迁移进度（2026-07-24）：** **150/150 engineering-compliant** · 0 legacy · 迁移后 Oracle 证据 150/150 · 手册 [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
+## 先读
 
----
-
-## 先读这四份（2026-07-24 起）
-
-| 顺序 | 文档 | 内容 |
-| --- | --- | --- |
-| 1 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | **整体思路**：测什么、信息分层、打分、方法优先级 |
-| 2 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | **规格宪法**：public_spec、API/behavior、门禁 |
-| 3 | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | **迁移手册**：CLI、compliant/legacy 分报、试点 |
-| 4 | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | **实验臂**：test-blind Main / Public-feedback / Short-prompt |
-
-冲突时以以上四份 + [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) 为准。
-
----
-
-## 按意图导航
-
-| 我想… | 从这里开始 |
+| 目的 | 文档 |
 | --- | --- |
-| 理解整个 benchmark 设计 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
-| 迁规格 / 跑 validate | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) · [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
-| 做 Public-feedback 等对照 | [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) · [../RUN.md](../RUN.md) §1.5 |
-| 看当前优先级与下一步 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
-| 看规模 / Oracle / 合规计数 | [STATUS.md](STATUS.md) · `reports/audits/spec_compliance_frozen_20260724.csv` |
-| 跑实验 | [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) · [../RUN.md](../RUN.md) · [EXPERIMENTS.md](EXPERIMENTS.md) |
-| 看结果解读 | [FINDINGS.md](FINDINGS.md) |
-| 生命周期 / promote | [07_incremental_task_rules.md](07_incremental_task_rules.md) |
-| 包布局 schema | [06_task_schema.md](06_task_schema.md) |
+| 快速了解项目 | [项目 README](../README.md) |
+| 看当前是否可跑、还缺什么 | [STATUS.md](STATUS.md) |
+| 理解核心设计 | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) |
+| 理解完整方法 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
+| 在服务器运行 v3 Python-150 | [SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md) |
 
----
+当前状态（2026-07-27）：Python v3 External Main **150/150 ready**，
+source registry **126 external repositories / 132 snapshots**，Docker Oracle
+**450/450**、对抗样例 **12/12**。active freeze 以机器指针文件为准。
+v3 模型 baseline 尚未产生；已有模型结果都属于历史
+`mixed_snapshot_v1` 条件。
 
-## 文档分层地图
+## 权威顺序
 
-```text
-叙事与优先级
-  BENCHMARK_DESIGN.md      ← 整体思路
-  CURRENT_RESEARCH.md      ← 今天做什么
-  STATUS.md / FINDINGS.md / EXPERIMENTS.md
+发生冲突时按以下顺序处理：
 
-出题与评测规范（权威）
-  TASK_DESIGN_RULES.md     ← 宪法
-  CONSTITUTION_MIGRATION.md ← 迁移操作（CLI / 分报）
-  EXPERIMENT_ARMS.md       ← 实验臂
-  01_task_definition.md … 07_incremental_task_rules.md
+1. 机器冻结与审计：
+   [`current_benchmark_freeze.json`](../artifacts/research_analysis/v3/current_benchmark_freeze.json)、
+   [`v3_main_readiness.md`](../reports/audits/v3_main_readiness.md) 和
+   [`benchmark/sources/registry.json`](../benchmark/sources/registry.json)。
+2. 设计与任务规范：
+   [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)、
+   [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)、
+   [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md)。
+3. 运行与评测：
+   [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)、
+   [04_experiment_protocol.md](04_experiment_protocol.md)、
+   [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)。
+4. 手写状态与研究叙事：
+   [STATUS.md](STATUS.md)、[CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)、
+   [EXPERIMENTS.md](EXPERIMENTS.md)、[FINDINGS.md](FINDINGS.md)。
 
-编号核心文档（部分内容可能滞后于宪法）
-  00_overview … 05_failure_taxonomy, 02_RQs, 04_protocol
-  → 与宪法冲突时回修并向宪法对齐
+## 规范
 
-方法线（降级 / 历史）
-  research_analysis/REPOSITORY_SEMANTIC_GRAPH_*   ← RSG 基线
-  research_analysis/ECSM_*                       ← 已废弃
-```
-
----
-
-## Core Docs
-
-| File | Purpose |
+| 文档 | 内容 |
 | --- | --- |
-| [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | 整体设计思路 |
-| [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | 规格宪法 |
-| [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) | 规格迁移手册 |
-| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | 实验臂 |
-| [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) | 研究入口 |
-| [STATUS.md](STATUS.md) | 状态摘要 |
-| [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) | 最新 Python-150 服务器正式运行流程 |
-| [06_task_schema.md](06_task_schema.md) | 任务包布局 |
-| [07_incremental_task_rules.md](07_incremental_task_rules.md) | 生命周期 |
-| [limitations.md](limitations.md) | 已知局限 |
+| [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) | 八条 Full-Repository / No-Hint 原则 |
+| [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | 构念、信息边界、指标和实验设计 |
+| [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | 公开契约、私有评测映射和准入门禁 |
+| [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) | canonical source、revision、archive、digest |
+| [06_task_schema.md](06_task_schema.md) | task package 与 metadata schema |
+| [07_incremental_task_rules.md](07_incremental_task_rules.md) | staging、验证和 promotion 生命周期 |
+| [limitations.md](limitations.md) | 当前可支持与不可外推的结论 |
 
-## Task Design Notes
+## 实验与论文
 
-- [task_designs/](task_designs/) · [go_task_designs/](go_task_designs/) — maintainer 笔记，**不是** Agent 可见规格  
-- **Compliant 题：** Agent 可见契约 = `render(public_spec)`  
-- **Legacy 题：** 当前 Python main 为 0；历史 legacy runs 仍须按旧口径单独报告
-
-## Research & Methods
-
-| 状态 | 文档 |
+| 文档 | 内容 |
 | --- | --- |
-| **当前主线** | 冻结后的 compliant Python-150 test-blind Main 完整实验；独立人工审核在实验后 |
-| **下一方法候选** | Contract/API closure recovery（compliant 子集上验证） |
-| **降级** | RSG start-here |
-| **废弃** | ECSM |
+| [RUN.md](../RUN.md) | 本地运行速查 |
+| [SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md) | 正式服务器运行、恢复和验收 |
+| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | Main 与各消融臂 |
+| [EXPERIMENTS.md](EXPERIMENTS.md) | 已有结果、缺失结果和口径 |
+| [FINDINGS.md](FINDINGS.md) | 现有证据能支持的结论 |
+| [02_research_questions.md](02_research_questions.md) | 研究问题 |
+| [05_failure_taxonomy.md](05_failure_taxonomy.md) | 失败分类 |
+| [06_paper_outline.md](06_paper_outline.md) | 当前论文结构 |
+| [REPORTS_INDEX.md](REPORTS_INDEX.md) | 审计与结果文件索引 |
 
-## Operational
+## 语言分区
 
-| Location | Purpose |
-| --- | --- |
-| [../RUN.md](../RUN.md) | 运行速查（含 `./run_experiment.sh`） |
-| `harness/featureliftbench/cli.py` | validate / migrate / render / annotate |
-| [../.agents/skills/](../.agents/skills/) | create / validate / promote / run-eval |
+- [python/](python/)：当前 Python-150 主榜的仓库选择、任务分布、难度和示例。
+- [go/](go/)：Go calibration；尚不是 paper-ready Main。
+- [go_task_designs/](go_task_designs/)：仍在使用的 Go pilot 设计笔记。
+
+Python 的旧逐题设计笔记已经删除。它们只覆盖部分题目、重复
+`metadata.json`/`public_spec`，并含源码定位信息。当前出题事实源是任务包、
+source registry、reference registry 和可执行门禁。
+
+## 历史证据
+
+- [`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/)：
+  v1 mixed-snapshot 四模型 candidate，不能作为 v3 baseline。
+- [`reports/archive/v1_mixed_snapshot_runs_20260712.md`](../reports/archive/v1_mixed_snapshot_runs_20260712.md)：
+  更早的冻结 run 集。
+- [research_analysis/](research_analysis/)：仍可复查的 taxonomy 与轨迹证据；
+  不再保存已废弃方法路线图或取消的独立审核包。
 
 ## 维护规则
 
-1. **宪法优先**：宪法 / 迁移 / 臂 变更后，回修 `00–07` 与 STATUS。  
-2. **Living status**：合规计数变时更新 STATUS + `spec_compliance.csv`。  
-3. **分报**：legacy 与 compliant 实验不得混报 headline。  
-4. **Historical**：旧报告不 retro-edit；加 banner 说明 legacy 口径。
+1. 数字状态只在 [STATUS.md](STATUS.md) 汇总；其他文档链接到它。
+2. 任务和 source 数量由机器文件生成，不手抄逐题长表。
+3. `mixed_snapshot_v1` 与 v3 Full-Repository / No-Hint 结果严格分报。
+4. 已完成的 sprint、迁移清单和废弃方法不留在当前 `docs/`。
+5. 上游源码文档和原始实验证据不为“统一文风”而改写。

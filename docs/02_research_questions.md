@@ -1,106 +1,97 @@
 # Research Questions
 
-## RQ Overview
+## RQ1 — Functional capability
 
-FeatureLiftBench should use one shared RQ set across all language splits. Python and Go results may be reported in separate tables, but the questions remain the same because both splits test the same capability: standalone, compact, behavior-preserving feature extraction.
+Can current code agents extract independent, behavior-complete features from
+full repositories under No-Hint Main?
 
-| RQ | Question | Primary role |
-|---|---|---|
-| RQ1 | Can current code agents perform FeatureLift? | Main performance |
-| RQ2 | Where do agents fail? | Failure analysis |
-| RQ3 | Is feature localization the main bottleneck? | Ablation |
-| RQ4 | Is compactness constraint necessary? | Scoring validation |
-| RQ5 | What task properties make FeatureLift difficult? | Dataset analysis |
+Primary evidence:
 
-## RQ1: Can Current Code Agents Perform FeatureLift?
+- evaluator Functional Pass@1；
+- build→public→hidden→isolation funnel；
+- cross-model paired task outcomes。
 
-Purpose: main performance experiment. This tests whether current code agents can extract standalone reusable features from entangled real-world repositories.
+## RQ2 — Compactness
 
-Metrics:
+How compact are functionally passing submissions relative to frozen references?
 
-- Pass@1
-- Install or build pass
-- Public pass
-- Hidden pass
-- Functional gate
-- Final score
-- Submitted LOC
-- Extraction ratio or LOC ratio
-- Forbidden import rate
+Evidence:
 
-Expected analysis: report by language split and by agent/model, but do not redefine the task per language.
+- submission/reference LOC and file ratios；
+- copied LOC/fraction；
+- dependency footprint；
+- copy-heavy pass rate；
+- copy-all and reference controls。
 
-## RQ2: Where Do Agents Fail?
+Compactness is separate from Functional Pass and is not a minimality proof.
 
-Purpose: failure analysis. This explains whether failures come from locating the feature, recovering the dependency closure, preserving behavior, packaging the output, or avoiding leakage from the original repository.
+## RQ3 — Cost and efficiency
 
-Failure types:
+What resources do agents consume, and how does cost relate to outcome?
 
-- Locate failure
-- Dependency closure failure
-- Packaging failure
-- Behavior drift
-- Over-copy
-- Forbidden import
-- Path leakage
-- Test gaming
-- Environment failure
+Evidence:
 
-Python-specific failure details may involve dynamic imports, monkeypatching, module-level registries, runtime config, and hidden behavior. Go-specific failure details may involve type closure, package boundaries, `go.mod`, interfaces, and compile-time errors. These are subcases under the shared taxonomy, not separate RQs.
+- API calls；
+- prompt/completion/total tokens；
+- interaction steps；
+- agent/evaluator/wall-clock time；
+- step/context/rate/infra failures。
 
-## RQ3: Is Feature Localization the Main Bottleneck?
+## RQ4 — Failure mechanisms
 
-Purpose: distinguish "agent cannot find the feature" from "agent can find it but cannot extract it cleanly."
+Where does FeatureLift fail?
 
-Core comparison:
+Stages:
 
-| Setting | Agent-visible information | Interpretation |
-|---|---|---|
-| Standard | Task prompt plus full source repo | End-to-end FeatureLift |
-| Hint | Small list of likely relevant files | Reduced localization burden |
-| Oracle-Locate | Reference-related files or closure hints | Tests extraction and modularization after localization |
+- localization；
+- API/behavior contract completion；
+- dependency/resource/registry closure；
+- packaging；
+- isolation；
+- compactness；
+- process/infra。
 
-If oracle-locate helps only partially, the benchmark is not merely code search. The remaining gap indicates dependency closure, behavior preservation, and packaging difficulty.
+Mechanical labels come from evaluator/run logs；semantic attribution uses
+trajectory evidence and must disclose whether it is AI-assisted or manually
+reviewed。
 
-## RQ4: Is Compactness Constraint Necessary?
+## RQ5 — Task factors
 
-Purpose: show that tests alone are insufficient. A copy-heavy solution may pass hidden tests while failing the benchmark's reuse goal.
-
-Core experiment:
-
-- Copy-all baseline
-- Functional pass rate versus final score
-- LOC ratio or extraction ratio distribution
-- High-extraction pass versus compact pass
-
-Claim to support: FeatureLiftBench needs both functional correctness and compactness. Without compactness, wholesale copying can look artificially strong.
-
-## RQ5: What Task Properties Make FeatureLift Difficult?
-
-Purpose: explain difficulty drivers and validate task design.
+Which task properties are associated with success、compactness and cost?
 
 Candidate variables:
 
-- Reference or oracle LOC
-- Number of source files in closure
-- Dependency depth
-- Feature type
-- Dynamic behavior
-- Global state or registry coupling
-- Packaging complexity
-- Public-hidden gap
-- Language-specific mechanisms such as Python runtime behavior or Go type/package closure
+- repository archetype/domain；
+- source LOC/files/depth；
+- task footprint/reference files/LOC；
+- entanglement primary/types；
+- resources、dynamic dispatch、global state；
+- source popularity/long-tail；
+- historical Core-100/Hard-50 construction slice。
 
-The analysis should avoid claiming causality from small sample sizes. Use correlations and case studies as diagnostic evidence.
+Use correlations and stratified comparisons, not causal language from small
+subgroups.
 
-## Three Key Experimental Handles
+## RQ6 — Information ablations
 
-- Copy-all baseline: proves compactness is necessary.
-- Oracle-locate baseline: separates localization from extraction and modularization.
-- Public-hidden gap: measures behavior drift and public-test overfitting.
+How do controlled information changes affect results?
 
-## TODO
+| Arm | Question |
+| --- | --- |
+| Entrypoint-Hint | How much does source localization information help? |
+| Public-feedback | How much does evaluator feedback help? |
+| Pruned-Context | What is the effect of reducing repository context? |
+| Short-prompt | Does procedural prompt wording matter? |
+| Reference Support Set | What is the closure-information upper bound? |
 
-- Freeze exact model list and agent versions for the paper.
-- Define manual failure annotation protocol and inter-annotator policy if used.
-- Decide whether `path_leakage` becomes a first-class evaluator metric or remains a failure taxonomy label backed by existing import/path guards.
+All arms use the same task/spec/model/agent/evaluator/environment and are
+compared on the same task subset.
+
+## Evidence order
+
+1. Run frozen v3 Main baseline。
+2. Report RQ1–RQ5 on complete suites。
+3. Select a preregistered paired subset for RQ6。
+4. Run method experiments only after failure mechanisms are established。
+
+Current evidence and gaps: [EXPERIMENTS.md](EXPERIMENTS.md)。

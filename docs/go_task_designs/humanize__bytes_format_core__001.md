@@ -92,5 +92,5 @@ hard paper-ready evidence.
 
 ## References
 
-- [GO_PILOT_PLAYBOOK.md](../GO_PILOT_PLAYBOOK.md)
-- [GO_QUALITY_RUBRIC.md](../GO_QUALITY_RUBRIC.md)
+- [Go split docs](../go/README.md)
+- [Go difficulty rubric](../go/03_go_difficulty_rubric.md)

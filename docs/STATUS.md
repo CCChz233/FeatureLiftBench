@@ -1,117 +1,136 @@
 # FeatureLiftBench 当前状态
 
-**最后更新：** 2026-07-24
+**最后更新：** 2026-07-27
 
-手写状态摘要。Gate 详表：[research_analysis/V11_IMPLEMENTATION_STATUS.md](research_analysis/V11_IMPLEMENTATION_STATUS.md)。
+## 结论
 
-**整体思路：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)  
-**规格宪法：** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)（Python-150：**150/150 compliant**，0 legacy）  
-**迁移手册：** [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)  
-**研究入口：** [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)  
-**实验臂：** [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)  
-**怎么跑：** [RUN.md](../RUN.md) · **实验账本：** [EXPERIMENTS.md](EXPERIMENTS.md) · **解读：** [FINDINGS.md](FINDINGS.md)
+Python External-150 已完成 Full-Repository / No-Hint v3 hardened 工程闭环，
+**可以开始正式模型实验**。当前缺的不是 benchmark 修复，而是按 active v3 freeze 从头运行
+baseline。
 
-**最新服务器默认：** [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md) —
-OpenHands + 指定模型 + test-blind Main + Agent/Eval Docker + 150
-engineering-compliant tasks + 每题一次 Pass@1。当前新协议内容审计：
-engineering-ready 150/150、完整非模板化契约 150/150、experiment-ready
-150/150；含可发现上游测试 48/150 是信息项，不是硬门禁。独立人工审核
-0/150，因此 paper-ready 仍为 0/150。
+已有模型结果全部来自 `mixed_snapshot_v1`，不能改标签进入 v3 主表。
 
-## 当前优先级（摘要）
+## v3 release gate
 
-1. **Benchmark 基础主线：** **150/150 experiment-ready 已完成并冻结**；可以启动 compliant Python-150 模型实验  
-2. **实验主线：** OpenHands + 指定模型 + test-blind Main + 双 Docker + 150 题 Pass@1  
-3. **方法研究主线（在合规题上）：** Contract/API closure recovery（Checklist / Probe / Reference Support Set）  
-4. Repository Fact Graph：基建保留；当前 RSG start-here：**retrieval 基线**  
-5. 扩题 / 调 start-here：在独立审核与 compliant 校准完成前低优先级  
+| 项 | 状态 |
+| --- | --- |
+| Python Main tasks | **150/150 ready** |
+| 完整公开契约 | **150/150** |
+| No-Hint Agent workspace | **150/150** |
+| Canonical source mapping | **150/150** |
+| Full source snapshots | **132/132 ready** |
+| Reference-relative compactness records | **150/150** |
+| Docker Oracle revalidation | **450/450**（150 × 3） |
+| Stable tasks / quarantine | **150 / 0** |
+| Source-free functional capsules | **150/150** |
+| Adversarial isolation canaries | **12/12** |
+| v3 strict readiness audit | **150/150 pass** |
+| Harness tests | **344 passed, 7 skipped**（最近完整回归） |
 
-排期决定（2026-07-24）：150 题契约/hidden 对齐、Oracle 重验和 spec
-freeze 已完成。独立人工 paper-gold 审核按计划延后到 150 题实验之后；
-它只阻塞 paper-ready 发布，不阻塞当前模型实验。
+权威证据：
 
-150 题工程合规结果：
-[reports/audits/new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md)
-（逐题验证 **150/150**；当前冻结 Oracle 证据 **450/450**）。
+- [v3 Main readiness](../reports/audits/v3_main_readiness.md)
+- [v3 Oracle revalidation](../reports/audits/v3_oracle_revalidation/summary.md)
+- [adversarial canaries](../reports/audits/v3_adversarial_canaries.json)
+- [source registry](../benchmark/sources/registry.json)
+- [active benchmark freeze](../artifacts/research_analysis/v3/current_benchmark_freeze.json)
 
-权威叙事：[BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)
+## Active freeze
+
+```text
+policy:
+  featureliftbench.full_repository_no_hint_main.v3
+freeze_pointer:
+  artifacts/research_analysis/v3/current_benchmark_freeze.json
+tasks:
+  150
+primary_metric:
+  evaluator Functional Pass@1
+secondary_metric:
+  reference-relative compactness vector
+```
+
+冻结覆盖 source registry、task/spec、reference、evaluator、环境与 vendor
+wheels。任何结果若没有记录并匹配该 freeze，都不能进入 v3 headline。旧
+v2 freeze 仅保留为不可变历史 provenance。
 
 ## Benchmark 规模
 
-| Split | 位置 | 数量 | 说明 |
-| --- | --- | ---: | --- |
-| Python main | `benchmark/tasks/` | **150 hard** | core-100 + hard50；**150 compliant / 0 legacy** |
-| Python smoke | `benchmark/sanity/` | **3** | harness smoke |
-| Go calibration | `benchmark/go/` | seed / pilot | 非 paper-ready main |
+| Split | 数量 | 说明 |
+| --- | ---: | --- |
+| Python v3 External Main | 150 | 当前论文主榜 |
+| Python Curated | 7 | 扩展 split；不进入 headline |
+| Python smoke | 3 | harness smoke |
+| Go tasks | 12 | seed/calibration；非 paper-ready Main |
 
-- 唯一 source 数（Python main）：**121**
-- Inventory：[python/02_python_repo_task_inventory.md](python/02_python_repo_task_inventory.md)
+Python source registry：
 
-## Oracle / Evaluator
+- 126 个真实外部仓库；
+- 0 个本地 curated source 进入 Main；
+- 126 repositories；
+- 132 immutable snapshots；
+- 150 task mappings；
+- 132 ready，0 pending。
 
-| 项 | 状态 |
-| --- | --- |
-| 当前 Oracle freeze ID | `7c042d5528b7d0fd` |
-| 当前 spec freeze ID | `f7c616edb47ea533` |
-| Canary | **15/15** runs（5 × 3） |
-| Full revalidation | **450/450** runs（150 × 3） |
-| Stable pass | **150/150** |
-| Active quarantine | **0** |
+原 7 道 `vibe_app` 题位于 `benchmark/curated/tasks/`，不参与 External-150
+headline。`metadata.source.name` 不能直接当作 canonical repository 数。
+详细分布见
+[Python Repository and Task Inventory](python/02_python_repo_task_inventory.md)。
 
-当前 benchmark 已可在服务器启动正式 compliant Python-150 实验。历史
-legacy 模型结果仍不得与新 freeze 下的结果混报。
+## 当前实验结果
 
-## Agent 实验（摘要）
+### v3 Full-Repository / No-Hint
 
-| 范围 | 状态 |
-| --- | --- |
-| 四模型 core-100 | ✅ 已冻结 |
-| Flash Python-150 | ✅ 91/150 |
-| Flash compliant hard-50 | ✅ 历史 Public-feedback **11/50**；test-blind Main **4/50** |
-| Qwen 27B / 35B Python-150 | ⚠️ candidate；待冻结 |
-| Qwen-Coder hard50 | ❌ 待跑 |
-| ECSM Pilot | ⛔ 已废弃 |
-| RSG v2 OpenHands | ✅ 基建可跑；easy token 不稳；**hard A/B 无通过率收益** → 降级 |
-| 规格宪法门禁 / test-blind Main | ✅ 校验器 + 生成器已落地；Python-150 全量 compliant |
+**尚无模型 baseline。** 下一步应对每个指定模型运行一次完整 Python-150
+Pass@1。默认配置见
+[Server Runbook](SERVER_RUNBOOK_PYTHON150.md)。
 
-RSG hard 报告：`reports/repo_graph_phase2/rsg_hard_ab_20260724.md`  
-失败归因：`reports/failure_attribution_20260720/`
+### 历史 `mixed_snapshot_v1`
 
-## 规格宪法与迁移（2026-07-24）
+2026-07-26 的四个 OpenHands/test-blind candidate suites 各覆盖 150 题。
+按当前论文主指标 `evaluation.functional_gate`：
 
-| 项 | 状态 |
-| --- | --- |
-| 工程：schema / render / validate / CLI | ✅ |
-| Compliant 批次 | **150**（完整 Python main；AI 辅助工程审核） |
-| Legacy 主榜 | **0** |
-| Hard-50 Oracle 复验 | **50/50** functional gate；48 local + 2 Docker |
-| 第一批 Core-50 Oracle 复验 | **50/50** Docker functional gate |
-| 最终 Core-50 Oracle 复验 | **50/50** Docker functional gate |
-| 全量 compliant main validation / Oracle | **150/150** / **450/450（150 × 3）** |
-| 契约内容门禁 | **150/150 experiment-ready**；0 generic；0 unresolved callable |
-| Harness / 生命周期回归 | **318 tests pass**（7 skipped）；167 packages，0 task/global issue |
-| Hard-50 compliant rebaseline | ✅ 旧标签 Main=现 Public-feedback **11/50**；旧标签 No-public=现 test-blind Main **4/50**；两臂各 50/50 完整 |
-| Python-150 独立人工审核 | **0/150；延后，仅阻塞 paper-ready** |
-| Spec freeze | `f7c616edb47ea533`（Oracle freeze `7c042d5528b7d0fd`） |
-| Hard-50 paired report | 本地历史结果（不进 Git）：`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/paired-analysis.md` |
-| 冻结合规报表 | [reports/audits/spec_compliance_frozen_20260724.csv](../reports/audits/spec_compliance_frozen_20260724.csv) |
-| 新协议内容审计 | [reports/audits/new_protocol_readiness.md](../reports/audits/new_protocol_readiness.md) |
-| 操作手册 | [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) |
+| Model | Evaluator Functional Pass@1 | Agent-completion pass | 备注 |
+| --- | ---: | ---: | --- |
+| DeepSeek-V4-Flash-DSpark | **87/150（58.0%）** | 84/150 | 1 context violation |
+| Qwen3.5-122B-A10B-FP8 | **56/150（37.3%）** | 56/150 | 1 次 fail→fail post-hoc rerun 说明 |
+| Qwen3.6-35B-A3B-FP8 | **49/150（32.7%）** | 47/150 | 4 context violations |
+| gpt-oss-120b | **37/150（24.7%）** | 37/150 | compact bundle audit clean |
 
-## v1.1 论文门禁（摘要）
+`Agent-completion pass` 会把 step-limit 后残留 submission 的 evaluator pass
+判为失败；它是过程指标，不是 benchmark 的 Functional Pass@1。五条
+agent/evaluator 状态不一致记录必须单独披露。
 
-| 区域 | 状态 |
-| --- | --- |
-| Behavior contracts 映射 | 150/150 mapped；**独立人工 gold：0/150** |
-| Diagnostic-40 closure | file scope 40/40；**独立裁决：0/40** |
-| Paper release gates | **8/13** — `paper_release_ready: false` |
+完整审计见
+[`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/)。
+这些结果仍有 context、rerun 和 exact provenance caveat，且源码条件不是
+v3 full-repository，因此只作历史/消融证据。
 
-宪法要求主榜逐题审核与双向 behavior/API 覆盖。Python-150 已完成 AI 辅助工程审核与可执行门禁；独立人工 paper-gold 审核仍为 0/150。
+更早的 2026-07-12 run set 已移入
+[reports/archive/v1_mixed_snapshot_runs_20260712.md](../reports/archive/v1_mixed_snapshot_runs_20260712.md)。
 
-## 历史里程碑
+## 现在需要做什么
 
-| 阶段 | 内容 | 文档 |
-| --- | --- | --- |
-| 2026-07 | 规格宪法 Adopted；RSG 提分主线降级 | TASK_DESIGN_RULES · BENCHMARK_DESIGN |
-| 2026-07 | RSG v2 可选工具实现 + 真 API 烟测/ hard A/B | research_analysis/REPOSITORY_SEMANTIC_GRAPH_* |
-| 更早 | ECSM 废弃；Oracle freeze；550-run 归因 | FINDINGS · failure_attribution |
+1. 在服务器 checkout 当前代码并物化/校验 canonical sources。
+2. 构建固定 agent/eval Docker images。
+3. 用正式配置跑 1 题 end-to-end smoke。
+4. 对每个目标模型运行 Python-150 一次，保持 `attempt=1`。
+5. 保存 suite、逐题 run/eval、usage、image digest 和 benchmark freeze。
+6. 统一生成 v3 leaderboard、失败归因、token/step/latency 和 compactness 表。
+
+## 当前不需要做什么
+
+- 不需要重写 150 道题；
+- 不需要恢复独立人工审核门禁；
+- 不需要再跑 Flash 100 次证明 benchmark 合格；
+- 不需要把旧 source slices 或 entrypoint-conditioned 结果包装成 v3；
+- 不需要在首轮 baseline 前扩更多仓库或继续 RSG/ECSM 方法实验。
+
+## 入口
+
+- 核心原则：[BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
+- 完整设计：[BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)
+- 当前研究：[CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)
+- 实验清单：[EXPERIMENTS.md](EXPERIMENTS.md)
+- 运行手册：[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)
+- 报告索引：[REPORTS_INDEX.md](REPORTS_INDEX.md)

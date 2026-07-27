@@ -1,162 +1,154 @@
-# FeatureLiftBench 实验清单与缺口
+# FeatureLiftBench 实验清单
 
-**最后更新：** 2026-07-24
-**权威冻结口径：** [paper_runs_frozen.md](paper_runs_frozen.md)  
-**怎么跑：** 根目录 [RUN.md](../RUN.md) §6.1  
-**分析入口：** [paper_tables.md](paper_tables.md) · `reports/paper_analysis/executive_summary.md` · [research_analysis/TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md)
+**最后更新：** 2026-07-27
 
-## 1. 现在能跑吗？
+## 当前实验版本
 
-**能。** Python 主榜 **150 hard**、Oracle freeze `7c042d5528b7d0fd`
-（450/450）、spec freeze `f7c616edb47ea533`、Docker agent/eval 与
-test-blind Main runner 均可用。
+正式主结果只接受：
 
-| 能力 | 状态 |
-| --- | --- |
-| Reference / Docker eval | ✅ |
-| OpenHands agent 主榜 | ✅ |
-| 规格宪法 validate / migrate | ✅ Python-150（150 compliant / 0 legacy） |
-| 完整四模型 Python-150 对比 | ⚠️ Flash 已冻结（**legacy 口径**）；Qwen candidate；Coder 缺 hard50 |
-| ECSM Pilot | ⛔ **已废弃** |
-| Compliant 子集 rebaseline | ✅ Flash hard-50：历史 Public-feedback **11/50**；test-blind Main **4/50** |
+```text
+benchmark policy: featureliftbench.full_repository_no_hint_main.v3
+freeze:
+  artifacts/research_analysis/v3/current_benchmark_freeze.json
+agent: OpenHands
+arm: Main
+workspace: Full-Repository / No-Hint / evaluator-test-blind
+sandbox: agent Docker + evaluator Docker
+tasks: Python External-150
+attempts: 1 per task
+primary metric: evaluator Functional Pass@1
+```
 
-研究主线见 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)：RSG 为可选工具，决策权在大模型。
+运行入口：
+[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)。
 
-## 2. 已完成的正式 Agent 实验
+## v3 完成度
 
-协议：OpenHands standard · 冻结于 `docs/paper_runs_frozen.md`。
-
-### 2.1 Shared core-100（四模型）
-
-| Model | Run ID | Pass | Avg final |
-| --- | --- | ---: | ---: |
-| deepseek-v4-flash | `main-flash-20260705-232429` | 83/100 | 0.520 |
-| qwen3.6-27b-fp8 | `qwen36-27b-fp8-main-20260704-001328` | 54/100 | 0.324 |
-| qwen3.6-35b-a3b-fp8 | `qwen36-35b-a3b-fp8-main-20260704-001313` | 49/100 | 0.303 |
-| qwen3-coder-30b-a3b-instruct | `main-20260702-212731` | 24/100 | 0.173 |
-
-路径：`experiments/python/openhands/<model>/<run_id>/`
-
-### 2.2 Hard-extension-50（冻结集：Flash）
-
-合并三波后 **8/50** pass（16%），avg final **0.037**。  
-与 core-100 拼合 → Flash 全 Python-150：**91/150（60.7%）**，avg **0.359**。
-
-### 2.3 Hard-50 compliant rebaseline（2026-07-24）
-
-冻结同一 50 题、同一 DeepSeek V4 Flash、同一 standard prompt 与 Docker
-agent/evaluator；唯一预期处理差异是 Agent workspace 是否挂载 Benchmark
-基础 evaluator tests。
-
-| 当前语义 | 历史运行标签 | Pass | Avg final | Infra failures | Total tokens |
-| --- | --- | ---: | ---: | ---: | ---: |
-| Public-feedback | Main | **11/50（22%）** | 0.120691 | 0 | 51,868,511 |
-| Test-blind Main | No-public | **4/50（8%）** | 0.045947 | 0 | 55,018,550 |
-
-配对结果：both-pass 4、Public-feedback-only 7、test-blind-Main-only 0、
-both-fail 39；Public feedback 净增 14 percentage points，exact McNemar
-`p=0.015625`。Legacy hard-50 为 8/50；与历史 public-feedback 条件的
-compliant 结果差异为 +6 points，但 `p=0.375`，且迁移改变了规格/测试，
-不能作稳定因果提分宣称。
-
-> 这批结果生成时使用旧命名：`Main` 表示可见 public tests，`No-public`
-> 表示不可见。v1.1 起默认 `Main` 即 test-blind；旧结果必须按上表映射，
-> 不能静默当成新 Main。
-
-原始 suite 与报告：
-`experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/`。
-
-### 2.4 2026-07-20 导入的 candidate runs
-
-两个 Qwen hard50 run 已导入、任务集与 Flash Python-150 对齐，并通过 registry 结构检查；尚未加入论文冻结集。
-
-| Model | Hard50 | Hard50 avg | 合并 Python-150 | 合并 avg |
-| --- | ---: | ---: | ---: | ---: |
-| qwen3.6-27b-fp8 | 4/50 | 0.026916 | **58/150** | 0.224684 |
-| qwen3.6-35b-a3b-fp8 | 3/50 | 0.024567 | **52/150** | 0.210023 |
-
-原始 bundle 与校验和位于 `experiments/bundles/incoming/`；组合口径见 `experiments/registry/studies/python150-current.json`。
-
-### 2.5 已有分析产物（基于冻结 runs）
-
-| 产物 | 位置 |
-| --- | --- |
-| Executive summary | `reports/paper_analysis/executive_summary.md` |
-| 论文表草稿 | [paper_tables.md](paper_tables.md) |
-| 轨迹统计 / 发现 | [TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md) · `artifacts/research_analysis/trajectory_statistics.md` |
-| Case studies | `reports/paper_analysis/case_studies/` |
-| 报告索引 | [REPORTS_INDEX.md](REPORTS_INDEX.md) |
-
-## 3. 缺口与待冻结项
-
-| 缺口 | 说明 | 推荐命令 |
+| 实验 | 状态 | 还缺什么 |
 | --- | --- | --- |
-| 最新 compliant Python-150 基线 | 当前规格下必须整榜重跑；历史 legacy core/hard 结果不能拼接 | `./harness/scripts/run_python150_paper.sh <profile> <run-id> --execute` |
-| Qwen3-Coder-30B hard50（历史 legacy 表） | 仅用于补历史旧口径，不替代 compliant 全榜 | `./harness/scripts/run_python_hard50_paper.sh openhands_qwen3_coder_30b_paper --execute` |
-| Qwen3.6-27B / 35B candidate（历史 legacy 表） | 校验旧协议与运行元数据后才能写入旧 freeze 文档 | 使用 registry 审核，不与 compliant 新跑混报 |
+| Reference/Oracle validation | 完成，450/450 | 无 |
+| Isolation/compactness canaries | 完成，12/12 | 无 |
+| End-to-end model smoke | 待在服务器做 | 1 题、正式镜像和 profile |
+| DeepSeek/Flash v3 Python-150 | 未运行 | 150 次独立 task attempts |
+| Qwen 系列 v3 Python-150 | 未运行 | 每个模型各 150 次 |
+| 其他 baseline v3 Python-150 | 未运行 | 先冻结模型名单和 profile |
+| v3 cross-model leaderboard | 未生成 | 至少两个同协议完整 suites |
+| v3 failure/token/compactness analysis | 未生成 | 等 baseline 完成 |
 
-冻结 candidate 或补齐 Coder 后：更新本文件与 [paper_runs_frozen.md](paper_runs_frozen.md)，再跑：
+因此当前可以开始实验，但还不能在论文中报告 v3 模型性能。
 
-```bash
-PYTHONPATH=harness .venv/bin/python harness/scripts/generate_paper_analysis.py
-```
+## 历史 `mixed_snapshot_v1` 结果
 
-## 4. 基建 / Oracle / Control（非 agent leaderboard）
+### 2026-07-26 四模型 candidate
 
-| 实验 | 状态 |
-| --- | --- |
-| Oracle freeze `7c042d5528b7d0fd` | ✅ canary 15/15；full 450/450；quarantine 0 |
-| Spec freeze `f7c616edb47ea533` | ✅ 150/150 experiment-ready；内容寻址清单已生成 |
-| Historical infra re-eval | ✅ 62/62 |
-| batch-1 gate evidence | ✅ `evidence/python/batch1/` |
-| Control functional preflight | ✅ 功能门过；workload 工时未记 |
-| ECSM Pilot Stage A–C | ⛔ 已废弃；目录 `experiments/ecsm_pilot/` 仅历史保留 |
-| OpenHands × RSG（旧 Pilot） | 历史诊断 2/12；**不恢复**旧强制采用门协议 |
+四组均为 OpenHands、test-blind、agent/eval Docker、150 tasks、attempt=1，
+但 Agent 输入是 mixed/pruned source snapshots，且 server bundle 缺完整
+per-run v3 freeze provenance。
 
-### 4.1 OpenHands × RSG 历史诊断
+| Model | Evaluator Functional Pass@1 | Agent-completion pass |
+| --- | ---: | ---: |
+| DeepSeek-V4-Flash-DSpark | **87/150（58.0%）** | 84/150 |
+| Qwen3.5-122B-A10B-FP8 | **56/150（37.3%）** | 56/150 |
+| Qwen3.6-35B-A3B-FP8 | **49/150（32.7%）** | 47/150 |
+| gpt-oss-120b | **37/150（24.7%）** | 37/150 |
 
-2026-07-23 的 `rsg-pilot-v1-20260723-clean1`（DeepSeek-V4-Flash、Celery 题、P0/P3）
-只完成第一对后因旧「必调 task-closure + submission-check」采用门停止：
+两种 pass 口径差异来自五条 agent step-limit 后 evaluator 通过的记录。
+论文 benchmark 主指标使用 evaluator functional gate；Agent completion、
+step limit 和 token 作为过程指标单列。
 
-| Arm | Formal | Total tokens | Max prompt | 备注 |
-| --- | --- | ---: | ---: | --- |
-| P0 | fail | 1,642,027 | 68,134 | 无 RSG |
-| P3 | fail | 3,405,659 | 93,944 | 仅调了 `submission-check` |
+完整文件：
+[`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/)。
+已知 caveat：
 
-该结果只说明硬性工具合同 fragile，**不**支持 RSG 效果结论。  
-按 [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)，后续应在**重设计后的可选通用 RSG**上另开实验，而不是继续旧 12-cell Pilot。
+- DeepSeek 1 条、Qwen3.6-35B 4 条 context violation；
+- Qwen3.5-122B 有一条 fail→fail post-hoc rerun 说明；
+- Qwen3.6-27B 尚未包含；
+- compact bundle 不能独立证明服务器 task/spec 与当前 v3 freeze 一致；
+- 最重要的是源码条件不是 v3 full-repository。
 
-## 5. 规格合规与实验口径（2026-07-24）
+### 更早的 frozen/candidate runs
 
-| 口径 | 题数 | 说明 |
-| --- | ---: | --- |
-| `spec_status: legacy` | 0 | 历史 Flash 91/150 等仍是 **legacy run 数字**；不能与新跑拼接 |
-| `spec_status: compliant` | 150 | schema / validator / contract / Oracle 已闭环；可跑正式实验 |
+2026-07-12 的 core-100、hard-extension-50 和拼接 Python-150 结果保存在
+[v1 mixed-snapshot run archive](../reports/archive/v1_mixed_snapshot_runs_20260712.md)。
+这些数字只用于历史复现，不再作为当前 paper table。
 
-- 冻结合规报表：`reports/audits/spec_compliance_frozen_20260724.csv`
-- 新协议内容审计：`reports/audits/new_protocol_readiness.md`
-- 当前审计：engineering-ready 150/150、完整非模板化契约 150/150、
-  experiment-ready 150/150；含可发现上游测试 48/150 为信息项。
-  独立人工审核 0/150，因此 paper-ready 0/150，但不阻塞模型实验。
-- 迁移手册：[CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md)
-- Compliant 重跑示例见 [RUN.md](../RUN.md) §1.5 · [CONSTITUTION_MIGRATION.md](CONSTITUTION_MIGRATION.md) §6
+### Public-feedback 配对
 
-## 6. 服务器最短路径
+同一历史 hard-50、DeepSeek V4 Flash：
 
-```bash
-git pull
-PYTHON=python3.12 SKIP_MINI=1 ./setup.sh
-# 配置 .env 中对应 API key / base
+| 当前语义 | 历史标签 | Pass |
+| --- | --- | ---: |
+| Public-feedback | Main | 11/50 |
+| Test-blind | No-public | 4/50 |
 
-./harness/scripts/run_python150_paper.sh \
-  openhands_deepseek_v4_flash \
-  compliant150-flash-main-001
+这表明 evaluator feedback 会显著改变结果，因此实验臂必须显式命名。
+它不证明 v3 Main 的绝对性能。
 
-./harness/scripts/run_python150_paper.sh \
-  openhands_deepseek_v4_flash \
-  compliant150-flash-main-001 \
-  --workers 1 \
-  --execute
-```
+## 报告指标
 
-完整流程见 [SERVER_RUNBOOK_COMPLIANT150.md](SERVER_RUNBOOK_COMPLIANT150.md)；Docker 默认值见 [RUN.md](../RUN.md)。项目状态见 [STATUS.md](STATUS.md)。
+每个完整 suite 至少报告：
+
+### Headline
+
+- assigned / completed tasks；
+- evaluator Functional Pass@1；
+- Core-100 / Hard-50（仅分析切片）；
+- bootstrap confidence interval 或 task-level paired comparison。
+
+### Correctness layers
+
+- build/import；
+- public regression layer；
+- hidden behavior layer；
+- isolation/forbidden checks；
+- agent/evaluator status mismatch。
+
+### Compactness
+
+- submission/reference LOC ratio；
+- file-count ratio；
+- copied LOC/fraction；
+- dependency footprint；
+- excess copied LOC。
+
+### Cost and process
+
+- API calls；
+- prompt/completion/total tokens；
+- interaction steps；
+- agent/evaluator/wall-clock time；
+- step-limit、context-limit、rate-limit 和 infra failures。
+
+### Slices
+
+- repository archetype/domain；
+- entanglement primary/types；
+- source size；
+- task footprint；
+- popular vs long-tail source；
+- model and agent configuration。
+
+## 冻结要求
+
+一个 suite 进入 v3 paper table 前必须保存：
+
+- benchmark freeze ID；
+- task ID set；
+- source/spec/reference/evaluator hashes；
+- agent/eval image digests；
+- model identifier、provider、profile 和 prompt arm；
+- attempt policy、timeouts、worker count；
+- 每题 `run.json`、`eval/result.json`、submission 和 usage；
+- context/rerun/infra exception ledger；
+- suite checksum 和数据质量报告。
+
+原始结果默认留在 `experiments/`，不进入 benchmark 代码提交；小型索引、
+校验和和审计摘要可进入 `reports/`。
+
+## 相关文档
+
+- 实验臂：[EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)
+- 评测口径：[03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)
+- 实验协议：[04_experiment_protocol.md](04_experiment_protocol.md)
+- 结论边界：[FINDINGS.md](FINDINGS.md)
+- 报告索引：[REPORTS_INDEX.md](REPORTS_INDEX.md)

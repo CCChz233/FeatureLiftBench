@@ -19,6 +19,7 @@ Before promotion, read:
 
 - `docs/07_incremental_task_rules.md`
 - `docs/06_task_schema.md`
+- `docs/FULL_REPOSITORY_SOURCE_POLICY.md`
 - `benchmark/README.md`
 - `docs/python/02_python_repo_task_inventory.md`
 - the candidate task's `TASK.md` and `metadata.json`
@@ -37,7 +38,8 @@ python3 .agents/skills/featureliftbench-promote-task/scripts/preflight_promotion
    - Confirm source task exists, target task does not exist, status is acceptable, and no duplicate task ID is present.
 
 2. Verify gates.
-   - Source, package, reference/oracle, isolation, and difficulty gates must have evidence.
+   - Source registry, package, contract/No-Hint, reference/oracle, isolation,
+     compactness, and difficulty gates must have evidence.
    - For hard tasks, require strong-agent calibration evidence and a short failure-mode summary.
 
 3. Copy task.
@@ -55,13 +57,16 @@ python3 scripts/promote_batch3_task.py <task_id>
    - Keep `output.package` as `featurelifted`.
 
 5. Update registries.
-   - Update `docs/python/02_python_repo_task_inventory.md`.
-   - Update `benchmark/manifest.json` split counts and any relevant notes.
+   - Update `benchmark/sources/registry.json`, frozen reference records,
+     `benchmark/manifest.json`, and generated inventory/status outputs.
+   - Rebuild the content-addressed v2 benchmark freeze; never reuse the prior
+     active freeze after changing Main.
 
 6. Validate.
    - Run `python3 scripts/check_task_lifecycle.py`.
    - Run `PYTHONPATH=harness python3 -B -m featureliftbench.cli validate-task benchmark/tasks/<task_id> --json`.
-   - Re-run reference/oracle eval if the promotion changed paths, metadata, or oracle placement.
+   - Re-run source materialization, reference/oracle, isolation, strict v2
+     readiness and benchmark-freeze checks.
 
 7. Commit.
    - Stage only benchmark task files, manifest/inventory updates, and intended skill/script/docs changes.

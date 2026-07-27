@@ -1,10 +1,15 @@
 # FeatureLiftBench Python-150 Benchmark Taxonomy Specification
 
+> Current v2 task taxonomy. It is an analysis layer, not a release gate:
+> entrypoint counts and structural closure fields remain maintainer-only
+> measurements and are never exposed to the Main Agent.
+
 ## Status and evidence boundary
 
-- Version: `v1`
+- Version: `v2`
 - Unit of analysis: one row per task under `benchmark/tasks/*/metadata.json`
-- Frozen population: 150 Python main tasks (`core100=100`, `hard50=50`)
+- Frozen population: 150 Python External Main tasks (`core100=100`, `hard50=50`
+  retained only as construction strata)
 - Excluded directory: `benchmark/tasks/iniconfig__parse_config__001` because `benchmark/manifest.json` explicitly lists it as an empty legacy directory without metadata
 - Allowed evidence: task metadata, oracle manifest, source snapshot, public tests, hidden tests
 - Forbidden evidence for intrinsic classification: trajectories, submissions, evaluation results, public/hidden pass status, extraction ratio, copied files, or any historical failure label
@@ -19,7 +24,8 @@ The generated table is `artifacts/research_analysis/python150_task_taxonomy.csv`
 4. Original metadata labels are preserved verbatim before normalization.
 5. Automatically unavailable measurements are `NA`; zero is used only when the relevant scope was located and measured.
 6. Every row records concrete evidence paths.
-7. A semantic ambiguity is retained as a provisional v1 label with `review_status=needs_review`; it is not silently resolved.
+7. A semantic ambiguity is retained as a provisional label with
+   `review_status=needs_review`; it is not silently resolved.
 8. Categories with fewer than five tasks are descriptive only.
 
 ## Repository taxonomy
@@ -43,7 +49,7 @@ The label describes the upstream repository, not the selected feature. For examp
 | `real_oss_legacy` | Upstream OSS explicitly marked as legacy by task-package provenance evidence |
 | `curated_vibe` | Curated `vibe_app` benchmark repository |
 
-`real_oss_legacy` is deliberately not inferred from project reputation, age, or current maintenance status. It has zero v1 tasks because the local task packages contain no explicit legacy-provenance marker for the real OSS snapshots.
+`real_oss_legacy` is deliberately not inferred from project reputation, age, or current maintenance status. It has zero v2 tasks because the local task packages contain no explicit legacy-provenance marker for the real OSS snapshots. `curated_vibe` is reserved but has zero rows because Curated-7 is not part of External Main.
 
 ### `repo_domain_primary`
 
@@ -99,7 +105,8 @@ The original `entanglement.primary` and `entanglement.types` fields are retained
 | `dynamic_import_plugin` | Scoped source uses dynamic-import/entry-point APIs, or metadata semantics explicitly describe dynamic loading/discovery |
 | `third_party_contract` | Original metadata contains `third_party_dependency_coupling` |
 
-`legacy_vibe_clutter` is not normalized as entanglement because v1 records it on the independent codebase-condition axis.
+`legacy_vibe_clutter` is not normalized as entanglement because the taxonomy
+records it on the independent codebase-condition axis.
 
 ## Behavioral hidden-risk taxonomy
 
@@ -132,7 +139,10 @@ Absence of a tag is not proof that the repository lacks the condition; it means 
 
 ### Reference closure
 
-Main tasks do not contain `reference_solution/`. Therefore v1 defines “reference” structurally as the explicit `required_source_files` or legacy `source_files` list in `evaluation/oracle_manifest.json`.
+Main task packages do not expose `reference_solution/`. The taxonomy's legacy
+structural closure fields therefore use explicit `required_source_files` or
+`source_files` in `evaluation/oracle_manifest.json`. Paper compactness uses the
+separate 150/150 frozen registry at `benchmark/references/compactness.json`.
 
 - `reference_file_count`: number of resolved files after expanding explicitly listed directories
 - `reference_loc`: nonblank physical lines in resolved Python files
@@ -188,7 +198,7 @@ The trial set was selected before the full semantic map to span different source
 16. `pydantic_v1__validation_error_core__001`
 17. `requests_cache__cache_key_core__hard3_001`
 18. `sqlparse__parse_format_core__001`
-19. `vibe_app__plugin_registry_core__001`
+19. `blinker__signal_registry_core__001`
 20. `yarl__url_model_core__001`
 
 The trial produced four revisions:
@@ -200,7 +210,10 @@ The trial produced four revisions:
 
 ## Review and freeze protocol
 
-Every v1 task has an explicit repository source map and task-level feature-family assignment. Rows marked `reviewed_v1` were checked against feature/entanglement metadata and structural evidence. Fifteen cross-family/domain cases remain `needs_review`; their provisional labels are retained so the table stays complete, but a human domain expert must adjudicate them before a narrow per-category paper claim.
+Every v2 task has an explicit repository source map and task-level feature-family
+assignment. Rows distinguish maintainer review from AI-assisted adjudication;
+neither is described as independent human gold. The current generated report
+contains zero unresolved `needs_review` rows.
 
 The build runs the following invariants:
 
@@ -210,7 +223,7 @@ The build runs the following invariants:
 - labels belong to the controlled vocabulary;
 - every evidence path exists;
 - all 20 trial tasks remain present;
-- taxonomy version is `v1` for every row.
+- taxonomy version is `v2` for every row.
 
 ## Reproduction
 

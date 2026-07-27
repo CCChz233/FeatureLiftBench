@@ -70,7 +70,7 @@ Before a Go repo enters the candidate backlog, answer:
 
 Existing planning docs indicate that some Go tasks have reached calibration status, but paper-ready hard Go tasks still require stricter evidence. The current `benchmark/go/tasks/` tree also contains seed or placeholder tasks whose metadata still describes `sample.Add`; those should not be counted as hard paper-ready FeatureLift tasks.
 
-## TODO
+## Open work
 
 - Reconcile `benchmark/go/tasks/` contents with Go planning docs and promote only verified hard tasks.
 - Add one source-level repo pool row per accepted Go hard task after verification.

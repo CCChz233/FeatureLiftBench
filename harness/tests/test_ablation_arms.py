@@ -1,4 +1,4 @@
-"""Tests for test-blind Main / Public-feedback / Short-prompt ablation arms."""
+"""Tests for No-Hint Main and explicit FeatureLiftBench ablation arms."""
 
 from __future__ import annotations
 
@@ -11,9 +11,11 @@ from featureliftbench.ablation import AblationOptions
 from featureliftbench.ablation import resolve_ablation_options
 from featureliftbench.agent_runner import build_task_prompt
 from featureliftbench.agent_runner import prepare_agent_workspace
+from featureliftbench.agent_runner import redact_task_metadata
 from featureliftbench.metadata import load_metadata
 from featureliftbench.openhands_runner import OpenHandsRunnerConfig
 from featureliftbench.openhands_runner import _build_openhands_prompt
+from featureliftbench.task_render import render_agent_workspace_task
 
 
 class AblationOptionsTests(unittest.TestCase):
@@ -29,14 +31,23 @@ class AblationOptionsTests(unittest.TestCase):
         )
         self.assertEqual(
             AblationOptions(mount_public_tests=True, prompt_style="short").ablation_arm,
-            "public_feedback_short",
+            "public_feedback_short_prompt",
+        )
+        self.assertEqual(
+            AblationOptions(expose_source_hints=True).ablation_arm,
+            "entrypoint_hint",
         )
 
     def test_cli_overrides_profile(self) -> None:
         options = resolve_ablation_options(
-            profile={"mount_public_tests": True, "prompt_style": "standard"},
+            profile={
+                "mount_public_tests": True,
+                "prompt_style": "standard",
+                "expose_source_hints": True,
+            },
             mount_public_tests=False,
             prompt_style="short",
+            expose_source_hints=False,
         )
         self.assertEqual(options.ablation_arm, "short_prompt")
 
@@ -63,10 +74,57 @@ class AblationWorkspaceTests(unittest.TestCase):
             self.assertFalse((workspace / "public_tests").exists())
             self.assertTrue((workspace / "repo" / "testing" / "test_iniconfig.py").is_file())
             prompt = (workspace / "TASK.md").read_text(encoding="utf-8")
+            redacted = load_metadata(workspace).data
             self.assertIn("## How to work", prompt)
             self.assertIn("## Closure Discipline", prompt)
             self.assertIn("Benchmark evaluator tests", prompt)
             self.assertNotIn("Run `pytest public_tests/`", prompt)
+            self.assertNotIn("Source entrypoints", prompt)
+            self.assertNotIn("iniconfig.IniConfig", prompt)
+            self.assertNotIn("source_entrypoints", redacted["feature"])
+
+    def test_entrypoint_hint_is_explicit_and_auditable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp) / "ws"
+            prepare_agent_workspace(
+                self.task_dir,
+                workspace,
+                self.metadata,
+                ablation=AblationOptions(expose_source_hints=True),
+            )
+            prompt = (workspace / "TASK.md").read_text(encoding="utf-8")
+            redacted = load_metadata(workspace).data
+            self.assertIn("Entrypoint-Hint Ablation", prompt)
+            self.assertIn("iniconfig.IniConfig", prompt)
+            self.assertEqual(
+                redacted["feature"]["source_entrypoints"],
+                self.metadata["feature"]["source_entrypoints"],
+            )
+
+    def test_all_python_main_tasks_render_without_frozen_entrypoints(self) -> None:
+        tasks_root = Path(__file__).resolve().parents[2] / "benchmark" / "tasks"
+        task_dirs = sorted(
+            path
+            for path in tasks_root.iterdir()
+            if path.is_dir() and (path / "metadata.json").is_file()
+        )
+        self.assertEqual(len(task_dirs), 150)
+        for task_dir in task_dirs:
+            with self.subTest(task_id=task_dir.name):
+                metadata = load_metadata(task_dir).data
+                prompt = render_agent_workspace_task(metadata)
+                redacted = redact_task_metadata(metadata)
+                serialized = str(redacted)
+                self.assertNotIn("source_entrypoints", serialized)
+                self.assertNotIn("source_hints", serialized)
+                entrypoints = set(
+                    metadata.get("public_spec", {}).get("source_entrypoints", [])
+                )
+                entrypoints.update(
+                    metadata.get("feature", {}).get("source_entrypoints", [])
+                )
+                for entrypoint in entrypoints:
+                    self.assertNotIn(f"`{entrypoint}`", prompt)
 
     def test_public_feedback_mounts_public_and_mentions_pytest(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

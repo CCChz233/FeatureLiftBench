@@ -1,0 +1,316 @@
+{
+  "benchmark_split": "curated",
+  "difficulty": "hard",
+  "entanglement": {
+    "description": "Query compilation is split across builder, AST, and compiler modules with duplicate utils shortcuts and GLOBAL_STATE query bookkeeping.",
+    "level": "high",
+    "primary": "framework_coupling",
+    "signals": [
+      "two similarly named query helpers with incorrect semantics",
+      "build_ast appends compiled AST dicts to GLOBAL_STATE",
+      "compiler updates last_compiled_sql in GLOBAL_STATE"
+    ],
+    "types": [
+      "framework_coupling",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 60
+  },
+  "evaluation_spec": {
+    "experiment_contract_hardening": {
+      "independent_human_review": false,
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "hidden_test_mappings": [
+      {
+        "behavior_ids": [
+          "B001",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_join_and_multiple_predicates"
+      },
+      {
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_build_ast_tracks_global_state"
+      },
+      {
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_compile_query_updates_last_sql"
+      },
+      {
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "generated_required_api_surface",
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      }
+    ],
+    "manual_review": {
+      "checklist_passed": true,
+      "independent_human_review": false,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending.",
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review"
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: build SELECT queries with columns, FROM table, WHERE predicates, and INNER joins. Required observable cases include simple select where; build ast records columns and predicates; join and multiple predicates."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: materialize immutable SQL AST nodes from Query.build_ast. Required observable cases include compile query updates last sql."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: compile AST nodes and Query objects to parameterized SQL strings. Required observable cases include compile query updates last sql."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: track compiled query AST payloads in GLOBAL_STATE. Required observable cases include build ast tracks global state."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: support eq/neq/gt/gte/lt/lte comparison operators in WHERE clauses. Required observable cases include join and multiple predicates."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.Query`, `featurelifted.Query.build_ast`, `featurelifted.compile_query`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_simple_select_where"
+      },
+      {
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_build_ast_records_columns_and_predicates"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.Query"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.Query.build_ast"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.compile_query"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.GLOBAL_STATE"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.reset_state"
+      }
+    ]
+  },
+  "feature": {
+    "description": "Extract VibeShop's mini Query-to-SQL AST compiler as a standalone package.",
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap, pricing, CSV, and session modules",
+      "compile_query_v1 and build_query_legacy wrong helpers",
+      "database drivers and runtime query execution",
+      "original project tests and CLI entrypoints"
+    ],
+    "included_behaviors": [
+      "build SELECT queries with columns, FROM table, WHERE predicates, and INNER joins",
+      "materialize immutable SQL AST nodes from Query.build_ast",
+      "compile AST nodes and Query objects to parameterized SQL strings",
+      "track compiled query AST payloads in GLOBAL_STATE",
+      "support eq/neq/gt/gte/lt/lte comparison operators in WHERE clauses"
+    ],
+    "name": "ORM query builder and SQL AST",
+    "source_entrypoints": [
+      "vibe_app.orm_query.query.Query",
+      "vibe_app.orm_query.compiler.compile_query",
+      "vibe_app.orm_query.compiler.compile_ast",
+      "vibe_app.orm_query.ast.SelectNode"
+    ]
+  },
+  "generated_task_hash": "2f2eab9afa8d05aec88a639dbc8fbef96516b6b2dc0311e7d663e3a5aed4b841",
+  "language": "python",
+  "output": {
+    "callable": "featurelifted.compile_query",
+    "import": "from featurelifted import Query, compile_query; from featurelifted.state import GLOBAL_STATE, reset_state",
+    "package": "featurelifted",
+    "signature": "compile_query(query: Query) -> str"
+  },
+  "public_spec": {
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: build SELECT queries with columns, FROM table, WHERE predicates, and INNER joins. Required observable cases include simple select where; build ast records columns and predicates; join and multiple predicates."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: materialize immutable SQL AST nodes from Query.build_ast. Required observable cases include compile query updates last sql."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: compile AST nodes and Query objects to parameterized SQL strings. Required observable cases include compile query updates last sql."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: track compiled query AST payloads in GLOBAL_STATE. Required observable cases include build ast tracks global state."
+      },
+      {
+        "id": "B005",
+        "text": "The extracted feature must support this observable behavior: support eq/neq/gt/gte/lt/lte comparison operators in WHERE clauses. Required observable cases include join and multiple predicates."
+      },
+      {
+        "id": "B006",
+        "text": "The package exposes the required task API paths `featurelifted.Query`, `featurelifted.Query.build_ast`, `featurelifted.compile_query`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap, pricing, CSV, and session modules",
+      "compile_query_v1 and build_query_legacy wrong helpers",
+      "database drivers and runtime query execution",
+      "original project tests and CLI entrypoints"
+    ],
+    "forbidden": {
+      "imports": [
+        "vibe_app"
+      ],
+      "paths": []
+    },
+    "isolation_behavior": {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app."
+    },
+    "optional_api": [],
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "required_api": [
+      {
+        "kind": "class",
+        "members": [
+          {
+            "kind": "method",
+            "path": "featurelifted.Query.build_ast",
+            "signature": "(self) -> 'SelectNode'"
+          }
+        ],
+        "path": "featurelifted.Query",
+        "signature": "(_columns: 'list[str]' = <factory>, _table: 'str | None' = None, _where: 'list[tuple[str, str, Any]]' = <factory>, _joins: 'list[tuple[str, str, str, str]]' = <factory>) -> None"
+      },
+      {
+        "kind": "function",
+        "path": "featurelifted.compile_query",
+        "signature": "(query: 'Query') -> 'str'"
+      },
+      {
+        "kind": "module",
+        "members": [
+          {
+            "kind": "constant",
+            "path": "featurelifted.state.GLOBAL_STATE"
+          },
+          {
+            "kind": "function",
+            "path": "featurelifted.state.reset_state",
+            "signature": "() -> 'None'"
+          }
+        ],
+        "path": "featurelifted.state"
+      }
+    ],
+    "source_entrypoints": [
+      "vibe_app.orm_query.query.Query",
+      "vibe_app.orm_query.compiler.compile_query",
+      "vibe_app.orm_query.compiler.compile_ast",
+      "vibe_app.orm_query.ast.SelectNode"
+    ],
+    "summary": "Extract a task-scoped subset of `vibe_app` into a standalone `featurelifted` package.",
+    "title": "ORM query builder and SQL AST"
+  },
+  "selection_id": "legacy-curated-v1",
+  "source": {
+    "commit": "curated",
+    "license": "MIT",
+    "name": "vibe_app",
+    "url": "sources/vibe_app/"
+  },
+  "spec_hash": "3426108ed0ea4bae5bdb2984748e6a71974bb069ab2dfcc5fb794aa87f64e518",
+  "spec_status": "compliant",
+  "status": "curated",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "framework_coupling",
+    "pure-python"
+  ],
+  "task_id": "vibe_app__orm_query_ast_core__001",
+  "task_revision": 2,
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

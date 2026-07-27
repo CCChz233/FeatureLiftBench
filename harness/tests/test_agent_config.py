@@ -12,6 +12,31 @@ from featureliftbench.repo_graph.policy import MODE_ENV as REPO_GRAPH_MODE_ENV
 
 
 class AgentConfigTests(unittest.TestCase):
+    def test_example_profiles_make_no_hint_default_and_hint_arm_explicit(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        with mock.patch.dict(
+            os.environ,
+            {"FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS": "0"},
+            clear=False,
+        ):
+            main = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands-agent"),
+                config_path=config_file,
+                profile_name="openhands_deepseek_v4_flash_main",
+            )
+        hint = load_agent_run_config(
+            base_config=AgentRunConfig(agent="openhands-agent"),
+            config_path=config_file,
+            profile_name="openhands_deepseek_v4_flash_entrypoint_hint",
+            expose_source_hints=True,
+        )
+        self.assertEqual(main.summary["ablation_arm"], "main")
+        self.assertFalse(main.summary["expose_source_hints"])
+        self.assertEqual(hint.summary["ablation_arm"], "entrypoint_hint")
+        self.assertTrue(hint.summary["expose_source_hints"])
+
     def test_repo_graph_profile_is_opt_in_validated_and_uses_environment_precedence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

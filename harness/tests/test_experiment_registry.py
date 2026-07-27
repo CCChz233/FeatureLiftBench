@@ -15,6 +15,13 @@ import build_experiment_registry  # noqa: E402
 
 
 class ExperimentRegistryTests(unittest.TestCase):
+    def test_scope_recognizes_full_python150_main_suite(self) -> None:
+        suite = Path(
+            "experiments/python/openhands/model/compliant150-model-main-001"
+        )
+
+        self.assertEqual(build_experiment_registry._scope(suite, 150), "python150")
+
     def test_lifecycle_distinguishes_raw_leaderboard_from_support_copy(self) -> None:
         raw = Path("experiments/python/openhands/model/main-flash-20260705-232429")
         support = Path("experiments/v1_1_infra_reevaluation/main-flash-20260705-232429")

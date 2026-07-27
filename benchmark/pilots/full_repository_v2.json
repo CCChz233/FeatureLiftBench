@@ -1,0 +1,222 @@
+{
+  "schema_version": "featureliftbench.full_repository_pilot.v1",
+  "pilot_id": "full-repository-no-hint-pilot-16-20260726",
+  "policy_id": "featureliftbench.full_repository_source.v1",
+  "selection_date": "2026-07-26",
+  "purpose": "Paired validation of full-repository materialization and No-Hint Main before Python-150 migration.",
+  "selection_constraints": {
+    "distinct_source_repositories": true,
+    "legacy_split_balance": {
+      "core100": 8,
+      "hard50": 8
+    },
+    "revision_case_balance": {
+      "exact_git_commit": 12,
+      "installed_snapshot_requires_resolution": 4
+    },
+    "primary_entanglement_coverage": {
+      "config_environment_coupling": 2,
+      "data_model_coupling": 6,
+      "framework_coupling": 3,
+      "parser_state_coupling": 2,
+      "resource_coupling": 2,
+      "third_party_dependency_coupling": 1
+    }
+  },
+  "status": "completed_and_superseded_by_python150",
+  "task_count": 16,
+  "tasks": [
+    {
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__aio_libs__aiohttp",
+      "source_snapshot_id": "github__aio_libs__aiohttp__f9b96545c5f4",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 4,
+      "legacy_repo_python_file_count": 2,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Small Hard-50 slice from a large async/network library; tests whether full context changes localization and closure recovery."
+    },
+    {
+      "task_id": "transitions__state_machine_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__pytransitions__transitions",
+      "source_snapshot_id": "github__pytransitions__transitions__95166dc4eec7",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 5,
+      "legacy_repo_python_file_count": 3,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Stateful hierarchical behavior with implicit closure requirements and a heavily pruned legacy workspace."
+    },
+    {
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__scrapy__scrapy",
+      "source_snapshot_id": "github__scrapy__scrapy__32a8a88ac60c",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "framework_coupling",
+      "legacy_repo_file_count": 4,
+      "legacy_repo_python_file_count": 2,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Framework task where repository search and processor/data-model dependency discovery should be material."
+    },
+    {
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__jupyter__jupyter_core",
+      "source_snapshot_id": "github__jupyter__jupyter_core__23116e7ef136",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "config_environment_coupling",
+      "legacy_repo_file_count": 7,
+      "legacy_repo_python_file_count": 4,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Configuration, environment, and filesystem semantics exercise non-code evidence and platform-sensitive paths."
+    },
+    {
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__mkdocs__mkdocs",
+      "source_snapshot_id": "github__mkdocs__mkdocs__b396880fcfb1",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "framework_coupling",
+      "legacy_repo_file_count": 7,
+      "legacy_repo_python_file_count": 4,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Plugin/config lifecycle task with a copy-heavy failure mode and relevant docs/config evidence."
+    },
+    {
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__pypa__distlib",
+      "source_snapshot_id": "github__pypa__distlib__e71700d90bff",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "resource_coupling",
+      "legacy_repo_file_count": 8,
+      "legacy_repo_python_file_count": 5,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Packaging/resource task checks that full-tree policy preserves metadata and path-handling evidence."
+    },
+    {
+      "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__sqlalchemy__sqlalchemy",
+      "source_snapshot_id": "github__sqlalchemy__sqlalchemy__73ee4dfeb1da",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "framework_coupling",
+      "legacy_repo_file_count": 7,
+      "legacy_repo_python_file_count": 5,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Large framework repository with registry/dispatch behavior makes localization and compact extraction independently challenging."
+    },
+    {
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "legacy_split": "hard50",
+      "source_repo_id": "github__pypa__build",
+      "source_snapshot_id": "github__pypa__build__0dd08861015a",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 6,
+      "legacy_repo_python_file_count": 3,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Build metadata validation exercises config semantics while providing an exact pinned commit for early materializer debugging."
+    },
+    {
+      "task_id": "arrow__parse_format_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__arrow_py__arrow",
+      "source_snapshot_id": "github__arrow_py__arrow__c130ffb9980a",
+      "revision_case": "installed_snapshot_requires_resolution",
+      "primary_entanglement": "parser_state_coupling",
+      "legacy_repo_file_count": 11,
+      "legacy_repo_python_file_count": 10,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Forces deterministic resolution of a historical installed snapshot and covers parser/format behavior."
+    },
+    {
+      "task_id": "babel__plural_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__python_babel__babel",
+      "source_snapshot_id": "github__python_babel__babel__daa7160174ce",
+      "revision_case": "installed_snapshot_requires_resolution",
+      "primary_entanglement": "third_party_dependency_coupling",
+      "legacy_repo_file_count": 828,
+      "legacy_repo_python_file_count": 23,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Resource-rich localization repository tests data preservation and separates full context from an already large mixed snapshot."
+    },
+    {
+      "task_id": "astroid__nodes_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__pycqa__astroid",
+      "source_snapshot_id": "github__pycqa__astroid__d140cd4da9d6",
+      "revision_case": "installed_snapshot_requires_resolution",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 155,
+      "legacy_repo_python_file_count": 154,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Large Python model/parser package tests source resolution and whether full repository context adds useful tests/docs rather than only files."
+    },
+    {
+      "task_id": "phonenumbers__parse_format_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__daviddrysdale__python_phonenumbers",
+      "source_snapshot_id": "github__daviddrysdale__python_phonenumbers__a72d28a419ff",
+      "revision_case": "installed_snapshot_requires_resolution",
+      "primary_entanglement": "resource_coupling",
+      "legacy_repo_file_count": 45,
+      "legacy_repo_python_file_count": 29,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Generated metadata/resource closure provides a strong test of complete tracked-tree retention and compact extraction."
+    },
+    {
+      "task_id": "jinja2__lexer_parser_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__pallets__jinja",
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "parser_state_coupling",
+      "legacy_repo_file_count": 117,
+      "legacy_repo_python_file_count": 60,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Mature parser/template engine supplies rich upstream tests and a multi-module implementation closure."
+    },
+    {
+      "task_id": "coverage__config_merge_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__coveragepy__coveragepy",
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "config_environment_coupling",
+      "legacy_repo_file_count": 404,
+      "legacy_repo_python_file_count": 171,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Large mature repository with extensive tests makes evidence discovery and config behavior auditable."
+    },
+    {
+      "task_id": "bidict__bidirectional_map_core__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__jab__bidict",
+      "source_snapshot_id": "github__jab__bidict__dbbb0ca3e3ea",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 83,
+      "legacy_repo_python_file_count": 19,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Focused data-structure library acts as a smaller control against the very large framework repositories."
+    },
+    {
+      "task_id": "tomlkit__roundtrip_document__001",
+      "legacy_split": "core100",
+      "source_repo_id": "github__python_poetry__tomlkit",
+      "source_snapshot_id": "github__python_poetry__tomlkit__b4d3e4a77252",
+      "revision_case": "exact_git_commit",
+      "primary_entanglement": "data_model_coupling",
+      "legacy_repo_file_count": 80,
+      "legacy_repo_python_file_count": 25,
+      "status": "selected_not_materialized",
+      "selection_rationale": "Round-trip parser/document behavior tests a compact but multi-module closure with upstream tests."
+    }
+  ]
+}

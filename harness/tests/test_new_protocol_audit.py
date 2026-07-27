@@ -31,7 +31,6 @@ def _write_task(root: Path, task_id: str, *, ready: bool) -> None:
     metadata = {
         "spec_status": "compliant",
         "public_spec": {
-            "source_entrypoints": ["repo/package/feature.py"],
             "required_api": [
                 {
                     "kind": "function",
@@ -51,12 +50,7 @@ def _write_task(root: Path, task_id: str, *, ready: bool) -> None:
                 }
             ],
         },
-        "evaluation_spec": {
-            "manual_review": {
-                "independent_human_review": ready,
-                "reviewer_type": "independent_human" if ready else "ai_assisted",
-            }
-        },
+        "evaluation_spec": {},
     }
     (task_dir / "metadata.json").write_text(
         json.dumps(metadata),
@@ -65,7 +59,7 @@ def _write_task(root: Path, task_id: str, *, ready: bool) -> None:
 
 
 class NewProtocolReadinessAuditTests(unittest.TestCase):
-    def test_audit_separates_engineering_and_paper_readiness(self) -> None:
+    def test_audit_uses_contract_and_package_gates_without_human_review(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             tasks_root = Path(tmp)
             _write_task(tasks_root, "ready", ready=True)
@@ -84,15 +78,14 @@ class NewProtocolReadinessAuditTests(unittest.TestCase):
         self.assertEqual(report["summary"]["engineering_ready"], 2)
         self.assertEqual(report["summary"]["contract_ready"], 1)
         self.assertEqual(report["summary"]["experiment_ready"], 1)
+        self.assertEqual(report["summary"]["content_ready"], 1)
         self.assertEqual(report["summary"]["repository_discovery_ready"], 0)
-        self.assertEqual(report["summary"]["independent_human_review"], 1)
-        self.assertEqual(report["summary"]["paper_ready"], 1)
         failing = next(
             task for task in report["tasks"] if task["task_id"] == "needs_content_work"
         )
         self.assertIn("generic_behavior_contract", failing["issues"])
         self.assertIn("missing_callable_signatures", failing["issues"])
-        self.assertIn("independent_human_review_pending", failing["issues"])
+        self.assertNotIn("independent_human_review_pending", failing["issues"])
 
 
 if __name__ == "__main__":

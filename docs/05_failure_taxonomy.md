@@ -1,78 +1,155 @@
 # Failure Taxonomy
 
-## Labeling Policy
+## Labeling policy
 
-Each failed or low-quality submission should receive one primary failure label and, when useful, one secondary label. Automatic checks should assign mechanical labels where possible; human review is needed for locate failure, dependency closure failure, behavior drift, and test gaming.
+Separate three layers:
 
-## 1. Locate Failure
+1. **Evaluator outcome**：build/public/hidden/isolation/functional pass；
+2. **Agent process**：completion、step/context/rate limit、missing submission；
+3. **Semantic cause**：localization、closure、behavior、packaging、copy-heavy。
 
-- Definition: the agent does not find the source files, symbols, or behavior region that implements the target feature.
-- Typical symptoms: irrelevant files copied, target API stubbed from scratch, public tests fail on basic behavior, trajectory searches unrelated modules.
-- How to detect: trajectory review, missing expected source entrypoints, oracle-locate improvement.
-- Example: `h2__frame_parse_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=missing_submission, extraction=None, final_score=0.0. See `reports/paper_analysis/case_studies/h2__frame_parse_core__001.md`.
+Mechanical fields are generated automatically. Semantic causes require
+trajectory/code evidence and may remain `unknown`; do not force a narrative from
+the last error line.
 
-## 2. Dependency Closure Failure
+## Functional stages
 
-- Definition: the agent finds the main entrypoint but misses required helpers, constants, resources, runtime registration, types, interfaces, or transitive dependencies.
-- Typical symptoms: import errors, missing attributes, partial behavior, hidden-only failures, Go compile errors for undefined types.
-- How to detect: stack traces, missing closure files, public pass plus hidden fail, module probes.
-- Example: `alembic__revision_map_core__hard3_001` — Flash run `experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-113104`; mechanical=public_only_fail, extraction=0.501692, final_score=0.0. See `reports/paper_analysis/case_studies/alembic__revision_map_core__hard3_001.md`.
+### 1. Missing or unusable submission
 
-## 3. Packaging Failure
+No deliverable was collected, or it cannot be parsed as a submission tree.
+Distinguish model non-delivery from runner/transport loss.
 
-- Definition: the submitted package cannot be installed, imported, built, or called through the required target API.
-- Typical symptoms: missing `pyproject.toml`, wrong package name, wrong Go module path, invalid `go.mod`, bad import path, missing exported symbol.
-- How to detect: install/build logs and target API import checks.
-- Example: `bleach__sanitize_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=build_fail, extraction=0.506234, final_score=0.0. See `reports/paper_analysis/case_studies/bleach__sanitize_core__001.md`.
+### 2. Build/import failure
 
-## 4. Behavior Drift
+The package cannot install/import or the required API cannot be loaded.
+Common causes:
 
-- Definition: the submission implements a similar but not behavior-preserving version of the feature.
-- Typical symptoms: public tests pass but hidden tests fail on edge cases, exception types, ordering, parser state, formatting, global state, or interface semantics.
-- How to detect: public-hidden gap, hidden failure diff, targeted behavior probes.
-- Example: `coverage__config_merge_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=public_only_fail, extraction=1.0, final_score=0.0. See `reports/paper_analysis/case_studies/coverage__config_merge_core__001.md`.
+- wrong package layout；
+- missing export；
+- dependency install failure；
+- import-time side effects；
+- invalid build metadata。
 
-## 5. Over-Copy
+### 3. Public regression failure
 
-- Definition: the submission passes functional gates by copying a large amount of unrelated source code.
-- Typical symptoms: high extraction ratio, broad package copy, many unused files, final score near zero despite passing tests.
-- How to detect: LOC metrics, copied file audit, copy-all baseline comparison.
-- Example: `coverage__glob_matcher_core__001` — Flash run `experiments/python/openhands/deepseek-v4-flash/main-flash-20260705-232429`; mechanical=passed, extraction=1.0, final_score=0.0. See `reports/paper_analysis/case_studies/coverage__glob_matcher_core__001.md`.
+Basic observable contract behavior fails. This can indicate an early semantic
+miss, packaging defect or a narrow stub.
 
-## 6. Forbidden Import
+### 4. Hidden behavior failure
 
-- Definition: the submission directly imports the original repository, original package, forbidden dependency, or forbidden Go module.
-- Typical symptoms: `import original_package`, dependency on upstream package in `pyproject.toml` or `go.mod`, `replace` directive pointing to original module.
-- How to detect: static forbidden import/dependency/module checks and build logs.
-- Example placeholder: TODO: add example from experiments.
+Public passes but hidden fails on deeper combinations、state sequences、edge
+inputs、exception semantics or resource behavior. Hidden must still map to the
+published contract；otherwise the task is defective.
 
-No failures with `original_import_pass=false` were observed in the frozen Flash 100-hard run; this label is included for cross-model and future-run completeness.
+### 5. Isolation failure
 
-## 7. Path Leakage
+Behavior may pass, but submission imports the original project、uses forbidden
+dependencies、reads the source workspace or depends on forbidden paths/resources.
 
-- Definition: the submission relies on source repo paths, local absolute paths, symlinks, hidden evaluator locations, or environment-specific files.
-- Typical symptoms: works in agent workspace but fails in clean eval, opens `/workspace/repo/...`, reads source snapshots at runtime, uses absolute developer paths.
-- How to detect: static string scan, runtime import guard, clean eval workspace, explicit path leakage detector if implemented.
-- Example placeholder: TODO: add example from experiments.
+## Semantic causes
 
-## 8. Test Gaming
+### Localization failure
 
-- Definition: the submission overfits visible tests or hardcodes examples instead of preserving the feature behavior.
-- Typical symptoms: public pass with brittle branch logic, exact fixture constants, missing generalization, hidden tests fail on small variants.
-- How to detect: hidden tests, trajectory review, code review for fixture-specific logic.
-- Example placeholder: TODO: add example from experiments.
+The Agent does not identify the relevant implementation region or misidentifies
+another feature. Evidence should come from searches/reads and the submitted code,
+not from a private entrypoint checklist alone.
 
-## 9. Environment Failure
+### Contract/API completion failure
 
-- Definition: failure caused primarily by infrastructure, dependency installation, Docker, resource limits, or unsupported platform assumptions rather than the agent's extraction logic.
-- Typical symptoms: Docker unavailable, dependency index failure, timeout before agent acts, OOM in evaluator, missing toolchain.
-- How to detect: run logs, infra error fields, repeated reproduction with oracle or no-op baseline.
-- Example placeholder: TODO: add example from experiments.
+The Agent finds the general implementation but omits required exports、members、
+defaults、exceptions or state behavior.
 
-## Language-Specific Notes
+### Dependency closure failure
 
-Python failures often cluster around dynamic dependency recovery, runtime behavior, hidden edge cases, import rewriting, module-level globals, and behavior that is only visible through execution.
+Necessary helpers、types、constants、resources、configuration、registries or
+transitive dependencies are missing.
 
-Go failures often cluster around type closure, package boundary mistakes, missing interfaces, invalid `go.mod`, forbidden module references, and compile-time errors before tests can run.
+### Behavior drift
 
-These are not separate taxonomies. They are language-specific manifestations of the same FeatureLift failure types.
+The submission implements a similar but observably different feature. Typical
+differences include ordering、normalization、error type/message、parser state、
+global state and compatibility behavior.
+
+### Packaging/modularization failure
+
+Correct logic is present but cannot be exposed as the required independent
+`featurelifted` package.
+
+### Over-copy
+
+Functional gates pass, but reference-relative LOC/file/copy/dependency metrics
+show a broad vendoring solution. Over-copy is a quality label, not a functional
+failure.
+
+### Test gaming or narrow reimplementation
+
+Code hard-codes known samples、branches on fixtures or implements only a prompt-
+level toy behavior. Requires code/trajectory evidence; hidden failure alone is
+not sufficient proof.
+
+## Process and infrastructure
+
+Report separately:
+
+- agent step limit；
+- context limit；
+- rate limit/API error；
+- timeout；
+- OOM/resource limit；
+- Docker/build infrastructure；
+- corrupted/missing logs；
+- manual rerun or intervention。
+
+If an Agent hits step-limit but leaves an evaluator-passing submission, label:
+
+```text
+functional_pass = true
+agent_completion = false
+process_failure = step_limit
+```
+
+Do not turn this into a functional failure or hide the process failure.
+
+## Compactness classes
+
+For functionally passing submissions:
+
+- compact pass；
+- functional mixed footprint；
+- copy-heavy pass；
+- unapproved dependency；
+- path/source leakage。
+
+Thresholds must be declared and sensitivity-tested. The frozen reference is a
+comparison point, not a unique optimum.
+
+## Task-defect labels
+
+Some failures belong to the benchmark:
+
+- hidden-only requirement；
+- incomplete `required_api`；
+- incorrect reference；
+- non-deterministic test；
+- missing dependency/resource in locked environment；
+- source digest/materialization mismatch；
+- evaluator infrastructure defect。
+
+These must be quarantined or fixed and re-frozen, not counted as model failures.
+
+## Reporting
+
+At minimum publish:
+
+- mechanical funnel；
+- process/infra counts；
+- primary semantic cause + unknown rate；
+- annotation provenance；
+- representative evidence；
+- task-defect exclusions；
+- inter-rater agreement only if independent human raters were actually used。
+
+Historical labeled evidence is in
+[`reports/failure_attribution_20260720/`](../reports/failure_attribution_20260720/)
+and [TRAJECTORY_FINDINGS.md](research_analysis/TRAJECTORY_FINDINGS.md), both under
+`mixed_snapshot_v1` conditions.

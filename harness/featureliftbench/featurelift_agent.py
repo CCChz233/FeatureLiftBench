@@ -497,8 +497,7 @@ def _build_phase_prompt(state_dir: Path, phase: str) -> tuple[str, str]:
         context = (
             "## task_brief.md\n"
             f"{_read_text(state_dir / 'task_brief.md')}\n\n"
-            "## source_entrypoints.json\n"
-            f"{_read_text(state_dir / 'source_entrypoints.json')}\n\n"
+            f"{_source_hint_phase_context(state_dir)}"
             "## repo_map.md\n"
             f"{_read_text(state_dir / 'repo_map.md')}\n"
             f"{_repo_graph_phase_context(state_dir)}"
@@ -1688,10 +1687,11 @@ def _write_state_files(config: FeatureLiftAgentConfig, state_dir: Path, task_tex
         ),
         encoding="utf-8",
     )
-    (state_dir / "source_entrypoints.json").write_text(
-        json.dumps(source_entrypoints, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
+    if source_entrypoints is not None:
+        (state_dir / "source_entrypoints.json").write_text(
+            json.dumps(source_entrypoints, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
     (state_dir / "closure_plan.md").write_text(
         "# Closure Plan\n\n"
         "Status: not started.\n\n"
@@ -1703,20 +1703,18 @@ def _write_state_files(config: FeatureLiftAgentConfig, state_dir: Path, task_tex
         "# Extraction Plan\n\nPending.\n",
         encoding="utf-8",
     )
+    dependency_manifest = {
+        "schema_version": "featureliftbench.dependency_manifest.v1",
+        "runtime_files": [],
+        "resource_files": [],
+        "third_party_dependencies": _extract_declared_dependencies(metadata),
+        "excluded_subsystems": [],
+        "risk_points": ["controller scaffold only; no model runtime attached yet"],
+    }
+    if source_entrypoints is not None:
+        dependency_manifest["source_entrypoints"] = source_entrypoints["entrypoints"]
     (state_dir / "dependency_manifest.json").write_text(
-        json.dumps(
-            {
-                "schema_version": "featureliftbench.dependency_manifest.v1",
-                "runtime_files": [],
-                "resource_files": [],
-                "source_entrypoints": source_entrypoints["entrypoints"],
-                "third_party_dependencies": _extract_declared_dependencies(metadata),
-                "excluded_subsystems": [],
-                "risk_points": ["controller scaffold only; no model runtime attached yet"],
-            },
-            indent=2,
-            sort_keys=True,
-        ),
+        json.dumps(dependency_manifest, indent=2, sort_keys=True),
         encoding="utf-8",
     )
     for name in (
@@ -1827,9 +1825,18 @@ def _repo_graph_phase_context(state_dir: Path) -> str:
     return "".join(chunks)
 
 
-def _extract_source_entrypoints(metadata: dict[str, Any]) -> dict[str, Any]:
+def _source_hint_phase_context(state_dir: Path) -> str:
+    path = state_dir / "source_entrypoints.json"
+    if not path.is_file():
+        return ""
+    return f"## source_entrypoints.json\n{_read_text(path)}\n\n"
+
+
+def _extract_source_entrypoints(metadata: dict[str, Any]) -> dict[str, Any] | None:
     feature = metadata.get("feature") if isinstance(metadata.get("feature"), dict) else {}
     output = metadata.get("output") if isinstance(metadata.get("output"), dict) else {}
+    if "source_entrypoints" not in feature:
+        return None
     raw_entrypoints = feature.get("source_entrypoints")
     entrypoints = [
         str(item)

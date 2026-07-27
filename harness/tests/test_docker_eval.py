@@ -13,6 +13,41 @@ from featureliftbench.docker_eval import _prepare_docker_eval_output
 from featureliftbench.docker_eval import evaluate_submission_docker
 
 
+def _make_python_eval_task(path: Path) -> Path:
+    path.mkdir(parents=True)
+    for tests in ("public_tests", "hidden_tests"):
+        directory = path / tests
+        directory.mkdir()
+        (directory / "test_contract.py").write_text(
+            "def test_placeholder():\n    assert True\n",
+            encoding="utf-8",
+        )
+    (path / "requirements.lock").write_text("", encoding="utf-8")
+    (path / "metadata.json").write_text(
+        json.dumps(
+            {
+                "task_id": path.name,
+                "language": "python",
+                "source": {"name": "upstream"},
+                "output": {"package": "featurelifted"},
+                "environment": {
+                    "allowed_dependencies": [],
+                    "forbidden_dependencies": ["upstream"],
+                    "forbidden_imports": ["upstream"],
+                    "dependency_lock": "requirements.lock",
+                },
+                "tests": {
+                    "command": "pytest",
+                    "public": "public_tests/",
+                    "hidden": "hidden_tests/",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
 class _FakeDockerEvalProcess:
     def __init__(
         self,
@@ -70,10 +105,10 @@ class DockerEvalTests(unittest.TestCase):
     def test_evaluate_submission_docker_runs_container_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            task_dir = root / "task"
+            task_dir = _make_python_eval_task(root / "task")
             submission_dir = root / "submission"
             output_dir = root / "output"
-            for path in (task_dir, submission_dir, output_dir):
+            for path in (submission_dir, output_dir):
                 path.mkdir()
             (output_dir / "result.json").write_text(
                 json.dumps({"status": "passed", "scores": {"final_score": 1.0}}),
@@ -120,19 +155,34 @@ class DockerEvalTests(unittest.TestCase):
             self.assertIn("--user", command)
             self.assertIn(f"{os.getuid()}:{os.getgid()}", command)
             joined = " ".join(command)
-            self.assertIn("/workspace/tasks/", joined)
+            self.assertIn("/workspace/evaluation-capsule", joined)
             self.assertIn("/workspace/harness", joined)
             self.assertIn("/workspace/benchmark/vendor-wheels:ro", joined)
+            self.assertNotIn("/workspace/tasks/", joined)
+            self.assertNotIn("/workspace/benchmark/sources", joined)
+            self.assertNotIn("/workspace/benchmark/references", joined)
+            self.assertNotIn("reference_solution", joined)
+            mount_targets = {
+                command[index + 1].rsplit(":", 2)[-2]
+                for index, token in enumerate(command)
+                if token == "-v"
+            }
+            self.assertNotIn("/workspace/oracle", mount_targets)
+            self.assertNotIn(
+                f"/workspace/submissions/{task_dir.name}/oracle",
+                mount_targets,
+            )
             self.assertIn(f"{output_dir.resolve()}:/workspace/output:rw", joined)
             self.assertEqual(result["sandbox"]["backend"], "docker")
+            self.assertRegex(result["evaluation_capsule_digest"], r"^[a-f0-9]{64}$")
 
     def test_evaluate_submission_docker_uses_env_overrides(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            task_dir = root / "task"
+            task_dir = _make_python_eval_task(root / "task")
             submission_dir = root / "submission"
             output_dir = root / "output"
-            for path in (task_dir, submission_dir, output_dir):
+            for path in (submission_dir, output_dir):
                 path.mkdir()
             (output_dir / "result.json").write_text(json.dumps({"status": "passed"}), encoding="utf-8")
 
@@ -215,10 +265,10 @@ class DockerEvalTests(unittest.TestCase):
     def test_evaluate_submission_docker_writes_structured_failure(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            task_dir = root / "task"
+            task_dir = _make_python_eval_task(root / "task")
             submission_dir = root / "submission"
             output_dir = root / "output"
-            for path in (task_dir, submission_dir):
+            for path in (submission_dir,):
                 path.mkdir()
 
             with mock.patch(
@@ -242,10 +292,10 @@ class DockerEvalTests(unittest.TestCase):
     def test_evaluate_submission_docker_timeout_kills_container(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            task_dir = root / "task"
+            task_dir = _make_python_eval_task(root / "task")
             submission_dir = root / "submission"
             output_dir = root / "output"
-            for path in (task_dir, submission_dir):
+            for path in (submission_dir,):
                 path.mkdir()
 
             fake = _FakeDockerEvalProcess(hang=True)

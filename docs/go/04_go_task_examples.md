@@ -89,7 +89,8 @@ Current seed placeholders include:
 - `doublestar__glob_match_core__001`
 - `uuid__parse_format_core__001`
 
-Important: current metadata for these tasks still describes `sample.Add`. They should be treated as TODO placeholders, not as real Go FeatureLift task examples.
+Important: current metadata for these tasks still describes `sample.Add`. They
+are placeholders, not real Go FeatureLift task examples.
 
 ## Desired Future Example Types
 
@@ -99,7 +100,7 @@ Important: current metadata for these tasks still describes `sample.Add`. They s
 - Expression evaluator with AST, environment binding, and typed runtime errors.
 - Glob matcher with path normalization and edge-case patterns.
 
-## TODO
+## Open work
 
 - Replace placeholder tasks with real boundary plans.
 - Add one paper-ready hard Go example only after gates and evidence packets pass.

@@ -1,5 +1,8 @@
 # Repository Semantic Graph Phase 2 Checkpoint
 
+> Historical RSG prototype evidence. Task-private entrypoint overlays described
+> below are incompatible with v2 Main and are retained only for ablation provenance.
+
 Date: 2026-07-22
 
 Phase 2 connects the deterministic graph to the Agent runner without changing

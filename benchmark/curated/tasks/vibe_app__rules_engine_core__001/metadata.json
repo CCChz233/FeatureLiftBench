@@ -1,0 +1,317 @@
+{
+  "benchmark_split": "curated",
+  "difficulty": "hard",
+  "entanglement": {
+    "description": "Correct rules evaluation lives behind duplicate helpers in utils.py and mutates GLOBAL_STATE counters during evaluation.",
+    "level": "high",
+    "primary": "legacy_vibe_clutter",
+    "signals": [
+      "three similarly named rules helpers with only one correct semantics",
+      "rules engine increments rules_evaluated in GLOBAL_STATE",
+      "conditions/actions split across modules with orchestration in engine.py"
+    ],
+    "types": [
+      "legacy_vibe_clutter",
+      "global_state_registry_coupling",
+      "implicit_dependency_coupling"
+    ]
+  },
+  "environment": {
+    "allowed_dependencies": [],
+    "dependency_lock": "requirements.lock",
+    "forbidden_dependencies": [
+      "vibe_app"
+    ],
+    "forbidden_imports": [
+      "vibe_app"
+    ],
+    "network": false,
+    "python": "3.11",
+    "timeout_seconds": 60
+  },
+  "evaluation_spec": {
+    "experiment_contract_hardening": {
+      "independent_human_review": false,
+      "method": "existing_contract_and_test_mapping_review",
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
+    },
+    "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
+    "hidden_test_mappings": [
+      {
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_contains_operator_matches_list_membership"
+      },
+      {
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_inc_action_accumulates_counter"
+      },
+      {
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_rules_engine_updates_global_state_counter"
+      },
+      {
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface",
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      }
+    ],
+    "manual_review": {
+      "checklist_passed": true,
+      "independent_human_review": false,
+      "notes": "Task-level constitution migration reviewed against the legacy TASK, public tests, hidden tests, behavior mappings, and required API surface. Independent human paper-gold review remains pending.",
+      "reviewed_at": "2026-07-24",
+      "reviewer": "codex_hard50_constitution_review",
+      "reviewer_type": "ai_assisted_task_level_review"
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: match field conditions with eq/gt/gte/in/contains operators. Required observable cases include contains operator matches list membership."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: apply set/inc/append actions to facts mappings. Required observable cases include rule applies set action when condition matches; inc action accumulates counter."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: evaluate rules in descending priority order. Required observable cases include multiple rules apply in priority order; rules engine updates global state counter."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: track evaluation count in GLOBAL_STATE registry. Required observable cases include rules engine updates global state counter."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "api_surface",
+        "text": "The package exposes the required task API paths `featurelifted.Rule`, `featurelifted.RulesEngine`, `featurelifted.RulesEngine.evaluate`, `featurelifted.evaluate_rules`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "isolation_constraint",
+        "text": "the submitted package does not import forbidden upstream packages: vibe_app"
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_rule_applies_set_action_when_condition_matches"
+      },
+      {
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted",
+        "nodeid": "public_tests/test_public_api.py::test_multiple_rules_apply_in_priority_order"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.Rule"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.RulesEngine"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_rules_engine_updates_global_state_counter"
+        ],
+        "path": "featurelifted.RulesEngine.evaluate"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.evaluate_rules"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.GLOBAL_STATE"
+      },
+      {
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ],
+        "path": "featurelifted.state.reset_state"
+      }
+    ]
+  },
+  "feature": {
+    "description": "Extract VibeShop rules evaluation (conditions, actions, priority) as a standalone package.",
+    "excluded_behaviors": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and pricing computation",
+      "evaluate_rules_v1 and evaluate_rules_legacy wrong helpers",
+      "CSV import pipeline and app factory clutter",
+      "original project tests and CLI entrypoints"
+    ],
+    "included_behaviors": [
+      "match field conditions with eq/gt/gte/in/contains operators",
+      "apply set/inc/append actions to facts mappings",
+      "evaluate rules in descending priority order",
+      "track evaluation count in GLOBAL_STATE registry"
+    ],
+    "name": "Business rules engine",
+    "source_entrypoints": [
+      "vibe_app.rules_engine.engine.RulesEngine",
+      "vibe_app.rules_engine.engine.evaluate_rules",
+      "vibe_app.rules_engine.conditions.match_condition",
+      "vibe_app.rules_engine.actions.apply_actions"
+    ]
+  },
+  "generated_task_hash": "64049f215ef5459c148e798a9b92aaec80f174cb9b43608d54ee86e16950b2ac",
+  "language": "python",
+  "output": {
+    "callable": "featurelifted.evaluate_rules",
+    "import": "from featurelifted import Rule, RulesEngine, evaluate_rules; from featurelifted.state import GLOBAL_STATE, reset_state",
+    "package": "featurelifted",
+    "signature": "evaluate_rules(facts: dict, rules: list[Rule]) -> dict"
+  },
+  "public_spec": {
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: match field conditions with eq/gt/gte/in/contains operators. Required observable cases include contains operator matches list membership."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: apply set/inc/append actions to facts mappings. Required observable cases include rule applies set action when condition matches; inc action accumulates counter."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: evaluate rules in descending priority order. Required observable cases include multiple rules apply in priority order; rules engine updates global state counter."
+      },
+      {
+        "id": "B004",
+        "text": "The extracted feature must support this observable behavior: track evaluation count in GLOBAL_STATE registry. Required observable cases include rules engine updates global state counter."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.Rule`, `featurelifted.RulesEngine`, `featurelifted.RulesEngine.evaluate`, `featurelifted.evaluate_rules`, `featurelifted.state`, `featurelifted.state.GLOBAL_STATE`, `featurelifted.state.reset_state` with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "Flask-ish routes and HTTP handlers",
+      "YAML bootstrap and pricing computation",
+      "evaluate_rules_v1 and evaluate_rules_legacy wrong helpers",
+      "CSV import pipeline and app factory clutter",
+      "original project tests and CLI entrypoints"
+    ],
+    "forbidden": {
+      "imports": [
+        "vibe_app"
+      ],
+      "paths": []
+    },
+    "isolation_behavior": {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: vibe_app."
+    },
+    "optional_api": [],
+    "public_vs_hidden_note": "Benchmark evaluator tests remain private. Each evaluator test maps to the public behaviors above and only deepens examples, boundaries, or combinations within those declared behaviors.",
+    "required_api": [
+      {
+        "kind": "class",
+        "path": "featurelifted.Rule",
+        "signature": "(name: 'str', conditions: 'list[dict[str, Any]]', actions: 'list[dict[str, Any]]', priority: 'int' = 0) -> None"
+      },
+      {
+        "kind": "class",
+        "members": [
+          {
+            "kind": "method",
+            "path": "featurelifted.RulesEngine.evaluate",
+            "signature": "(self, facts: 'dict[str, Any]') -> 'dict[str, Any]'"
+          }
+        ],
+        "path": "featurelifted.RulesEngine",
+        "signature": "(rules: 'list[Rule]' = <factory>) -> None"
+      },
+      {
+        "kind": "function",
+        "path": "featurelifted.evaluate_rules",
+        "signature": "(facts: 'dict[str, Any]', rules: 'list[Rule]') -> 'dict[str, Any]'"
+      },
+      {
+        "kind": "module",
+        "members": [
+          {
+            "kind": "constant",
+            "path": "featurelifted.state.GLOBAL_STATE"
+          },
+          {
+            "kind": "function",
+            "path": "featurelifted.state.reset_state",
+            "signature": "() -> 'None'"
+          }
+        ],
+        "path": "featurelifted.state"
+      }
+    ],
+    "source_entrypoints": [
+      "vibe_app.rules_engine.engine.RulesEngine",
+      "vibe_app.rules_engine.engine.evaluate_rules",
+      "vibe_app.rules_engine.conditions.match_condition",
+      "vibe_app.rules_engine.actions.apply_actions"
+    ],
+    "summary": "Extract a task-scoped subset of `vibe_app` into a standalone `featurelifted` package.",
+    "title": "Business rules engine"
+  },
+  "selection_id": "legacy-curated-v1",
+  "source": {
+    "commit": "curated",
+    "license": "MIT",
+    "name": "vibe_app",
+    "url": "sources/vibe_app/"
+  },
+  "spec_hash": "07dccad11cd753f2eb66515427d67e250783f180f97f0f72560cac6997c2ce9a",
+  "spec_status": "compliant",
+  "status": "curated",
+  "tags": [
+    "extreme",
+    "multi-task-repo",
+    "functional-discriminator",
+    "legacy_vibe_clutter",
+    "global_state_registry_coupling",
+    "pure-python"
+  ],
+  "task_id": "vibe_app__rules_engine_core__001",
+  "task_revision": 2,
+  "tests": {
+    "command": "pytest",
+    "hidden": "hidden_tests/",
+    "public": "public_tests/"
+  }
+}

@@ -1,34 +1,31 @@
 # Reports
 
-分析产物与时间点快照。顶层只保留当前分析目录和分类目录；旧 sprint 不再散落在顶层。
+本目录保存小型、可复查的审计和分析结果。当前数字以
+[`docs/STATUS.md`](../docs/STATUS.md) 为准，完整索引见
+[`docs/REPORTS_INDEX.md`](../docs/REPORTS_INDEX.md)。
 
-**可提交索引：** [docs/REPORTS_INDEX.md](../docs/REPORTS_INDEX.md)  
-**当前状态：** [docs/STATUS.md](../docs/STATUS.md)  
-**实验清单：** [docs/EXPERIMENTS.md](../docs/EXPERIMENTS.md)
-
-## 当前分析
+## 当前 v3
 
 | Path | Role |
 | --- | --- |
-| [token_efficiency_20260720/](token_efficiency_20260720/) | 当前 token、context condenser 与 Budgeted ECSM 分析 |
-| [paper_analysis/](paper_analysis/) | 冻结论文 run 的主表、切片和案例 |
-| [trajectory_innovation/](trajectory_innovation/) | 轨迹创新原型输出 |
+| [`audits/v3_main_readiness.md`](audits/v3_main_readiness.md) | External Python-150 严格准入 |
+| [`audits/v3_oracle_revalidation/`](audits/v3_oracle_revalidation/) | 450/450 Docker Oracle 稳定性 |
+| [`audits/v3_adversarial_canaries.json`](audits/v3_adversarial_canaries.json) | 12/12 对抗性隔离与 compactness canaries |
+| [`audits/task_lifecycle_report.md`](audits/task_lifecycle_report.md) | task lifecycle |
 
-## Batch-3 历史归档
+v3 模型 baseline 尚未产生。v2 审计与 freeze 保留为不可变历史 provenance。
 
-| Report | Status |
+## 历史结果
+
+| Path | Boundary |
 | --- | --- |
-统一放在 [archive/batch3_202607/](archive/batch3_202607/)；这些是 100→150 hard 的历史计划、材料化、验证和 promotion 快照。
+| [`python150_compliant_20260726/`](python150_compliant_20260726/) | mixed-snapshot v1 四模型 candidate |
+| [`paper_analysis/`](paper_analysis/) | 2026-07-12 v1 run set 的生成分析 |
+| [`failure_attribution_20260720/`](failure_attribution_20260720/) | v1/mixed trajectory failure analysis |
+| [`token_efficiency_20260720/`](token_efficiency_20260720/) | v1/mixed token/process analysis |
+| [`repo_graph_phase1/`](repo_graph_phase1/) | RSG infrastructure evidence |
+| [`repo_graph_phase2/`](repo_graph_phase2/) | RSG smoke/A-B evidence |
+| [`repo_graph_phase3/`](repo_graph_phase3/) | RSG prototype evidence |
+| [`archive/`](archive/) | batch construction and old freeze provenance |
 
-## Paper analysis
-
-见 [docs/REPORTS_INDEX.md](../docs/REPORTS_INDEX.md) 与 [docs/paper_runs_frozen.md](../docs/paper_runs_frozen.md)。
-
-## Benchmark audits
-
-| Report | Role |
-| --- | --- |
-| [audits/python_task_audit.md](audits/python_task_audit.md) | Task audit |
-| [audits/task_lifecycle_report.md](audits/task_lifecycle_report.md) | Lifecycle |
-| [audits/missing_high_value_repos.md](audits/missing_high_value_repos.md) | Repo gaps |
-| [audits/benchmark_integrity_audit/](audits/benchmark_integrity_audit/) | Integrity evidence |
+历史报告不得重新命名或拼接成 Full-Repository / No-Hint v3 结果。

@@ -630,7 +630,9 @@ def write_readme(
         "",
         f"Generated: {datetime.now(timezone.utc).replace(microsecond=0).isoformat()}",
         "",
-        "Canonical runs: see [docs/paper_runs_frozen.md](../../docs/paper_runs_frozen.md).",
+        "Historical run boundary: see "
+        "[v1_mixed_snapshot_runs_20260712.md]"
+        "(../archive/v1_mixed_snapshot_runs_20260712.md).",
         "",
         "## Regenerate",
         "",

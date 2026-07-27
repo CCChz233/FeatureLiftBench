@@ -17,6 +17,7 @@ from typing import Any, Iterable
 
 from .closure_gold import load_closure_gold
 from .metrics import count_files, count_python_loc, count_runtime_dependencies
+from .reference_registry import compactness_reference
 
 
 _STDLIB = set(getattr(sys, "stdlib_module_names", ()))
@@ -134,6 +135,7 @@ def analyze_submission_footprint(
     submission_path: str | Path,
     *,
     reference_path: str | Path | None = None,
+    source_path: str | Path | None = None,
     functional_pass: bool | None = None,
 ) -> dict[str, Any]:
     """Return the v1.1 diagnostic metric vector for one submission.
@@ -149,11 +151,34 @@ def analyze_submission_footprint(
         if reference_path is not None
         else (task.parents[1] / "submissions" / task.name / "oracle").resolve()
     )
-    source = task / "repo"
+    source = (
+        Path(source_path).resolve()
+        if source_path is not None
+        else (task / "repo").resolve()
+    )
     submitted_loc = count_python_loc(submission)
-    reference_loc = count_python_loc(reference) if reference.is_dir() else None
+    frozen_reference = compactness_reference(task.name)
+    reference_loc = (
+        count_python_loc(reference)
+        if reference.is_dir()
+        else (
+            frozen_reference.get("python_loc")
+            if isinstance(frozen_reference, dict)
+            and isinstance(frozen_reference.get("python_loc"), int)
+            else None
+        )
+    )
     file_count = count_files(submission)
-    reference_files = _reference_file_count(reference)
+    reference_files = (
+        _reference_file_count(reference)
+        if reference.is_dir()
+        else (
+            frozen_reference.get("file_count")
+            if isinstance(frozen_reference, dict)
+            and isinstance(frozen_reference.get("file_count"), int)
+            else None
+        )
+    )
     copied_loc, copy_evidence = _copied_line_indices(
         _python_files(submission), _python_files(source)
     )
@@ -208,6 +233,7 @@ def analyze_submission_footprint(
         "copy_detection": {
             "method": "normalized_nonempty_line_sequence",
             "minimum_matching_run": 3,
+            "source_path": str(source),
             "evidence": copy_evidence,
             "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
         },

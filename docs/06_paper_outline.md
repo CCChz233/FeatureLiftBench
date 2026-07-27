@@ -1,118 +1,150 @@
 # Paper Outline
 
-## Candidate Titles
+## Working title
 
-- FeatureLiftBench: Evaluating Repository-Level Feature Extraction in Code Agents
-- Can Code Agents Extract Reusable Features from Entangled Repositories?
+**FeatureLiftBench: Evaluating Repository-Level Feature Extraction by Code
+Agents**
 
-## Abstract Sketch
+## Core claim
 
-Current code-agent benchmarks focus heavily on code generation, code completion, or issue repair inside an existing repository. Real software reuse often requires a different capability: extracting a reusable feature from an entangled codebase into a standalone package while preserving behavior and avoiding unnecessary copying. FeatureLiftBench evaluates this capability with source repository snapshots, feature specifications, public and hidden tests, forbidden import checks, and compactness-aware scoring. The benchmark is organized as language splits under one task definition, with Python as the current mature split and Go as an in-progress split designed to stress static type and package-boundary closure.
+FeatureLiftBench isolates a software-engineering capability not captured by
+bug-fixing or greenfield generation benchmarks: extracting an existing feature
+from an entangled repository into an independent, behavior-complete and compact
+module.
 
-On the frozen Python-150 split with OpenHands, DeepSeek-V4-Flash achieves 91/150 functional passes (60.7%) with average final score 0.359. On the shared core-100 comparison subset, it achieves 83/100 functional passes (83%) with average final score 0.520; open models range from 24/100 to 54/100. The hard 50-task extension yields only 8/50 Flash passes, indicating substantial headroom on entangled repository features. Compactness scoring separates copy-heavy functional passes from compact extractions.
+The evaluation gives agents a complete public contract and a complete pinned
+repository, but no source-location hints or benchmark tests before submission.
 
-## 1. Introduction
+## Contributions
 
-Motivation:
+1. **Task formulation**：repository-level behavior-preserving feature
+   extraction。
+2. **Benchmark**：150 external Python OSS tasks、126 repositories、132
+   immutable snapshots，Full-Repository / No-Hint。
+3. **Specification discipline**：generated public contract、private
+   public/hidden mapping、No-Hint leak gates。
+4. **Evaluation**：Functional Pass@1 separated from reference-relative
+   compactness and process cost。
+5. **Empirical study**：cross-model correctness、compactness、cost and failure
+   mechanisms（v3 baseline 待跑）。
 
-- Existing benchmarks often ask agents to generate code or patch an existing repository.
-- Software reuse, migration, and modularization require extracting features from existing code.
-- Feature extraction is difficult because implementations are entangled with dependencies, configuration, framework state, resources, and language-specific runtime or type systems.
-- FeatureLiftBench tests whether agents can produce standalone, compact, behavior-preserving packages.
+## Research questions
 
-Key contrast:
+- **RQ1 — Capability:** How often do code agents produce functionally correct,
+  isolated feature packages?
+- **RQ2 — Compactness:** When they pass, how compact are solutions relative to
+  frozen references?
+- **RQ3 — Cost:** How many tokens、steps and seconds are required?
+- **RQ4 — Failure mechanisms:** Where do localization、closure recovery、
+  behavior preservation、packaging and isolation fail?
+- **RQ5 — Task factors:** How do repository size、domain、entanglement and task
+  footprint relate to outcomes?
+- **RQ6 — Information ablations:** What changes under Entrypoint-Hint、
+  Public-feedback and Pruned-Context?
 
-- SWE-bench: issue repair in the original repo.
-- FeatureLiftBench: feature extraction out of the original repo.
+## Recommended structure
 
-## 2. Task Definition
+### 1. Introduction
 
-Describe:
+- motivate code reuse、legacy/vibe-code cleanup and modularization；
+- distinguish extraction from issue repair and greenfield implementation；
+- state the information boundary and contributions。
 
-- Source repository snapshot.
-- Feature specification.
-- Target API.
-- Public tests and hidden tests.
-- Standalone `submission/` package.
-- Forbidden imports and path leakage.
-- Compactness requirement.
+### 2. Task definition
 
-Emphasize that Python and Go are language splits under this definition.
+- full repository + complete public contract；
+- No-Hint and evaluator-test-blind Main；
+- `featurelifted` submission；
+- independence and allowed extraction/adaptation；
+- public/hidden as two private depths of the same contract。
 
-## 3. Benchmark Construction
+### 3. Benchmark construction
 
-Describe:
+- repository selection protocol and attrition；
+- canonical source registry and immutable snapshots；
+- task/spec/evaluator construction；
+- source、contract、reference、isolation and freeze gates；
+- 150-task distribution and task footprint。
 
-- Repository selection criteria.
-- Feature type selection.
-- Task metadata.
-- Public and hidden test design.
-- Oracle, naive, and copy-all construction when available.
-- Difficulty rubric.
-- Language-specific construction notes.
+The replacement selection ledger and complete reference file/LOC footprint are
+frozen; the original 143-task historical selection protocol must still be
+described candidly before paper submission.
 
-Python construction should discuss dynamic dependency recovery, runtime behavior, and hidden-test fidelity. Go construction should discuss type closure, package boundaries, `go.mod`, interfaces, and compile-time failure modes.
+### 4. Evaluation
 
-## 4. Experimental Setup
+- Functional Pass@1；
+- reference-relative LOC/file/copy/dependency vector；
+- agent completion、step/context/infra failures；
+- token、step and latency；
+- statistical comparison and paired ablations。
 
-Describe:
+### 5. Experimental setup
 
-- Agents and models.
-- Standard, hint, oracle-locate, and copy-all settings.
-- Evaluator and Docker or clean environment.
-- Metrics: install/build pass, public pass, hidden pass, functional gate, final score, LOC/extraction ratio, forbidden import rate, public-hidden gap.
+- exact OpenHands/model profiles；
+- agent/eval Docker；
+- active benchmark freeze and image digests；
+- one attempt per task；
+- baselines and ablation definitions。
 
-## 5. Results Organized by RQs
+### 6. Results
 
-### RQ1: Overall Performance
+Do not populate with historical mixed-snapshot numbers as the main table.
+Required v3 tables:
 
-DeepSeek-V4-Flash: 91/150 on the full split; 83/100 on the shared cross-model subset. See `docs/paper_tables.md` Table 1.
+1. cross-model Python-150 Functional Pass@1；
+2. correctness funnel；
+3. compactness among functional passes；
+4. tokens/steps/latency；
+5. repository/domain/entanglement/task-footprint slices；
+6. paired information ablations。
 
-### RQ2: Failure Analysis
+Historical v1 results may appear only in a clearly labeled development-history
+or source-context comparison.
 
-Flash 100-hard mechanical failure distribution: {'passed': 83, 'build_fail': 2, 'public_only_fail': 11, 'missing_submission': 2, 'other_fail': 2}. Representative case studies in `reports/paper_analysis/case_studies/`.
+### 7. Failure analysis
 
-### RQ3: Localization Ablation
+- missing API/export；
+- hidden behavior mismatch；
+- dependency/resource/registry omissions；
+- packaging/isolation；
+- copy-heavy；
+- step/context/infra failures；
+- representative task dossiers。
 
-Full hint/oracle-locate ablation is not yet implemented in the harness. We report gate-oracle extraction ratios as a localization upper bound and defer full RQ3 to future work. Optional 10-task hint pilot is listed as follow-up.
+### 8. Discussion
 
-### RQ4: Compactness
+- why localization alone is insufficient；
+- tension between behavior completeness and compactness；
+- how upstream evidence quality affects agents；
+- implications for repository-aware agent design。
 
-See `reports/paper_analysis/rq4_compactness.json` and Table 4 in `docs/paper_tables.md`.
+### 9. Limitations and ethics
 
-### RQ5: Task Difficulty
+Use [limitations.md](limitations.md): selection bias、library/tool skew、
+training contamination、AI-assisted annotation、licensing、test completeness、
+proxy compactness and missing non-Python coverage。
 
-See `reports/paper_analysis/rq5_slices.json` — entanglement, difficulty, and hard3 slices.
+### 10. Reproducibility
 
-## 6. Related Work
+- source URL/revision/digest；
+- benchmark freeze；
+- image/model/profile/arm；
+- task-level results and checksums；
+- archive acquisition instructions。
 
-Discuss:
+## Current evidence boundary
 
-- SWE-bench and SWE-Bench Pro.
-- RepoBench and repository-level code understanding.
-- LiveCodeBench and code generation benchmarks.
-- Automated benchmark generation.
-- Refactoring, program slicing, software modularization, and library extraction.
-- Program repair and agent-based software engineering benchmarks.
+Engineering:
 
-## 7. Limitations
+- v3 readiness 150/150；
+- source snapshots 132/132；
+- Docker Oracle 450/450；
+- active freeze recorded。
 
-Potential limitations:
+Empirical:
 
-- Hidden tests are incomplete approximations of full behavior.
-- Compactness metrics can penalize legitimate closures or miss semantic over-copy.
-- Python split may overrepresent parser, validator, and config-loader style features.
-- Go split is still under calibration until paper-ready hard tasks are verified.
-- Evaluator safety and path leakage checks may need expansion.
-- Benchmark tasks are curated and may not represent all extraction scenarios.
+- v3 model baseline absent；
+- historical mixed-snapshot runs available only as development evidence。
 
-## 8. Conclusion
-
-FeatureLiftBench introduces a repository-level feature extraction benchmark for code agents. It measures whether agents can recover dependency closure, preserve behavior, package standalone code, and avoid copy-heavy shortcuts. The benchmark complements issue-repair benchmarks by testing a practical software reuse capability that current agents may not reliably possess.
-
-## TODO
-
-- Insert official dataset table after Python and Go split status is frozen.
-- Abstract updated with frozen Python-150 headline numbers (2026-07-12).
-- Add examples only from audited task designs and experiment artifacts.
-- Align paper scoring notation with the evaluator version used for official runs.
+See [STATUS.md](STATUS.md)、[EXPERIMENTS.md](EXPERIMENTS.md) and
+[REPORTS_INDEX.md](REPORTS_INDEX.md)。

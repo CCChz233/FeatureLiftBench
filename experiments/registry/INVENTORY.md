@@ -2,7 +2,10 @@
 
 Generated from task-local `run.json` and `eval/result.json`; `suite.summary` is not trusted as a primary metric source.
 
-## Python-150 composition
+> The composition below is the historical `mixed_snapshot_v1` study. No
+> Full-Repository / No-Hint v2 model suite has been frozen yet.
+
+## Historical mixed-snapshot Python-150 composition
 
 | Model | Status | Coverage | Pass | Pass rate | Avg final |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -16,15 +19,23 @@ Generated from task-local `run.json` and `eval/result.json`; `suite.summary` is 
 | Run ID | Lifecycle | Category | Scope | Tasks | Evaluated | Pass | Avg final | Quality |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |
 | `go-openhands-deepseek-v4-flash-20260705-001` | support | calibration | go-calibration | 3 | 3 | 3 | 0.501318 | absolute_artifact_paths |
+| `compliant150-flash-dspark-main-001` | candidate | leaderboard | python150 | 150 | 0 | 84 | 0.417602 | absolute_artifact_paths, missing_eval_results |
 | `batch3-flash-20260707-112646` | superseded | leaderboard | hard50-fragment | 10 | 0 | 0 | 0.000000 | absolute_artifact_paths |
 | `batch3-flash-20260707-113104` | frozen | leaderboard | hard50-fragment | 10 | 10 | 2 | 0.058741 | absolute_artifact_paths |
 | `batch3-flash-20260707-wave2wave4` | frozen | leaderboard | hard50-fragment | 20 | 20 | 5 | 0.031127 | absolute_artifact_paths |
 | `batch3-flash-20260708-wave5` | frozen | leaderboard | hard50-fragment | 20 | 19 | 1 | 0.031556 | summary_average_mismatch, absolute_artifact_paths |
 | `batch3-pydantic-rerun-20260711` | candidate | leaderboard | hard50-fragment | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `context-compression-64k-local-smoke-20260720-202600` | candidate | leaderboard | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `context-compression-64k-local-smoke-20260720-204055` | candidate | leaderboard | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `context-compression-64k-local-smoke-20260720-204440` | candidate | leaderboard | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `context-compression-64k-smoke-20260720-193557` | candidate | leaderboard | other | 1 | 0 | 0 | 0.000000 | absolute_artifact_paths |
 | `main-flash-20260705-232429` | frozen | leaderboard | core100 | 100 | 98 | 83 | 0.519816 | summary_average_mismatch, absolute_artifact_paths |
+| `compliant150-gptoss120b-main-002` | candidate | leaderboard | python150 | 150 | 0 | 37 | 0.184544 | absolute_artifact_paths, missing_eval_results |
 | `main-20260702-212731` | frozen | leaderboard | core100 | 100 | 100 | 24 | 0.172782 | absolute_artifact_paths |
+| `compliant150-qwen122b-main-001` | candidate | leaderboard | python150 | 150 | 0 | 56 | 0.275992 | absolute_artifact_paths, missing_eval_results |
 | `hard50-qwen3.6-27b-fp8-20260720-023500` | candidate | leaderboard | hard50 | 50 | 44 | 4 | 0.026916 | ok |
 | `qwen36-27b-fp8-main-20260704-001328` | frozen | leaderboard | core100 | 100 | 98 | 54 | 0.323569 | summary_average_mismatch, absolute_artifact_paths |
+| `compliant150-qwen35b-main-001` | candidate | leaderboard | python150 | 150 | 0 | 47 | 0.208269 | absolute_artifact_paths, missing_eval_results |
 | `hard50-qwen3.6-35b-a3b-fp8-20260720-022800` | candidate | leaderboard | hard50 | 50 | 49 | 3 | 0.024567 | ok |
 | `qwen36-35b-a3b-fp8-main-20260704-001313` | frozen | leaderboard | core100 | 100 | 95 | 49 | 0.302750 | summary_average_mismatch, absolute_artifact_paths |
 | `batch2` | support | smoke | smoke | 2 | 2 | 1 | 0.233201 | absolute_artifact_paths |
@@ -34,6 +45,36 @@ Generated from task-local `run.json` and `eval/result.json`; `suite.summary` is 
 | `pilot-5-20260701-161103` | support | smoke | smoke | 2 | 2 | 1 | 0.233658 | absolute_artifact_paths |
 | `sanity-pilot-20260701-151923` | support | smoke | smoke | 3 | 3 | 0 | 0.000000 | absolute_artifact_paths |
 | `workers2-sanity-20260701-162415` | support | smoke | smoke | 3 | 3 | 0 | 0.000000 | absolute_artifact_paths |
+| `main` | support | support | other | 50 | 50 | 11 | 0.120691 | absolute_artifact_paths |
+| `nopublic` | support | support | other | 50 | 50 | 4 | 0.045947 | absolute_artifact_paths |
+| `20260723_bidict_baseline_smoke` | support | support | other | 1 | 1 | 1 | 0.523591 | absolute_artifact_paths |
+| `20260723_bidict_rsg_closure_smoke` | support | support | other | 1 | 1 | 1 | 0.523133 | absolute_artifact_paths |
+| `isort__settings_resolver_core__hard3_001__p0` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `isort__settings_resolver_core__hard3_001__tuned` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `scrapy__item_loader_core__hard3_001__p0` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `scrapy__item_loader_core__hard3_001__tuned` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `transitions__state_machine_core__hard3_001__p0` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `transitions__state_machine_core__hard3_001__tuned` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `live-api-verify-20260723-210022` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `attempt_01` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `attempt_01` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `001_celery_p0_r1` | support | support | other | 1 | 1 | 1 | 0.197007 | absolute_artifact_paths |
+| `002_celery_p3_r1` | support | support | other | 1 | 0 | 0 | 0.000000 | absolute_artifact_paths, missing_eval_results |
+| `smoke-d0-auto_support-v2-20260723-200929` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `smoke-p0-baseline-v2-20260723-200737` | support | support | other | 1 | 1 | 1 | 0.544228 | absolute_artifact_paths |
+| `smoke-p2-bidict-v2-20260723-201043` | support | support | other | 1 | 1 | 1 | 0.523591 | absolute_artifact_paths |
+| `smoke-p2-tool_only-v2-20260723-200606` | support | support | other | 1 | 1 | 1 | 0.521739 | absolute_artifact_paths |
+| `p0-easy` | support | support | other | 1 | 1 | 1 | 0.544228 | absolute_artifact_paths |
+| `tuned-efficient-easy` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `tuned-hard-transitions` | support | support | other | 1 | 1 | 0 | 0.000000 | absolute_artifact_paths |
+| `p0` | support | support | other | 1 | 1 | 1 | 0.515742 | absolute_artifact_paths |
+| `tuned` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `r1-p0` | support | support | other | 1 | 1 | 1 | 0.544228 | absolute_artifact_paths |
+| `r1-tuned` | support | support | other | 1 | 1 | 1 | 0.544228 | absolute_artifact_paths |
+| `r2-p0` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `r2-tuned` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `r3-p0` | support | support | other | 1 | 1 | 1 | 0.499250 | absolute_artifact_paths |
+| `r3-tuned` | support | support | other | 1 | 1 | 1 | 0.544228 | absolute_artifact_paths |
 | `batch3-flash-20260707-wave2wave4` | support | validation | infra-reevaluation | 2 | 2 | 0 | 0.000000 | absolute_artifact_paths |
 | `main-20260702-212731` | support | validation | infra-reevaluation | 21 | 21 | 2 | 0.074430 | absolute_artifact_paths |
 | `qwen36-27b-fp8-main-20260704-001328` | support | validation | infra-reevaluation | 21 | 21 | 14 | 0.374977 | absolute_artifact_paths |

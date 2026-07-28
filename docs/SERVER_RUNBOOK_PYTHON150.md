@@ -41,6 +41,30 @@ egress controls if the experiment requires model-endpoint-only networking.
 
 ## 2. Checkout and bootstrap
 
+### Option A — runnable bundle（推荐：一包部署）
+
+在开发机（oracle + archives 已齐）打包：
+
+```bash
+./scripts/build_runnable_bundle.sh
+# experiments/bundles/outgoing/FeatureLiftBench-runnable-<stamp>.tar.gz
+```
+
+传到服务器后：
+
+```bash
+tar -xzf FeatureLiftBench-runnable-*.tar.gz
+cd FeatureLiftBench-runnable-*
+# 详见包内 BUNDLE.md
+PYTHON=python3.12 SKIP_MINI=1 ./setup.sh
+cp -n harness/config/agents.example.toml harness/config/agents.toml
+# 配置 .env 与 agents.toml
+```
+
+该包已含 `benchmark/submissions/*/oracle` 与 `benchmark/sources/archives`，一般**不必**再拷 oracle，也**不必**联网 materialize（仍建议跑 `--check`）。
+
+### Option B — git pull + 本地缓存
+
 First commit and push (or otherwise transfer) the complete benchmark migration
 and runner changes from the development machine. A server-side `git pull`
 cannot see uncommitted local files. On the server, check out one exact revision
@@ -51,11 +75,14 @@ git pull --ff-only
 git status --short
 git rev-parse HEAD
 PYTHON=python3.12 SKIP_MINI=1 ./setup.sh
+# Oracle is gitignored: unpack a submissions tarball, or use Option A.
 python3 scripts/materialize_full_sources.py --workers 8
 python3 scripts/materialize_full_sources.py --check
 ```
 
-`git status --short` should be empty before the run.
+`git status --short` should be empty before the run when using a clean git
+checkout (Option B). Bundle unpacks (Option A) are not git checkouts.
+
 
 The formal run uses OpenHands inside the agent image; no host-level OpenHands
 or mini-swe-agent installation is required.

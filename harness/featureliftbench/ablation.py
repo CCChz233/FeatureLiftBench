@@ -1,4 +1,4 @@
-"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt.
+"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt / TD-Cognition.
 
 See docs/EXPERIMENT_ARMS.md. Semantic contract (API/behaviors/hidden) is unchanged.
 Main is No-Hint by default; source-location hints require explicit opt-in.
@@ -14,6 +14,7 @@ MOUNT_PUBLIC_TESTS_ENV = "FEATURELIFTBENCH_MOUNT_PUBLIC_TESTS"
 PROMPT_STYLE_ENV = "FEATURELIFTBENCH_PROMPT_STYLE"
 EXPOSE_SOURCE_HINTS_ENV = "FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS"
 SOURCE_CONTEXT_ENV = "FEATURELIFTBENCH_SOURCE_CONTEXT"
+TD_COGNITION_ENV = "FEATURELIFTBENCH_TD_COGNITION"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
@@ -28,6 +29,7 @@ class AblationOptions:
     prompt_style: str = "standard"
     expose_source_hints: bool = False
     source_context: str = "full_repository"
+    td_cognition: bool = False
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
@@ -41,9 +43,13 @@ class AblationOptions:
                 f"got {self.source_context!r}"
             )
         object.__setattr__(self, "source_context", source_context)
+        object.__setattr__(self, "td_cognition", bool(self.td_cognition))
 
     @property
     def ablation_arm(self) -> str:
+        if self.td_cognition:
+            # TD-Cognition is a first-class method arm on top of Main visibility.
+            return "td_cognition"
         parts: list[str] = []
         if self.expose_source_hints:
             parts.append("entrypoint_hint")
@@ -61,6 +67,7 @@ class AblationOptions:
             PROMPT_STYLE_ENV: self.prompt_style,
             EXPOSE_SOURCE_HINTS_ENV: "1" if self.expose_source_hints else "0",
             SOURCE_CONTEXT_ENV: self.source_context,
+            TD_COGNITION_ENV: "1" if self.td_cognition else "0",
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -71,6 +78,7 @@ class AblationOptions:
             "prompt_style": self.prompt_style,
             "expose_source_hints": self.expose_source_hints,
             "source_context": self.source_context,
+            "td_cognition": self.td_cognition,
         }
 
 
@@ -87,11 +95,14 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         str(values.get(SOURCE_CONTEXT_ENV, "full_repository")).strip().lower()
         or "full_repository"
     )
+    td_raw = str(values.get(TD_COGNITION_ENV, "0")).strip().lower()
+    td_cognition = td_raw not in {"0", "false", "no", "off", ""}
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
         expose_source_hints=expose_hints,
         source_context=source_context,
+        td_cognition=td_cognition,
     )
 
 
@@ -104,6 +115,7 @@ def resolve_ablation_options(
     prompt_style: str | None = None,
     expose_source_hints: bool | None = None,
     source_context: str | None = None,
+    td_cognition: bool | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -151,11 +163,22 @@ def resolve_ablation_options(
     else:
         resolved_source_context = str(source_context).strip().lower()
 
+    if td_cognition is None:
+        resolved_td = _first_bool(
+            process_env.get(TD_COGNITION_ENV),
+            env_values.get(TD_COGNITION_ENV),
+            profile.get("td_cognition"),
+            default=False,
+        )
+    else:
+        resolved_td = bool(td_cognition)
+
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
         expose_source_hints=expose_hints,
         source_context=resolved_source_context,
+        td_cognition=resolved_td,
     )
 
 

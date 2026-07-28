@@ -149,6 +149,20 @@ def main(argv: list[str] | None = None) -> int:
         choices=("full_repository", "pruned_context"),
         help="source workspace arm; Main requires full_repository",
     )
+    td_cognition = run_agent_parser.add_mutually_exclusive_group()
+    td_cognition.add_argument(
+        "--td-cognition",
+        dest="td_cognition",
+        action="store_true",
+        help="TD-Cognition method arm: hard-gate submission/ until cognition scaffold + probes unlock",
+    )
+    td_cognition.add_argument(
+        "--no-td-cognition",
+        dest="td_cognition",
+        action="store_false",
+        help="Disable TD-Cognition hard gate (default)",
+    )
+    run_agent_parser.set_defaults(td_cognition=None)
     run_agent_parser.add_argument(
         "--env-file",
         type=Path,
@@ -522,6 +536,7 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             prompt_style=args.prompt_style,
             expose_source_hints=args.expose_source_hints,
             source_context=args.source_context,
+            td_cognition=args.td_cognition,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

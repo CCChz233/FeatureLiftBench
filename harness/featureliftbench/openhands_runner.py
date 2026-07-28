@@ -99,6 +99,9 @@ def _build_parser() -> argparse.ArgumentParser:
 
 def run(config: OpenHandsRunnerConfig) -> int:
     config.agent_output_dir.mkdir(parents=True, exist_ok=True)
+    # TD-Cognition legacy lock files must not block mkdir; two-phase uses a real dir.
+    if config.submission_dir.exists() and not config.submission_dir.is_dir():
+        config.submission_dir.unlink()
     config.submission_dir.mkdir(parents=True, exist_ok=True)
     prompt_file = config.agent_output_dir / "openhands_task.md"
     prompt_file.write_text(_build_openhands_prompt(config), encoding="utf-8")
@@ -553,6 +556,54 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "- Keep the implementation behavior-complete against the Required Output API and "
             "included behaviors.\n\n"
         )
+    td_section = ""
+    submission_line = f"- Final output must be written under `{config.submission_dir}`.\n"
+    required_finish = (
+        "## Required Finish State\n\n"
+        "Create a normal Python submission layout:\n\n"
+        "```text\n"
+        "submission/\n"
+        "  featurelifted/\n"
+        "    __init__.py\n"
+        "    ...\n"
+        "```\n\n"
+    )
+    if options.td_cognition:
+        from .td_cognition import TD_PHASE_ENV
+        from .td_cognition import openhands_phase1_appendix
+        from .td_cognition import openhands_phase2_appendix
+
+        phase = str(os.environ.get(TD_PHASE_ENV, "implement")).strip().lower() or "implement"
+        if phase == "cognition":
+            td_section = (
+                "## TD-Cognition Phase 1\n\n"
+                + openhands_phase1_appendix()
+                + "\n"
+            )
+            submission_line = (
+                "- `submission/` may exist but must remain **empty** in this phase. "
+                "Do not create `submission/featurelifted/`.\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Deliver cognition artifacts only:\n\n"
+                "```text\n"
+                "COGNITION.md\n"
+                "probes/\n"
+                "  test_*.py\n"
+                "```\n\n"
+                "Then finish. Implementation happens in a later phase.\n\n"
+            )
+            test_hint = (
+                "Write and run your own probes under `probes/` against `repo/` or "
+                "standalone checks. Do not import `submission.featurelifted`.\n\n"
+            )
+        else:
+            td_section = (
+                "## TD-Cognition Phase 2\n\n"
+                + openhands_phase2_appendix(workspace_dir=config.workspace_dir)
+                + "\n"
+            )
     prompt = (
         "# FeatureLiftBench Task for OpenHands\n\n"
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
@@ -562,22 +613,17 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         f"{public_line}"
         "- All benchmark-authored evaluator tests and evaluation files are private boundaries; "
         "do not use them as inputs.\n"
-        f"- Final output must be written under `{config.submission_dir}`.\n"
-        "- The importable package must be `submission/featurelifted/`.\n"
+        f"{submission_line}"
+        "- The importable package must be `submission/featurelifted/` "
+        "(phase-2 / normal runs only).\n"
         "- Do not place the answer in a top-level `featurelifted/` directory.\n"
         "- Prefer not to create `pyproject.toml`; the evaluator imports `submission/featurelifted` "
         "directly via `PYTHONPATH`.\n"
         "- If a `pyproject.toml` is truly necessary, use only `setuptools.build_meta` as the "
         "build backend; never use `setuptools.backends._legacy:_Backend`.\n"
         f"{complete_note}"
-        "## Required Finish State\n\n"
-        "Create a normal Python submission layout:\n\n"
-        "```text\n"
-        "submission/\n"
-        "  featurelifted/\n"
-        "    __init__.py\n"
-        "    ...\n"
-        "```\n\n"
+        f"{td_section}"
+        f"{required_finish}"
         f"{test_hint}"
         "## Task\n\n"
         f"{task_text}\n"

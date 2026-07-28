@@ -11,6 +11,8 @@
 | 看当前是否可跑、还缺什么 | [STATUS.md](STATUS.md) |
 | 理解核心设计 | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) |
 | 理解完整方法 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
+| 看当前研究优先级 | [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) |
+| 方法故事（测试驱动认知增强，草案） | [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) |
 | 在服务器运行 v3 Python-150 | [SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md) |
 
 当前状态（2026-07-27）：Python v3 External Main **150/150 ready**，

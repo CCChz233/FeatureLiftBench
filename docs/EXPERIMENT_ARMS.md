@@ -81,6 +81,27 @@ evaluator。
 
 该臂必须记录 `prompt_style=short`。
 
+## TD-Cognition：测试驱动的认知增强（方法臂）
+
+唯一变化：相对 Main 增加 **两阶段** 认知注入（不是喂更多官方测试）。
+
+1. **Phase 1（认知）**：Agent 只产出 `COGNITION.md` + 可执行 `probes/`，不交 `submission/featurelifted/`。  
+2. **Phase 2（实现）**：保留脚手架，把 Phase-1 产物注入 TASK/OpenHands 提示，再正常写 `submission/`。
+
+可见性与 Main 相同：Full-Repository、No-Hint、test-blind。  
+这里的「测试」是 Agent **自建认知探针**，不是 benchmark `public_tests/` / `hidden_tests/`。
+
+用途：验证「行动前契约建模」是否相对纯 ReAct Main 提高 Functional Pass。故事与 go/no-go 见
+[METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) 与
+[`experiments/td_cognition_pilot/`](../experiments/td_cognition_pilot/)。
+
+```bash
+./run_experiment.sh --arm td_cognition \
+  --task-file experiments/td_cognition_pilot/task_ids.txt
+```
+
+该臂必须记录 `td_cognition=true` / `ablation_arm=td_cognition`，并落盘 `td_cognition_phase.json`。
+
 ## Pruned-Context：源码范围消融
 
 唯一变化：将完整仓库替换为预先冻结的目标相关裁剪 snapshot。是否提供定位
@@ -105,6 +126,7 @@ Pruned-Context 或 v3 Main。
 | Public-feedback | benchmark 测试反馈的收益 |
 | Short-prompt | 流程提示文风的影响 |
 | Pruned-Context | 仓库搜索范围的影响 |
+| TD-Cognition | 行动前自建用例/探针认知注入的收益（方法臂） |
 
 先完成 active v3 freeze 上的全量 Main baseline，再在预注册子集上做消融。
 同一比较必须报告 Functional Pass@1、各 evaluator gate、steps、tokens、时长

@@ -503,7 +503,138 @@ def run_agent_on_task(
             agent_output_dir=agent_output_dir,
             task_text=task_file.read_text(encoding="utf-8"),
         )
-        if agent_ready:
+        phase1_agent_result = None
+        phase1_gate = None
+        if agent_ready and ablation.td_cognition:
+            from .td_cognition import TD_PHASE_ENV
+            from .td_cognition import evaluate_phase1_artifacts
+            from .td_cognition import prepare_phase2_workspace
+            from .td_cognition import write_phase_audit
+
+            phase1_dir = output_path / "agent_phase1"
+            _reset_dir(phase1_dir)
+            phase1_timeout = min(int(run_config.timeout_seconds or 3600), 1800)
+            phase1_config = replace(
+                run_config,
+                timeout_seconds=phase1_timeout,
+                env={
+                    **(run_config.env or {}),
+                    TD_PHASE_ENV: "cognition",
+                    "FEATURELIFTBENCH_TD_COGNITION": "1",
+                },
+            )
+            phase1_context = AgentRunContext(
+                workspace_dir=workspace_dir,
+                task_file=task_file,
+                submission_dir=workspace_submission_dir,
+                agent_output_dir=phase1_dir,
+                task_text=task_file.read_text(encoding="utf-8"),
+            )
+            phase1_stdout = phase1_dir / "stdout.log"
+            phase1_stderr = phase1_dir / "stderr.log"
+            try:
+                if agent_docker:
+                    phase1_agent_result = run_agent_in_docker(
+                        phase1_context,
+                        phase1_config,
+                        image=agent_docker_image,
+                        stdout_log=phase1_stdout,
+                        stderr_log=phase1_stderr,
+                    )
+                else:
+                    adapter = get_agent_adapter(phase1_config.agent)
+                    phase1_agent_result = adapter.run(
+                        phase1_context,
+                        phase1_config,
+                        stdout_log=phase1_stdout,
+                        stderr_log=phase1_stderr,
+                    )
+            except ValueError as exc:
+                errors.append(f"td_cognition phase1 failed: {exc}")
+            if phase1_agent_result is not None and not phase1_stdout.is_file():
+                _write_agent_logs(phase1_dir, phase1_agent_result)
+
+            phase1_gate = evaluate_phase1_artifacts(workspace_dir, run_pytest=True)
+            # Phase 2 always proceeds; incomplete cognition is recorded.
+            phase2_task_text = prepare_phase2_workspace(
+                workspace_dir,
+                task_file.read_text(encoding="utf-8"),
+            )
+            task_file = workspace_dir / "TASK.md"
+            prompt_path.write_text(phase2_task_text, encoding="utf-8")
+            _reset_dir(agent_output_dir)
+            phase2_config = replace(
+                run_config,
+                env={
+                    **(run_config.env or {}),
+                    TD_PHASE_ENV: "implement",
+                    "FEATURELIFTBENCH_TD_COGNITION": "1",
+                },
+            )
+            context = AgentRunContext(
+                workspace_dir=workspace_dir,
+                task_file=task_file,
+                submission_dir=workspace_submission_dir,
+                agent_output_dir=agent_output_dir,
+                task_text=phase2_task_text,
+            )
+            stdout_log = agent_output_dir / "stdout.log"
+            stderr_log = agent_output_dir / "stderr.log"
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        phase2_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(phase2_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        phase2_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(f"td_cognition phase2 failed: {exc}")
+            write_phase_audit(
+                output_path,
+                phase1_result=phase1_gate,
+                phase1_agent=(
+                    None
+                    if phase1_agent_result is None
+                    else {
+                        "name": phase1_agent_result.name,
+                        "passed": phase1_agent_result.passed,
+                        "returncode": phase1_agent_result.returncode,
+                        "duration_seconds": phase1_agent_result.duration_seconds,
+                        "timed_out": phase1_agent_result.timed_out,
+                        "reason": phase1_agent_result.reason,
+                        "resource_limited": phase1_agent_result.resource_limited,
+                    }
+                ),
+                phase2_agent=(
+                    None
+                    if agent_result is None
+                    else {
+                        "name": agent_result.name,
+                        "passed": agent_result.passed,
+                        "returncode": agent_result.returncode,
+                        "duration_seconds": agent_result.duration_seconds,
+                        "timed_out": agent_result.timed_out,
+                        "reason": agent_result.reason,
+                        "resource_limited": agent_result.resource_limited,
+                    }
+                ),
+            )
+            if not phase1_gate.ok:
+                errors.append(
+                    "td_cognition phase1 cognition incomplete: "
+                    + "; ".join(phase1_gate.errors)
+                )
+        elif agent_ready:
             try:
                 if agent_docker:
                     agent_result = run_agent_in_docker(
@@ -1487,7 +1618,13 @@ def prepare_agent_workspace(
         json.dumps(redacted_metadata, indent=2, sort_keys=True),
         encoding="utf-8",
     )
-    (workspace_path / "submission").mkdir(exist_ok=True)
+    if options.td_cognition:
+        from .td_cognition import install_td_cognition_workspace
+        from .td_cognition import phase1_task_appendix
+
+        install_td_cognition_workspace(workspace_path)
+    else:
+        (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
     if get_spec_status(metadata) == SPEC_STATUS_COMPLIANT:
         task_markdown = render_agent_workspace_task(
@@ -1501,6 +1638,12 @@ def prepare_agent_workspace(
         )
     else:
         task_markdown = build_task_prompt(redacted_metadata, ablation=options)
+    if options.td_cognition:
+        task_markdown = (
+            task_markdown.rstrip()
+            + "\n\n## TD-Cognition Phase 1\n\n"
+            + phase1_task_appendix()
+        )
     task_file.write_text(task_markdown, encoding="utf-8")
     if not options.expose_source_hints:
         leaks = audit_no_hint_workspace(workspace_path)

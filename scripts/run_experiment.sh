@@ -25,7 +25,7 @@ Usage:
   ./run_experiment.sh [options]
 
 Arms / profiles:
-  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|p0
+  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|p0
       Map to OpenHands DeepSeek profiles (uses harness/config/agents.example.toml)
   --profile NAME
       Explicit --agent-profile (overrides --arm mapping)
@@ -127,9 +127,10 @@ arm_to_profile() {
     nopublic|no_public|no-public) echo "openhands_deepseek_v4_flash_main" ;;
     short|short_prompt|short-prompt) echo "openhands_deepseek_v4_flash_short_prompt" ;;
     pruned|pruned_context|pruned-context) echo "openhands_deepseek_v4_flash_main" ;;
+    td|td_cognition|td-cognition|cognition) echo "openhands_deepseek_v4_flash_td_cognition" ;;
     p0) echo "openhands_deepseek_v4_flash_rsg_pilot_p0" ;;
     *)
-      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|p0 or --profile)" >&2
+      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|p0 or --profile)" >&2
       return 2
       ;;
   esac
@@ -231,19 +232,22 @@ run_one() {
   local arm_flags=()
   case "${arm_label}" in
     entrypoint_hint|entrypoint-hint|hints)
-      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository)
+      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition)
       ;;
     public_feedback|public-feedback|public)
-      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository)
+      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition)
       ;;
     short|short_prompt|short-prompt)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository --no-td-cognition)
       ;;
     pruned|pruned_context|pruned-context)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context --no-td-cognition)
+      ;;
+    td|td_cognition|td-cognition|cognition)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --td-cognition)
       ;;
     *)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition)
       ;;
   esac
 

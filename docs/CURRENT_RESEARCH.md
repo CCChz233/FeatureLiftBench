@@ -1,12 +1,12 @@
 # 当前研究入口
 
-**更新时间：** 2026-07-27
+**更新时间：** 2026-07-28
 
 ## 一句话
 
-Benchmark 工程已经闭环；当前最高优先级是按 frozen Full-Repository /
-No-Hint Python-150 跑正式 baseline，而不是继续改题、恢复人工审核或推进
-旧方法线。
+Benchmark 工程已经闭环；正式主线仍是 v3 Full-Repository / No-Hint baseline。  
+方法试点 **TD-Cognition（两阶段）** 已在 GPU176 重跑中，操作见
+[`experiments/td_cognition_pilot/`](../experiments/td_cognition_pilot/)。
 
 ## 当前判断
 
@@ -33,7 +33,19 @@ Python-150 已满足八条核心原则：
 | P0 | v3 baseline | 每个目标模型完整 150 题、attempt=1、freeze/image/protocol 可审计 |
 | P1 | v3 结果分析 | Functional Pass@1、compactness、token、step、latency、failure taxonomy |
 | P2 | 难度重校准 | 基于首轮 v3 empirical success，不把旧 hard 标签当实证结论 |
-| P3 | 方法研究 | 在冻结 v3 子集上验证 Contract/API closure recovery |
+| P3 | 方法研究 | TD-Cognition **两阶段**试点进行中（GPU176）。Baseline 4/12 已出；锁文件版 TD 作废；有效 TD 目录见 pilot README |
+
+## TD-Cognition 试点快照（2026-07-28）
+
+| 项 | 状态 |
+| --- | --- |
+| 模型 | `deepseek/deepseek-v4-flash` |
+| 题集 | 12（`experiments/td_cognition_pilot/task_ids.txt`） |
+| Baseline | `experiments/ablation/compare-20260728-155516/main` → **4/12 pass** |
+| TD（作废） | 同 compare 的 `td_cognition/`：锁文件与 runner `mkdir` 冲突 → 12× missing_submission |
+| TD（现行） | `experiments/ablation/td-cognition-twophase-20260728-180833`（Phase1→Phase2） |
+| 故事 | [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) |
+| 操作 | [pilot README](../experiments/td_cognition_pilot/README.md) |
 
 正式默认：
 
@@ -82,7 +94,7 @@ OpenHands
 | 路线 | 状态 |
 | --- | --- |
 | Benchmark v3 工程 | 完成 |
-| Contract/API closure recovery | 下一方法候选 |
+| Contract/API closure recovery | **当前方法候选**；两阶段 TD-Cognition 试点进行中，见 [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) 与 [pilot README](../experiments/td_cognition_pilot/README.md) |
 | Repository Fact Graph 基础设施 | 保留 |
 | RSG start-here/support retrieval | 降级为历史基线 |
 | ECSM / 强制 task-closure 状态机 | 废弃 |
@@ -95,6 +107,9 @@ OpenHands
 
 - [设计原则](BENCHMARK_DESIGN_PRINCIPLES.md)
 - [当前状态](STATUS.md)
+- [方法故事草案](METHOD_TEST_DRIVEN_COGNITION.md)
+- [TD 试点操作（GPU176）](../experiments/td_cognition_pilot/README.md)
+- [实验臂](EXPERIMENT_ARMS.md)
 - [实验清单](EXPERIMENTS.md)
 - [服务器运行手册](SERVER_RUNBOOK_PYTHON150.md)
 - [报告索引](REPORTS_INDEX.md)

@@ -1,10 +1,10 @@
 # 测试驱动的 Agent 认知增强（方法故事）
 
-**状态：** 草案 v0.4（2026-07-28）— 两阶段协议；GPU176 试点重跑中  
-**定位：** FeatureLiftBench 上的方法研究假说与叙事；**不是**已验证结论  
+**状态：** 归档 v0.6（2026-07-29）— 干净试点相对 Main **零增益**；**不再扩**；方法主线已切到 [METHOD_EXEC_CONTRACT.md](METHOD_EXEC_CONTRACT.md)  
+**定位：** 负对照叙事（「自编探针先行」为何不够）；**不是**当前主候选  
 **上位：** [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md) · [FINDINGS.md](FINDINGS.md) · [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)  
 **试点：** [`experiments/td_cognition_pilot/`](../experiments/td_cognition_pilot/)（DeepSeek Flash · Phase1→Phase2 · 12 题）  
-**有效结果目录：** Baseline `compare-20260728-155516/main`（4/12）；TD `td-cognition-twophase-20260728-180833`（进行中）。锁文件版 TD 作废。
+**有效结果：** Main `compare-20260728-155516/main`（4/12）；干净 TD `td-cognition-clean-20260728-220500`（4/12，零翻盘）。脏跑与锁文件版作废。
 
 ---
 
@@ -154,6 +154,7 @@ FeatureLiftBench 要求 Agent 在完整真实仓库与完整公开功能契约�
 | **TD-Cognition** | **两阶段**：Phase1 只产 `COGNITION.md`+`probes/`；Phase2 注入脚手架后再实现（`--arm td_cognition`） |
 
 **已拍板：** 模型 `deepseek/deepseek-v4-flash`（API）；两阶段协议（已从锁文件硬门闩改为分阶段）；探针在 Phase1 写+跑。  
+**Phase1 gate：** 在 **agent Docker** 内执行 `python -m pytest probes/`（与 Agent 同镜像），不再用宿主机解释器；脚手架标题/用例格式已放宽；`gate.ok=false` 仍进入 Phase2（软门闩），报告按 gate 分桶。  
 暂不设 Token-matched 臂。Oracle-Scaffold 留作第二波。
 
 题集与跑法：[`experiments/td_cognition_pilot/`](../experiments/td_cognition_pilot/)。

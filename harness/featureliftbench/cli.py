@@ -163,6 +163,34 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable TD-Cognition hard gate (default)",
     )
     run_agent_parser.set_defaults(td_cognition=None)
+    exec_contract = run_agent_parser.add_mutually_exclusive_group()
+    exec_contract.add_argument(
+        "--exec-contract",
+        dest="exec_contract",
+        action="store_true",
+        help="Execution-Guided Contract arm: upstream runtime facts -> contracts -> verify",
+    )
+    exec_contract.add_argument(
+        "--no-exec-contract",
+        dest="exec_contract",
+        action="store_false",
+        help="Disable Execution-Guided Contract arm (default)",
+    )
+    run_agent_parser.set_defaults(exec_contract=None)
+    self_contract = run_agent_parser.add_mutually_exclusive_group()
+    self_contract.add_argument(
+        "--self-contract",
+        dest="self_contract",
+        action="store_true",
+        help="Self-Authored Contract arm: model writes contracts -> freeze -> implement",
+    )
+    self_contract.add_argument(
+        "--no-self-contract",
+        dest="self_contract",
+        action="store_false",
+        help="Disable Self-Authored Contract arm (default)",
+    )
+    run_agent_parser.set_defaults(self_contract=None)
     run_agent_parser.add_argument(
         "--env-file",
         type=Path,
@@ -537,6 +565,8 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             expose_source_hints=args.expose_source_hints,
             source_context=args.source_context,
             td_cognition=args.td_cognition,
+            exec_contract=args.exec_contract,
+            self_contract=args.self_contract,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

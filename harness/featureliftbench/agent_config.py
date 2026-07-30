@@ -61,6 +61,8 @@ def load_agent_run_config(
     expose_source_hints: bool | None = None,
     source_context: str | None = None,
     td_cognition: bool | None = None,
+    exec_contract: bool | None = None,
+    self_contract: bool | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
 
@@ -87,6 +89,8 @@ def load_agent_run_config(
         expose_source_hints=expose_source_hints,
         source_context=source_context,
         td_cognition=td_cognition,
+        exec_contract=exec_contract,
+        self_contract=self_contract,
     )
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
@@ -423,6 +427,8 @@ def load_agent_run_config(
         "expose_source_hints": ablation.expose_source_hints,
         "source_context": ablation.source_context,
         "td_cognition": ablation.td_cognition,
+        "exec_contract": ablation.exec_contract,
+        "self_contract": ablation.self_contract,
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 

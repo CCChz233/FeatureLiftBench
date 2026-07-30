@@ -1,12 +1,12 @@
 # 当前研究入口
 
-**更新时间：** 2026-07-28
+**更新时间：** 2026-07-30
 
 ## 一句话
 
 Benchmark 工程已经闭环；正式主线仍是 v3 Full-Repository / No-Hint baseline。  
-方法试点 **TD-Cognition（两阶段）** 已在 GPU176 重跑中，操作见
-[`experiments/td_cognition_pilot/`](../experiments/td_cognition_pilot/)。
+方法侧：干净 **Exec-Contract clean3** 在 alembic+click focus 两题皆 public✓（Functional 仍 0/2）；**Self-Authored Contract** 首跑闸门绿但 formal 0/2（弱于 clean3）。TD-Cognition 为负对照。  
+操作：[`exec_contract_pilot`](../experiments/exec_contract_pilot/) · [`self_contract_pilot`](../experiments/self_contract_pilot/) · 故事：[METHOD_EXEC_CONTRACT.md](METHOD_EXEC_CONTRACT.md) · [METHOD_SELF_CONTRACT.md](METHOD_SELF_CONTRACT.md)。
 
 ## 当前判断
 
@@ -33,19 +33,45 @@ Python-150 已满足八条核心原则：
 | P0 | v3 baseline | 每个目标模型完整 150 题、attempt=1、freeze/image/protocol 可审计 |
 | P1 | v3 结果分析 | Functional Pass@1、compactness、token、step、latency、failure taxonomy |
 | P2 | 难度重校准 | 基于首轮 v3 empirical success，不把旧 hard 标签当实证结论 |
-| P3 | 方法研究 | TD-Cognition **两阶段**试点进行中（GPU176）。Baseline 4/12 已出；锁文件版 TD 作废；有效 TD 目录见 pilot README |
+| P3 | 方法研究 | Focus 最佳干净模板臂 = **exec clean3**；self_contract focus 0/2 未增益、协议未改前不扩。TD 4/12 零翻盘 |
 
-## TD-Cognition 试点快照（2026-07-28）
+## Focus 方法快照（alembic + click，2026-07-30）
+
+| Arm | alembic | click | 备注 |
+| --- | --- | --- | --- |
+| Main `compare-20260728-155516/main` | p✗ h✗ | p✗ h✗ | 基线 |
+| **exec clean3** | **p✓ h✗** | **p✓ h✗** | 当前最佳干净模板 |
+| exec clean4 | p✗ h✗ | p✓ h✗ | B006 → `"base"` 过度泛化 |
+| self_contract `…-140322` | p✗ h✗ | p✗ h✗ | 闸门绿；base 泛化 + 漏 invoke |
+
+详表：[CLEAN_FOCUS.md](../experiments/exec_contract_pilot/CLEAN_FOCUS.md) · [FOCUS_RESULTS.md](../experiments/self_contract_pilot/FOCUS_RESULTS.md)  
+导出：`exports/flb-useful-focus-expts-20260730-144258.tar.gz`
+
+## Exec-Contract 试点快照
 
 | 项 | 状态 |
 | --- | --- |
 | 模型 | `deepseek/deepseek-v4-flash` |
-| 题集 | 12（`experiments/td_cognition_pilot/task_ids.txt`） |
-| Baseline | `experiments/ablation/compare-20260728-155516/main` → **4/12 pass** |
-| TD（作废） | 同 compare 的 `td_cognition/`：锁文件与 runner `mkdir` 冲突 → 12× missing_submission |
-| TD（现行） | `experiments/ablation/td-cognition-twophase-20260728-180833`（Phase1→Phase2） |
+| 12 题对照 Main | `compare-20260728-155516/main` → **4/12** |
+| Focus 最佳 | `exec-contract-clean3-20260729-214504` |
+| 故事 | [METHOD_EXEC_CONTRACT.md](METHOD_EXEC_CONTRACT.md) |
+| 操作 | [exec_contract pilot](../experiments/exec_contract_pilot/README.md) |
+
+## Self-Authored Contract 快照
+
+| 项 | 状态 |
+| --- | --- |
+| 臂 | `--arm self_contract` |
+| Focus | **0/2** Functional；[FOCUS_RESULTS.md](../experiments/self_contract_pilot/FOCUS_RESULTS.md) |
+| 故事 | [METHOD_SELF_CONTRACT.md](METHOD_SELF_CONTRACT.md) |
+
+## TD-Cognition 归档快照（2026-07-28，负对照）
+
+| 项 | 状态 |
+| --- | --- |
+| 干净 TD | `td-cognition-clean-20260728-220500` → **4/12**，相对 Main **零翻盘** |
+| 结论 | 自编探针易锁死错误认知；不扩。尸检动机写入 Exec-Contract 文档 §2 |
 | 故事 | [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) |
-| 操作 | [pilot README](../experiments/td_cognition_pilot/README.md) |
 
 正式默认：
 
@@ -94,7 +120,7 @@ OpenHands
 | 路线 | 状态 |
 | --- | --- |
 | Benchmark v3 工程 | 完成 |
-| Contract/API closure recovery | **当前方法候选**；两阶段 TD-Cognition 试点进行中，见 [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md) 与 [pilot README](../experiments/td_cognition_pilot/README.md) |
+| Contract/API closure recovery | **主候选仍是 Exec-Contract（focus 上限 = clean3）**；Self-Authored 已试点无增益。TD 负对照 |
 | Repository Fact Graph 基础设施 | 保留 |
 | RSG start-here/support retrieval | 降级为历史基线 |
 | ECSM / 强制 task-closure 状态机 | 废弃 |
@@ -107,8 +133,11 @@ OpenHands
 
 - [设计原则](BENCHMARK_DESIGN_PRINCIPLES.md)
 - [当前状态](STATUS.md)
-- [方法故事草案](METHOD_TEST_DRIVEN_COGNITION.md)
-- [TD 试点操作（GPU176）](../experiments/td_cognition_pilot/README.md)
+- [方法故事：Exec-Contract](METHOD_EXEC_CONTRACT.md)
+- [方法故事：Self-Authored Contract](METHOD_SELF_CONTRACT.md)
+- [Exec-Contract focus 结果](../experiments/exec_contract_pilot/CLEAN_FOCUS.md)
+- [Self-Contract focus 结果](../experiments/self_contract_pilot/FOCUS_RESULTS.md)
+- [TD 负对照故事](METHOD_TEST_DRIVEN_COGNITION.md)
 - [实验臂](EXPERIMENT_ARMS.md)
 - [实验清单](EXPERIMENTS.md)
 - [服务器运行手册](SERVER_RUNBOOK_PYTHON150.md)

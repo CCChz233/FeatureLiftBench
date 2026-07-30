@@ -53,6 +53,107 @@ class AgentDockerInvocation:
     container_name: str
 
 
+@dataclass(frozen=True)
+class AgentDockerCommandResult:
+    returncode: int
+    stdout: str
+    stderr: str
+    timed_out: bool
+    command: list[str]
+    container_name: str
+
+
+def run_command_in_agent_docker(
+    workspace_dir: str | Path,
+    argv: list[str],
+    *,
+    image: str = DEFAULT_AGENT_IMAGE,
+    timeout_seconds: int = 300,
+) -> AgentDockerCommandResult:
+    """Run a short-lived command in the agent image with workspace mounted.
+
+    Used for TD-Cognition Phase-1 probe validation so pytest runs in the same
+    Python environment as the agent, not on the host interpreter.
+    """
+
+    workspace = Path(workspace_dir).resolve()
+    if not argv:
+        raise ValueError("argv must be non-empty")
+    container_name = f"flb-gate-{uuid.uuid4().hex[:12]}"
+    command = [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        container_name,
+        "--network",
+        _env_default("FEATURELIFTBENCH_AGENT_DOCKER_NETWORK", DEFAULT_AGENT_DOCKER_NETWORK),
+        "--memory",
+        _env_default("FEATURELIFTBENCH_AGENT_DOCKER_MEMORY", DEFAULT_AGENT_DOCKER_MEMORY),
+        "--cpus",
+        _env_default("FEATURELIFTBENCH_AGENT_DOCKER_CPUS", DEFAULT_AGENT_DOCKER_CPUS),
+        "--pids-limit",
+        _env_default("FEATURELIFTBENCH_AGENT_DOCKER_PIDS", DEFAULT_AGENT_DOCKER_PIDS),
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        _env_default("FEATURELIFTBENCH_AGENT_DOCKER_TMPFS", DEFAULT_AGENT_DOCKER_TMPFS),
+        "--user",
+        _uid_gid(),
+        "-w",
+        str(CONTAINER_WORKSPACE),
+        "-v",
+        f"{workspace}:{CONTAINER_WORKSPACE}:rw",
+        image,
+        *argv,
+    ]
+    try:
+        proc = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=max(1, int(timeout_seconds)),
+        )
+    except FileNotFoundError as exc:
+        return AgentDockerCommandResult(
+            returncode=127,
+            stdout="",
+            stderr=str(exc),
+            timed_out=False,
+            command=command,
+            container_name=container_name,
+        )
+    except subprocess.TimeoutExpired as exc:
+        _kill_container(container_name)
+        stdout = exc.stdout if isinstance(exc.stdout, str) else (exc.stdout or b"").decode(
+            "utf-8", errors="replace"
+        )
+        stderr = exc.stderr if isinstance(exc.stderr, str) else (exc.stderr or b"").decode(
+            "utf-8", errors="replace"
+        )
+        if not stderr:
+            stderr = f"agent docker command timed out after {timeout_seconds}s"
+        return AgentDockerCommandResult(
+            returncode=124,
+            stdout=stdout or "",
+            stderr=stderr,
+            timed_out=True,
+            command=command,
+            container_name=container_name,
+        )
+    return AgentDockerCommandResult(
+        returncode=int(proc.returncode or 0),
+        stdout=proc.stdout or "",
+        stderr=proc.stderr or "",
+        timed_out=False,
+        command=command,
+        container_name=container_name,
+    )
+
+
 def run_agent_in_docker(
     context: AgentRunContext,
     config: AgentRunConfig,

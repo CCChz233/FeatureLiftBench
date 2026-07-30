@@ -554,7 +554,12 @@ def run_agent_on_task(
             if phase1_agent_result is not None and not phase1_stdout.is_file():
                 _write_agent_logs(phase1_dir, phase1_agent_result)
 
-            phase1_gate = evaluate_phase1_artifacts(workspace_dir, run_pytest=True)
+            phase1_gate = evaluate_phase1_artifacts(
+                workspace_dir,
+                run_pytest=True,
+                pytest_backend="docker" if agent_docker else "local",
+                docker_image=agent_docker_image if agent_docker else None,
+            )
             # Phase 2 always proceeds; incomplete cognition is recorded.
             phase2_task_text = prepare_phase2_workspace(
                 workspace_dir,
@@ -634,6 +639,504 @@ def run_agent_on_task(
                     "td_cognition phase1 cognition incomplete: "
                     + "; ".join(phase1_gate.errors)
                 )
+        elif agent_ready and ablation.exec_contract:
+            from .exec_contract import collect_upstream_runtime
+            from .exec_contract import phase1_task_appendix as exec_phase1_appendix
+            from .exec_contract import prepare_repair_workspace
+            from .exec_contract import synthesize_contracts
+            from .exec_contract import verify_submission_contracts
+            from .exec_contract import write_exec_contract_audit
+            from .exec_contract.common import DEFAULT_REPAIR_ROUNDS
+            from .exec_contract.common import DEFAULT_REPAIR_TIMEOUT_SECONDS
+
+            public_spec = metadata.get("public_spec") if isinstance(metadata.get("public_spec"), dict) else {}
+            collect_meta = collect_upstream_runtime(
+                workspace_dir,
+                public_spec,
+                docker_image=agent_docker_image if agent_docker else None,
+                use_docker=bool(agent_docker),
+            )
+            synthesize_meta = synthesize_contracts(
+                workspace_dir, public_spec, collect_meta=collect_meta
+            )
+            # Refresh TASK appendix now that RUNTIME_FACTS exists.
+            base_task = task_file.read_text(encoding="utf-8")
+            import re as _re
+            base_task = _re.sub(
+                r"\n## Execution-Guided Contract.*",
+                "",
+                base_task,
+                flags=_re.DOTALL,
+            ).rstrip()
+            refreshed = (
+                base_task
+                + "\n\n## Execution-Guided Contract\n\n"
+                + exec_phase1_appendix()
+            )
+            task_file.write_text(refreshed + "\n", encoding="utf-8")
+            prompt_path.write_text(refreshed, encoding="utf-8")
+            context = AgentRunContext(
+                workspace_dir=workspace_dir,
+                task_file=task_file,
+                submission_dir=workspace_submission_dir,
+                agent_output_dir=agent_output_dir,
+                task_text=refreshed,
+            )
+            exec_env = {
+                **(run_config.env or {}),
+                "FEATURELIFTBENCH_EXEC_CONTRACT": "1",
+                "FEATURELIFTBENCH_EXEC_CONTRACT_PHASE": "implement",
+            }
+            primary_config = replace(run_config, env=exec_env)
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        primary_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(primary_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        primary_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(f"exec_contract implement failed: {exc}")
+
+            verify_initial = verify_submission_contracts(
+                workspace_dir,
+                docker_image=agent_docker_image if agent_docker else None,
+                use_docker=bool(agent_docker),
+            )
+            verify_final = verify_initial
+            repair_agent_result = None
+            repair_rounds_used = 0
+            if not verify_initial.get("ok") and DEFAULT_REPAIR_ROUNDS > 0:
+                repair_rounds_used = 1
+                repair_task = prepare_repair_workspace(
+                    workspace_dir,
+                    verify_result=verify_initial,
+                    task_markdown=task_file.read_text(encoding="utf-8"),
+                )
+                prompt_path.write_text(repair_task, encoding="utf-8")
+                repair_dir = output_path / "agent_repair"
+                _reset_dir(repair_dir)
+                repair_stdout = repair_dir / "stdout.log"
+                repair_stderr = repair_dir / "stderr.log"
+                repair_config = replace(
+                    run_config,
+                    timeout_seconds=min(
+                        int(run_config.timeout_seconds or 3600),
+                        DEFAULT_REPAIR_TIMEOUT_SECONDS,
+                    ),
+                    env={
+                        **(run_config.env or {}),
+                        "FEATURELIFTBENCH_EXEC_CONTRACT": "1",
+                        "FEATURELIFTBENCH_EXEC_CONTRACT_PHASE": "repair",
+                    },
+                )
+                repair_context = AgentRunContext(
+                    workspace_dir=workspace_dir,
+                    task_file=task_file,
+                    submission_dir=workspace_submission_dir,
+                    agent_output_dir=repair_dir,
+                    task_text=repair_task,
+                )
+                try:
+                    if agent_docker:
+                        repair_agent_result = run_agent_in_docker(
+                            repair_context,
+                            repair_config,
+                            image=agent_docker_image,
+                            stdout_log=repair_stdout,
+                            stderr_log=repair_stderr,
+                        )
+                    else:
+                        adapter = get_agent_adapter(repair_config.agent)
+                        repair_agent_result = adapter.run(
+                            repair_context,
+                            repair_config,
+                            stdout_log=repair_stdout,
+                            stderr_log=repair_stderr,
+                        )
+                except ValueError as exc:
+                    errors.append(f"exec_contract repair failed: {exc}")
+                verify_final = verify_submission_contracts(
+                    workspace_dir,
+                    docker_image=agent_docker_image if agent_docker else None,
+                    use_docker=bool(agent_docker),
+                )
+
+            write_exec_contract_audit(
+                output_path,
+                collect_meta=collect_meta,
+                synthesize_meta=synthesize_meta,
+                verify_initial=verify_initial,
+                verify_final=verify_final,
+                repair_rounds_used=repair_rounds_used,
+                agent_primary=(
+                    None
+                    if agent_result is None
+                    else {
+                        "name": agent_result.name,
+                        "passed": agent_result.passed,
+                        "returncode": agent_result.returncode,
+                        "duration_seconds": agent_result.duration_seconds,
+                        "timed_out": agent_result.timed_out,
+                        "reason": agent_result.reason,
+                        "resource_limited": agent_result.resource_limited,
+                    }
+                ),
+                agent_repair=(
+                    None
+                    if repair_agent_result is None
+                    else {
+                        "name": repair_agent_result.name,
+                        "passed": repair_agent_result.passed,
+                        "returncode": repair_agent_result.returncode,
+                        "duration_seconds": repair_agent_result.duration_seconds,
+                        "timed_out": repair_agent_result.timed_out,
+                        "reason": repair_agent_result.reason,
+                        "resource_limited": repair_agent_result.resource_limited,
+                    }
+                ),
+            )
+            if not verify_final.get("ok"):
+                errors.append(
+                    "exec_contract contracts incomplete: "
+                    + str(verify_final.get("error") or verify_final.get("stderr_tail") or "contracts failed")[:500]
+                )
+        elif agent_ready and ablation.self_contract:
+            import re as _re
+
+            from .exec_contract import collect_upstream_runtime
+            from .exec_contract import verify_submission_contracts
+            from .self_contract import author_task_appendix
+            from .self_contract import evaluate_author_gate
+            from .self_contract import freeze_contracts
+            from .self_contract import implement_task_appendix
+            from .self_contract import prepare_author_repair_workspace
+            from .self_contract import prepare_impl_repair_workspace
+            from .self_contract import reset_submission_dir
+            from .self_contract import verify_contracts_frozen
+            from .self_contract import write_self_contract_audit
+            from .self_contract.common import DEFAULT_AUTHOR_REPAIR_ROUNDS
+            from .self_contract.common import DEFAULT_AUTHOR_TIMEOUT_SECONDS
+            from .self_contract.common import DEFAULT_IMPL_REPAIR_ROUNDS
+            from .self_contract.common import DEFAULT_REPAIR_TIMEOUT_SECONDS
+            from .self_contract.common import SELF_CONTRACT_ENV
+            from .self_contract.common import SELF_CONTRACT_PHASE_ENV
+
+            def _agent_compact(result: Any) -> dict[str, Any] | None:
+                if result is None:
+                    return None
+                return {
+                    "name": result.name,
+                    "passed": result.passed,
+                    "returncode": result.returncode,
+                    "duration_seconds": result.duration_seconds,
+                    "timed_out": result.timed_out,
+                    "reason": result.reason,
+                    "resource_limited": result.resource_limited,
+                }
+
+            public_spec = (
+                metadata.get("public_spec")
+                if isinstance(metadata.get("public_spec"), dict)
+                else {}
+            )
+            # Phase 0: facts only (no harness-synthesized contracts).
+            collect_meta = collect_upstream_runtime(
+                workspace_dir,
+                public_spec,
+                docker_image=agent_docker_image if agent_docker else None,
+                use_docker=bool(agent_docker),
+            )
+
+            def _refresh_task(section_title: str, appendix: str) -> str:
+                base = task_file.read_text(encoding="utf-8")
+                base = _re.sub(
+                    r"\n## Self-Authored Contract.*",
+                    "",
+                    base,
+                    flags=_re.DOTALL,
+                ).rstrip()
+                refreshed = base + f"\n\n## {section_title}\n\n" + appendix
+                task_file.write_text(refreshed + "\n", encoding="utf-8")
+                prompt_path.write_text(refreshed, encoding="utf-8")
+                return refreshed
+
+            # Phase A — author contracts
+            author_text = _refresh_task(
+                "Self-Authored Contract Phase A", author_task_appendix()
+            )
+            author_dir = output_path / "agent_author"
+            _reset_dir(author_dir)
+            author_stdout = author_dir / "stdout.log"
+            author_stderr = author_dir / "stderr.log"
+            author_timeout = min(
+                int(run_config.timeout_seconds or 3600),
+                DEFAULT_AUTHOR_TIMEOUT_SECONDS,
+            )
+            author_config = replace(
+                run_config,
+                timeout_seconds=author_timeout,
+                env={
+                    **(run_config.env or {}),
+                    SELF_CONTRACT_ENV: "1",
+                    SELF_CONTRACT_PHASE_ENV: "author",
+                },
+            )
+            author_context = AgentRunContext(
+                workspace_dir=workspace_dir,
+                task_file=task_file,
+                submission_dir=workspace_submission_dir,
+                agent_output_dir=author_dir,
+                task_text=author_text,
+            )
+            author_agent_result = None
+            try:
+                if agent_docker:
+                    author_agent_result = run_agent_in_docker(
+                        author_context,
+                        author_config,
+                        image=agent_docker_image,
+                        stdout_log=author_stdout,
+                        stderr_log=author_stderr,
+                    )
+                else:
+                    adapter = get_agent_adapter(author_config.agent)
+                    author_agent_result = adapter.run(
+                        author_context,
+                        author_config,
+                        stdout_log=author_stdout,
+                        stderr_log=author_stderr,
+                    )
+            except ValueError as exc:
+                errors.append(f"self_contract author failed: {exc}")
+
+            author_gate = evaluate_author_gate(
+                workspace_dir,
+                docker_image=agent_docker_image if agent_docker else None,
+                use_docker=bool(agent_docker),
+            )
+            author_repair_rounds = 0
+            if (
+                not author_gate.get("ok")
+                and DEFAULT_AUTHOR_REPAIR_ROUNDS > 0
+            ):
+                author_repair_rounds = 1
+                repair_text = prepare_author_repair_workspace(
+                    workspace_dir,
+                    gate_result=author_gate,
+                    task_markdown=task_file.read_text(encoding="utf-8"),
+                )
+                prompt_path.write_text(repair_text, encoding="utf-8")
+                author_repair_dir = output_path / "agent_author_repair"
+                _reset_dir(author_repair_dir)
+                author_repair_stdout = author_repair_dir / "stdout.log"
+                author_repair_stderr = author_repair_dir / "stderr.log"
+                author_repair_config = replace(
+                    run_config,
+                    timeout_seconds=min(
+                        int(run_config.timeout_seconds or 3600),
+                        DEFAULT_REPAIR_TIMEOUT_SECONDS,
+                    ),
+                    env={
+                        **(run_config.env or {}),
+                        SELF_CONTRACT_ENV: "1",
+                        SELF_CONTRACT_PHASE_ENV: "author_repair",
+                    },
+                )
+                author_repair_context = AgentRunContext(
+                    workspace_dir=workspace_dir,
+                    task_file=task_file,
+                    submission_dir=workspace_submission_dir,
+                    agent_output_dir=author_repair_dir,
+                    task_text=repair_text,
+                )
+                try:
+                    if agent_docker:
+                        author_agent_result = run_agent_in_docker(
+                            author_repair_context,
+                            author_repair_config,
+                            image=agent_docker_image,
+                            stdout_log=author_repair_stdout,
+                            stderr_log=author_repair_stderr,
+                        )
+                    else:
+                        adapter = get_agent_adapter(author_repair_config.agent)
+                        author_agent_result = adapter.run(
+                            author_repair_context,
+                            author_repair_config,
+                            stdout_log=author_repair_stdout,
+                            stderr_log=author_repair_stderr,
+                        )
+                except ValueError as exc:
+                    errors.append(f"self_contract author repair failed: {exc}")
+                author_gate = evaluate_author_gate(
+                    workspace_dir,
+                    docker_image=agent_docker_image if agent_docker else None,
+                    use_docker=bool(agent_docker),
+                )
+
+            freeze_meta: dict[str, Any] | None = None
+            freeze_check: dict[str, Any] | None = None
+            verify_initial: dict[str, Any] | None = None
+            verify_final: dict[str, Any] | None = None
+            impl_repair_rounds = 0
+            repair_agent_result = None
+
+            if not author_gate.get("ok"):
+                errors.append(
+                    "self_contract author gate failed: "
+                    + "; ".join(str(e) for e in (author_gate.get("errors") or []))[:500]
+                )
+            else:
+                freeze_meta = freeze_contracts(workspace_dir)
+                reset_submission_dir(workspace_dir)
+                impl_text = _refresh_task(
+                    "Self-Authored Contract Phase B",
+                    implement_task_appendix(),
+                )
+                _reset_dir(agent_output_dir)
+                stdout_log = agent_output_dir / "stdout.log"
+                stderr_log = agent_output_dir / "stderr.log"
+                impl_config = replace(
+                    run_config,
+                    env={
+                        **(run_config.env or {}),
+                        SELF_CONTRACT_ENV: "1",
+                        SELF_CONTRACT_PHASE_ENV: "implement",
+                    },
+                )
+                context = AgentRunContext(
+                    workspace_dir=workspace_dir,
+                    task_file=task_file,
+                    submission_dir=workspace_submission_dir,
+                    agent_output_dir=agent_output_dir,
+                    task_text=impl_text,
+                )
+                try:
+                    if agent_docker:
+                        agent_result = run_agent_in_docker(
+                            context,
+                            impl_config,
+                            image=agent_docker_image,
+                            stdout_log=stdout_log,
+                            stderr_log=stderr_log,
+                        )
+                    else:
+                        adapter = get_agent_adapter(impl_config.agent)
+                        agent_result = adapter.run(
+                            context,
+                            impl_config,
+                            stdout_log=stdout_log,
+                            stderr_log=stderr_log,
+                        )
+                except ValueError as exc:
+                    errors.append(f"self_contract implement failed: {exc}")
+
+                verify_initial = verify_submission_contracts(
+                    workspace_dir,
+                    docker_image=agent_docker_image if agent_docker else None,
+                    use_docker=bool(agent_docker),
+                )
+                verify_final = verify_initial
+                if (
+                    not verify_initial.get("ok")
+                    and DEFAULT_IMPL_REPAIR_ROUNDS > 0
+                ):
+                    impl_repair_rounds = 1
+                    repair_task = prepare_impl_repair_workspace(
+                        workspace_dir,
+                        verify_result=verify_initial,
+                        task_markdown=task_file.read_text(encoding="utf-8"),
+                    )
+                    prompt_path.write_text(repair_task, encoding="utf-8")
+                    repair_dir = output_path / "agent_repair"
+                    _reset_dir(repair_dir)
+                    repair_stdout = repair_dir / "stdout.log"
+                    repair_stderr = repair_dir / "stderr.log"
+                    repair_config = replace(
+                        run_config,
+                        timeout_seconds=min(
+                            int(run_config.timeout_seconds or 3600),
+                            DEFAULT_REPAIR_TIMEOUT_SECONDS,
+                        ),
+                        env={
+                            **(run_config.env or {}),
+                            SELF_CONTRACT_ENV: "1",
+                            SELF_CONTRACT_PHASE_ENV: "repair",
+                        },
+                    )
+                    repair_context = AgentRunContext(
+                        workspace_dir=workspace_dir,
+                        task_file=task_file,
+                        submission_dir=workspace_submission_dir,
+                        agent_output_dir=repair_dir,
+                        task_text=repair_task,
+                    )
+                    try:
+                        if agent_docker:
+                            repair_agent_result = run_agent_in_docker(
+                                repair_context,
+                                repair_config,
+                                image=agent_docker_image,
+                                stdout_log=repair_stdout,
+                                stderr_log=repair_stderr,
+                            )
+                        else:
+                            adapter = get_agent_adapter(repair_config.agent)
+                            repair_agent_result = adapter.run(
+                                repair_context,
+                                repair_config,
+                                stdout_log=repair_stdout,
+                                stderr_log=repair_stderr,
+                            )
+                    except ValueError as exc:
+                        errors.append(f"self_contract repair failed: {exc}")
+                    verify_final = verify_submission_contracts(
+                        workspace_dir,
+                        docker_image=agent_docker_image if agent_docker else None,
+                        use_docker=bool(agent_docker),
+                    )
+
+                freeze_check = verify_contracts_frozen(workspace_dir)
+                if not freeze_check.get("ok"):
+                    errors.append(
+                        "self_contract freeze check failed: "
+                        + str(freeze_check.get("error") or "lock mismatch")[:500]
+                    )
+                if not (verify_final or {}).get("ok"):
+                    errors.append(
+                        "self_contract contracts incomplete: "
+                        + str(
+                            (verify_final or {}).get("error")
+                            or (verify_final or {}).get("stderr_tail")
+                            or "contracts failed"
+                        )[:500]
+                    )
+
+            write_self_contract_audit(
+                output_path,
+                collect_meta=collect_meta,
+                author_gate=author_gate,
+                freeze_meta=freeze_meta,
+                freeze_check=freeze_check,
+                verify_initial=verify_initial,
+                verify_final=verify_final,
+                author_repair_rounds=author_repair_rounds,
+                impl_repair_rounds=impl_repair_rounds,
+                agent_author=_agent_compact(author_agent_result),
+                agent_implement=_agent_compact(agent_result),
+                agent_repair=_agent_compact(repair_agent_result),
+            )
         elif agent_ready:
             try:
                 if agent_docker:
@@ -1623,6 +2126,14 @@ def prepare_agent_workspace(
         from .td_cognition import phase1_task_appendix
 
         install_td_cognition_workspace(workspace_path)
+    elif options.exec_contract:
+        from .exec_contract import install_exec_contract_workspace
+
+        install_exec_contract_workspace(workspace_path)
+    elif options.self_contract:
+        from .self_contract import install_self_contract_workspace
+
+        install_self_contract_workspace(workspace_path)
     else:
         (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
@@ -1643,6 +2154,22 @@ def prepare_agent_workspace(
             task_markdown.rstrip()
             + "\n\n## TD-Cognition Phase 1\n\n"
             + phase1_task_appendix()
+        )
+    elif options.exec_contract:
+        from .exec_contract import phase1_task_appendix as exec_phase1_appendix
+
+        task_markdown = (
+            task_markdown.rstrip()
+            + "\n\n## Execution-Guided Contract\n\n"
+            + exec_phase1_appendix()
+        )
+    elif options.self_contract:
+        from .self_contract import author_task_appendix
+
+        task_markdown = (
+            task_markdown.rstrip()
+            + "\n\n## Self-Authored Contract Phase A\n\n"
+            + author_task_appendix()
         )
     task_file.write_text(task_markdown, encoding="utf-8")
     if not options.expose_source_hints:

@@ -557,6 +557,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "included behaviors.\n\n"
         )
     td_section = ""
+    sc_section = ""
     submission_line = f"- Final output must be written under `{config.submission_dir}`.\n"
     required_finish = (
         "## Required Finish State\n\n"
@@ -568,7 +569,53 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "    ...\n"
         "```\n\n"
     )
-    if options.td_cognition:
+    if options.self_contract:
+        from .self_contract.common import SELF_CONTRACT_PHASE_ENV
+        from .self_contract import openhands_author_appendix
+        from .self_contract import openhands_implement_appendix
+
+        phase = (
+            str(os.environ.get(SELF_CONTRACT_PHASE_ENV, "implement")).strip().lower()
+            or "implement"
+        )
+        if phase in {"author", "author_repair"}:
+            sc_section = (
+                "## Self-Authored Contract Phase A\n\n"
+                + openhands_author_appendix()
+                + "\n"
+            )
+            submission_line = (
+                "- `submission/` may exist but must remain **empty** in this phase. "
+                "Do not create `submission/featurelifted/`.\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Deliver authored contracts only:\n\n"
+                "```text\n"
+                "contracts/\n"
+                "  test_*.py\n"
+                "  README.md\n"
+                "```\n\n"
+                "Then finish. Implementation happens in a later phase.\n\n"
+            )
+            test_hint = (
+                "Write pytest modules under `contracts/` that import `featurelifted` "
+                "and assert TASK behaviors. Use `repo/` and `RUNTIME_FACTS.md` as hints. "
+                "Do not implement the full submission yet.\n\n"
+            )
+        else:
+            sc_section = (
+                "## Self-Authored Contract Phase B\n\n"
+                + openhands_implement_appendix()
+                + "\n"
+            )
+            test_hint = (
+                "Run your frozen contracts before submit:\n\n"
+                "```bash\n"
+                "PYTHONPATH=submission pytest contracts/ -q\n"
+                "```\n\n"
+            )
+    elif options.td_cognition:
         from .td_cognition import TD_PHASE_ENV
         from .td_cognition import openhands_phase1_appendix
         from .td_cognition import openhands_phase2_appendix
@@ -623,6 +670,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "build backend; never use `setuptools.backends._legacy:_Backend`.\n"
         f"{complete_note}"
         f"{td_section}"
+        f"{sc_section}"
         f"{required_finish}"
         f"{test_hint}"
         "## Task\n\n"

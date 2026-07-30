@@ -1,4 +1,4 @@
-"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt / TD-Cognition.
+"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt / TD / Exec-Contract / Self-Contract.
 
 See docs/EXPERIMENT_ARMS.md. Semantic contract (API/behaviors/hidden) is unchanged.
 Main is No-Hint by default; source-location hints require explicit opt-in.
@@ -15,6 +15,8 @@ PROMPT_STYLE_ENV = "FEATURELIFTBENCH_PROMPT_STYLE"
 EXPOSE_SOURCE_HINTS_ENV = "FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS"
 SOURCE_CONTEXT_ENV = "FEATURELIFTBENCH_SOURCE_CONTEXT"
 TD_COGNITION_ENV = "FEATURELIFTBENCH_TD_COGNITION"
+EXEC_CONTRACT_ENV = "FEATURELIFTBENCH_EXEC_CONTRACT"
+SELF_CONTRACT_ENV = "FEATURELIFTBENCH_SELF_CONTRACT"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
@@ -30,6 +32,8 @@ class AblationOptions:
     expose_source_hints: bool = False
     source_context: str = "full_repository"
     td_cognition: bool = False
+    exec_contract: bool = False
+    self_contract: bool = False
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
@@ -44,11 +48,23 @@ class AblationOptions:
             )
         object.__setattr__(self, "source_context", source_context)
         object.__setattr__(self, "td_cognition", bool(self.td_cognition))
+        object.__setattr__(self, "exec_contract", bool(self.exec_contract))
+        object.__setattr__(self, "self_contract", bool(self.self_contract))
+        method_arms = sum(
+            1 for flag in (self.td_cognition, self.exec_contract, self.self_contract) if flag
+        )
+        if method_arms > 1:
+            raise ValueError(
+                "td_cognition, exec_contract, and self_contract are mutually exclusive"
+            )
 
     @property
     def ablation_arm(self) -> str:
+        if self.self_contract:
+            return "self_contract"
+        if self.exec_contract:
+            return "exec_contract"
         if self.td_cognition:
-            # TD-Cognition is a first-class method arm on top of Main visibility.
             return "td_cognition"
         parts: list[str] = []
         if self.expose_source_hints:
@@ -68,6 +84,8 @@ class AblationOptions:
             EXPOSE_SOURCE_HINTS_ENV: "1" if self.expose_source_hints else "0",
             SOURCE_CONTEXT_ENV: self.source_context,
             TD_COGNITION_ENV: "1" if self.td_cognition else "0",
+            EXEC_CONTRACT_ENV: "1" if self.exec_contract else "0",
+            SELF_CONTRACT_ENV: "1" if self.self_contract else "0",
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -79,6 +97,8 @@ class AblationOptions:
             "expose_source_hints": self.expose_source_hints,
             "source_context": self.source_context,
             "td_cognition": self.td_cognition,
+            "exec_contract": self.exec_contract,
+            "self_contract": self.self_contract,
         }
 
 
@@ -97,12 +117,18 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
     )
     td_raw = str(values.get(TD_COGNITION_ENV, "0")).strip().lower()
     td_cognition = td_raw not in {"0", "false", "no", "off", ""}
+    ec_raw = str(values.get(EXEC_CONTRACT_ENV, "0")).strip().lower()
+    exec_contract = ec_raw not in {"0", "false", "no", "off", ""}
+    sc_raw = str(values.get(SELF_CONTRACT_ENV, "0")).strip().lower()
+    self_contract = sc_raw not in {"0", "false", "no", "off", ""}
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
         expose_source_hints=expose_hints,
         source_context=source_context,
         td_cognition=td_cognition,
+        exec_contract=exec_contract,
+        self_contract=self_contract,
     )
 
 
@@ -116,6 +142,8 @@ def resolve_ablation_options(
     expose_source_hints: bool | None = None,
     source_context: str | None = None,
     td_cognition: bool | None = None,
+    exec_contract: bool | None = None,
+    self_contract: bool | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -173,12 +201,34 @@ def resolve_ablation_options(
     else:
         resolved_td = bool(td_cognition)
 
+    if exec_contract is None:
+        resolved_ec = _first_bool(
+            process_env.get(EXEC_CONTRACT_ENV),
+            env_values.get(EXEC_CONTRACT_ENV),
+            profile.get("exec_contract"),
+            default=False,
+        )
+    else:
+        resolved_ec = bool(exec_contract)
+
+    if self_contract is None:
+        resolved_sc = _first_bool(
+            process_env.get(SELF_CONTRACT_ENV),
+            env_values.get(SELF_CONTRACT_ENV),
+            profile.get("self_contract"),
+            default=False,
+        )
+    else:
+        resolved_sc = bool(self_contract)
+
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
         expose_source_hints=expose_hints,
         source_context=resolved_source_context,
         td_cognition=resolved_td,
+        exec_contract=resolved_ec,
+        self_contract=resolved_sc,
     )
 
 

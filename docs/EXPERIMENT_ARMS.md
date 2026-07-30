@@ -102,6 +102,37 @@ evaluator。
 
 该臂必须记录 `td_cognition=true` / `ablation_arm=td_cognition`，并落盘 `td_cognition_phase.json`。
 
+## Exec-Contract：Execution-Guided Contract（方法臂）
+
+唯一变化：相对 Main，在 Agent 动手前由 harness **定向跑上游 `repo/` 测试并 instrumentation**，生成
+`RUNTIME_FACTS.md` + 可执行 `contracts/`（针对 `featurelifted`）；实现后验证合约，失败可 1 轮修复。
+
+可见性与 Main 相同：Full-Repository、No-Hint、**不**挂载 benchmark public/hidden。  
+合约来自原仓执行事实，不是 Agent 自编探针（对比 TD-Cognition）。
+
+```bash
+./run_experiment.sh --arm exec_contract \
+  --task-file experiments/td_cognition_pilot/task_ids.txt
+```
+
+详情：[METHOD_EXEC_CONTRACT.md](METHOD_EXEC_CONTRACT.md)。必须记录 `exec_contract=true` 与 `exec_contract_phase.json`。  
+Focus 最佳干净跑：`exec-contract-clean3-20260729-214504`（见 [CLEAN_FOCUS.md](../experiments/exec_contract_pilot/CLEAN_FOCUS.md)）。
+
+## Self-Contract：Self-Authored Contract（方法臂）
+
+唯一变化：相对 Main，由 **模型自己写** `contracts/`（可参考 Phase0 `RUNTIME_FACTS`，**无** harness 模板 pytest）→ 出题闸门 → 冻结 → 再实现并验证。
+
+可见性与 Main 相同：Full-Repository、No-Hint、不挂载 benchmark public/hidden。  
+与 `td_cognition` / `exec_contract` **互斥**。
+
+```bash
+./run_experiment.sh --arm self_contract \
+  --task-file experiments/exec_contract_pilot/task_ids_v2_focus.txt
+```
+
+详情：[METHOD_SELF_CONTRACT.md](METHOD_SELF_CONTRACT.md)。必须记录 `self_contract=true` 与 `self_contract_phase.json`。  
+Focus 首跑 **0/2** Functional（弱于 clean3）：[FOCUS_RESULTS.md](../experiments/self_contract_pilot/FOCUS_RESULTS.md)。
+
 ## Pruned-Context：源码范围消融
 
 唯一变化：将完整仓库替换为预先冻结的目标相关裁剪 snapshot。是否提供定位

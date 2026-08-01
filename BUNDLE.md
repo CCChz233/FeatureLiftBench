@@ -20,7 +20,7 @@ not become permanent Git history.
 
 ```bash
 cd /data1/FeatureLiftBench/experiments/FeatureLiftBench-v3-846-20260801-ready
-PYTHON=python3.12 SKIP_MINI=1 ./setup.sh
+PYTHON=python3 SKIP_MINI=1 ./setup.sh
 ```
 
 Add the server API credentials to `.env`, then review

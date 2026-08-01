@@ -11,6 +11,9 @@ from typing import Iterable
 IGNORED_NAMES = {".DS_Store"}
 IGNORED_SUFFIXES = {".pyc", ".pyo"}
 IGNORED_PARTS = {"__pycache__", ".pytest_cache"}
+# Machine-local model/credential profiles (gitignored). These vary per experiment
+# operator and must not be part of the benchmark freeze identity.
+LOCAL_AGENT_CONFIG_NAMES = {"agents.toml", "agents.local.toml"}
 
 
 def sha256_file(path: str | Path) -> str:
@@ -62,6 +65,9 @@ def verify_file_manifest(
     base = Path(root).resolve()
     mismatches: list[dict[str, str]] = []
     for relative, digest in sorted(expected.items()):
+        # Tolerate legacy freezes that incorrectly pinned local agent configs.
+        if Path(relative).name in LOCAL_AGENT_CONFIG_NAMES:
+            continue
         path = base / relative
         if not path.is_file():
             mismatches.append({"path": relative, "expected": digest, "actual": "missing"})
@@ -75,6 +81,7 @@ def verify_file_manifest(
 def _ignored(path: Path) -> bool:
     return (
         path.name in IGNORED_NAMES
+        or path.name in LOCAL_AGENT_CONFIG_NAMES
         or path.suffix in IGNORED_SUFFIXES
         or bool(set(path.parts) & IGNORED_PARTS)
     )

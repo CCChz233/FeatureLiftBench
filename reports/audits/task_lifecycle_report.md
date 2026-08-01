@@ -1,6 +1,6 @@
 # Task Lifecycle Report
 
-Generated: 2026-07-27
+Generated: 2026-08-01
 
 Read-only audit from `scripts/check_task_lifecycle.py`. No files were modified.
 

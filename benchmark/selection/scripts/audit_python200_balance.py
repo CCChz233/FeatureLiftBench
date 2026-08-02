@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import re
 from collections import Counter
@@ -20,14 +19,6 @@ DEFAULT_MD = ROOT / "reports/audits/python200_balance_design.md"
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
-
-
-def load_jsonl(path: Path) -> list[dict[str, Any]]:
-    return [
-        json.loads(line)
-        for line in path.read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
 
 
 def counts(rows: list[dict[str, str]], field: str) -> dict[str, int]:
@@ -60,26 +51,21 @@ def build_report(policy: dict[str, Any]) -> dict[str, Any]:
         if (path / "metadata.json").is_file()
     }
 
-    old_taxonomy = list(
-        csv.DictReader(
-            (ROOT / "artifacts/research_analysis/python150_task_taxonomy.csv").open(
-                encoding="utf-8"
+    baseline_snapshot = policy["baseline"]["distribution"]
+    baseline_lift = baseline_snapshot["lift_type"]
+    baseline_family = baseline_snapshot["feature_family"]
+    baseline_entanglement = baseline_snapshot["entanglement"]
+    baseline_total = policy["baseline"]["task_count"]
+    for name, values in (
+        ("lift_type", baseline_lift),
+        ("feature_family", baseline_family),
+        ("entanglement", baseline_entanglement),
+    ):
+        if sum(values.values()) != baseline_total:
+            raise ValueError(
+                f"baseline {name} distribution sums to {sum(values.values())}, "
+                f"expected {baseline_total}"
             )
-        )
-    )
-    old_lift_rows = load_jsonl(ROOT / "reports/lift_taxonomy/LIFT_LABELS.jsonl")
-    baseline_rows = [
-        {
-            "feature_family": row["feature_family_primary"],
-            "entanglement": row["entanglement_primary_original"],
-        }
-        for row in old_taxonomy
-    ]
-    baseline_lift = dict(
-        sorted(Counter(row["lift_type"] for row in old_lift_rows).items())
-    )
-    baseline_family = counts(baseline_rows, "feature_family")
-    baseline_entanglement = counts(baseline_rows, "entanglement")
 
     replacements = policy["replace_candidates"]
     replacement_candidate_ids = set(replacements)

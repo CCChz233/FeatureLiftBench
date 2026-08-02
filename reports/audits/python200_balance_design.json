@@ -1,0 +1,1350 @@
+{
+  "baseline": {
+    "distribution": {
+      "entanglement": {
+        "config_environment_coupling": 16,
+        "data_model_coupling": 43,
+        "framework_coupling": 28,
+        "parser_state_coupling": 45,
+        "resource_coupling": 15,
+        "third_party_dependency_coupling": 3
+      },
+      "feature_family": {
+        "algorithm_data_structure": 11,
+        "cache_retry_policy": 8,
+        "config_resolve_discover": 18,
+        "parse_tokenize_decode": 31,
+        "protocol_state_transition": 9,
+        "registry_plugin_dispatch": 22,
+        "resource_metadata_loading": 12,
+        "serialize_format_render": 19,
+        "validate_normalize_construct": 15,
+        "workflow_session_orchestration": 5
+      },
+      "lift_type": {
+        "Adapted": 76,
+        "Composite": 18,
+        "Direct": 56
+      }
+    },
+    "freeze_id": "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd",
+    "immutable": true,
+    "task_count": 150
+  },
+  "checks": [
+    {
+      "detail": "expected 150, found 150",
+      "name": "baseline_task_count",
+      "passed": true
+    },
+    {
+      "detail": "expected 50, found 50",
+      "name": "selected_task_count",
+      "passed": true
+    },
+    {
+      "detail": "unique=50 selected=50",
+      "name": "selected_task_ids_unique",
+      "passed": true
+    },
+    {
+      "detail": "overlap=[]",
+      "name": "no_baseline_overlap",
+      "passed": true
+    },
+    {
+      "detail": "slots=10 candidates=10",
+      "name": "replacement_slots_match_candidates",
+      "passed": true
+    },
+    {
+      "detail": "assignments=10 candidates=10 slots=10",
+      "name": "replacement_assignments_complete",
+      "passed": true
+    },
+    {
+      "detail": "selected_replacements=10 selected_candidates=[]",
+      "name": "replacement_tasks_selected",
+      "passed": true
+    },
+    {
+      "detail": "proposed=50",
+      "name": "proposed_expansion_count",
+      "passed": true
+    },
+    {
+      "detail": "share=34.0% bounds=30.0%-36.0%",
+      "name": "lift_type_share:Direct",
+      "passed": true
+    },
+    {
+      "detail": "share=44.5% bounds=38.0%-45.0%",
+      "name": "lift_type_share:Adapted",
+      "passed": true
+    },
+    {
+      "detail": "share=21.5% bounds=20.0%-28.0%",
+      "name": "lift_type_share:Composite",
+      "passed": true
+    },
+    {
+      "detail": "share=8.5% bounds=5.0%-18.0%",
+      "name": "feature_family_share:algorithm_data_structure",
+      "passed": true
+    },
+    {
+      "detail": "share=6.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:cache_retry_policy",
+      "passed": true
+    },
+    {
+      "detail": "share=10.5% bounds=5.0%-18.0%",
+      "name": "feature_family_share:config_resolve_discover",
+      "passed": true
+    },
+    {
+      "detail": "share=18.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:parse_tokenize_decode",
+      "passed": true
+    },
+    {
+      "detail": "share=8.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:protocol_state_transition",
+      "passed": true
+    },
+    {
+      "detail": "share=12.5% bounds=5.0%-18.0%",
+      "name": "feature_family_share:registry_plugin_dispatch",
+      "passed": true
+    },
+    {
+      "detail": "share=9.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:resource_metadata_loading",
+      "passed": true
+    },
+    {
+      "detail": "share=12.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:serialize_format_render",
+      "passed": true
+    },
+    {
+      "detail": "share=10.5% bounds=5.0%-18.0%",
+      "name": "feature_family_share:validate_normalize_construct",
+      "passed": true
+    },
+    {
+      "detail": "share=5.0% bounds=5.0%-18.0%",
+      "name": "feature_family_share:workflow_session_orchestration",
+      "passed": true
+    },
+    {
+      "detail": "share=11.0% bounds=8.0%-18.0%",
+      "name": "entanglement_share:config_environment_coupling",
+      "passed": true
+    },
+    {
+      "detail": "share=30.0% bounds=15.0%-30.0%",
+      "name": "entanglement_share:data_model_coupling",
+      "passed": true
+    },
+    {
+      "detail": "share=17.5% bounds=12.0%-22.0%",
+      "name": "entanglement_share:framework_coupling",
+      "passed": true
+    },
+    {
+      "detail": "share=27.5% bounds=15.0%-30.0%",
+      "name": "entanglement_share:parser_state_coupling",
+      "passed": true
+    },
+    {
+      "detail": "share=10.5% bounds=8.0%-18.0%",
+      "name": "entanglement_share:resource_coupling",
+      "passed": true
+    },
+    {
+      "detail": "share=3.5% bounds=3.0%-12.0%",
+      "name": "entanglement_share:third_party_dependency_coupling",
+      "passed": true
+    }
+  ],
+  "next_gate": "Run offline reference, isolation, Docker, and lifecycle gates for the realized External-50 selection.",
+  "policy_id": "python200-balance-20260801-v2",
+  "proposed_python200_distribution": {
+    "entanglement": {
+      "config_environment_coupling": {
+        "count": 22,
+        "share": 0.11
+      },
+      "data_model_coupling": {
+        "count": 60,
+        "share": 0.3
+      },
+      "framework_coupling": {
+        "count": 35,
+        "share": 0.175
+      },
+      "parser_state_coupling": {
+        "count": 55,
+        "share": 0.275
+      },
+      "resource_coupling": {
+        "count": 21,
+        "share": 0.105
+      },
+      "third_party_dependency_coupling": {
+        "count": 7,
+        "share": 0.035
+      }
+    },
+    "feature_family": {
+      "algorithm_data_structure": {
+        "count": 17,
+        "share": 0.085
+      },
+      "cache_retry_policy": {
+        "count": 12,
+        "share": 0.06
+      },
+      "config_resolve_discover": {
+        "count": 21,
+        "share": 0.105
+      },
+      "parse_tokenize_decode": {
+        "count": 36,
+        "share": 0.18
+      },
+      "protocol_state_transition": {
+        "count": 16,
+        "share": 0.08
+      },
+      "registry_plugin_dispatch": {
+        "count": 25,
+        "share": 0.125
+      },
+      "resource_metadata_loading": {
+        "count": 18,
+        "share": 0.09
+      },
+      "serialize_format_render": {
+        "count": 24,
+        "share": 0.12
+      },
+      "validate_normalize_construct": {
+        "count": 21,
+        "share": 0.105
+      },
+      "workflow_session_orchestration": {
+        "count": 10,
+        "share": 0.05
+      }
+    },
+    "lift_type": {
+      "Adapted": {
+        "count": 89,
+        "share": 0.445
+      },
+      "Composite": {
+        "count": 43,
+        "share": 0.215
+      },
+      "Direct": {
+        "count": 68,
+        "share": 0.34
+      }
+    }
+  },
+  "raw_python200_distribution": {
+    "entanglement": {
+      "config_environment_coupling": {
+        "count": 22,
+        "share": 0.11
+      },
+      "data_model_coupling": {
+        "count": 60,
+        "share": 0.3
+      },
+      "framework_coupling": {
+        "count": 35,
+        "share": 0.175
+      },
+      "parser_state_coupling": {
+        "count": 55,
+        "share": 0.275
+      },
+      "resource_coupling": {
+        "count": 21,
+        "share": 0.105
+      },
+      "third_party_dependency_coupling": {
+        "count": 7,
+        "share": 0.035
+      }
+    },
+    "feature_family": {
+      "algorithm_data_structure": {
+        "count": 17,
+        "share": 0.085
+      },
+      "cache_retry_policy": {
+        "count": 12,
+        "share": 0.06
+      },
+      "config_resolve_discover": {
+        "count": 21,
+        "share": 0.105
+      },
+      "parse_tokenize_decode": {
+        "count": 36,
+        "share": 0.18
+      },
+      "protocol_state_transition": {
+        "count": 16,
+        "share": 0.08
+      },
+      "registry_plugin_dispatch": {
+        "count": 25,
+        "share": 0.125
+      },
+      "resource_metadata_loading": {
+        "count": 18,
+        "share": 0.09
+      },
+      "serialize_format_render": {
+        "count": 24,
+        "share": 0.12
+      },
+      "validate_normalize_construct": {
+        "count": 21,
+        "share": 0.105
+      },
+      "workflow_session_orchestration": {
+        "count": 10,
+        "share": 0.05
+      }
+    },
+    "lift_type": {
+      "Adapted": {
+        "count": 89,
+        "share": 0.445
+      },
+      "Composite": {
+        "count": 43,
+        "share": 0.215
+      },
+      "Direct": {
+        "count": 68,
+        "share": 0.34
+      }
+    }
+  },
+  "replacement_slots": [
+    {
+      "design_requirement": "A deterministic cache or retry policy with explicit defaults and no service dependency.",
+      "entanglement": "config_environment_coupling",
+      "feature_family": "cache_retry_policy",
+      "lift_type": "Direct",
+      "slot_id": "cache-direct-config-01"
+    },
+    {
+      "design_requirement": "A bounded policy feature with one allowlisted pure-Python dependency and offline wheels.",
+      "entanglement": "third_party_dependency_coupling",
+      "feature_family": "cache_retry_policy",
+      "lift_type": "Direct",
+      "slot_id": "cache-direct-third-party-02"
+    },
+    {
+      "design_requirement": "Compose keying, expiration, and retry/eviction decisions without a live cache service.",
+      "entanglement": "third_party_dependency_coupling",
+      "feature_family": "cache_retry_policy",
+      "lift_type": "Composite",
+      "slot_id": "cache-composite-third-party-03"
+    },
+    {
+      "design_requirement": "A deterministic in-process workflow with explicit state transitions and no worker service.",
+      "entanglement": "framework_coupling",
+      "feature_family": "workflow_session_orchestration",
+      "lift_type": "Composite",
+      "slot_id": "workflow-composite-framework-01"
+    },
+    {
+      "design_requirement": "A session or workflow planner whose environment/config inputs can be frozen in tests.",
+      "entanglement": "config_environment_coupling",
+      "feature_family": "workflow_session_orchestration",
+      "lift_type": "Composite",
+      "slot_id": "workflow-composite-config-02"
+    },
+    {
+      "design_requirement": "An offline orchestration pipeline using one allowlisted pure-Python dependency.",
+      "entanglement": "third_party_dependency_coupling",
+      "feature_family": "workflow_session_orchestration",
+      "lift_type": "Composite",
+      "slot_id": "workflow-composite-third-party-03"
+    },
+    {
+      "design_requirement": "Load and resolve a small redistributable metadata resource with deterministic fallbacks.",
+      "entanglement": "resource_coupling",
+      "feature_family": "resource_metadata_loading",
+      "lift_type": "Direct",
+      "slot_id": "resource-direct-01"
+    },
+    {
+      "design_requirement": "A separate resource-backed lookup feature with pinned local data and no network refresh.",
+      "entanglement": "resource_coupling",
+      "feature_family": "resource_metadata_loading",
+      "lift_type": "Direct",
+      "slot_id": "resource-direct-02"
+    },
+    {
+      "design_requirement": "Compose local metadata loading and resolution around one allowlisted pure-Python dependency.",
+      "entanglement": "third_party_dependency_coupling",
+      "feature_family": "resource_metadata_loading",
+      "lift_type": "Composite",
+      "slot_id": "resource-composite-third-party-03"
+    },
+    {
+      "design_requirement": "A registry plus selection/dispatch flow with deterministic in-process plugins.",
+      "entanglement": "framework_coupling",
+      "feature_family": "registry_plugin_dispatch",
+      "lift_type": "Composite",
+      "slot_id": "registry-composite-framework-01"
+    }
+  ],
+  "schema_version": "featureliftbench.python200_balance_design.v1",
+  "summary": {
+    "all_balance_checks_pass": true,
+    "keep": 40,
+    "promotion_ready": false,
+    "redesign": 0,
+    "replaced_candidates": 10,
+    "replacement_selected": 10,
+    "replacement_slots": 10,
+    "selected": 50
+  },
+  "task_reviews": [
+    {
+      "card_status": "staging_validated",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "anytree__tree_resolve_render_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot workflow-composite-framework-01 in place of ijson__event_parse_core__001."
+      ],
+      "task_id": "automat__methodical_workflow_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "boolean_py__expr_simplify_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "cachecontrol__heuristic_store_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Direct"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot cache-direct-config-01 in place of cssselect__selector_xpath_core__001."
+      ],
+      "task_id": "cacheout__ttl_policy_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot cache-composite-third-party-03 in place of parsimonious__grammar_visitor_core__001."
+      ],
+      "task_id": "cachier__memoize_backend_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "configupdater__ini_roundtrip_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "dateparser__parse_settings_pipeline_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "fasteners__process_lock_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "flask_cors__cors_options_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "flask_login__session_guard_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "freezegun__freeze_time_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "ftfy__fix_text_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "furl__url_mutate_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "huey__task_schedule_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "hyperlink__url_parse_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "icalendar__component_roundtrip_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "invoke__collection_context_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "joserfc__jwt_claims_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "jsonpickle__handler_roundtrip_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot resource-composite-third-party-03 in place of frictionless__schema_resource_validate_core__001."
+      ],
+      "task_id": "langcodes__language_metadata_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "more_itertools__recipes_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "omegaconf__merge_interpolate_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "The primary contract parses and normalizes one package identity data model rather than exposing a parser pipeline."
+      ],
+      "task_id": "packageurl__purl_parse_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "portalocker__file_lock_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot resource-direct-01 in place of dill__serialize_settings_core__001."
+      ],
+      "task_id": "publicsuffixlist__metadata_lookup_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot resource-direct-02 in place of cloudpickle__dumps_loads_core__001."
+      ],
+      "task_id": "puremagic__signature_resource_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot workflow-composite-third-party-03 in place of premailer__inline_css_core__001."
+      ],
+      "task_id": "pyee__event_workflow_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "The primary contract validates and constructs signed claims; serialization is an implementation step."
+      ],
+      "task_id": "pyjwt__encode_decode_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "pyotp__totp_hotp_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "pyparsing__grammar_compose_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "pyrsistent__pmap_pvector_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "config_resolve_discover",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "python_crontab__cron_item_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "python_json_logger__json_formatter_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "config_environment_coupling",
+        "feature_family": "workflow_session_orchestration",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot workflow-composite-config-02 in place of chardet__detect_core__001."
+      ],
+      "task_id": "python_statemachine__json_workflow_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "semver__version_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "sqlglot__parse_transpile_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Direct"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "third_party_dependency_coupling",
+        "feature_family": "cache_retry_policy",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot cache-direct-third-party-02 in place of textx__metamodel_model_core__001."
+      ],
+      "task_id": "stamina__retry_context_core__001"
+    },
+    {
+      "card_status": "staging_validated",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "strictyaml__schema_load_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "serialize_format_render",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "structlog__processor_chain_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "tinycss2__stylesheet_roundtrip_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "tinydb__query_storage_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "resource_metadata_loading",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "tldextract__suffix_resolve_core__001"
+    },
+    {
+      "card_status": "staging_validated",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "algorithm_data_structure",
+        "lift_type": "Direct"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "toolz__compose_pipe_core__001"
+    },
+    {
+      "card_status": "staging_validated",
+      "current_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "data_model_coupling",
+        "feature_family": "validate_normalize_construct",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "typeguard__check_type_pipeline_core__001"
+    },
+    {
+      "card_status": "staging_validated",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "parse_tokenize_decode",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "unidiff__patch_hunk_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "parser_state_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Adapted"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "uritools__uri_join_normalize_core__001"
+    },
+    {
+      "card_status": "design_card_ready",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [],
+      "task_id": "vcrpy__cassette_match_core__001"
+    },
+    {
+      "card_status": "reference_static_validated",
+      "current_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Composite"
+      },
+      "decision": "replacement_selected",
+      "effective_labels": {
+        "entanglement": "framework_coupling",
+        "feature_family": "registry_plugin_dispatch",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "materialized_candidate",
+      "reasons": [
+        "Realizes balance slot registry-composite-framework-01 in place of pykwalify__map_seq_validate_core__001."
+      ],
+      "task_id": "venusian__scan_dispatch_core__001"
+    },
+    {
+      "card_status": "validated_staging",
+      "current_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Composite"
+      },
+      "decision": "keep",
+      "effective_labels": {
+        "entanglement": "resource_coupling",
+        "feature_family": "protocol_state_transition",
+        "lift_type": "Composite"
+      },
+      "flags": [],
+      "metadata_status": "validated",
+      "reasons": [],
+      "task_id": "watchdog__observer_dispatch_core__001"
+    }
+  ]
+}

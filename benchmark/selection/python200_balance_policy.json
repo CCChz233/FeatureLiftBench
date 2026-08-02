@@ -4,7 +4,34 @@
   "baseline": {
     "task_count": 150,
     "freeze_id": "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd",
-    "immutable": true
+    "immutable": true,
+    "distribution": {
+      "lift_type": {
+        "Direct": 56,
+        "Adapted": 76,
+        "Composite": 18
+      },
+      "feature_family": {
+        "algorithm_data_structure": 11,
+        "cache_retry_policy": 8,
+        "config_resolve_discover": 18,
+        "parse_tokenize_decode": 31,
+        "protocol_state_transition": 9,
+        "registry_plugin_dispatch": 22,
+        "resource_metadata_loading": 12,
+        "serialize_format_render": 19,
+        "validate_normalize_construct": 15,
+        "workflow_session_orchestration": 5
+      },
+      "entanglement": {
+        "config_environment_coupling": 16,
+        "data_model_coupling": 43,
+        "framework_coupling": 28,
+        "parser_state_coupling": 45,
+        "resource_coupling": 15,
+        "third_party_dependency_coupling": 3
+      }
+    }
   },
   "expansion": {
     "selection_path": "benchmark/selection/external50_expansion_20260731.json",

@@ -9,8 +9,8 @@
 ```
 
 `build_runnable_bundle.sh` 只从当前 `HEAD` 的已提交文件构建，并在压缩前
-强制通过 source、strict readiness 与 freeze 检查。当前工作树含方法开发
-改动时，它应当 fail closed。
+强制通过 source、selection、dependency、wheel 与 freeze 检查。工作树中
+未提交的方法开发改动不会进入 bundle。
 
 重建已冻结的 Python-150 v3 release（freeze `846b8147...`）：
 

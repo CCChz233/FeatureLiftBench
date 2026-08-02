@@ -65,7 +65,7 @@ ARCHIVE_N="$(find "$STAGE/$NAME/benchmark/sources/archives" -type f -name '*.tar
 WHEEL_N="$(find "$STAGE/$NAME/benchmark/vendor-wheels" -type f -name '*.whl' | wc -l | tr -d ' ')"
 
 GIT_REV="$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo unknown)"
-GIT_DESC="$(git -C "$ROOT" describe --always --dirty 2>/dev/null || echo unknown)"
+GIT_DESC="$(git -C "$ROOT" describe --always HEAD 2>/dev/null || echo unknown)"
 
 cat >"$STAGE/$NAME/BUNDLE.md" <<EOF
 # FeatureLiftBench runnable bundle

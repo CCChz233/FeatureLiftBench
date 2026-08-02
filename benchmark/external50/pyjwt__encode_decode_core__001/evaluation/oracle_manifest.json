@@ -1,0 +1,14 @@
+{
+  "source_package_name": "PyJWT",
+  "required_source_files": [
+    "jwt/api_jwt.py",
+    "jwt/exceptions.py"
+  ],
+  "runtime_dependencies": [
+    "cffi",
+    "cryptography",
+    "pycparser",
+    "pyjwt"
+  ],
+  "notes": "Adapted jwt encode/decode HS256 with crypto extra."
+}

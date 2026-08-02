@@ -1,0 +1,261 @@
+{
+  "task_id": "puremagic__signature_resource_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "resource-direct-02",
+    "direct"
+  ],
+  "source": {
+    "name": "puremagic",
+    "url": "https://github.com/cdgriffith/puremagic",
+    "commit": "57bed56ef669132c0f906e1d064680bf2c4b2205",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Bundled file-signature metadata detection",
+    "description": "Extract pure-Python file signature detection from strings, streams, and extensions using bundled metadata.",
+    "source_entrypoints": [
+      "puremagic.from_string",
+      "puremagic.from_stream",
+      "puremagic.magic_string",
+      "puremagic.from_extension"
+    ],
+    "included_behaviors": [
+      "byte-string detection",
+      "stream detection",
+      "MIME selection",
+      "extension metadata lookup",
+      "unknown input errors"
+    ],
+    "excluded_behaviors": [
+      "CLI",
+      "deep archive scanners",
+      "large fixture corpus",
+      "network lookups"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "resource_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "Detection loads a bundled magic_data.json signature table and combines header, footer, extension, and MIME metadata.",
+    "signals": [
+      "byte-string detection",
+      "stream detection",
+      "MIME selection",
+      "extension metadata lookup",
+      "unknown input errors"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import from_string, from_stream, magic_string, from_extension, PureError",
+    "callable": "from_string",
+    "signature": "(string: str | bytes, mime: bool = False, filename=None) -> str"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "puremagic"
+    ],
+    "forbidden_imports": [
+      "puremagic"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "puremagic/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Bundled file-signature metadata detection",
+    "summary": "Extract pure-Python file signature detection from strings, streams, and extensions using bundled metadata.",
+    "required_api": [
+      {
+        "path": "featurelifted.from_string",
+        "kind": "function",
+        "signature": "(string: str | bytes, mime: bool = False, filename=None) -> str"
+      },
+      {
+        "path": "featurelifted.from_stream",
+        "kind": "function",
+        "signature": "(stream, mime: bool = False, filename=None) -> str"
+      },
+      {
+        "path": "featurelifted.magic_string",
+        "kind": "function",
+        "signature": "(string, filename=None) -> list"
+      },
+      {
+        "path": "featurelifted.from_extension",
+        "kind": "function",
+        "signature": "(extension: str, mime: bool = True) -> str"
+      },
+      {
+        "path": "featurelifted.PureError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "from_string and from_stream identify known byte signatures using bundled magic metadata."
+      },
+      {
+        "id": "B002",
+        "text": "MIME mode and from_extension return metadata associated with the selected signature or extension."
+      },
+      {
+        "id": "B003",
+        "text": "magic_string returns ranked match records and unknown or empty inputs raise documented errors."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import puremagic or access external signature services."
+      }
+    ],
+    "exclusions": [
+      "CLI",
+      "deep archive scanners",
+      "large fixture corpus",
+      "network lookups",
+      "original puremagic import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "puremagic"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "from_string and from_stream identify known byte signatures using bundled magic metadata."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "MIME mode and from_extension return metadata associated with the selected signature or extension."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "magic_string returns ranked match records and unknown or empty inputs raise documented errors."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import puremagic or access external signature services."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_string_and_stream_detection",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_mime_detection",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_extension_metadata_lookup",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_ranked_matches_and_unknown_input",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.from_string",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.from_stream",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.magic_string",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.from_extension",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PureError",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot resource-direct-02."
+    }
+  },
+  "spec_hash": "aea4cdbdddddfe7314c9701d56ae1a92950781bb6b32c6baaa2ef6ac332a27dd",
+  "generated_task_hash": "f7b4d9488e7e6631f4382bd76e57979a1f14c9f87a5f90eecc542f158698a22d"
+}

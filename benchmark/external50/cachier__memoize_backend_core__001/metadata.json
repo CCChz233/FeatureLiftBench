@@ -1,0 +1,270 @@
+{
+  "task_id": "cachier__memoize_backend_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "cache-composite-third-party-03",
+    "composite",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "cachier",
+    "url": "https://github.com/python-cachier/cachier",
+    "commit": "e5fd990d646b05764977fe20f3e846c9e3d59076",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Memoization decorator and backend policy",
+    "description": "Extract cachier decorator behavior with deterministic memory caching, per-call overrides, and global policy controls.",
+    "source_entrypoints": [
+      "cachier.cachier",
+      "cachier.set_default_params",
+      "cachier.enable_caching",
+      "cachier.disable_caching"
+    ],
+    "included_behaviors": [
+      "memory backend memoization",
+      "skip and overwrite controls",
+      "clear/precache methods",
+      "global enable/disable policy"
+    ],
+    "excluded_behaviors": [
+      "MongoDB, Redis, SQL, and S3 services",
+      "background timing assertions",
+      "network access"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "third_party_dependency_coupling"
+    ],
+    "primary": "third_party_dependency_coupling",
+    "description": "Decorator policy composes hash keys, memory entries, size accounting, and optional locked persistent backends.",
+    "signals": [
+      "memory backend memoization",
+      "skip and overwrite controls",
+      "clear/precache methods",
+      "global enable/disable policy"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import cachier, set_default_params, get_default_params, enable_caching, disable_caching",
+    "callable": "cachier",
+    "signature": "(*, backend='pickle', stale_after=..., next_time=False, cache_dir=None, ...)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "portalocker",
+      "pympler",
+      "watchdog"
+    ],
+    "forbidden_dependencies": [
+      "cachier"
+    ],
+    "forbidden_imports": [
+      "cachier"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cachier/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Memoization decorator and backend policy",
+    "summary": "Extract cachier decorator behavior with deterministic memory caching, per-call overrides, and global policy controls.",
+    "required_api": [
+      {
+        "path": "featurelifted.cachier",
+        "kind": "function",
+        "signature": "(*, backend='pickle', stale_after=..., next_time=False, cache_dir=None, ...)"
+      },
+      {
+        "path": "featurelifted.set_default_params",
+        "kind": "function",
+        "signature": "(**params) -> None"
+      },
+      {
+        "path": "featurelifted.get_default_params",
+        "kind": "function",
+        "signature": "() -> dict"
+      },
+      {
+        "path": "featurelifted.enable_caching",
+        "kind": "function",
+        "signature": "() -> None"
+      },
+      {
+        "path": "featurelifted.disable_caching",
+        "kind": "function",
+        "signature": "() -> None"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The memory backend memoizes by arguments and exposes clear_cache and precache_value on wrapped callables."
+      },
+      {
+        "id": "B002",
+        "text": "Per-call skip-cache and overwrite-cache controls bypass or replace an existing entry deterministically."
+      },
+      {
+        "id": "B003",
+        "text": "Global enable and disable controls affect decorated functions and can be restored between tests."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package uses only locked backend dependencies and does not import cachier."
+      }
+    ],
+    "exclusions": [
+      "MongoDB, Redis, SQL, and S3 services",
+      "background timing assertions",
+      "network access",
+      "original cachier import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "cachier"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The memory backend memoizes by arguments and exposes clear_cache and precache_value on wrapped callables."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Per-call skip-cache and overwrite-cache controls bypass or replace an existing entry deterministically."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Global enable and disable controls affect decorated functions and can be restored between tests."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package uses only locked backend dependencies and does not import cachier."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_memory_backend_memoizes_by_arguments",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_skip_and_overwrite_controls",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_clear_and_precache_methods",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_overwrite_replaces_existing_entry",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_global_disable_bypasses_cache",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.cachier",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.set_default_params",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.get_default_params",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.enable_caching",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.disable_caching",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot cache-composite-third-party-03."
+    }
+  },
+  "spec_hash": "5610eb6ab993333d10440a5ac8fd5088d934dd305b35ca2b7332a08308e2777e",
+  "generated_task_hash": "ff9b25bdade998e913f67b9a78c20073e4a7464cb72e46818cee9295f2099fec",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

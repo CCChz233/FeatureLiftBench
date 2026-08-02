@@ -1,0 +1,221 @@
+{
+  "task_id": "automat__methodical_workflow_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "workflow-composite-framework-01",
+    "composite"
+  ],
+  "source": {
+    "name": "Automat",
+    "url": "https://github.com/glyph/automat",
+    "commit": "bd5651c7970d2b4bfaa197f23777e469c5060e81",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Methodical state-machine workflow",
+    "description": "Extract MethodicalMachine declaration, transition dispatch, outputs, and state serialization.",
+    "source_entrypoints": [
+      "automat.MethodicalMachine",
+      "automat.NoTransition"
+    ],
+    "included_behaviors": [
+      "state/input/output decorators",
+      "upon transition wiring",
+      "serializer and unserializer",
+      "unhandled input errors"
+    ],
+    "excluded_behaviors": [
+      "Graphviz rendering",
+      "Twisted integration",
+      "command-line visualization"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Descriptors declared on a host class connect states, inputs, outputs, serialization, and transition dispatch.",
+    "signals": [
+      "state/input/output decorators",
+      "upon transition wiring",
+      "serializer and unserializer",
+      "unhandled input errors"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import MethodicalMachine, NoTransition",
+    "callable": "MethodicalMachine",
+    "signature": "featurelifted.MethodicalMachine"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "automat"
+    ],
+    "forbidden_imports": [
+      "automat"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "automat/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Methodical state-machine workflow",
+    "summary": "Extract MethodicalMachine declaration, transition dispatch, outputs, and state serialization.",
+    "required_api": [
+      {
+        "path": "featurelifted.MethodicalMachine",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.NoTransition",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "MethodicalMachine composes declared states and inputs into deterministic transitions on host instances."
+      },
+      {
+        "id": "B002",
+        "text": "Transition outputs are collected and returned in declared order."
+      },
+      {
+        "id": "B003",
+        "text": "Serializer and unserializer decorators round-trip the active state for a new instance."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import automat or use visualization dependencies."
+      }
+    ],
+    "exclusions": [
+      "Graphviz rendering",
+      "Twisted integration",
+      "command-line visualization",
+      "original automat import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "automat"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "MethodicalMachine composes declared states and inputs into deterministic transitions on host instances."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Transition outputs are collected and returned in declared order."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Serializer and unserializer decorators round-trip the active state for a new instance."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import automat or use visualization dependencies."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_transition_and_collected_output",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_instances_keep_independent_state",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_serializer_roundtrip",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_undeclared_transition_raises",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.MethodicalMachine",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.NoTransition",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot workflow-composite-framework-01."
+    }
+  },
+  "spec_hash": "8c90e90ee281650f2617f07698d05ebba083671c0b03a3a0d1732c6ad27aa7ea",
+  "generated_task_hash": "7f5129be5576e5890f62dfb04a770e6d451700bd525ade6d1c631f63840e33c1"
+}

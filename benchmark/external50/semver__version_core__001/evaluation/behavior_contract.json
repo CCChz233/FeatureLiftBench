@@ -1,0 +1,94 @@
+{
+  "task_id": "semver__version_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "Invalid version strings raise ValueError."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "text": "the submitted package does not import forbidden upstream packages: semver."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_parse_basic",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_compare_and_order",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_bump_and_replace",
+      "public_clause_ids": [
+        "B003"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_prerelease_and_build_parse",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_version_raises",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_constructor_defaults",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_ordering_operators",
+      "public_clause_ids": [
+        "B004"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ]
+    }
+  ],
+  "spec_sha256": "646b6f761c2550ee09a135325d73495798a24e7f834780d0ab7c5a33396ed42f"
+}

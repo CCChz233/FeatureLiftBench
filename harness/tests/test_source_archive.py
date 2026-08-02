@@ -88,6 +88,25 @@ def test_safe_extract_rejects_parent_traversal(tmp_path: Path) -> None:
     assert not (tmp_path / "outside.txt").exists()
 
 
+def test_safe_extract_allows_dot_root_directory(tmp_path: Path) -> None:
+    archive = tmp_path / "rooted.tar.gz"
+    with tarfile.open(archive, "w:gz") as handle:
+        root = tarfile.TarInfo("./")
+        root.type = tarfile.DIRTYPE
+        root.mode = 0o755
+        handle.addfile(root)
+        payload = b"value\n"
+        info = tarfile.TarInfo("./value.txt")
+        info.size = len(payload)
+        info.mode = 0o644
+        handle.addfile(info, io.BytesIO(payload))
+
+    destination = tmp_path / "target"
+    safe_extract_archive(archive, destination)
+
+    assert (destination / "value.txt").read_bytes() == b"value\n"
+
+
 def test_source_cache_environment_does_not_change_absolute_archive(
     tmp_path: Path,
 ) -> None:

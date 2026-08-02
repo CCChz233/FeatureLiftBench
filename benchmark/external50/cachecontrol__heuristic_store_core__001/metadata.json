@@ -1,0 +1,342 @@
+{
+  "task_id": "cachecontrol__heuristic_store_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 3,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "cachecontrol",
+    "contract-member-reviewed",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "cachecontrol",
+    "url": "https://github.com/psf/cachecontrol",
+    "commit": "aba0315599d7d4200074ab3606384732be7bbc25",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "cachecontrol heuristic store",
+    "description": "Composite DictCache + ExpiresAfter + Serializer + CacheController offline.",
+    "source_entrypoints": [
+      "cachecontrol.cache.DictCache",
+      "cachecontrol.heuristics.ExpiresAfter",
+      "cachecontrol.serialize.Serializer"
+    ],
+    "included_behaviors": [
+      "DictCache get/set/delete",
+      "ExpiresAfter construction",
+      "Serializer and CacheController construction"
+    ],
+    "excluded_behaviors": [
+      "requests Session integration",
+      "FileCache",
+      "network"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Cache store + heuristic + serializer composition.",
+    "signals": [
+      "DictCache",
+      "ExpiresAfter",
+      "Serializer"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import DictCache, ExpiresAfter, Serializer, CacheController",
+    "callable": "DictCache",
+    "signature": "DictCache()"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "certifi",
+      "charset-normalizer",
+      "idna",
+      "msgpack",
+      "requests",
+      "urllib3"
+    ],
+    "forbidden_dependencies": [
+      "cachecontrol"
+    ],
+    "forbidden_imports": [
+      "cachecontrol"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cachecontrol/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "cachecontrol heuristic store",
+    "summary": "Extract a task-scoped subset of `cachecontrol` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.DictCache",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.DictCache.get",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.DictCache.set",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.DictCache.delete",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.BaseCache",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.ExpiresAfter",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Serializer",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.CacheController",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.CacheController.cache",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface."
+      },
+      {
+        "id": "B004",
+        "text": "No live HTTP is required; tests use in-memory DictCache only."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes DictCache/BaseCache/ExpiresAfter/Serializer/CacheController with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: cachecontrol."
+      }
+    ],
+    "exclusions": [
+      "requests Session integration",
+      "FileCache",
+      "network",
+      "original cachecontrol import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "cachecontrol"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "No live HTTP is required; tests use in-memory DictCache only."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes DictCache/BaseCache/ExpiresAfter/Serializer/CacheController with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: cachecontrol."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_dict_cache_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_expires_after_construct",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_serializer_construct",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_base_cache_interface",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cache_controller_construct",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_expires_after_days_hours",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_serializer_serde_version",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.DictCache",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BaseCache",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExpiresAfter",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Serializer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheController",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DictCache.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DictCache.set",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DictCache.delete",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheController.cache",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "cba788b1ee98afd8e5489f846b3a92c69831bd0a3901c137169dc131326432c1",
+  "generated_task_hash": "2c59bc171bc58bbe8c346aa60e4ffca83b84cfa1f766690ffc670c237b54b6a0",
+  "contract_repair_id": "external50-contract-members-20260801-v1",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

@@ -1,0 +1,94 @@
+{
+  "task_id": "pyparsing__grammar_compose_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: compose Word/Literal/Optional/Group helpers and parse_string with named results. Required observable cases include word literal compose; optional group."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: Keyword/Regex/ZeroOrMore/OneOrMore/Suppress composition. Required observable cases include keyword and regex; zero one or more; group structure."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: ParseException on mismatch including parse_all leftovers. Required observable cases include parse exception; parse all flag."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "ParseResults supports as_list/as_dict accessors used in tests."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "text": "The package exposes the required task API paths for Word/Literal/Keyword/Regex/Optional/ZeroOrMore/OneOrMore/Group/Suppress/ParseException/ParseResults/alphas/nums with the kinds listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "text": "the submitted package does not import forbidden upstream packages: pyparsing."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_word_literal_compose",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_optional_group",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_parse_exception",
+      "public_clause_ids": [
+        "B003"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_keyword_and_regex",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_zero_one_or_more",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_structure",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_all_flag",
+      "public_clause_ids": [
+        "B004"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ]
+    }
+  ],
+  "spec_sha256": "8f695e66b5fc8902f530638f2be34b54dd4d0de6c76efe4542aff5f06f7b280e"
+}

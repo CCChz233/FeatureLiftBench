@@ -1,0 +1,257 @@
+{
+  "task_id": "python_statemachine__json_workflow_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "workflow-composite-config-02",
+    "composite"
+  ],
+  "source": {
+    "name": "python-statemachine",
+    "url": "https://github.com/fgmacedo/python-statemachine",
+    "commit": "d911f537f557f0f6a5de2ceedd6fde9a451b6ada",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "JSON-defined statechart workflow",
+    "description": "Extract safe inline JSON statechart loading and synchronous event execution.",
+    "source_entrypoints": [
+      "statemachine.io.load",
+      "statemachine.StateChart"
+    ],
+    "included_behaviors": [
+      "inline JSON loading",
+      "initial state selection",
+      "event-driven transitions",
+      "safe default expression mode"
+    ],
+    "excluded_behaviors": [
+      "YAML and SCXML",
+      "schema validation",
+      "trusted eval",
+      "Django integration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "A JSON definition configures state topology, event routing, initial configuration, and safe expression policy.",
+    "signals": [
+      "inline JSON loading",
+      "initial state selection",
+      "event-driven transitions",
+      "safe default expression mode"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import load, StateChart, InvalidDefinition",
+    "callable": "load",
+    "signature": "(source: str | Path, *, format=None, trusted=False, validate=False, name=None) -> type[StateChart]"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "statemachine"
+    ],
+    "forbidden_imports": [
+      "statemachine"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "statemachine/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "JSON-defined statechart workflow",
+    "summary": "Extract safe inline JSON statechart loading and synchronous event execution.",
+    "required_api": [
+      {
+        "path": "featurelifted.load",
+        "kind": "function",
+        "signature": "(source: str | Path, *, format=None, trusted=False, validate=False, name=None) -> type[StateChart]"
+      },
+      {
+        "path": "featurelifted.StateChart",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.StateChart.send",
+            "kind": "method",
+            "signature": "(event, *args, **kwargs)"
+          },
+          {
+            "path": "featurelifted.StateChart.configuration",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidDefinition",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "load parses an inline JSON statechart definition and returns an instantiable StateChart subclass."
+      },
+      {
+        "id": "B002",
+        "text": "The instantiated chart starts in the configured initial state and routes declared events to target states."
+      },
+      {
+        "id": "B003",
+        "text": "The default trusted=False mode rejects unsupported executable expressions at load time."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import statemachine and performs no file or network lookup for inline JSON."
+      }
+    ],
+    "exclusions": [
+      "YAML and SCXML",
+      "schema validation",
+      "trusted eval",
+      "Django integration",
+      "original statemachine import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "statemachine"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "load parses an inline JSON statechart definition and returns an instantiable StateChart subclass."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The instantiated chart starts in the configured initial state and routes declared events to target states."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The default trusted=False mode rejects unsupported executable expressions at load time."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import statemachine and performs no file or network lookup for inline JSON."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_load_inline_json_returns_machine_class",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_declared_event_moves_to_target",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_instances_have_independent_configuration",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_definition_is_rejected",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.load",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StateChart",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StateChart.send",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StateChart.configuration",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidDefinition",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot workflow-composite-config-02."
+    }
+  },
+  "spec_hash": "26da50a136f1191b2c834190173a6fa13d470e7c059c69503cfc3e1e1ab25606",
+  "generated_task_hash": "2f87e2e706beee189e0c642bab743dcdadcb889c0533e42f64018fba30e686c8"
+}

@@ -1,0 +1,67 @@
+{
+  "task_id": "automat__methodical_workflow_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "MethodicalMachine composes declared states and inputs into deterministic transitions on host instances."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "Transition outputs are collected and returned in declared order."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "Serializer and unserializer decorators round-trip the active state for a new instance."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package does not import automat or use visualization dependencies."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_transition_and_collected_output",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_instances_keep_independent_state",
+      "public_clause_ids": [
+        "B001"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_serializer_roundtrip",
+      "public_clause_ids": [
+        "B001",
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_undeclared_transition_raises",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "7f5129be5576e5890f62dfb04a770e6d451700bd525ade6d1c631f63840e33c1"
+}

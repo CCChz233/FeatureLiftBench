@@ -1,0 +1,18 @@
+{
+  "source_package_name": "cachecontrol",
+  "required_source_files": [
+    "cachecontrol/cache.py",
+    "cachecontrol/heuristics.py",
+    "cachecontrol/serialize.py",
+    "cachecontrol/controller.py"
+  ],
+  "runtime_dependencies": [
+    "certifi",
+    "charset-normalizer",
+    "idna",
+    "msgpack",
+    "requests",
+    "urllib3"
+  ],
+  "notes": "Offline DictCache + ExpiresAfter + Serializer; no live HTTP."
+}

@@ -1,0 +1,67 @@
+{
+  "task_id": "cacheout__ttl_policy_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "Cache stores, retrieves, and deletes values while honoring constructor and configure defaults."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "TTL expiration uses the injected timer deterministically and supports per-entry overrides."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "LRUCache evicts the least recently accessed entry when maxsize is exceeded."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package does not import cacheout or read the upstream repository at runtime."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cache_roundtrip_and_delete",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_ttl_uses_injected_timer",
+      "public_clause_ids": [
+        "B002"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_configure_changes_default_ttl",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_lru_touch_controls_eviction",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "e33bdc3b41b6805109ff44f5138f49b6468c2874e9912bf65fdfbba0064eed40"
+}

@@ -1,0 +1,280 @@
+{
+  "task_id": "dateparser__parse_settings_pipeline_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "dateparser",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "dateparser",
+    "url": "https://github.com/scrapinghub/dateparser",
+    "commit": "08c78d3b8bcdd2f721dff8ffaf25de482fd696dd",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "dateparser settings parse pipeline",
+    "description": "Composite Settings + parse + detect_languages with frozen allowlist.",
+    "source_entrypoints": [
+      "dateparser.parse",
+      "dateparser.conf.Settings",
+      "dateparser.search.search.DateSearchWithDetection.detect_language"
+    ],
+    "included_behaviors": [
+      "parse ISO/English/Spanish/French dates",
+      "settings timezone-aware and DATE_ORDER",
+      "detect_languages shortcodes for en/es/fr subset"
+    ],
+    "excluded_behaviors": [
+      "search_dates",
+      "network downloads",
+      "settings keys outside allowlist"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Settings, locale data, and language detection compose the parse pipeline.",
+    "signals": [
+      "settings allowlist",
+      "locale data",
+      "language shortcodes"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, Settings, detect_languages",
+    "callable": "parse",
+    "signature": "parse(date_string: str, ...) -> datetime | None"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "python-dateutil",
+      "pytz",
+      "regex",
+      "six",
+      "tzlocal"
+    ],
+    "forbidden_dependencies": [
+      "dateparser"
+    ],
+    "forbidden_imports": [
+      "dateparser"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "dateparser/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "dateparser settings parse pipeline",
+    "summary": "Extract a task-scoped subset of `dateparser` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.parse",
+        "kind": "function",
+        "signature": "(date_string: str, date_formats=None, languages=None, locales=None, region=None, settings=None)"
+      },
+      {
+        "path": "featurelifted.Settings",
+        "kind": "class",
+        "signature": "(**options)"
+      },
+      {
+        "path": "featurelifted.detect_languages",
+        "kind": "function",
+        "signature": "(text: str, languages: list[str] | None = None) -> list[str]"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr."
+      },
+      {
+        "id": "B004",
+        "text": "Parsing remains offline using bundled locale/date data without network access."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.Settings`, `featurelifted.detect_languages` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: dateparser."
+      }
+    ],
+    "exclusions": [
+      "search_dates",
+      "network downloads",
+      "settings keys outside allowlist",
+      "languages outside en/es/fr for required tests",
+      "original dateparser import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "dateparser"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Parsing remains offline using bundled locale/date data without network access."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.Settings`, `featurelifted.detect_languages` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: dateparser."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_iso_and_english",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_with_languages",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_settings_timezone_aware",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_detect_languages_es_fr",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_prefer_dates_from_past",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_date_order_dmy",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_settings_key",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Settings",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.detect_languages",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "e3d6f015b5b143a317831c0369bdd12272835cc733b19691f497a43f5d392383",
+  "generated_task_hash": "dd75bc1cba18f25d058c49a037cd09f73fd5cd3a249c543926d80c69ac8826ad",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

@@ -1,0 +1,267 @@
+{
+  "task_id": "cacheout__ttl_policy_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "cache-direct-config-01",
+    "direct"
+  ],
+  "source": {
+    "name": "cacheout",
+    "url": "https://github.com/dgilland/cacheout",
+    "commit": "ab709979deafd7e241050a9fa8ce8463d70a10fb",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Configurable TTL and LRU cache policy",
+    "description": "Extract Cache and LRUCache policy behavior with deterministic timers and runtime configuration.",
+    "source_entrypoints": [
+      "cacheout.Cache",
+      "cacheout.LRUCache"
+    ],
+    "included_behaviors": [
+      "cache get/set/delete",
+      "TTL expiry with an injected timer",
+      "LRU eviction and configure updates"
+    ],
+    "excluded_behaviors": [
+      "async wrappers",
+      "global cache manager",
+      "random-replacement policies"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "config_environment_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Constructor and configure defaults control size, TTL, timer, and eviction behavior.",
+    "signals": [
+      "cache get/set/delete",
+      "TTL expiry with an injected timer",
+      "LRU eviction and configure updates"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Cache, LRUCache",
+    "callable": "Cache",
+    "signature": "(maxsize: int = 256, ttl: float = 0, timer=None, default=None, enable_stats: bool = False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "cacheout"
+    ],
+    "forbidden_imports": [
+      "cacheout"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cacheout/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Configurable TTL and LRU cache policy",
+    "summary": "Extract Cache and LRUCache policy behavior with deterministic timers and runtime configuration.",
+    "required_api": [
+      {
+        "path": "featurelifted.Cache",
+        "kind": "class",
+        "signature": "(maxsize: int = 256, ttl: float = 0, timer=None, default=None, enable_stats: bool = False)",
+        "members": [
+          {
+            "path": "featurelifted.Cache.set",
+            "kind": "method",
+            "signature": "(key, value, ttl=None) -> None"
+          },
+          {
+            "path": "featurelifted.Cache.get",
+            "kind": "method",
+            "signature": "(key, default=None)"
+          },
+          {
+            "path": "featurelifted.Cache.delete",
+            "kind": "method",
+            "signature": "(key) -> int"
+          },
+          {
+            "path": "featurelifted.Cache.configure",
+            "kind": "method",
+            "signature": "(**kwargs) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.LRUCache",
+        "kind": "class",
+        "signature": "(maxsize: int = 256, ttl: float = 0, timer=None, default=None, enable_stats: bool = False)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Cache stores, retrieves, and deletes values while honoring constructor and configure defaults."
+      },
+      {
+        "id": "B002",
+        "text": "TTL expiration uses the injected timer deterministically and supports per-entry overrides."
+      },
+      {
+        "id": "B003",
+        "text": "LRUCache evicts the least recently accessed entry when maxsize is exceeded."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import cacheout or read the upstream repository at runtime."
+      }
+    ],
+    "exclusions": [
+      "async wrappers",
+      "global cache manager",
+      "random-replacement policies",
+      "original cacheout import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "cacheout"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Cache stores, retrieves, and deletes values while honoring constructor and configure defaults."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "TTL expiration uses the injected timer deterministically and supports per-entry overrides."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "LRUCache evicts the least recently accessed entry when maxsize is exceeded."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import cacheout or read the upstream repository at runtime."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_cache_roundtrip_and_delete",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_ttl_uses_injected_timer",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_configure_changes_default_ttl",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_lru_touch_controls_eviction",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Cache",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cache.set",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cache.get",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cache.delete",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cache.configure",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LRUCache",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot cache-direct-config-01."
+    }
+  },
+  "spec_hash": "3eeec93e50f4ca4ddac499d09a6a458ebb2e0f9884338177bd4a978fa5b65d2c",
+  "generated_task_hash": "e33bdc3b41b6805109ff44f5138f49b6468c2874e9912bf65fdfbba0064eed40"
+}

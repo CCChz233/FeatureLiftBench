@@ -188,6 +188,8 @@ def tree_stats(root: str | Path) -> SourceTreeStats:
 
 def _validate_member(member: tarfile.TarInfo) -> None:
     path = PurePosixPath(member.name)
+    if member.isdir() and member.name.rstrip("/") in {"", "."}:
+        return
     if path.is_absolute() or ".." in path.parts or not path.parts:
         raise ValueError(f"unsafe source archive member: {member.name}")
     if member.issym() or member.islnk():

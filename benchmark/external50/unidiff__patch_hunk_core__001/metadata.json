@@ -1,0 +1,299 @@
+{
+  "task_id": "unidiff__patch_hunk_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "unidiff"
+  ],
+  "source": {
+    "name": "unidiff",
+    "url": "https://github.com/matiasb/python-unidiff",
+    "commit": "5ff054b218a345b6322bdd3cdd8ca4670ddcd6ad",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "unidiff patch hunk",
+    "description": "Composite unidiff PatchSet + PatchedFile + Hunk line model.",
+    "source_entrypoints": [
+      "unidiff.PatchSet",
+      "unidiff.PatchedFile",
+      "unidiff.Hunk"
+    ],
+    "included_behaviors": [
+      "parse unified diff into PatchSet",
+      "hunk added/removed/context lines",
+      "UnidiffParseError on malformed hunks"
+    ],
+    "excluded_behaviors": [
+      "git apply execution",
+      "binary diffs"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "parser_state_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Patch parse builds file/hunk/line object model.",
+    "signals": [
+      "PatchSet",
+      "Hunk",
+      "LINE_TYPE_*"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PatchSet, UnidiffParseError",
+    "callable": "PatchSet",
+    "signature": "PatchSet(diff: str)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "unidiff"
+    ],
+    "forbidden_imports": [
+      "unidiff"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "unidiff/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "unidiff patch hunk",
+    "summary": "Extract a task-scoped subset of `unidiff` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.PatchSet",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.PatchedFile",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Hunk",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.UnidiffParseError",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_ADDED",
+        "kind": "constant"
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_REMOVED",
+        "kind": "constant"
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_CONTEXT",
+        "kind": "constant"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: PatchSet parses unified diffs into PatchedFile/Hunk. Required observable cases include parse patchset."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: hunk lines expose added/removed/context types. Required observable cases include hunk lines; context lines."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: UnidiffParseError on short hunks and multi-file patches. Required observable cases include parse error short hunk; multiple files."
+      },
+      {
+        "id": "B004",
+        "text": "PatchedFile exposes added/removed counts."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes PatchSet/PatchedFile/Hunk/UnidiffParseError/LINE_TYPE_* with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: unidiff."
+      }
+    ],
+    "exclusions": [
+      "git apply",
+      "binary diffs",
+      "original unidiff import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "unidiff"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: PatchSet parses unified diffs into PatchedFile/Hunk. Required observable cases include parse patchset."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: hunk lines expose added/removed/context types. Required observable cases include hunk lines; context lines."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: UnidiffParseError on short hunks and multi-file patches. Required observable cases include parse error short hunk; multiple files."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "PatchedFile exposes added/removed counts."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes PatchSet/PatchedFile/Hunk/UnidiffParseError/LINE_TYPE_* with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: unidiff."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_patchset",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_hunk_lines",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_error_short_hunk",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_files",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_context_lines",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_added_removed_counts",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.PatchSet",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PatchedFile",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Hunk",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.UnidiffParseError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_ADDED",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_REMOVED",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LINE_TYPE_CONTEXT",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "0a5740db3b6a9e19dd61e8ed9fd7811b15f204ea65d08736c60a31a0032d96e7",
+  "generated_task_hash": "ec4a5a737fdc5f0ba60624cb47425ca68a4b31441807dc6e6099bceaca2ea149"
+}

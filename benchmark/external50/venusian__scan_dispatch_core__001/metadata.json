@@ -1,0 +1,257 @@
+{
+  "task_id": "venusian__scan_dispatch_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "registry-composite-framework-01",
+    "composite"
+  ],
+  "source": {
+    "name": "venusian",
+    "url": "https://github.com/Pylons/venusian",
+    "commit": "d036c00afa4e8c3077ab53a22290ac19fed652b2",
+    "license": "BSD-derived"
+  },
+  "feature": {
+    "name": "Decorator registry and scanner dispatch",
+    "description": "Extract callback attachment, category filtering, and module scanning into a deterministic plugin-dispatch workflow.",
+    "source_entrypoints": [
+      "venusian.attach",
+      "venusian.Scanner",
+      "venusian.lift"
+    ],
+    "included_behaviors": [
+      "attach callback metadata",
+      "module scanning",
+      "category filtering",
+      "scanner context injection"
+    ],
+    "excluded_behaviors": [
+      "filesystem package walks in evaluator cases",
+      "zip imports",
+      "namespace package edge cases"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Decorator-time attachments are stored by category and later discovered and dispatched through a Scanner context.",
+    "signals": [
+      "attach callback metadata",
+      "module scanning",
+      "category filtering",
+      "scanner context injection"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import attach, Scanner, AttachInfo, lift",
+    "callable": "attach",
+    "signature": "(wrapped, callback, category=None, depth=1, name=None) -> AttachInfo"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "venusian"
+    ],
+    "forbidden_imports": [
+      "venusian"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "venusian/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Decorator registry and scanner dispatch",
+    "summary": "Extract callback attachment, category filtering, and module scanning into a deterministic plugin-dispatch workflow.",
+    "required_api": [
+      {
+        "path": "featurelifted.attach",
+        "kind": "function",
+        "signature": "(wrapped, callback, category=None, depth=1, name=None) -> AttachInfo"
+      },
+      {
+        "path": "featurelifted.Scanner",
+        "kind": "class",
+        "signature": "(**context)",
+        "members": [
+          {
+            "path": "featurelifted.Scanner.scan",
+            "kind": "method",
+            "signature": "(package, categories=None, onerror=None, ignore=None) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.AttachInfo",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.lift",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "attach records a callback on a function or class without replacing the wrapped object."
+      },
+      {
+        "id": "B002",
+        "text": "Scanner.scan discovers attached objects in a module and dispatches callbacks with scanner context, name, and object."
+      },
+      {
+        "id": "B003",
+        "text": "Category filters select only matching registrations while preserving deterministic callback order."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import venusian or scan the network or unrelated filesystem paths."
+      }
+    ],
+    "exclusions": [
+      "filesystem package walks in evaluator cases",
+      "zip imports",
+      "namespace package edge cases",
+      "original venusian import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "venusian"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "attach records a callback on a function or class without replacing the wrapped object."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Scanner.scan discovers attached objects in a module and dispatches callbacks with scanner context, name, and object."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Category filters select only matching registrations while preserving deterministic callback order."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import venusian or scan the network or unrelated filesystem paths."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_attach_and_scan_current_module",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_category_filtering",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_attach_returns_info_and_preserves_object",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_callback_order_with_same_category",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.attach",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Scanner",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Scanner.scan",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AttachInfo",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.lift",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot registry-composite-framework-01."
+    }
+  },
+  "spec_hash": "b36c09eb226e697dc6cd296c9323071cb172c49faf31f605895e98d439e92500",
+  "generated_task_hash": "41b2f2b024d007950b494752a9ac917f911db19b1a07e059995996af2202da33"
+}

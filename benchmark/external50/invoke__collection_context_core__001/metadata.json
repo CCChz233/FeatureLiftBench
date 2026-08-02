@@ -1,0 +1,301 @@
+{
+  "task_id": "invoke__collection_context_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "w3",
+    "composite",
+    "invoke",
+    "contract-member-reviewed"
+  ],
+  "source": {
+    "name": "invoke",
+    "url": "https://github.com/pyinvoke/invoke",
+    "commit": "ab836f911f7304dcab7653c0068a8327137161a7",
+    "license": "BSD-2-Clause"
+  },
+  "feature": {
+    "name": "invoke collection context",
+    "description": "Composite invoke @task + Collection + Context/MockContext.",
+    "source_entrypoints": [
+      "invoke.task",
+      "invoke.Collection",
+      "invoke.Context"
+    ],
+    "included_behaviors": [
+      "build Collection namespaces",
+      "call tasks with Context",
+      "MockContext records run without shell"
+    ],
+    "excluded_behaviors": [
+      "real SSH fabric",
+      "config file discovery"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Collection namespace and Context execution compose.",
+    "signals": [
+      "@task",
+      "Collection",
+      "MockContext"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import task, Collection, Context, MockContext",
+    "callable": "task",
+    "signature": "task(*args, **kwargs)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "invoke"
+    ],
+    "forbidden_imports": [
+      "invoke"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "invoke/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "invoke collection context",
+    "summary": "Extract a task-scoped subset of `invoke` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.task",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.Collection",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Collection.add_task",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.Collection.add_collection",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Context",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.MockContext",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.MockContext.run",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.UnexpectedExit",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: Collection task invocation with Context. Required observable cases include collection task call."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: MockContext stubs run without shell. Required observable cases include mock context run."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: nested collections and UnexpectedExit. Required observable cases include nested collection; task exception type."
+      },
+      {
+        "id": "B004",
+        "text": "Tasks are accessed via Collection.__getitem__ by name."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes task/Collection/Context/MockContext/UnexpectedExit with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: invoke."
+      }
+    ],
+    "exclusions": [
+      "real SSH fabric",
+      "original invoke import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "invoke"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: Collection task invocation with Context. Required observable cases include collection task call."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: MockContext stubs run without shell. Required observable cases include mock context run."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: nested collections and UnexpectedExit. Required observable cases include nested collection; task exception type."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Tasks are accessed via Collection.__getitem__ by name."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes task/Collection/Context/MockContext/UnexpectedExit with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: invoke."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_collection_task_call",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_mock_context_run",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_collection",
+        "behavior_ids": [
+          "B001",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_task_exception_type",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Collection",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Context",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MockContext",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.UnexpectedExit",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Collection.add_task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Collection.add_collection",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MockContext.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "b4450ff460ed8e5a08aa6b0a6d6ad8f84231433352fbf32c47d99459b7cadb10",
+  "generated_task_hash": "c0edea15bf431c4f9750042917f2f49c76ddc141dc969668ca48c997a412c666",
+  "contract_repair_id": "external50-contract-members-20260801-v1"
+}

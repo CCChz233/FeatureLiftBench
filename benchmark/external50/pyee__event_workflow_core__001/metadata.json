@@ -1,0 +1,295 @@
+{
+  "task_id": "pyee__event_workflow_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "workflow-composite-third-party-03",
+    "composite",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "pyee",
+    "url": "https://github.com/jfhbrook/pyee",
+    "commit": "661fe6a4e144a0ce205d1e900836157208b79122",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Event-emitter workflow orchestration",
+    "description": "Extract synchronous EventEmitter registration, ordered dispatch, once semantics, and error routing.",
+    "source_entrypoints": [
+      "pyee.EventEmitter",
+      "pyee.PyeeError"
+    ],
+    "included_behaviors": [
+      "on/listens_to registration",
+      "ordered emit",
+      "once",
+      "listener removal",
+      "error event semantics"
+    ],
+    "excluded_behaviors": [
+      "asyncio, Trio, Twisted, and executor emitters",
+      "thread scheduling",
+      "network integration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "third_party_dependency_coupling"
+    ],
+    "primary": "third_party_dependency_coupling",
+    "description": "Event registration, one-shot wrappers, ordered dispatch, and typed handlers use the locked typing-extensions surface.",
+    "signals": [
+      "on/listens_to registration",
+      "ordered emit",
+      "once",
+      "listener removal",
+      "error event semantics"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import EventEmitter, PyeeError",
+    "callable": "EventEmitter",
+    "signature": "featurelifted.EventEmitter"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "pyee"
+    ],
+    "forbidden_imports": [
+      "pyee"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pyee/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Event-emitter workflow orchestration",
+    "summary": "Extract synchronous EventEmitter registration, ordered dispatch, once semantics, and error routing.",
+    "required_api": [
+      {
+        "path": "featurelifted.EventEmitter",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.EventEmitter.on",
+            "kind": "method",
+            "signature": "(event: str, f=None)"
+          },
+          {
+            "path": "featurelifted.EventEmitter.once",
+            "kind": "method",
+            "signature": "(event: str, f=None)"
+          },
+          {
+            "path": "featurelifted.EventEmitter.emit",
+            "kind": "method",
+            "signature": "(event: str, *args, **kwargs) -> bool"
+          },
+          {
+            "path": "featurelifted.EventEmitter.remove_listener",
+            "kind": "method",
+            "signature": "(event: str, f) -> None"
+          },
+          {
+            "path": "featurelifted.EventEmitter.remove_all_listeners",
+            "kind": "method",
+            "signature": "(event=None) -> None"
+          },
+          {
+            "path": "featurelifted.EventEmitter.listeners",
+            "kind": "method",
+            "signature": "(event: str) -> list"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.PyeeError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "EventEmitter dispatches listeners synchronously in registration order and forwards arguments."
+      },
+      {
+        "id": "B002",
+        "text": "once listeners remove themselves before invocation and listener removal updates subsequent dispatch."
+      },
+      {
+        "id": "B003",
+        "text": "An unhandled error event raises its Exception or PyeeError for a non-exception payload."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package uses only typing-extensions and does not import pyee."
+      }
+    ],
+    "exclusions": [
+      "asyncio, Trio, Twisted, and executor emitters",
+      "thread scheduling",
+      "network integration",
+      "original pyee import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "pyee"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "EventEmitter dispatches listeners synchronously in registration order and forwards arguments."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "once listeners remove themselves before invocation and listener removal updates subsequent dispatch."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "An unhandled error event raises its Exception or PyeeError for a non-exception payload."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package uses only typing-extensions and does not import pyee."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_emit_preserves_registration_order",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_once_listener_runs_once",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_remove_listener_changes_dispatch",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unhandled_error_semantics",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.EventEmitter",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.on",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.once",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.emit",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.remove_listener",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.remove_all_listeners",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.EventEmitter.listeners",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PyeeError",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot workflow-composite-third-party-03."
+    }
+  },
+  "spec_hash": "7dcedab50de2282f4b726cbfa3512c5d32962e8622c40f2d76bbf217b50fd1b5",
+  "generated_task_hash": "d1bc433ad37c65f9a4fd401ab31efa5f058bd140fd06a5eaab4d2356af624968",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

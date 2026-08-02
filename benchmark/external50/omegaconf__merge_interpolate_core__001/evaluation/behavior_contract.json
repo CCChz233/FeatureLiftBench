@@ -1,0 +1,94 @@
+{
+  "task_id": "omegaconf__merge_interpolate_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "ListConfig merge replaces list values as upstream default merge semantics used in tests."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "text": "The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "text": "the submitted package does not import forbidden upstream packages: omegaconf."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_create_merge_resolve",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_select",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_is_helpers",
+      "public_clause_ids": [
+        "B003"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolve_inplace",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_interpolation_error",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_struct_mode_key_error",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_list_config_merge",
+      "public_clause_ids": [
+        "B004"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ]
+    }
+  ],
+  "spec_sha256": "deecc33cf2a711601f0e80381798c192b0df9bb809f8cec826b42083419b4d12"
+}

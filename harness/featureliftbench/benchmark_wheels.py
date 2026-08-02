@@ -93,3 +93,18 @@ def expand_with_transitive_deps(package_names: list[str]) -> list[str]:
 
 def all_benchmark_wheel_specs() -> list[str]:
     return sorted(set(load_benchmark_wheel_specs().values()), key=str.lower)
+
+
+@lru_cache(maxsize=1)
+def load_source_build_packages() -> set[str]:
+    if not BENCHMARK_WHEELS_TOML.is_file():
+        return set()
+    payload = tomllib.loads(BENCHMARK_WHEELS_TOML.read_text(encoding="utf-8"))
+    raw = payload.get("source_build")
+    if not isinstance(raw, dict):
+        return set()
+    return {
+        str(key).lower().replace("_", "-")
+        for key, value in raw.items()
+        if value is True
+    }

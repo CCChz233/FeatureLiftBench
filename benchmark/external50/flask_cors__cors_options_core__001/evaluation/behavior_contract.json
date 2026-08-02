@@ -1,0 +1,73 @@
+{
+  "task_id": "flask_cors__cors_options_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: CORS(app) reflects Origin on GET responses. Required observable cases include cors app headers."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: cross_origin decorator sets per-route ACAO. Required observable cases include cross origin decorator."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: OPTIONS preflight exposes allowed methods. Required observable cases include options preflight."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "Tests use Flask test client only; Flask is an allowed dependency."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "text": "The package exposes CORS and cross_origin with the kinds listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "text": "the submitted package does not import forbidden upstream packages: flask_cors."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cors_app_headers",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cross_origin_decorator",
+      "public_clause_ids": [
+        "B002"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_options_preflight",
+      "public_clause_ids": [
+        "B002",
+        "B001",
+        "B003",
+        "B004"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ]
+    }
+  ],
+  "spec_sha256": "da1e665c92c0dacd8b9a8c5df30e39653d73af0ad1ab91c73552a34e2d061060"
+}

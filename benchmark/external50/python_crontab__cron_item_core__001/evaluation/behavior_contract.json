@@ -1,0 +1,84 @@
+{
+  "task_id": "python_crontab__cron_item_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: CronSlices parse/render/is_valid. Required observable cases include cron slices valid; slices setall."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: CronItem constructor render/is_valid. Required observable cases include cron item from line; cron item invalid line."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The extracted feature must support this observable behavior: special @reboot slices. Required observable cases include special reboot."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "No OS crontab file access is required."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "text": "The package exposes CronSlices/CronItem with the kinds listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "text": "the submitted package does not import forbidden upstream packages: crontab."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cron_slices_valid",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cron_item_from_line",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cron_item_invalid_line",
+      "public_clause_ids": [
+        "B003"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_slices_setall",
+      "public_clause_ids": [
+        "B002",
+        "B001",
+        "B004"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_special_reboot",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ]
+    }
+  ],
+  "spec_sha256": "02e9fcc565eefc111097cd7bcb0591bf6ccde7f9f4dbd8ffc5e42f5503872218"
+}

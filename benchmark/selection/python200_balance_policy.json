@@ -1,0 +1,268 @@
+{
+  "schema_version": "featureliftbench.python200_balance_policy.v2",
+  "policy_id": "python200-balance-20260801-v2",
+  "baseline": {
+    "task_count": 150,
+    "freeze_id": "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd",
+    "immutable": true
+  },
+  "expansion": {
+    "selection_path": "benchmark/selection/external50_expansion_20260731.json",
+    "selected_count": 50,
+    "target_total": 200
+  },
+  "principles": [
+    "Balance is multi-dimensional and does not require equal-sized categories.",
+    "Do not relabel a task solely to satisfy a quota; replace it when its real design does not fill the required slot.",
+    "Do not modify any task in the frozen Python-150 baseline.",
+    "Source, contract, reference, isolation, and calibration gates remain mandatory after balance selection."
+  ],
+  "final_distribution_bounds": {
+    "lift_type_share": {
+      "Direct": [
+        0.3,
+        0.36
+      ],
+      "Adapted": [
+        0.38,
+        0.45
+      ],
+      "Composite": [
+        0.2,
+        0.28
+      ]
+    },
+    "feature_family_share": {
+      "minimum": 0.05,
+      "maximum": 0.18
+    },
+    "entanglement_primary_share": {
+      "config_environment_coupling": [
+        0.08,
+        0.18
+      ],
+      "data_model_coupling": [
+        0.15,
+        0.3
+      ],
+      "framework_coupling": [
+        0.12,
+        0.22
+      ],
+      "parser_state_coupling": [
+        0.15,
+        0.3
+      ],
+      "resource_coupling": [
+        0.08,
+        0.18
+      ],
+      "third_party_dependency_coupling": [
+        0.03,
+        0.12
+      ]
+    }
+  },
+  "label_reclassification_review": {
+    "packageurl__purl_parse_core__001": {
+      "feature_family": "validate_normalize_construct",
+      "reason": "The primary contract parses and normalizes one package identity data model rather than exposing a parser pipeline."
+    },
+    "pyjwt__encode_decode_core__001": {
+      "feature_family": "validate_normalize_construct",
+      "reason": "The primary contract validates and constructs signed claims; serialization is an implementation step."
+    }
+  },
+  "replace_candidates": {
+    "cssselect__selector_xpath_core__001": "Parser family concentration and a thin single-upstream selector-to-XPath surface.",
+    "textx__metamodel_model_core__001": "Parser family concentration plus a broad metamodel closure and size risk.",
+    "parsimonious__grammar_visitor_core__001": "Parser family concentration; the reference currently retains nearly the complete Python source surface.",
+    "ijson__event_parse_core__001": "Parser family concentration and overlap with several retained streaming/parser tasks.",
+    "chardet__detect_core__001": "Parser family concentration; preserve a Direct slot by replacing it with an underrepresented family.",
+    "premailer__inline_css_core__001": "Serializer concentration, dependency burden, and a near-whole-source reference closure.",
+    "dill__serialize_settings_core__001": "Serializer concentration and overlap with retained object-serialization tasks.",
+    "cloudpickle__dumps_loads_core__001": "Serializer concentration and overlap with retained object-serialization tasks.",
+    "frictionless__schema_resource_validate_core__001": "Large dependency-heavy validation closure; replace with a narrower underrepresented-family task.",
+    "pykwalify__map_seq_validate_core__001": "Validation and data-model concentration; replace with a resource-backed Composite task."
+  },
+  "redesign_evidence": {
+    "undeclared_member_gap_task_ids": [],
+    "offline_dependency_gap_task_ids": [],
+    "pass_with_care_task_ids": [],
+    "resolved_member_contract_task_ids": [
+      "watchdog__observer_dispatch_core__001",
+      "cachecontrol__heuristic_store_core__001",
+      "flask_login__session_guard_core__001",
+      "pyparsing__grammar_compose_core__001",
+      "parsimonious__grammar_visitor_core__001",
+      "anytree__tree_resolve_render_core__001",
+      "boolean_py__expr_simplify_core__001",
+      "tinydb__query_storage_core__001",
+      "huey__task_schedule_core__001",
+      "invoke__collection_context_core__001",
+      "icalendar__component_roundtrip_core__001",
+      "tldextract__suffix_resolve_core__001",
+      "vcrpy__cassette_match_core__001",
+      "furl__url_mutate_core__001",
+      "packageurl__purl_parse_core__001",
+      "python_crontab__cron_item_core__001",
+      "freezegun__freeze_time_core__001",
+      "semver__version_core__001",
+      "portalocker__file_lock_core__001"
+    ],
+    "resolved_offline_dependency_task_ids": [
+      "cachecontrol__heuristic_store_core__001",
+      "dateparser__parse_settings_pipeline_core__001",
+      "flask_login__session_guard_core__001",
+      "ftfy__fix_text_core__001",
+      "furl__url_mutate_core__001",
+      "icalendar__component_roundtrip_core__001",
+      "joserfc__jwt_claims_core__001",
+      "omegaconf__merge_interpolate_core__001",
+      "pyjwt__encode_decode_core__001",
+      "tldextract__suffix_resolve_core__001",
+      "vcrpy__cassette_match_core__001"
+    ],
+    "resolved_pass_with_care": {
+      "cachecontrol__heuristic_store_core__001": "In-memory DictCache and fake-response paths only; no HTTP session or network.",
+      "flask_login__session_guard_core__001": "Flask test request contexts only; no server or external auth service.",
+      "sqlglot__parse_transpile_core__001": "Frozen parse/transpile API and sqlite/postgres/mysql dialect subset; optimizer excluded.",
+      "watchdog__observer_dispatch_core__001": "PollingObserver is exported as Observer with bounded temp-directory tests."
+    },
+    "portalocker_member_review": "Lock.write/close candidates were rejected because they belong to the returned file handle, not portalocker.Lock."
+  },
+  "replacement_slots": [
+    {
+      "slot_id": "cache-direct-config-01",
+      "lift_type": "Direct",
+      "feature_family": "cache_retry_policy",
+      "entanglement": "config_environment_coupling",
+      "design_requirement": "A deterministic cache or retry policy with explicit defaults and no service dependency."
+    },
+    {
+      "slot_id": "cache-direct-third-party-02",
+      "lift_type": "Direct",
+      "feature_family": "cache_retry_policy",
+      "entanglement": "third_party_dependency_coupling",
+      "design_requirement": "A bounded policy feature with one allowlisted pure-Python dependency and offline wheels."
+    },
+    {
+      "slot_id": "cache-composite-third-party-03",
+      "lift_type": "Composite",
+      "feature_family": "cache_retry_policy",
+      "entanglement": "third_party_dependency_coupling",
+      "design_requirement": "Compose keying, expiration, and retry/eviction decisions without a live cache service."
+    },
+    {
+      "slot_id": "workflow-composite-framework-01",
+      "lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement": "framework_coupling",
+      "design_requirement": "A deterministic in-process workflow with explicit state transitions and no worker service."
+    },
+    {
+      "slot_id": "workflow-composite-config-02",
+      "lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement": "config_environment_coupling",
+      "design_requirement": "A session or workflow planner whose environment/config inputs can be frozen in tests."
+    },
+    {
+      "slot_id": "workflow-composite-third-party-03",
+      "lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement": "third_party_dependency_coupling",
+      "design_requirement": "An offline orchestration pipeline using one allowlisted pure-Python dependency."
+    },
+    {
+      "slot_id": "resource-direct-01",
+      "lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "entanglement": "resource_coupling",
+      "design_requirement": "Load and resolve a small redistributable metadata resource with deterministic fallbacks."
+    },
+    {
+      "slot_id": "resource-direct-02",
+      "lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "entanglement": "resource_coupling",
+      "design_requirement": "A separate resource-backed lookup feature with pinned local data and no network refresh."
+    },
+    {
+      "slot_id": "resource-composite-third-party-03",
+      "lift_type": "Composite",
+      "feature_family": "resource_metadata_loading",
+      "entanglement": "third_party_dependency_coupling",
+      "design_requirement": "Compose local metadata loading and resolution around one allowlisted pure-Python dependency."
+    },
+    {
+      "slot_id": "registry-composite-framework-01",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement": "framework_coupling",
+      "design_requirement": "A registry plus selection/dispatch flow with deterministic in-process plugins."
+    }
+  ],
+  "replacement_assignments": [
+    {
+      "candidate_task_id": "cssselect__selector_xpath_core__001",
+      "slot_id": "cache-direct-config-01",
+      "replacement_task_id": "cacheout__ttl_policy_core__001"
+    },
+    {
+      "candidate_task_id": "textx__metamodel_model_core__001",
+      "slot_id": "cache-direct-third-party-02",
+      "replacement_task_id": "stamina__retry_context_core__001"
+    },
+    {
+      "candidate_task_id": "parsimonious__grammar_visitor_core__001",
+      "slot_id": "cache-composite-third-party-03",
+      "replacement_task_id": "cachier__memoize_backend_core__001"
+    },
+    {
+      "candidate_task_id": "ijson__event_parse_core__001",
+      "slot_id": "workflow-composite-framework-01",
+      "replacement_task_id": "automat__methodical_workflow_core__001"
+    },
+    {
+      "candidate_task_id": "chardet__detect_core__001",
+      "slot_id": "workflow-composite-config-02",
+      "replacement_task_id": "python_statemachine__json_workflow_core__001"
+    },
+    {
+      "candidate_task_id": "premailer__inline_css_core__001",
+      "slot_id": "workflow-composite-third-party-03",
+      "replacement_task_id": "pyee__event_workflow_core__001"
+    },
+    {
+      "candidate_task_id": "dill__serialize_settings_core__001",
+      "slot_id": "resource-direct-01",
+      "replacement_task_id": "publicsuffixlist__metadata_lookup_core__001"
+    },
+    {
+      "candidate_task_id": "cloudpickle__dumps_loads_core__001",
+      "slot_id": "resource-direct-02",
+      "replacement_task_id": "puremagic__signature_resource_core__001"
+    },
+    {
+      "candidate_task_id": "frictionless__schema_resource_validate_core__001",
+      "slot_id": "resource-composite-third-party-03",
+      "replacement_task_id": "langcodes__language_metadata_core__001"
+    },
+    {
+      "candidate_task_id": "pykwalify__map_seq_validate_core__001",
+      "slot_id": "registry-composite-framework-01",
+      "replacement_task_id": "venusian__scan_dispatch_core__001"
+    }
+  ],
+  "realization": {
+    "status": "reference_and_static_gates_pass",
+    "selected_task_count": 50,
+    "replacement_task_count": 10,
+    "reference_tests": 357,
+    "contract_validation": "50/50",
+    "source_materialization": "50/50",
+    "static_isolation": "50/50",
+    "next_gate": "docker_reference_and_lifecycle"
+  }
+}

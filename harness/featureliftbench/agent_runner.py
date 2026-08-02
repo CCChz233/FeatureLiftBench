@@ -55,7 +55,7 @@ from .source_archive import (
 from .task_discovery import discover_main_task_dirs
 from .suite_progress import SuiteBatchProgressManager
 from .suite_progress import live_suite_progress
-from .validate import validate_task
+from .validate import validate_runnable_task
 
 USAGE_SUM_FIELDS = (
     "assistant_steps",
@@ -411,7 +411,7 @@ def run_agent_on_task(
 
     errors: list[str] = []
     ablation = ablation_options_from_env(config.env)
-    validation = validate_task(task_path)
+    validation = validate_runnable_task(task_path)
     task_id = validation.task_id
     metadata: dict[str, Any] = {}
     source_provenance: dict[str, Any] | None = None

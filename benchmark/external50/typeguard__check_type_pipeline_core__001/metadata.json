@@ -1,0 +1,271 @@
+{
+  "task_id": "typeguard__check_type_pipeline_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "typeguard",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "typeguard",
+    "url": "https://github.com/agronholm/typeguard",
+    "commit": "9f289c7fca68097542d3bde9d59496ad42e58251",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "typeguard check_type pipeline",
+    "description": "Composite typeguard check_type for nested collections/Unions.",
+    "source_entrypoints": [
+      "typeguard.check_type",
+      "typeguard.TypeCheckError"
+    ],
+    "included_behaviors": [
+      "check_type for builtins and nested collections",
+      "Optional/Union handling",
+      "CollectionCheckStrategy FIRST_ITEM vs ALL_ITEMS",
+      "TypeCheckError on mismatch"
+    ],
+    "excluded_behaviors": [
+      "pytest plugin",
+      "import hook instrumentation"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Nested type checkers compose across origins/args.",
+    "signals": [
+      "check_type",
+      "CollectionCheckStrategy",
+      "TypeCheckError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import check_type, TypeCheckError",
+    "callable": "check_type",
+    "signature": "check_type(value, expected_type, *, collection_check_strategy=...)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "typeguard"
+    ],
+    "forbidden_imports": [
+      "typeguard"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "typeguard/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "typeguard check_type pipeline",
+    "summary": "Extract a task-scoped subset of `typeguard` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.check_type",
+        "kind": "function",
+        "signature": "(value, expected_type, *, collection_check_strategy=...)"
+      },
+      {
+        "path": "featurelifted.TypeCheckError",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.CollectionCheckStrategy",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss."
+      },
+      {
+        "id": "B004",
+        "text": "dict[str, list[int]] nesting is checked."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes check_type/TypeCheckError/CollectionCheckStrategy with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: typeguard."
+      }
+    ],
+    "exclusions": [
+      "pytest plugin",
+      "import hook",
+      "original typeguard import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "typeguard"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "dict[str, list[int]] nesting is checked."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes check_type/TypeCheckError/CollectionCheckStrategy with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: typeguard."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_nested_collections",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_optional_union",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_type_check_error",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_collection_strategy",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_dict_nested_list",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_first_item_strategy_can_miss",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_optional_reject",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.check_type",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TypeCheckError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CollectionCheckStrategy",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "5f384bbb8543be804f410cc0452eb6c39993832ca138f8be2f95d82b61dd7f6f",
+  "generated_task_hash": "fcaf9febe37a755b0eb19c5c340a131a8cffd2b98cc47e5f66cb56b2f23a67bd",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

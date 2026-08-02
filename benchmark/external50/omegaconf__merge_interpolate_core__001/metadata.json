@@ -1,0 +1,338 @@
+{
+  "task_id": "omegaconf__merge_interpolate_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "omegaconf",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "omegaconf",
+    "url": "https://github.com/omry/omegaconf",
+    "commit": "350bdb632865c5dd2286f2f6521acefe4abd843d",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "omegaconf merge interpolate",
+    "description": "Composite create/merge/interpolate/select.",
+    "source_entrypoints": [
+      "omegaconf.OmegaConf"
+    ],
+    "included_behaviors": [
+      "create/merge/to_container/select/resolve",
+      "is_missing/is_config and null select",
+      "struct mode key errors and interpolation errors"
+    ],
+    "excluded_behaviors": [
+      "dataclass structured configs",
+      "custom resolver registration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Config tree merge + interpolation resolution.",
+    "signals": [
+      "${} interpolate",
+      "struct mode",
+      "merge lists"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import OmegaConf",
+    "callable": "OmegaConf.merge",
+    "signature": "OmegaConf.merge(*configs) -> DictConfig"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "antlr4-python3-runtime",
+      "pyyaml"
+    ],
+    "forbidden_dependencies": [
+      "omegaconf"
+    ],
+    "forbidden_imports": [
+      "omegaconf"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "omegaconf/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "omegaconf merge interpolate",
+    "summary": "Extract a task-scoped subset of `omegaconf` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.OmegaConf.create",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.merge",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.to_container",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.select",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.resolve",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.is_missing",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.is_config",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.OmegaConf.set_struct",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.errors.InterpolationResolutionError",
+        "kind": "exception"
+      },
+      {
+        "path": "featurelifted.errors.ConfigKeyError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+      },
+      {
+        "id": "B004",
+        "text": "ListConfig merge replaces list values as upstream default merge semantics used in tests."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: omegaconf."
+      }
+    ],
+    "exclusions": [
+      "dataclass structured configs",
+      "custom resolver registration",
+      "original omegaconf import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "omegaconf"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "ListConfig merge replaces list values as upstream default merge semantics used in tests."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: omegaconf."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_create_merge_resolve",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_select",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_is_helpers",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolve_inplace",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_interpolation_error",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_struct_mode_key_error",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_list_config_merge",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.OmegaConf.create",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.merge",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.to_container",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.select",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.resolve",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.is_missing",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.is_config",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OmegaConf.set_struct",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.errors.InterpolationResolutionError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.errors.ConfigKeyError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "6e95bf3665a774cc8340aaf746bc00e811e4fe8a2ac53726de2b3a5d1e9f9e2a",
+  "generated_task_hash": "deecc33cf2a711601f0e80381798c192b0df9bb809f8cec826b42083419b4d12",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

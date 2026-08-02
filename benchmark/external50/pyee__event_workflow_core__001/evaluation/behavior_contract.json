@@ -1,0 +1,67 @@
+{
+  "task_id": "pyee__event_workflow_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "EventEmitter dispatches listeners synchronously in registration order and forwards arguments."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "once listeners remove themselves before invocation and listener removal updates subsequent dispatch."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "An unhandled error event raises its Exception or PyeeError for a non-exception payload."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package uses only typing-extensions and does not import pyee."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_emit_preserves_registration_order",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_once_listener_runs_once",
+      "public_clause_ids": [
+        "B002"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_remove_listener_changes_dispatch",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unhandled_error_semantics",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "d1bc433ad37c65f9a4fd401ab31efa5f058bd140fd06a5eaab4d2356af624968"
+}

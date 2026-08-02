@@ -1,0 +1,67 @@
+{
+  "task_id": "venusian__scan_dispatch_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "attach records a callback on a function or class without replacing the wrapped object."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "Scanner.scan discovers attached objects in a module and dispatches callbacks with scanner context, name, and object."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "Category filters select only matching registrations while preserving deterministic callback order."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package does not import venusian or scan the network or unrelated filesystem paths."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_attach_and_scan_current_module",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_category_filtering",
+      "public_clause_ids": [
+        "B003"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_attach_returns_info_and_preserves_object",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_callback_order_with_same_category",
+      "public_clause_ids": [
+        "B002",
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "41b2f2b024d007950b494752a9ac917f911db19b1a07e059995996af2202da33"
+}

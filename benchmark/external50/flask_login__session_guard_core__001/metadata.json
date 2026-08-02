@@ -1,0 +1,342 @@
+{
+  "task_id": "flask_login__session_guard_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 3,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "flask_login",
+    "contract-member-reviewed",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "flask-login",
+    "url": "https://github.com/maxcountryman/flask-login",
+    "commit": "793e240e408802bb1b1fbdf57d36403ea204f0bc",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "flask-login session guard",
+    "description": "Composite LoginManager + session user helpers.",
+    "source_entrypoints": [
+      "flask_login.LoginManager",
+      "flask_login.login_user",
+      "flask_login.current_user"
+    ],
+    "included_behaviors": [
+      "user_loader login/logout current_user",
+      "login_required guard",
+      "UserMixin flags and remember"
+    ],
+    "excluded_behaviors": [
+      "LDAP",
+      "real HTTP servers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Flask request/session context required.",
+    "signals": [
+      "login_required",
+      "current_user",
+      "session keys"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import LoginManager, login_user, current_user",
+    "callable": "login_user",
+    "signature": "login_user(user, remember: bool = False) -> bool"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "blinker",
+      "click",
+      "flask",
+      "itsdangerous",
+      "jinja2",
+      "markupsafe",
+      "werkzeug"
+    ],
+    "forbidden_dependencies": [
+      "flask_login"
+    ],
+    "forbidden_imports": [
+      "flask_login"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "flask_login/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "flask-login session guard",
+    "summary": "Extract a task-scoped subset of `flask-login` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.LoginManager",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.LoginManager.init_app",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.LoginManager.user_loader",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.LoginManager.login_view",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.UserMixin",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.login_user",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.logout_user",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.login_required",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.current_user",
+        "kind": "attribute",
+        "members": [
+          {
+            "path": "featurelifted.current_user.get_id",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.current_user.is_authenticated",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: login/logout/current_user with UserMixin. Required observable cases include login logout current user; user mixin anonymous."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: login_required guards anonymous users. Required observable cases include login required redirects anonymous."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: remember flag on login_user. Required observable cases include remember flag."
+      },
+      {
+        "id": "B004",
+        "text": "Tests use Flask test_request_context/test_client only; Flask is an allowed dependency."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes LoginManager/UserMixin/login_user/logout_user/login_required/current_user with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: flask_login."
+      }
+    ],
+    "exclusions": [
+      "LDAP",
+      "real HTTP servers",
+      "original flask_login import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "flask_login"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: login/logout/current_user with UserMixin. Required observable cases include login logout current user; user mixin anonymous."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: login_required guards anonymous users. Required observable cases include login required redirects anonymous."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: remember flag on login_user. Required observable cases include remember flag."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Tests use Flask test_request_context/test_client only; Flask is an allowed dependency."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes LoginManager/UserMixin/login_user/logout_user/login_required/current_user with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: flask_login."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_login_logout_current_user",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_user_mixin_anonymous",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_login_required_redirects_anonymous",
+        "behavior_ids": [
+          "B001",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_remember_flag",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.LoginManager",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.UserMixin",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.login_user",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.logout_user",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.login_required",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.current_user",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LoginManager.init_app",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LoginManager.user_loader",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LoginManager.login_view",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.current_user.get_id",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.current_user.is_authenticated",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "5aeb0b0e77e5d34493097fad7dfa4c9e70f4fa7b553bffdfbc801362303d26e2",
+  "generated_task_hash": "96f4fbdf0f2d2726e401e108af7f2e00d10f9f7482b3f2a4bcb24599a66f30fc",
+  "contract_repair_id": "external50-contract-members-20260801-v1",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

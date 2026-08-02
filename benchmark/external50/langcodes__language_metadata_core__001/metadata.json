@@ -1,0 +1,303 @@
+{
+  "task_id": "langcodes__language_metadata_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "resource-composite-third-party-03",
+    "composite",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "langcodes",
+    "url": "https://github.com/rspeer/langcodes",
+    "commit": "0aebfa862ed86d820d0c96ce311ef661cf0a798a",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Language-tag normalization and CLDR metadata",
+    "description": "Extract language tag normalization, name lookup, likely-subtag expansion, and distance matching with offline CLDR data.",
+    "source_entrypoints": [
+      "langcodes.Language",
+      "langcodes.standardize_tag",
+      "langcodes.best_match"
+    ],
+    "included_behaviors": [
+      "BCP-47 normalization",
+      "Language objects",
+      "localized display names",
+      "likely subtag maximize",
+      "best-match scoring"
+    ],
+    "excluded_behaviors": [
+      "data rebuild scripts",
+      "online registry updates",
+      "population statistics beyond the declared API"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "third_party_dependency_coupling"
+    ],
+    "primary": "third_party_dependency_coupling",
+    "description": "BCP-47 normalization composes built-in code tables with language-data CLDR names and marisa-trie lookups.",
+    "signals": [
+      "BCP-47 normalization",
+      "Language objects",
+      "localized display names",
+      "likely subtag maximize",
+      "best-match scoring"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Language, standardize_tag, best_match",
+    "callable": "Language",
+    "signature": "featurelifted.Language"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "language-data",
+      "marisa-trie"
+    ],
+    "forbidden_dependencies": [
+      "langcodes"
+    ],
+    "forbidden_imports": [
+      "langcodes"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "langcodes/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Language-tag normalization and CLDR metadata",
+    "summary": "Extract language tag normalization, name lookup, likely-subtag expansion, and distance matching with offline CLDR data.",
+    "required_api": [
+      {
+        "path": "featurelifted.Language",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Language.get",
+            "kind": "method",
+            "signature": "(tag, normalize=True) -> Language"
+          },
+          {
+            "path": "featurelifted.Language.to_tag",
+            "kind": "method",
+            "signature": "() -> str"
+          },
+          {
+            "path": "featurelifted.Language.language_name",
+            "kind": "method",
+            "signature": "(language=None) -> str"
+          },
+          {
+            "path": "featurelifted.Language.maximize",
+            "kind": "method",
+            "signature": "() -> Language"
+          },
+          {
+            "path": "featurelifted.Language.script",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.standardize_tag",
+        "kind": "function",
+        "signature": "(tag, macro: bool = False) -> str"
+      },
+      {
+        "path": "featurelifted.best_match",
+        "kind": "function",
+        "signature": "(desired_language, supported_languages, min_score=0) -> tuple[str, int]"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "standardize_tag and Language.get normalize overlong, deprecated, script, and territory subtags."
+      },
+      {
+        "id": "B002",
+        "text": "language_name and maximize resolve localized CLDR metadata from the locked language-data package offline."
+      },
+      {
+        "id": "B003",
+        "text": "best_match ranks supported language tags using normalized language distance and returns a score."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package uses only locked language-data and marisa-trie dependencies and does not import langcodes."
+      }
+    ],
+    "exclusions": [
+      "data rebuild scripts",
+      "online registry updates",
+      "population statistics beyond the declared API",
+      "original langcodes import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "langcodes"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "standardize_tag and Language.get normalize overlong, deprecated, script, and territory subtags."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "language_name and maximize resolve localized CLDR metadata from the locked language-data package offline."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "best_match ranks supported language tags using normalized language distance and returns a score."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package uses only locked language-data and marisa-trie dependencies and does not import langcodes."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_standardize_and_language_object",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_cldr_name_and_maximize",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_deprecated_tag_normalization",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_hidden_cldr_name_lookup",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_best_match_prefers_closest_supported_tag",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Language",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Language.get",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Language.to_tag",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Language.language_name",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Language.maximize",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Language.script",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.standardize_tag",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.best_match",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot resource-composite-third-party-03."
+    }
+  },
+  "spec_hash": "e1b7120221870d86203a1565afd8fef2d2d410eefc58fa9463b7acef617b83d8",
+  "generated_task_hash": "52a540902ec58e89bde74f9cd227869182af6c22bc9c93645af69424f3c0d62e",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

@@ -32,7 +32,7 @@ from .source_archive import materialize_task_source
 from .resource_limits import command_result_resource_fields
 from .resource_limits import eval_memory_limit_mb
 from .resource_limits import run_captured_command
-from .validate import validate_task
+from .validate import validate_runnable_task
 
 
 @dataclass(frozen=True)
@@ -114,7 +114,7 @@ def _evaluate_python_submission(
     logs_path.mkdir(parents=True, exist_ok=True)
 
     errors: list[str] = []
-    validation = None if trusted_capsule else validate_task(task_path)
+    validation = None if trusted_capsule else validate_runnable_task(task_path)
     if validation is not None and not validation.valid:
         errors.extend(f"invalid task: {error}" for error in validation.errors)
 

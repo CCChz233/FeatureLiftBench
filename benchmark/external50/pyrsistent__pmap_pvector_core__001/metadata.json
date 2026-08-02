@@ -1,0 +1,321 @@
+{
+  "task_id": "pyrsistent__pmap_pvector_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "w5",
+    "direct",
+    "pyrsistent"
+  ],
+  "source": {
+    "name": "pyrsistent",
+    "url": "https://github.com/tobgu/pyrsistent",
+    "commit": "a6c9c18981168820fd8acaafc783946ce638b7dc",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "pyrsistent pmap pvector",
+    "description": "Direct pyrsistent pmap/pvector persistent collections.",
+    "source_entrypoints": [
+      "pyrsistent.pmap",
+      "pyrsistent.pvector",
+      "pyrsistent.PMap",
+      "pyrsistent.PVector"
+    ],
+    "included_behaviors": [
+      "pmap/PMap.set/get immutable maps",
+      "pvector/PVector.append/set/extend",
+      "updates return new objects leaving originals unchanged"
+    ],
+    "excluded_behaviors": [
+      "pset/pdeque/pclass unless listed",
+      "C extension requirement"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Persistent data structures with structural sharing.",
+    "signals": [
+      "pmap",
+      "pvector",
+      "immutability"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import pmap, pvector, PMap, PVector",
+    "callable": "pmap",
+    "signature": "pmap(initial=None) -> PMap"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pyrsistent"
+    ],
+    "forbidden_imports": [
+      "pyrsistent"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pyrsistent/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "pyrsistent pmap pvector",
+    "summary": "Extract a task-scoped subset of `pyrsistent` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.pmap",
+        "kind": "function",
+        "signature": "(initial=None) -> PMap"
+      },
+      {
+        "path": "featurelifted.pvector",
+        "kind": "function",
+        "signature": "(initial=()) -> PVector"
+      },
+      {
+        "path": "featurelifted.PMap",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.PMap.set",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.PMap.get",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.PVector",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.PVector.append",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.PVector.extend",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.PVector.set",
+        "kind": "method"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend."
+      },
+      {
+        "id": "B004",
+        "text": "Original pmap/pvector instances remain unchanged after updates."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes pmap/pvector/PMap/PVector with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: pyrsistent."
+      }
+    ],
+    "exclusions": [
+      "pset/pdeque/pclass",
+      "original pyrsistent import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "pyrsistent"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Original pmap/pvector instances remain unchanged after updates."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes pmap/pvector/PMap/PVector with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: pyrsistent."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_pmap_set_get",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_pvector_append",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_factory_types",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_pmap_immutability",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_set",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_extend",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.pmap",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.pvector",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PMap",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PMap.set",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PMap.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PVector",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PVector.append",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PVector.extend",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PVector.set",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "20fd2bba7fb1017db9bc16531d6e43bdaa566479be282055f862bea4247e14f4",
+  "generated_task_hash": "6f320d7a401529e624a7b8ee33b96b90388eaecb71029ca92863a44f26e4749a"
+}

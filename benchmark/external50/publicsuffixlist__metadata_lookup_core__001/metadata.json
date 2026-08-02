@@ -1,0 +1,263 @@
+{
+  "task_id": "publicsuffixlist__metadata_lookup_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "python200-replacement",
+    "resource-direct-01",
+    "direct"
+  ],
+  "source": {
+    "name": "publicsuffixlist",
+    "url": "https://github.com/ko-zu/psl",
+    "commit": "7d4d0d0db229f996824bd65741ed285ebb466d87",
+    "license": "MPL-2.0"
+  },
+  "feature": {
+    "name": "Bundled public-suffix metadata lookup",
+    "description": "Extract offline PublicSuffixList loading and suffix/domain classification from the bundled PSL snapshot.",
+    "source_entrypoints": [
+      "publicsuffixlist.PublicSuffixList"
+    ],
+    "included_behaviors": [
+      "bundled list loading",
+      "public and private suffix lookup",
+      "registrable-domain lookup",
+      "IDN handling"
+    ],
+    "excluded_behaviors": [
+      "updatePSL network refresh",
+      "command-line updates",
+      "live publicsuffix.org access"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "resource_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "PublicSuffixList loads a bundled PSL resource and resolves exact, wildcard, exception, ICANN, and private rules.",
+    "signals": [
+      "bundled list loading",
+      "public and private suffix lookup",
+      "registrable-domain lookup",
+      "IDN handling"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PublicSuffixList",
+    "callable": "PublicSuffixList",
+    "signature": "(source=None, accept_unknown=True, accept_encoded_idn=True, only_icann=False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "publicsuffixlist"
+    ],
+    "forbidden_imports": [
+      "publicsuffixlist"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "publicsuffixlist/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Bundled public-suffix metadata lookup",
+    "summary": "Extract offline PublicSuffixList loading and suffix/domain classification from the bundled PSL snapshot.",
+    "required_api": [
+      {
+        "path": "featurelifted.PublicSuffixList",
+        "kind": "class",
+        "signature": "(source=None, accept_unknown=True, accept_encoded_idn=True, only_icann=False)",
+        "members": [
+          {
+            "path": "featurelifted.PublicSuffixList.publicsuffix",
+            "kind": "method",
+            "signature": "(domain, accept_unknown=None, keep_case=False)"
+          },
+          {
+            "path": "featurelifted.PublicSuffixList.privatesuffix",
+            "kind": "method",
+            "signature": "(domain, accept_unknown=None, keep_case=False)"
+          },
+          {
+            "path": "featurelifted.PublicSuffixList.is_public",
+            "kind": "method",
+            "signature": "(domain) -> bool"
+          },
+          {
+            "path": "featurelifted.PublicSuffixList.is_private",
+            "kind": "method",
+            "signature": "(domain) -> bool"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "PublicSuffixList with no source loads the bundled public_suffix_list.dat resource offline."
+      },
+      {
+        "id": "B002",
+        "text": "publicsuffix and privatesuffix apply exact, wildcard, and exception rules to normalized domain names."
+      },
+      {
+        "id": "B003",
+        "text": "only_icann and unknown-suffix options alter classification according to their constructor settings."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package does not import publicsuffixlist or perform network refreshes."
+      }
+    ],
+    "exclusions": [
+      "updatePSL network refresh",
+      "command-line updates",
+      "live publicsuffix.org access",
+      "original publicsuffixlist import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "publicsuffixlist"
+      ],
+      "paths": []
+    },
+    "public_vs_hidden_note": "Public tests cover common use. Hidden tests cover documented edge, configuration, state, API-surface, and isolation behavior only."
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "PublicSuffixList with no source loads the bundled public_suffix_list.dat resource offline."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "publicsuffix and privatesuffix apply exact, wildcard, and exception rules to normalized domain names."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "only_icann and unknown-suffix options alter classification according to their constructor settings."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import publicsuffixlist or perform network refreshes."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_bundled_list_resolves_common_suffixes",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_public_and_private_classification",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_wildcard_and_exception_rules",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_suffix_policy",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_bundled_resource_is_available_offline",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "manual_semantic_review"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.PublicSuffixList",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PublicSuffixList.publicsuffix",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PublicSuffixList.privatesuffix",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PublicSuffixList.is_public",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PublicSuffixList.is_private",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "python200_replacement_materializer",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Semantic contract review for balance slot resource-direct-01."
+    }
+  },
+  "spec_hash": "df54fa7a86a7b5c6cc016402c48109b9dafcace1a144fda64fa5386e36ef4722",
+  "generated_task_hash": "7fa04a59e63cabe0ceb5d2f019e48552520bc466caa1729c49e243540d711d74"
+}

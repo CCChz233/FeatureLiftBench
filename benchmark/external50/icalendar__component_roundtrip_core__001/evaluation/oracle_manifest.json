@@ -1,0 +1,13 @@
+{
+  "source_package_name": "icalendar",
+  "required_source_files": [
+    "src/icalendar/cal/calendar.py",
+    "src/icalendar/cal/event.py"
+  ],
+  "runtime_dependencies": [
+    "python-dateutil",
+    "six",
+    "tzdata"
+  ],
+  "notes": "Composite Calendar.from_ical/to_ical + Event components."
+}

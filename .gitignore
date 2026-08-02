@@ -113,6 +113,9 @@ scripts/*
 !scripts/run_v3_adversarial_canaries.py
 !scripts/build_v3_benchmark_freeze.py
 !scripts/build_external150_selection_ledger.py
+!scripts/build_runnable_bundle.sh
+!scripts/build_v3_846_release_bundle.sh
+!scripts/split_external50_source_registry.py
 !scripts/scaffold_external150_replacements.py
 !scripts/populate_external150_pruned_sources.py
 !scripts/promote_external150_replacements.py
@@ -139,3 +142,7 @@ benchmark/tasks/**/repo/.git/
 # Reproducible canonical source archives are rebuilt from registry revisions.
 # Their checksums are tracked; the archive bytes remain a local/server cache.
 benchmark/sources/archives/
+
+# Local cross-version wheel cache; the Python-200 release tracks CPython 3.11,
+# ABI3, and universal wheels only.
+benchmark/vendor-wheels/*cp312*.whl

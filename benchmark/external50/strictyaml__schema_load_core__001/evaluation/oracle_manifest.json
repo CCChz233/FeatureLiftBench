@@ -1,0 +1,13 @@
+{
+  "source_package_name": "strictyaml",
+  "required_source_files": [
+    "strictyaml/parser.py",
+    "strictyaml/compound.py",
+    "strictyaml/scalar.py"
+  ],
+  "runtime_dependencies": [
+    "python-dateutil",
+    "six"
+  ],
+  "notes": "Composite load + Map/Seq/scalar validators; ruamel vendored inside package."
+}

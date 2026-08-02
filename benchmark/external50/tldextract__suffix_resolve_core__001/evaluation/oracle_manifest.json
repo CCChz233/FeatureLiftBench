@@ -1,0 +1,17 @@
+{
+  "source_package_name": "tldextract",
+  "required_source_files": [
+    "tldextract/tldextract.py",
+    "tldextract/.tld_set_snapshot"
+  ],
+  "runtime_dependencies": [
+    "certifi",
+    "charset-normalizer",
+    "filelock",
+    "idna",
+    "requests",
+    "requests-file",
+    "urllib3"
+  ],
+  "notes": "Composite TLDExtract offline with suffix_list_urls=()."
+}

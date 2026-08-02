@@ -19,6 +19,15 @@
       "excluded_dir_count": 1,
       "notes": "Current Python main candidate pool. 150 tasks with metadata.json; 1 legacy empty directory (iniconfig__parse_config__001) listed in exclude_task_ids. Includes all 50 materialized batch3_pilot tasks, with pydantic__field_validator_core__hard3_001 promoted last on 2026-07-11. Legacy tasks may omit metadata.status; split membership implies main. Local staging and batch pilot workspaces are intentionally excluded from the public registry."
     },
+    "python200_external": {
+      "root": "benchmark/external50",
+      "language": "python",
+      "paper_use": "python200_balanced_expansion",
+      "lifecycle_status": "reference_static_validated",
+      "task_dir_count": 50,
+      "metadata_json_count": 50,
+      "notes": "Balanced External-50 release split. Combined with the immutable Python-150 through benchmark/python200_tasks; Docker reference validation remains a release gate."
+    },
     "python_sanity": {
       "root": "benchmark/sanity",
       "language": "python",

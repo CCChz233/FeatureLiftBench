@@ -121,6 +121,46 @@ def validate_task(task_dir: str | Path) -> ValidationResult:
     return ValidationResult(task_dir=root, task_id=task_id, errors=errors, warnings=warnings)
 
 
+def validate_runnable_task(task_dir: str | Path) -> ValidationResult:
+    """Validate a task while preserving a cryptographically frozen legacy contract."""
+
+    result = validate_task(task_dir)
+    if result.valid or not result.task_id:
+        return result
+    compatibility_errors = [
+        error
+        for error in result.errors
+        if " uses undeclared API reference featurelifted." in error
+    ]
+    if len(compatibility_errors) != len(result.errors):
+        return result
+
+    from .benchmark_freeze import benchmark_freeze_provenance
+
+    provenance = benchmark_freeze_provenance(result.task_id)
+    if provenance is None:
+        return result
+    try:
+        metadata = load_metadata(Path(task_dir)).data
+    except MetadataError:
+        return result
+    if (
+        provenance.get("spec_hash") != metadata.get("spec_hash")
+        or provenance.get("generated_task_hash") != metadata.get("generated_task_hash")
+    ):
+        return result
+    return ValidationResult(
+        task_dir=result.task_dir,
+        task_id=result.task_id,
+        errors=[],
+        warnings=result.warnings
+        + [
+            "active benchmark freeze preserves legacy implicit API references: "
+            f"{len(compatibility_errors)}"
+        ],
+    )
+
+
 def _validate_behavior_contract(root: Path, path: Path) -> list[str]:
     errors: list[str] = []
     try:

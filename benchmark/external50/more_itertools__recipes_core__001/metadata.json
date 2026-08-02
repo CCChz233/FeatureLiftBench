@@ -1,0 +1,290 @@
+{
+  "task_id": "more_itertools__recipes_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "w5",
+    "direct",
+    "more_itertools"
+  ],
+  "source": {
+    "name": "more-itertools",
+    "url": "https://github.com/more-itertools/more-itertools",
+    "commit": "64be96ceb2a6e836f76f069f4a96d2394d59fd0c",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "more_itertools recipes",
+    "description": "Direct extract of more_itertools chunked/first/unique_everseen/consume/windowed.",
+    "source_entrypoints": [
+      "more_itertools.chunked",
+      "more_itertools.recipes.unique_everseen",
+      "more_itertools.recipes.consume"
+    ],
+    "included_behaviors": [
+      "chunked splits iterables into fixed-size tuples",
+      "first returns first item",
+      "unique_everseen deduplicates preserving order",
+      "consume advances iterators",
+      "windowed sliding windows"
+    ],
+    "excluded_behaviors": [
+      "full more_itertools surface beyond listed helpers"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Pure iterator helper toolkit.",
+    "signals": [
+      "chunked",
+      "windowed",
+      "unique_everseen"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import chunked, first, unique_everseen, consume, windowed",
+    "callable": "chunked",
+    "signature": "chunked(iterable, n, strict=False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "more_itertools"
+    ],
+    "forbidden_imports": [
+      "more_itertools"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "more_itertools/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "more_itertools recipes",
+    "summary": "Extract a task-scoped subset of `more_itertools` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.chunked",
+        "kind": "function",
+        "signature": "(iterable, n, strict=False)"
+      },
+      {
+        "path": "featurelifted.first",
+        "kind": "function",
+        "signature": "(iterable, default=...)"
+      },
+      {
+        "path": "featurelifted.unique_everseen",
+        "kind": "function",
+        "signature": "(iterable, key=None)"
+      },
+      {
+        "path": "featurelifted.consume",
+        "kind": "function",
+        "signature": "(iterator, n=None)"
+      },
+      {
+        "path": "featurelifted.windowed",
+        "kind": "function",
+        "signature": "(seq, n, fillvalue=None, step=1)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: chunked splits iterables and first returns the first element. Required observable cases include chunked and first."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: unique_everseen deduplicates preserving order. Required observable cases include unique everseen; unique everseen key."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: consume advances iterators and windowed yields sliding tuples. Required observable cases include consume and windowed; windowed fillvalue; consume all."
+      },
+      {
+        "id": "B004",
+        "text": "chunked strict=True raises ValueError when the iterable length is not divisible by n."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes chunked/first/unique_everseen/consume/windowed with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: more_itertools."
+      }
+    ],
+    "exclusions": [
+      "full more_itertools catalog",
+      "original more_itertools import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "more_itertools"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: chunked splits iterables and first returns the first element. Required observable cases include chunked and first."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: unique_everseen deduplicates preserving order. Required observable cases include unique everseen; unique everseen key."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: consume advances iterators and windowed yields sliding tuples. Required observable cases include consume and windowed; windowed fillvalue; consume all."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "chunked strict=True raises ValueError when the iterable length is not divisible by n."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes chunked/first/unique_everseen/consume/windowed with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: more_itertools."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_chunked_and_first",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unique_everseen",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_consume_and_windowed",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_chunked_strict",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unique_everseen_key",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_windowed_fillvalue",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_consume_all",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.chunked",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.first",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.unique_everseen",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.consume",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.windowed",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "6c2fc432c074295ec82936d0d748ac288bad4bcb17df1220e3da933692c56849",
+  "generated_task_hash": "24c2133cb7c4fc5c7e1723cce4d819429220161a99fa0d22ca15ef521f645df8"
+}

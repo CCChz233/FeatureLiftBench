@@ -1,0 +1,299 @@
+{
+  "task_id": "tldextract__suffix_resolve_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 3,
+  "tags": [
+    "external50",
+    "w3",
+    "composite",
+    "tldextract",
+    "contract-member-reviewed",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "tldextract",
+    "url": "https://github.com/john-kurkowski/tldextract",
+    "commit": "361f12febf901ef48215d0380551d86c7f0608ac",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "tldextract suffix resolve",
+    "description": "Composite tldextract TLDExtract offline extract.",
+    "source_entrypoints": [
+      "tldextract.TLDExtract",
+      "tldextract.extract"
+    ],
+    "included_behaviors": [
+      "TLDExtract with suffix_list_urls=()",
+      "extract subdomain/domain/suffix",
+      "extract convenience function"
+    ],
+    "excluded_behaviors": [
+      "live PSL download"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "resource_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "Bundled suffix snapshot plus extract logic.",
+    "signals": [
+      "TLDExtract",
+      "suffix_list_urls",
+      "ExtractResult"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import TLDExtract, extract",
+    "callable": "TLDExtract",
+    "signature": "TLDExtract(cache_dir=False, suffix_list_urls=())"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "certifi",
+      "charset-normalizer",
+      "filelock",
+      "idna",
+      "requests",
+      "requests-file",
+      "urllib3"
+    ],
+    "forbidden_dependencies": [
+      "tldextract"
+    ],
+    "forbidden_imports": [
+      "tldextract"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "tldextract/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "tldextract suffix resolve",
+    "summary": "Extract a task-scoped subset of `tldextract` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.TLDExtract",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.TLDExtract.__call__",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.extract",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.ExtractResult",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.ExtractResult.subdomain",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ExtractResult.domain",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ExtractResult.suffix",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: offline TLDExtract splits URLs. Required observable cases include tldextract offline."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: extract convenience helper. Required observable cases include extract convenience."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: registered domain and bare hosts. Required observable cases include registered domain; no subdomain."
+      },
+      {
+        "id": "B004",
+        "text": "suffix_list_urls=() disables network suffix fetch."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes TLDExtract/extract/ExtractResult with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: tldextract."
+      }
+    ],
+    "exclusions": [
+      "live PSL download",
+      "original tldextract import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "tldextract"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: offline TLDExtract splits URLs. Required observable cases include tldextract offline."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: extract convenience helper. Required observable cases include extract convenience."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: registered domain and bare hosts. Required observable cases include registered domain; no subdomain."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "suffix_list_urls=() disables network suffix fetch."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes TLDExtract/extract/ExtractResult with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: tldextract."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_tldextract_offline",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_extract_convenience",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_registered_domain",
+        "behavior_ids": [
+          "B001",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_subdomain",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.TLDExtract",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.extract",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtractResult",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TLDExtract.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtractResult.subdomain",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtractResult.domain",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ExtractResult.suffix",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "69cfb3d0c9e5a5f6006f4bbd452d385b7a544deb4696750444ec15adf95e0c0e",
+  "generated_task_hash": "ae1d293fa20aa771ab00d1d85a9934ba2404e0fc9fa4423bdac51079c4c39541",
+  "contract_repair_id": "external50-contract-members-20260801-v1",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

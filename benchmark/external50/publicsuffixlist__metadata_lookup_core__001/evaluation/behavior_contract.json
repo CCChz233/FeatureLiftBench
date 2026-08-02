@@ -1,0 +1,72 @@
+{
+  "task_id": "publicsuffixlist__metadata_lookup_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "PublicSuffixList with no source loads the bundled public_suffix_list.dat resource offline."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "publicsuffix and privatesuffix apply exact, wildcard, and exception rules to normalized domain names."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "only_icann and unknown-suffix options alter classification according to their constructor settings."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package does not import publicsuffixlist or perform network refreshes."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_bundled_list_resolves_common_suffixes",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_public_and_private_classification",
+      "public_clause_ids": [
+        "B002"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_wildcard_and_exception_rules",
+      "public_clause_ids": [
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_suffix_policy",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_bundled_resource_is_available_offline",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "7fa04a59e63cabe0ceb5d2f019e48552520bc466caa1729c49e243540d711d74"
+}

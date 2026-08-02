@@ -1,0 +1,365 @@
+{
+  "task_id": "semver__version_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "direct",
+    "semver",
+    "contract-member-reviewed"
+  ],
+  "source": {
+    "name": "semver",
+    "url": "https://github.com/python-semver/python-semver",
+    "commit": "6adf8765f6e21910f1f0c13151ce84f32f8d431d",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Version parse/compare/bump",
+    "description": "Extract python-semver Version API into featurelifted.",
+    "source_entrypoints": [
+      "semver.Version"
+    ],
+    "included_behaviors": [
+      "parse semver strings into Version",
+      "compare and order Version instances",
+      "bump major/minor/patch and replace parts"
+    ],
+    "excluded_behaviors": [
+      "CLI entry points",
+      "file reading helpers",
+      "deprecated VersionInfo-only quirks beyond optional alias"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Version fields, prerelease/build ordering, and immutable replace/bump semantics.",
+    "signals": [
+      "prerelease ordering",
+      "immutable bump/replace"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Version",
+    "callable": "Version.parse",
+    "signature": "Version.parse(version: str) -> Version"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "semver"
+    ],
+    "forbidden_imports": [
+      "semver"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "semver/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Version parse/compare/bump",
+    "summary": "Extract a task-scoped subset of `semver` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.Version",
+        "kind": "class",
+        "signature": "(major: int, minor: int = 0, patch: int = 0, prerelease: str | None = None, build: str | None = None)",
+        "members": [
+          {
+            "path": "featurelifted.Version.parse",
+            "kind": "method",
+            "signature": "(version: str) -> Version"
+          },
+          {
+            "path": "featurelifted.Version.compare",
+            "kind": "method",
+            "signature": "(self, other: Version) -> int"
+          },
+          {
+            "path": "featurelifted.Version.bump_major",
+            "kind": "method",
+            "signature": "(self) -> Version"
+          },
+          {
+            "path": "featurelifted.Version.bump_minor",
+            "kind": "method",
+            "signature": "(self) -> Version"
+          },
+          {
+            "path": "featurelifted.Version.bump_patch",
+            "kind": "method",
+            "signature": "(self) -> Version"
+          },
+          {
+            "path": "featurelifted.Version.replace",
+            "kind": "method",
+            "signature": "(self, **parts) -> Version"
+          },
+          {
+            "path": "featurelifted.Version.major",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Version.minor",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Version.patch",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Version.prerelease",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Version.build",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults."
+      },
+      {
+        "id": "B004",
+        "text": "Invalid version strings raise ValueError."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: semver."
+      }
+    ],
+    "exclusions": [
+      "CLI entry points",
+      "file reading helpers",
+      "deprecated VersionInfo-only quirks beyond optional alias",
+      "original semver import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "semver"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Invalid version strings raise ValueError."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: semver."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_basic",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_compare_and_order",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_bump_and_replace",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_prerelease_and_build_parse",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_version_raises",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_constructor_defaults",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_ordering_operators",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Version",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.compare",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.bump_major",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.bump_minor",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.bump_patch",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.replace",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.major",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.minor",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.patch",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.prerelease",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Version.build",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "704b901d7c59a96829bc51105d4632b7fccbe25bef83e2435f651c1f457a3829",
+  "generated_task_hash": "646b6f761c2550ee09a135325d73495798a24e7f834780d0ab7c5a33396ed42f",
+  "contract_repair_id": "external50-contract-members-20260801-v1"
+}

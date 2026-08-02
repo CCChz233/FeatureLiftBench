@@ -1,0 +1,371 @@
+{
+  "task_id": "anytree__tree_resolve_render_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "anytree",
+    "contract-member-reviewed"
+  ],
+  "source": {
+    "name": "anytree",
+    "url": "https://github.com/c0fec0de/anytree",
+    "commit": "2e0a1b956172654d75aff93277ce3d883355e0bf",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "anytree resolve render",
+    "description": "Composite anytree Node + Resolver + RenderTree.",
+    "source_entrypoints": [
+      "anytree.Node",
+      "anytree.Resolver",
+      "anytree.RenderTree"
+    ],
+    "included_behaviors": [
+      "build parent/child trees",
+      "path resolve via Resolver",
+      "ASCII RenderTree rows",
+      "PreOrderIter and findall"
+    ],
+    "excluded_behaviors": [
+      "dot export",
+      "dict importer/exporter persistence"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Tree mutation, path resolve, and render share Node graph.",
+    "signals": [
+      "parent/children",
+      "Resolver",
+      "RenderTree"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Node, Resolver, RenderTree",
+    "callable": "Resolver.get",
+    "signature": "get(node, path: str)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "anytree"
+    ],
+    "forbidden_imports": [
+      "anytree"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "anytree/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "anytree tree resolve render",
+    "summary": "Extract a task-scoped subset of `anytree` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.Node",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Node.name",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Node.parent",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Node.children",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Resolver.get",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.RenderTree",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.RenderTree.__iter__",
+            "kind": "method"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.PreOrderIter",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.findall",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.ChildResolverError",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.ResolverError",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall."
+      },
+      {
+        "id": "B004",
+        "text": "parent assignment mutates children relationships."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes Node/Resolver/RenderTree/PreOrderIter/findall/ChildResolverError/ResolverError with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: anytree."
+      }
+    ],
+    "exclusions": [
+      "dot export",
+      "dict attachment persistence",
+      "original anytree import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "anytree"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "parent assignment mutates children relationships."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes Node/Resolver/RenderTree/PreOrderIter/findall/ChildResolverError/ResolverError with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: anytree."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_build_and_preorder",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_resolver_get",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_render_and_findall",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_parent_children_mutation",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolver_relative_path",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_render_row_fields",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_findall_empty",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolver_error_base",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Node",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RenderTree",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PreOrderIter",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.findall",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ChildResolverError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ResolverError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Node.name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Node.parent",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Node.children",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RenderTree.__iter__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "2ccbbb159773f88685b076678eb6d9d54d17185d39fcc2c24fc80bf2aac56920",
+  "generated_task_hash": "3cf6689249a6a0c2f64eeb8d2d11ab3e1495123079b97da3be326405a36f41d9",
+  "contract_repair_id": "external50-contract-members-20260801-v1"
+}

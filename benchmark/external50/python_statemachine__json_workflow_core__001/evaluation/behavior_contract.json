@@ -1,0 +1,67 @@
+{
+  "task_id": "python_statemachine__json_workflow_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "text": "load parses an inline JSON statechart definition and returns an instantiable StateChart subclass."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "text": "The instantiated chart starts in the configured initial state and routes declared events to target states."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "text": "The default trusted=False mode rejects unsupported executable expressions at load time."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "text": "The submitted package does not import statemachine and performs no file or network lookup for inline JSON."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_load_inline_json_returns_machine_class",
+      "public_clause_ids": [
+        "B001"
+      ]
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_declared_event_moves_to_target",
+      "public_clause_ids": [
+        "B002"
+      ]
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_instances_have_independent_configuration",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_definition_is_rejected",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B003"
+      ]
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B004"
+      ]
+    }
+  ],
+  "spec_sha256": "2f87e2e706beee189e0c642bab743dcdadcb889c0533e42f64018fba30e686c8"
+}

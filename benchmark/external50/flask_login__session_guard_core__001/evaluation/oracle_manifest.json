@@ -1,0 +1,18 @@
+{
+  "source_package_name": "flask_login",
+  "required_source_files": [
+    "src/flask_login/login_manager.py",
+    "src/flask_login/utils.py",
+    "src/flask_login/mixins.py"
+  ],
+  "runtime_dependencies": [
+    "blinker",
+    "click",
+    "flask",
+    "itsdangerous",
+    "jinja2",
+    "markupsafe",
+    "werkzeug"
+  ],
+  "notes": "Flask test_request_context only; flask allowed, flask_login forbidden."
+}

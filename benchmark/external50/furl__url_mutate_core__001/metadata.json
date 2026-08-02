@@ -1,0 +1,331 @@
+{
+  "task_id": "furl__url_mutate_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 3,
+  "tags": [
+    "external50",
+    "w4",
+    "adapted",
+    "furl",
+    "contract-member-reviewed",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "furl",
+    "url": "https://github.com/gruns/furl",
+    "commit": "fea659e66f078f3c81b1a70e609192ea3aedfef6",
+    "license": "Unlicense"
+  },
+  "feature": {
+    "name": "furl url mutate",
+    "description": "Adapted furl mutable URL/path/query API.",
+    "source_entrypoints": [
+      "furl.furl"
+    ],
+    "included_behaviors": [
+      "parse and mutate path segments",
+      "query args set/remove",
+      "scheme/host/port/fragment updates"
+    ],
+    "excluded_behaviors": [
+      "network fetch"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Mutable URL composed of path/query/fragment parts.",
+    "signals": [
+      "furl.url",
+      "path.segments",
+      "args"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import furl",
+    "callable": "furl",
+    "signature": "furl(url: str = '')"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "orderedmultidict",
+      "six"
+    ],
+    "forbidden_dependencies": [
+      "furl"
+    ],
+    "forbidden_imports": [
+      "furl"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "furl/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "furl url mutate",
+    "summary": "Extract a task-scoped subset of `furl` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.furl",
+        "kind": "class",
+        "signature": "(url: str = '')",
+        "members": [
+          {
+            "path": "featurelifted.furl.url",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.path",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.args",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.scheme",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.host",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.port",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.furl.fragment",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Path",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Path.segments",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: parse and mutate path/query. Required observable cases include parse and mutate path; query args."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: scheme/host/port/fragment mutation. Required observable cases include set scheme host; fragment and port."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: remove query keys. Required observable cases include remove query key."
+      },
+      {
+        "id": "B004",
+        "text": "furl.url returns the serialized URL string."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes furl with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: furl."
+      }
+    ],
+    "exclusions": [
+      "network fetch",
+      "original furl import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "furl"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: parse and mutate path/query. Required observable cases include parse and mutate path; query args."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: scheme/host/port/fragment mutation. Required observable cases include set scheme host; fragment and port."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: remove query keys. Required observable cases include remove query key."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "furl.url returns the serialized URL string."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes furl with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: furl."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_and_mutate_path",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_query_args",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_set_scheme_host",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_fragment_and_port",
+        "behavior_ids": [
+          "B002",
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_remove_query_key",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.furl",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.url",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.args",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.scheme",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.host",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.port",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.furl.fragment",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Path.segments",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "3461f70c2c1b74802fbbbbed701ca7a6c6063caa885128f1604c872af37d124a",
+  "generated_task_hash": "8d86ed9229ab7dfde1243017ccf87e1136114c5585aa49f046dff7171d515b7f",
+  "contract_repair_id": "external50-contract-members-20260801-v1",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

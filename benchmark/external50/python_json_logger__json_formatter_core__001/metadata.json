@@ -1,0 +1,231 @@
+{
+  "task_id": "python_json_logger__json_formatter_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "w3",
+    "adapted",
+    "pythonjsonlogger"
+  ],
+  "source": {
+    "name": "python-json-logger",
+    "url": "https://github.com/nhairs/python-json-logger",
+    "commit": "d80c68da770154d9662975b789cabcc9a3e99408",
+    "license": "BSD-2-Clause"
+  },
+  "feature": {
+    "name": "python json logger formatter",
+    "description": "Adapted pythonjsonlogger JsonFormatter field rename/reshape.",
+    "source_entrypoints": [
+      "pythonjsonlogger.json.JsonFormatter"
+    ],
+    "included_behaviors": [
+      "format LogRecord to JSON string",
+      "rename_fields mapping",
+      "static_fields injection"
+    ],
+    "excluded_behaviors": [
+      "SocketHandler networking"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "types": [
+      "config_environment_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Formatter options reshape log record output.",
+    "signals": [
+      "JsonFormatter",
+      "rename_fields",
+      "static_fields"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import JsonFormatter",
+    "callable": "JsonFormatter.format",
+    "signature": "format(record: logging.LogRecord) -> str"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pythonjsonlogger"
+    ],
+    "forbidden_imports": [
+      "pythonjsonlogger"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pythonjsonlogger/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "python json logger formatter",
+    "summary": "Extract a task-scoped subset of `python-json-logger` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.JsonFormatter",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.JsonFormatter.format",
+        "kind": "method"
+      }
+    ],
+    "optional_api": [
+      {
+        "path": "featurelifted.json.JsonFormatter",
+        "kind": "class"
+      }
+    ],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule."
+      },
+      {
+        "id": "B004",
+        "text": "Output is a single JSON object line per record."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes JsonFormatter with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: pythonjsonlogger."
+      }
+    ],
+    "exclusions": [
+      "SocketHandler networking",
+      "original pythonjsonlogger import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "pythonjsonlogger"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Output is a single JSON object line per record."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes JsonFormatter with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: pythonjsonlogger."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_basic_json_line",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_rename_and_static_fields",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_fmt_fields",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.JsonFormatter",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.JsonFormatter.format",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "7ffa85f176c55cd6428733c229779d1a13f65d528ca31e933e12ea63568b8a75",
+  "generated_task_hash": "f07e434338f2fd7cfb5c3d338f1839ad29d456e26086cf5ae7b0b1c35b89f17f"
+}

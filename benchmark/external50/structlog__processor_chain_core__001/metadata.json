@@ -1,0 +1,291 @@
+{
+  "task_id": "structlog__processor_chain_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "validated",
+  "task_revision": 1,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "structlog"
+  ],
+  "source": {
+    "name": "structlog",
+    "url": "https://github.com/hynek/structlog",
+    "commit": "8174a86a2f14b5bd295eded733ff5fffc12aa173",
+    "license": "MIT OR Apache-2.0"
+  },
+  "feature": {
+    "name": "structlog processor chain",
+    "description": "Composite configure/get_logger/processors/bind.",
+    "source_entrypoints": [
+      "structlog.configure",
+      "structlog.get_logger"
+    ],
+    "included_behaviors": [
+      "configure processor chain and get_logger",
+      "bind/unbind/new context",
+      "JSONRenderer KeyValueRenderer TimeStamper add_log_level"
+    ],
+    "excluded_behaviors": [
+      "twisted/asyncio",
+      "stdlib LoggerFactory integrations"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Global configure state + ordered processors + bound context.",
+    "signals": [
+      "processor order",
+      "bind/unbind",
+      "reset_defaults"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "import featurelifted as structlog",
+    "callable": "configure",
+    "signature": "configure(processors=..., logger_factory=..., cache_logger_on_first_use=False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "structlog"
+    ],
+    "forbidden_imports": [
+      "structlog"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "structlog/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "structlog processor chain",
+    "summary": "Extract a task-scoped subset of `structlog` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.configure",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.get_logger",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.reset_defaults",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.processors.JSONRenderer",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.processors.KeyValueRenderer",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.processors.TimeStamper",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.processors.add_log_level",
+        "kind": "function"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order."
+      },
+      {
+        "id": "B004",
+        "text": "reset_defaults clears global configuration between tests."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.configure`, `featurelifted.get_logger`, `featurelifted.reset_defaults`, and the frozen processors with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: structlog."
+      }
+    ],
+    "exclusions": [
+      "twisted/asyncio",
+      "stdlib LoggerFactory integrations",
+      "original structlog import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "structlog"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "reset_defaults clears global configuration between tests."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes the required task API paths `featurelifted.configure`, `featurelifted.get_logger`, `featurelifted.reset_defaults`, and the frozen processors with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: structlog."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_bind_and_json_renderer",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_key_value_renderer",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_timestamp_and_unbind",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_new_context",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_processor_order",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.configure",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.get_logger",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.reset_defaults",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.processors.JSONRenderer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.processors.KeyValueRenderer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.processors.TimeStamper",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.processors.add_log_level",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "b7926fd553c8a913453ec857034dba608b34ef158b69447de4bc88c77e199537",
+  "generated_task_hash": "ee331a48faf42cbdfbaa33b40a0dc7670c57bb22646b783ca95c60cb88f07fc2"
+}

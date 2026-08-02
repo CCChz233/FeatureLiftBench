@@ -218,7 +218,7 @@ PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \
 import json
 from pathlib import Path
 
-from featureliftbench.validate import validate_task
+from featureliftbench.validate import validate_runnable_task
 
 root = Path("benchmark/tasks")
 task_dirs = sorted(
@@ -232,7 +232,7 @@ for task_dir in task_dirs:
     if metadata.get("spec_status") != "compliant":
         failures.append(f"{task_dir.name}: spec_status={metadata.get('spec_status')!r}")
         continue
-    result = validate_task(task_dir)
+    result = validate_runnable_task(task_dir)
     if not result.valid:
         failures.append(f"{task_dir.name}: {'; '.join(result.errors)}")
 if failures:

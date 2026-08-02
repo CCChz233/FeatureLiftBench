@@ -1,0 +1,13 @@
+{
+  "source_package_name": "joserfc",
+  "required_source_files": [
+    "src/joserfc/jwt.py",
+    "src/joserfc/jwk.py"
+  ],
+  "runtime_dependencies": [
+    "cffi",
+    "cryptography",
+    "pycparser"
+  ],
+  "notes": "Composite jwt.encode/decode with OctKey HS256 offline."
+}

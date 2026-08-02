@@ -1,0 +1,333 @@
+{
+  "task_id": "strictyaml__schema_load_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "pilot",
+    "composite",
+    "strictyaml",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "strictyaml",
+    "url": "https://github.com/crdoconnor/strictyaml",
+    "commit": "f19d2815bb733e3bf709a34281a62a25ccdfdc3a",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "strictyaml schema load",
+    "description": "Composite strictyaml load + Map/Seq/scalar validators.",
+    "source_entrypoints": [
+      "strictyaml.load",
+      "strictyaml.Map",
+      "strictyaml.Seq"
+    ],
+    "included_behaviors": [
+      "load YAML string against schema",
+      "Map/Seq/scalars/Optional/MapPattern",
+      "YAMLValidationError on mismatch"
+    ],
+    "excluded_behaviors": [
+      "external ruamel fancy types beyond vendored subset"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Schema combinators + loader produce typed YAML objects.",
+    "signals": [
+      "load",
+      "Map/Seq",
+      "YAMLValidationError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import load, Map, Seq, Str, Int",
+    "callable": "load",
+    "signature": "load(yaml_string: str, schema, label: str = 'string')"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "python-dateutil",
+      "six"
+    ],
+    "forbidden_dependencies": [
+      "strictyaml"
+    ],
+    "forbidden_imports": [
+      "strictyaml"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "strictyaml/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "strictyaml schema load",
+    "summary": "Extract a task-scoped subset of `strictyaml` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.load",
+        "kind": "function",
+        "signature": "(yaml_string, schema, label='string')"
+      },
+      {
+        "path": "featurelifted.Map",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Seq",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Str",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Int",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Bool",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Optional",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.MapPattern",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.YAMLValidationError",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.StrictYAMLError",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern."
+      },
+      {
+        "id": "B004",
+        "text": "YAMLValidationError is a StrictYAMLError subclass."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes load and declared validators/errors with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: strictyaml."
+      }
+    ],
+    "exclusions": [
+      "external ruamel beyond vendored",
+      "original strictyaml import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "strictyaml"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "YAMLValidationError is a StrictYAMLError subclass."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes load and declared validators/errors with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: strictyaml."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_load_map_seq",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_validation_error",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_map_pattern",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_optional_key_absent",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_seq_map",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_strict_error_hierarchy",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.load",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Map",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Seq",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Str",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Int",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Bool",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Optional",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MapPattern",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.YAMLValidationError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StrictYAMLError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-07-31",
+      "reviewer": "external50_pilot_materialize",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Pilot materialization with frozen design-card scope."
+    }
+  },
+  "spec_hash": "d63754496a7ec0ac38ec796f5c94a89d075b447dfdc2b6c0a2c02d961030fd57",
+  "generated_task_hash": "3f9f532dac7294525b3d01e8119c12396d3c29dcf0b7a0114915b8f7681486ff",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

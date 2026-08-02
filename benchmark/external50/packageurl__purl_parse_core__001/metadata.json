@@ -1,0 +1,301 @@
+{
+  "task_id": "packageurl__purl_parse_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 2,
+  "tags": [
+    "external50",
+    "w4",
+    "adapted",
+    "packageurl",
+    "contract-member-reviewed"
+  ],
+  "source": {
+    "name": "packageurl-python",
+    "url": "https://github.com/package-url/packageurl-python",
+    "commit": "04b755ccc388d6a53bb5277d1f95de4baa727deb",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "packageurl purl parse",
+    "description": "Adapted PackageURL.from_string/to_string normalize.",
+    "source_entrypoints": [
+      "packageurl.PackageURL"
+    ],
+    "included_behaviors": [
+      "from_string parses type/namespace/name/version",
+      "to_string roundtrip and qualifier ordering",
+      "ValueError on invalid purl"
+    ],
+    "excluded_behaviors": [
+      "ecosystem network lookups"
+    ]
+  },
+  "entanglement": {
+    "level": "low",
+    "types": [
+      "data_model_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "PURL value object parse/serialize.",
+    "signals": [
+      "from_string",
+      "to_string",
+      "qualifiers"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import PackageURL",
+    "callable": "PackageURL.from_string",
+    "signature": "from_string(purl: str) -> PackageURL"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "packageurl"
+    ],
+    "forbidden_imports": [
+      "packageurl"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "packageurl/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "packageurl purl parse",
+    "summary": "Extract a task-scoped subset of `packageurl` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.PackageURL",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.PackageURL.from_string",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.PackageURL.to_string",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.PackageURL.type",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PackageURL.name",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PackageURL.namespace",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PackageURL.version",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.from_string",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.PackageURL.to_string",
+        "kind": "method"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl."
+      },
+      {
+        "id": "B004",
+        "text": "Qualifiers are serialized in stable order."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes PackageURL.from_string/to_string with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: packageurl."
+      }
+    ],
+    "exclusions": [
+      "ecosystem network lookups",
+      "original packageurl import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "packageurl"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Qualifiers are serialized in stable order."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes PackageURL.from_string/to_string with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: packageurl."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_from_string_fields",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_to_string_roundtrip",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_constructor",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_qualifiers_normalize",
+        "behavior_ids": [
+          "B002",
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_purl",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.PackageURL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.from_string",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.to_string",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.type",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.namespace",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PackageURL.version",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "3759701fead1a3019f6c0e4340e5594db070f5716615ad5ce0a3eecceb5a6fab",
+  "generated_task_hash": "1117a88de9315915223a5249477faceee280927b2308d1a86b1c26e8347776f4",
+  "contract_repair_id": "external50-contract-members-20260801-v1"
+}

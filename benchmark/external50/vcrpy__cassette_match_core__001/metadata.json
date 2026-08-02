@@ -1,0 +1,290 @@
+{
+  "task_id": "vcrpy__cassette_match_core__001",
+  "language": "python",
+  "difficulty": "medium",
+  "status": "materialized_candidate",
+  "task_revision": 3,
+  "tags": [
+    "external50",
+    "w3",
+    "composite",
+    "vcr",
+    "contract-member-reviewed",
+    "offline-dependency-closed"
+  ],
+  "source": {
+    "name": "vcrpy",
+    "url": "https://github.com/kevin1024/vcrpy",
+    "commit": "c599974b31f3e510df9b98e61513fe6889a50db0",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "vcrpy cassette match",
+    "description": "Composite vcr use_cassette replay with matchers.",
+    "source_entrypoints": [
+      "vcr.use_cassette",
+      "vcr.VCR"
+    ],
+    "included_behaviors": [
+      "use_cassette replay pre-recorded yaml",
+      "record_mode none",
+      "match_on method/uri"
+    ],
+    "excluded_behaviors": [
+      "recording against internet",
+      "selenium"
+    ]
+  },
+  "entanglement": {
+    "level": "medium",
+    "types": [
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Matchers, cassette store, and HTTP replay compose.",
+    "signals": [
+      "use_cassette",
+      "VCR",
+      "match_on"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import use_cassette, VCR",
+    "callable": "use_cassette",
+    "signature": "use_cassette(path, record_mode='none', ...)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "pyyaml",
+      "urllib3",
+      "wrapt"
+    ],
+    "forbidden_dependencies": [
+      "vcr"
+    ],
+    "forbidden_imports": [
+      "vcr"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "vcr/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "vcrpy cassette match",
+    "summary": "Extract a task-scoped subset of `vcrpy` into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.use_cassette",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.VCR",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.VCR.use_cassette",
+            "kind": "method"
+          },
+          {
+            "path": "featurelifted.VCR.record_mode",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.VCR.use_cassette",
+        "kind": "method"
+      },
+      {
+        "path": "featurelifted.Cassette",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Cassette.play_count",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay."
+      },
+      {
+        "id": "B002",
+        "text": "The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory."
+      },
+      {
+        "id": "B003",
+        "text": "The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none."
+      },
+      {
+        "id": "B004",
+        "text": "record_mode='none' never records new interactions in tests."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes use_cassette and VCR with the kinds listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: vcr."
+      }
+    ],
+    "exclusions": [
+      "recording against internet",
+      "original vcr import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "vcr"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "record_mode='none' never records new interactions in tests."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes use_cassette and VCR with the kinds listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: vcr."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_use_cassette_replay",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_vcr_factory",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_match_on_method_uri",
+        "behavior_ids": [
+          "B001",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cassette_path_record_mode_none",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.use_cassette",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.VCR",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.VCR.use_cassette",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.VCR.record_mode",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cassette",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Cassette.play_count",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-01",
+      "reviewer": "external50_contract_repair",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Explicit class/member contract closure; return-object false positives excluded."
+    }
+  },
+  "spec_hash": "dc3d182542cbc30563627e7102f2402f6a52b27a5ae8a2ed8faeb93f70e3e163",
+  "generated_task_hash": "f48989f7d1f223900955b1fdf0959334c43f01f0dc3093c620f5dfb90b278470",
+  "contract_repair_id": "external50-contract-members-20260801-v1",
+  "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
+}

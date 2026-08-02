@@ -1,0 +1,13 @@
+{
+  "source_package_name": "omegaconf",
+  "required_source_files": [
+    "omegaconf/omegaconf.py",
+    "omegaconf/base.py",
+    "omegaconf/grammar/"
+  ],
+  "runtime_dependencies": [
+    "antlr4-python3-runtime",
+    "pyyaml"
+  ],
+  "notes": "repo git tree omits generated grammar/gen; reference uses release wheel artifacts."
+}

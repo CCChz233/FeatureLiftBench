@@ -1,0 +1,14 @@
+{
+  "source_package_name": "vcrpy",
+  "required_source_files": [
+    "vcr/config.py",
+    "vcr/cassette.py",
+    "vcr/matchers.py"
+  ],
+  "runtime_dependencies": [
+    "pyyaml",
+    "urllib3",
+    "wrapt"
+  ],
+  "notes": "Composite use_cassette replay with pre-recorded yaml; record_mode=none."
+}

@@ -1,0 +1,17 @@
+{
+  "source_package_name": "dateparser",
+  "required_source_files": [
+    "dateparser/__init__.py",
+    "dateparser/conf.py",
+    "dateparser/search/search.py",
+    "dateparser/data/"
+  ],
+  "runtime_dependencies": [
+    "python-dateutil",
+    "pytz",
+    "regex",
+    "six",
+    "tzlocal"
+  ],
+  "notes": "Composite Settings + parse + detect_languages; offline data bundled in repo/reference."
+}

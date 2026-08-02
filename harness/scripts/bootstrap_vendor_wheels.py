@@ -119,9 +119,13 @@ def _collect_selection_specs(selection_path: Path) -> list[str]:
     for row in payload.get("rows", []):
         if row.get("disposition") != "selected" or not row.get("task_id"):
             continue
-        lock_path = (
-            _REPO_ROOT / "benchmark/staging" / row["task_id"] / "requirements.lock"
+        released = _REPO_ROOT / "benchmark/external50" / row["task_id"]
+        task_dir = (
+            released
+            if (released / "requirements.lock").is_file()
+            else _REPO_ROOT / "benchmark/staging" / row["task_id"]
         )
+        lock_path = task_dir / "requirements.lock"
         if not lock_path.is_file():
             raise RuntimeError(f"selected task lock missing: {lock_path}")
         for line in lock_path.read_text(encoding="utf-8").splitlines():

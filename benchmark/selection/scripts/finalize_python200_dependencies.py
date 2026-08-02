@@ -28,10 +28,19 @@ from featureliftbench.task_spec import (  # noqa: E402
 
 SELECTION_PATH = ROOT / "benchmark/selection/external50_expansion_20260731.json"
 CLOSURE_ID = "python200-offline-dependency-closure-20260801-v1"
+RELEASE_ROOT = ROOT / "benchmark/external50"
+STAGING_ROOT = ROOT / "benchmark/staging"
 
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def selected_task_dir(task_id: str) -> Path:
+    released = RELEASE_ROOT / task_id
+    if (released / "metadata.json").is_file():
+        return released
+    return STAGING_ROOT / task_id
 
 
 def selected_task_ids() -> list[str]:
@@ -89,7 +98,7 @@ def expected_files(task_dir: Path) -> tuple[dict[str, Any], str, dict[str, Any] 
 
 
 def process(task_id: str, *, check: bool) -> bool:
-    task_dir = ROOT / "benchmark/staging" / task_id
+    task_dir = selected_task_dir(task_id)
     metadata, task_md, manifest = expected_files(task_dir)
     lock = lock_text(metadata["environment"]["allowed_dependencies"])
     expected = {

@@ -135,7 +135,13 @@ def build_report(policy: dict[str, Any]) -> dict[str, Any]:
             decision = "redesign" if flags else "keep"
         retained_rows.append(effective)
 
-        metadata = load_json(ROOT / "benchmark/staging" / task_id / "metadata.json")
+        released = ROOT / "benchmark/external50" / task_id
+        task_dir = (
+            released
+            if (released / "metadata.json").is_file()
+            else ROOT / "benchmark/staging" / task_id
+        )
+        metadata = load_json(task_dir / "metadata.json")
         card_text = (ROOT / row["design_card"]).read_text(encoding="utf-8")
         card_match = re.search(r"\*\*status:\*\* `([^`]+)`", card_text)
         task_reviews.append(

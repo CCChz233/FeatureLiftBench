@@ -13,10 +13,19 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 SELECTION_PATH = ROOT / "benchmark/selection/external50_expansion_20260731.json"
 REGISTRY_PATH = ROOT / "benchmark/sources/external50_registry.json"
+RELEASE_ROOT = ROOT / "benchmark/external50"
+STAGING_ROOT = ROOT / "benchmark/staging"
 
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def task_dir(task_id: str) -> Path:
+    released = RELEASE_ROOT / task_id
+    if (released / "metadata.json").is_file():
+        return released
+    return STAGING_ROOT / task_id
 
 
 def selected_ids() -> set[str]:
@@ -103,7 +112,7 @@ def verify(payload: dict[str, Any], selected: set[str]) -> list[str]:
         snapshot = snapshots[0]
         if snapshot.get("status") != "ready":
             issues.append(f"{task_id}: source snapshot is not ready")
-        metadata = load_json(ROOT / "benchmark/staging" / task_id / "metadata.json")
+        metadata = load_json(task_dir(task_id) / "metadata.json")
         commit = metadata.get("source", {}).get("commit")
         if commit != snapshot.get("resolved_commit"):
             issues.append(f"{task_id}: metadata/source registry commit mismatch")

@@ -63,9 +63,17 @@ def copy_release_task(source: Path, destination: Path) -> None:
 
 
 def build_external_root(destination: Path, task_ids: list[str]) -> None:
+    if all((STAGING_ROOT / task_id / "metadata.json").is_file() for task_id in task_ids):
+        source_root = STAGING_ROOT
+    elif all((EXTERNAL_ROOT / task_id / "metadata.json").is_file() for task_id in task_ids):
+        source_root = EXTERNAL_ROOT
+    else:
+        raise FileNotFoundError(
+            "selected External-50 tasks are incomplete in both staging and release roots"
+        )
     destination.mkdir(parents=True)
     for task_id in task_ids:
-        copy_release_task(STAGING_ROOT / task_id, destination / task_id)
+        copy_release_task(source_root / task_id, destination / task_id)
 
 
 def build_suite_root(destination: Path, main_ids: list[str], external_ids: list[str]) -> None:

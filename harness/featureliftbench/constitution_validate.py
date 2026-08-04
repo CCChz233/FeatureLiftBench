@@ -52,6 +52,7 @@ def validate_constitution(
     task_markdown: str | None = None,
     additional_test_nodeids: set[str] | None = None,
     test_source_overrides: dict[str, str] | None = None,
+    ignore_test_api_usage: bool = False,
 ) -> list[str]:
     status = get_spec_status(metadata)
     if status == SPEC_STATUS_LEGACY:
@@ -80,13 +81,14 @@ def validate_constitution(
             additional_test_nodeids=additional_test_nodeids,
         )
     )
-    errors.extend(
-        _validate_test_api_usage(
-            task_dir,
-            public_spec,
-            test_source_overrides=test_source_overrides,
+    if not ignore_test_api_usage:
+        errors.extend(
+            _validate_test_api_usage(
+                task_dir,
+                public_spec,
+                test_source_overrides=test_source_overrides,
+            )
         )
-    )
     errors.extend(_validate_task_leakage(task_dir, metadata))
     return errors
 
@@ -316,7 +318,80 @@ def _collect_declared_api_paths(public_spec: dict[str, Any]) -> set[str]:
     return paths
 
 
-def _extract_test_api_refs(source: str) -> set[str]:
+TEST_API_USAGE_FILENAME = "test_api_usage.json"
+TEST_API_USAGE_SCHEMA = "featureliftbench.test_api_usage.v1"
+
+
+def _collect_declared_api_kinds(public_spec: dict[str, Any]) -> dict[str, str]:
+    kinds: dict[str, str] = {}
+
+    def walk(entries: Any) -> None:
+        if not isinstance(entries, list):
+            return
+        for entry in entries:
+            if not isinstance(entry, dict):
+                continue
+            path = entry.get("path")
+            kind = entry.get("kind")
+            if isinstance(path, str) and isinstance(kind, str):
+                kinds[path] = kind.strip().lower()
+            walk(entry.get("members"))
+
+    walk(public_spec.get("required_api"))
+    walk(public_spec.get("optional_api"))
+    return kinds
+
+
+def _imported_root(expr: ast.AST, imported: dict[str, str]) -> str | None:
+    """Resolve the imported featurelifted root used by an expression."""
+
+    cur = expr
+    while True:
+        if isinstance(cur, ast.Name):
+            imported_name = imported.get(cur.id)
+            return f"featurelifted.{imported_name}" if imported_name else None
+        if isinstance(cur, ast.Attribute):
+            cur = cur.value
+            continue
+        if isinstance(cur, ast.Call):
+            cur = cur.func
+            continue
+        if isinstance(cur, ast.Subscript):
+            cur = cur.value
+            continue
+        return None
+
+
+def _attribute_path(node: ast.Attribute, imported: dict[str, str]) -> str | None:
+    """Resolve a call-free attribute path rooted at a featurelifted import."""
+
+    attrs: list[str] = []
+    cur: ast.AST = node
+    while isinstance(cur, ast.Attribute):
+        attrs.append(cur.attr)
+        cur = cur.value
+    if not isinstance(cur, ast.Name):
+        return None
+    if cur.id == "featurelifted":
+        base = "featurelifted"
+    elif cur.id in imported:
+        base = f"featurelifted.{imported[cur.id]}"
+    else:
+        return None
+    return base + "." + ".".join(reversed(attrs))
+
+
+def _extract_test_api_refs(
+    source: str,
+    *,
+    api_kinds: dict[str, str] | None = None,
+) -> set[str]:
+    """Best-effort AST extraction of featurelifted API refs (including call chains).
+
+    This is a discovery aid, not the sole contract fact source. Prefer the
+    explicit ``evaluation/test_api_usage.json`` manifest when present.
+    """
+
     refs: set[str] = set()
     try:
         tree = ast.parse(source)
@@ -329,18 +404,67 @@ def _extract_test_api_refs(source: str) -> set[str]:
             for alias in node.names:
                 local = alias.asname or alias.name
                 imported[local] = alias.name
-        elif isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
+
+    kinds = api_kinds or {}
+    instance_kinds = {"class", "exception"}
+    namespace_kinds = {"module", "class", "exception", "enum"}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id in imported:
+            refs.add(f"featurelifted.{imported[node.id]}")
+            continue
+        if not isinstance(node, ast.Attribute):
+            continue
+
+        if isinstance(node.value, ast.Name):
             if node.value.id in imported:
                 refs.add(f"featurelifted.{imported[node.value.id]}.{node.attr}")
-                refs.add(f"featurelifted.{imported[node.value.id]}")
             elif node.value.id == "featurelifted":
                 refs.add(f"featurelifted.{node.attr}")
-        elif isinstance(node, ast.Name) and node.id in imported:
-            refs.add(f"featurelifted.{imported[node.id]}")
+            continue
 
-    for match in re.finditer(r"\bfeaturelifted\.([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*)", source):
+        if isinstance(node.value, ast.Call):
+            base = _imported_root(node.value, imported)
+            if base is not None and kinds.get(base) in instance_kinds:
+                # Constructor/fluent chains retain the exported class owner.
+                refs.add(f"{base}.{node.attr}")
+            continue
+
+        if isinstance(node.value, ast.Attribute):
+            path = _attribute_path(node, imported)
+            if path is None:
+                continue
+            parts = path.split(".")
+            base = ".".join(parts[:2])
+            parent = ".".join(parts[:-1])
+            if kinds.get(base) == "module" or kinds.get(parent) in namespace_kinds:
+                refs.add(path)
+
+    for match in re.finditer(
+        r"\bfeaturelifted\.([A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*)",
+        source,
+    ):
         refs.add(f"featurelifted.{match.group(1)}")
     return refs
+
+
+def _load_test_api_usage_manifest(task_dir: Path) -> dict[str, Any] | None:
+    path = task_dir / "evaluation" / TEST_API_USAGE_FILENAME
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid {path.as_posix()}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path.as_posix()} must be a JSON object")
+    return payload
+
+
+def _api_ref_is_member_path(ref: str) -> bool:
+    """True for ``featurelifted.Class.member`` (2+ dotted segments after package)."""
+
+    parts = ref.removeprefix("featurelifted.").split(".")
+    return len(parts) >= 2
 
 
 def _validate_test_api_usage(
@@ -349,9 +473,24 @@ def _validate_test_api_usage(
     *,
     test_source_overrides: dict[str, str] | None = None,
 ) -> list[str]:
+    """Validate public/hidden API usage against declared required/optional paths.
+
+    Fact source priority:
+    1. ``evaluation/test_api_usage.json`` manifest (``test_id -> api_ids``) when present
+    2. AST extraction as a cross-check / fallback discovery signal
+
+    Member paths (``featurelifted.X.y``) must be exactly declared. Declaring only
+    the class root ``featurelifted.X`` does **not** authorize arbitrary members.
+    """
+
     errors: list[str] = []
     declared = _collect_declared_api_paths(public_spec)
-    declared_roots = {path.split(".")[1] if path.count(".") >= 1 else path for path in declared}
+    api_kinds = _collect_declared_api_kinds(public_spec)
+    declared_roots = {
+        path.removeprefix("featurelifted.").split(".")[0]
+        for path in declared
+        if path.startswith("featurelifted.")
+    }
     optional_paths: set[str] = set()
 
     def collect_optional(entries: Any) -> None:
@@ -369,6 +508,65 @@ def _validate_test_api_usage(
     optional_roots = {
         path.removeprefix("featurelifted.").split(".")[0] for path in optional_paths
     }
+
+    try:
+        manifest = _load_test_api_usage_manifest(task_dir)
+    except ValueError as exc:
+        return [str(exc)]
+
+    manifest_by_test: dict[str, set[str]] = {}
+    manifest_by_file: dict[str, set[str]] = {}
+    if manifest is not None:
+        schema = str(manifest.get("schema_version") or "")
+        if schema and schema != TEST_API_USAGE_SCHEMA:
+            errors.append(
+                f"evaluation/{TEST_API_USAGE_FILENAME} unsupported schema_version: {schema}"
+            )
+        tests = manifest.get("tests")
+        if not isinstance(tests, list) or not tests:
+            errors.append(
+                f"evaluation/{TEST_API_USAGE_FILENAME} must define a non-empty tests list"
+            )
+        else:
+            for item in tests:
+                if not isinstance(item, dict):
+                    errors.append(
+                        f"evaluation/{TEST_API_USAGE_FILENAME} tests entries must be objects"
+                    )
+                    continue
+                test_id = item.get("test_id")
+                api_ids = item.get("api_ids")
+                if not isinstance(test_id, str) or not test_id.strip():
+                    errors.append(
+                        f"evaluation/{TEST_API_USAGE_FILENAME} entry missing test_id"
+                    )
+                    continue
+                if not isinstance(api_ids, list) or not all(
+                    isinstance(x, str) and x.strip() for x in api_ids
+                ):
+                    errors.append(
+                        f"evaluation/{TEST_API_USAGE_FILENAME} {test_id}: api_ids must be "
+                        "a list of strings"
+                    )
+                    continue
+                ids = {str(x).strip() for x in api_ids}
+                manifest_by_test[test_id.strip()] = ids
+                file_key = test_id.split("::", 1)[0]
+                manifest_by_file.setdefault(file_key, set()).update(ids)
+                for api_id in ids:
+                    root = api_id.removeprefix("featurelifted.").split(".")[0]
+                    if root in optional_roots or api_id in optional_paths:
+                        errors.append(
+                            f"evaluation/{TEST_API_USAGE_FILENAME} {test_id} lists "
+                            f"optional API {api_id}"
+                        )
+                        continue
+                    if api_id not in declared:
+                        errors.append(
+                            f"evaluation/{TEST_API_USAGE_FILENAME} {test_id} lists "
+                            f"undeclared API {api_id}"
+                        )
+
     overrides = test_source_overrides or {}
     for label in ("public_tests", "hidden_tests"):
         test_dir = task_dir / label
@@ -385,20 +583,30 @@ def _validate_test_api_usage(
             }
         )
         for relative, source in sorted(sources.items()):
-            refs = _extract_test_api_refs(source)
-            for ref in refs:
+            refs = _extract_test_api_refs(source, api_kinds=api_kinds)
+            file_manifest = manifest_by_file.get(relative, set())
+            for ref in sorted(refs):
                 if ref in STANDARD_MODULE_METADATA_REFS:
                     continue
                 root = ref.removeprefix("featurelifted.").split(".")[0]
-                if root in optional_roots:
+                if root in optional_roots or ref in optional_paths:
                     errors.append(
                         f"{relative} depends on optional API reference {ref}"
                     )
                     continue
-                if ref not in declared and root not in declared_roots:
-                    errors.append(
-                        f"{relative} uses undeclared API reference {ref}"
-                    )
+                if ref not in declared:
+                    # Member paths require exact declaration (no class-root loophole).
+                    if _api_ref_is_member_path(ref) or root not in declared_roots:
+                        errors.append(
+                            f"{relative} uses undeclared API reference {ref}"
+                        )
+                if manifest is not None and file_manifest and ref not in file_manifest:
+                    # Manifest is the audit fact source; AST-only extras are gaps.
+                    if ref in declared or _api_ref_is_member_path(ref):
+                        errors.append(
+                            f"{relative} AST-discovered API {ref} missing from "
+                            f"evaluation/{TEST_API_USAGE_FILENAME} for this file"
+                        )
     return errors
 
 

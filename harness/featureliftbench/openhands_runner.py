@@ -558,6 +558,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         )
     td_section = ""
     sc_section = ""
+    tfl_section = ""
     submission_line = f"- Final output must be written under `{config.submission_dir}`.\n"
     required_finish = (
         "## Required Finish State\n\n"
@@ -651,6 +652,28 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
                 + openhands_phase2_appendix(workspace_dir=config.workspace_dir)
                 + "\n"
             )
+    elif options.test_first_lift:
+        from .test_first_lift import openhands_appendix
+
+        tfl_section = openhands_appendix() + "\n"
+        test_hint = (
+            "Use `./flb-test-first freeze` after writing characterization cases, "
+            "then implement `submission/featurelifted/`, then "
+            "`./flb-test-first verify`.\n\n"
+        )
+        required_finish = (
+            "## Required Finish State\n\n"
+            "Leave both frozen characterization evidence and a working submission:\n\n"
+            "```text\n"
+            "characterization/\n"
+            "oracle.json\n"
+            "characterization.lock\n"
+            "submission/\n"
+            "  featurelifted/\n"
+            "    __init__.py\n"
+            "    ...\n"
+            "```\n\n"
+        )
     prompt = (
         "# FeatureLiftBench Task for OpenHands\n\n"
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
@@ -671,6 +694,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         f"{complete_note}"
         f"{td_section}"
         f"{sc_section}"
+        f"{tfl_section}"
         f"{required_finish}"
         f"{test_hint}"
         "## Task\n\n"

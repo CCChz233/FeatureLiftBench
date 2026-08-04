@@ -15,6 +15,9 @@
 | [`artifacts/research_analysis/v3/current_benchmark_freeze.json`](../artifacts/research_analysis/v3/current_benchmark_freeze.json) | active v3 source/spec/reference/evaluator/environment freeze |
 | [`reports/audits/task_lifecycle_report.md`](../reports/audits/task_lifecycle_report.md) | task package lifecycle |
 | [`reports/audits/new_protocol_readiness.md`](../reports/audits/new_protocol_readiness.md) | 公开契约与 evaluation mapping 工程门禁 |
+| [`docs/LIFT_TAXONOMY.md`](LIFT_TAXONOMY.md) | Direct / Adapted / Composite 定义 |
+| [`reports/lift_taxonomy/`](../reports/lift_taxonomy/) | 150 题 lift_type 标注进度（seeded≠final） |
+| [`reports/contract_closure_audit/`](../reports/contract_closure_audit/) | contract-closure 审计与问题族 |
 
 旧的 source/no-hint 预审、Pilot-16 计划和整改 checklist 已被
 `v3_main_readiness` 与 active freeze 取代，不再保留为并列入口。

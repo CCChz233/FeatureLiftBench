@@ -363,6 +363,28 @@ td_cognition = false
 exec_contract = false
 self_contract = true
 
+[profiles.openhands_deepseek_v4_flash_test_first_lift]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = true
+
 [profiles.openhands_deepseek_v4_flash_rsg_pilot_p3]
 model = "deepseek/deepseek-v4-flash"
 api_key_env = "FEATURELIFTBENCH_API_KEY"

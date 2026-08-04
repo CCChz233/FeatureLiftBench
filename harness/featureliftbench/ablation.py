@@ -16,11 +16,16 @@ EXPOSE_SOURCE_HINTS_ENV = "FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS"
 SOURCE_CONTEXT_ENV = "FEATURELIFTBENCH_SOURCE_CONTEXT"
 TD_COGNITION_ENV = "FEATURELIFTBENCH_TD_COGNITION"
 EXEC_CONTRACT_ENV = "FEATURELIFTBENCH_EXEC_CONTRACT"
+EXEC_CONTRACT_VARIANT_ENV = "FEATURELIFTBENCH_EXEC_CONTRACT_VARIANT"
 SELF_CONTRACT_ENV = "FEATURELIFTBENCH_SELF_CONTRACT"
+TEST_FIRST_LIFT_ENV = "FEATURELIFTBENCH_TEST_FIRST_LIFT"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
 SOURCE_CONTEXTS = frozenset({"full_repository", "pruned_context"})
+EXEC_CONTRACT_VARIANTS = frozenset(
+    {"clean3", "cgcc_lite", "cgcc_roc", "cgcc_rmc", "fcec"}
+)
 
 
 @dataclass(frozen=True)
@@ -33,7 +38,9 @@ class AblationOptions:
     source_context: str = "full_repository"
     td_cognition: bool = False
     exec_contract: bool = False
+    exec_contract_variant: str = "clean3"
     self_contract: bool = False
+    test_first_lift: bool = False
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
@@ -49,20 +56,47 @@ class AblationOptions:
         object.__setattr__(self, "source_context", source_context)
         object.__setattr__(self, "td_cognition", bool(self.td_cognition))
         object.__setattr__(self, "exec_contract", bool(self.exec_contract))
+        exec_contract_variant = str(
+            self.exec_contract_variant or "clean3"
+        ).strip().lower()
+        if exec_contract_variant not in EXEC_CONTRACT_VARIANTS:
+            raise ValueError(
+                "exec_contract_variant must be one of "
+                f"{sorted(EXEC_CONTRACT_VARIANTS)}, got {self.exec_contract_variant!r}"
+            )
+        object.__setattr__(self, "exec_contract_variant", exec_contract_variant)
         object.__setattr__(self, "self_contract", bool(self.self_contract))
+        object.__setattr__(self, "test_first_lift", bool(self.test_first_lift))
         method_arms = sum(
-            1 for flag in (self.td_cognition, self.exec_contract, self.self_contract) if flag
+            1
+            for flag in (
+                self.td_cognition,
+                self.exec_contract,
+                self.self_contract,
+                self.test_first_lift,
+            )
+            if flag
         )
         if method_arms > 1:
             raise ValueError(
-                "td_cognition, exec_contract, and self_contract are mutually exclusive"
+                "td_cognition, exec_contract, self_contract, and test_first_lift "
+                "are mutually exclusive"
             )
 
     @property
     def ablation_arm(self) -> str:
+        if self.test_first_lift:
+            return "test_first_lift"
         if self.self_contract:
             return "self_contract"
         if self.exec_contract:
+            if self.exec_contract_variant in {
+                "cgcc_lite",
+                "cgcc_roc",
+                "cgcc_rmc",
+                "fcec",
+            }:
+                return self.exec_contract_variant
             return "exec_contract"
         if self.td_cognition:
             return "td_cognition"
@@ -85,7 +119,9 @@ class AblationOptions:
             SOURCE_CONTEXT_ENV: self.source_context,
             TD_COGNITION_ENV: "1" if self.td_cognition else "0",
             EXEC_CONTRACT_ENV: "1" if self.exec_contract else "0",
+            EXEC_CONTRACT_VARIANT_ENV: self.exec_contract_variant,
             SELF_CONTRACT_ENV: "1" if self.self_contract else "0",
+            TEST_FIRST_LIFT_ENV: "1" if self.test_first_lift else "0",
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -98,7 +134,9 @@ class AblationOptions:
             "source_context": self.source_context,
             "td_cognition": self.td_cognition,
             "exec_contract": self.exec_contract,
+            "exec_contract_variant": self.exec_contract_variant,
             "self_contract": self.self_contract,
+            "test_first_lift": self.test_first_lift,
         }
 
 
@@ -119,8 +157,14 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
     td_cognition = td_raw not in {"0", "false", "no", "off", ""}
     ec_raw = str(values.get(EXEC_CONTRACT_ENV, "0")).strip().lower()
     exec_contract = ec_raw not in {"0", "false", "no", "off", ""}
+    exec_contract_variant = (
+        str(values.get(EXEC_CONTRACT_VARIANT_ENV, "clean3")).strip().lower()
+        or "clean3"
+    )
     sc_raw = str(values.get(SELF_CONTRACT_ENV, "0")).strip().lower()
     self_contract = sc_raw not in {"0", "false", "no", "off", ""}
+    tfl_raw = str(values.get(TEST_FIRST_LIFT_ENV, "0")).strip().lower()
+    test_first_lift = tfl_raw not in {"0", "false", "no", "off", ""}
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -128,7 +172,9 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         source_context=source_context,
         td_cognition=td_cognition,
         exec_contract=exec_contract,
+        exec_contract_variant=exec_contract_variant,
         self_contract=self_contract,
+        test_first_lift=test_first_lift,
     )
 
 
@@ -143,7 +189,9 @@ def resolve_ablation_options(
     source_context: str | None = None,
     td_cognition: bool | None = None,
     exec_contract: bool | None = None,
+    exec_contract_variant: str | None = None,
     self_contract: bool | None = None,
+    test_first_lift: bool | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -211,6 +259,16 @@ def resolve_ablation_options(
     else:
         resolved_ec = bool(exec_contract)
 
+    if exec_contract_variant is None:
+        resolved_ec_variant = _first_string(
+            process_env.get(EXEC_CONTRACT_VARIANT_ENV),
+            env_values.get(EXEC_CONTRACT_VARIANT_ENV),
+            profile.get("exec_contract_variant"),
+            default="clean3",
+        )
+    else:
+        resolved_ec_variant = str(exec_contract_variant).strip().lower()
+
     if self_contract is None:
         resolved_sc = _first_bool(
             process_env.get(SELF_CONTRACT_ENV),
@@ -221,6 +279,16 @@ def resolve_ablation_options(
     else:
         resolved_sc = bool(self_contract)
 
+    if test_first_lift is None:
+        resolved_tfl = _first_bool(
+            process_env.get(TEST_FIRST_LIFT_ENV),
+            env_values.get(TEST_FIRST_LIFT_ENV),
+            profile.get("test_first_lift"),
+            default=False,
+        )
+    else:
+        resolved_tfl = bool(test_first_lift)
+
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -228,7 +296,9 @@ def resolve_ablation_options(
         source_context=resolved_source_context,
         td_cognition=resolved_td,
         exec_contract=resolved_ec,
+        exec_contract_variant=resolved_ec_variant,
         self_contract=resolved_sc,
+        test_first_lift=resolved_tfl,
     )
 
 

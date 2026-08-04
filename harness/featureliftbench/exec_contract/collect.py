@@ -23,7 +23,6 @@ from ..agent_docker import (
     _uid_gid,
 )
 from .common import COLLECT_META
-from .common import DEFAULT_COLLECT_TIMEOUT_SECONDS
 from .common import DEFAULT_MAX_TEST_FILES
 from .common import FACTS_FILE
 from .common import PYTEST_REPORT
@@ -36,6 +35,7 @@ from .common import is_noise_event
 from .common import keywords_from_public_spec
 from .common import scaled_collect_timeout
 from .common import source_entrypoint_names
+from .runtime_doctor import build_runtime_plan
 from .select_tests import select_upstream_tests
 
 
@@ -43,8 +43,22 @@ def _guess_watch_prefixes(repo: Path, public_spec: dict[str, Any] | None) -> lis
     """Path-like watch prefixes only (never free-text keywords)."""
 
     prefixes: list[str] = []
+    entrypoint_prefixes: list[str] = []
+    for ep in source_entrypoint_names(public_spec):
+        parts = [part for part in ep.split(".") if part]
+        if len(parts) >= 2:
+            module_parts = parts[:-1]
+            entrypoint_prefixes.append(
+                "/" + "/".join(module_parts) + ".py"
+            )
+            entrypoint_prefixes.append(
+                "/src/" + "/".join(module_parts) + ".py"
+            )
+    if entrypoint_prefixes:
+        prefixes.extend(entrypoint_prefixes)
+
     skip = {"tests", "test", "docs", "examples", "scripts", "benchmarks", "ci"}
-    if repo.is_dir():
+    if repo.is_dir() and not entrypoint_prefixes:
         for child in sorted(repo.iterdir()):
             if child.is_dir() and (child / "__init__.py").exists():
                 if child.name not in skip:
@@ -57,11 +71,6 @@ def _guess_watch_prefixes(repo: Path, public_spec: dict[str, Any] | None) -> lis
                 ):
                     prefixes.append(f"/src/{child.name}/")
                     prefixes.append(f"/{child.name}/")
-    for ep in source_entrypoint_names(public_spec):
-        top = ep.split(".", 1)[0].strip()
-        if top and len(top) >= 2:
-            prefixes.append(f"/{top}/")
-            prefixes.append(f"/src/{top}/")
     # de-dupe preserve order
     out: list[str] = []
     seen: set[str] = set()
@@ -88,6 +97,7 @@ def collect_upstream_runtime(
     runtime = ensure_dir(workspace / RUNTIME_DIR)
     selected = select_upstream_tests(repo, public_spec, max_files=max_test_files)
     watch = _guess_watch_prefixes(repo, public_spec)
+    runtime_plan = build_runtime_plan(repo, selected)
     effective_timeout = (
         int(timeout_seconds)
         if timeout_seconds is not None
@@ -103,6 +113,7 @@ def collect_upstream_runtime(
         "docker_image": docker_image or DEFAULT_AGENT_IMAGE,
         "timeout_seconds": effective_timeout,
         "trace_quality": "low",
+        "runtime_doctor": runtime_plan,
     }
 
     if not selected:
@@ -125,34 +136,92 @@ def collect_upstream_runtime(
         container = f"flb-exec-{uuid.uuid4().hex[:12]}"
         import shlex
 
-        # Bootstrap: install package WITH deps (sqlalchemy etc.), src-layout on path.
+        # Keep the dependency environment ephemeral; only compact trace/audit
+        # artifacts persist in the benchmark workspace.
+        env_python = "/tmp/flb-upstream-env/bin/python"
+        project_rel = str(runtime_plan.get("project_root") or ".")
+        project_path = (
+            "/flb/workspace/repo"
+            if project_rel == "."
+            else f"/flb/workspace/repo/{project_rel}"
+        )
+        extras = [
+            str(item)
+            for item in runtime_plan.get("project_extras") or []
+            if str(item).strip()
+        ]
+        project_requirement = project_path
+        if extras:
+            project_requirement += f"[{','.join(extras)}]"
+
+        # Build an isolated upstream runtime from the repository's own
+        # pyproject metadata. Installation failures are fatal and visible.
         parts = [
             "set -e",
-            "export PYTHONPATH=/flb/harness:/flb/workspace/repo/src:/flb/workspace/repo:${PYTHONPATH:-}",
-            # Prefer locked agent deps when present; otherwise editable install with deps.
-            "if [ -f /flb/workspace/requirements.lock ]; then "
-            "grep -v '^#' /flb/workspace/requirements.lock | grep -v '^$' >/tmp/flb_reqs.txt || true; "
-            "if [ -s /tmp/flb_reqs.txt ]; then python -m pip install -q -r /tmp/flb_reqs.txt >/tmp/flb_pip_lock.log 2>&1 || true; fi; "
-            "fi",
-            "python -m pip install -q -e '/flb/workspace/repo' >/tmp/flb_pip_editable.log 2>&1 || "
-            "python -m pip install -q -e '/flb/workspace/repo[tests]' >/tmp/flb_pip_editable2.log 2>&1 || true",
-            # Common missing test deps for popular packages (best-effort).
-            "python -m pip install -q sqlalchemy pytest >/tmp/flb_pip_extra.log 2>&1 || true",
-            # Prefer --no-trace: settrace makes large suites hit wall timeouts (rc=124).
-            # Contracts still come from upstream AST; env keys remain via os.environ wrap.
-            "python -m featureliftbench.exec_contract.instrument "
-            "--no-trace "
+            "export PIP_DISABLE_PIP_VERSION_CHECK=1",
+            "export SETUPTOOLS_SCM_PRETEND_VERSION=99.0",
+            "python -m venv /tmp/flb-upstream-env",
+            f"{env_python} -m pip install -q setuptools wheel packaging",
+        ]
+        build_requirements = [
+            str(item)
+            for item in runtime_plan.get("build_requirements") or []
+            if str(item).strip()
+        ]
+        if build_requirements:
+            build_args = " ".join(
+                shlex.quote(item) for item in build_requirements
+            )
+            parts.append(f"{env_python} -m pip install -q {build_args}")
+        for sibling in runtime_plan.get("sibling_projects") or []:
+            sibling_path = f"/flb/workspace/repo/{str(sibling).strip('/')}"
+            parts.append(
+                f"{env_python} -m pip install -q --no-build-isolation "
+                f"{shlex.quote(sibling_path)}"
+            )
+        parts.append(
+            f"{env_python} -m pip install -q {shlex.quote(project_requirement)} "
+            f"|| {env_python} -m pip install -q --no-build-isolation "
+            f"{shlex.quote(project_requirement)}"
+        )
+        requirements = [
+            str(item)
+            for item in runtime_plan.get("test_requirements") or []
+            if str(item).strip()
+        ]
+        if requirements:
+            req_args = " ".join(shlex.quote(item) for item in requirements)
+            parts.append(f"{env_python} -m pip install -q {req_args}")
+        parts.extend(
+            [
+            "export PYTHONPATH=/flb/harness",
+            f"{env_python} -m featureliftbench.exec_contract.instrument "
+            "--trace "
             "--repo /flb/workspace/repo "
             f"--out /flb/workspace/{RUNTIME_DIR}",
-        ]
+            ]
+        )
         cmd = parts[-1]
         for prefix in watch:
             cmd += f" --watch {shlex.quote(prefix)}"
+        for plugin in runtime_plan.get("required_pytest_plugins") or []:
+            cmd += f" --plugin {shlex.quote(str(plugin))}"
         cmd += " --"
         for rel in selected:
             cmd += f" {shlex.quote(rel)}"
         parts[-1] = cmd
         inner = "; ".join(parts)
+        tmpfs_parts = [
+            part
+            for part in _env_default(
+                "FEATURELIFTBENCH_AGENT_DOCKER_TMPFS",
+                DEFAULT_AGENT_DOCKER_TMPFS,
+            ).split(",")
+            if part != "noexec"
+        ]
+        if "exec" not in tmpfs_parts:
+            tmpfs_parts.append("exec")
+        collector_tmpfs = ",".join(tmpfs_parts)
         command = [
             "docker",
             "run",
@@ -182,9 +251,7 @@ def collect_upstream_runtime(
             "--security-opt",
             "no-new-privileges",
             "--tmpfs",
-            _env_default(
-                "FEATURELIFTBENCH_AGENT_DOCKER_TMPFS", DEFAULT_AGENT_DOCKER_TMPFS
-            ),
+            collector_tmpfs,
             "--user",
             _uid_gid(),
             "-w",
@@ -209,8 +276,8 @@ def collect_upstream_runtime(
                 timeout=max(1, int(effective_timeout)),
             )
             meta["collector_returncode"] = proc.returncode
-            meta["collector_stdout_tail"] = (proc.stdout or "")[-2000:]
-            meta["collector_stderr_tail"] = (proc.stderr or "")[-2000:]
+            meta["collector_stdout_tail"] = (proc.stdout or "")[-8000:]
+            meta["collector_stderr_tail"] = (proc.stderr or "")[-8000:]
         except subprocess.TimeoutExpired as exc:
             meta["collector_returncode"] = 124
             meta["collector_timed_out"] = True
@@ -225,7 +292,7 @@ def collect_upstream_runtime(
             sys.executable,
             "-m",
             "featureliftbench.exec_contract.instrument",
-            "--no-trace",
+            "--trace",
             "--repo",
             str(repo),
             "--out",
@@ -233,6 +300,8 @@ def collect_upstream_runtime(
         ]
         for prefix in watch:
             local_argv.extend(["--watch", prefix])
+        for plugin in runtime_plan.get("required_pytest_plugins") or []:
+            local_argv.extend(["--plugin", str(plugin)])
         local_argv.append("--")
         local_argv.extend(selected)
         proc = subprocess.run(
@@ -248,8 +317,8 @@ def collect_upstream_runtime(
             },
         )
         meta["collector_returncode"] = proc.returncode
-        meta["collector_stdout_tail"] = (proc.stdout or "")[-2000:]
-        meta["collector_stderr_tail"] = (proc.stderr or "")[-2000:]
+        meta["collector_stdout_tail"] = (proc.stdout or "")[-8000:]
+        meta["collector_stderr_tail"] = (proc.stderr or "")[-8000:]
 
     report = None
     report_path = runtime / PYTEST_REPORT
@@ -271,16 +340,17 @@ def collect_upstream_runtime(
             except json.JSONDecodeError:
                 continue
 
-    useful = [e for e in events if not is_noise_event(e)]
+    useful = [
+        e
+        for e in events
+        if not is_noise_event(e, allow_path_prefixes=watch)
+    ]
     meta["trace_events"] = len(events)
     meta["useful_trace_events"] = len(useful)
     meta["pytest_passed"] = None if report is None else report.get("passed")
 
-    # pytest_passed without settrace still counts as medium+: AST contracts are primary.
     if useful and report and report.get("passed"):
         meta["trace_quality"] = "high"
-    elif report and report.get("passed"):
-        meta["trace_quality"] = "medium"
     elif useful and len(useful) >= 5:
         meta["trace_quality"] = "medium"
     elif useful:
@@ -352,9 +422,8 @@ def _write_facts(
     if seen == 0:
         lines.append("- _(no useful events)_")
         lines.append(
-            "- Phase0 may have failed (missing deps / timeout). Still implement from "
-            "`repo/` source and make `contracts/` pass — contracts include upstream-"
-            "inferred API surface."
+            "- Phase 0 produced no admissible dynamic evidence. The fail-closed "
+            "method must not expose this capsule to the implementation agent."
         )
 
     lines.extend(

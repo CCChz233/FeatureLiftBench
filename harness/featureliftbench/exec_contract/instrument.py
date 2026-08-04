@@ -70,6 +70,10 @@ _NOISE_PATH_MARKERS = (
     "/site-packages/pluggy/",
     "/site-packages/py.py",
 )
+_HARD_NOISE_PATH_MARKERS = (
+    "/_vendor/",
+    "/vendor/",
+)
 
 
 class _CallTracer:
@@ -81,24 +85,45 @@ class _CallTracer:
 
     def _interesting(self, filename: str) -> bool:
         norm = filename.replace("\\", "/")
+        if any(m in norm for m in _HARD_NOISE_PATH_MARKERS):
+            return False
+        if self.watch_prefixes:
+            # Explicit scope wins. Pytest tasks intentionally watch /_pytest/;
+            # the old noise-first ordering made those traces impossible.
+            return any(p in norm for p in self.watch_prefixes)
         if any(m in norm for m in _NOISE_PATH_MARKERS):
             return False
-        if not self.watch_prefixes:
-            return "/repo/" in norm and "/tests/" not in norm
-        return any(p in norm for p in self.watch_prefixes)
+        return "/repo/" in norm and "/tests/" not in norm
 
     def __call__(self, frame, event, arg):  # noqa: ANN001
         if len(self.events) >= self.max_events:
             return None
         code = frame.f_code
+        if (
+            code.co_name.startswith("__")
+            and code.co_name.endswith("__")
+            and code.co_name != "__init__"
+        ):
+            return self
+        if code.co_argcount == 0 and code.co_name[:1].isupper():
+            # Python traces execution of a class body as a call whose code name
+            # is the class name. It is not a runtime constructor observation.
+            return self
         filename = code.co_filename
         if not self._interesting(filename):
             return self
         if event == "call":
             args: dict[str, Any] = {}
+            owner = None
             try:
                 local = frame.f_locals
+                if "self" in local:
+                    owner = type(local["self"]).__name__
+                elif isinstance(local.get("cls"), type):
+                    owner = local["cls"].__name__
                 for name in code.co_varnames[: code.co_argcount]:
+                    if name in {"self", "cls"}:
+                        continue
                     if name in local:
                         args[name] = _project(local[name])
             except Exception:  # noqa: BLE001
@@ -109,6 +134,8 @@ class _CallTracer:
                 "file": filename,
                 "args": args,
             }
+            if owner:
+                self._stack[id(frame)]["owner"] = owner
             return self
         if event == "return" and id(frame) in self._stack:
             base = self._stack.pop(id(frame))
@@ -141,6 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     repo = Path(".")
     out = Path("runtime_traces")
     watch: list[str] = []
+    plugins: list[str] = []
     tests: list[str] = []
     enable_trace = True
     if "--" in argv:
@@ -159,6 +187,9 @@ def main(argv: list[str] | None = None) -> int:
         elif opts[i] == "--watch" and i + 1 < len(opts):
             watch.append(opts[i + 1])
             i += 2
+        elif opts[i] == "--plugin" and i + 1 < len(opts):
+            plugins.append(opts[i + 1])
+            i += 2
         elif opts[i] == "--no-trace":
             enable_trace = False
             i += 1
@@ -169,6 +200,11 @@ def main(argv: list[str] | None = None) -> int:
             i += 1
 
     out.mkdir(parents=True, exist_ok=True)
+    # Import pytest before enabling tracing. Otherwise package-under-test tasks
+    # such as pytest itself exhaust the event budget on import-time framework
+    # initialization before a selected test executes.
+    import pytest  # noqa: WPS433
+
     env_watch = _EnvWatch()
     tracer = _CallTracer(watch_prefixes=watch)
     env_watch.install()
@@ -185,10 +221,10 @@ def main(argv: list[str] | None = None) -> int:
         "trace_enabled": enable_trace,
     }
     try:
-        import pytest  # noqa: WPS433
-
         os.chdir(str(repo))
-        # Ignore upstream pytest.ini addopts (xdist/cov/etc.) that break headless collection.
+        plugin_args: list[str] = []
+        for plugin in plugins:
+            plugin_args.extend(["-p", plugin])
         os.environ.pop("PYTEST_ADDOPTS", None)
         code = pytest.main(
             [
@@ -196,6 +232,7 @@ def main(argv: list[str] | None = None) -> int:
                 "--tb=line",
                 "-o",
                 "addopts=",
+                *plugin_args,
                 "-p",
                 "no:cacheprovider",
                 "--maxfail=15",

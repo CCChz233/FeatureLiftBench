@@ -25,7 +25,7 @@ Usage:
   ./run_experiment.sh [options]
 
 Arms / profiles:
-  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|self_contract|p0
+  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|cgcc_lite|cgcc_roc|cgcc_rmc|fcec|self_contract|test_first_lift|p0
       Map to OpenHands DeepSeek profiles (uses harness/config/agents.example.toml)
   --profile NAME
       Explicit --agent-profile (overrides --arm mapping)
@@ -35,10 +35,12 @@ Arms / profiles:
 Tasks:
   --tasks id1,id2,...          Comma-separated task ids under --tasks-root
   --task-file PATH             File with one task id per line (# comments ok)
-  --suite sanity|main|pilot    Run all tasks under a known root
+  --suite sanity|main|staging|pilot
+                               Run all tasks under a known root
   --tasks-root REL_PATH        Default: benchmark/tasks
                                sanity -> benchmark/sanity
                                pilot  -> benchmark/batch3_pilot
+  --source-registry REL_PATH   Override the canonical source registry
 
 Agent / eval:
   --agent NAME                 Default: openhands-agent
@@ -86,6 +88,7 @@ NO_PROGRESS=0
 OUTPUT=""
 RUN_ID=""
 RESUME=""
+SOURCE_REGISTRY=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -97,6 +100,7 @@ while [[ $# -gt 0 ]]; do
     --task-file) TASK_FILE="$2"; shift 2 ;;
     --suite) SUITE="$2"; shift 2 ;;
     --tasks-root) TASKS_ROOT="$2"; shift 2 ;;
+    --source-registry) SOURCE_REGISTRY="$2"; shift 2 ;;
     --agent) AGENT="$2"; shift 2 ;;
     --agent-config) AGENT_CONFIG="$2"; shift 2 ;;
     --env-file) ENV_FILE="$2"; shift 2 ;;
@@ -129,10 +133,12 @@ arm_to_profile() {
     pruned|pruned_context|pruned-context) echo "openhands_deepseek_v4_flash_main" ;;
     td|td_cognition|td-cognition|cognition) echo "openhands_deepseek_v4_flash_td_cognition" ;;
     exec|exec_contract|exec-contract|execution_contract) echo "openhands_deepseek_v4_flash_exec_contract" ;;
+    cgcc|cgcc_lite|cgcc-lite|cgcc_roc|cgcc-roc|cgcc_rmc|cgcc-rmc|fcec) echo "openhands_deepseek_v4_flash_exec_contract" ;;
     self|self_contract|self-contract|sac) echo "openhands_deepseek_v4_flash_self_contract" ;;
+    tfl|test_first|test-first|test_first_lift|test-first-lift) echo "openhands_deepseek_v4_flash_test_first_lift" ;;
     p0) echo "openhands_deepseek_v4_flash_rsg_pilot_p0" ;;
     *)
-      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|self_contract|p0 or --profile)" >&2
+      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|cgcc_lite|cgcc_roc|cgcc_rmc|fcec|self_contract|test_first_lift|p0 or --profile)" >&2
       return 2
       ;;
   esac
@@ -142,12 +148,27 @@ case "${SUITE}" in
   "") ;;
   sanity) TASKS_ROOT="benchmark/sanity" ;;
   main) TASKS_ROOT="benchmark/tasks" ;;
+  staging) TASKS_ROOT="benchmark/staging" ;;
   pilot|batch3) TASKS_ROOT="benchmark/batch3_pilot" ;;
   *)
     echo "Unknown --suite: ${SUITE}" >&2
     exit 2
     ;;
 esac
+
+if [[ -z "${SOURCE_REGISTRY}" ]]; then
+  if [[ "${TASKS_ROOT}" == "benchmark/staging" ]]; then
+    SOURCE_REGISTRY="benchmark/sources/external50_registry.json"
+  else
+    SOURCE_REGISTRY="benchmark/sources/registry.json"
+  fi
+fi
+
+if [[ ! -f "${SOURCE_REGISTRY}" ]]; then
+  echo "source registry not found: ${SOURCE_REGISTRY}" >&2
+  exit 2
+fi
+export FEATURELIFTBENCH_SOURCE_REGISTRY="${SOURCE_REGISTRY}"
 
 if [[ ! -d "${TASKS_ROOT}" ]]; then
   echo "tasks root not found (relative to repo): ${TASKS_ROOT}" >&2
@@ -234,28 +255,43 @@ run_one() {
   local arm_flags=()
   case "${arm_label}" in
     entrypoint_hint|entrypoint-hint|hints)
-      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
     public_feedback|public-feedback|public)
-      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
     short|short_prompt|short-prompt)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
     pruned|pruned_context|pruned-context)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context --no-td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
     td|td_cognition|td-cognition|cognition)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
     exec|exec_contract|exec-contract|execution_contract)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant clean3 --no-self-contract --no-test-first-lift)
+      ;;
+    cgcc|cgcc_lite|cgcc-lite)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_lite --no-self-contract --no-test-first-lift)
+      ;;
+    cgcc_roc|cgcc-roc)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_roc --no-self-contract --no-test-first-lift)
+      ;;
+    cgcc_rmc|cgcc-rmc)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_rmc --no-self-contract --no-test-first-lift)
+      ;;
+    fcec)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant fcec --no-self-contract --no-test-first-lift)
       ;;
     self|self_contract|self-contract|sac)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --self-contract --no-test-first-lift)
+      ;;
+    tfl|test_first|test-first|test_first_lift|test-first-lift)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --test-first-lift)
       ;;
     *)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract)
+      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
       ;;
   esac
 
@@ -267,6 +303,7 @@ run_one() {
   echo "Profile: ${profile}  (arm=${arm_label})"
   echo "Config:  ${AGENT_CONFIG}"
   echo "Tasks:   ${TASKS_ROOT} (${#TASK_IDS[@]} explicit ids)"
+  echo "Sources: ${SOURCE_REGISTRY}"
   echo "Output:  ${out}"
   echo "Docker:  ${USE_DOCKER}"
   echo "============================================================"

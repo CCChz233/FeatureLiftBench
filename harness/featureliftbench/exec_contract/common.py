@@ -17,11 +17,12 @@ AUDIT_FILE = "exec_contract_phase.json"
 TRACE_JSONL = "traces.jsonl"
 PYTEST_REPORT = "pytest_report.json"
 COLLECT_META = "collect_meta.json"
+CLOSURE_CAPSULE_FILE = "CLOSURE_CAPSULE.json"
 
-# Keep Phase0 cheap and on-target (v1 used 20 files / 180s → timeouts + noise).
-# settrace makes upstream pytest much slower; prefer few files + AST scenarios.
+# Keep Phase0 cheap and on-target. One strongly ranked file is preferable to a
+# broad suite: the collector is an evidence gate, not another benchmark run.
 DEFAULT_MAX_TEST_FILES = 1
-DEFAULT_COLLECT_TIMEOUT_SECONDS = 400
+DEFAULT_COLLECT_TIMEOUT_SECONDS = 600
 DEFAULT_VERIFY_TIMEOUT_SECONDS = 300
 DEFAULT_REPAIR_ROUNDS = 1
 DEFAULT_REPAIR_TIMEOUT_SECONDS = 1800
@@ -212,7 +213,7 @@ DEMOTE_TEST_SUBSTR = (
 
 
 def flatten_required_api(public_spec: dict[str, Any] | None) -> list[dict[str, str]]:
-    """Return flat list of {path, kind, name} for required API entries."""
+    """Return flat required API entries, preserving published signatures."""
 
     items: list[dict[str, str]] = []
     if not isinstance(public_spec, dict):
@@ -224,13 +225,15 @@ def flatten_required_api(public_spec: dict[str, Any] | None) -> list[dict[str, s
         path = str(node.get("path") or "").strip()
         kind = str(node.get("kind") or "").strip()
         if path:
-            items.append(
-                {
-                    "path": path,
-                    "kind": kind or "symbol",
-                    "name": path.rsplit(".", 1)[-1],
-                }
-            )
+            item = {
+                "path": path,
+                "kind": kind or "symbol",
+                "name": path.rsplit(".", 1)[-1],
+            }
+            signature = str(node.get("signature") or "").strip()
+            if signature:
+                item["signature"] = signature
+            items.append(item)
         for member in node.get("members") or []:
             walk(member)
 
@@ -291,12 +294,34 @@ def keywords_from_public_spec(public_spec: dict[str, Any] | None) -> list[str]:
     return sorted(k for k in keys if k not in KEYWORD_STOPWORDS and len(k) >= 3)
 
 
-def is_noise_event(event: dict[str, Any]) -> bool:
+def is_noise_event(
+    event: dict[str, Any],
+    *,
+    allow_path_prefixes: list[str] | tuple[str, ...] | None = None,
+) -> bool:
     func = str(event.get("func") or "")
+    args = event.get("args")
+    if (
+        func[:1].isupper()
+        and isinstance(args, dict)
+        and not args
+        and not event.get("owner")
+    ):
+        return True
+    if (
+        func.startswith("__")
+        and func.endswith("__")
+        and func != "__init__"
+    ):
+        return True
     if func in NOISE_FUNCS:
         return True
     path = str(event.get("file") or event.get("qualname") or "")
     norm = path.replace("\\", "/")
+    if allow_path_prefixes and any(
+        prefix in norm for prefix in allow_path_prefixes
+    ):
+        return False
     if any(
         bad in norm
         for bad in (
@@ -305,6 +330,8 @@ def is_noise_event(event: dict[str, Any]) -> bool:
             "/pluggy/",
             "/site-packages/_pytest/",
             "/site-packages/pluggy/",
+            "/_vendor/",
+            "/vendor/",
         )
     ):
         return True

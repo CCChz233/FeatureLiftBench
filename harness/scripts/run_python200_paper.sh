@@ -12,6 +12,7 @@ Usage:
 
 Options:
   --execute             Execute model calls; otherwise print a validated plan.
+  --external-only       Run only the balanced External-50 extension.
   --resume DIR          Resume an existing suite output directory.
   --workers N           Parallel task workers (default: 1).
   --timeout SEC         Per-task wall timeout (default: 3600).
@@ -87,6 +88,7 @@ MODEL_SLUG="$(printf '%s' "$MODEL" | tr '[:upper:]' '[:lower:]' | sed 's#^openai
 
 RUN_ID="python200-${MODEL_SLUG}-$(date +%Y%m%d-%H%M%S)"
 EXECUTE=0
+EXTERNAL_ONLY=0
 RESUME_DIR=""
 WORKERS="${NUM_WORKERS:-1}"
 TIMEOUT="${TIMEOUT_SECONDS:-3600}"
@@ -96,6 +98,7 @@ RUN_ID_SET=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --execute) EXECUTE=1; shift ;;
+    --external-only) EXTERNAL_ONLY=1; shift ;;
     --resume) RESUME_DIR="${2:?--resume requires a directory}"; shift 2 ;;
     --workers) WORKERS="${2:?--workers requires a value}"; shift 2 ;;
     --timeout) TIMEOUT="${2:?--timeout requires a value}"; shift 2 ;;
@@ -107,6 +110,10 @@ while [[ $# -gt 0 ]]; do
       RUN_ID="$1"; RUN_ID_SET=1; shift ;;
   esac
 done
+
+if [[ "$EXTERNAL_ONLY" -eq 1 && "$RUN_ID_SET" -eq 0 && -z "$RESUME_DIR" ]]; then
+  RUN_ID="python200-external50-${MODEL_SLUG}-$(date +%Y%m%d-%H%M%S)"
+fi
 
 [[ "$WORKERS" =~ ^[1-9][0-9]*$ ]] || { echo "--workers must be positive" >&2; exit 2; }
 [[ "$TIMEOUT" =~ ^[1-9][0-9]*$ ]] || { echo "--timeout must be positive" >&2; exit 2; }
@@ -134,31 +141,56 @@ TASK_IDS=()
 while IFS= read -r task_id; do
   TASK_IDS+=("$task_id")
 done < <(
-  "$PYTHON" - <<'PY'
+  "$PYTHON" - "$EXTERNAL_ONLY" <<'PY'
 import json
+import sys
 from pathlib import Path
+
 payload = json.loads(Path("benchmark/selection/python200_suite.json").read_text())
+external_only = sys.argv[1] == "1"
 for task_id in payload["task_ids"]:
+    if external_only and not (Path("benchmark/external50") / task_id).is_dir():
+        continue
     print(task_id)
 PY
 )
-[[ "${#TASK_IDS[@]}" -eq 200 ]] || { echo "Expected 200 tasks, found ${#TASK_IDS[@]}" >&2; exit 1; }
+EXPECTED_TASKS=200
+SELECTION_LABEL="200 tasks (150 frozen + 50 balanced External)"
+if [[ "$EXTERNAL_ONLY" -eq 1 ]]; then
+  EXPECTED_TASKS=50
+  SELECTION_LABEL="50 tasks (balanced External extension only)"
+fi
+[[ "${#TASK_IDS[@]}" -eq "$EXPECTED_TASKS" ]] || {
+  echo "Expected $EXPECTED_TASKS tasks, found ${#TASK_IDS[@]}" >&2
+  exit 1
+}
 
-PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON" -B - <<'PY'
+PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \
+  "$PYTHON" -B - "$EXTERNAL_ONLY" <<'PY'
 import json
+import sys
 from pathlib import Path
 from featureliftbench.validate import validate_runnable_task
 
 suite = json.loads(Path("benchmark/selection/python200_suite.json").read_text())
 root = Path(suite["task_root"])
+external_only = sys.argv[1] == "1"
 failures = []
+selected = 0
 for task_id in suite["task_ids"]:
+    if external_only and not (Path("benchmark/external50") / task_id).is_dir():
+        continue
+    selected += 1
     result = validate_runnable_task(root / task_id)
     if not result.valid:
         failures.append(f"{task_id}: {'; '.join(result.errors)}")
 if failures:
     raise SystemExit("Python-200 compliance preflight failed:\n" + "\n".join(failures))
-print("Compliance preflight: 200/200 runnable (150 frozen + 50 strict)")
+expected = 50 if external_only else 200
+if selected != expected:
+    raise SystemExit(f"Expected {expected} selected tasks, found {selected}")
+label = "External-50" if external_only else "Python-200"
+print(f"Compliance preflight: {selected}/{expected} runnable ({label})")
 PY
 
 if [[ -n "$RESUME_DIR" ]]; then
@@ -195,7 +227,7 @@ COMMAND+=("${TASK_ARGS[@]}")
 echo "Profile: $PROFILE"
 echo "Model: $MODEL"
 echo "Arm: Full-Repository / No-Hint (benchmark tests hidden)"
-echo "Selected: 200 tasks (150 frozen + 50 balanced External)"
+echo "Selected: $SELECTION_LABEL"
 echo "Workers: $WORKERS"
 echo "Timeout: $TIMEOUT seconds/task"
 echo "Agent image: $AGENT_IMAGE"

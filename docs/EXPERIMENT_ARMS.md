@@ -81,6 +81,25 @@ evaluator。
 
 该臂必须记录 `prompt_style=short`。
 
+## Test-First Lift：Upstream-backed characterization（方法臂 · 已归档负结果）
+
+**正式结论：** Functional **1/6**，相对 Main **−1**；不扩样本、不再修补。  
+裁决：[VERDICT.md](../experiments/test_first_lift_pilot/dev6_tfl_p0_20260731/VERDICT.md)。
+
+历史协议：Agent 先写 `characterization/` paired cases → `./flb-test-first freeze`
+→ 再实现 `submission/featurelifted/`。可见性与 Main 相同。
+
+```bash
+./run_experiment.sh --arm test_first_lift \
+  --task-file experiments/test_first_lift_pilot/task_ids_dev6.txt \
+  --docker --workers 1 --timeout 3600 \
+  --output experiments/test_first_lift_pilot/dev6_tfl_p0_YYYYMMDD
+```
+
+故事：[METHOD_TEST_FIRST_LIFT.md](METHOD_TEST_FIRST_LIFT.md)。  
+当前第一步：[CONTRACT_CLOSURE_AUDIT.md](CONTRACT_CLOSURE_AUDIT.md)；  
+下一候选方法：[METHOD_SPEC_CLOSURE.md](METHOD_SPEC_CLOSURE.md)。
+
 ## TD-Cognition：测试驱动的认知增强（方法臂）
 
 唯一变化：相对 Main 增加 **两阶段** 认知注入（不是喂更多官方测试）。
@@ -132,6 +151,54 @@ Focus 最佳干净跑：`exec-contract-clean3-20260729-214504`（见 [CLEAN_FOCU
 
 详情：[METHOD_SELF_CONTRACT.md](METHOD_SELF_CONTRACT.md)。必须记录 `self_contract=true` 与 `self_contract_phase.json`。  
 Focus 首跑 **0/2** Functional（弱于 clean3）：[FOCUS_RESULTS.md](../experiments/self_contract_pilot/FOCUS_RESULTS.md)。
+
+## CGCC-lite：Counterexample-Guided Closure Contracts（方法开发臂）
+
+以 Exec-Contract clean3 为基线，在冻结合约前增加 **eval-blind 对照闭包**：
+只有能区分预注册的合理错误实现（API 删除、符号过度泛化、惰性/缓存坍缩、
+边角色混淆、顺序丢失等）的合约才计入绿色闸门。
+
+允许证据仅为 `TASK/public_spec`、上游源码/AST/测试/执行，以及预注册的一致性
+算子；禁止 formal public/hidden 反馈回填。
+
+```bash
+./run_experiment.sh --arm cgcc_lite \
+  --task-file experiments/cgcc_lite_pilot/task_ids_focus.txt
+```
+
+详情：[METHOD_CGCC_LITE.md](METHOD_CGCC_LITE.md)。每题必须落盘
+`OBLIGATIONS.json`、`MUTATION_AUDIT.json` 和带 `contract_variant=cgcc_lite`
+的 `exec_contract_phase.json`。
+
+`cgcc_roc` 是独立开发扩展：在 CGCC-lite 上增加内部状态、原始别名绑定与
+公开紧凑表示之间的 observation closure；它不加入 formal 错误文案：
+
+```bash
+./run_experiment.sh --arm cgcc_roc \
+  --task-file experiments/cgcc_lite_pilot/task_ids_focus.txt
+```
+
+`cgcc_rmc` 在 ROC 上进一步要求 TASK required methods 具有可执行行为 witness，
+而不是只做 `hasattr`：
+
+```bash
+./run_experiment.sh --arm cgcc_rmc \
+  --tasks alembic__revision_map_core__hard3_001
+```
+
+## FCEC：Fail-Closed Execution Contract（方法开发臂）
+
+在 clean3 基础设施上增加 dependency-complete doctor、source-entrypoint
+定向 trace、Required API/signature closure capsule 和 pre-agent hard gate。
+证据不 substantive 时删除全部方法产物并运行 Main fallback。
+
+```bash
+./run_experiment.sh --arm fcec --tasks <task_ids>
+```
+
+当前状态：open dev-6 no-API preflight 为 0/6 admission，所以尚未启动
+DeepSeek 模型跑。见
+[METHOD_FAIL_CLOSED_EXEC_CONTRACT.md](METHOD_FAIL_CLOSED_EXEC_CONTRACT.md)。
 
 ## Pruned-Context：源码范围消融
 

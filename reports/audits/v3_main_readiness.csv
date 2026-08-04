@@ -4,8 +4,8 @@ alembic__revision_map_core__hard3_001,True,True,True,True,True,True,True,True,
 apscheduler__cron_trigger_core__hard3_001,True,True,True,True,True,True,True,True,
 arrow__parse_format_core__001,True,True,True,True,True,True,True,True,
 astroid__nodes_core__001,True,True,True,True,True,True,True,True,
-attrs__validators_core__001,True,True,True,True,True,True,True,True,
-babel__plural_core__001,True,True,True,True,True,True,True,True,
+attrs__validators_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.deep_iterable; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.deep_mapping; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.instance_of; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.matches_re; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.min_len; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.optional; validation:hidden_tests/test_validators_hidden.py uses undeclared API reference featurelifted.validators.set_disabled; validation:public_tests/test_validators_public.py uses undeclared API reference featurelifted.validators.and_; validation:public_tests/test_validators_public.py uses undeclared API reference featurelifted.validators.ge; validation:public_tests/test_validators_public.py uses undeclared API reference featurelifted.validators.instance_of
+babel__plural_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Locale.plural_form
 bidict__bidirectional_map_core__001,True,True,True,True,True,True,True,True,
 bleach__sanitize_core__001,True,True,True,True,True,True,True,True,
 blinker__signal_registry_core__001,True,True,True,True,True,True,True,True,
@@ -26,7 +26,7 @@ coverage__path_remap_core__001,True,True,True,True,True,True,True,True,
 coverage__report_core__001,True,True,True,True,True,True,True,True,
 coverage__source_selection_core__001,True,True,True,True,True,True,True,True,
 croniter__cron_parse_core__001,True,True,True,True,True,True,True,True,
-dataclasses_json__serde_core__001,True,True,True,True,True,True,True,True,
+dataclasses_json__serde_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Exclude.ALWAYS; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.LetterCase.CAMEL; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.global_config.decoders; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.global_config.encoders; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.LetterCase.CAMEL
 dateutil__zone_resolver_core__hard3_001,True,True,True,True,True,True,True,True,
 decorator__signature_preserving_core__001,True,True,True,True,True,True,True,True,
 deepdiff__deep_compare_core__001,True,True,True,True,True,True,True,True,
@@ -34,7 +34,7 @@ diskcache__eviction_policy_core__hard3_001,True,True,True,True,True,True,True,Tr
 distlib__wheel_metadata_core__hard3_001,True,True,True,True,True,True,True,True,
 dynaconf__settings_merge_core__001,True,True,True,True,True,True,True,True,
 email_validator__validate_core__001,True,True,True,True,True,True,True,True,
-environs__typed_env_core__001,True,True,True,True,True,True,True,True,
+environs__typed_env_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Env.timedelta; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.validate.Range
 faker__provider_core__001,True,True,True,True,True,True,True,True,
 filelock__reentrant_lock_core__001,True,True,True,True,True,True,True,True,
 flake8__plugin_options_core__hard3_001,True,True,True,True,True,True,True,True,
@@ -45,9 +45,9 @@ glom__spec_eval_core__hard3_001,True,True,True,True,True,True,True,True,
 h11__message_parse_core__001,True,True,True,True,True,True,True,True,
 h2__frame_parse_core__001,True,True,True,True,True,True,True,True,
 hatch__project_metadata_core__hard3_001,True,True,True,True,True,True,True,True,
-httpx__request_model_core__001,True,True,True,True,True,True,True,True,
+httpx__request_model_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.QueryParams.merge
 humanize__naturaltime_core__001,True,True,True,True,True,True,True,True,
-importlib_metadata__entry_points_core__001,True,True,True,True,True,True,True,True,
+importlib_metadata__entry_points_core__001,False,False,True,True,True,True,True,True,validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.Sectioned.section_pairs
 importlib_resources__traversable_tree_core__hard3_001,True,True,True,True,True,True,True,True,
 installer__wheel_record_core__hard3_001,True,True,True,True,True,True,True,True,
 intervaltree__interval_tree_core__001,True,True,True,True,True,True,True,True,
@@ -55,9 +55,9 @@ isodate__duration_parse_core__001,True,True,True,True,True,True,True,True,
 isort__settings_resolver_core__hard3_001,True,True,True,True,True,True,True,True,
 itsdangerous__timed_serializer_core__001,True,True,True,True,True,True,True,True,
 jinja2__compile_render_core__001,True,True,True,True,True,True,True,True,
-jinja2__extensions_core__001,True,True,True,True,True,True,True,True,
-jinja2__filters_tests_core__001,True,True,True,True,True,True,True,True,
-jinja2__lexer_parser_core__001,True,True,True,True,True,True,True,True,
+jinja2__extensions_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.nodes.CallBlock
+jinja2__filters_tests_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.filters.FILTERS; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.tests.TESTS
+jinja2__lexer_parser_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.nodes.For; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.nodes.If; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.nodes.Output; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.nodes.Name; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.nodes.Output; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.nodes.Template
 jinja2__loader_inheritance_core__001,True,True,True,True,True,True,True,True,
 json5__parse_core__001,True,True,True,True,True,True,True,True,
 json_logic__evaluator_core__hard3_001,True,True,True,True,True,True,True,True,
@@ -71,22 +71,22 @@ lark__grammar_loader_core__001,True,True,True,True,True,True,True,True,
 lark__parse_tree_core__001,True,True,True,True,True,True,True,True,
 lark__visitor_transform_core__001,True,True,True,True,True,True,True,True,
 license_expression__policy_core__hard3_001,True,True,True,True,True,True,True,True,
-mako__lexer_expression_core__001,True,True,True,True,True,True,True,True,
+mako__lexer_expression_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.parsetree.ControlLine; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.parsetree.Expression; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.parsetree.Text; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.parsetree.ControlLine; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.parsetree.DefTag; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.parsetree.Expression; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.parsetree.TemplateNode; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.parsetree.Text
 markdown__extensions_core__001,True,True,True,True,True,True,True,True,
-markdown_it__commonmark_render__001,True,True,True,True,True,True,True,True,
-marshmallow__schema_core__001,True,True,True,True,True,True,True,True,
+markdown_it__commonmark_render__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.MarkdownIt.disable; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.MarkdownIt.enable; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.MarkdownIt.parse; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.MarkdownIt.parse
+marshmallow__schema_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.fields.Int; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.fields.List; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.fields.Nested; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.fields.Str; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.fields.Int; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.fields.Nested; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.fields.Str
 mkdocs__plugin_config_core__hard3_001,True,True,True,True,True,True,True,True,
 msgpack__pack_unpack_core__001,True,True,True,True,True,True,True,True,
 multidict__multidict_mutation_core__hard3_001,True,True,True,True,True,True,True,True,
 networkx__dag_topo_core__001,True,True,True,True,True,True,True,True,
-packaging__requirement_marker_specifier__001,True,True,True,True,True,True,True,True,
+packaging__requirement_marker_specifier__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.SpecifierSet.filter
 parse__format_parser_core__001,True,True,True,True,True,True,True,True,
-parsel__selector_namespace_core__hard3_001,True,True,True,True,True,True,True,True,
+parsel__selector_namespace_core__hard3_001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.Selector.getall; validation:public_tests/test_public_contract.py uses undeclared API reference featurelifted.Selector.get
 parso__python_parse_core__001,True,True,True,True,True,True,True,True,
 passlib__hash_context_core__001,True,True,True,True,True,True,True,True,
 pathvalidate__sanitize_core__001,True,True,True,True,True,True,True,True,
 pendulum__parse_format_core__001,True,True,True,True,True,True,True,True,
-phonenumbers__parse_format_core__001,True,True,True,True,True,True,True,True,
+phonenumbers__parse_format_core__001,False,False,True,True,True,True,True,True,validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.PhoneNumberFormat.INTERNATIONAL; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.PhoneNumberFormat.NATIONAL
 platformdirs__app_dirs_core__hard3_001,True,True,True,True,True,True,True,True,
 pluggy__hook_call_order__001,True,True,True,True,True,True,True,True,
 pluggy__hook_specs_core__001,True,True,True,True,True,True,True,True,
@@ -94,17 +94,17 @@ pluggy__hook_wrapper_core__hard3_001,True,True,True,True,True,True,True,True,
 poetry_core__dependency_groups_core__hard3_001,True,True,True,True,True,True,True,True,
 pydantic__field_validator_core__hard3_001,True,True,True,True,True,True,True,True,
 pydantic_settings__env_source_core__001,True,True,True,True,True,True,True,True,
-pydantic_v1__validation_error_core__001,True,True,True,True,True,True,True,True,
+pydantic_v1__validation_error_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Extra.forbid
 pygments__formatter_core__001,True,True,True,True,True,True,True,True,
-pygments__lexer_core__001,True,True,True,True,True,True,True,True,
+pygments__lexer_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Comment; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Comment.Single; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Literal; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Literal.String; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Literal.String.Single; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Number; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Number.Integer; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Operator; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.String; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.String.Double; validation:hidden_tests/test_lexer_hidden.py uses undeclared API reference featurelifted.token.Text; validation:public_tests/test_lexer_public.py uses undeclared API reference featurelifted.token.Keyword; validation:public_tests/test_lexer_public.py uses undeclared API reference featurelifted.token.Name; validation:public_tests/test_lexer_public.py uses undeclared API reference featurelifted.token.Name.Function
 pyramid__configurator_action_core__hard3_001,True,True,True,True,True,True,True,True,
 pytest__fixture_resolve_core__001,True,True,True,True,True,True,True,True,
-pytest__ini_markers_core__001,True,True,True,True,True,True,True,True,
-pytest__mark_expression_core__001,True,True,True,True,True,True,True,True,
+pytest__ini_markers_core__001,False,False,True,True,True,True,True,True,validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.MarkerRegistry.from_lines
+pytest__mark_expression_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Expression.evaluate; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.Expression.evaluate
 pytest__marker_registry_core__hard3_001,True,True,True,True,True,True,True,True,
 pytest__skipif_eval_core__001,True,True,True,True,True,True,True,True,
 python_box__config_box_core__001,True,True,True,True,True,True,True,True,
-python_dateutil__relativedelta_core__001,True,True,True,True,True,True,True,True,
+python_dateutil__relativedelta_core__001,False,False,True,True,True,True,True,True,validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.MO.weekday
 python_dateutil__rrule_core__001,True,True,True,True,True,True,True,True,
 python_decouple__config_repository_core__001,True,True,True,True,True,True,True,True,
 python_dotenv__env_parse_core__001,True,True,True,True,True,True,True,True,
@@ -113,36 +113,36 @@ python_multipart__form_parse_core__001,True,True,True,True,True,True,True,True,
 pyyaml__safe_load_dump__001,True,True,True,True,True,True,True,True,
 readme_renderer__content_type_core__hard3_001,True,True,True,True,True,True,True,True,
 redis__resp_parser_core__001,True,True,True,True,True,True,True,True,
-referencing__json_schema_refs_core__001,True,True,True,True,True,True,True,True,
-requests_cache__cache_key_core__hard3_001,True,True,True,True,True,True,True,True,
+referencing__json_schema_refs_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Registry.with_resource; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.Registry.with_resources
+requests_cache__cache_key_core__hard3_001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.CachePolicy.expiration_seconds; validation:public_tests/test_public_contract.py uses undeclared API reference featurelifted.CachePolicy.expiration_seconds
 responses__request_matcher_core__hard3_001,True,True,True,True,True,True,True,True,
-returns__result_pipeline_core__hard3_001,True,True,True,True,True,True,True,True,
-rfc3986__uri_parse_core__001,True,True,True,True,True,True,True,True,
+returns__result_pipeline_core__hard3_001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.Failure.bind; validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.Failure.map; validation:public_tests/test_public_contract.py uses undeclared API reference featurelifted.Success.bind
+rfc3986__uri_parse_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.URIBuilder.finalize; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.URIBuilder.add_host; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.URIBuilder.add_path; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.URIBuilder.add_scheme; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.URIBuilder.finalize
 rich__markup_parse_core__001,True,True,True,True,True,True,True,True,
 ruamel_yaml__roundtrip_core__001,True,True,True,True,True,True,True,True,
-schema__nested_validate_core__hard3_001,True,True,True,True,True,True,True,True,
+schema__nested_validate_core__hard3_001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.And.validate
 scrapy__item_loader_core__hard3_001,True,True,True,True,True,True,True,True,
 setuptools_scm__version_normalize_core__hard3_001,True,True,True,True,True,True,True,True,
 sortedcontainers__sorted_list_core__001,True,True,True,True,True,True,True,True,
 sphinx__extension_registry_core__hard3_001,True,True,True,True,True,True,True,True,
 sqlalchemy__event_dispatch_core__hard3_001,True,True,True,True,True,True,True,True,
 sqlparse__format_filters_core__001,True,True,True,True,True,True,True,True,
-sqlparse__parse_format_core__001,True,True,True,True,True,True,True,True,
-sqlparse__parse_split_core__001,True,True,True,True,True,True,True,True,
-sqlparse__token_tree_core__001,True,True,True,True,True,True,True,True,
+sqlparse__parse_format_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Comparison; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Identifier; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Where; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.sql.Statement; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword.DML
+sqlparse__parse_split_core__001,False,False,True,True,True,True,True,True,validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.sql.Statement; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword.DML
+sqlparse__token_tree_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Comparison; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Identifier; validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.sql.Where; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.sql.Statement; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.tokens.Keyword.DML
 starlette__route_matching_core__hard3_001,True,True,True,True,True,True,True,True,
 stevedore__extension_manager_core__hard3_001,True,True,True,True,True,True,True,True,
 tabulate__table_format_core__001,True,True,True,True,True,True,True,True,
 tenacity__retry_state_core__hard3_001,True,True,True,True,True,True,True,True,
 tomlkit__roundtrip_document__001,True,True,True,True,True,True,True,True,
 tox__factor_expression_core__hard3_001,True,True,True,True,True,True,True,True,
-trafaret__validation_rules_core__hard3_001,True,True,True,True,True,True,True,True,
+trafaret__validation_rules_core__hard3_001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_contract.py uses undeclared API reference featurelifted.And.check
 transitions__state_machine_core__hard3_001,True,True,True,True,True,True,True,True,
 typer__command_parser_core__001,True,True,True,True,True,True,True,True,
-urllib3__retry_backoff_core__001,True,True,True,True,True,True,True,True,
+urllib3__retry_backoff_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_retry_hidden.py uses undeclared API reference featurelifted.ResponseError.SPECIFIC_ERROR; validation:public_tests/test_retry_public.py uses undeclared API reference featurelifted.Retry.from_int; validation:public_tests/test_retry_public.py uses undeclared API reference featurelifted.Retry.total
 virtualenv__interpreter_spec_core__hard3_001,True,True,True,True,True,True,True,True,
 voluptuous__schema_validate_core__001,True,True,True,True,True,True,True,True,
-websockets__handshake_parse_core__001,True,True,True,True,True,True,True,True,
+websockets__handshake_parse_core__001,False,False,True,True,True,True,True,True,validation:hidden_tests/test_hidden_behavior.py uses undeclared API reference featurelifted.Request.parse; validation:public_tests/test_public_api.py uses undeclared API reference featurelifted.Request.parse
 werkzeug__routing_core__001,True,True,True,True,True,True,True,True,
 wheel__metadata_normalize_core__hard3_001,True,True,True,True,True,True,True,True,
 wsproto__frame_parse_core__001,True,True,True,True,True,True,True,True,

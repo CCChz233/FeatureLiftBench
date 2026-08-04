@@ -641,6 +641,8 @@ def run_agent_on_task(
                 )
         elif agent_ready and ablation.exec_contract:
             from .exec_contract import collect_upstream_runtime
+            from .exec_contract import compute_evidence_gate_ok
+            from .exec_contract import deactivate_exec_contract_workspace
             from .exec_contract import phase1_task_appendix as exec_phase1_appendix
             from .exec_contract import prepare_repair_workspace
             from .exec_contract import synthesize_contracts
@@ -657,7 +659,17 @@ def run_agent_on_task(
                 use_docker=bool(agent_docker),
             )
             synthesize_meta = synthesize_contracts(
-                workspace_dir, public_spec, collect_meta=collect_meta
+                workspace_dir,
+                public_spec,
+                collect_meta=collect_meta,
+                variant=ablation.exec_contract_variant,
+            )
+            fallback_to_main = (
+                ablation.exec_contract_variant == "fcec"
+                and not compute_evidence_gate_ok(
+                    collect_meta=collect_meta,
+                    synthesize_meta=synthesize_meta,
+                )
             )
             # Refresh TASK appendix now that RUNTIME_FACTS exists.
             base_task = task_file.read_text(encoding="utf-8")
@@ -668,11 +680,20 @@ def run_agent_on_task(
                 base_task,
                 flags=_re.DOTALL,
             ).rstrip()
-            refreshed = (
-                base_task
-                + "\n\n## Execution-Guided Contract\n\n"
-                + exec_phase1_appendix()
-            )
+            if fallback_to_main:
+                # The evidence doctor failed. Remove all method-only artifacts
+                # so the single implementation call is a byte-for-byte Main
+                # information condition rather than a weakly labeled capsule.
+                deactivate_exec_contract_workspace(workspace_dir)
+                refreshed = base_task
+            else:
+                refreshed = (
+                    base_task
+                    + "\n\n## Execution-Guided Contract\n\n"
+                    + exec_phase1_appendix(
+                        variant=ablation.exec_contract_variant
+                    )
+                )
             task_file.write_text(refreshed + "\n", encoding="utf-8")
             prompt_path.write_text(refreshed, encoding="utf-8")
             context = AgentRunContext(
@@ -682,11 +703,17 @@ def run_agent_on_task(
                 agent_output_dir=agent_output_dir,
                 task_text=refreshed,
             )
-            exec_env = {
-                **(run_config.env or {}),
-                "FEATURELIFTBENCH_EXEC_CONTRACT": "1",
-                "FEATURELIFTBENCH_EXEC_CONTRACT_PHASE": "implement",
-            }
+            exec_env = dict(run_config.env or {})
+            if fallback_to_main:
+                exec_env.pop("FEATURELIFTBENCH_EXEC_CONTRACT", None)
+                exec_env.pop("FEATURELIFTBENCH_EXEC_CONTRACT_PHASE", None)
+            else:
+                exec_env.update(
+                    {
+                        "FEATURELIFTBENCH_EXEC_CONTRACT": "1",
+                        "FEATURELIFTBENCH_EXEC_CONTRACT_PHASE": "implement",
+                    }
+                )
             primary_config = replace(run_config, env=exec_env)
             try:
                 if agent_docker:
@@ -708,15 +735,27 @@ def run_agent_on_task(
             except ValueError as exc:
                 errors.append(f"exec_contract implement failed: {exc}")
 
-            verify_initial = verify_submission_contracts(
-                workspace_dir,
-                docker_image=agent_docker_image if agent_docker else None,
-                use_docker=bool(agent_docker),
+            verify_initial = (
+                {
+                    "ok": False,
+                    "skipped": True,
+                    "reason": "fail-closed Main fallback",
+                }
+                if fallback_to_main
+                else verify_submission_contracts(
+                    workspace_dir,
+                    docker_image=agent_docker_image if agent_docker else None,
+                    use_docker=bool(agent_docker),
+                )
             )
             verify_final = verify_initial
             repair_agent_result = None
             repair_rounds_used = 0
-            if not verify_initial.get("ok") and DEFAULT_REPAIR_ROUNDS > 0:
+            if (
+                not fallback_to_main
+                and not verify_initial.get("ok")
+                and DEFAULT_REPAIR_ROUNDS > 0
+            ):
                 repair_rounds_used = 1
                 repair_task = prepare_repair_workspace(
                     workspace_dir,
@@ -774,6 +813,7 @@ def run_agent_on_task(
 
             write_exec_contract_audit(
                 output_path,
+                variant=ablation.exec_contract_variant,
                 collect_meta=collect_meta,
                 synthesize_meta=synthesize_meta,
                 verify_initial=verify_initial,
@@ -805,8 +845,9 @@ def run_agent_on_task(
                         "resource_limited": repair_agent_result.resource_limited,
                     }
                 ),
+                fallback_to_main=fallback_to_main,
             )
-            if not verify_final.get("ok"):
+            if not fallback_to_main and not verify_final.get("ok"):
                 errors.append(
                     "exec_contract contracts incomplete: "
                     + str(verify_final.get("error") or verify_final.get("stderr_tail") or "contracts failed")[:500]
@@ -1186,6 +1227,33 @@ def run_agent_on_task(
                 if agent_ready:
                     errors.append("agent did not create any files under workspace/submission")
                     errors.append(_missing_submission_diagnostic(workspace_dir))
+                # TFL: freeze fail / missing submission still count in suite
+                # denominator; formal metrics are recorded as not_evaluated.
+
+        if ablation.test_first_lift:
+            from .test_first_lift import write_phase_audit
+
+            try:
+                agent_compact = None
+                if agent_result is not None:
+                    agent_compact = {
+                        "name": agent_result.name,
+                        "passed": agent_result.passed,
+                        "returncode": agent_result.returncode,
+                        "duration_seconds": agent_result.duration_seconds,
+                        "timed_out": agent_result.timed_out,
+                        "reason": agent_result.reason,
+                        "resource_limited": agent_result.resource_limited,
+                    }
+                write_phase_audit(
+                    output_path,
+                    workspace_dir=workspace_dir,
+                    agent_result=agent_compact,
+                    evaluation=_evaluation_payload(eval_result, eval_output_dir),
+                    submission_exists=_has_submission_files(collected_submission_dir),
+                )
+            except Exception as exc:  # noqa: BLE001 - audit must not kill eval
+                errors.append(f"test_first_lift audit failed: {exc}")
 
         if repo_graph_state is not None:
             try:
@@ -2134,6 +2202,14 @@ def prepare_agent_workspace(
         from .self_contract import install_self_contract_workspace
 
         install_self_contract_workspace(workspace_path)
+    elif options.test_first_lift:
+        from .test_first_lift import install_test_first_lift_workspace
+        from .test_first_lift.cases import flatten_required_api_paths
+
+        install_test_first_lift_workspace(
+            workspace_path,
+            required_api_paths=flatten_required_api_paths(metadata),
+        )
     else:
         (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
@@ -2161,7 +2237,7 @@ def prepare_agent_workspace(
         task_markdown = (
             task_markdown.rstrip()
             + "\n\n## Execution-Guided Contract\n\n"
-            + exec_phase1_appendix()
+            + exec_phase1_appendix(variant=options.exec_contract_variant)
         )
     elif options.self_contract:
         from .self_contract import author_task_appendix
@@ -2170,6 +2246,14 @@ def prepare_agent_workspace(
             task_markdown.rstrip()
             + "\n\n## Self-Authored Contract Phase A\n\n"
             + author_task_appendix()
+        )
+    elif options.test_first_lift:
+        from .test_first_lift import task_appendix as tfl_appendix
+
+        task_markdown = (
+            task_markdown.rstrip()
+            + "\n\n"
+            + tfl_appendix()
         )
     task_file.write_text(task_markdown, encoding="utf-8")
     if not options.expose_source_hints:

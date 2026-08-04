@@ -261,3 +261,24 @@ Skill：`featureliftbench-create-task` → `validate-task` →（批准）`promo
 4. ~~轻量 closure review + balance replacement~~ ✅ **40 retained + 10 replacement**  
 5. ~~冻结 External-50 独立 split，并生成 Python-200 unified root~~ ✅  
 6. **下一步：** 服务器 Docker preflight 后执行 `run_python200_paper.sh --execute`
+
+### 仅运行 External-50
+
+已有完整、同条件 Python-150 结果时，可以只运行扩展的 50 题：
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  <openhands-profile> \
+  <run-id> \
+  --external-only \
+  --workers <n> \
+  --agent-image <pinned-agent-image-id> \
+  --eval-image <pinned-eval-image-id> \
+  --execute
+```
+
+该模式仍执行全部 Python-200 release checks，但模型调用只选择冻结
+`python200_suite.json` 中属于 `benchmark/external50/` 的 50 题，并强制选择数为
+50。合并时必须保持 model revision、agent profile、Main arm、attempt policy、agent
+image 和 evaluator image 一致；原 150 与新 50 分别保留，分析阶段按 task ID 合并，
+不得覆盖或重试旧 150 的失败样本。

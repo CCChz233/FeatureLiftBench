@@ -177,6 +177,17 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable Execution-Guided Contract arm (default)",
     )
     run_agent_parser.set_defaults(exec_contract=None)
+    run_agent_parser.add_argument(
+        "--exec-contract-variant",
+        choices=("clean3", "cgcc_lite", "cgcc_roc", "cgcc_rmc", "fcec"),
+        help=(
+            "exec-contract synthesis variant: clean3 is the best frozen template "
+            "baseline; cgcc_lite adds eval-blind contrastive closure contracts; "
+            "cgcc_roc adds representation/observation closure; cgcc_rmc adds "
+            "required-method behavioral witnesses; fcec requires clause-bound "
+            "dynamic evidence or falls back to Main"
+        ),
+    )
     self_contract = run_agent_parser.add_mutually_exclusive_group()
     self_contract.add_argument(
         "--self-contract",
@@ -191,6 +202,23 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable Self-Authored Contract arm (default)",
     )
     run_agent_parser.set_defaults(self_contract=None)
+    test_first_lift = run_agent_parser.add_mutually_exclusive_group()
+    test_first_lift.add_argument(
+        "--test-first-lift",
+        dest="test_first_lift",
+        action="store_true",
+        help=(
+            "Test-First Lift method arm: agent writes characterization cases, "
+            "harness freezes upstream oracle, then agent implements"
+        ),
+    )
+    test_first_lift.add_argument(
+        "--no-test-first-lift",
+        dest="test_first_lift",
+        action="store_false",
+        help="Disable Test-First Lift arm (default)",
+    )
+    run_agent_parser.set_defaults(test_first_lift=None)
     run_agent_parser.add_argument(
         "--env-file",
         type=Path,
@@ -566,7 +594,9 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             source_context=args.source_context,
             td_cognition=args.td_cognition,
             exec_contract=args.exec_contract,
+            exec_contract_variant=args.exec_contract_variant,
             self_contract=args.self_contract,
+            test_first_lift=args.test_first_lift,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

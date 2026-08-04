@@ -1328,6 +1328,9 @@ def migrate_task_to_compliant(task_dir: Path, *, dry_run: bool = False) -> dict[
             task_dir,
             metadata,
             task_markdown=task_markdown,
+            # Member-path API surface gaps are owned by contract-closure audit /
+            # revision waves; do not block already-compliant idempotent migrate.
+            ignore_test_api_usage=True,
         )
         if errors:
             raise ValueError("constitution validation failed: " + "; ".join(errors))

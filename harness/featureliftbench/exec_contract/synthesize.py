@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from .common import CLOSURE_CAPSULE_FILE
 from .common import CONTRACT_INDEX
 from .common import CONTRACTS_DIR
 from .common import RUNTIME_DIR
@@ -16,42 +17,123 @@ from .common import behavior_texts
 from .common import ensure_dir
 from .common import flatten_required_api
 from .common import is_noise_event
+from .common import KEYWORD_STOPWORDS
 from .common import source_entrypoint_names
+
+
+OBLIGATIONS_FILE = "OBLIGATIONS.json"
+MUTATION_AUDIT_FILE = "MUTATION_AUDIT.json"
+CGCC_VARIANTS = frozenset({"cgcc_lite", "cgcc_roc", "cgcc_rmc"})
+CONTRACT_VARIANTS = frozenset({"clean3", "fcec", *CGCC_VARIANTS})
 
 
 def synthesize_contracts(
     workspace_dir: str | Path,
     public_spec: dict[str, Any] | None,
     collect_meta: dict[str, Any] | None = None,
+    *,
+    variant: str = "clean3",
 ) -> dict[str, Any]:
+    variant = str(variant or "clean3").strip().lower()
+    if variant not in CONTRACT_VARIANTS:
+        raise ValueError(
+            f"contract variant must be one of {sorted(CONTRACT_VARIANTS)}, got {variant!r}"
+        )
     workspace = Path(workspace_dir).resolve()
     contracts = ensure_dir(workspace / CONTRACTS_DIR)
     (contracts / "__init__.py").write_text("", encoding="utf-8")
 
-    api = flatten_required_api(public_spec)
+    required_api = flatten_required_api(public_spec)
+    api = list(required_api)
     behaviors = behavior_texts(public_spec)
-    events = [e for e in _load_events(workspace / RUNTIME_DIR / TRACE_JSONL) if not is_noise_event(e)]
+    watch_prefixes = list((collect_meta or {}).get("watch_prefixes") or [])
+    events = [
+        e
+        for e in _load_events(workspace / RUNTIME_DIR / TRACE_JSONL)
+        if not is_noise_event(e, allow_path_prefixes=watch_prefixes)
+    ]
 
     inferred = infer_api_from_upstream(workspace / "repo", public_spec)
     # Surface: required_api + small allowlisted inferred symbols (cut format_* noise).
     surface_api = _surface_api_for_contracts(api, inferred, public_spec)
     api = _merge_api(api, inferred["api"])
 
-    surface = _generate_surface_tests(surface_api)
+    surface = _generate_surface_tests(
+        surface_api,
+        check_signatures=variant == "fcec",
+    )
     (contracts / "test_required_surface.py").write_text(surface, encoding="utf-8")
 
-    replay = _generate_replay_tests(api, events)
+    replay = _generate_replay_tests(
+        required_api if variant == "fcec" else api,
+        events,
+        state_free_only=variant == "fcec",
+    )
     (contracts / "test_runtime_replay.py").write_text(replay["code"], encoding="utf-8")
 
-    scenarios = _generate_scenario_tests(api, public_spec, inferred)
+    scenarios = _generate_scenario_tests(
+        api, public_spec, inferred, variant=variant
+    )
     (contracts / "test_behavior_scenarios.py").write_text(scenarios["code"], encoding="utf-8")
 
     behavior_doc = _generate_behavior_checklist(behaviors)
     (contracts / "test_behavior_checklist.py").write_text(behavior_doc, encoding="utf-8")
 
+    obligations = _build_cgcc_obligations(
+        api=api,
+        public_spec=public_spec,
+        inferred=inferred,
+        variant=variant,
+    )
+    mutation_audit = _build_mutation_audit(obligations, variant=variant)
+    closure_capsule = _build_closure_capsule(
+        required_api=required_api,
+        public_spec=public_spec,
+        events=events,
+        selected_tests=list((collect_meta or {}).get("selected_tests") or []),
+    )
+    (workspace / CLOSURE_CAPSULE_FILE).write_text(
+        json.dumps(closure_capsule, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (workspace / OBLIGATIONS_FILE).write_text(
+        json.dumps(
+            {
+                "schema_version": "featureliftbench.cgcc_obligations.v1",
+                "contract_variant": variant,
+                "evidence_policy": {
+                    "A": "TASK/public_spec explicit",
+                    "B": "upstream source/AST/runtime supported",
+                    "C": "pre-registered semantic consistency operator",
+                    "formal_eval": "forbidden",
+                },
+                "obligations": obligations,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (workspace / MUTATION_AUDIT_FILE).write_text(
+        json.dumps(mutation_audit, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
     substantive = int(scenarios["assertions"]) + int(replay["count"]) + _count_surface_asserts(surface)
     # Surface-only (hasattr) is not enough; require real scenario assertions.
-    contracts_substantive = bool(scenarios["assertions"] >= 2 or replay["count"] > 0)
+    replay_behavior_count = int(
+        replay["behavioral_count"]
+        if variant == "fcec"
+        else replay["count"]
+    )
+    contracts_substantive = bool(
+        scenarios["assertions"] >= 2 or replay_behavior_count > 0
+    )
+    if variant in CGCC_VARIANTS:
+        contracts_substantive = bool(
+            contracts_substantive and mutation_audit["mutation_adequacy_ok"]
+        )
 
     quality = "low"
     if collect_meta and isinstance(collect_meta, dict):
@@ -78,6 +160,15 @@ def synthesize_contracts(
         f"Surface symbols kept: {len(surface_api)}",
         f"Phase0 trace quality: `{quality}`",
         f"Contracts substantive: `{contracts_substantive}`",
+        f"Contract variant: `{variant}`",
+        f"Mutation families covered: "
+        f"{mutation_audit['covered_family_count']}/{mutation_audit['applicable_family_count']}",
+        f"Mutation adequacy: `{mutation_audit['mutation_adequacy_ok']}`",
+        f"Clause-bound dynamic obligations: "
+        f"{closure_capsule['clause_bound_obligations']}",
+        f"Required API closure: `{closure_capsule['api_closure_complete']}`",
+        f"Published signature closure: "
+        f"`{closure_capsule['signature_closure_complete']}`",
         "",
     ]
     (workspace / CONTRACT_INDEX).write_text("\n".join(index), encoding="utf-8")
@@ -88,12 +179,30 @@ def synthesize_contracts(
     return {
         "api_symbols": len(api),
         "replay_cases": replay["count"],
+        "behavior_replay_cases": replay["behavioral_count"],
         "behaviors": len(behaviors),
         "scenario_assertions": scenarios["assertions"],
+        "behavior_assertions": int(scenarios["assertions"])
+        + replay_behavior_count,
         "inferred_methods": inferred.get("methods") or [],
+        "semantic_evidence": inferred.get("semantic_evidence") or [],
+        "contract_variant": variant,
+        "obligations": len(obligations),
+        "applicable_mutation_families": mutation_audit["applicable_families"],
+        "covered_mutation_families": mutation_audit["covered_families"],
+        "mutation_adequacy_ok": mutation_audit["mutation_adequacy_ok"],
         "contracts_substantive": contracts_substantive,
         "substantive_count": substantive,
         "trace_quality": quality,
+        "closure_capsule_file": CLOSURE_CAPSULE_FILE,
+        "api_closure_complete": closure_capsule["api_closure_complete"],
+        "signature_closure_complete": closure_capsule[
+            "signature_closure_complete"
+        ],
+        "clause_bound_obligations": closure_capsule[
+            "clause_bound_obligations"
+        ],
+        "dynamic_bindings": len(closure_capsule["dynamic_bindings"]),
         "contracts_dir": CONTRACTS_DIR,
     }
 
@@ -112,8 +221,14 @@ def infer_api_from_upstream(
     methods: list[str] = []
     api: list[dict[str, str]] = []
     class_attrs: dict[str, list[str]] = {}
+    semantic_evidence: set[str] = set()
     if not repo.is_dir() or not isinstance(public_spec, dict):
-        return {"api": api, "methods": methods, "class_attrs": class_attrs}
+        return {
+            "api": api,
+            "methods": methods,
+            "class_attrs": class_attrs,
+            "semantic_evidence": [],
+        }
 
     for ep in source_entrypoint_names(public_spec):
         parts = [p for p in ep.split(".") if p]
@@ -125,6 +240,13 @@ def infer_api_from_upstream(
         if resolved is None:
             continue
         src, class_node, tree = resolved
+        source_text = src.read_text(encoding="utf-8", errors="ignore")
+        if (
+            "Ordering required" in source_text
+            or "OrderedSet" in source_text
+            or "OrderedDict" in source_text
+        ):
+            semantic_evidence.add("preserves_insertion_order")
         related: dict[str, ast.ClassDef] = {fl_cls_name: class_node}
         # Prefer Context from same module / package for attr checks.
         ctx = _find_class(tree, "Context")
@@ -210,7 +332,12 @@ def infer_api_from_upstream(
             continue
         seen.add(path)
         uniq.append(item)
-    return {"api": uniq, "methods": sorted(set(methods)), "class_attrs": class_attrs}
+    return {
+        "api": uniq,
+        "methods": sorted(set(methods)),
+        "class_attrs": class_attrs,
+        "semantic_evidence": sorted(semantic_evidence),
+    }
 
 
 def _resolve_upstream_class(
@@ -376,6 +503,148 @@ def _load_events(path: Path) -> list[dict[str, Any]]:
     return events
 
 
+def _build_closure_capsule(
+    *,
+    required_api: list[dict[str, str]],
+    public_spec: dict[str, Any] | None,
+    events: list[dict[str, Any]],
+    selected_tests: list[str],
+) -> dict[str, Any]:
+    """Produce a small clause/API/signature-first, evaluator-blind capsule."""
+
+    behaviors = behavior_texts(public_spec)
+    callable_kinds = {"class", "function", "method"}
+    signatures = [
+        {
+            "path": item["path"],
+            "kind": item["kind"],
+            "signature": item["signature"],
+        }
+        for item in required_api
+        if item.get("kind") in callable_kinds and item.get("signature")
+    ]
+    published_callable_paths = {
+        item["path"]
+        for item in required_api
+        if item.get("kind") in callable_kinds and item.get("signature")
+    }
+    signature_paths = {item["path"] for item in signatures}
+
+    clause_records: list[dict[str, Any]] = []
+    dynamic_bindings: list[dict[str, Any]] = []
+    for behavior in behaviors:
+        text = str(behavior.get("text") or "")
+        lowered = text.lower()
+        api_paths = [
+            item["path"]
+            for item in required_api
+            if item["name"].lower() in lowered
+            or item["path"].lower() in lowered
+        ]
+        terms: set[str] = set()
+        for item in required_api:
+            name = str(item.get("name") or "")
+            if name and re.search(
+                rf"\b{re.escape(name)}\b",
+                text,
+                flags=re.IGNORECASE,
+            ):
+                terms.update(_identifier_terms(name))
+        for match in re.findall(r"`([^`]+)`", text):
+            for part in match.split("."):
+                terms.update(_identifier_terms(part))
+        evidence_ids: list[str] = []
+        for index, event in enumerate(events):
+            raw_func = str(event.get("func") or "")
+            raw_name = (
+                str(event.get("owner") or "")
+                if raw_func == "__init__"
+                else raw_func
+            )
+            func = re.sub(r"[^a-z0-9]", "", raw_name.lower())
+            if not func or raw_func.startswith("__") and raw_func != "__init__":
+                continue
+            matched = sorted(
+                term
+                for term in terms
+                if re.sub(r"[^a-z0-9]", "", term) == func
+                or (
+                    len(term) >= 4
+                    and re.sub(r"[^a-z0-9]", "", term) in func
+                )
+            )
+            if not matched:
+                continue
+            evidence_id = f"trace:{index}"
+            evidence_ids.append(evidence_id)
+            dynamic_bindings.append(
+                {
+                    "behavior_id": behavior.get("id") or "",
+                    "evidence_id": evidence_id,
+                    "function": raw_name,
+                    "file": event.get("file"),
+                    "matched_terms": matched[:8],
+                }
+            )
+            if len(evidence_ids) >= 5:
+                break
+        clause_records.append(
+            {
+                "id": behavior.get("id") or "",
+                "text": text,
+                "required_api_paths": api_paths,
+                "dynamic_evidence": evidence_ids,
+            }
+        )
+
+    bound_clause_ids = {
+        str(item.get("behavior_id") or "")
+        for item in dynamic_bindings
+        if item.get("behavior_id")
+    }
+    return {
+        "schema_version": "featureliftbench.fcec_capsule.v1",
+        "evidence_policy": {
+            "inputs": [
+                "TASK/public_spec",
+                "selected upstream repository tests",
+                "upstream runtime trace",
+            ],
+            "formal_evaluator": "forbidden",
+            "unbound_dynamic_observations": "excluded",
+        },
+        "selected_tests": selected_tests,
+        "required_api": required_api,
+        "published_signatures": signatures,
+        "clauses": clause_records,
+        "dynamic_bindings": dynamic_bindings[:80],
+        "clause_bound_obligations": len(bound_clause_ids),
+        "api_closure_complete": bool(required_api)
+        and all(item.get("path") and item.get("kind") for item in required_api),
+        "signature_closure_complete": (
+            published_callable_paths == signature_paths
+        ),
+    }
+
+
+def _identifier_terms(value: str) -> set[str]:
+    """Split snake/camel API identifiers without adding prose keywords."""
+
+    pieces = re.findall(
+        r"[A-Z]+(?=[A-Z][a-z]|\b)|[A-Z]?[a-z]+|[0-9]+",
+        value.replace("-", "_"),
+    )
+    terms = {
+        piece.lower()
+        for piece in pieces
+        if len(piece) >= 3 and piece.lower() not in KEYWORD_STOPWORDS
+    }
+    normalized = re.sub(r"[^A-Za-z0-9]", "", value).lower()
+    if len(normalized) >= 3 and normalized not in KEYWORD_STOPWORDS:
+        terms.add(normalized)
+    return terms
+
+
 def _count_surface_asserts(code: str) -> int:
     return code.count("assert ")
 
@@ -410,31 +679,14 @@ _SURFACE_METHOD_DENY = frozenset(
     }
 )
 
-# Keep these inferred methods even when not in required_api (task-critical).
+# Keep only an inferred method with a demonstrated task-level behavioral
+# closure. Other upstream helpers (add_source, make_context, add_revision,
+# filter_for_lineage, Revision properties, etc.) are implementation choices,
+# not part of the featurelifted contract; requiring them rejects valid compact
+# reference solutions.
 _SURFACE_METHOD_ALLOW = frozenset(
     {
         "invoke",
-        "get_command",
-        "resolve",
-        "list_commands",
-        "add_source",
-        "make_context",
-        "get_revision",
-        "get_revisions",
-        "get_heads",
-        "get_current_head",
-        "ancestors",
-        "iterate_revisions",
-        "add_revision",
-        "heads",
-        "bases",
-        "filter_for_lineage",
-        "is_base",
-        "is_head",
-        "is_branch_point",
-        "is_merge_point",
-        "add_nextrev",
-        "verify_rev_id",
     }
 )
 
@@ -488,12 +740,30 @@ def _surface_api_for_contracts(
     return out
 
 
-def _generate_surface_tests(api: list[dict[str, str]]) -> str:
+def _generate_surface_tests(
+    api: list[dict[str, str]],
+    *,
+    check_signatures: bool = False,
+) -> str:
     lines = [
         '"""Required + upstream-inferred API surface contracts."""',
         "from __future__ import annotations",
         "",
         "import importlib",
+        "import inspect",
+        "",
+        "",
+        "def _signature_shape(value):",
+        "    signature = inspect.signature(value)",
+        "    return [",
+        "        (",
+        "            parameter.name,",
+        "            parameter.kind.name,",
+        "            parameter.default is not inspect.Parameter.empty,",
+        "            None if parameter.default is inspect.Parameter.empty else repr(parameter.default),",
+        "        )",
+        "        for parameter in signature.parameters.values()",
+        "    ]",
         "",
         "",
         "def test_featurelifted_package_importable() -> None:",
@@ -555,15 +825,137 @@ def _generate_surface_tests(api: list[dict[str, str]]) -> str:
             f"    assert callable(getattr(cls, {meth!r}, None)), {path!r}",
             "",
         ]
+    signature_items = (
+        [a for a in api if a.get("signature")][:80]
+        if check_signatures
+        else []
+    )
+    for item in signature_items:
+        path = item["path"]
+        parts = path.split(".")
+        if len(parts) < 2 or parts[0] != "featurelifted":
+            continue
+        safe = "_".join(parts)
+        lines += [
+            f"def test_signature_{safe}() -> None:",
+            f"    parts = {parts!r}",
+            "    mod = importlib.import_module('featurelifted')",
+            "    value = mod",
+            "    for name in parts[1:]:",
+            "        value = getattr(value, name)",
+            f"    expected = {_signature_contract_shape(item['signature'])!r}",
+            "    assert _signature_shape(value) == expected",
+            "",
+        ]
     return "\n".join(lines)
+
+
+def _signature_contract_shape(
+    signature: str,
+) -> list[tuple[str, str, bool, str | None]]:
+    """Parse the public parameter/default shape without evaluating annotations."""
+
+    head = str(signature).split("->", 1)[0].strip()
+    if not head.startswith("(") or ")" not in head:
+        return []
+    body = head[1 : head.rfind(")")]
+    values = _split_signature_parameters(body)
+    out: list[list[Any]] = []
+    keyword_only = False
+    for value in values:
+        item = value.strip()
+        if not item:
+            continue
+        if item == "/":
+            for prior in out:
+                if prior[1] == "POSITIONAL_OR_KEYWORD":
+                    prior[1] = "POSITIONAL_ONLY"
+            continue
+        if item == "*":
+            keyword_only = True
+            continue
+        kind = "KEYWORD_ONLY" if keyword_only else "POSITIONAL_OR_KEYWORD"
+        if item.startswith("**"):
+            kind = "VAR_KEYWORD"
+            item = item[2:].strip()
+        elif item.startswith("*"):
+            kind = "VAR_POSITIONAL"
+            keyword_only = True
+            item = item[1:].strip()
+        default_at = _top_level_character(item, "=")
+        has_default = default_at >= 0
+        default = item[default_at + 1 :].strip() if has_default else None
+        declaration = item[:default_at].strip() if has_default else item
+        annotation_at = _top_level_character(declaration, ":")
+        name = (
+            declaration[:annotation_at].strip()
+            if annotation_at >= 0
+            else declaration.strip()
+        )
+        out.append([name, kind, has_default, default])
+    return [tuple(item) for item in out]  # type: ignore[return-value]
+
+
+def _split_signature_parameters(value: str) -> list[str]:
+    out: list[str] = []
+    start = 0
+    depth = 0
+    quote = ""
+    escaped = False
+    for index, char in enumerate(value):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in {"'", '"'}:
+            quote = char
+        elif char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth = max(0, depth - 1)
+        elif char == "," and depth == 0:
+            out.append(value[start:index])
+            start = index + 1
+    out.append(value[start:])
+    return out
+
+
+def _top_level_character(value: str, target: str) -> int:
+    depth = 0
+    quote = ""
+    escaped = False
+    for index, char in enumerate(value):
+        if quote:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = ""
+            continue
+        if char in {"'", '"'}:
+            quote = char
+        elif char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth = max(0, depth - 1)
+        elif char == target and depth == 0:
+            return index
+    return -1
 
 
 def _simple_args(args: dict[str, Any] | None) -> bool:
     if not isinstance(args, dict):
         return False
     for key, value in args.items():
-        if key == "self":
+        if key in {"self", "cls"}:
             continue
+        if key.startswith("__"):
+            return False
         if isinstance(value, dict) and ("__type__" in value or "__repr__" in value):
             return False
         if isinstance(value, (list, dict)) and _contains_opaque(value):
@@ -584,27 +976,64 @@ def _contains_opaque(value: Any) -> bool:
 def _generate_replay_tests(
     api: list[dict[str, str]],
     events: list[dict[str, Any]],
+    *,
+    state_free_only: bool = False,
 ) -> dict[str, Any]:
     api_names = {a["name"] for a in api}
     cases: list[dict[str, Any]] = []
     for event in events:
         func = str(event.get("func") or "")
-        if func not in api_names:
+        event_api_name = (
+            str(event.get("owner") or "")
+            if func == "__init__"
+            else func
+        )
+        if event_api_name not in api_names:
             continue
-        args = event.get("args") if isinstance(event.get("args"), dict) else {}
-        call_args = {k: v for k, v in args.items() if k != "self"}
-        if not _simple_args(call_args) and not event.get("exception"):
-            continue
-        matches = [a for a in api if a["name"] == func]
+        matches = [a for a in api if a["name"] == event_api_name]
         if not matches:
             continue
-        target = matches[0]["path"]
+        item = matches[0]
+        if item.get("kind") not in {"class", "function", "method"}:
+            continue
+        if state_free_only and item.get("kind") == "method":
+            # A call trace does not serialize the receiver's pre-state. Replaying
+            # a stateful method on a fresh instance fabricates a different
+            # scenario (for example conflict commit on an empty registry).
+            continue
+        args = event.get("args") if isinstance(event.get("args"), dict) else {}
+        call_args = {
+            k: v for k, v in args.items() if k not in {"self", "cls"}
+        }
+        if not _simple_args(call_args):
+            continue
+        if not _call_args_match_public_signature(item, call_args):
+            continue
+        if item.get("kind") == "method":
+            owner_path = item["path"].rsplit(".", 1)[0]
+            owner_item = next(
+                (candidate for candidate in api if candidate["path"] == owner_path),
+                None,
+            )
+            if owner_item is None or not _signature_allows_no_args(owner_item):
+                continue
+        exception = event.get("exception")
+        if exception and str(exception.get("type") or "") not in api_names:
+            continue
+        if (
+            not exception
+            and item.get("kind") != "class"
+            and not _return_matches_public_signature(item, event.get("return"))
+        ):
+            continue
+        target = item["path"]
         cases.append(
             {
                 "target": target,
-                "func": func,
+                "func": event_api_name,
+                "kind": item.get("kind"),
                 "args": call_args,
-                "exception": event.get("exception"),
+                "exception": exception,
                 "return": event.get("return"),
             }
         )
@@ -623,7 +1052,7 @@ def _generate_replay_tests(
             "    pytest.skip('no simple name-matched replay cases from upstream traces')",
             "",
         ]
-        return {"code": "\n".join(lines), "count": 0}
+        return {"code": "\n".join(lines), "count": 0, "behavioral_count": 0}
 
     lines = [
         '"""Replay contracts mapped from upstream traces onto featurelifted API names."""',
@@ -665,27 +1094,403 @@ def _generate_replay_tests(
         "    if exc:",
         "        with pytest.raises(Exception) as caught:",
         "            fn(**plain)",
-        "        assert type(caught.value).__name__ == exc.get('type') or True",
+        "        assert type(caught.value).__name__ == exc.get('type')",
         "    else:",
         "        result = fn(**plain)",
         "        expected = case.get('return')",
-        "        if isinstance(expected, (bool, int, float, str)) or expected is None:",
+        "        if case.get('kind') == 'class':",
+        "            assert result is not None",
+        "        elif isinstance(expected, (bool, int, float, str)) or expected is None:",
         "            assert result == expected",
         "",
     ]
-    return {"code": "\n".join(lines), "count": len(cases)}
+    return {
+        "code": "\n".join(lines),
+        "count": len(cases),
+        "behavioral_count": sum(
+            1 for case in cases if case.get("kind") != "class"
+        ),
+    }
+
+
+def _call_args_match_public_signature(
+    item: dict[str, str],
+    call_args: dict[str, Any],
+) -> bool:
+    signature = str(item.get("signature") or "")
+    if not signature:
+        return True
+    shape = _signature_contract_shape(signature)
+    allowed = {
+        name
+        for name, kind, _, _ in shape
+        if name not in {"self", "cls"}
+        and kind not in {"VAR_POSITIONAL", "VAR_KEYWORD"}
+    }
+    has_var_keyword = any(kind == "VAR_KEYWORD" for _, kind, _, _ in shape)
+    if not has_var_keyword and not set(call_args).issubset(allowed):
+        return False
+    positional_only = {
+        name
+        for name, kind, _, _ in shape
+        if kind == "POSITIONAL_ONLY"
+    }
+    return not (set(call_args) & positional_only)
+
+
+def _signature_allows_no_args(item: dict[str, str]) -> bool:
+    signature = str(item.get("signature") or "")
+    if not signature:
+        return False
+    for name, kind, has_default, _ in _signature_contract_shape(signature):
+        if name in {"self", "cls"} or kind in {"VAR_POSITIONAL", "VAR_KEYWORD"}:
+            continue
+        if not has_default:
+            return False
+    return True
+
+
+def _return_matches_public_signature(
+    item: dict[str, str],
+    observed: Any,
+) -> bool:
+    signature = str(item.get("signature") or "")
+    if "->" not in signature:
+        return True
+    annotation = signature.split("->", 1)[1].strip().strip("'\"")
+    if observed is None:
+        return annotation in {"None", "NoneType"} or "None |" in annotation or "| None" in annotation
+    expected_roots = {
+        "bool": bool,
+        "int": int,
+        "float": float,
+        "str": str,
+        "list": list,
+        "dict": dict,
+        "tuple": list,  # tuples are projected to JSON arrays by the tracer
+        "set": list,
+    }
+    root = re.split(r"[\[| ]", annotation, maxsplit=1)[0]
+    expected = expected_roots.get(root)
+    return True if expected is None else isinstance(observed, expected)
+
+
+def _build_cgcc_obligations(
+    *,
+    api: list[dict[str, str]],
+    public_spec: dict[str, Any] | None,
+    inferred: dict[str, Any],
+    variant: str,
+) -> list[dict[str, Any]]:
+    """Build an evidence ledger for pre-registered plausible-wrong families.
+
+    This is deliberately independent of benchmark evaluator tests. A family is
+    applicable only when TASK/public_spec or upstream AST/source evidence makes
+    both the intended behavior and the corresponding wrong implementation
+    plausible.
+    """
+
+    if variant not in CGCC_VARIANTS:
+        return []
+
+    names = {a["name"] for a in api}
+    paths = {a["path"] for a in api}
+    methods = set(inferred.get("methods") or [])
+    evidence = set(inferred.get("semantic_evidence") or [])
+    blob = _behavior_blob(public_spec)
+    obligations: list[dict[str, Any]] = []
+
+    def add(
+        obligation_id: str,
+        family: str,
+        statement: str,
+        *,
+        evidence_refs: list[dict[str, str]],
+        contract_tests: list[str],
+        mutant: str,
+    ) -> None:
+        obligations.append(
+            {
+                "id": obligation_id,
+                "family": family,
+                "statement": statement,
+                "evidence": evidence_refs,
+                "contract_tests": contract_tests,
+                "plausible_wrong_implementation": mutant,
+            }
+        )
+
+    is_lazy = (
+        "LazyCommandCollection" in names
+        or "featurelifted.LazyCommandCollection" in paths
+    )
+    if is_lazy and ("invoke" in methods or "invoke" in names):
+        add(
+            "api_closure.invoke",
+            "api_member_deletion",
+            "An inherited/adjacent public operation needed to execute the resolved command remains callable and behavioral.",
+            evidence_refs=[
+                {"tier": "B", "source": "upstream AST/MRO: invoke"},
+                {"tier": "C", "source": "API-closure deletion operator"},
+            ],
+            contract_tests=["test_invoke_runs_callback_over_argv"],
+            mutant="Delete invoke or replace it with a non-behavioral stub.",
+        )
+    if is_lazy and ("cache" in blob or "loads only" in blob):
+        add(
+            "state.lazy_selective_cache",
+            "lazy_state_collapse",
+            "Only the requested source loads, and the resolved command is cached by identity.",
+            evidence_refs=[
+                {"tier": "A", "source": "public_spec B001"},
+                {"tier": "C", "source": "requested/unrequested + first/repeat matched pairs"},
+            ],
+            contract_tests=["test_get_command_is_selective_and_cached"],
+            mutant="Eagerly load unrelated factories or omit the cache write.",
+        )
+    if is_lazy and ("envvar" in blob or "default_map" in blob or "defaults" in blob):
+        add(
+            "state.context_defaults",
+            "context_propagation_omission",
+            "Environment-derived defaults reach the resolution context without changing unrelated loading.",
+            evidence_refs=[
+                {"tier": "A", "source": "public_spec B002"},
+                {"tier": "B", "source": "upstream Context AST attributes"},
+            ],
+            contract_tests=["test_envvar_json_propagates_to_context_default_map"],
+            mutant="Resolve the command but drop envvar/default_map propagation.",
+        )
+    if is_lazy and ("resolve" in methods or "resolve" in names or "resolve" in blob):
+        add(
+            "error.resolve_unknown",
+            "error_type_omission",
+            "Unknown argv resolution raises the declared UsageError type.",
+            evidence_refs=[{"tier": "A", "source": "public_spec B003"}],
+            contract_tests=["test_resolve_returns_context_command_and_remaining_argv"],
+            mutant="Return None or raise a generic exception for an unknown command.",
+        )
+
+    is_revision = "RevisionMap" in names or "featurelifted.RevisionMap" in paths
+    if is_revision and (
+        "symbolic" in blob or ("head" in blob and "base" in blob)
+    ):
+        add(
+            "namespace.symbol_fallback",
+            "symbol_overgeneralization",
+            "A registered unrestricted string identifier is resolved before applying symbolic fallback semantics.",
+            evidence_refs=[
+                {"tier": "A", "source": "Revision(revision: str) + public_spec B006"},
+                {"tier": "C", "source": "namespace-collision conservation operator"},
+            ],
+            contract_tests=["test_symbolic_fallback_preserves_registered_identifier"],
+            mutant="Treat a symbolic token as special even when the same string is a registered concrete id.",
+        )
+    if is_revision and "preserves_insertion_order" in evidence:
+        add(
+            "ordering.heads",
+            "ordered_output_collapse",
+            "Independent heads preserve upstream source/insertion order.",
+            evidence_refs=[
+                {"tier": "B", "source": "upstream ordered map/set implementation"},
+                {"tier": "C", "source": "ordered-output permutation operator"},
+            ],
+            contract_tests=["test_independent_heads_preserve_source_order"],
+            mutant="Convert ordered heads to a set, sort them, or reverse their source order.",
+        )
+    if is_revision and ("dependencies" in blob or "dependency" in blob):
+        add(
+            "graph.dependency_role",
+            "edge_role_collapse",
+            "Dependency edges affect dependency-aware ancestry without replacing versioned parent/child head semantics.",
+            evidence_refs=[
+                {"tier": "A", "source": "public_spec B002/B003/B005"},
+                {"tier": "C", "source": "edge-role toggle operator"},
+            ],
+            contract_tests=[
+                "test_dependency_aware_ancestors_preserve_versioned_heads"
+            ],
+            mutant="Treat dependencies as down_revision edges or ignore them during dependency-aware ancestry.",
+        )
+    if is_revision and ("branch label" in blob or "branch_labels" in blob):
+        add(
+            "graph.branch_label_propagation",
+            "state_propagation_omission",
+            "A branch label remains usable at the eligible descendant head.",
+            evidence_refs=[{"tier": "A", "source": "public_spec B004"}],
+            contract_tests=["test_branch_label_propagates_to_descendant_head"],
+            mutant="Store the branch label only on its origin and omit descendant propagation.",
+        )
+        if variant in {"cgcc_roc", "cgcc_rmc"}:
+            add(
+                "representation.branch_label_origin",
+                "observable_representation_collapse",
+                "The public alias mapping preserves the originally bound revision id while propagated state remains observable at the descendant head.",
+                evidence_refs=[
+                    {
+                        "tier": "A",
+                        "source": "public_spec B004 + required RevisionMap.branch_labels",
+                    },
+                    {
+                        "tier": "B",
+                        "source": "upstream _map_branch_labels binds aliases before _add_branches propagation",
+                    },
+                    {
+                        "tier": "C",
+                        "source": "representation/observation separation operator",
+                    },
+                ],
+                contract_tests=[
+                    "test_branch_label_binding_is_distinct_from_propagated_head"
+                ],
+                mutant=(
+                    "Recompute the public alias mapping from propagated descendant "
+                    "state or expose internal Revision objects instead of revision ids."
+                ),
+            )
+    if is_revision and variant == "cgcc_rmc":
+        if "iterate_revisions" in names or "iterate_revisions" in methods:
+            add(
+                "required_method.iterate_revisions",
+                "required_method_behavior_omission",
+                "The required revision traversal method honors its upstream default lower-bound exclusivity.",
+                evidence_refs=[
+                    {
+                        "tier": "A",
+                        "source": "TASK required iterate_revisions(upper, lower=None)",
+                    },
+                    {
+                        "tier": "B",
+                        "source": "upstream iterate_revisions inclusive=False default",
+                    },
+                    {
+                        "tier": "C",
+                        "source": "required-method boundary witness operator",
+                    },
+                ],
+                contract_tests=[
+                    "test_iterate_revisions_excludes_lower_by_default"
+                ],
+                mutant=(
+                    "Expose iterate_revisions but include the lower boundary despite "
+                    "the upstream exclusive default, or return a non-traversal stub."
+                ),
+            )
+        if "get_revisions" in names or "get_revisions" in methods:
+            add(
+                "required_method.get_revisions",
+                "required_method_behavior_omission",
+                "The required vector lookup resolves every requested concrete revision in input order.",
+                evidence_refs=[
+                    {
+                        "tier": "A",
+                        "source": "TASK required get_revisions(identifiers)",
+                    },
+                    {
+                        "tier": "B",
+                        "source": "upstream get_revisions vector lookup",
+                    },
+                    {
+                        "tier": "C",
+                        "source": "required-method vectorization witness operator",
+                    },
+                ],
+                contract_tests=[
+                    "test_get_revisions_preserves_requested_identifier_order"
+                ],
+                mutant=(
+                    "Expose get_revisions but return an empty/scalar result or lose "
+                    "the requested identifier order."
+                ),
+            )
+    if is_revision and ("multiple" in blob or "MultipleHeads" in names):
+        add(
+            "error.multiple_heads",
+            "ambiguity_error_omission",
+            "Symbolic head lookup resolves one candidate and rejects multiple candidates with MultipleHeads.",
+            evidence_refs=[{"tier": "A", "source": "public_spec B006/B007"}],
+            contract_tests=["test_symbolic_head_rejects_multiple_candidates"],
+            mutant="Pick an arbitrary head instead of reporting ambiguity.",
+        )
+    if is_revision and ("cycle" in blob or "CycleDetected" in names):
+        add(
+            "error.cycle",
+            "cycle_check_omission",
+            "A versioned cycle raises CycleDetected during graph construction.",
+            evidence_refs=[{"tier": "A", "source": "public_spec B007"}],
+            contract_tests=["test_revision_cycle_raises_cycle_detected"],
+            mutant="Build a cyclic graph without explicit cycle detection.",
+        )
+
+    return obligations
+
+
+def _build_mutation_audit(
+    obligations: list[dict[str, Any]],
+    *,
+    variant: str,
+) -> dict[str, Any]:
+    mutants: list[dict[str, Any]] = []
+    for index, obligation in enumerate(obligations, start=1):
+        tests = [
+            str(item)
+            for item in obligation.get("contract_tests") or []
+            if str(item).strip()
+        ]
+        mutants.append(
+            {
+                "id": f"M{index:03d}",
+                "family": obligation["family"],
+                "description": obligation["plausible_wrong_implementation"],
+                "obligation_id": obligation["id"],
+                "killed_by": tests,
+                "status": "contractually_killed" if tests else "survived",
+            }
+        )
+    applicable = sorted({str(item["family"]) for item in mutants})
+    covered = sorted(
+        {
+            str(item["family"])
+            for item in mutants
+            if item["status"] == "contractually_killed"
+        }
+    )
+    adequacy_ok = (
+        True
+        if variant not in CGCC_VARIANTS
+        else bool(applicable) and applicable == covered
+    )
+    return {
+        "schema_version": "featureliftbench.cgcc_mutation_audit.v1",
+        "contract_variant": variant,
+        "mode": "semantic_contract_traceability",
+        "note": (
+            "Each listed contract contains an observation that distinguishes the "
+            "registered plausible-wrong semantic mutant. No formal evaluator result "
+            "is used to create or mark mutants."
+        ),
+        "mutants": mutants,
+        "applicable_families": applicable,
+        "covered_families": covered,
+        "applicable_family_count": len(applicable),
+        "covered_family_count": len(covered),
+        "mutation_adequacy_ok": adequacy_ok,
+    }
 
 
 def _generate_scenario_tests(
     api: list[dict[str, str]],
     public_spec: dict[str, Any] | None,
     inferred: dict[str, Any],
+    *,
+    variant: str,
 ) -> dict[str, Any]:
     """Real assertions from upstream AST + public_spec only.
 
     Hard rule: do **not** encode benchmark public/hidden failure shapes
-    (exact error strings, eval graphs, orderings). Those are soft test leakage.
-    Allowed: upstream-inferred API surface behavior, TASK/public_spec obligations.
+    (exact error strings or evaluator-specific graphs/orderings). Those are soft
+    test leakage. Allowed: upstream-inferred API surface behavior,
+    TASK/public_spec obligations, and pre-registered contrastive operators whose
+    applicability is supported by upstream source evidence.
     """
 
     names = {a["name"] for a in api}
@@ -772,23 +1577,45 @@ def _generate_scenario_tests(
 
         # B001: get_command loads only needed source (cache once).
         if "cache" in blob or "loads only" in blob or "get_command" in blob:
-            lines += [
-                "def test_get_command_loads_source_once() -> None:",
-                "    \"\"\"public_spec B001: load the providing source and cache the command.\"\"\"",
-                "    mod = importlib.import_module('featurelifted')",
-                "    Lazy = getattr(mod, 'LazyCommandCollection')",
-                "    Command = getattr(mod, 'Command')",
-                "    calls = {'n': 0}",
-                "    def factory():",
-                "        calls['n'] += 1",
-                "        return Command('demo')",
-                "    col = Lazy({'demo': factory})",
-                "    c1 = col.get_command('demo')",
-                "    c2 = col.get_command('demo')",
-                "    assert c1 is not None and c2 is not None",
-                "    assert calls['n'] == 1",
-                "",
-            ]
+            if variant in CGCC_VARIANTS:
+                lines += [
+                    "def test_get_command_is_selective_and_cached() -> None:",
+                    "    \"\"\"B001 contrast: requested factory runs once; unrelated factory stays cold.\"\"\"",
+                    "    mod = importlib.import_module('featurelifted')",
+                    "    Lazy = getattr(mod, 'LazyCommandCollection')",
+                    "    Command = getattr(mod, 'Command')",
+                    "    calls = {'wanted': 0, 'other': 0}",
+                    "    def wanted():",
+                    "        calls['wanted'] += 1",
+                    "        return Command('wanted')",
+                    "    def other():",
+                    "        calls['other'] += 1",
+                    "        return Command('other')",
+                    "    col = Lazy({'wanted': wanted, 'other': other})",
+                    "    c1 = col.get_command('wanted')",
+                    "    c2 = col.get_command('wanted')",
+                    "    assert c1 is not None and c2 is c1",
+                    "    assert calls == {'wanted': 1, 'other': 0}",
+                    "",
+                ]
+            else:
+                lines += [
+                    "def test_get_command_loads_source_once() -> None:",
+                    "    \"\"\"public_spec B001: load the providing source and cache the command.\"\"\"",
+                    "    mod = importlib.import_module('featurelifted')",
+                    "    Lazy = getattr(mod, 'LazyCommandCollection')",
+                    "    Command = getattr(mod, 'Command')",
+                    "    calls = {'n': 0}",
+                    "    def factory():",
+                    "        calls['n'] += 1",
+                    "        return Command('demo')",
+                    "    col = Lazy({'demo': factory})",
+                    "    c1 = col.get_command('demo')",
+                    "    c2 = col.get_command('demo')",
+                    "    assert c1 is not None and c2 is not None",
+                    "    assert calls['n'] == 1",
+                    "",
+                ]
             assertions += 1
 
     # --- RevisionMap / alembic-like (public_spec obligations only) ---
@@ -833,9 +1660,9 @@ def _generate_scenario_tests(
         ]
         assertions += 1
 
-        # B006: symbolic head/base must resolve via get_revision (not only get_revisions /
-        # get_current_head). Triggered by public_spec behavior text or get_revision API.
-        if (
+        # CGCC namespace conservation: a symbol is a fallback, not a reason to
+        # erase a concrete entity using the same unrestricted string identifier.
+        if variant in CGCC_VARIANTS and (
             "symbolic" in blob
             or ("head" in blob and "base" in blob)
             or "get_revision" in names
@@ -843,17 +1670,152 @@ def _generate_scenario_tests(
             or "featurelifted.RevisionMap.get_revision" in paths
         ):
             lines += [
-                "def test_symbolic_head_and_base_via_get_revision() -> None:",
-                "    \"\"\"public_spec B006: get_revision resolves symbolic head/base identifiers.\"\"\"",
+                "def test_symbolic_fallback_preserves_registered_identifier() -> None:",
+                "    \"\"\"B001+B006 contrast: concrete ids win; symbols are fallback semantics.\"\"\"",
                 "    mod = importlib.import_module('featurelifted')",
                 "    Revision = getattr(mod, 'Revision')",
                 "    RevisionMap = getattr(mod, 'RevisionMap')",
-                "    revmap = RevisionMap([Revision('a'), Revision('b', 'a')])",
-                "    head = revmap.get_revision('head')",
+                "    plain = RevisionMap([Revision('root'), Revision('tip', 'root')])",
+                "    head = plain.get_revision('head')",
                 "    assert head is not None, 'get_revision(\"head\") must resolve the unique head'",
-                "    assert getattr(head, 'revision', None) == 'b'",
-                "    # Symbolic base is not a concrete node id.",
-                "    assert revmap.get_revision('base') is None",
+                "    assert getattr(head, 'revision', None) == 'tip'",
+                "    assert plain.get_revision('base') is None",
+                "    collision = RevisionMap([Revision('base'), Revision('tip', 'base')])",
+                "    concrete = collision.get_revision('base')",
+                "    assert concrete is not None",
+                "    assert getattr(concrete, 'revision', None) == 'base'",
+                "",
+            ]
+            assertions += 1
+
+        # CGCC order conservation is admitted only when upstream source declares
+        # or implements ordered collection semantics.
+        if (
+            variant in CGCC_VARIANTS
+            and "preserves_insertion_order"
+            in set(inferred.get("semantic_evidence") or [])
+            and (
+                "get_heads" in names
+                or "get_heads" in methods
+                or "featurelifted.RevisionMap.get_heads" in paths
+            )
+        ):
+            lines += [
+                "def test_independent_heads_preserve_source_order() -> None:",
+                "    \"\"\"Upstream ordered-map/set evidence: independent heads keep source order.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    first = RevisionMap([Revision('left'), Revision('right')])",
+                "    second = RevisionMap([Revision('right'), Revision('left')])",
+                "    assert list(first.get_heads()) == ['left', 'right']",
+                "    assert list(second.get_heads()) == ['right', 'left']",
+                "",
+            ]
+            assertions += 1
+
+        if variant in CGCC_VARIANTS and (
+            "dependencies" in blob or "dependency" in blob
+        ):
+            lines += [
+                "def test_dependency_aware_ancestors_preserve_versioned_heads() -> None:",
+                "    \"\"\"B003+B005 contrast: dependencies affect ancestry, not versioned edges.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    revmap = RevisionMap([",
+                "        Revision('root'),",
+                "        Revision('side', 'root'),",
+                "        Revision('consumer', 'root', dependencies='side'),",
+                "    ])",
+                "    assert list(revmap.get_heads()) == ['side', 'consumer']",
+                "    assert revmap.ancestors('consumer', include_dependencies=False) == {'root'}",
+                "    assert revmap.ancestors('consumer', include_dependencies=True) >= {'root', 'side'}",
+                "",
+            ]
+            assertions += 1
+
+        if variant in CGCC_VARIANTS and (
+            "branch label" in blob or "branch_labels" in blob
+        ):
+            lines += [
+                "def test_branch_label_propagates_to_descendant_head() -> None:",
+                "    \"\"\"B004 contrast: a branch label remains usable at its descendant head.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    revmap = RevisionMap([",
+                "        Revision('root', branch_labels={'stable'}),",
+                "        Revision('tip', 'root'),",
+                "    ])",
+                "    assert revmap.get_current_head('stable') == 'tip'",
+                "    tip = revmap.get_revision('tip')",
+                "    assert tip is not None",
+                "    assert 'stable' in set(getattr(tip, 'branch_labels', ()))",
+                "",
+            ]
+            assertions += 1
+
+        if variant in {"cgcc_roc", "cgcc_rmc"} and (
+            "branch label" in blob or "branch_labels" in blob
+        ):
+            lines += [
+                "def test_branch_label_binding_is_distinct_from_propagated_head() -> None:",
+                "    \"\"\"B004 + upstream alias map: preserve origin and public id projection.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    revmap = RevisionMap([",
+                "        Revision('origin', branch_labels={'stable'}),",
+                "        Revision('tip', 'origin'),",
+                "    ])",
+                "    bound = revmap.get_revision('stable')",
+                "    assert bound is not None",
+                "    assert getattr(bound, 'revision', None) == 'origin'",
+                "    assert revmap.get_current_head('stable') == 'tip'",
+                "    assert revmap.branch_labels.get('stable') == 'origin'",
+                "",
+            ]
+            assertions += 1
+
+        if variant == "cgcc_rmc" and (
+            "iterate_revisions" in names
+            or "iterate_revisions" in methods
+            or "featurelifted.RevisionMap.iterate_revisions" in paths
+        ):
+            lines += [
+                "def test_iterate_revisions_excludes_lower_by_default() -> None:",
+                "    \"\"\"TASK method + upstream inclusive=False: lower is exclusive.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    revmap = RevisionMap([",
+                "        Revision('r0'),",
+                "        Revision('r1', 'r0'),",
+                "        Revision('r2', 'r1'),",
+                "    ])",
+                "    bounded = revmap.iterate_revisions('r2', 'r0')",
+                "    assert [rev.revision for rev in bounded] == ['r2', 'r1']",
+                "    full = revmap.iterate_revisions('r2', None)",
+                "    assert [rev.revision for rev in full] == ['r2', 'r1', 'r0']",
+                "",
+            ]
+            assertions += 1
+
+        if variant == "cgcc_rmc" and (
+            "get_revisions" in names
+            or "get_revisions" in methods
+            or "featurelifted.RevisionMap.get_revisions" in paths
+        ):
+            lines += [
+                "def test_get_revisions_preserves_requested_identifier_order() -> None:",
+                "    \"\"\"TASK required vector lookup must resolve all inputs in order.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    revmap = RevisionMap([Revision('r0'), Revision('r1', 'r0')])",
+                "    resolved = revmap.get_revisions(('r0', 'r1'))",
+                "    assert [rev.revision for rev in resolved] == ['r0', 'r1']",
                 "",
             ]
             assertions += 1
@@ -871,6 +1833,39 @@ def _generate_scenario_tests(
                 "        pytest.skip('MissingRevision not exported')",
                 "    with pytest.raises(MissingRevision):",
                 "        RevisionMap([Revision('b', 'missing')])",
+                "",
+            ]
+            assertions += 1
+
+        if variant in CGCC_VARIANTS and (
+            "MultipleHeads" in names or "multiple" in blob
+        ):
+            lines += [
+                "def test_symbolic_head_rejects_multiple_candidates() -> None:",
+                "    \"\"\"B006+B007 contrast: unique head resolves; multiple heads are explicit.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    MultipleHeads = getattr(mod, 'MultipleHeads')",
+                "    assert RevisionMap([Revision('only')]).get_revision('head').revision == 'only'",
+                "    with pytest.raises(MultipleHeads):",
+                "        RevisionMap([Revision('one'), Revision('two')]).get_revision('head')",
+                "",
+            ]
+            assertions += 1
+
+        if variant in CGCC_VARIANTS and (
+            "CycleDetected" in names or "cycle" in blob
+        ):
+            lines += [
+                "def test_revision_cycle_raises_cycle_detected() -> None:",
+                "    \"\"\"B007: a two-node versioned cycle raises the declared graph error.\"\"\"",
+                "    mod = importlib.import_module('featurelifted')",
+                "    Revision = getattr(mod, 'Revision')",
+                "    RevisionMap = getattr(mod, 'RevisionMap')",
+                "    CycleDetected = getattr(mod, 'CycleDetected')",
+                "    with pytest.raises(CycleDetected):",
+                "        RevisionMap([Revision('one', 'two'), Revision('two', 'one')])",
                 "",
             ]
             assertions += 1

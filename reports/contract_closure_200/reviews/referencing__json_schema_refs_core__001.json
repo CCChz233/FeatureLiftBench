@@ -1,0 +1,135 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-referencing-001: Registry.with_resource/with_resources are absent",
+        "CC-referencing-002: DRAFT202012.create_resource is absent",
+        "CC-referencing-003: Resolver.lookup and returned Resolved.contents/resolver protocols are absent"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-referencing-001",
+      "resolution": "Declare Registry.with_resource(uri, resource) and with_resources(iterable).",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-referencing-002",
+      "resolution": "Declare Specification.create_resource(contents)->Resource on DRAFT202012.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-referencing-003",
+      "resolution": "Declare Resolver.lookup(ref)->Resolved and Resolved.contents/resolver chaining.",
+      "severity": "critical"
+    }
+  ],
+  "notes": "Reference and anchor semantics are explicit, but every composition method between specification, registry, resolver, and result is missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "referencing__json_schema_refs_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_external_ref_resolution",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_fragment_ref_into_defs",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_anchor_lookup",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_dialect_and_missing_anchor",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unresolvable_external_ref",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

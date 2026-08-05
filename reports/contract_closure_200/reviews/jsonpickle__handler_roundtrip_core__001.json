@@ -1,0 +1,114 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py::PointHandler",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-jsonpickle-001: encode/decode/register signatures are absent",
+        "CC-jsonpickle-002: BaseHandler flatten/restore callback protocol and arguments are not declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-jsonpickle-001",
+      "resolution": "Publish the tested encode, decode, and register signatures, including unpicklable=False.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jsonpickle-002",
+      "resolution": "Declare BaseHandler subclass construction plus flatten(obj, data) and restore(data) callbacks.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Serialization behavior is upstream-backed; the evaluator-required extension protocol is hidden from the target API.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "jsonpickle__handler_roundtrip_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_encode_decode_builtin",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_custom_handler_roundtrip",
+      "notes": "The global registration behavior is public, but the subclass callback contract is not.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unpicklable_false_dict_mode",
+      "notes": "Current metadata overmaps the test to unrelated handler clauses; the encode keyword signature remains unpublished.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

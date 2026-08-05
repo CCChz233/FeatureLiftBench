@@ -1,0 +1,120 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [],
+  "notes": "Multi-value mapping protocols and immutable proxy semantics are restored, declared, and tested.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "closed",
+  "review_status": "adjudicated",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": false,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "multidict__multidict_mutation_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_multidict_duplicate_keys_and_getall",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_proxy_reflects_base_mutations",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_case_insensitive_lookup_and_equality",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

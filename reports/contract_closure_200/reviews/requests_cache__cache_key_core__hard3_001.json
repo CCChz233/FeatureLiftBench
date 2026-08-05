@@ -1,0 +1,168 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-requests-cache-001: CachePolicy.should_store/expiration_seconds/reason attributes are not formal API members"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-requests-cache-001",
+      "resolution": "Add CachePolicy.should_store, expiration_seconds, and reason attributes with types.",
+      "severity": "high"
+    }
+  ],
+  "notes": "This task is otherwise strongly specified; the policy result record and several semantic mappings need repair.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "requests_cache__cache_key_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_query_order_normalized",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_ignored_parameter_redacts_value_for_matching",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B008",
+        "B009",
+        "B010"
+      ],
+      "evidence_basis": [
+        "public_spec:B008",
+        "public_spec:B009",
+        "public_spec:B010"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_cache_control_max_age_and_no_store",
+      "notes": "Current mapping omits no-store policy/expiration clauses; observed attributes are undeclared.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_json_body_sorting_and_redaction_affect_cache_key",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_form_body_and_key_only_params_are_normalized",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B005",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B005",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_match_headers_controls_key_variation",
+      "notes": "Current metadata overmaps unrelated request-object, URL, policy, and expiration clauses.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_header_multi_value_normalization_and_redaction",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B008",
+        "B009",
+        "B011"
+      ],
+      "evidence_basis": [
+        "public_spec:B008",
+        "public_spec:B009",
+        "public_spec:B011"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_expires_header_and_default_expiration",
+      "notes": "Current mapping lists only default behavior; CachePolicy attribute is undeclared.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B012"
+      ],
+      "evidence_basis": [
+        "public_spec:B012"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

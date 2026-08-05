@@ -1,0 +1,178 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-tomlkit-001: TOMLDocument/Table/Array/AoT/String/Item mapping, mutation, append, and as_string protocols are central evaluator APIs but undeclared",
+        "CC-tomlkit-002: ParseError line/col fields are evaluator-required but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B006",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-tomlkit-003: B006 promises date, time, and float values, but evaluator coverage demonstrates datetime plus integers/booleans/arrays/tables/Unicode, not all listed scalar types"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-tomlkit-001",
+      "resolution": "Declare all returned TOML item/document mapping, mutation, append, and as_string protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-tomlkit-002",
+      "resolution": "Declare ParseError line/col fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-tomlkit-003",
+      "resolution": "Add date/time/float cases or narrow B006.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-tomlkit-004",
+      "resolution": "Correct string/sorted-dump mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Roundtrip formatting, comments/order, builders, arrays/AoT/inline tables, strings, dotted keys, Unicode/errors, source, and isolation are strong; object API and scalar breadth remain open.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "tomlkit__roundtrip_document__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_document_values_and_roundtrip_layout",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_editing_preserves_table_order_and_comments",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_dump_plain_mappings_and_build_document",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_inline_table_array_and_parse_errors",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiline_literal_strings_and_trailing_comma_arrays_roundtrip",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_arrays_of_tables_and_inline_tables_dump_correctly",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_dotted_keys_table_redefinition_and_unicode_errors",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_string_constructor_and_sorted_dump_preserve_expected_format",
+      "notes": "It does not test parsing B001 or malformed-input B007.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

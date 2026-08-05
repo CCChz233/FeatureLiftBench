@@ -1,5 +1,7 @@
 # Archived Task-Scaffolding Scripts
 
+> **Documentation status: reference · Last verified: 2026-08-04**
+
 These scripts were used to **build** benchmark tasks during initial dataset construction. They are not needed to run or evaluate the benchmark.
 
 ## When you might still use them

@@ -1,0 +1,136 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [],
+  "notes": "Callable signatures, HS256-only algorithm scope, exception behavior, wrong-secret rejection, and standard-library-only dependency closure are now explicit.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "closed",
+  "review_status": "adjudicated",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": false,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "pyjwt__encode_decode_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_encode_decode_hs256",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_wrong_secret",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_expired_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_header",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_token_error_base",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_wrong_secret_hidden",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-flask-login-001: LoginManager methods and login/logout/decorator functions have no signatures",
+        "CC-flask-login-002: UserMixin is_authenticated/is_anonymous/get_id members used by evaluator are absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-flask-login-001",
+      "resolution": "Publish LoginManager, init_app, user_loader, login_user, logout_user, and login_required signatures.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-flask-login-002",
+      "resolution": "Declare the tested UserMixin properties/get_id and current_user proxy semantics.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Flask context and guard behavior are public; the mixin, proxy, and decorator surfaces are only partially declared.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "flask_login__session_guard_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_login_logout_current_user",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_user_mixin_anonymous",
+      "notes": "Current metadata incorrectly maps UserMixin state to anonymous-route guard B002.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_login_required_redirects_anonymous",
+      "notes": "Current metadata includes unrelated login lifecycle and remember B001/B003.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_remember_flag",
+      "notes": "Current metadata incorrectly maps remember=True to login_required B002.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

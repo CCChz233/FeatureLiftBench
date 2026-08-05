@@ -1,0 +1,195 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json",
+        "benchmark/contract_v2/repairs.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [],
+  "notes": "Recurrence construction, iteration, interval/until boundaries, rruleset, and RDATE behavior are explicit and exercised.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "closed",
+  "review_status": "adjudicated",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": false,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "python_dateutil__rrule_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_monthly_rrule_yields_dates",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_weekly_byweekday_filter",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_count_stops_iteration",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_rrulestr_parses_monthly_rule",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_bysetpos_last_friday",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_byeaster_occurrence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_rruleset_exdate_skips",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_interval_and_until_boundaries",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_rruleset_rdate_includes_explicit_date",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_rrulestr_freq_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_rrulestr_byday_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_dateutil_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

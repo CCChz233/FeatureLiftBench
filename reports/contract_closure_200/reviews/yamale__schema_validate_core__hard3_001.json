@@ -1,0 +1,132 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-yamale-001: ValidationResult.isValid is evaluator-required but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-yamale-002: optional-field behavior in B002 is not exercised",
+        "CC-yamale-003: several behavior mappings omit the actual include, strict, bool, and result-return clauses they test"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-yamale-001",
+      "resolution": "Declare ValidationResult.isValid and the validate return collection protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-yamale-002",
+      "resolution": "Add an omitted optional-field case or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-yamale-003",
+      "resolution": "Correct test-to-behavior mappings for strict, include, bool, and result-return semantics.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Schema parsing, include/list, strict rejection, bool acceptance, source, dependencies, and isolation are coherent; result protocol and optional-field coverage need closure.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "yamale__schema_validate_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_basic_schema_validation",
+      "notes": "Result validity is observed through undeclared ValidationResult.isValid.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_strict_mode_rejects_extra_keys",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_include_and_list_validator",
+      "notes": "Multi-document include and list behavior are covered; result validity method remains undeclared.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_bool_non_strict_coercion",
+      "notes": "Non-strict bool acceptance is covered; result validity method remains undeclared.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

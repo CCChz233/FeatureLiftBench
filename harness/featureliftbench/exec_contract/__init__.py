@@ -4,7 +4,7 @@ Phase 0 — Run targeted upstream tests under instrumentation; synthesize contra
 Phase 1 — Agent implements featurelifted with RUNTIME_FACTS + contracts available.
 Phase 2 — Verify contracts against submission (optional one repair round), then formal eval.
 
-See docs/METHOD_EXEC_CONTRACT.md.
+See docs/archive/methods/METHOD_EXEC_CONTRACT.md.
 """
 
 from __future__ import annotations

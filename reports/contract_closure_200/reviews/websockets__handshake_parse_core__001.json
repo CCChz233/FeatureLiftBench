@@ -1,0 +1,328 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-websockets-001: Request.parse is required for every HTTP request case but absent from required_api",
+        "CC-websockets-002: StreamReader.feed_data/read_line generator protocol is absent",
+        "CC-websockets-003: Headers __getitem__ duplicate-value error semantics and Request path/headers result members are only partially declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-websockets-001",
+      "resolution": "Declare Request.parse(read_line) generator and returned Request fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-websockets-002",
+      "resolution": "Declare StreamReader.feed_data and read_line protocols used to drive parsers.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-websockets-003",
+      "resolution": "Declare Headers indexing and duplicate-header failure behavior; add behavior clauses for Basic auth helper assertions.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Header grammar coverage is broad, but the stream/request composition path and several hidden helper behaviors are not publicly closed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "websockets__handshake_parse_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_connection_and_upgrade",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_headers_case_insensitive_lookup",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_websocket_request_basic",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_accept_key_rfc6455_example",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_extension_with_quoted_params",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_upgrade_case_insensitive_list",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_subprotocol_skips_empty_elements",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_headers_multiple_connection_values",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B005",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_handshake_rejects_bad_upgrade",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_handshake_missing_key",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_handshake_invalid_key_length",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_handshake_origin_allowlist",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_request_invalid_method",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_headers_security_limit",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_extension_invalid_quoted_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_build_subprotocol_roundtrip",
+      "notes": "Current metadata incorrectly includes API-surface B008.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_subprotocols_rejects_invalid_token",
+      "notes": "Current metadata includes unrelated accept-key B006.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_authorization_basic_credentials",
+      "notes": "Authorization Basic behavior has formal API signatures but no public behavior clause.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_authorization_basic_rejects_non_basic_scheme",
+      "notes": "Authorization Basic behavior is absent from public behavioral clauses.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_build_www_authenticate_basic_format",
+      "notes": "WWW-Authenticate behavior has formal API but no public behavior clause.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_handshake_origin_regex_allowlist",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_websockets_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

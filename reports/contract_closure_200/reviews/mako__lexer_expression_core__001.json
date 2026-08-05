@@ -1,0 +1,207 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-mako-001: parsetree TemplateNode/Text/Expression/ControlLine/DefTag classes and observed members are absent",
+        "CC-mako-002: PythonCode declared/undeclared identifier members are absent and PythonFragment input modes are not specified",
+        "CC-mako-003: Lexer.parse return type and nested node collection protocol are undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-mako-001",
+      "resolution": "Declare all evaluator-observed parsetree node types and fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-mako-002",
+      "resolution": "Declare identifier-analysis members for PythonCode and PythonFragment plus accepted fragment forms.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-mako-003",
+      "resolution": "Publish Lexer.parse -> TemplateNode and nested sequence contracts.",
+      "severity": "critical"
+    }
+  ],
+  "notes": "The parser and identifier behaviors are direct, but nearly the entire returned parse-tree data model is omitted.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "mako__lexer_expression_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_text_and_expression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_control_line",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_python_code_undeclared",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_def_tag_parses",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_percent_escape_in_template",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unclosed_tag_raises_syntax",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_python_fragment_for_loop",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_expression_filter_escapes",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_elif_partial_control_identifiers",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_partial_control_raises_compile",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_mako_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

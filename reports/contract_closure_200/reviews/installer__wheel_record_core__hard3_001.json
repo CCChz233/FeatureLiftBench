@@ -1,0 +1,110 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-installer-001: source entrypoints identify parse_wheel_record only; provenance for adapted find_dist_info and script_name behavior is absent"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-installer-001",
+      "resolution": "Record upstream source entrypoints or an explicit adapter derivation for find_dist_info and script_name.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-installer-002",
+      "resolution": "Correct script_name behavior mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "RECORD tuple parsing, unique/multiple dist-info handling, and script derivation are coherent; two adapted endpoints lack source traceability.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "installer__wheel_record_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_parse_wheel_record_row",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_find_dist_info_unique",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_multiple_dist_info_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_script_name_from_entry_point",
+      "notes": "Current B001 RECORD mapping is unrelated.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

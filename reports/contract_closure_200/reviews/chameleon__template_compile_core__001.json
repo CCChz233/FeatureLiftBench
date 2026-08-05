@@ -1,0 +1,130 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py"
+      ],
+      "issues": [
+        "CC-chameleon-001: PageTemplate.render(**context)->str is the behavior endpoint but absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B004",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-chameleon-002: macro define/use is promised, but no evaluator test uses metal macros"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-chameleon-001",
+      "resolution": "Declare PageTemplate.render(**context)->str.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-chameleon-002",
+      "resolution": "Add a deterministic metal:define-macro/use-macro case or remove B004.",
+      "severity": "high"
+    }
+  ],
+  "notes": "TAL/TALES rendering is exercised, but render is undeclared and macro behavior lacks evidence.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "chameleon__template_compile_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_render_tal_content",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_render_python_expression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_tal_repeat_and_condition",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_tal_attributes_replace",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_tal_replace_marker",
+      "notes": "Current metadata incorrectly maps TAL replace to untested macro behavior B004.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-platformdirs-001",
+      "resolution": "Correct Linux/macOS/Windows/no-appname behavior mappings and complete review metadata.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Linux XDG/defaults, macOS defaults/overrides, Windows author/roaming/opinion/version, blank env, base dirs, API, provenance, and isolation are closed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "closed",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "platformdirs__app_dirs_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_linux_defaults_append_app_and_version",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_linux_xdg_overrides_take_precedence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B005",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_windows_author_roaming_and_cache_layout",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_macos_defaults_and_xdg_precedence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_blank_xdg_values_are_ignored",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_windows_appauthor_false_omits_author_segment",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B005",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_windows_cache_opinion_can_be_disabled",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_no_appname_returns_platform_base_dir",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

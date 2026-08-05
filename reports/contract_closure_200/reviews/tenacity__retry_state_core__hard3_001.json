@@ -1,0 +1,193 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-tenacity-001: Retrying instances are called directly but __call__ is undeclared",
+        "CC-tenacity-002: RetryError.last_attempt and outcome/attempt exception/failed plus RetryCallState fields are evaluator-observable but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B005",
+        "public_spec:B006",
+        "public_spec:B007",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-tenacity-003: retry predicate AND composition is promised but only OR behavior is exercised",
+        "CC-tenacity-004: stop_after_delay and stop_before_delay are required/promised but untested",
+        "CC-tenacity-005: wait_none and wait_combine are required/promised but untested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-tenacity-001",
+      "resolution": "Declare Retrying.__call__, RetryError.last_attempt, outcome, and RetryCallState observable fields/methods.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-tenacity-003",
+      "resolution": "Add retry predicate AND composition or narrow B005.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-tenacity-004",
+      "resolution": "Add deterministic delay-boundary cases or remove delay stop endpoints.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-tenacity-005",
+      "resolution": "Add wait_none/combine cases or remove those endpoints.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-tenacity-006",
+      "resolution": "Correct overbroad test mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Exception/result retries, attempts, fixed/chain/exponential waits, callbacks, reraise, OR composition, source, and isolation are broad; state API and three promised strategy families remain open.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "tenacity__retry_state_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B004",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004",
+        "public_spec:B007"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_retry_exception_until_success_without_real_sleep",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_retry_result_predicate",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_retry_error_when_stop_is_reached",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_wait_chain_requires_at_least_one_strategy",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_wait_chain_uses_last_strategy_after_exhaustion",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_before_sleep_observes_retry_state",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_reraise_surfaces_last_exception",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B005",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_strategy_composition_and_exponential_wait",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

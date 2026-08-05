@@ -1,0 +1,198 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-rrule-001: featurelifted.rrule is declared as a module but every direct recurrence test calls it as a constructor",
+        "CC-rrule-002: returned recurrence iteration and rruleset.rrule/exdate mutation methods are evaluator-required but undeclared"
+      ],
+      "verdict": "contradictory"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-rrule-003: B001 promises interval and until behavior without corresponding evaluator cases",
+        "CC-rrule-004: B002 promises RDATE but only RRULE inclusion and EXDATE are tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-rrule-001",
+      "resolution": "Correct rrule to a callable class/function kind and declare recurrence iteration plus rruleset mutation APIs.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-rrule-003",
+      "resolution": "Add interval/until cases or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-rrule-004",
+      "resolution": "Add rdate behavior or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-rrule-005",
+      "resolution": "Correct isolation mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Monthly/weekly/count/BYDAY/BYSETPOS/BYEASTER/rrulestr/EXDATE are broad, but the central endpoint kind and two promised branches are unclosed.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "python_dateutil__rrule_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_monthly_rrule_yields_dates",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_weekly_byweekday_filter",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_count_stops_iteration",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_rrulestr_parses_monthly_rule",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_bysetpos_last_friday",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_byeaster_occurrence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_rruleset_exdate_skips",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_rrulestr_freq_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_rrulestr_byday_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_dateutil_import_surface",
+      "notes": "Current mapping references nonexistent B007; retain as isolation evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / "harness"))
 from featureliftbench.compactness import analyze_submission_footprint
 
 
-RUN_ROOT = ROOT / "experiments/v1_1_control_preflight"
+RUN_ROOT = ROOT / "experiments/validation/v1_1/v1_1_control_preflight"
 OUTPUT = ROOT / "artifacts/research_analysis/v1_1/control_preflight_results.json"
 WORKLOAD_RECORD = ROOT / "artifacts/research_analysis/v1_1/control_workload_record.json"
 

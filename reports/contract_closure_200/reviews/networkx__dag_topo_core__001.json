@@ -1,0 +1,144 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B005",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-networkx-001: B001 promises edge mutation but tests only construct graphs from edge lists",
+        "CC-networkx-002: DAG detection is asserted only for one true DAG; false cycle detection is not checked via is_directed_acyclic_graph"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-networkx-001",
+      "resolution": "Add add_edge/add_edges_from APIs and tests or narrow B001 to construction from edge iterables.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-networkx-002",
+      "resolution": "Assert is_directed_acyclic_graph returns False for a cycle or narrow B005.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-networkx-003",
+      "resolution": "Correct DAG and undirected-error behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Topological order, stable lexical order, generations, and cycle/undirected errors are strong; mutation and negative DAG detection claims are incomplete.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "networkx__dag_topo_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_topological_sort_linear_dag",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_topological_sort_parallel_roots",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_lexicographical_topological_sort_is_stable",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_topological_generations_layers",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_cycle_raises_networkx_unfeasible",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_undirected_graph_raises_networkx_error",
+      "notes": "It does not test graph construction or is_directed_acyclic_graph.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

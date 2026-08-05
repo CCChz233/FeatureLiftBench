@@ -1,0 +1,238 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-msgpack-001: Unpacker.feed/unpack are publicly exercised but absent from required_api",
+        "CC-msgpack-002: ExtraData.unpacked/extra fields and ExtType/Timestamp value/equality protocols are evaluator-observable but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "public_spec:B004",
+        "public_spec:B006",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-msgpack-003: Packer option behavior is promised but no evaluator case constructs Packer",
+        "CC-msgpack-004: 32/64/96-bit timestamp encodings are claimed without coverage of all forms or wire vectors",
+        "CC-msgpack-005: StackError and OutOfData semantics are promised but neither type is declared or tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-msgpack-001",
+      "resolution": "Declare streaming Unpacker methods and observable value/exception fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-msgpack-003",
+      "resolution": "Add Packer option/default/datetime cases or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-msgpack-004",
+      "resolution": "Add independent timestamp wire vectors for all advertised widths or narrow B004.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-msgpack-005",
+      "resolution": "Declare and test StackError/OutOfData or remove them from B006.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-msgpack-006",
+      "resolution": "Correct extensive behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Primitive/container, streaming Unpacker, ExtType, two timestamps, strict keys, hooks, aliases, stream read, and errors are useful; central APIs and advertised options/exceptions remain open.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "msgpack__pack_unpack_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_pack_unpack_none_bool_int",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_pack_unpack_string_and_bytes",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_pack_unpack_list_and_dict",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_packer_unpacker_streaming",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_dumps_loads_aliases",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_timestamp_roundtrip",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_ext_type_roundtrip",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_strict_map_key_allows_int_keys",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_extra_data_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_ext_hook_transforms_extension",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_format_error_on_invalid_bytes",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unpack_stream_reads_filelike",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_msgpack_import_surface",
+      "notes": "Current mapping references nonexistent B008; retain as isolation evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "metadata.json#/public_spec/required_api",
+        "hidden_tests/test_hidden_contract.py::test_parse_wheel_filename"
+      ],
+      "issues": [
+        "CC-wheel-metadata-001: B002 promises distribution, version, build, and tag components, while the declared signature and test require a three-tuple"
+      ],
+      "verdict": "contradictory"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-wheel-metadata-002: split_sections, safe_extra, urlsafe_b64encode, and the custom three-value filename parser are not tied to recorded upstream entrypoints or adapter derivations"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-wheel-metadata-001",
+      "resolution": "Choose and consistently specify either the three-value adapted result or a result that includes wheel tags.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-wheel-metadata-002",
+      "resolution": "Record upstream symbols or an explicit adapter derivation for every exported helper.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-wheel-metadata-003",
+      "resolution": "Add a behavior clause for urlsafe_b64encode and correct the split_sections test mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Normalization helpers are testable, but the headline filename contract is internally contradictory and several adapted endpoints lack provenance.",
+  "oracle_relation": "inferred_adapter",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "wheel__metadata_normalize_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_safe_name_and_extra",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_split_sections_and_b64",
+      "notes": "split_sections partially supports B003; urlsafe_b64encode has no behavior clause and the original B001 mapping is wrong.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_parse_wheel_filename",
+      "notes": "The test enforces the declared three-tuple, contradicting B002's four-component promise.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

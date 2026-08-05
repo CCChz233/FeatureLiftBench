@@ -1,5 +1,7 @@
 # FeatureLiftBench useful focus experiments
 
+> **Documentation status: archived/reference · Indexed: 2026-08-04**
+
 ## Scorecard (alembic + click)
 
 | Arm | alembic | click |

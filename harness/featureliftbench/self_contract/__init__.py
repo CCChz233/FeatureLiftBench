@@ -5,7 +5,7 @@ Phase A — Agent authors contracts/; author-gate (min tests + empty stub must f
 Freeze  — Hash lock contracts/.
 Phase B — Agent implements submission/; verify; optional repair (submission only).
 
-See docs/METHOD_SELF_CONTRACT.md.
+See docs/archive/methods/METHOD_SELF_CONTRACT.md.
 """
 
 from __future__ import annotations

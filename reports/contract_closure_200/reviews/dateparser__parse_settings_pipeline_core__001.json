@@ -1,0 +1,160 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api/featurelifted.Settings",
+        "public_tests/test_public_api.py::test_settings_timezone_aware"
+      ],
+      "issues": [
+        "CC-dateparser-001: visible Settings signature is (**options), while tests pass one positional dict"
+      ],
+      "verdict": "contradictory"
+    },
+    "behavior": {
+      "evidence": [
+        "metadata.json#/public_spec/behaviors/B001-B003",
+        "private_design_card:target_api"
+      ],
+      "issues": [
+        "CC-dateparser-002: None-value TypeError is private-only",
+        "CC-dateparser-003: four behavior mappings are incorrect"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "pinned_upstream_or_adapter_evidence"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-dateparser-001",
+      "resolution": "Declare a positional mapping constructor or change evaluator calls.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-dateparser-002",
+      "resolution": "Publish the None-value TypeError rule or remove the hidden assertion.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-dateparser-003",
+      "resolution": "Correct the behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Composite mixed-oracle task; constructor contradiction blocks a clean experiment condition.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "dateparser__parse_settings_pipeline_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_iso_and_english",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_parse_with_languages",
+      "notes": "Current metadata incorrectly maps this test to B002.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_settings_timezone_aware",
+      "notes": "Behavior is declared, but the positional constructor conflicts with the published signature.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_detect_languages_es_fr",
+      "notes": "Current metadata incorrectly maps this test to B001.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_prefer_dates_from_past",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_date_order_dmy",
+      "notes": "Current metadata incorrectly maps this test to B003.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "private_design_card:target_api/exceptions"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_settings_key",
+      "notes": "TypeError is absent from Agent-visible public_spec.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

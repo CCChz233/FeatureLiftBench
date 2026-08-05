@@ -1,0 +1,183 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-keyring-001: Backend subclass priority/name/get_password protocol and Credential.username/password fields are observable but undeclared",
+        "CC-keyring-002: PasswordDeleteError is required although no delete method or behavior exists"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_spec:B008",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-keyring-003: FailBackend password-operation failure is promised but only its selected type is checked",
+        "CC-keyring-004: delete failure semantics are promised but never exercised"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-keyring-001",
+      "resolution": "Declare Backend subclass selection protocol and Credential result fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-keyring-002",
+      "resolution": "Remove PasswordDeleteError/delete wording or add a declared delete endpoint and oracle cases.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-keyring-003",
+      "resolution": "Call FailBackend operations and assert declared errors or narrow B003.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-keyring-004",
+      "resolution": "Correct per-test behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Selection, env override, chaining order/fallback, set errors, and credential discovery are broad; backend/result protocols and unused delete/fail claims remain open.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "keyring__backend_select_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_select_highest_priority_backend",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B006",
+        "public_spec:B007"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_env_override_selects_named_backend",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_chainer_get_password_uses_first_backend_with_value",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B006",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_negative_priority_is_excluded_and_fail_backend_is_default",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_skips_backend_errors_on_get_password",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_set_password_falls_back_after_failure",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_chainer_set_password_raises_when_all_backends_fail",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_get_credential_can_discover_username",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

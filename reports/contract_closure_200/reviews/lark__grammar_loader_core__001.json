@@ -1,0 +1,111 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-lark-grammar-001: Lark.parse returns ParseTree whose pretty, children, iteration/index, and string conversion are evaluator-observable but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-lark-grammar-002: B003 explicitly promises open_from_package, but no required API entry or evaluator call exists"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-lark-grammar-001",
+      "resolution": "Declare ParseTree and the observable pretty/children/token protocols used by tests.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-lark-grammar-002",
+      "resolution": "Declare and test Lark.open_from_package or narrow B003 to FromPackageLoader import resolution.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Relative/file/package grammar imports, LALR parsing, common grammar resources, and grammar errors are substantial; result object and open_from_package claims are not closed.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "lark__grammar_loader_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_open_relative_import_and_common_import",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_open_from_package_and_import_graph",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_packaged_common_grammar_import",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

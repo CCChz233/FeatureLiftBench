@@ -1,0 +1,131 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-pluggy-wrapper-001: HookCaller.__call__, call_historic, and add_hookwrapper are evaluator-required but absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-pluggy-wrapper-002: wrappers are promised to observe or modify outcomes, but the test only observes enter/inner/exit order and no result mutation"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-pluggy-wrapper-001",
+      "resolution": "Declare HookCaller call, historic replay, and wrapper registration protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-pluggy-wrapper-002",
+      "resolution": "Add wrapper result observation/mutation and firstresult cases or narrow B003.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-pluggy-wrapper-003",
+      "resolution": "Correct historic, wrapper, call_extra, and API mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Historic replay/direct-call rejection, ordering, teardown, call_extra restoration, source, and isolation are useful; three actual endpoints and result mutation are unclosed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "pluggy__hook_wrapper_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_historic_replays_for_late_registration",
+      "notes": "Current B001 concerns call_extra temporary state, not historic replay.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_hookwrapper_runs_teardown",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_tryfirst_trylast_ordering",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_call_extra_restores_state",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_direct_call_on_historic_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

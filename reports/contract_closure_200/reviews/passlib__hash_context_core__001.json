@@ -1,0 +1,114 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_spec:B003",
+        "metadata.json#/public_spec/required_api",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-passlib-001: B003 promises needs_update but no such method is declared or called"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "public_spec:B003",
+        "hidden_tests/test_hidden_behavior.py::test_context_verify_and_update_roundtrip"
+      ],
+      "issues": [
+        "CC-passlib-002: deprecated scheme behavior is promised but untested",
+        "CC-passlib-003: the test named verify_and_update_roundtrip never calls verify_and_update or needs_update; it hashes twice with the same context"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-passlib-004: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-passlib-001",
+      "resolution": "Declare and test needs_update/verify_and_update, or remove B003 update wording.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-passlib-002",
+      "resolution": "Add a deprecated/round-change update case or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-passlib-003",
+      "resolution": "Rename or replace the misleading hidden test with actual update semantics.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-passlib-004",
+      "resolution": "Record immutable passlib source closure.",
+      "severity": "high"
+    }
+  ],
+  "notes": "PBKDF2 hash/verify, rounds, and identify are tested; update/deprecation claims are currently unsupported.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "passlib__hash_context_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_hash_and_verify_pbkdf2",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_context_hash_includes_rounds",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_context_verify_and_update_roundtrip",
+      "notes": "It establishes only repeated hash/verify, not update/deprecation semantics.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

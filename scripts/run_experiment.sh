@@ -56,7 +56,7 @@ Agent / eval:
   --no-progress
 
 Output:
-  --output REL_OR_ABS          Suite output dir (default under experiments/ablation/...)
+  --output REL_OR_ABS          Suite output dir (default under experiments/methods/ablation/...)
   --run-id NAME                Used when --output omitted
   --resume DIR                 Resume an existing suite dir
 
@@ -373,7 +373,7 @@ PY
 }
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
-BASE_OUT_ROOT="experiments/ablation"
+BASE_OUT_ROOT="experiments/methods/ablation"
 
 if [[ -n "${COMPARE_ARMS}" ]]; then
   IFS=',' read -r -a ARMS <<<"${COMPARE_ARMS}"

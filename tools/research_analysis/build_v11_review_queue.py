@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TASKS = ROOT / "benchmark/tasks"
 SUBSET_PATH = ROOT / "artifacts/research_analysis/v1_1/diagnostic_subset_manifest.json"
 TAXONOMY_PATH = ROOT / "artifacts/research_analysis/python150_task_taxonomy.csv"
-QUARANTINE_PATH = ROOT / "experiments/v1_1_oracle_validation/536c2beec549fdc8/quarantine_manifest.json"
+QUARANTINE_PATH = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation/536c2beec549fdc8/quarantine_manifest.json"
 OUTPUT = ROOT / "artifacts/research_analysis/v1_1/review_queue.csv"
 
 

@@ -1,0 +1,111 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-decorator-001: B003 promises module and annotations preservation, but evaluator assertions cover name, doc, signature, and wrapped only"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [
+        "CC-decorator-002: oracle source_files contains symbol names rather than immutable repository file paths"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-decorator-001",
+      "resolution": "Assert module and annotations preservation or narrow B003.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-decorator-002",
+      "resolution": "Replace symbol-like oracle source entries with repository file paths and hashes.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-decorator-003",
+      "resolution": "Correct per-test behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Call order, signature enforcement, metadata basics, async identity, and isolation are coherent; two metadata claims and provenance need closure.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "decorator__signature_preserving_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_metadata_signature_and_call_order",
+      "notes": "The synchronous case does not exercise async B004.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_calls_follow_original_signature",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_async_caller_and_wrapped",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

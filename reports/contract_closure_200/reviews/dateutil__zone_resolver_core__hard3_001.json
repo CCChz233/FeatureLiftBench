@@ -1,0 +1,119 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-zone-001: TZZone and its name attribute are observable return API but are not declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B003",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-zone-002: valid tzfile metadata extraction is promised but only invalid-header rejection is tested",
+        "CC-zone-003: missing-name UnknownZoneError is promised but only alias-cycle failure is tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-zone-001",
+      "resolution": "Declare TZZone and its observable name identity contract.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-zone-002",
+      "resolution": "Add a minimal valid TZif metadata oracle case or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-zone-003",
+      "resolution": "Add missing-name failure coverage or narrow B003.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Caching, alias identity, cycle failure, and invalid header are useful; return API and two promised branches are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "dateutil__zone_resolver_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_load_zone_caches",
+      "notes": "Current B002 alias mapping is unrelated to canonical load/cache.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_alias_resolution",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_circular_alias_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_tzfile_header",
+      "notes": "Current B002 alias mapping is unrelated.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

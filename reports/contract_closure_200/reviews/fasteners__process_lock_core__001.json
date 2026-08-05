@@ -1,0 +1,128 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py"
+      ],
+      "issues": [
+        "CC-fasteners-001: InterProcessLock constructor path signature is absent",
+        "CC-fasteners-002: context-manager protocol methods are behaviorally named but absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-fasteners-001",
+      "resolution": "Publish InterProcessLock(path) constructor signature.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-fasteners-002",
+      "resolution": "Declare the context-manager protocol members required by B002.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Direct oracle behavior is clear, but the callable and protocol surface is not fully specified.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "fasteners__process_lock_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_acquire_release",
+      "notes": "Acquire/release is explicit, but the required constructor signature is missing.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_context_manager",
+      "notes": "Context behavior is explicit, but __enter__/__exit__ and constructor surface are not declared.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_reacquire_after_release",
+      "notes": "Behavior is explicit; constructor surface is incomplete.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_nonblocking_acquire_free_lock",
+      "notes": "Current metadata incorrectly maps this test to B002; constructor surface is incomplete.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

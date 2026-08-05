@@ -1,0 +1,239 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-email-001: validate_email is declared as a module but every evaluator case calls it as a function",
+        "CC-email-002: ValidatedEmail observable fields and validate_email keyword options are absent from required_api"
+      ],
+      "verdict": "contradictory"
+    },
+    "behavior": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_spec:B005",
+        "public_spec:B006"
+      ],
+      "issues": [
+        "CC-email-003: EmailUndeliverableError is required although deliverability is explicitly excluded and has no behavior case",
+        "CC-email-004: several tests are mapped to unrelated clauses, obscuring display-name, test-environment, domain-literal, and NFC coverage"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-email-001",
+      "resolution": "Correct validate_email to function kind with the supported call signature.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-email-002",
+      "resolution": "Declare all observable ValidatedEmail fields and option-controlled result semantics.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-email-003",
+      "resolution": "Remove EmailUndeliverableError from the offline contract or add a scoped deliverability contract.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-email-004",
+      "resolution": "Correct behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "The behavioral cases are broad and useful, but the primary entrypoint kind is formally wrong and its result object is undeclared.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "email_validator__validate_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_validate_basic_ascii_email",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_validate_plus_addressing",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_invalid_missing_at_sign",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_invalid_empty_local_part",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_idna_domain_normalization",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_quoted_local_part_dequoted",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_display_name_parsing",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_postmaster_case_insensitive",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_reserved_domain_rejected",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_test_environment_allows_dot_test",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_unicode_nfc_local_part",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_smtputf8_local_part",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_domain_literal_ipv4",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_email_validator_import_surface",
+      "notes": "Current mapping references nonexistent B010; retain as isolation evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    }
+  ]
+}

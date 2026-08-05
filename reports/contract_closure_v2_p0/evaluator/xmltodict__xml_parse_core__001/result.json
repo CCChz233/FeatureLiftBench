@@ -1,0 +1,178 @@
+{
+  "build": {
+    "duration_seconds": 0.194751,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": true,
+  "compactness": {
+    "closure_gold_file_completeness": "unresolved",
+    "compactness_class": "copy_heavy_pass",
+    "copied_file_count": 4,
+    "copied_fraction": 0.962898,
+    "copied_loc": 545,
+    "copy_detection": {
+      "evidence": {
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/xmltodict__xml_parse_core__001/featurelifted/parse.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo/tests/test_xmltodict.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo/xmltodict.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/xmltodict__xml_parse_core__001/featurelifted/sax_handler.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo/xmltodict.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/xmltodict__xml_parse_core__001/featurelifted/unparse.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo/xmltodict.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/xmltodict__xml_parse_core__001/featurelifted/validation.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo/xmltodict.py"
+        ]
+      },
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-utmcmosd/repo"
+    },
+    "excess_copied_loc": null,
+    "external_dependencies": [],
+    "external_dependency_count": 0,
+    "extraction_ratio_to_reference": 1.0,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": 12,
+    "reference_loc": 566,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "archive_sha256": "4fee31532babd7dbdbab70a2bd7c3a60b4557ee3bf92daaed7530465d5672d4d",
+      "policy_id": "featureliftbench.full_repository_source.v2",
+      "requested_revision": "966b903e4441f27816cd39ecf3305727b294a9c5",
+      "resolved_commit": "966b903e4441f27816cd39ecf3305727b294a9c5",
+      "snapshot_scope": "full_tracked_tree",
+      "source_digest": "03b1d5c51433b4fe3fba3273e568197447b0159539eb9a9c9814d45eba94d563",
+      "source_repo_id": "github__martinblech__xmltodict",
+      "source_snapshot_id": "github__martinblech__xmltodict__a3d8ab67d4af",
+      "status": "ready"
+    },
+    "status": "ok",
+    "submitted_file_count": 12,
+    "submitted_loc": 566,
+    "unapproved_external_dependencies": [],
+    "unapproved_external_dependency_count": 0
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "dependency lock is empty",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-ya8kowdh/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-ya8kowdh/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-ya8kowdh/.venv"
+  },
+  "errors": [],
+  "eval_tooling": {
+    "duration_seconds": 0.351537,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 5.114941,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": true,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": true,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": true,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/xmltodict__xml_parse_core__001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 12,
+    "loc": 566,
+    "package_bytes": 50886,
+    "reference_loc": 566,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 4.965966,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": true,
+  "scores": {
+    "compactness_score": 1.0,
+    "extraction_ratio": 1.0,
+    "final_score": 1.0,
+    "functional_gate": 1.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "passed",
+  "submission": "xmltodict__xml_parse_core__001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "xmltodict__xml_parse_core__001",
+  "test_pass": true
+}

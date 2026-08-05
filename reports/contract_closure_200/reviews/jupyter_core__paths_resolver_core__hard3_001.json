@@ -1,0 +1,148 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [
+        "CC-jupyter-paths-001: oracle source_files points only to the materialized reference solution, not immutable upstream jupyter_core source or a derivation record"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-jupyter-paths-001",
+      "resolution": "Record pinned upstream source paths/hashes and the adapter derivation; do not use the reference solution as its own sole oracle source.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jupyter-paths-002",
+      "resolution": "Correct per-test behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Cross-platform defaults, env overrides/order, prefer-env, no-config, subdirs, and API are well covered; independent oracle provenance is missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_config_env_path_precedes_user_path",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_data_path_adds_requested_subdir",
+      "notes": "This tests explicit JUPYTER_PATH ordering and Linux defaults, not env/user preference B005.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_data_dir_platform_defaults",
+      "notes": "No explicit JUPYTER_DATA_DIR override is present, so B002 is unrelated.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_hidden_runtime_dir_env_override_and_xdg_fallback",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_hidden_prefer_environment_over_user_changes_order",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_hidden_no_config_uses_clean_config_dir_only",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_hidden_windows_path_separator_and_programdata_default",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

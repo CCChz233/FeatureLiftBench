@@ -104,8 +104,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--csv", type=Path, default=root / "artifacts/research_analysis/trajectory_records.csv")
     parser.add_argument("--statistics", type=Path, default=root / "artifacts/research_analysis/trajectory_statistics.json")
-    parser.add_argument("--findings", type=Path, default=root / "docs/research_analysis/TRAJECTORY_FINDINGS.md")
-    parser.add_argument("--hypotheses", type=Path, default=root / "docs/research_analysis/MECHANISM_HYPOTHESES.md")
+    parser.add_argument("--findings", type=Path, default=root / "docs/reference/research_analysis/TRAJECTORY_FINDINGS.md")
+    parser.add_argument("--hypotheses", type=Path, default=root / "docs/reference/research_analysis/MECHANISM_HYPOTHESES.md")
     return parser.parse_args()
 
 

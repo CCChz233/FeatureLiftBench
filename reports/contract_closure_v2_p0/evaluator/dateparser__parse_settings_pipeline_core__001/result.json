@@ -1,0 +1,170 @@
+{
+  "build": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": false,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": null,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": false,
+  "compactness": {
+    "closure_gold_file_completeness": "unresolved",
+    "compactness_class": "non_functional",
+    "copied_file_count": 0,
+    "copied_fraction": 0.0,
+    "copied_loc": 0,
+    "copy_detection": {
+      "evidence": {},
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_tasks/dateparser__parse_settings_pipeline_core__001/repo"
+    },
+    "excess_copied_loc": null,
+    "external_dependencies": [
+      "convertdate",
+      "dateutil",
+      "hijridate",
+      "langdetect",
+      "pytz",
+      "regex",
+      "tzlocal"
+    ],
+    "external_dependency_count": 7,
+    "extraction_ratio_to_reference": null,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": null,
+    "reference_loc": null,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "snapshot_scope": "task_local"
+    },
+    "status": "ok",
+    "submitted_file_count": 715,
+    "submitted_loc": 52718,
+    "unapproved_external_dependencies": [
+      "convertdate",
+      "dateutil",
+      "hijridate",
+      "langdetect"
+    ],
+    "unapproved_external_dependency_count": 4
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": false,
+    "reason": "dependency install failed: WARNING: The directory '/Users/chz/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.\nERROR: Could not find a version that satisfies the requirement regex==2024.11.6 (from versions: none)\nERROR: No matching distribution found for regex==2024.11.6",
+    "resource_limited": false,
+    "returncode": 1,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-h6pbjxxt/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-h6pbjxxt/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-h6pbjxxt/.venv"
+  },
+  "errors": [
+    "dependency installation failed"
+  ],
+  "eval_tooling": {
+    "duration_seconds": 0.251721,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": false,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": null,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": false,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": false,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": false,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": false,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/dateparser__parse_settings_pipeline_core__001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 715,
+    "loc": 52718,
+    "package_bytes": 2940422,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": false,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": null,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": false,
+  "scores": {
+    "compactness_score": 0.0,
+    "extraction_ratio": 1.0,
+    "final_score": 0.0,
+    "functional_gate": 0.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "failed",
+  "submission": "dateparser__parse_settings_pipeline_core__001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "dateparser__parse_settings_pipeline_core__001",
+  "test_pass": false
+}

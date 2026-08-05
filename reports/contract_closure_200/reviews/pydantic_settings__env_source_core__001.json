@@ -1,0 +1,136 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-pydantic-settings-001: SettingsConfigDict's supported config keys and BaseSettings subclass field/value protocol are not formally declared",
+        "CC-pydantic-settings-002: SettingsError is required but has no behavior or evaluator case"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "metadata.json#/environment"
+      ],
+      "issues": [
+        "CC-pydantic-settings-003: no oracle source files are recorded and runtime dependencies are empty despite direct reliance on allowed pydantic packages"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-pydantic-settings-001",
+      "resolution": "Declare supported SettingsConfigDict keys and BaseSettings subclass field parsing/attribute protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-pydantic-settings-002",
+      "resolution": "Remove SettingsError from scope or add a deterministic settings-source failure case.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-pydantic-settings-003",
+      "resolution": "Record immutable pydantic-settings source closure and reconcile runtime dependency provenance.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-pydantic-settings-004",
+      "resolution": "Correct JSON and parse-none behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Prefix, nested delimiter, JSON, case sensitivity, empty ignore, and None parsing are coherent; config/model API and provenance remain open.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "pydantic_settings__env_source_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_env_prefix_and_nested",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_json_list_env",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_case_sensitive_env",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_ignore_empty_env",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_none_str",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

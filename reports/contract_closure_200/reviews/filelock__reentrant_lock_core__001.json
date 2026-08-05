@@ -1,0 +1,132 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-filelock-001: context-manager __enter__/__exit__ and lock_counter are evaluator-required but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_tests/test_public_contract.py"
+      ],
+      "issues": [
+        "CC-filelock-002: timeout behavior is promised but only timeout=0 nonblocking contention is exercised"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [
+        "CC-filelock-003: oracle source_files contains symbol names rather than repository file paths"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-filelock-001",
+      "resolution": "Declare context-manager and lock_counter observable protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-filelock-002",
+      "resolution": "Add bounded positive-timeout behavior or narrow B003 to nonblocking contention.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-filelock-003",
+      "resolution": "Replace symbol-like source entries with immutable file paths and hashes.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-filelock-004",
+      "resolution": "Correct overbroad per-test behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Reentrancy, contention, forced/idempotent release, cleanup, and sequential acquisition are tested; formal object and provenance closure are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "filelock__reentrant_lock_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_context_and_reentrant_release",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_nonblocking_contention",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_force_release_and_idempotence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_two_instances_can_acquire_sequentially",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    }
+  ]
+}

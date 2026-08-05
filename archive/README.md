@@ -1,5 +1,7 @@
 # archive/
 
+> **Documentation status: archived/reference · Indexed: 2026-08-04**
+
 历史运行、旧 agent workspace、日志和传输副本；**不是**当前 benchmark、
 文档或实验入口。
 

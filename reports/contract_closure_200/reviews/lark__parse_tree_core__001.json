@@ -1,0 +1,136 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_parse_public.py",
+        "hidden_tests/test_parse_hidden.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-lark-tree-001: Tree.data, Tree.children, Tree.pretty and Token string/value behavior are central evaluator APIs but are not declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B004",
+        "public_tests/test_parse_public.py",
+        "hidden_tests/test_parse_hidden.py"
+      ],
+      "issues": [
+        "CC-lark-tree-002: structured errors with line/column are promised, but tests assert only exception type"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-lark-tree-003: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-lark-tree-001",
+      "resolution": "Declare Tree data/children/pretty and observable Token protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-lark-tree-002",
+      "resolution": "Assert line and column fields for token and character failures or narrow B004.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-lark-tree-003",
+      "resolution": "Record immutable Lark source closure.",
+      "severity": "high"
+    }
+  ],
+  "notes": "LALR trees, precedence, terminals/imports, and typed parse failures are exercised; result-object API, error context, and provenance remain open.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "lark__parse_tree_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_parse_public.py::test_parse_builds_tree_with_precedence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_parse_public.py::test_parse_error_reports_unexpected_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_parse_hidden.py::test_nested_lists_and_tokens",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_parse_hidden.py::test_unexpected_characters_on_garbage_input",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_parse_hidden.py::test_named_terminal_and_pretty_output",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

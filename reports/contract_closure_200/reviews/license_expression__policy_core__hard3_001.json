@@ -1,0 +1,180 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-license-001: Licensing.parse returns Node and tests call Node.render, but Node/render are undeclared",
+        "CC-license-002: ExpressionInfo normalized_expression/invalid_symbols/errors and evaluate_policy result dictionary fields are observable but not formally declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-license-001",
+      "resolution": "Declare Node.render and the parsed expression result protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-license-002",
+      "resolution": "Declare ExpressionInfo fields and the evaluate_policy dictionary schema.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-license-003",
+      "resolution": "Replace the current largely incorrect behavior-to-test mapping table.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Operator precedence, parentheses, WITH typing, aliases, validation, policy allow/deny, and errors are well covered; returned object schemas are missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "license_expression__policy_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_alias_normalization_and_precedence_rendering",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_with_exception_normalizes_aliases",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_policy_allows_known_allowed_symbols",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_parentheses_override_precedence",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_plain_symbol_cannot_be_used_as_with_exception",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_exception_symbol_cannot_be_used_as_plain_license",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_validate_reports_unknown_symbol_without_normalized_expression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_policy_denies_denied_symbol_even_inside_with_expression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_unbalanced_parentheses_raise_parse_error",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B010"
+      ],
+      "evidence_basis": [
+        "public_spec:B010"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

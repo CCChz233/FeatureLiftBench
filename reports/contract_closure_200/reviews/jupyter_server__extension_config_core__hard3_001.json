@@ -1,0 +1,127 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-jupyter-ext-001: ExtensionConfigStore.enable is publicly exercised but absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-jupyter-ext-002: write-and-reload behavior is promised, but tests query the same store and do not instantiate a second store or inspect persisted state",
+        "CC-jupyter-ext-003: recursive deletion by None is evaluator-required but not explicit in B001"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-jupyter-ext-001",
+      "resolution": "Declare ExtensionConfigStore.enable and strengthen the API-surface test.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-jupyter-ext-002",
+      "resolution": "Add a fresh-store persistence/reload oracle case or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jupyter-ext-003",
+      "resolution": "Specify recursive None deletion/pruning semantics.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jupyter-ext-004",
+      "resolution": "Correct filter behavior mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Merge precedence, enable/disable state, filtering, and pruning are useful; one public method and persistence/deletion contract details are missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "jupyter_server__extension_config_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_recursive_update_and_enable",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_config_precedence_and_disable",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_filter_enabled_extensions_masks_disabled",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_recursive_update_prunes_empty_nested_dicts",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    }
+  ]
+}

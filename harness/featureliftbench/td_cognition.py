@@ -3,7 +3,7 @@
 Phase 1 — Agent produces COGNITION.md + executable probes/ (no submission required).
 Phase 2 — Same workspace keeps those artifacts; prompt injects them; Agent implements submission/.
 
-See docs/METHOD_TEST_DRIVEN_COGNITION.md and docs/EXPERIMENT_ARMS.md.
+See docs/archive/methods/METHOD_TEST_DRIVEN_COGNITION.md and docs/EVALUATION.md.
 """
 
 from __future__ import annotations

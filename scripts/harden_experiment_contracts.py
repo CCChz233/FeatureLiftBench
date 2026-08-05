@@ -87,17 +87,17 @@ def _flatten_api(entries: Any) -> list[dict[str, Any]]:
 
 
 def _oracle_dir(task_dir: Path) -> Path:
-    return (
-        ROOT
-        / "benchmark"
-        / "submissions"
-        / task_dir.name
-        / "oracle"
+    candidates = (
+        ROOT / "benchmark" / "submissions" / task_dir.name / "oracle",
+        ROOT / "benchmark" / "staging" / task_dir.name / "reference_solution",
+        ROOT / "benchmark" / "external50" / task_dir.name / "reference_solution",
     )
+    return next((path for path in candidates if path.is_dir()), candidates[0])
 
 
 def _stable_signature(value: str) -> str:
     value = re.sub(r" at 0x[0-9A-Fa-f]+", "", value)
+    value = re.sub(r"<module '([^']+)' from '[^']+'>", r"<module '\1'>", value)
     value = re.sub(r"\bfeaturelifted(?:\.[A-Za-z_][A-Za-z0-9_]*)*\.", "", value)
     return value
 
@@ -121,17 +121,24 @@ for path in json.loads(__import__("os").environ["FLB_API_PATHS"]):
     parts = suffix.split(".")
     try:
         value = featurelifted
-        consumed = 0
         runtime_bound = False
-        for index in range(len(parts), 0, -1):
-            module_name = "featurelifted." + ".".join(parts[:index])
-            try:
-                value = importlib.import_module(module_name)
-                consumed = index
-                break
-            except ModuleNotFoundError as exc:
-                if not isinstance(exc.name, str) or not module_name.startswith(exc.name):
-                    raise
+        consumed = 0
+        try:
+            for part in parts:
+                value = getattr(value, part)
+            consumed = len(parts)
+        except AttributeError:
+            value = featurelifted
+        if consumed != len(parts):
+            for index in range(len(parts), 0, -1):
+                module_name = "featurelifted." + ".".join(parts[:index])
+                try:
+                    value = importlib.import_module(module_name)
+                    consumed = index
+                    break
+                except ModuleNotFoundError as exc:
+                    if not isinstance(exc.name, str) or not module_name.startswith(exc.name):
+                        raise
         remaining = parts[consumed:]
         for offset, part in enumerate(remaining):
             try:
@@ -143,6 +150,10 @@ for path in json.loads(__import__("os").environ["FLB_API_PATHS"]):
                 else:
                     raise
         is_exception = isinstance(value, type) and issubclass(value, BaseException)
+        is_class = isinstance(value, type) and not is_exception
+        is_module = inspect.ismodule(value)
+        is_callable = callable(value)
+        is_function = inspect.isfunction(value) or inspect.ismethod(value) or inspect.isbuiltin(value)
         try:
             signature = str(inspect.signature(value))
         except (TypeError, ValueError):
@@ -153,6 +164,10 @@ for path in json.loads(__import__("os").environ["FLB_API_PATHS"]):
         result[path] = {
             "signature": signature,
             "is_exception": is_exception,
+            "is_class": is_class,
+            "is_module": is_module,
+            "is_callable": is_callable,
+            "is_function": is_function,
             "runtime_bound": runtime_bound,
         }
     except Exception as exc:
@@ -184,12 +199,24 @@ print(json.dumps(result, sort_keys=True))
         return {}, f"oracle introspection returned invalid JSON: {exc}"
     signatures: dict[str, str] = {}
     exceptions: set[str] = set()
+    classes: set[str] = set()
+    modules: set[str] = set()
+    callables: set[str] = set()
+    functions: set[str] = set()
     runtime_bound: set[str] = set()
     for path, value in payload.items():
         if not isinstance(value, dict):
             continue
         if value.get("is_exception") is True:
             exceptions.add(path)
+        if value.get("is_class") is True:
+            classes.add(path)
+        if value.get("is_module") is True:
+            modules.add(path)
+        if value.get("is_callable") is True:
+            callables.add(path)
+        if value.get("is_function") is True:
+            functions.add(path)
         if value.get("runtime_bound") is True:
             runtime_bound.add(path)
         signature = value.get("signature")
@@ -198,6 +225,10 @@ print(json.dumps(result, sort_keys=True))
     return {
         "signatures": signatures,
         "exceptions": sorted(exceptions),
+        "classes": sorted(classes),
+        "modules": sorted(modules),
+        "callables": sorted(callables),
+        "functions": sorted(functions),
         "runtime_bound": sorted(runtime_bound),
     }, None
 
@@ -281,6 +312,8 @@ def _return_class_path(
 def _hidden_member_usage(
     task_dir: Path,
     required_api: list[dict[str, Any]],
+    *,
+    include_public: bool = False,
 ) -> dict[str, dict[str, Any]]:
     entries = _entry_by_path(required_api)
     class_paths = {
@@ -297,7 +330,16 @@ def _hidden_member_usage(
     }
     usage: dict[str, dict[str, Any]] = {}
 
-    for path in sorted((task_dir / "hidden_tests").rglob("*.py")):
+    roots = [task_dir / "hidden_tests"]
+    if include_public:
+        roots.insert(0, task_dir / "public_tests")
+    paths = sorted(
+        path
+        for root in roots
+        if root.is_dir()
+        for path in root.rglob("*.py")
+    )
+    for path in paths:
         if path.name == "test_required_api_surface.py":
             continue
         source = path.read_text(encoding="utf-8")
@@ -401,6 +443,10 @@ def _hidden_member_usage(
                     imported_path = imported.get(node.value.id)
                     if imported_path in class_paths:
                         owner = imported_path
+                elif isinstance(node.value, ast.Call):
+                    constructed = _expression_path(node.value.func, imported)
+                    if constructed in class_paths:
+                        owner = constructed
                 if owner not in class_paths:
                     continue
                 member_path = f"{owner}.{node.attr}"

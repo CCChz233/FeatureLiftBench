@@ -1,0 +1,128 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-fs-opener-001: InvalidPathError is evaluator-required through dynamic import but absent from required_api",
+        "CC-fs-opener-002: register is used as a decorator and its return/callback protocol is not declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-fs-opener-003: invalid URL ParseError behavior is promised but no malformed URL test exists",
+        "CC-fs-opener-004: normalize_fs_path control-character rejection has no explicit behavior clause"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-fs-opener-001",
+      "resolution": "Declare InvalidPathError and register's decorator/callback return protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-fs-opener-003",
+      "resolution": "Add malformed URL ParseError coverage or narrow B003.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-fs-opener-004",
+      "resolution": "Add an observable path-normalization/error clause.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-fs-opener-005",
+      "resolution": "Correct behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Parsing, opener registration/opening, default protocol, and unknown protocol are exercised; one hidden exception and malformed/path contracts are missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "fs__url_opener_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_parse_fs_url_and_open",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_default_protocol_injection",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_unknown_protocol_raises",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_path_control_characters",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    }
+  ]
+}

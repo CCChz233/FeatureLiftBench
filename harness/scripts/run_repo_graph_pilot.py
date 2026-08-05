@@ -41,7 +41,7 @@ def main() -> int:
         args.output.resolve()
         if args.output is not None
         else ROOT
-        / "experiments/rsg_pilot/openhands/deepseek-v4-flash"
+        / "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash"
         / experiment_id
     )
     experiment_dir.mkdir(parents=True, exist_ok=True)

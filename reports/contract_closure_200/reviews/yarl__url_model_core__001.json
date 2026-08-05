@@ -1,0 +1,263 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_url_public.py",
+        "hidden_tests/test_url_hidden.py"
+      ],
+      "issues": [
+        "CC-yarl-url-001: URL is declared as a constant but tests require a callable class-like constructor",
+        "CC-yarl-url-002: all URL properties and methods plus returned query protocols are evaluator-required but undeclared"
+      ],
+      "verdict": "contradictory"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "public_spec:B005",
+        "public_tests/test_url_public.py",
+        "hidden_tests/test_url_hidden.py"
+      ],
+      "issues": [
+        "CC-yarl-url-003: join fragment rules are promised but no fragment join case exists",
+        "CC-yarl-url-004: IDNA encoding and decoding are promised but only decoding of a punycode input is exercised",
+        "CC-yarl-url-005: with_query is incorrectly mapped to join B002 and omits helper behavior B006"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-yarl-url-001",
+      "resolution": "Declare URL as a class/callable with constructor, properties, join, with_query, update_query, joinpath, human_repr, and string protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-yarl-url-002",
+      "resolution": "Declare the returned query mapping and MultiDict-like getall/items protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-yarl-url-003",
+      "resolution": "Add fragment-sensitive join cases or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-yarl-url-004",
+      "resolution": "Add Unicode-host construction and encoded string assertions or narrow B005.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-yarl-url-005",
+      "resolution": "Correct helper and isolation behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "URL behavior cases and pinned source closure are substantial, but the central URL and query APIs contradict or exceed the declared surface, with two advertised edge behaviors untested.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "yarl__url_model_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_url_public.py::test_basic_parse_components",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_url_public.py::test_join_absolute_path",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_url_public.py::test_with_query_kwargs",
+      "notes": "Corrected mapping; test still depends on URL constructor/properties/methods absent from the declared API.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_url_public.py::test_joinpath_appends_segments",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Non-None checks do not establish URL's required callable kind or its runtime protocol.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_duplicate_query_keys_multidict",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_semicolon_in_query_value_not_separator",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_idna_unicode_host_decoded",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_join_relative_parent_path",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_joinpath_normalizes_dot_segments",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_default_http_port_omitted_from_str",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_query_no_double_unquote",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_update_query_with_multidict",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_join_preserves_base_query_when_relative_has_query_only",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_no_yarl_import_surface",
+      "notes": "Valid isolation evidence; original B008 mapping is stale because the contract defines only B001-B007.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_url_hidden.py::test_join_rejects_non_url_type",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    }
+  ]
+}

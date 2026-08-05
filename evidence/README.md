@@ -1,5 +1,7 @@
 # evidence/
 
+> **Documentation status: reference · Last verified: 2026-08-04**
+
 历史出题 gate 证据（oracle / naive / copy_all / Flash 校准），不是 v2
 Agent 主榜跑分。
 

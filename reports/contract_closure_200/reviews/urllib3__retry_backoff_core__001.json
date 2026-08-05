@@ -1,0 +1,223 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_retry_public.py",
+        "hidden_tests/test_retry_hidden.py"
+      ],
+      "issues": [
+        "CC-urllib3-retry-001: Retry.from_int and total are undeclared",
+        "CC-urllib3-retry-002: MaxRetryError.reason, ResponseError.SPECIFIC_ERROR, and RequestHistory field members are incomplete"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B005",
+        "hidden_tests/test_retry_hidden.py::test_parse_retry_after_numeric_and_invalid"
+      ],
+      "issues": [
+        "CC-urllib3-retry-003: HTTP-date Retry-After parsing is promised but only numeric and invalid values are tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-urllib3-retry-001",
+      "resolution": "Declare Retry.from_int(retries, redirect=True, default=None)->Retry and total.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-urllib3-retry-002",
+      "resolution": "Declare observed error/history record members and SPECIFIC_ERROR constant.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-urllib3-retry-003",
+      "resolution": "Add a fixed-now HTTP-date Retry-After test or narrow B005.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Retry counters/backoff are well covered, but coercion/error fields and one promised date form remain open.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "urllib3__retry_backoff_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_retry_public.py::test_retry_defaults_and_from_int",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_retry_public.py::test_is_retry_status_forcelist",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_retry_public.py::test_backoff_progression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_retry_public.py::test_connect_timeout_increment",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_total_wins_over_connect",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_allowed_methods_and_status_forcelist_and",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_backoff_resets_after_redirect",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_parse_retry_after_numeric_and_invalid",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_history_accumulates",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_read_timeout_requires_allowed_method",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_remove_headers_on_redirect_lowercased",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_status_increment_raises_specific_error",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_retry_hidden.py::test_no_urllib3_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

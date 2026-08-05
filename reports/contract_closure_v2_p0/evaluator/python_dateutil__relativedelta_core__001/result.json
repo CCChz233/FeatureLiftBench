@@ -1,0 +1,175 @@
+{
+  "build": {
+    "duration_seconds": 0.041106,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": true,
+  "compactness": {
+    "closure_gold_file_completeness": "unresolved",
+    "compactness_class": "copy_heavy_pass",
+    "copied_file_count": 2,
+    "copied_fraction": 0.960993,
+    "copied_loc": 542,
+    "copy_detection": {
+      "evidence": {
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/python_dateutil__relativedelta_core__001/featurelifted/_common.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/_common.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/relativedelta.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/tz/_common.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/tz/tz.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/python_dateutil__relativedelta_core__001/featurelifted/relativedelta.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/_common.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo/src/dateutil/relativedelta.py"
+        ]
+      },
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-03suc5ir/repo"
+    },
+    "excess_copied_loc": null,
+    "external_dependencies": [],
+    "external_dependency_count": 0,
+    "extraction_ratio_to_reference": 1.0,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": 3,
+    "reference_loc": 564,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "archive_sha256": "33e1808c841959774aeb28eff4602ad3e143ebf9ea0f3ab960018830e7e8666e",
+      "policy_id": "featureliftbench.full_repository_source.v2",
+      "requested_revision": "1ae807774053c071acc9e7d3d27778fba0a7773e",
+      "resolved_commit": "1ae807774053c071acc9e7d3d27778fba0a7773e",
+      "snapshot_scope": "full_tracked_tree",
+      "source_digest": "045a886f5ecd31fa0de5002428f3bbdc99108330beee26f20961915691ef62e4",
+      "source_repo_id": "github__dateutil__dateutil",
+      "source_snapshot_id": "github__dateutil__dateutil__8f9462716028",
+      "status": "ready"
+    },
+    "status": "ok",
+    "submitted_file_count": 6,
+    "submitted_loc": 564,
+    "unapproved_external_dependencies": [],
+    "unapproved_external_dependency_count": 0
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "dependency lock is empty",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-nk2yb81a/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-nk2yb81a/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-nk2yb81a/.venv"
+  },
+  "errors": [],
+  "eval_tooling": {
+    "duration_seconds": 0.374176,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 3.877023,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": true,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": true,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": true,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/python_dateutil__relativedelta_core__001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 6,
+    "loc": 564,
+    "package_bytes": 57016,
+    "reference_loc": 564,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 3.846215,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": true,
+  "scores": {
+    "compactness_score": 1.0,
+    "extraction_ratio": 1.0,
+    "final_score": 1.0,
+    "functional_gate": 1.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "passed",
+  "submission": "python_dateutil__relativedelta_core__001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "python_dateutil__relativedelta_core__001",
+  "test_pass": true
+}

@@ -48,8 +48,10 @@ def compatible(tags: object, python_version: str) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--python-version", default="311", choices=("311", "312"))
+    parser.add_argument("--suite", type=Path, default=SUITE_PATH)
     args = parser.parse_args()
-    suite = json.loads(SUITE_PATH.read_text(encoding="utf-8"))
+    suite_path = args.suite if args.suite.is_absolute() else ROOT / args.suite
+    suite = json.loads(suite_path.read_text(encoding="utf-8"))
     task_root = ROOT / suite["task_root"]
     wheels = []
     for path in WHEEL_ROOT.glob("*.whl"):

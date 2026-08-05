@@ -1,0 +1,106 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-faker-001: Faker.name() is a primary public-test endpoint but is absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-faker-002: localized provider-module/resource resolution is an internal mechanism claim not directly observed by evaluator cases"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-faker-001",
+      "resolution": "Declare Faker.name() and strengthen the required API surface test for all provider methods.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-faker-002",
+      "resolution": "Rewrite B003 as an observable locale/provider behavior or add direct locale-resolution cases.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Seeded en_US generation is useful and source closure is detailed; one exercised endpoint and one internal behavior claim are not closed.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "faker__provider_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_en_us_person_address_and_phone_are_seeded",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_only_en_us_locale_and_provider_formats",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_address_contains_city_state_zip_pattern",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "The API test does not verify name/address/first_name/last_name/phone_number methods individually.",
+      "verdict": "underspecified"
+    }
+  ]
+}

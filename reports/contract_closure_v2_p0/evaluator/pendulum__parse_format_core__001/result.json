@@ -1,0 +1,366 @@
+{
+  "build": {
+    "duration_seconds": 0.186484,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": true,
+  "compactness": {
+    "closure_gold_file_completeness": "unresolved",
+    "compactness_class": "copy_heavy_pass",
+    "copied_file_count": 24,
+    "copied_fraction": 0.933883,
+    "copied_loc": 4647,
+    "copy_detection": {
+      "evidence": {
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/duration.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/tz/timezone.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/conftest.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/_helpers.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/_helpers.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/constants.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/constants.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/date.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/testing/traveller.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/datetime.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/testing/traveller.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/tz/timezone.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/conftest.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/test_helpers.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/day.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/day.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/duration.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/duration.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/exceptions.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/exceptions.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/formatting/formatter.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en_us/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/hi/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ja/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/tr/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/mixins/default.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/helpers.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/difference_formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/testing/traveller.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/test_helpers.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/interval.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/duration.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/locales/en/custom.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/bg/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/cs/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/da/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/de/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en_gb/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en_us/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/es/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fa/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fo/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fr/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/he/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/hi/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/id/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/it/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ja/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ko/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/lt/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nb/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nl/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nn/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/pl/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/pt_br/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ru/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/sk/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/sv/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/tr/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ua/custom.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/zh/custom.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/locales/en/locale.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/bg/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/cs/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/da/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/de/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en_gb/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/en_us/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/es/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fa/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fo/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/fr/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/he/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/hi/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/id/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/it/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ja/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ko/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/lt/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nb/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nl/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/nn/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/pl/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/pt_br/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ru/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/sk/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/sv/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/tr/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/ua/locale.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/zh/locale.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/locales/locale.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/locales/locale.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/mixins/default.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/mixins/default.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/parser.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parser.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/__init__.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/parsing/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parser.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/datetime/test_behavior.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/parsing/test_parse_iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/test_main.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/parsing/exceptions/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/exceptions/__init__.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/parsing/iso8601.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/formatting/formatter.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/parsing/iso8601.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/testing/traveller.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/time.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/date.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/duration.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/helpers.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/interval.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/time.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/tz/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/tz/__init__.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/tz/exceptions.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/tz/exceptions.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/tz/timezone.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/__init__.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/datetime.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/tz/timezone.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/tests/conftest.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/pendulum__parse_format_core__001/featurelifted/utils/_compat.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo/src/pendulum/utils/_compat.py"
+        ]
+      },
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-b46frc9f/repo"
+    },
+    "excess_copied_loc": null,
+    "external_dependencies": [
+      "dateutil",
+      "typing_extensions"
+    ],
+    "external_dependency_count": 2,
+    "extraction_ratio_to_reference": 1.0,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": 55,
+    "reference_loc": 4976,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "archive_sha256": "1880a60278afc430cc50d64cd62b3dd4fb1a53a304ddd6731c5eca4bacf295fb",
+      "policy_id": "featureliftbench.full_repository_source.v2",
+      "requested_revision": "b99bd1468b5562f045c90d851c4fab0072b26df8",
+      "resolved_commit": "b99bd1468b5562f045c90d851c4fab0072b26df8",
+      "snapshot_scope": "full_tracked_tree",
+      "source_digest": "6ef250dec75d8a4c3c3228a1307782a45a3ff2cea3b087b22530c07b7482b915",
+      "source_repo_id": "github__sdispater__pendulum",
+      "source_snapshot_id": "github__sdispater__pendulum__970a8c189aaa",
+      "status": "ready"
+    },
+    "status": "ok",
+    "submitted_file_count": 58,
+    "submitted_loc": 4976,
+    "unapproved_external_dependencies": [
+      "dateutil",
+      "typing_extensions"
+    ],
+    "unapproved_external_dependency_count": 2
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-0xnmnhfq/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-0xnmnhfq/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-0xnmnhfq/.venv"
+  },
+  "errors": [],
+  "eval_tooling": {
+    "duration_seconds": 0.305363,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 3.749624,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": true,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": true,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": true,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/pendulum__parse_format_core__001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 58,
+    "loc": 4976,
+    "package_bytes": 444003,
+    "reference_loc": 4976,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 3.559665,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": true,
+  "scores": {
+    "compactness_score": 1.0,
+    "extraction_ratio": 1.0,
+    "final_score": 1.0,
+    "functional_gate": 1.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "passed",
+  "submission": "pendulum__parse_format_core__001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "pendulum__parse_format_core__001",
+  "test_pass": true
+}

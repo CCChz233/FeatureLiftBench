@@ -1,6 +1,6 @@
 """Test-First Lift: agent-authored paired characterization + harness oracle freeze.
 
-See docs/METHOD_TEST_FIRST_LIFT.md.
+See docs/archive/methods/METHOD_TEST_FIRST_LIFT.md.
 """
 
 from __future__ import annotations

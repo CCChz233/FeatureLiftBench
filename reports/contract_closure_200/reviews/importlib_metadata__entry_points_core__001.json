@@ -1,0 +1,118 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-importlib-metadata-001: EntryPoint.module/attr/matches/load and EntryPoints indexing protocols are absent",
+        "CC-importlib-metadata-002: Sectioned.section_pairs plus yielded pair name/value members are undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-importlib-metadata-003: required target loading behavior has no evaluator assertion"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-importlib-metadata-001",
+      "resolution": "Declare EntryPoint module/attr/matches/load and EntryPoints selection/indexing return protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-importlib-metadata-002",
+      "resolution": "Declare Sectioned.section_pairs and its yielded record fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-importlib-metadata-003",
+      "resolution": "Add a deterministic local module EntryPoint.load assertion or remove B003.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Metadata parsing is exercised, but result-object surfaces are incomplete and target loading is promised without evidence.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "importlib_metadata__entry_points_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_entry_point_value_parsing_and_selection",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_sectioned_entry_point_config",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_path_distribution_entry_points",
+      "notes": "Current metadata includes untested target loading B003.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

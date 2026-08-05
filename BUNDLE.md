@@ -1,5 +1,7 @@
 # FeatureLiftBench v3 frozen release
 
+> **Documentation status: reference · Last verified: 2026-08-04**
+
 Built: 20260801-ready
 Base ref: 8438e3a3c05e9c8ed65a835f42321c7cf07d5977
 Freeze ref: 8fc6c11

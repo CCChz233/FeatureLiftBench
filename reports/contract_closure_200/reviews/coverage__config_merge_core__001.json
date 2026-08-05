@@ -1,0 +1,149 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-coverage-config-001: CoverageConfig output attributes used by tests are not declared and read_run_config **kwargs semantics are implicit"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B004",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-coverage-config-002: B001 promises tox.ini but no tox.ini case exists",
+        "CC-coverage-config-003: B004 promises user-path expansion but its mapped test only checks relative_files and disable_warnings"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-coverage-config-004: no oracle source files are recorded for the adapted implementation"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-coverage-config-001",
+      "resolution": "Declare the returned CoverageConfig fields and accepted override semantics used by the contract.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-coverage-config-002",
+      "resolution": "Add a tox.ini oracle case or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-coverage-config-003",
+      "resolution": "Add a path-expansion oracle case or remove B004.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-coverage-config-004",
+      "resolution": "Record the upstream source closure and adapter derivation evidence.",
+      "severity": "high"
+    }
+  ],
+  "notes": "INI/env/kwargs behavior is exercised, but the returned state contract, two promised cases, and source oracle traceability are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "coverage__config_merge_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_read_run_config_from_coveragerc",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_read_run_config_kwargs_override",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_from_setup_cfg",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_env_data_file",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_multiline_lists",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_read_run_config_relative_files_section",
+      "notes": "This does not exercise the B004 path-expansion promise.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

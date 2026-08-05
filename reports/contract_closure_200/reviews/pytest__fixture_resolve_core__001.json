@@ -1,0 +1,139 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-pytest-fixture-001: fixture returns a marker whose scope/name fields are inspected but FixtureFunctionMarker and its fields are undeclared",
+        "CC-pytest-fixture-002: FixtureDef observable argname/argnames/baseid/scope fields and closure result semantics are only implicit"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-pytest-fixture-003: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-pytest-fixture-001",
+      "resolution": "Declare FixtureFunctionMarker scope/name and decorated-function marker protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-pytest-fixture-002",
+      "resolution": "Declare FixtureDef fields and closure/arg2defs result schema.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-pytest-fixture-003",
+      "resolution": "Record immutable pytest fixture source closure.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-pytest-fixture-004",
+      "resolution": "Add a marker behavior clause and correct its mapping.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Transitive closure, parent matching, deduplication, scope order, missing diagnostics, and marker extraction are useful; result/marker APIs and provenance are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "pytest__fixture_resolve_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_resolve_closure_adds_fixture_dependencies",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_getfixturemarker_on_decorated_function",
+      "notes": "Marker inspection is not fixture ordering B004 or missing-fixture B005 and has no dedicated behavior clause.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_deduplicate_names_keeps_first_occurrence_order",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_closure_sorted_by_scope_descending",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_fixture_lookup_error_lists_available",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,12 +1,11 @@
 # FeatureLiftBench Task Design Rules（规格宪法）
 
-- **状态：** 当前 v3（2026-07-27，External-150 / Full-Repository / No-Hint Main）
+> **Documentation status: current · Last verified: 2026-08-04**
+
+- **状态：** 当前 Full-Repository / No-Hint task contract 规范
 - **效力：** 主榜入库与新题/晋升的权威规则；与旧文档冲突时以本文为准
-- **当前：** Python-150 **150/150 spec-compliant**、150/150
-  Full-Repository/No-Hint，450/450 Oracle 与 12/12 adversarial canaries
-  已完成，v3 freeze 由严格 readiness 门禁生成；见
-  [STATUS.md](STATUS.md)。
-- **相关：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)（整体思路）· [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)（臂）· [06_task_schema.md](06_task_schema.md)（包布局）· [07_incremental_task_rules.md](07_incremental_task_rules.md)（生命周期）· [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)（计分）
+- **当前 release：** 所有动态数量、readiness 与 freeze 状态见 [STATUS.md](STATUS.md)。
+- **相关：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)（整体思路）· [EVALUATION.md](EVALUATION.md)（实验与计分）· [06_task_schema.md](reference/06_task_schema.md)（包布局）· [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)（生命周期）
 
 ---
 
@@ -34,7 +33,7 @@ Benchmark **不规定** Agent 的探索、推理、测试或停止流程；任�
 
 ### 1.1 原则
 
-> `metadata.public_spec` 是唯一人工维护的 **Agent 可见契约**。  
+> `metadata.public_spec` 是唯一人工维护的 **Agent 可见契约**。
 > 所有 Agent-facing `TASK.md`、OpenHands prompt 功能规格片段与文档视图均由它 **生成**；禁止人工修改生成物。
 
 `metadata.evaluation_spec`（及等价私有评测配置）**不对 Agent 可见**。
@@ -49,14 +48,14 @@ metadata
 
 ### 1.3 生成与哈希
 
-1. `TASK.md`（workspace / 包内若保留）= `render(public_spec)` 的生成物。  
-2. 记录 `spec_hash = hash(canonical_json(public_spec))` 与 `generated_task_hash = hash(render(public_spec))`。  
-3. CI / `validate`：手写偏离、hash 不一致、第二规格源 → **任务无效**。  
+1. `TASK.md`（workspace / 包内若保留）= `render(public_spec)` 的生成物。
+2. 记录 `spec_hash = hash(canonical_json(public_spec))` 与 `generated_task_hash = hash(render(public_spec))`。
+3. CI / `validate`：手写偏离、hash 不一致、第二规格源 → **任务无效**。
 4. 每次评测 run 日志保存 `task_revision + spec_hash`（及可选 `generated_task_hash`）。
 
 ### 1.4 禁止
 
-- 包内手写一份更全的 `TASK.md`、agent 另读更窄的 metadata 提示（历史 isort 类分叉）。  
+- 包内手写一份更全的 `TASK.md`、agent 另读更窄的 metadata 提示（历史 isort 类分叉）。
 - 将 `evaluation_spec`、hidden 内容、entanglement 分析字段注入默认 Agent TASK。
 
 ---
@@ -74,9 +73,9 @@ metadata
 
 规则：
 
-1. public / hidden 只能使用已声明的 API（`required_api ∪ optional_api`）；hidden 不得要求未声明的 surface（例如只声明 `State` 却要求未声明的 `State.parent`）。  
-2. 类成员等必须用完整路径，例如 `featurelifted.State.parent`、`featurelifted.CryptContext.identify`。  
-3. 每个 API 条目应尽量包含：`path`、`kind`、`signature`、默认参数、必需成员、主要异常。  
+1. public / hidden 只能使用已声明的 API（`required_api ∪ optional_api`）；hidden 不得要求未声明的 surface（例如只声明 `State` 却要求未声明的 `State.parent`）。
+2. 类成员等必须用完整路径，例如 `featurelifted.State.parent`、`featurelifted.CryptContext.identify`。
+3. 每个 API 条目应尽量包含：`path`、`kind`、`signature`、默认参数、必需成员、主要异常。
 4. Agent 必须能从 `required_api` 判断强制契约；不得依赖“超集里哪些随便做”。
 
 示例：
@@ -120,7 +119,7 @@ optional_api: []
 
 ### 2.3 其它公开字段
 
-- `exclusions`：明确不做的能力；hidden 不得要求 exclusions 内行为。  
+- `exclusions`：明确不做的能力；hidden 不得要求 exclusions 内行为。
 - `forbidden`：原包 import / 外部依赖等，与 evaluator 门一致。
 
 Main 的 `public_spec`、TASK、redacted metadata 和初始 prompt **不得暴露**：
@@ -137,10 +136,10 @@ Agent 不可见的 evaluator 私有字段；向 Agent 暴露它们只能属于�
 
 以下属 benchmark **私有**（分层统计、采样、失败分析、实验切片），默认不进 TASK；若研究提示增强，须作为 **单独 ablation**：
 
-- `entanglement.*`（含 types / signals）  
-- `failure_mode` / `difficulty` 叙事细节  
-- `hidden_behavior_category`  
-- 其它直接暗示 hidden 重点或解法类型的标签  
+- `entanglement.*`（含 types / signals）
+- `failure_mode` / `difficulty` 叙事细节
+- `hidden_behavior_category`
+- 其它直接暗示 hidden 重点或解法类型的标签
 
 Agent 默认只见正常功能规格（目标提交 API、behaviors、exclusions、
 forbidden、输出布局与功能门说明），不见上游实现定位。
@@ -151,9 +150,9 @@ forbidden、输出布局与功能门说明），不见上游实现定位。
 
 至少包含：
 
-- public / hidden 测试清单与映射：`test_id → behavior_ids`、`test_id → api_ids`（或等价 manifest）  
-- isolation / forbidden 检查配置  
-- reference / oracle 指针  
+- public / hidden 测试清单与映射：`test_id → behavior_ids`、`test_id → api_ids`（或等价 manifest）
+- isolation / forbidden 检查配置
+- reference / oracle 指针
 
 测试对 API 的引用须维护 **显式 manifest**；AST 扫描仅作交叉校验（无法可靠覆盖 `import featurelifted as fl` / 反射）。
 
@@ -163,16 +162,16 @@ forbidden、输出布局与功能门说明），不见上游实现定位。
 
 ### 4.1 核心原则
 
-> Public 与 hidden **必须来自同一组公开行为契约**。  
+> Public 与 hidden **必须来自同一组公开行为契约**。
 > Hidden 可以增加案例、组合、边界、异常路径、状态序列、配置与类型变体，但 **不得** 增加新的 API、新的行为类别或新的环境假设。
 
 ### 4.2 覆盖（双向强制）
 
-1. 每个 public / hidden 测试至少映射一个 **公开** behavior id。  
-2. 每个 **required behavior** 至少被一个 **hidden** 测试覆盖。  
-3. 每个 **required_api** 条目（含必需成员/异常等 surface）至少被 hidden 覆盖（导入或可观察使用）。  
-4. 测试使用的 API ⊆ `required_api ∪ optional_api`；**optional_api 不得被 public/hidden 依赖**。  
-5. Hidden 不引用 `exclusions` 中明确排除的能力。  
+1. 每个 public / hidden 测试至少映射一个 **公开** behavior id。
+2. 每个 **required behavior** 至少被一个 **hidden** 测试覆盖。
+3. 每个 **required_api** 条目（含必需成员/异常等 surface）至少被 hidden 覆盖（导入或可观察使用）。
+4. 测试使用的 API ⊆ `required_api ∪ optional_api`；**optional_api 不得被 public/hidden 依赖**。
+5. Hidden 不引用 `exclusions` 中明确排除的能力。
 6. Public 可只覆盖部分 behavior，或对全部行为做浅层 smoke；hidden 可加深案例/组合/边界，但不得新增契约。
 
 “Public 是行为条款的严格子集”**不是**准确表述：允许 public 对全部行为做浅层 smoke，hidden 做更深覆盖。
@@ -227,19 +226,19 @@ visibility、public-test feedback 或非语义文风；每次只能归因于明�
 
 ### 7.1 契约一致性
 
-1. `required_api` / `optional_api` 路径格式合法。  
-2. public/hidden 使用的 API 均已声明。  
-3. 每个 required API 被 hidden 覆盖。  
-4. 每个测试映射 ≥1 behavior。  
-5. 每个 required behavior 被 hidden 覆盖。  
-6. hidden 不触及 exclusions。  
+1. `required_api` / `optional_api` 路径格式合法。
+2. public/hidden 使用的 API 均已声明。
+3. 每个 required API 被 hidden 覆盖。
+4. 每个测试映射 ≥1 behavior。
+5. 每个 required behavior 被 hidden 覆盖。
+6. hidden 不触及 exclusions。
 7. 显式 test↔API/behavior manifest 存在；AST 交叉校验可选但推荐。
 
 ### 7.2 来源一致性
 
-8. Agent-facing TASK 仅由 `public_spec` 生成。  
-9. 禁止人工维护第二份可见规格。  
-10. `spec_hash` / `generated_task_hash` 一致。  
+8. Agent-facing TASK 仅由 `public_spec` 生成。
+9. 禁止人工维护第二份可见规格。
+10. `spec_hash` / `generated_task_hash` 一致。
 11. run 日志记录 `task_revision + spec_hash`。
 
 ### 7.3 可执行性
@@ -278,14 +277,14 @@ visibility、public-test feedback 或非语义文风；每次只能归因于明�
 
 每道主榜题必须通过可审计的工程检查，回答：
 
-- 题面是否足以唯一确定预期行为？  
-- hidden 是否完全属于公开契约？  
-- 是否遗漏异常、默认值、状态或资源要求？  
-- exclusions 是否明确？  
-- `required_api` 是否完整？  
-- reference 是否利用了未公开知识？  
-- public 是否过强或过弱？  
-- 是否主要测解耦/契约实现，而非环境偶然性？  
+- 题面是否足以唯一确定预期行为？
+- hidden 是否完全属于公开契约？
+- 是否遗漏异常、默认值、状态或资源要求？
+- exclusions 是否明确？
+- `required_api` 是否完整？
+- reference 是否利用了未公开知识？
+- public 是否过强或过弱？
+- 是否主要测解耦/契约实现，而非环境偶然性？
 
 检查可由 maintainer、自动验证与 AI-assisted 审核共同完成。独立人工审核
 不是 promotion、实验或 release 的硬门禁；若未来对高风险题
@@ -294,23 +293,17 @@ config/environment）安排额外人工复核，应单独报告，不改变主�
 
 ---
 
-## 9. 实现优先级（相对扩题 / 旧 retrieval）
+## 9. 实现优先级
 
-| # | 项 | 状态 |
-| --- | --- | --- |
-| 1 | 落地本文 + [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) | ✅ |
-| 2 | 校验器：API surface / behavior–test mapping / TASK hash / isolation | ✅ `constitution_validate` + `validate-task` |
-| 3 | 试点 isort / transitions / scrapy + hidden 重判 | ✅ |
-| 4 | 生成器 `public_spec → TASK.md` | ✅ `render-task`；compliant agent workspace 已接入 |
-| 5 | 主榜分批迁移；`spec_status: legacy` 标注 | ✅ 150/150 compliant；0 legacy |
-| 6 | `mixed_snapshot_v1` 基线 | ⚠️ 可作历史/消融证据 |
-| 7 | Full-repository / No-Hint workspace、source freeze、compactness | ✅ |
-| 8 | v3 全量 Oracle / isolation | ✅ 450/450；12/12 canaries |
-| 9 | v3 model baseline | ⏳ |
-| 10 | RSG start-here 仅 retrieval baseline；扩题低优先级 | ✅ 政策已冻结 |
+1. 先闭合公开 API/behavior 与 evaluator mapping，再 materialize task。
+2. 先通过 source、reference、isolation 和 lifecycle 门禁，再进入 release。
+3. Release 后保持 task revision、source archive 和 evaluator 语义不可变。
+4. 模型实验、retrieval 或方法研究不得反向修改失败题的契约以制造增益。
 
-操作细节：[07_incremental_task_rules.md](07_incremental_task_rules.md)；
-正式运行：[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)。
+具体 release 进度和下一步只在 [STATUS.md](STATUS.md) 维护。
+
+操作细节：[07_incremental_task_rules.md](reference/07_incremental_task_rules.md)；
+正式运行：[SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md)。
 
 ---
 
@@ -325,4 +318,4 @@ config/environment）安排额外人工复核，应单独报告，不改变主�
 | Entanglement signals 默认进 prompt | 默认私有；ablation 可选 |
 | Public 必须是行为子集 | 改为同契约下的覆盖深度差异 |
 
-生命周期仍见 [07_incremental_task_rules.md](07_incremental_task_rules.md)；包路径仍见 [06_task_schema.md](06_task_schema.md)。二者与本文冲突时，**契约与可见性以本文为准**，并应回修那两份文档。
+生命周期仍见 [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)；包路径仍见 [06_task_schema.md](reference/06_task_schema.md)。二者与本文冲突时，**契约与可见性以本文为准**，并应回修那两份文档。

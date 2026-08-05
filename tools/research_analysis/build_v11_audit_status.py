@@ -15,15 +15,15 @@ TASKS = ROOT / "benchmark/tasks"
 SUBSET = ROOT / "artifacts/research_analysis/v1_1/diagnostic_subset_manifest.json"
 TAXONOMY = ROOT / "artifacts/research_analysis/python150_task_taxonomy.csv"
 OUTPUT_JSON = ROOT / "artifacts/research_analysis/v1_1/v1_1_audit_status.json"
-OUTPUT_MD = ROOT / "docs/research_analysis/V11_IMPLEMENTATION_STATUS.md"
+OUTPUT_MD = ROOT / "docs/reference/research_analysis/V11_IMPLEMENTATION_STATUS.md"
 CURRENT_FREEZE_POINTER = ROOT / "artifacts/research_analysis/v1_1/current_oracle_freeze.json"
-INFRA_ANALYSIS = ROOT / "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/analysis.json"
+INFRA_ANALYSIS = ROOT / "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/analysis.json"
 CONTROL_RESULTS = ROOT / "artifacts/research_analysis/v1_1/control_preflight_results.json"
 NEAR_DUPLICATE_QUEUE = ROOT / "artifacts/research_analysis/v1_1/near_duplicate_review_queue.csv"
 BEHAVIOR_REVIEW = ROOT / "artifacts/research_analysis/v1_1/behavior_review_audit.json"
 CLOSURE_REVIEW = ROOT / "artifacts/research_analysis/v1_1/diagnostic_closure_review_audit.json"
 RELEASE_GATE = ROOT / "artifacts/research_analysis/v1_1/release_gate_report.json"
-PILOT_FREEZE = ROOT / "experiments/ecsm_pilot/pilot_freeze_manifest.json"
+PILOT_FREEZE = ROOT / "experiments/methods/ecsm_pilot/pilot_freeze_manifest.json"
 PILOT_AUTHORIZATION = ROOT / "artifacts/research_analysis/v1_1/pilot_execution_authorization_status.json"
 
 
@@ -98,11 +98,11 @@ def main() -> int:
 
     pointer = load_json(CURRENT_FREEZE_POINTER) if CURRENT_FREEZE_POINTER.is_file() else {}
     freeze_id = str(pointer.get("freeze_id") or "")
-    oracle_root = ROOT / "experiments/v1_1_oracle_validation" / freeze_id
+    oracle_root = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation" / freeze_id
     canary = load_json(oracle_root / "canary/summary.json") if (oracle_root / "canary/summary.json").is_file() else {}
     full = load_json(oracle_root / "full/summary.json") if (oracle_root / "full/summary.json").is_file() else {}
     quarantine = load_json(oracle_root / "quarantine_manifest.json") if (oracle_root / "quarantine_manifest.json").is_file() else {"tasks": []}
-    original_root = ROOT / "experiments/v1_1_oracle_validation/536c2beec549fdc8"
+    original_root = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation/536c2beec549fdc8"
     history_after = load_json(original_root / "historical_outputs_after_verification.json") if (original_root / "historical_outputs_after_verification.json").is_file() else {}
     infra = load_json(INFRA_ANALYSIS) if INFRA_ANALYSIS.is_file() else {}
     controls = load_json(CONTROL_RESULTS) if CONTROL_RESULTS.is_file() else {}

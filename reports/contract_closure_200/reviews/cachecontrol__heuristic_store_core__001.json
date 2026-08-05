@@ -1,0 +1,162 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-cachecontrol-001: DictCache methods and ExpiresAfter/Serializer/CacheController constructors lack signatures",
+        "CC-cachecontrol-002: optional delta and serde_version observations are not formal members and permit vacuous assertions"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "hidden_tests/test_hidden_behavior.py::test_expires_after_days_hours",
+        "hidden_tests/test_hidden_behavior.py::test_serializer_serde_version"
+      ],
+      "issues": [
+        "CC-cachecontrol-003: two hidden assertions can pass without the claimed delta/serde behavior"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-cachecontrol-001",
+      "resolution": "Publish all tested constructors and cache method signatures.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-cachecontrol-002",
+      "resolution": "Declare delta/serde_version only if required, then assert their real values.",
+      "severity": "medium"
+    },
+    {
+      "id": "CC-cachecontrol-003",
+      "resolution": "Replace vacuous hidden checks with behavioral assertions or remove those promised cases.",
+      "severity": "high"
+    }
+  ],
+  "notes": "The cache path is mostly explicit, but constructor contracts and two claimed composite observations are not meaningful evaluator checks.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "cachecontrol__heuristic_store_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_dict_cache_roundtrip",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_expires_after_construct",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_serializer_construct",
+      "notes": "Current metadata incorrectly maps Serializer construction to controller behavior B003.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_base_cache_interface",
+      "notes": "Current metadata incorrectly maps subclassing to cache operations B001.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_cache_controller_construct",
+      "notes": "Current metadata incorrectly maps controller construction to heuristic/serializer B002.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_expires_after_days_hours",
+      "notes": "Current metadata maps this to B003; assertion is vacuous because h is always non-None.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_serializer_serde_version",
+      "notes": "Current metadata maps this to no-network B004; getattr default makes the assertion vacuous.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

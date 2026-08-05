@@ -79,7 +79,7 @@ def main() -> int:
     engineering_pilot_ready = bool(status.get("readiness", {}).get("engineering_pilot_ready"))
     pointer = load(CURRENT_FREEZE_POINTER) if CURRENT_FREEZE_POINTER.is_file() else {}
     freeze_id = str(pointer.get("freeze_id") or "")
-    oracle_root = ROOT / "experiments/v1_1_oracle_validation" / freeze_id
+    oracle_root = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation" / freeze_id
     release_inputs = (
         ROOT / "benchmark/tasks",
         ROOT / "artifacts/research_analysis/python150_task_taxonomy.csv",
@@ -93,7 +93,7 @@ def main() -> int:
         oracle_root / "canary/summary.json",
         oracle_root / "full/summary.json",
         oracle_root / "quarantine_manifest.json",
-        ROOT / "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/analysis.json",
+        ROOT / "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/analysis.json",
     )
     payload = {
         "schema_version": "featureliftbench.v1_1_release_gate_report.v1",

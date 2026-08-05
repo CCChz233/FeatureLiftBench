@@ -1,0 +1,122 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-werkzeug-routing-001: Map.bind returns an evaluator-required adapter whose match/build methods and signatures are undeclared",
+        "CC-werkzeug-routing-002: RequestRedirect.new_url is evaluator-observed but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-werkzeug-routing-003: B001 promises HTTP-method routing but no test exercises method selection or mismatch"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-werkzeug-routing-004: no immutable oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-werkzeug-routing-001",
+      "resolution": "Declare the returned MapAdapter protocol, including match and build signatures and result shapes.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-werkzeug-routing-002",
+      "resolution": "Declare RequestRedirect.new_url.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-werkzeug-routing-003",
+      "resolution": "Add HTTP method routing cases or remove that promise from B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-werkzeug-routing-004",
+      "resolution": "Record the pinned Werkzeug routing source closure.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Path conversion, building, subdomain/submount routing, and strict-slash redirects are useful direct behavior; the central returned adapter API and source evidence are incomplete.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "werkzeug__routing_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_match_and_build_simple_rules",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_subdomain_and_submount_routing",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_strict_slashes_redirect",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

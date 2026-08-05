@@ -1,0 +1,105 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-sqlparse-format-001: preservation of comments, whitespace, strings, aliases, and nested expressions is promised, but the mapped test only rejects an invalid keyword_case value"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-sqlparse-format-002: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-sqlparse-format-001",
+      "resolution": "Add preservation cases for quoted strings/comments/nested expressions or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-sqlparse-format-002",
+      "resolution": "Record immutable sqlparse formatter/filter source closure.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-sqlparse-format-003",
+      "resolution": "Correct invalid-option behavior mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Common formatting, comment stripping, operator spacing, and option validation are coherent; preservation breadth and provenance remain open.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "sqlparse__format_filters_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_format_supports_common_options",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_formatter_comment_stripping_and_spacing",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_formatter_rejects_invalid_options",
+      "notes": "It does not establish preservation B002.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

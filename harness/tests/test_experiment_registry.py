@@ -24,7 +24,10 @@ class ExperimentRegistryTests(unittest.TestCase):
 
     def test_lifecycle_distinguishes_raw_leaderboard_from_support_copy(self) -> None:
         raw = Path("experiments/python/openhands/model/main-flash-20260705-232429")
-        support = Path("experiments/v1_1_infra_reevaluation/main-flash-20260705-232429")
+        support = Path(
+            "experiments/validation/v1_1/v1_1_infra_reevaluation/"
+            "main-flash-20260705-232429"
+        )
         superseded = Path(
             "experiments/python/openhands/model/batch3-flash-20260707-112646"
         )
@@ -98,7 +101,31 @@ class ExperimentRegistryTests(unittest.TestCase):
             self.assertEqual(record["passed"], 0)
             self.assertEqual(record["average_final_score"], 0.75)
             self.assertNotIn("summary_passed_mismatch", record["quality"]["flags"])
-            self.assertIn("summary_average_mismatch", record["quality"]["flags"])
+        self.assertIn("summary_average_mismatch", record["quality"]["flags"])
+
+    def test_new_layout_categories_are_explicit(self) -> None:
+        validation = Path("experiments/validation/batch3/run")
+        method = Path("experiments/methods/ablation/run")
+        self.assertEqual(build_experiment_registry._category(validation), "validation")
+        self.assertEqual(build_experiment_registry._category(method), "method")
+
+    def test_duplicate_run_ids_keep_all_raw_paths(self) -> None:
+        duplicates = build_experiment_registry.duplicate_run_ids(
+            [
+                {"run_id": "same", "raw_path": "experiments/smoke/a"},
+                {"run_id": "same", "raw_path": "experiments/smoke/b"},
+                {"run_id": "unique", "raw_path": "experiments/smoke/c"},
+            ]
+        )
+        self.assertEqual(
+            duplicates,
+            [
+                {
+                    "run_id": "same",
+                    "raw_paths": ["experiments/smoke/a", "experiments/smoke/b"],
+                }
+            ],
+        )
 
 
 if __name__ == "__main__":

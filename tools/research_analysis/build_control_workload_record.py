@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN_ROOT = ROOT / "experiments/v1_1_control_preflight"
+RUN_ROOT = ROOT / "experiments/validation/v1_1/v1_1_control_preflight"
 OUTPUT = ROOT / "artifacts/research_analysis/v1_1/control_workload_record.json"
 LOG = ROOT / "artifacts/research_analysis/v1_1/control_workload_prospective_log.csv"
 TASKS = ("boltons__iterutils_core__001", "pluggy__hook_specs_core__001")

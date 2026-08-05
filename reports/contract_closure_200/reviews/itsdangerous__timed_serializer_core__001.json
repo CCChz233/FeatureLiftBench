@@ -1,0 +1,133 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-itsdangerous-001: deterministic token bytes are claimed but no same-input token equality or fixed-vector assertion exists",
+        "CC-itsdangerous-002: HMAC-SHA256 specifically is claimed, but tests establish only salt/key separation and tamper rejection, which many algorithms satisfy"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [
+        "CC-itsdangerous-003: oracle source_files contains symbol names rather than repository file paths"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-itsdangerous-001",
+      "resolution": "Add fixed-time deterministic token equality/vector coverage or remove deterministic wording.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-itsdangerous-002",
+      "resolution": "Add an independently computed HMAC-SHA256 vector or describe only observable signing behavior.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-itsdangerous-003",
+      "resolution": "Replace symbol-like oracle entries with immutable source paths and hashes.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-itsdangerous-004",
+      "resolution": "Correct overbroad per-test mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Roundtrip, salt/key separation, tampering, expiry boundary, malformed tokens, and exception distinctions are coherent; algorithm/determinism claims and provenance are not closed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "itsdangerous__timed_serializer_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_roundtrip_and_salt_separation",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_tampering_raises_bad_signature",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_expiry_boundary_and_error_type",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_wrong_key_and_malformed_token",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

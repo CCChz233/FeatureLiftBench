@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / "benchmark/quarantine/python_v1_1_revision_2.json"
-RUN_ROOT = ROOT / "experiments/v1_1_repair_preflight/revision_3"
+RUN_ROOT = ROOT / "experiments/validation/v1_1/v1_1_repair_preflight/revision_3"
 LEDGER = ROOT / "artifacts/research_analysis/v1_1/oracle_repair_ledger.json"
 OUTPUT = ROOT / "benchmark/quarantine/python_v1_1_revision_3.json"
 CURRENT_POINTER = ROOT / "artifacts/research_analysis/v1_1/current_oracle_freeze.json"
@@ -70,7 +70,7 @@ def main() -> int:
     ]
     pointer = json.loads(CURRENT_POINTER.read_text(encoding="utf-8")) if CURRENT_POINTER.is_file() else {}
     current_freeze_id = str(pointer.get("freeze_id") or "")
-    current_root = ROOT / "experiments/v1_1_oracle_validation" / current_freeze_id if current_freeze_id else None
+    current_root = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation" / current_freeze_id if current_freeze_id else None
     full_summary_path = current_root / "full/summary.json" if current_root else None
     full_summary = (
         json.loads(full_summary_path.read_text(encoding="utf-8"))

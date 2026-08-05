@@ -1,0 +1,143 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-jsonschema-001: ValidationError path, schema_path, validator, validator_value, and message fields are promised and inspected but absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-jsonschema-002: array, number, boolean, and null type validation are promised but not exercised",
+        "CC-jsonschema-003: minLength, pattern, and allOf are promised but no evaluator case covers them"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "metadata.json#/environment"
+      ],
+      "issues": [
+        "CC-jsonschema-004: no oracle source files are recorded and oracle runtime dependencies are empty despite the task's allowed dependency closure"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-jsonschema-001",
+      "resolution": "Declare the observable ValidationError field and path collection protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-jsonschema-002",
+      "resolution": "Add missing primitive/container type cases or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jsonschema-003",
+      "resolution": "Add minLength/pattern/allOf cases or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jsonschema-004",
+      "resolution": "Record immutable jsonschema source closure and reconcile runtime dependency provenance.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Required/properties/minimum/additional, format, schema error, anyOf/oneOf/enum/const, and error paths are useful; result API, keyword/type breadth, and provenance remain open.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "jsonschema__validator_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_validate_object_required_properties_and_minimum",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_iter_errors_exposes_paths_and_validity",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_errors_paths_combinators_and_messages",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_format_checker_schema_errors_and_additional_properties",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_oneof_and_const_keyword",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

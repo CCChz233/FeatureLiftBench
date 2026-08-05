@@ -113,7 +113,7 @@ print(len(task_ids))
 PY
 )"
 
-OUTPUT="$ROOT/experiments/ablation/$RUN_ID"
+OUTPUT="$ROOT/experiments/methods/ablation/$RUN_ID"
 MAIN_COMMAND=(
   "$ROOT/scripts/run_experiment.sh"
   --arm main

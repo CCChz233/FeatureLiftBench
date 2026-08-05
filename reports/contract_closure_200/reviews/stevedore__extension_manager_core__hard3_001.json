@@ -1,0 +1,159 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-stevedore-001: map_method, items, iteration, containment, keyed lookup, and extension plugin/entry_point_target fields are evaluator-required but undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-stevedore-001",
+      "resolution": "Declare manager collection/lookup/map_method protocols and all observable Extension fields.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-stevedore-002",
+      "resolution": "Correct NamedExtensionManager behavior mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Discovery/filtering, invocation, failures, conflicts, map policy, named order/missing callbacks, source, and isolation are broad; manager and extension result APIs are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "stevedore__extension_manager_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_extension_manager_loads_matching_namespace",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B007"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_invoke_on_load_and_map_method",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_map_raises_no_matches_when_empty",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_load_failure_callback_gets_manager_entrypoint_and_exception",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_duplicate_names_default_to_last_extension",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_duplicate_names_can_raise_multiple_matches",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_map_exception_policy_can_ignore_or_propagate",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_named_extension_manager_filters_reports_missing_and_orders_names",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B010"
+      ],
+      "evidence_basis": [
+        "public_spec:B010"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_visitor_public.py",
+        "hidden_tests/test_visitor_hidden.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-lark-visitor-001: subclass rule-name callback dispatch for Transformer/Visitor and Visitor.visit are evaluator-required but undeclared",
+        "CC-lark-visitor-002: Tree data/children and Token conversion protocols used inside callbacks are undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-lark-visitor-003: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-lark-visitor-001",
+      "resolution": "Declare Visitor.visit and dynamic rule callback signatures/dispatch for Visitor and Transformer.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-lark-visitor-002",
+      "resolution": "Declare Tree/Token protocols consumed by callbacks.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-lark-visitor-003",
+      "resolution": "Record immutable visitor/parser source closure.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-lark-visitor-004",
+      "resolution": "Correct visitor behavior mapping.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Bottom-up transforms, inline/tree v_args, Discard, and visitor traversal are substantive; subclass callback and tree/token APIs are missing.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "lark__visitor_transform_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_visitor_public.py::test_transformer_evaluates_expression",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_visitor_public.py::test_v_args_inline_transform",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_visitor_hidden.py::test_discard_removes_nodes",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_visitor_hidden.py::test_visitor_walks_tree_nodes",
+      "notes": "Visitor traversal does not establish Transformer B002.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_visitor_hidden.py::test_v_args_tree_mode",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # FeatureLiftBench Task Layout
 
-This directory holds all benchmark task packages, split workspaces, oracle artifacts, and shared source curation. **Do not add new tasks directly to `benchmark/tasks/`** without following the incremental lifecycle in [`docs/07_incremental_task_rules.md`](../docs/07_incremental_task_rules.md).
+This directory holds all benchmark task packages, split workspaces, oracle artifacts, and shared source curation. **Do not add new tasks directly to `benchmark/tasks/`** without following the incremental lifecycle in [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md).
 
 Machine-readable split definitions live in [`manifest.json`](manifest.json).
 
@@ -59,7 +59,7 @@ Local development workspaces such as `benchmark/staging/` and `benchmark/batch3_
 ### `benchmark/go/tasks/` — Go candidate / calibration
 
 - Go language split tasks (calibration, seed placeholders, redesign candidates).
-- **Not** paper-ready hard Go tasks today. See [`docs/go/02_go_task_inventory.md`](../docs/go/02_go_task_inventory.md).
+- **Not** paper-ready hard Go tasks today. See [`docs/reference/go/02_go_task_inventory.md`](../docs/reference/go/02_go_task_inventory.md).
 
 ### `benchmark/go/sanity/` and `benchmark/go_pilot/`
 
@@ -102,7 +102,7 @@ benchmark/<split>/<task_id>/
   reference_solution/        # optional inline reference (pilots)
 ```
 
-Go tasks use `environment/go.mod` instead of `requirements.lock`. See [`docs/06_task_schema.md`](../docs/06_task_schema.md).
+Go tasks use `environment/go.mod` instead of `requirements.lock`. See [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md).
 
 ## Agent Output (evaluation runtime)
 
@@ -141,8 +141,8 @@ benchmark freeze. A non-empty task-local `repo/` alone is insufficient.
 
 ## Related Docs
 
-- [`docs/06_task_schema.md`](../docs/06_task_schema.md) — canonical task package fields
-- [`docs/07_incremental_task_rules.md`](../docs/07_incremental_task_rules.md) — lifecycle and promotion gates
+- [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md) — canonical task package fields
+- [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md) — lifecycle and promotion gates
 - [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md) — canonical source inclusion/digest rules
 - [`reports/audits/v3_main_readiness.md`](../reports/audits/v3_main_readiness.md) — current v3 release gate
-- [`docs/python/02_python_repo_task_inventory.md`](../docs/python/02_python_repo_task_inventory.md) — Python main inventory
+- [`docs/reference/python/02_python_repo_task_inventory.md`](../docs/reference/python/02_python_repo_task_inventory.md) — Python main inventory

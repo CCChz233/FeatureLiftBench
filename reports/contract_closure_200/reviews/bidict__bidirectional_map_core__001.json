@@ -1,0 +1,175 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-bidict-001: bidict and frozenbidict signatures claim -> None while every behavior requires returned mappings",
+        "CC-bidict-002: forward/inverse indexing, assignment, keys, inverse, hash, and immutability protocols are undeclared",
+        "CC-bidict-003: on_dup keyword is exercised but hidden inside unrelated **kw value typing"
+      ],
+      "verdict": "contradictory"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-bidict-001",
+      "resolution": "Declare bidict/frozenbidict as classes or factories returning explicit mutable/immutable bidirectional mapping types.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-bidict-002",
+      "resolution": "Publish mapping, inverse-view, mutation, key iteration, equality/hash, and immutability protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-bidict-003",
+      "resolution": "Declare on_dup separately from mapping keyword items.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Behavior is direct, but formal return types contradict every tested operation on the resulting mappings.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "bidict__bidirectional_map_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_bidict_forward_and_inverse_lookup",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_bidict_inverse_reflects_updates",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_frozenbidict_is_immutable",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_on_dup_raise_value_collision",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_key_and_value_duplication_error",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_ordered_move_to_end",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_frozenbidict_hash_stable",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_inverted_iterator",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_bidict_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Existence checks do not detect the incorrect None return contracts.",
+      "verdict": "contradictory"
+    }
+  ]
+}

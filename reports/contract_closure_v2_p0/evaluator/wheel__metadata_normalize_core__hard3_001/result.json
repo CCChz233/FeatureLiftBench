@@ -1,0 +1,169 @@
+{
+  "build": {
+    "duration_seconds": 0.040353,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": true,
+  "compactness": {
+    "closure_gold_file_completeness": "complete",
+    "compactness_class": "copy_heavy_pass",
+    "copied_file_count": 1,
+    "copied_fraction": 0.139535,
+    "copied_loc": 6,
+    "copy_detection": {
+      "evidence": {
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/wheel__metadata_normalize_core__hard3_001/featurelifted/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-8e6w5lg8/repo/src/wheel/_metadata.py",
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-8e6w5lg8/repo/src/wheel/wheelfile.py"
+        ]
+      },
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-8e6w5lg8/repo"
+    },
+    "excess_copied_loc": 0,
+    "external_dependencies": [],
+    "external_dependency_count": 0,
+    "extraction_ratio_to_reference": 1.0,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": 2,
+    "reference_loc": 43,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "archive_sha256": "c839e06e8a2e7bfc120303e4a3d78ccade60f6f66f6fe59a82cc2e82feb7f4e1",
+      "policy_id": "featureliftbench.full_repository_source.v2",
+      "requested_revision": "197012dcb8a9da10570d6486bc1a70305861e7f2",
+      "resolved_commit": "197012dcb8a9da10570d6486bc1a70305861e7f2",
+      "snapshot_scope": "full_tracked_tree",
+      "source_digest": "debe3e56176908b56a008d681c60188921eaa78a37b0ecc5c2bb6213ec5b2f3e",
+      "source_repo_id": "github__pypa__wheel",
+      "source_snapshot_id": "github__pypa__wheel__39d64ea4597b",
+      "status": "ready"
+    },
+    "status": "ok",
+    "submitted_file_count": 2,
+    "submitted_loc": 43,
+    "unapproved_external_dependencies": [],
+    "unapproved_external_dependency_count": 0
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "dependency lock is empty",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-w6lhy3uq/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-w6lhy3uq/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-w6lhy3uq/.venv"
+  },
+  "errors": [],
+  "eval_tooling": {
+    "duration_seconds": 0.362331,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 5.017958,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": true,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": true,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": true,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/wheel__metadata_normalize_core__hard3_001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 2,
+    "loc": 43,
+    "package_bytes": 4980,
+    "reference_loc": 43,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 4.914729,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": true,
+  "scores": {
+    "compactness_score": 1.0,
+    "extraction_ratio": 1.0,
+    "final_score": 1.0,
+    "functional_gate": 1.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "passed",
+  "submission": "wheel__metadata_normalize_core__hard3_001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "wheel__metadata_normalize_core__hard3_001",
+  "test_pass": true
+}

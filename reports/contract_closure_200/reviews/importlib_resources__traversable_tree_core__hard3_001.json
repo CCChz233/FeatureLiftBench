@@ -1,0 +1,175 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-importlib-res-001: files returns FileTraversable/MemoryTraversable objects whose name, is_file, is_dir, iterdir, open, read_bytes, read_text, and slash protocols are central but mostly absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B003",
+        "public_spec:B005",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-importlib-res-002: module-object and module-name anchors are not compared for equivalent roots",
+        "CC-importlib-res-003: MemoryTraversable open behavior and slash-operator traversal are promised but untested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-importlib-res-001",
+      "resolution": "Declare the complete observable Traversable protocol for both filesystem and memory nodes.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-importlib-res-002",
+      "resolution": "Add equivalent module-object/string anchor assertions or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-importlib-res-003",
+      "resolution": "Add MemoryTraversable.open and slash traversal cases or narrow B003/B005.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-importlib-res-004",
+      "resolution": "Correct filesystem and memory behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Filesystem/memory reads, nested joinpath, encoding, binary open, escape, and missing errors are strong; the core return protocol and two promised paths are not closed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_files_returns_traversable_for_package",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B006"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_read_text_and_binary_from_string_anchor",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_nested_joinpath_accepts_multiple_segments",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003",
+        "B004",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003",
+        "public_spec:B004",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_text_encoding_and_binary_open_are_preserved",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B005",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_parent_traversal_is_rejected",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_memory_traversable_matches_filesystem_contract",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_missing_resource_raises_traversal_error",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    }
+  ]
+}

@@ -106,8 +106,10 @@ def _category(path: Path) -> str:
         return "calibration"
     if "smoke" in parts:
         return "smoke"
-    if any(part.startswith("v1_1_") for part in path.parts):
+    if "validation" in parts:
         return "validation"
+    if "methods" in parts:
+        return "method"
     return "support"
 
 
@@ -119,6 +121,17 @@ def _lifecycle(path: Path, run_id: str) -> str:
     if run_id in FROZEN_RUN_IDS:
         return "frozen"
     return "candidate"
+
+
+def duplicate_run_ids(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    paths_by_id: dict[str, list[str]] = {}
+    for record in records:
+        paths_by_id.setdefault(str(record["run_id"]), []).append(str(record["raw_path"]))
+    return [
+        {"run_id": run_id, "raw_paths": sorted(paths)}
+        for run_id, paths in sorted(paths_by_id.items())
+        if len(paths) > 1
+    ]
 
 
 def _read_task_row(suite_dir: Path, entry: dict[str, Any]) -> dict[str, Any]:
@@ -299,10 +312,12 @@ def render_inventory(records: list[dict[str, Any]], study: dict[str, Any]) -> st
     lines = [
         "# Experiment Inventory",
         "",
+        "> **Documentation status: generated · Last verified: 2026-08-04**",
+        "",
         "Generated from task-local `run.json` and `eval/result.json`; `suite.summary` is not trusted as a primary metric source.",
         "",
-        "> The composition below is the historical `mixed_snapshot_v1` study. "
-        "No Full-Repository / No-Hint v2 model suite has been frozen yet.",
+        "> The composition below is the historical `mixed_snapshot_v1` study. Current "
+        "Python-200 evidence eligibility is maintained in `docs/STATUS.md`.",
         "",
         "## Historical mixed-snapshot Python-150 composition",
         "",
@@ -371,6 +386,7 @@ def main() -> int:
         "generated_at": generated_at,
         "suite_count": len(records),
         "clean_suites": sum(record["quality"]["ok"] for record in records),
+        "duplicate_run_ids": duplicate_run_ids(records),
         "flagged_suites": [
             {
                 "run_id": record["run_id"],

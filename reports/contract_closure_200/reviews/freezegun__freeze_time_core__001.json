@@ -1,0 +1,141 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-freezegun-001: freeze_time uses an ellipsis signature and its returned factory type is not specified",
+        "CC-freezegun-002: tick/move_to method signatures are absent"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "public_spec:B004",
+        "metadata.json#/environment/allowed_dependencies"
+      ],
+      "issues": [
+        "CC-freezegun-003: B004 says python-dateutil is the only third-party dependency, while the environment also allows and the oracle declares six"
+      ],
+      "verdict": "contradictory"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-freezegun-001",
+      "resolution": "Publish the tested freeze_time signature and returned factory variants.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-freezegun-002",
+      "resolution": "Publish tick(delta=...) and move_to(...) signatures.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-freezegun-003",
+      "resolution": "Align the public dependency claim with the locked six dependency or remove six from the evaluator environment.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Time behavior is upstream-backed; API and dependency declarations are not internally consistent.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "freezegun__freeze_time_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_freeze_context_manager",
+      "notes": "Behavior is explicit; context return type remains unspecified.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_freeze_decorator",
+      "notes": "Current metadata incorrectly maps the decorator case to B002; freeze_time callable surface is vague.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_unfrozen_after_context",
+      "notes": "Restoration behavior is explicit; callable surface remains vague.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_tick_moves_time",
+      "notes": "Current metadata includes unrelated B001/B004; tick signature and factory return are absent.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_move_to",
+      "notes": "Current metadata maps move_to to restoration B003; move_to signature is absent.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

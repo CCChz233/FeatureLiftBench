@@ -1,0 +1,121 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_spec:B004",
+        "metadata.json#/public_spec/required_api",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-starlette-route-001: B004 promises Route and Mount url_path_for, but only Router.url_path_for is declared and called",
+        "CC-starlette-route-002: Match FULL/PARTIAL states are promised but only Match.NONE is declared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B004",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-starlette-route-003: partial match behavior is not tested",
+        "CC-starlette-route-004: unknown convertor rejection is promised but untested",
+        "CC-starlette-route-005: missing route names/parameters for reverse routing are promised but only a success case exists"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-starlette-route-001",
+      "resolution": "Declare Route/Mount reverse-routing or narrow B004 to Router; declare Match FULL/PARTIAL if retained.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-starlette-route-003",
+      "resolution": "Add partial-match case or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-starlette-route-004",
+      "resolution": "Add unknown convertor rejection or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-starlette-route-005",
+      "resolution": "Add missing-name/parameter errors or narrow B004.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Typed route matching, mounts, method mismatch, and successful reverse routing are useful; advertised state/error/API breadth is incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "starlette__route_matching_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_router_matches_route",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B003",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_mount_prefix_and_url_path_for",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_method_mismatch_returns_no_match",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

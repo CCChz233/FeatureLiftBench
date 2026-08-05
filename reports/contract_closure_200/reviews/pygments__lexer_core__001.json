@@ -1,0 +1,133 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_lexer_public.py",
+        "hidden_tests/test_lexer_hidden.py"
+      ],
+      "issues": [
+        "CC-pygments-001: all tested nested token constants are absent from required_api",
+        "CC-pygments-002: lexer.name and lex iterable tuple result contract are undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B005",
+        "hidden_tests/test_lexer_hidden.py::test_triple_quoted_string_and_operator_tokens"
+      ],
+      "issues": [
+        "CC-pygments-003: modeline/encoding helper behavior is promised but no test invokes such a helper"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-pygments-001",
+      "resolution": "Declare the tested Token hierarchy constants and identity semantics.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-pygments-002",
+      "resolution": "Declare lexer.name and lex(code, lexer)->iterable[(TokenType,str)].",
+      "severity": "high"
+    },
+    {
+      "id": "CC-pygments-003",
+      "resolution": "Add direct modeline/encoding helper evidence or remove B005.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Python tokenization is scoped, but token identities and one promised helper family are not contract-closed.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "pygments__lexer_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_lexer_public.py::test_python_lexer_keywords_and_names",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_lexer_public.py::test_get_lexer_by_name_returns_python_lexer",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_lexer_hidden.py::test_string_and_comment_tokens_are_distinct",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_lexer_hidden.py::test_stripall_option_removes_whitespace_tokens",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_lexer_hidden.py::test_triple_quoted_string_and_operator_tokens",
+      "notes": "Current metadata includes alias lookup and unexercised modeline helpers B002/B005.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

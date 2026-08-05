@@ -1,0 +1,115 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-typer-001: Typer, Typer.command/callback/add_typer, Option, Argument, echo, and app/result protocols are all evaluator-required but required_api declares only CliRunner"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B004",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-typer-002: context passing is promised but the subcommand test does not create or inspect a context object"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-typer-003: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-typer-001",
+      "resolution": "Declare the complete Typer app/decorator/parameter/echo/invocation/result API used by tests.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-typer-002",
+      "resolution": "Add explicit context passing or narrow B004 to nested subcommands.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-typer-003",
+      "resolution": "Record immutable Typer/Click source closure.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Typed options/arguments, subcommands, optional paths, choices, usage errors, and invocation are useful; nearly the entire actual API and provenance are absent.",
+  "oracle_relation": "direct_oracle",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "typer__command_parser_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_typed_options_and_arguments",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002",
+        "B003",
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002",
+        "public_spec:B003",
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_subcommands_and_optional_path",
+      "notes": "It does not establish context passing B004.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_choice_validation",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

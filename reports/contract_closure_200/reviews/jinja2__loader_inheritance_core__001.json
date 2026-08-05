@@ -1,0 +1,127 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-jinja-loader-001: get_template returns Template and all success cases call Template.render, but Template/render are undeclared",
+        "CC-jinja-loader-002: BaseLoader subclass contract relies on get_source(environment, template)->tuple but that method protocol is undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B004",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-jinja-loader-003: trim_blocks is promised, but templates contain no newline-sensitive layout and the tests cannot distinguish trim behavior"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-jinja-loader-004: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-jinja-loader-001",
+      "resolution": "Declare Template.render and BaseLoader.get_source protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-jinja-loader-003",
+      "resolution": "Add a newline-sensitive trim_blocks oracle case or remove B004.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jinja-loader-004",
+      "resolution": "Record immutable loader/compile/render source closure.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-jinja-loader-005",
+      "resolution": "Correct inheritance and custom-loader mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Dict/custom loaders, missing template, and multi-level overrides are tested; return/callback APIs, trim behavior, and provenance are incomplete.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "jinja2__loader_inheritance_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_extends_overrides_block",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_multi_level_inheritance",
+      "notes": "It does not establish newline trimming B004.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_loader_module_required_for_missing_template",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_base_loader_subclass_get_source",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

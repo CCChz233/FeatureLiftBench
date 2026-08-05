@@ -1,0 +1,108 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_spec:B003"
+      ],
+      "issues": [
+        "CC-glom-001: T composition via attribute/item operations is promised but the T object's operator protocol is undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B001",
+        "public_spec:B003",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-glom-002: B001 promises dict/list/tuple and callable specs but only dotted strings, identity T, and Coalesce are tested",
+        "CC-glom-003: composed T traversal is promised but only glom(target, T) identity is tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-glom-001",
+      "resolution": "Declare T attribute/item composition and expression evaluation protocols.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-glom-002",
+      "resolution": "Add representative dict/list/tuple/callable spec oracle cases or narrow B001.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-glom-003",
+      "resolution": "Add a composed T traversal and failure case or narrow B003.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Dotted paths, identity T, Coalesce/default, and path error are tested; most advertised spec forms and T composition are not.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "glom__spec_eval_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_glom_path_and_t",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_coalesce_and_default",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_nested_path_error",
+      "notes": "This dotted-string failure does not exercise T composition B003.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

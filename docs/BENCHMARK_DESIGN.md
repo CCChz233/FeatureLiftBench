@@ -1,9 +1,11 @@
 # FeatureLiftBench 整体设计思路
 
-- **状态：** 当前 v3（2026-07-27，External-150 / Full-Repository / No-Hint Main）
+> **Documentation status: current · Last verified: 2026-08-04**
+
+- **状态：** 当前 Full-Repository / No-Hint 设计；release 数字见 [STATUS.md](STATUS.md)
 - **简明原则：** [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
 - **规格细则：** [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)（宪法）
-- **研究入口：** [CURRENT_RESEARCH.md](CURRENT_RESEARCH.md)
+- **研究入口：** [STATUS.md](STATUS.md) 与 [paper/](paper/README.md)
 - **文档地图：** [README.md](README.md)
 
 本文把近期结论收成一条清晰主线：**测什么、怎么出题、Agent 看见什么、怎么打分、做什么实验、不做什么。**
@@ -76,8 +78,8 @@ start-here/support retrieval 未改善 hidden 通过率。
 
 ### 2.1 公开契约必须清楚
 
-- `required_api` / `optional_api`（强制 vs 可选；禁止模糊「导出超集」）  
-- behaviors：前置条件 · 操作 · 可观察结果  
+- `required_api` / `optional_api`（强制 vs 可选；禁止模糊「导出超集」）
+- behaviors：前置条件 · 操作 · 可观察结果
 - exclusions、forbidden
 
 `required_api` **不能只是符号名单**。应覆盖导出路径、实体类型、函数/方法签名、默认参数、必需成员、必要异常类型等 **API surface**。Hidden 不得要求未声明的 surface（例如只声明 `State` 却要求未声明的 `State.parent`）。
@@ -94,29 +96,26 @@ source entrypoints 若作为维护 provenance 保留，必须位于 evaluator �
 ### 2.2 两级私有 evaluator 测试（同契约，不同覆盖深度）
 
 - `public_tests/` 是历史目录名，表示基础契约测试层，**不表示 Agent 可见**。
-- Public 与 hidden **必须来自同一组公开行为契约**。  
-- Hidden **不得**增加新 API、新行为类别或新环境假设；可增加输入组合、状态序列、边界与异常路径。  
-- Public 可只覆盖部分 behavior，或对全部行为做浅层 smoke。  
-- **双向覆盖（防漏测）：**  
-  - 每个 public/hidden test ≥1 个公开 behavior ID；  
-  - 每个 `required_api` 至少被一个 **hidden** test 覆盖；  
-  - 每个 required behavior 至少被一个 **hidden** test 覆盖。  
+- Public 与 hidden **必须来自同一组公开行为契约**。
+- Hidden **不得**增加新 API、新行为类别或新环境假设；可增加输入组合、状态序列、边界与异常路径。
+- Public 可只覆盖部分 behavior，或对全部行为做浅层 smoke。
+- **双向覆盖（防漏测）：**
+  - 每个 public/hidden test ≥1 个公开 behavior ID；
+  - 每个 `required_api` 至少被一个 **hidden** test 覆盖；
+  - 每个 required behavior 至少被一个 **hidden** test 覆盖。
 - 默认 Main：workspace 不可访问两级 evaluator 测试；提交后运行同一组测试。
 
-### 2.3 当前缺陷与迁移状态（2026-07-27）
+### 2.3 已解决的历史双轨问题
 
 历史实现存在双轨：包内手写 `TASK.md`、metadata、`build_task_prompt` 不一致（例：isort agent 可见 API 缺 `ProfileDoesNotExist`，hidden 却要求）。
 
 **已落地：** `public_spec` 唯一源 → `render()` 生成 TASK → `spec_hash`
 门禁。操作与准入规则见 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 和
-[07_incremental_task_rules.md](07_incremental_task_rules.md)。
+[07_incremental_task_rules.md](reference/07_incremental_task_rules.md)。
 
-**当前进度：** **150/150 spec-compliant、150/150 Full-Repository、
-150/150 No-Hint**。契约与 hidden 的自动双向门禁通过；canonical registry
-包含 126 个外部 OSS repositories / 132 个 immutable snapshots，全部
-`ready`。Python-150 Oracle 已在 Docker 中完成 150 × 3 重验，
-compactness 已改为 frozen-reference-relative 独立指标。新的 v3 freeze
-由严格 readiness、Oracle 与对抗性 canary 门禁共同生成。
+当前 release 规模、source registry、Oracle 和 canary 状态不在本文重复维护，
+统一见 [STATUS.md](STATUS.md)。Compactness 使用 frozen-reference-relative
+独立指标，release 由 readiness、Oracle 与对抗性 canary 门禁共同约束。
 
 历史任务目录中的 pruned/mixed `repo/` 保留作 provenance 和旧协议复现，
 但 v3 Agent workspace 只从经 digest 校验的 canonical source archive
@@ -140,8 +139,8 @@ FunctionalPass =
 
 其中：
 
-- **BuildPass：** 干净环境中安装/导入（或语言对应的 build）成功。  
-- **PublicTestsPass / HiddenTestsPass：** 对应 pytest（或 Go 等价）通过。  
+- **BuildPass：** 干净环境中安装/导入（或语言对应的 build）成功。
+- **PublicTestsPass / HiddenTestsPass：** 对应 pytest（或 Go 等价）通过。
 - **IsolationPass：** forbidden import/dependency、运行时 import origin、source
   filesystem absence、禁用网络和 submission location 等隔离子门全部通过。
 
@@ -149,7 +148,7 @@ FunctionalPass =
 
 **口径分离：** `functional_gate` 与 OpenHands suite 的 `run_status`（Agent 是否正常结束工作流）**分开计算**。主榜 **Pass@1** 采用 evaluator 功能门，不采用 Agent 工作流是否正常结束。这避免「hidden 通过数」与「formal pass」因工作流状态被混淆。
 
-- Gate：行为是否在干净环境成立（含 Agent 交卷前可能从未跑过的 hidden）  
+- Gate：行为是否在干净环境成立（含 Agent 交卷前可能从未跑过的 hidden）
 - 紧凑项：功能结果之外独立报告，使用 reference/reference-support-set
   相对指标；**不是**最小性证明
 
@@ -159,13 +158,13 @@ FunctionalPass =
 
 Functional 阶段只挂载 submission、测试、锁定依赖、允许 wheels、harness 和
 输出目录；source/reference 只进入不执行 submission 的只读 metrics 阶段。
-详情：[03_evaluator_and_scoring.md](03_evaluator_and_scoring.md)
+详情：[EVALUATION.md](EVALUATION.md)
 
 ---
 
 ## 4. 实验臂（语义契约相同）
 
-完整规定见 [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md)。
+完整规定见 [EVALUATION.md](EVALUATION.md)。
 
 | 臂 | 仓库上下文 | 定位提示 | Benchmark tests |
 | --- | --- | --- | --- |
@@ -184,7 +183,8 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 实验框架已实现 test visibility / prompt-style profiles：
 `…_main` / `…_public_feedback` / `…_short_prompt`，以及显式 opt-in
 `--agent-public-tests`。可验证的 No-Hint Main 与 Entrypoint-Hint 切换已
-落地；Full-Repository materialization 已完成 150/150。历史 `no_public`
+落地；当前 release 的 Full-Repository materialization 状态见
+[STATUS.md](STATUS.md)。历史 `no_public`
 名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。
 
 ---
@@ -201,9 +201,9 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 
 说明：
 
-- **Benchmark 基础主线**：先冻结规格、任务质量与评测口径。  
-- **方法研究主线**：在 **合规任务** 上验证契约/闭包恢复方法；不提前承诺某一工具有效。  
-- 「降级」的是 **当前 start-here retrieval 产品形态**，不是否定整个 Fact Graph / 关系抽取基建。  
+- **Benchmark 基础主线**：先冻结规格、任务质量与评测口径。
+- **方法研究主线**：在 **合规任务** 上验证契约/闭包恢复方法；不提前承诺某一工具有效。
+- 「降级」的是 **当前 start-here retrieval 产品形态**，不是否定整个 Fact Graph / 关系抽取基建。
 - 闭包类干预宜称 **Contract Checklist / Probe / Reference Support Set（上界）**，避免「Oracle Closure / 唯一最小闭包」用语。
 
 RSG 的当前可执行说明见
@@ -220,28 +220,18 @@ RSG 的当前可执行说明见
 读公开契约 → 构实现闭包 → 解耦改写 →（可选）自测/自建探针 → prune → 提交
 ```
 
-这用于理解「哪里断了」。  
+这用于理解「哪里断了」。
 **Benchmark 入库与评测不得强制** Agent 采用该流程或任何中间状态机。
 
 ---
 
 ## 7. 推进顺序
 
-| # | 项 | 状态 |
-| --- | --- | --- |
-| 1 | 冻结 `TASK_DESIGN_RULES.md` 与本文叙事 | ✅ |
-| 2 | 实现 validate：API / behavior / TASK hash / isolation | ✅ |
-| 3 | 试点 isort、transitions、scrapy + hidden 重判 | ✅ |
-| 4 | 主榜 `spec_status: legacy` 标注 + 分批迁移 | ✅ 150/150 compliant；0 legacy |
-| 5 | Test-blind Main / Public-feedback / Short-prompt 工程 | ✅ |
-| 6 | `mixed_snapshot_v1` OpenHands 基线 | ⚠️ 已有候选结果；仅作历史/消融证据 |
-| 7 | Full-repository source + No-Hint workspace + compactness 迁移 | ✅ 150/150 |
-| 8 | v3 Oracle / isolation / controls / freeze | ✅ 450/450；12/12 canaries |
-| 9 | v3 Full-Repository / No-Hint Main baseline | ⏳ |
-| 10 | Contract Checklist / Probe / Reference Support Set | ⏳ |
-| 11 | RSG start-here 仅 retrieval baseline | ✅ 政策 |
+设计、task contract、source policy 和 evaluator 必须先冻结，再运行模型与方法
+实验。当前执行顺序和阻塞项只在 [STATUS.md](STATUS.md) 维护；历史迁移和方法
+路线保存在 [archive/](archive/plans/README.md)。
 
-手册：[SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md)
+当前操作手册：[SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md)
 
 ---
 
@@ -252,9 +242,8 @@ RSG 的当前可执行说明见
 | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) | v3 简明权威原则 |
 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) | 出题与门禁宪法 |
 | [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) | canonical source policy |
-| [EXPERIMENT_ARMS.md](EXPERIMENT_ARMS.md) | Main 与消融臂 |
-| [03_evaluator_and_scoring.md](03_evaluator_and_scoring.md) | 评测与打分（实现口径） |
-| [06_task_schema.md](06_task_schema.md) | 包布局 |
-| [07_incremental_task_rules.md](07_incremental_task_rules.md) | 生命周期 |
-| [SERVER_RUNBOOK_PYTHON150.md](SERVER_RUNBOOK_PYTHON150.md) | v3 正式运行手册 |
-| [FINDINGS.md](FINDINGS.md) | 已有实验结果解读 |
+| [EVALUATION.md](EVALUATION.md) | Main、消融、评测与报告 |
+| [06_task_schema.md](reference/06_task_schema.md) | 包布局 |
+| [07_incremental_task_rules.md](reference/07_incremental_task_rules.md) | 生命周期 |
+| [SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md) | 当前正式运行手册 |
+| [STATUS.md](STATUS.md) | 当前状态与结果边界 |

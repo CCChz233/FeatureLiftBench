@@ -12,7 +12,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 CURRENT_POINTER = ROOT / "artifacts/research_analysis/v1_1/current_oracle_freeze.json"
 OUTPUT = ROOT / "artifacts/research_analysis/v1_1/oracle_failure_audit.json"
-REPORT = ROOT / "docs/research_analysis/ORACLE_REVALIDATION_REPORT.md"
+REPORT = ROOT / "docs/reference/research_analysis/ORACLE_REVALIDATION_REPORT.md"
 
 # Root causes were assigned after inspection of rep-1 build/public/hidden logs.
 # The script verifies the expected evidence pattern before emitting the audit.
@@ -53,7 +53,7 @@ def log_text(run_root: Path, task_id: str) -> tuple[str, list[str]]:
 def main() -> int:
     pointer = load(CURRENT_POINTER)
     freeze_id = str(pointer["freeze_id"])
-    run_root = ROOT / "experiments/v1_1_oracle_validation" / freeze_id / "full"
+    run_root = ROOT / "experiments/validation/v1_1/v1_1_oracle_validation" / freeze_id / "full"
     summary = load(run_root / "summary.json")
     failed = set(summary["failed_task_ids"])
     if not failed <= set(TRIAGE):

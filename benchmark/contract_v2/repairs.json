@@ -1,0 +1,323 @@
+{
+  "schema_version": "featureliftbench.contract_repairs.v1",
+  "base_suite_id": "python200-full-repository-no-hint-20260801-v1",
+  "tasks": {
+    "bidict__bidirectional_map_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare concrete bidirectional mapping constructors and evaluator-observed protocols.",
+      "api_upsert": [
+        {"path": "featurelifted.bidict", "kind": "class", "signature": "(arg=(), /, *, on_dup=ON_DUP_DEFAULT, **items) -> bidict"},
+        {"path": "featurelifted.bidict.__getitem__", "kind": "method", "signature": "(self, key) -> value"},
+        {"path": "featurelifted.bidict.__setitem__", "kind": "method", "signature": "(self, key, value) -> None"},
+        {"path": "featurelifted.bidict.keys", "kind": "method", "signature": "(self) -> KeysView"},
+        {"path": "featurelifted.frozenbidict", "kind": "class", "signature": "(arg=(), /, **items) -> frozenbidict"},
+        {"path": "featurelifted.frozenbidict.__getitem__", "kind": "method", "signature": "(self, key) -> value"},
+        {"path": "featurelifted.frozenbidict.__hash__", "kind": "method", "signature": "(self) -> int"}
+      ],
+      "mapping_updates": {
+        "hidden_tests/test_hidden_behavior.py::test_frozenbidict_rejects_mutation": ["B001"]
+      }
+    },
+    "dateparser__parse_settings_pipeline_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Align Settings construction and error semantics with the specified adapter.",
+      "behavior_text": {
+        "B002": "Settings accepts one optional mapping plus keyword options from the documented allowlist, controls timezone awareness and DATE_ORDER, and raises TypeError when a recognized option receives an invalid None value."
+      },
+      "mapping_updates": {
+        "public_tests/test_public_api.py::test_parse_with_languages": ["B001"],
+        "public_tests/test_public_api.py::test_settings_timezone_aware": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_detect_languages_es_fr": ["B003"],
+        "hidden_tests/test_hidden_behavior.py::test_prefer_dates_from_past": ["B001", "B002"],
+        "hidden_tests/test_hidden_behavior.py::test_date_order_dmy": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_invalid_settings_key": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface": ["B004", "B006"]
+      }
+    },
+    "distlib__wheel_metadata_core__hard3_001": {
+      "accept_api_candidates": true,
+      "adjudication": "Align RECORD helper behavior with the adapted path/digest contract.",
+      "behavior_text": {
+        "B001": "parse_record uses CSV quoting rules and returns complete (normalized path, digest or None, integer size or None) tuples in input order.",
+        "B002": "to_posix deterministically converts backslashes to forward slashes on every host, and normalize_record_path removes redundant dot segments and leading ./ prefixes.",
+        "B003": "validate_record_hash validates an optional RECORD sha256 digest field syntactically; it does not read file content or claim content-hash verification."
+      },
+      "mapping_updates": {
+        "hidden_tests/test_hidden_contract.py::test_to_posix_converts_separators": ["B002"],
+        "hidden_tests/test_hidden_contract.py::test_normalize_record_path_strips_dot_prefix": ["B002"],
+        "hidden_tests/test_hidden_contract.py::test_parse_record_handles_missing_hash_and_size": ["B001"],
+        "hidden_tests/test_hidden_contract.py::test_validate_record_hash": ["B003"]
+      },
+      "oracle_manifest": {
+        "notes": "Adapted Wheel RECORD parser. validate_record_hash validates digest syntax only; it does not read path content. to_posix treats both slash styles deterministically."
+      },
+      "reference_replacements": [
+        {
+          "path": "featurelifted/__init__.py",
+          "old": "def to_posix(path: str) -> str:\n    if os.sep == \"/\":\n        return path\n    return path.replace(os.sep, \"/\")",
+          "new": "def to_posix(path: str) -> str:\n    return path.replace(\"\\\\\", \"/\")",
+          "count": 1
+        }
+      ]
+    },
+    "email_validator__validate_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare validate_email and its returned ValidatedEmail protocol.",
+      "api_remove": ["featurelifted.EmailUndeliverableError"],
+      "api_upsert": [
+        {"path": "featurelifted.ValidatedEmail.ascii_domain", "kind": "attribute"},
+        {"path": "featurelifted.ValidatedEmail.display_name", "kind": "attribute"},
+        {"path": "featurelifted.ValidatedEmail.original", "kind": "attribute"},
+        {"path": "featurelifted.ValidatedEmail.smtputf8", "kind": "attribute"},
+        {"path": "featurelifted.ValidatedEmail.domain_address", "kind": "attribute"}
+      ],
+      "behavior_text": {
+        "B008": "Unicode local parts are normalized to NFC before ValidatedEmail.local_part and normalized are returned."
+      },
+      "mapping_updates": {
+        "public_tests/test_public_api.py::test_invalid_empty_local_part": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_reserved_domain_rejected": ["B002", "B006"],
+        "hidden_tests/test_hidden_behavior.py::test_test_environment_allows_dot_test": ["B006"],
+        "hidden_tests/test_hidden_behavior.py::test_unicode_nfc_local_part": ["B008"]
+      }
+    },
+    "freezegun__freeze_time_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Publish factory signatures and correct dependency-scope wording.",
+      "api_upsert": [
+        {
+          "path": "featurelifted.freeze_time",
+          "kind": "function",
+          "signature": "(time_to_freeze=None, tz_offset=0, ignore=None, tick: bool = False, as_arg: bool = False, as_kwarg: str = '', auto_tick_seconds: float = 0, real_asyncio: bool = False) -> context manager/decorator yielding FrozenDateTimeFactory | TickingDateTimeFactory | StepTickTimeFactory"
+        }
+      ],
+      "behavior_text": {
+        "B004": "python-dateutil and six are the only allowed third-party runtime dependencies."
+      },
+      "mapping_updates": {
+        "public_tests/test_public_api.py::test_freeze_decorator": ["B001"],
+        "hidden_tests/test_hidden_behavior.py::test_tick_moves_time": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_move_to": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_unfrozen_after_hidden_context": ["B001", "B003"],
+        "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface": ["B004", "B006"]
+      }
+    },
+    "multidict__multidict_mutation_core__hard3_001": {
+      "accept_api_candidates": true,
+      "adjudication": "Restore upstream read-only proxy semantics and declare mapping protocols.",
+      "api_remove": ["featurelifted.CIMultiDictProxy.add"],
+      "api_upsert": [
+        {"path": "featurelifted.MultiDict.__getitem__", "kind": "method", "signature": "(self, key: str) -> object"},
+        {"path": "featurelifted.MultiDict.__setitem__", "kind": "method", "signature": "(self, key: str, value: object) -> None"},
+        {"path": "featurelifted.MultiDict.__eq__", "kind": "method", "signature": "(self, other: object) -> bool"},
+        {"path": "featurelifted.CIMultiDict.__getitem__", "kind": "method", "signature": "(self, key: str) -> object"},
+        {"path": "featurelifted.CIMultiDict.__setitem__", "kind": "method", "signature": "(self, key: str, value: object) -> None"},
+        {"path": "featurelifted.CIMultiDict.__eq__", "kind": "method", "signature": "(self, other: object) -> bool"},
+        {"path": "featurelifted.MultiDictProxy.__getitem__", "kind": "method", "signature": "(self, key: str) -> object"},
+        {"path": "featurelifted.MultiDictProxy.getall", "kind": "method", "signature": "(self, key: str) -> list[object]"},
+        {"path": "featurelifted.CIMultiDictProxy.__getitem__", "kind": "method", "signature": "(self, key: str) -> object"},
+        {"path": "featurelifted.CIMultiDictProxy.getall", "kind": "method", "signature": "(self, key: str) -> list[object]"}
+      ],
+      "behavior_text": {
+        "B003": "MultiDictProxy and CIMultiDictProxy are read-only live views: mutations applied to their base mappings are reflected immediately, while assignment, deletion, and add through a proxy are rejected."
+      },
+      "mapping_updates": {
+        "hidden_tests/test_hidden_contract.py::test_popone_and_popall_semantics": ["B001", "B002"],
+        "hidden_tests/test_hidden_contract.py::test_cimultidict_proxy_reflects_base": ["B003", "B004"]
+      },
+      "oracle_manifest": {
+        "notes": "Pure-Python multidict subset with upstream-compatible read-only live proxy views. C extension and typing-only modules are excluded."
+      },
+      "reference_replacements": [
+        {
+          "path": "featurelifted/__init__.py",
+          "old": "    def __setitem__(self, key: str, value: object) -> None:\n        self._base[key] = value",
+          "new": "    def __setitem__(self, key: str, value: object) -> None:\n        raise TypeError(f\"{type(self).__name__} is read-only\")",
+          "count": 2
+        },
+        {
+          "path": "featurelifted/__init__.py",
+          "old": "    def add(self, key: str, value: object) -> None:\n        self._base.add(key, value)",
+          "new": "    def add(self, key: str, value: object) -> None:\n        raise TypeError(f\"{type(self).__name__} is read-only\")",
+          "count": 2
+        },
+        {
+          "path": "featurelifted/__init__.py",
+          "old": "    def __delitem__(self, key: str) -> None:\n        del self._base[key]",
+          "new": "    def __delitem__(self, key: str) -> None:\n        raise TypeError(f\"{type(self).__name__} is read-only\")",
+          "count": 2
+        }
+      ]
+    },
+    "pendulum__parse_format_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Correct constructor kinds and declare observable value protocols.",
+      "api_remove": ["featurelifted.Time", "featurelifted.fixed_timezone"],
+      "api_upsert": [
+        {"path": "featurelifted.DateTime.format", "kind": "method", "signature": "(self, fmt: str) -> str"},
+        {"path": "featurelifted.Duration.total_seconds", "kind": "method", "signature": "(self) -> float"}
+      ],
+      "mapping_updates": {
+        "public_tests/test_public_api.py::test_duration_constructor_and_total_seconds": ["B003", "B005"]
+      }
+    },
+    "pyjwt__encode_decode_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Publish encode/decode signatures and remove the incoherent PyJWT runtime dependency.",
+      "behavior_remove": ["B004"],
+      "mapping_updates": {
+        "public_tests/test_public_api.py::test_expired_token": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_custom_header": ["B001", "B003"],
+        "hidden_tests/test_hidden_behavior.py::test_wrong_secret_hidden": ["B002"]
+      },
+      "remove_requirement_prefixes": ["pyjwt", "cffi", "cryptography", "pycparser"],
+      "oracle_manifest": {
+        "runtime_dependencies": [],
+        "notes": "Adapted, self-contained HS256 JWT encode/decode scope. It uses standard-library HMAC and installs neither PyJWT nor optional asymmetric-algorithm dependencies."
+      }
+    },
+    "python_dateutil__relativedelta_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare relativedelta as the upstream class and expose observed arithmetic/value protocols.",
+      "api_upsert": [
+        {"path": "featurelifted.relativedelta.__radd__", "kind": "method", "signature": "(self, other: date | datetime) -> date | datetime"},
+        {"path": "featurelifted.relativedelta.__rsub__", "kind": "method", "signature": "(self, other: date | datetime) -> date | datetime"},
+        {"path": "featurelifted.relativedelta.hours", "kind": "attribute"},
+        {"path": "featurelifted.relativedelta.minutes", "kind": "attribute"},
+        {"path": "featurelifted.MO.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.MO.weekday", "kind": "attribute"},
+        {"path": "featurelifted.TU.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.WE.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.TH.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.FR.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.SA.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.SU.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"}
+      ]
+    },
+    "python_dateutil__rrule_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare recurrence constructors, iteration, and rruleset mutation protocols.",
+      "api_upsert": [
+        {"path": "featurelifted.rrule.__iter__", "kind": "method", "signature": "(self) -> iterator[datetime]"},
+        {"path": "featurelifted.rruleset.rdate", "kind": "method", "signature": "(self, value: datetime) -> None"},
+        {"path": "featurelifted.rruleset.__iter__", "kind": "method", "signature": "(self) -> iterator[datetime]"},
+        {"path": "featurelifted.MO.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.TU.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.WE.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.TH.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.FR.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.SA.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"},
+        {"path": "featurelifted.SU.__call__", "kind": "method", "signature": "(self, n: int) -> weekday"}
+      ],
+      "mapping_updates": {
+        "hidden_tests/test_hidden_behavior.py::test_interval_and_until_boundaries": ["B001"],
+        "hidden_tests/test_hidden_behavior.py::test_rruleset_rdate_includes_explicit_date": ["B002"]
+      }
+    },
+    "ruamel_yaml__roundtrip_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare YAML as a class and expose load/dump and round-trip mapping protocols.",
+      "api_upsert": [
+        {"path": "featurelifted.CommentedMap.__getitem__", "kind": "method", "signature": "(self, key) -> value"},
+        {"path": "featurelifted.CommentedMap.keys", "kind": "method", "signature": "(self) -> KeysView"},
+        {"path": "featurelifted.comments", "kind": "module"},
+        {"path": "featurelifted.comments.Format", "kind": "class"},
+        {"path": "featurelifted.comments.Format.set_flow_style", "kind": "method", "signature": "(self) -> None"}
+      ],
+      "mapping_updates": {
+        "hidden_tests/test_hidden_behavior.py::test_key_order_hidden": ["B002"],
+        "hidden_tests/test_hidden_behavior.py::test_no_ruamel_import_surface": ["B005"]
+      },
+      "reference_replacements": [
+        {
+          "path": "featurelifted/main.py",
+          "old": "try:\n    from _ruamel_yaml import CParser, CEmitter  # type: ignore\nexcept:  # NOQA\n    CParser = CEmitter = None",
+          "new": "# The lifted package is intentionally pure Python. The optional C extension\n# imports the forbidden upstream ruamel.yaml package internally.\nCParser = CEmitter = None",
+          "count": 1
+        }
+      ]
+    },
+    "unidiff__patch_hunk_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare parser container protocols and disambiguate malformed versus multi-file patches.",
+      "api_upsert": [
+        {"path": "featurelifted.PatchSet.__len__", "kind": "method", "signature": "(self) -> int"},
+        {"path": "featurelifted.PatchSet.__getitem__", "kind": "method", "signature": "(self, index: int) -> PatchedFile"},
+        {"path": "featurelifted.PatchSet.__iter__", "kind": "method", "signature": "(self) -> iterator[PatchedFile]"},
+        {"path": "featurelifted.PatchedFile.__len__", "kind": "method", "signature": "(self) -> int"},
+        {"path": "featurelifted.PatchedFile.__getitem__", "kind": "method", "signature": "(self, index: int) -> Hunk"},
+        {"path": "featurelifted.PatchedFile.__iter__", "kind": "method", "signature": "(self) -> iterator[Hunk]"},
+        {"path": "featurelifted.PatchedFile.path", "kind": "attribute"},
+        {"path": "featurelifted.PatchedFile.added", "kind": "attribute"},
+        {"path": "featurelifted.PatchedFile.removed", "kind": "attribute"},
+        {"path": "featurelifted.Hunk.__iter__", "kind": "method", "signature": "(self) -> iterator[patch.Line]"},
+        {"path": "featurelifted.patch.Line", "kind": "class"},
+        {"path": "featurelifted.patch.Line.value", "kind": "attribute"},
+        {"path": "featurelifted.patch.Line.line_type", "kind": "attribute"}
+      ],
+      "behavior_text": {
+        "B003": "PatchSet raises UnidiffParseError for malformed or internally inconsistent short hunks while accepting valid patches containing multiple files."
+      },
+      "mapping_updates": {
+        "hidden_tests/test_hidden_behavior.py::test_multiple_files": ["B001", "B003"],
+        "hidden_tests/test_hidden_behavior.py::test_added_removed_counts": ["B004"]
+      }
+    },
+    "wheel__metadata_normalize_core__hard3_001": {
+      "accept_api_candidates": true,
+      "adjudication": "Specify the intentional three-value wheel filename adapter and helper provenance.",
+      "behavior_text": {
+        "B002": "parse_wheel_filename validates a wheel filename and returns the adapted three-tuple (normalized distribution, version, build tag or empty string); compatibility tags are validated but intentionally not returned.",
+        "B003": "split_sections preserves preamble and named section content in order, and urlsafe_b64encode returns unpadded URL-safe Base64 bytes."
+      },
+      "mapping_updates": {
+        "hidden_tests/test_hidden_contract.py::test_split_sections_and_b64": ["B003"],
+        "hidden_tests/test_hidden_contract.py::test_safe_name_extra_hidden": ["B001"]
+      },
+      "oracle_manifest": {
+        "target_api": ["featurelifted.safe_name", "featurelifted.safe_extra", "featurelifted.split_sections", "featurelifted.parse_wheel_filename", "featurelifted.urlsafe_b64encode"],
+        "notes": "Explicit adapter over wheel metadata helpers: parse_wheel_filename returns distribution, version, and build only after validating the compatibility-tag suffix; split_sections and unpadded URL-safe Base64 behavior are included."
+      }
+    },
+    "xmltodict__xml_parse_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Correct parse and unparse to callable function contracts.",
+      "api_remove": ["featurelifted.ParsingInterrupted"],
+      "mapping_updates": {
+        "hidden_tests/test_hidden_behavior.py::test_unparse_custom_attr_prefix_roundtrip": ["B002", "B006"],
+        "hidden_tests/test_hidden_behavior.py::test_repeated_siblings_hidden": ["B001", "B003"]
+      }
+    },
+    "yarl__url_model_core__001": {
+      "accept_api_candidates": true,
+      "adjudication": "Declare URL construction, value properties, helper methods, and query protocols.",
+      "api_remove": [
+        "featurelifted.Query",
+        "featurelifted.QueryVariable",
+        "featurelifted.SimpleQuery",
+        "featurelifted.cache_clear",
+        "featurelifted.cache_configure",
+        "featurelifted.cache_info"
+      ],
+      "api_upsert": [
+        {"path": "featurelifted.URL.__str__", "kind": "method", "signature": "(self) -> str"},
+        {"path": "featurelifted.URL.join", "kind": "method", "signature": "(self, url: URL) -> URL"},
+        {"path": "featurelifted.URL.with_query", "kind": "method", "signature": "(self, *args, **kwargs) -> URL"},
+        {"path": "featurelifted.URL.update_query", "kind": "method", "signature": "(self, *args, **kwargs) -> URL"},
+        {"path": "featurelifted.URL.joinpath", "kind": "method", "signature": "(self, *paths: str) -> URL"},
+        {"path": "featurelifted.URL.human_repr", "kind": "method", "signature": "(self) -> str"}
+      ],
+      "behavior_text": {
+        "B002": "URL.join accepts only URL operands and applies RFC-style absolute/relative path, query, and fragment replacement or inheritance rules.",
+        "B003": "URL.query is an ordered MultiDict-style read-only result supporting key lookup, membership, len(), getall(), and items() with duplicate-key order preserved and semicolons retained inside values.",
+        "B005": "Unicode hosts are IDNA-encoded in str(URL), punycode hosts are decoded by URL.host and human_repr(), and default HTTP port 80 is omitted from string form."
+      },
+      "mapping_updates": {
+        "public_tests/test_url_public.py::test_with_query_kwargs": ["B001", "B006"],
+        "hidden_tests/test_url_hidden.py::test_query_no_double_unquote": ["B001"],
+        "hidden_tests/test_url_hidden.py::test_join_fragment_rules": ["B002"],
+        "hidden_tests/test_url_hidden.py::test_unicode_host_is_idna_encoded": ["B005"]
+      }
+    }
+  }
+}

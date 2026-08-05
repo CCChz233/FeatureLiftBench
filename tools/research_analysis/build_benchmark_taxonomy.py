@@ -557,7 +557,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--report",
         type=Path,
-        default=Path("docs/research_analysis/BENCHMARK_TAXONOMY_REPORT.md"),
+        default=Path("docs/reference/research_analysis/BENCHMARK_TAXONOMY_REPORT.md"),
         help="Markdown report output path, relative to --repo-root unless absolute",
     )
     parser.add_argument("--strict", action="store_true", help="fail on any audit invariant violation")

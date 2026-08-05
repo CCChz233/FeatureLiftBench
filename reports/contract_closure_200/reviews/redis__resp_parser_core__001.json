@@ -1,0 +1,146 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py",
+        "metadata.json#/public_spec/required_api"
+      ],
+      "issues": [
+        "CC-redis-001: returned RESP parser read_response and connection/buffer setup protocols are the actual evaluator endpoints but are undeclared"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "public_spec:B004",
+        "public_spec:B005",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-redis-002: optional bulk-string decoding/byte preservation is promised but the mapped RESP3 null/boolean case is unrelated",
+        "CC-redis-003: command-to-RESP bulk-array encoding is promised but tests only parse an array and reject Encoder.encode(bool)",
+        "CC-redis-004: incremental SocketBuffer behavior is promised but not directly varied or asserted"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "evaluation/oracle_manifest.json",
+        "task_dossier"
+      ],
+      "issues": [
+        "CC-redis-005: no oracle source files are recorded"
+      ],
+      "verdict": "underspecified"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-redis-001",
+      "resolution": "Declare parser read_response and required connection/socket buffer protocol.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-redis-002",
+      "resolution": "Add decode_responses true/false bulk cases or narrow B002.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-redis-003",
+      "resolution": "Add command array serialization or narrow B004 to scalar Encoder behavior.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-redis-004",
+      "resolution": "Add split-read incremental buffering or narrow B005.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-redis-005",
+      "resolution": "Record immutable redis parser source closure.",
+      "severity": "high"
+    }
+  ],
+  "notes": "RESP2/3 scalars, arrays, errors, and bool rejection are useful; parser API and three advertised mechanisms are not closed.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "redis__resp_parser_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_resp2_simple_and_bulk_replies",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_resp2_array_reply",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_resp2_error_reply_returns_response_error",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_resp3_null_and_boolean",
+      "notes": "Current B002/B005/B006 mappings do not describe RESP3 scalar parsing.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_encoder_rejects_bool",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

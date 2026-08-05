@@ -1,0 +1,185 @@
+{
+  "build": {
+    "duration_seconds": 0.088032,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "build_pass": true,
+  "compactness": {
+    "closure_gold_file_completeness": "unresolved",
+    "compactness_class": "copy_heavy_pass",
+    "copied_file_count": 6,
+    "copied_fraction": 0.953079,
+    "copied_loc": 650,
+    "copy_detection": {
+      "evidence": {
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/__init__.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/__init__.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/exceptions.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/exceptions.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/rfc_constants.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/rfc_constants.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/syntax.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/syntax.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/types.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/types.py"
+        ],
+        "/Users/chz/code/FeatureLiftBench/benchmark/contract_v2/generated_references/email_validator__validate_core__001/featurelifted/validate_email.py": [
+          "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo/email_validator/validate_email.py"
+        ]
+      },
+      "limitations": "Conservative diagnostic heuristic; requires manual audit for paper claims.",
+      "method": "normalized_nonempty_line_sequence",
+      "minimum_matching_run": 3,
+      "source_path": "/private/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-source-metrics-31tbfedm/repo"
+    },
+    "excess_copied_loc": null,
+    "external_dependencies": [
+      "idna"
+    ],
+    "external_dependency_count": 1,
+    "extraction_ratio_to_reference": 1.0,
+    "forbidden_source_import": false,
+    "path_leakage": false,
+    "reference_file_count": 6,
+    "reference_loc": 682,
+    "runtime_dependency_count": 0,
+    "source_provenance": {
+      "archive_sha256": "5c92fb6b6538ff408e6f55484c07ca3ad5909629a9d7bcb9bec54baa351ca409",
+      "policy_id": "featureliftbench.full_repository_source.v2",
+      "requested_revision": "b73d010bb3db70547199f39fd85d2286a7f6f476",
+      "resolved_commit": "b73d010bb3db70547199f39fd85d2286a7f6f476",
+      "snapshot_scope": "full_tracked_tree",
+      "source_digest": "f36aedd9974aead7f2187e894fd60e16a4f820c9f02dfc9c336c96bdd15b3532",
+      "source_repo_id": "github__joshdata__python_email_validator",
+      "source_snapshot_id": "github__joshdata__python_email_validator__e49b867521a5",
+      "status": "ready"
+    },
+    "status": "ok",
+    "submitted_file_count": 12,
+    "submitted_loc": 682,
+    "unapproved_external_dependencies": [],
+    "unapproved_external_dependency_count": 0
+  },
+  "compactness_status": "ok",
+  "dependency_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "environment": {
+    "install_mode": "path",
+    "python": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-t53w6ea1/.venv/bin/python",
+    "runtime_submission_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-t53w6ea1/submission-runtime",
+    "venv_dir": "/var/folders/45/2x2mlgtj2x165d64ymrtqwxh0000gn/T/featureliftbench-eval-t53w6ea1/.venv"
+  },
+  "errors": [],
+  "eval_tooling": {
+    "duration_seconds": 0.317268,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "evaluation_capsule_digest": "",
+  "hidden_tests": {
+    "duration_seconds": 2.90182,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "hidden_tests_pass": true,
+  "isolation": {
+    "forbidden_dependencies_pass": true,
+    "forbidden_imports_pass": true,
+    "forbidden_runtime_capabilities_pass": true,
+    "mount_allowlist_pass": true,
+    "network_disabled": true,
+    "pass": true,
+    "runtime_audit_events": [],
+    "runtime_audit_pass": true,
+    "runtime_import_origin_pass": true,
+    "source_filesystem_absent": true,
+    "submission_location_pass": true,
+    "verification_mode": "local_development_compatibility_not_for_paper"
+  },
+  "isolation_pass": true,
+  "logs": {
+    "dir": "/Users/chz/code/FeatureLiftBench/reports/contract_closure_v2_p0/evaluator/email_validator__validate_core__001/logs"
+  },
+  "metrics": {
+    "dependency_count": 0,
+    "file_count": 12,
+    "loc": 682,
+    "package_bytes": 96912,
+    "reference_loc": 682,
+    "source_loc": 0,
+    "suspicious_file_count": 0
+  },
+  "original_import_pass": true,
+  "public_tests": {
+    "duration_seconds": 3.067255,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": false,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "public_tests_pass": true,
+  "scores": {
+    "compactness_score": 1.0,
+    "extraction_ratio": 1.0,
+    "final_score": 1.0,
+    "functional_gate": 1.0,
+    "reference_relative_loc_ratio": 1.0
+  },
+  "status": "passed",
+  "submission": "email_validator__validate_core__001",
+  "submission_install": {
+    "duration_seconds": 0.0,
+    "log_limit_exceeded": false,
+    "passed": true,
+    "reason": "submission has no pyproject.toml; using PYTHONPATH",
+    "resource_limited": false,
+    "returncode": 0,
+    "skipped": true,
+    "stderr_truncated": false,
+    "stdout_truncated": false,
+    "timed_out": false
+  },
+  "task_id": "email_validator__validate_core__001",
+  "test_pass": true
+}

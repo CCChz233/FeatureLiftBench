@@ -30,7 +30,7 @@ from build_v11_diagnostic_subset import CANARY_5  # noqa: E402
 
 TASKS_ROOT = REPO_ROOT / "benchmark/tasks"
 SUBMISSIONS_ROOT = REPO_ROOT / "benchmark/submissions"
-DEFAULT_OUTPUT_ROOT = REPO_ROOT / "experiments/v1_1_oracle_validation"
+DEFAULT_OUTPUT_ROOT = REPO_ROOT / "experiments/validation/v1_1/v1_1_oracle_validation"
 CURRENT_FREEZE_POINTER = REPO_ROOT / "artifacts/research_analysis/v1_1/current_oracle_freeze.json"
 EVALUATOR_PATHS = (
     REPO_ROOT / "harness/featureliftbench/evaluator.py",

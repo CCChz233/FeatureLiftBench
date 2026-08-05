@@ -1,0 +1,179 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "public_spec:B006",
+        "public_spec:B007",
+        "public_tests/test_public_contract.py",
+        "hidden_tests/test_hidden_contract.py"
+      ],
+      "issues": [
+        "CC-isort-001: find_config's direct path/None behavior is declared but never called",
+        "CC-isort-002: google profile is promised but only black and django are tested",
+        "CC-isort-003: tox.ini and .isort.cfg parsing are promised but only pyproject.toml, setup.cfg, and .editorconfig are tested"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-isort-001",
+      "resolution": "Add direct nearest/none find_config oracle cases or remove the endpoint and B003.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-isort-002",
+      "resolution": "Add google profile coverage or narrow B006.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-isort-003",
+      "resolution": "Add tox.ini/.isort.cfg cases or narrow B007.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-isort-004",
+      "resolution": "Correct editorconfig behavior mappings.",
+      "severity": "medium"
+    }
+  ],
+  "notes": "Profile/config precedence, discovery through resolve_from_path, skips, src paths, errors, and several config formats are strong; three advertised branches remain untested.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "isort__settings_resolver_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B006",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B006",
+        "public_spec:B007"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_profile_and_pyproject_merge",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B008"
+      ],
+      "evidence_basis": [
+        "public_spec:B008"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_runtime_overrides_win_over_profile_and_config",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B002"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_resolve_from_path_finds_nearest_pyproject",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B004",
+        "B005",
+        "B010"
+      ],
+      "evidence_basis": [
+        "public_spec:B004",
+        "public_spec:B005",
+        "public_spec:B010"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_extend_skip_glob_and_existing_file_not_skipped",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B009"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B009"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_src_paths_are_resolved_relative_to_config_dir",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_setup_cfg_and_pyproject_precedence_follows_input_order",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_invalid_profile_and_unsupported_setting_errors",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B007"
+      ],
+      "evidence_basis": [
+        "public_spec:B007"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_editorconfig_indent_and_line_length",
+      "notes": "It does not call find_config B003 or test runtime overrides B008.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B011"
+      ],
+      "evidence_basis": [
+        "public_spec:B011"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

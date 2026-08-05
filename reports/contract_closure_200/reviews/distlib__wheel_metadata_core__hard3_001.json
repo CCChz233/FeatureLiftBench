@@ -1,0 +1,131 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B003",
+        "metadata.json#/public_spec/required_api",
+        "hidden_tests/test_hidden_contract.py::test_validate_record_hash"
+      ],
+      "issues": [
+        "CC-distlib-001: B003 says validate_record_hash receives file bytes and detects content mismatch, but the signature accepts a path string and the test accepts an arbitrary well-formed digest without reading bytes",
+        "CC-distlib-002: to_posix has no behavior clause and its test assertion permits platform-dependent non-conversion",
+        "CC-distlib-003: parse_record does not assert parsed digest/size or CSV quoting semantics"
+      ],
+      "verdict": "contradictory"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-distlib-001",
+      "resolution": "Choose and specify real digest-format validation or content-hash verification, then align signature, implementation, and oracle tests.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-distlib-002",
+      "resolution": "Add a deterministic to_posix contract and strict cross-separator assertions.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-distlib-003",
+      "resolution": "Assert complete RECORD tuple parsing including digest, integer size, and quoted CSV paths.",
+      "severity": "high"
+    }
+  ],
+  "notes": "The advertised hash validator does not test or expose the semantics it claims, making the current contract internally inconsistent.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "contradictory",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "distlib__wheel_metadata_core__hard3_001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "public_tests/test_public_contract.py::test_parse_record_row",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [],
+      "evidence_basis": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_to_posix_converts_separators",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001",
+        "B002"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B002"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_normalize_record_path_strips_dot_prefix",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B001"
+      ],
+      "evidence_basis": [
+        "public_spec:B001"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_parse_record_handles_missing_hash_and_size",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_contract.py::test_validate_record_hash",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "contradictory"
+    },
+    {
+      "behavior_ids": [
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

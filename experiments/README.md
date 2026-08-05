@@ -1,83 +1,50 @@
 # experiments/
 
-本目录保存原始模型运行、传输包和机器索引。大体积 runs 默认不进 Git；
-benchmark 定义不依赖本目录。
+> **Documentation status: reference · Last verified: 2026-08-04**
 
-当前研究入口：
-[`docs/CURRENT_RESEARCH.md`](../docs/CURRENT_RESEARCH.md)。正式结果口径：
-[`docs/EXPERIMENTS.md`](../docs/EXPERIMENTS.md)。
+原始模型运行和验证证据只进入以下七个目录：
 
-## 目录
-
-| 路径 | 内容 |
+| Directory | Purpose |
 | --- | --- |
-| `python/openhands/<model>/<run_id>/` | Python OpenHands runs |
-| `GO/openhands/<model>/<run_id>/` | Go calibration |
-| `smoke/` | smoke/debug |
-| `ablation/` | 显式实验臂 |
-| `rsg_pilot/` | 历史 RSG 证据 |
-| `ecsm_pilot/` | 已废弃 ECSM 原始证据 |
-| `v1_1_*` | 历史 contract/oracle validation |
-| `batch3-*` | 历史 100→150 materialization |
-| `bundles/incoming/` | 外部传输包与 SHA-256 |
-| `registry/` | 跨 run 机器索引 |
+| `python/` | Python OpenHands leaderboard 和历史正式 runs |
+| `GO/` | Go calibration runs |
+| `smoke/` | 临时 smoke/debug，不进入论文主表 |
+| `methods/` | 方法 pilot、历史 ablation 和负结果 |
+| `validation/` | reference、oracle、preflight 和 release validation |
+| `bundles/` | incoming、outgoing、archive 和 retired 传输包 |
+| `registry/` | 可提交的 suite index、路径映射和 bundle ledger |
 
-历史目录可能被报告和 ledger 引用，不为视觉整齐而移动。当前入口统一由
-`registry/` 和 `reports/` 提供。
-
-## v3 当前状态
-
-Full-Repository / No-Hint Python-150 模型 baseline 尚未导入。本目录中的
-现有正式规模结果都必须保留其 `mixed_snapshot_v1` 或其他历史 arm 标签。
-
-新 v3 suite 必须记录并匹配 active freeze pointer：
+Python-200 当前状态见 [`docs/STATUS.md`](../docs/STATUS.md)，正式实验条件见
+[`docs/EVALUATION.md`](../docs/EVALUATION.md)。正式模型 run 继续写入：
 
 ```text
-artifacts/research_analysis/v3/current_benchmark_freeze.json
+experiments/python/openhands/<model>/<run-id>/
 ```
 
-并保存 agent/eval image digests、exact task set、attempt policy、逐题 run/eval、
-submission、usage 和 exception ledger。
+正式 ablation 也应使用标准 suite 布局，并在 suite/run metadata 中登记 arm；
+`methods/ablation/` 只保留历史方法实验。
 
-## 2026-07-26 历史四模型视图
+## Path Compatibility
 
-这些 suites 各有 150 tasks，但使用 mixed snapshots。
-
-| 模型 | Evaluator Functional Pass@1 | Agent-completion pass |
-| --- | ---: | ---: |
-| DeepSeek-V4-Flash-DSpark | 87/150 | 84/150 |
-| Qwen3.5-122B-A10B-FP8 | 56/150 | 56/150 |
-| Qwen3.6-35B-A3B-FP8 | 49/150 | 47/150 |
-| gpt-oss-120b | 37/150 | 37/150 |
-
-统一审计：
-[`reports/python150_compliant_20260726/`](../reports/python150_compliant_20260726/)。
-
-更早的 core-100/hard50/patched Python-150 run set 见
-[`reports/archive/v1_mixed_snapshot_runs_20260712.md`](../reports/archive/v1_mixed_snapshot_runs_20260712.md)。
-
-## 结果口径
-
-- Benchmark correctness：逐题 evaluator `functional_gate`；
-- Agent process：completion status、step/context/rate/infra failures；
-- Compactness：reference-relative vector；
-- Cost：tokens、API calls、steps、agent/eval/wall time；
-- `suite.summary` 是可重建缓存，不是唯一事实源；
-- continuation 只能补没有终态 `run.json` 的题，不能重试已完成失败并仍称
-  Pass@1。
-
-## 常用命令
+历史报告中的旧路径不重写。解析旧路径：
 
 ```bash
-# 重建 suite 索引
-PYTHONPATH=harness python harness/scripts/refresh_suite_from_task_runs.py <suite_dir>
-
-# 重建全实验 registry
-PYTHONPATH=harness python harness/scripts/build_experiment_registry.py
-
-# 分析单个 suite
-PYTHONPATH=harness python harness/scripts/analyze_benchmark_suite.py <suite_dir>
+PYTHONPATH=harness python3 harness/scripts/resolve_experiment_path.py \
+  experiments/v1_1_oracle_validation/536c2beec549fdc8
 ```
 
-正式 Python-150 运行见
-[`docs/SERVER_RUNBOOK_PYTHON150.md`](../docs/SERVER_RUNBOOK_PYTHON150.md)。
+映射表是 `registry/path_aliases.json`，采用 longest-prefix resolution。迁移和删除
+记录见 `registry/bundle_ledger.json`。
+
+## Maintenance
+
+```bash
+# 验证目录布局和迁移状态
+python3 scripts/reorganize_experiments.py --check
+
+# 重建 suite registry
+PYTHONPATH=harness python3 harness/scripts/build_experiment_registry.py
+```
+
+Raw evidence 默认不进 Git；不得覆盖 completed suite。Resume 只能补没有 terminal
+`run.json` 的 task。

@@ -1,0 +1,122 @@
+{
+  "components": {
+    "api_surface": {
+      "evidence": [
+        "metadata.json#/public_spec/required_api",
+        "public_tests/test_public_api.py",
+        "hidden_tests/test_hidden_behavior.py"
+      ],
+      "issues": [
+        "CC-watchdog-001: Observer constructor/schedule/join signatures are absent",
+        "CC-watchdog-002: handler callback methods and event.src_path/type protocol are absent from required_api"
+      ],
+      "verdict": "underspecified"
+    },
+    "behavior": {
+      "evidence": [
+        "public_spec:B002",
+        "hidden_tests/test_hidden_behavior.py::test_modify_and_delete"
+      ],
+      "issues": [
+        "CC-watchdog-003: modify/delete test only asserts some event occurred, so a create event alone satisfies it"
+      ],
+      "verdict": "underspecified"
+    },
+    "dependency_environment": {
+      "evidence": [
+        "task_dossier",
+        "metadata.json#/source/commit",
+        "evaluation/oracle_manifest.json"
+      ],
+      "issues": [],
+      "verdict": "closed"
+    }
+  },
+  "issues": [
+    {
+      "id": "CC-watchdog-001",
+      "resolution": "Publish Observer(timeout=...), schedule(handler,path,recursive=False), start/stop, and join(timeout=...) signatures.",
+      "severity": "high"
+    },
+    {
+      "id": "CC-watchdog-002",
+      "resolution": "Declare FileSystemEventHandler callback methods and event src_path/type members.",
+      "severity": "critical"
+    },
+    {
+      "id": "CC-watchdog-003",
+      "resolution": "Assert distinct FileModifiedEvent and FileDeletedEvent callbacks rather than non-empty event collection.",
+      "severity": "high"
+    }
+  ],
+  "notes": "Polling isolation is clear, but callback/event APIs and the modify/delete evidence are insufficient.",
+  "oracle_relation": "specified_adapter",
+  "overall_verdict": "underspecified",
+  "review_status": "ai_assisted_reviewed",
+  "reviewed_at": "2026-08-04",
+  "reviewer": "codex_contract_closure_pass_20260804",
+  "revision_required": true,
+  "schema_version": "featureliftbench.contract_closure_review.v1",
+  "task_id": "watchdog__observer_dispatch_core__001",
+  "tests": [
+    {
+      "behavior_ids": [
+        "B001",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B001",
+        "public_spec:B004"
+      ],
+      "nodeid": "public_tests/test_public_api.py::test_observer_create_event",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B002",
+        "B004"
+      ],
+      "evidence_basis": [
+        "public_spec:B002",
+        "public_spec:B004"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_modify_and_delete",
+      "notes": "Current metadata includes unrelated create/API clauses; assertion does not distinguish modify or delete.",
+      "verdict": "underspecified"
+    },
+    {
+      "behavior_ids": [
+        "B003"
+      ],
+      "evidence_basis": [
+        "public_spec:B003"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_event_types_exist",
+      "notes": "Current metadata incorrectly maps type existence to callbacks B002.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B006"
+      ],
+      "evidence_basis": [
+        "public_spec:B006"
+      ],
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    },
+    {
+      "behavior_ids": [
+        "B005"
+      ],
+      "evidence_basis": [
+        "public_spec:B005"
+      ],
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "notes": "Reviewed against the task dossier and pinned evidence.",
+      "verdict": "closed"
+    }
+  ]
+}

@@ -1,8 +1,66 @@
 {
   "schema_version": "featureliftbench.experiment_data_quality.v1",
-  "generated_at": "2026-07-26T06:17:32+00:00",
-  "suite_count": 61,
+  "generated_at": "2026-08-04T11:42:01+00:00",
+  "suite_count": 70,
   "clean_suites": 2,
+  "duplicate_run_ids": [
+    {
+      "run_id": "attempt_01",
+      "raw_paths": [
+        "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/001_celery_p0_r1/attempts/attempt_01",
+        "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/002_celery_p3_r1/attempts/attempt_01"
+      ]
+    },
+    {
+      "run_id": "batch2",
+      "raw_paths": [
+        "experiments/smoke/openhands-pilot5-20260702-103319/batch2",
+        "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/batch2"
+      ]
+    },
+    {
+      "run_id": "batch3-flash-20260707-wave2wave4",
+      "raw_paths": [
+        "experiments/python/openhands/deepseek-v4-flash/batch3-flash-20260707-wave2wave4",
+        "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/batch3-flash-20260707-wave2wave4"
+      ]
+    },
+    {
+      "run_id": "main",
+      "raw_paths": [
+        "experiments/methods/ablation/hard50-compliant-deepseek-v4-flash-20260724/main",
+        "experiments/methods/pdr_clean6_20260730/generation/main"
+      ]
+    },
+    {
+      "run_id": "main-20260702-212731",
+      "raw_paths": [
+        "experiments/python/openhands/qwen3-coder-30b-a3b-instruct/main-20260702-212731",
+        "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/main-20260702-212731"
+      ]
+    },
+    {
+      "run_id": "qwen36-27b-fp8-main-20260704-001328",
+      "raw_paths": [
+        "experiments/python/openhands/qwen3.6-27b-fp8/qwen36-27b-fp8-main-20260704-001328",
+        "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-27b-fp8-main-20260704-001328"
+      ]
+    },
+    {
+      "run_id": "qwen36-35b-a3b-fp8-main-20260704-001313",
+      "raw_paths": [
+        "experiments/python/openhands/qwen3.6-35b-a3b-fp8/qwen36-35b-a3b-fp8-main-20260704-001313",
+        "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-35b-a3b-fp8-main-20260704-001313"
+      ]
+    },
+    {
+      "run_id": "sanity3",
+      "raw_paths": [
+        "experiments/smoke/openhands-pilot5-20260702-103319/sanity3",
+        "experiments/smoke/openhands-pilot5-deps-fix-20260702-123651/sanity3"
+      ]
+    }
+  ],
   "flagged_suites": [
     {
       "run_id": "go-openhands-deepseek-v4-flash-20260705-001",
@@ -211,6 +269,436 @@
       "absolute_result_paths": 95
     },
     {
+      "run_id": "cgcc-lite-focus-s1-20260730-codex01",
+      "raw_path": "experiments/methods/ablation/cgcc-lite-focus-s1-20260730-codex01",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 2,
+      "absolute_result_paths": 2
+    },
+    {
+      "run_id": "cgcc-rmc-alembic-s1-20260730-codex01",
+      "raw_path": "experiments/methods/ablation/cgcc-rmc-alembic-s1-20260730-codex01",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "cgcc-roc-focus-s1-20260730-codex01",
+      "raw_path": "experiments/methods/ablation/cgcc-roc-focus-s1-20260730-codex01",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 2,
+      "absolute_result_paths": 2
+    },
+    {
+      "run_id": "main",
+      "raw_path": "experiments/methods/ablation/hard50-compliant-deepseek-v4-flash-20260724/main",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.120691,
+      "absolute_run_paths": 50,
+      "absolute_result_paths": 50
+    },
+    {
+      "run_id": "nopublic",
+      "raw_path": "experiments/methods/ablation/hard50-compliant-deepseek-v4-flash-20260724/nopublic",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.045947,
+      "absolute_run_paths": 50,
+      "absolute_result_paths": 50
+    },
+    {
+      "run_id": "clean3",
+      "raw_path": "experiments/methods/pdr_clean6_20260730/generation/clean3",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.333333,
+      "absolute_run_paths": 6,
+      "absolute_result_paths": 6
+    },
+    {
+      "run_id": "main",
+      "raw_path": "experiments/methods/pdr_clean6_20260730/generation/main",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.333333,
+      "absolute_run_paths": 6,
+      "absolute_result_paths": 6
+    },
+    {
+      "run_id": "20260723_bidict_baseline_smoke",
+      "raw_path": "experiments/methods/rsg_pilot/deepseek-v4-flash/20260723_bidict_baseline_smoke",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.523591,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "20260723_bidict_rsg_closure_smoke",
+      "raw_path": "experiments/methods/rsg_pilot/deepseek-v4-flash/20260723_bidict_rsg_closure_smoke",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.523133,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "isort__settings_resolver_core__hard3_001__p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/isort__settings_resolver_core__hard3_001__p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "isort__settings_resolver_core__hard3_001__tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/isort__settings_resolver_core__hard3_001__tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "scrapy__item_loader_core__hard3_001__p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/scrapy__item_loader_core__hard3_001__p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "scrapy__item_loader_core__hard3_001__tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/scrapy__item_loader_core__hard3_001__tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "transitions__state_machine_core__hard3_001__p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/transitions__state_machine_core__hard3_001__p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "transitions__state_machine_core__hard3_001__tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/transitions__state_machine_core__hard3_001__tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "live-api-verify-20260723-210022",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/live-api-verify-20260723-210022",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "attempt_01",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/001_celery_p0_r1/attempts/attempt_01",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "attempt_01",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/002_celery_p3_r1/attempts/attempt_01",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "001_celery_p0_r1",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723/cells/001_celery_p0_r1",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.197007,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "002_celery_p3_r1",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723/cells/002_celery_p3_r1",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths",
+        "missing_eval_results"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "smoke-d0-auto_support-v2-20260723-200929",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/smoke-d0-auto_support-v2-20260723-200929",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "smoke-p0-baseline-v2-20260723-200737",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/smoke-p0-baseline-v2-20260723-200737",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.544228,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "smoke-p2-bidict-v2-20260723-201043",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/smoke-p2-bidict-v2-20260723-201043",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.523591,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "smoke-p2-tool_only-v2-20260723-200606",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/smoke-p2-tool_only-v2-20260723-200606",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.521739,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "p0-easy",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/p0-easy",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.544228,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "tuned-efficient-easy",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/tuned-efficient-easy",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "tuned-hard-transitions",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/tuned-hard-transitions",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab2-20260723-223134/p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.515742,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab2-20260723-223134/tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r1-p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r1-p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.544228,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r1-tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r1-tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.544228,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r2-p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r2-p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r2-tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r2-tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r3-p0",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r3-p0",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.49925,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "r3-tuned",
+      "raw_path": "experiments/methods/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r3-tuned",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.544228,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
+      "run_id": "dev6_20260731",
+      "raw_path": "experiments/methods/test_first_lift_pilot/dev6_20260731",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.166667,
+      "absolute_run_paths": 6,
+      "absolute_result_paths": 6
+    },
+    {
+      "run_id": "dev6_tfl_p0_20260731",
+      "raw_path": "experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.166667,
+      "absolute_run_paths": 6,
+      "absolute_result_paths": 5
+    },
+    {
+      "run_id": "smoke_returns_20260731",
+      "raw_path": "experiments/methods/test_first_lift_pilot/smoke_returns_20260731",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 0.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 0
+    },
+    {
+      "run_id": "smoke_returns_20260731b",
+      "raw_path": "experiments/methods/test_first_lift_pilot/smoke_returns_20260731b",
+      "ok": false,
+      "flags": [
+        "absolute_artifact_paths"
+      ],
+      "summary_average_final_score": 1.0,
+      "absolute_run_paths": 1,
+      "absolute_result_paths": 1
+    },
+    {
       "run_id": "batch2",
       "raw_path": "experiments/smoke/openhands-pilot5-20260702-103319/batch2",
       "ok": false,
@@ -288,339 +776,8 @@
       "absolute_result_paths": 3
     },
     {
-      "run_id": "main",
-      "raw_path": "experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/main",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.120691,
-      "absolute_run_paths": 50,
-      "absolute_result_paths": 50
-    },
-    {
-      "run_id": "nopublic",
-      "raw_path": "experiments/ablation/hard50-compliant-deepseek-v4-flash-20260724/nopublic",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.045947,
-      "absolute_run_paths": 50,
-      "absolute_result_paths": 50
-    },
-    {
-      "run_id": "20260723_bidict_baseline_smoke",
-      "raw_path": "experiments/rsg_pilot/deepseek-v4-flash/20260723_bidict_baseline_smoke",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.523591,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "20260723_bidict_rsg_closure_smoke",
-      "raw_path": "experiments/rsg_pilot/deepseek-v4-flash/20260723_bidict_rsg_closure_smoke",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.523133,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "isort__settings_resolver_core__hard3_001__p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/isort__settings_resolver_core__hard3_001__p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "isort__settings_resolver_core__hard3_001__tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/isort__settings_resolver_core__hard3_001__tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "scrapy__item_loader_core__hard3_001__p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/scrapy__item_loader_core__hard3_001__p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "scrapy__item_loader_core__hard3_001__tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/scrapy__item_loader_core__hard3_001__tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "transitions__state_machine_core__hard3_001__p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/transitions__state_machine_core__hard3_001__p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "transitions__state_machine_core__hard3_001__tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/hard-ab-20260724-073447/transitions__state_machine_core__hard3_001__tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "live-api-verify-20260723-210022",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/live-api-verify-20260723-210022",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "attempt_01",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/001_celery_p0_r1/attempts/attempt_01",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "attempt_01",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723-clean1/cells/002_celery_p3_r1/attempts/attempt_01",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "001_celery_p0_r1",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723/cells/001_celery_p0_r1",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.197007,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "002_celery_p3_r1",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/rsg-pilot-v1-20260723/cells/002_celery_p3_r1",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths",
-        "missing_eval_results"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "smoke-d0-auto_support-v2-20260723-200929",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/smoke-d0-auto_support-v2-20260723-200929",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "smoke-p0-baseline-v2-20260723-200737",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/smoke-p0-baseline-v2-20260723-200737",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.544228,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "smoke-p2-bidict-v2-20260723-201043",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/smoke-p2-bidict-v2-20260723-201043",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.523591,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "smoke-p2-tool_only-v2-20260723-200606",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/smoke-p2-tool_only-v2-20260723-200606",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.521739,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "p0-easy",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/p0-easy",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.544228,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "tuned-efficient-easy",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/tuned-efficient-easy",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "tuned-hard-transitions",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab-20260723-222557/tuned-hard-transitions",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.0,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab2-20260723-223134/p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.515742,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-ab2-20260723-223134/tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r1-p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r1-p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.544228,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r1-tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r1-tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.544228,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r2-p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r2-p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r2-tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r2-tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r3-p0",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r3-p0",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.49925,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
-      "run_id": "r3-tuned",
-      "raw_path": "experiments/rsg_pilot/openhands/deepseek-v4-flash/tuned-easy-repro-20260723-223851/r3-tuned",
-      "ok": false,
-      "flags": [
-        "absolute_artifact_paths"
-      ],
-      "summary_average_final_score": 0.544228,
-      "absolute_run_paths": 1,
-      "absolute_result_paths": 1
-    },
-    {
       "run_id": "batch3-flash-20260707-wave2wave4",
-      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/batch3-flash-20260707-wave2wave4",
+      "raw_path": "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/batch3-flash-20260707-wave2wave4",
       "ok": false,
       "flags": [
         "absolute_artifact_paths"
@@ -631,7 +788,7 @@
     },
     {
       "run_id": "main-20260702-212731",
-      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/main-20260702-212731",
+      "raw_path": "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/main-20260702-212731",
       "ok": false,
       "flags": [
         "absolute_artifact_paths"
@@ -642,7 +799,7 @@
     },
     {
       "run_id": "qwen36-27b-fp8-main-20260704-001328",
-      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-27b-fp8-main-20260704-001328",
+      "raw_path": "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-27b-fp8-main-20260704-001328",
       "ok": false,
       "flags": [
         "absolute_artifact_paths"
@@ -653,7 +810,7 @@
     },
     {
       "run_id": "qwen36-35b-a3b-fp8-main-20260704-001313",
-      "raw_path": "experiments/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-35b-a3b-fp8-main-20260704-001313",
+      "raw_path": "experiments/validation/v1_1/v1_1_infra_reevaluation/536c2beec549fdc8/qwen36-35b-a3b-fp8-main-20260704-001313",
       "ok": false,
       "flags": [
         "absolute_artifact_paths"

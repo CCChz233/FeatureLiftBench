@@ -1,4 +1,4 @@
-"""Agent experiment arms: Main / Entrypoint-Hint / Public-feedback / Short-prompt / TD / Exec-Contract / Self-Contract.
+"""Agent experiment arms and their information-preserving method variants.
 
 See docs/EXPERIMENT_ARMS.md. Semantic contract (API/behaviors/hidden) is unchanged.
 Main is No-Hint by default; source-location hints require explicit opt-in.
@@ -19,6 +19,15 @@ EXEC_CONTRACT_ENV = "FEATURELIFTBENCH_EXEC_CONTRACT"
 EXEC_CONTRACT_VARIANT_ENV = "FEATURELIFTBENCH_EXEC_CONTRACT_VARIANT"
 SELF_CONTRACT_ENV = "FEATURELIFTBENCH_SELF_CONTRACT"
 TEST_FIRST_LIFT_ENV = "FEATURELIFTBENCH_TEST_FIRST_LIFT"
+CONTRACT_CLOSURE_GATE_ENV = "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE"
+CONTRACT_CLOSURE_GATE_LITE_ENV = "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE"
+CONTRACT_CLOSURE_GATE_LITE_V1_ENV = (
+    "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_V1_FROZEN"
+)
+CONTRACT_CLOSURE_GATE_V3_ENV = "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_V3"
+CONTRACT_CLOSURE_BUDGET_CONTROL_ENV = (
+    "FEATURELIFTBENCH_CONTRACT_CLOSURE_BUDGET_CONTROL"
+)
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
@@ -41,6 +50,11 @@ class AblationOptions:
     exec_contract_variant: str = "clean3"
     self_contract: bool = False
     test_first_lift: bool = False
+    contract_closure_gate: bool = False
+    contract_closure_gate_lite: bool = False
+    contract_closure_gate_lite_v1: bool = False
+    contract_closure_gate_v3: bool = False
+    contract_closure_budget_control: bool = False
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
@@ -67,6 +81,29 @@ class AblationOptions:
         object.__setattr__(self, "exec_contract_variant", exec_contract_variant)
         object.__setattr__(self, "self_contract", bool(self.self_contract))
         object.__setattr__(self, "test_first_lift", bool(self.test_first_lift))
+        object.__setattr__(
+            self, "contract_closure_gate", bool(self.contract_closure_gate)
+        )
+        object.__setattr__(
+            self,
+            "contract_closure_gate_lite",
+            bool(self.contract_closure_gate_lite),
+        )
+        object.__setattr__(
+            self,
+            "contract_closure_gate_lite_v1",
+            bool(self.contract_closure_gate_lite_v1),
+        )
+        object.__setattr__(
+            self,
+            "contract_closure_gate_v3",
+            bool(self.contract_closure_gate_v3),
+        )
+        object.__setattr__(
+            self,
+            "contract_closure_budget_control",
+            bool(self.contract_closure_budget_control),
+        )
         method_arms = sum(
             1
             for flag in (
@@ -74,17 +111,35 @@ class AblationOptions:
                 self.exec_contract,
                 self.self_contract,
                 self.test_first_lift,
+                self.contract_closure_gate,
+                self.contract_closure_gate_lite,
+                self.contract_closure_gate_lite_v1,
+                self.contract_closure_gate_v3,
+                self.contract_closure_budget_control,
             )
             if flag
         )
         if method_arms > 1:
             raise ValueError(
-                "td_cognition, exec_contract, self_contract, and test_first_lift "
+                "td_cognition, exec_contract, self_contract, test_first_lift, and "
+                "contract_closure_gate, contract_closure_gate_lite, "
+                "contract_closure_gate_lite_v1, contract_closure_gate_v3, and "
+                "contract_closure_budget_control "
                 "are mutually exclusive"
             )
 
     @property
     def ablation_arm(self) -> str:
+        if self.contract_closure_budget_control:
+            return "contract_closure_budget_control"
+        if self.contract_closure_gate_lite_v1:
+            return "contract_closure_gate_lite_v1_frozen"
+        if self.contract_closure_gate_v3:
+            return "contract_closure_gate_v3"
+        if self.contract_closure_gate_lite:
+            return "contract_closure_gate_lite"
+        if self.contract_closure_gate:
+            return "contract_closure_gate"
         if self.test_first_lift:
             return "test_first_lift"
         if self.self_contract:
@@ -122,6 +177,19 @@ class AblationOptions:
             EXEC_CONTRACT_VARIANT_ENV: self.exec_contract_variant,
             SELF_CONTRACT_ENV: "1" if self.self_contract else "0",
             TEST_FIRST_LIFT_ENV: "1" if self.test_first_lift else "0",
+            CONTRACT_CLOSURE_GATE_ENV: "1" if self.contract_closure_gate else "0",
+            CONTRACT_CLOSURE_GATE_LITE_ENV: (
+                "1" if self.contract_closure_gate_lite else "0"
+            ),
+            CONTRACT_CLOSURE_GATE_LITE_V1_ENV: (
+                "1" if self.contract_closure_gate_lite_v1 else "0"
+            ),
+            CONTRACT_CLOSURE_GATE_V3_ENV: (
+                "1" if self.contract_closure_gate_v3 else "0"
+            ),
+            CONTRACT_CLOSURE_BUDGET_CONTROL_ENV: (
+                "1" if self.contract_closure_budget_control else "0"
+            ),
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -137,6 +205,11 @@ class AblationOptions:
             "exec_contract_variant": self.exec_contract_variant,
             "self_contract": self.self_contract,
             "test_first_lift": self.test_first_lift,
+            "contract_closure_gate": self.contract_closure_gate,
+            "contract_closure_gate_lite": self.contract_closure_gate_lite,
+            "contract_closure_gate_lite_v1": self.contract_closure_gate_lite_v1,
+            "contract_closure_gate_v3": self.contract_closure_gate_v3,
+            "contract_closure_budget_control": self.contract_closure_budget_control,
         }
 
 
@@ -165,6 +238,46 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
     self_contract = sc_raw not in {"0", "false", "no", "off", ""}
     tfl_raw = str(values.get(TEST_FIRST_LIFT_ENV, "0")).strip().lower()
     test_first_lift = tfl_raw not in {"0", "false", "no", "off", ""}
+    ccg_raw = str(values.get(CONTRACT_CLOSURE_GATE_ENV, "0")).strip().lower()
+    contract_closure_gate = ccg_raw not in {"0", "false", "no", "off", ""}
+    ccg_lite_raw = str(
+        values.get(CONTRACT_CLOSURE_GATE_LITE_ENV, "0")
+    ).strip().lower()
+    contract_closure_gate_lite = ccg_lite_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
+    ccg_lite_v1_raw = str(
+        values.get(CONTRACT_CLOSURE_GATE_LITE_V1_ENV, "0")
+    ).strip().lower()
+    contract_closure_gate_lite_v1 = ccg_lite_v1_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
+    ccg_v3_raw = str(values.get(CONTRACT_CLOSURE_GATE_V3_ENV, "0")).strip().lower()
+    contract_closure_gate_v3 = ccg_v3_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
+    ccg_control_raw = str(
+        values.get(CONTRACT_CLOSURE_BUDGET_CONTROL_ENV, "0")
+    ).strip().lower()
+    contract_closure_budget_control = ccg_control_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -175,6 +288,11 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         exec_contract_variant=exec_contract_variant,
         self_contract=self_contract,
         test_first_lift=test_first_lift,
+        contract_closure_gate=contract_closure_gate,
+        contract_closure_gate_lite=contract_closure_gate_lite,
+        contract_closure_gate_lite_v1=contract_closure_gate_lite_v1,
+        contract_closure_gate_v3=contract_closure_gate_v3,
+        contract_closure_budget_control=contract_closure_budget_control,
     )
 
 
@@ -192,6 +310,11 @@ def resolve_ablation_options(
     exec_contract_variant: str | None = None,
     self_contract: bool | None = None,
     test_first_lift: bool | None = None,
+    contract_closure_gate: bool | None = None,
+    contract_closure_gate_lite: bool | None = None,
+    contract_closure_gate_lite_v1: bool | None = None,
+    contract_closure_gate_v3: bool | None = None,
+    contract_closure_budget_control: bool | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -289,6 +412,84 @@ def resolve_ablation_options(
     else:
         resolved_tfl = bool(test_first_lift)
 
+    if contract_closure_gate is None:
+        resolved_ccg = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_ENV),
+            profile.get("contract_closure_gate"),
+            default=False,
+        )
+    else:
+        resolved_ccg = bool(contract_closure_gate)
+
+    if contract_closure_gate_lite is None:
+        resolved_ccg_lite = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_LITE_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_LITE_ENV),
+            profile.get("contract_closure_gate_lite"),
+            default=False,
+        )
+    else:
+        resolved_ccg_lite = bool(contract_closure_gate_lite)
+
+    if contract_closure_gate_lite_v1 is None:
+        resolved_ccg_lite_v1 = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_LITE_V1_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_LITE_V1_ENV),
+            profile.get("contract_closure_gate_lite_v1"),
+            default=False,
+        )
+    else:
+        resolved_ccg_lite_v1 = bool(contract_closure_gate_lite_v1)
+
+    if contract_closure_gate_v3 is None:
+        resolved_ccg_v3 = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_V3_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_V3_ENV),
+            profile.get("contract_closure_gate_v3"),
+            default=False,
+        )
+    else:
+        resolved_ccg_v3 = bool(contract_closure_gate_v3)
+
+    if contract_closure_budget_control is None:
+        resolved_ccg_control = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_BUDGET_CONTROL_ENV),
+            env_values.get(CONTRACT_CLOSURE_BUDGET_CONTROL_ENV),
+            profile.get("contract_closure_budget_control"),
+            default=False,
+        )
+    else:
+        resolved_ccg_control = bool(contract_closure_budget_control)
+
+    # An explicit positive CLI selection chooses that arm even when the profile
+    # defaults to the sibling closure arm.
+    if contract_closure_gate is True:
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+    elif contract_closure_gate_lite is True:
+        resolved_ccg = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+    elif contract_closure_gate_lite_v1 is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+    elif contract_closure_gate_v3 is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_control = False
+    elif contract_closure_budget_control is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_v3 = False
+
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -299,6 +500,11 @@ def resolve_ablation_options(
         exec_contract_variant=resolved_ec_variant,
         self_contract=resolved_sc,
         test_first_lift=resolved_tfl,
+        contract_closure_gate=resolved_ccg,
+        contract_closure_gate_lite=resolved_ccg_lite,
+        contract_closure_gate_lite_v1=resolved_ccg_lite_v1,
+        contract_closure_gate_v3=resolved_ccg_v3,
+        contract_closure_budget_control=resolved_ccg_control,
     )
 
 

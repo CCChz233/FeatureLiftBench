@@ -33,6 +33,8 @@ USAGE_SCHEMA_VERSION = "featureliftbench.agent_usage.v1"
 DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
 PROMPT_APPEND_FILE_ENV = "FEATURELIFTBENCH_OPENHANDS_PROMPT_APPEND_FILE"
 RAW_USAGE_FILENAMES = ("openhands_usage.json", "usage.json")
+OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE = 86
+INFRASTRUCTURE_ERROR_FILE = "openhands_infrastructure_error.json"
 
 
 @dataclass(frozen=True)
@@ -221,6 +223,14 @@ def run(config: OpenHandsRunnerConfig) -> int:
         config.agent_output_dir,
         stdout_log=stdout_log,
     )
+    infrastructure_error = _detect_openhands_infrastructure_error(events_path)
+    if infrastructure_error is not None:
+        (config.agent_output_dir / INFRASTRUCTURE_ERROR_FILE).write_text(
+            json.dumps(infrastructure_error, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        if returncode == 0:
+            returncode = OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE
     raw_usage_path = config.agent_output_dir / "openhands_usage.json"
     if events_path is not None and not raw_usage_path.is_file():
         write_usage_from_events(
@@ -241,6 +251,8 @@ def run(config: OpenHandsRunnerConfig) -> int:
         exit_status = "timeout"
     elif returncode == 127:
         exit_status = "command_not_found"
+    elif returncode == OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE:
+        exit_status = "tool_validation_error"
     _write_usage(
         config,
         exit_status=exit_status,
@@ -248,6 +260,7 @@ def run(config: OpenHandsRunnerConfig) -> int:
         duration_seconds=duration_seconds,
         raw_usage=raw_usage,
         assistant_steps=command_result.assistant_steps,
+        infrastructure_error=infrastructure_error,
     )
     print(f"OpenHands wrapper finished with return code {returncode}.")
     return returncode
@@ -559,6 +572,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
     td_section = ""
     sc_section = ""
     tfl_section = ""
+    closure_section = ""
     submission_line = f"- Final output must be written under `{config.submission_dir}`.\n"
     required_finish = (
         "## Required Finish State\n\n"
@@ -674,6 +688,85 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "    ...\n"
             "```\n\n"
         )
+    elif options.contract_closure_budget_control:
+        from .contract_closure_budget_control import openhands_appendix
+
+        closure_section = (
+            "## Equal-Budget Implementation Review\n\n"
+            + openhands_appendix()
+            + "\n"
+        )
+        test_hint = (
+            "Use ordinary local checks that you judge useful, then perform one final "
+            "review against the public Required Output API.\n\n"
+        )
+    elif (
+        options.contract_closure_gate
+        or options.contract_closure_gate_lite
+        or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_v3
+    ):
+        from .contract_closure_gate import openhands_appendix
+
+        closure_section = (
+            "## Public Contract Closure Gate\n\n"
+            + openhands_appendix(
+                lite=options.contract_closure_gate_lite
+                or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_v3,
+                frozen_v1=options.contract_closure_gate_lite_v1,
+                v3=options.contract_closure_gate_v3,
+            )
+            + "\n"
+        )
+        if options.contract_closure_gate_v3:
+            test_hint = (
+                "After implementing, write exactly two focused cases and run "
+                "`./flb-contract-check --micro --summary`. Do not chase complete "
+                "behavior coverage.\n\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Leave a working submission and two concise public behavior smoke "
+                "cases under `contract_cases/`.\n\n"
+            )
+        elif options.contract_closure_gate_lite_v1:
+            test_hint = (
+                "Run `./flb-contract-check --structure-only --summary` after "
+                "implementing. Do not spend steps authoring behavior cases.\n\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Leave a structurally closed working submission under "
+                "`submission/featurelifted/`.\n\n"
+            )
+        elif options.contract_closure_gate_lite:
+            test_hint = (
+                "Run `./flb-contract-check --structure-only --summary` after "
+                "implementing. Do not spend steps authoring behavior cases.\n\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Leave a structurally closed working submission under "
+                "`submission/featurelifted/`.\n\n"
+            )
+        else:
+            test_hint = (
+                "Run `./flb-contract-check` after implementing and adding behavior cases. "
+                "Resolve every actionable public-contract finding before submitting.\n\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Leave public behavior evidence and a working submission:\n\n"
+                "```text\n"
+                "contract_cases/\n"
+                "  *.py\n"
+                "submission/\n"
+                "  featurelifted/\n"
+                "    __init__.py\n"
+                "    ...\n"
+                "```\n\n"
+            )
     prompt = (
         "# FeatureLiftBench Task for OpenHands\n\n"
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
@@ -695,6 +788,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         f"{td_section}"
         f"{sc_section}"
         f"{tfl_section}"
+        f"{closure_section}"
         f"{required_finish}"
         f"{test_hint}"
         "## Task\n\n"
@@ -1029,6 +1123,44 @@ def _json_object_line(text: str) -> dict[str, Any] | None:
     return payload if isinstance(payload, dict) else None
 
 
+def _detect_openhands_infrastructure_error(
+    events_path: Path | None,
+) -> dict[str, Any] | None:
+    """Return an auditable OpenHands infrastructure error from JSONL events.
+
+    OpenHands can emit an ``AgentErrorEvent`` for an invalid tool-call payload,
+    print a goodbye message, and still exit zero. That is not a successful agent
+    completion and must not be confused with an empty model submission.
+    """
+
+    if events_path is None or not events_path.is_file():
+        return None
+    try:
+        lines = events_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return None
+    for line_number, line in enumerate(lines, start=1):
+        payload = _json_object_line(line)
+        if payload is None or payload.get("kind") != "AgentErrorEvent":
+            continue
+        error = payload.get("error")
+        if not isinstance(error, str):
+            continue
+        lowered = error.lower()
+        if "error validating tool" not in lowered:
+            continue
+        return {
+            "schema_version": "featureliftbench.openhands_infrastructure_error.v1",
+            "failure_class": "tool_validation_error",
+            "retryable": True,
+            "event_id": str(payload.get("id") or ""),
+            "event_line": line_number,
+            "tool_name": str(payload.get("tool_name") or ""),
+            "error": error[:2000],
+        }
+    return None
+
+
 def _openhands_max_steps(env: dict[str, str]) -> int | None:
     raw = env.get("FEATURELIFTBENCH_OPENHANDS_MAX_STEPS", "120").strip()
     if not raw:
@@ -1129,6 +1261,7 @@ def _write_usage(
     duration_seconds: float,
     raw_usage: dict[str, Any] | None,
     assistant_steps: int = 0,
+    infrastructure_error: dict[str, Any] | None = None,
 ) -> None:
     metrics = _usage_metrics(raw_usage)
     if assistant_steps > metrics.get("assistant_steps", 0):
@@ -1144,11 +1277,24 @@ def _write_usage(
         "prompt_tokens": metrics.get("prompt_tokens", 0),
         "completion_tokens": metrics.get("completion_tokens", 0),
         "total_tokens": metrics.get("total_tokens", 0),
+        "prompt_cache_accounting_available": bool(
+            raw_usage.get("prompt_cache_accounting_available", False)
+            if isinstance(raw_usage, dict)
+            else False
+        ),
+        "prompt_cache_hit_tokens": metrics.get("prompt_cache_hit_tokens", 0),
+        "prompt_cache_miss_tokens": metrics.get("prompt_cache_miss_tokens", 0),
+        "effective_uncached_prompt_tokens": metrics.get(
+            "effective_uncached_prompt_tokens", 0
+        ),
+        "tool_alias_normalizations": metrics.get("tool_alias_normalizations", 0),
         "context_audit": context_audit,
         "exit_status": exit_status,
         "external_returncode": returncode,
         "duration_seconds": round(duration_seconds, 6),
     }
+    if infrastructure_error is not None:
+        payload["infrastructure_error"] = infrastructure_error
     for key in ("trace_tokens", "billed_tokens"):
         if key in metrics:
             payload[key] = metrics[key]
@@ -1173,6 +1319,10 @@ def _usage_metrics(raw_usage: dict[str, Any] | None) -> dict[str, int]:
         "total_tokens",
         "trace_tokens",
         "billed_tokens",
+        "prompt_cache_hit_tokens",
+        "prompt_cache_miss_tokens",
+        "effective_uncached_prompt_tokens",
+        "tool_alias_normalizations",
     ):
         value = _int_metric(source.get(key))
         if value is not None:

@@ -1498,6 +1498,36 @@ class AgentRunnerTests(unittest.TestCase):
             )
             self.assertEqual(suite_json["agent_usage_totals"]["prompt_tokens"], 100)
 
+    def test_suite_usage_includes_contract_closure_repair_phase(self) -> None:
+        runs = [
+            {
+                "agent": {
+                    "usage": {
+                        "available": True,
+                        "total_tokens": 100,
+                        "api_calls": 2,
+                    }
+                },
+                "contract_closure": {
+                    "usage_totals": {
+                        "available": True,
+                        "total_tokens": 140,
+                        "api_calls": 3,
+                        "prompt_cache_hit_tokens": 70,
+                        "prompt_cache_miss_tokens": 30,
+                        "effective_uncached_prompt_tokens": 30,
+                    }
+                },
+            }
+        ]
+
+        totals = _sum_agent_usage(runs)
+
+        self.assertEqual(totals["total_tokens"], 140)
+        self.assertEqual(totals["api_calls"], 3)
+        self.assertEqual(totals["prompt_cache_hit_tokens"], 70)
+        self.assertEqual(totals["prompt_cache_miss_tokens"], 30)
+
     def test_suite_can_run_tasks_in_parallel(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -2199,6 +2229,62 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertIn("plain status line", stdout_text)
             self.assertNotIn('"tool_name": "bash"', stdout_text)
             self.assertIn('"tool_name": "bash"', events_text)
+
+    def test_openhands_runner_turns_zero_exit_tool_validation_error_into_failure(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import json\n"
+                "print(json.dumps({\n"
+                "    'id': 'event-1',\n"
+                "    'kind': 'AgentErrorEvent',\n"
+                "    'tool_name': 'terminal',\n"
+                "    'error': \"Error validating tool 'terminal': Failed to provide security_risk field\",\n"
+                "}))\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0"},
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="deepseek/deepseek-v4-flash",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            failure = json.loads(
+                (agent_output / "openhands_infrastructure_error.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(
+                code, openhands_runner.OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE
+            )
+            self.assertEqual(usage["exit_status"], "tool_validation_error")
+            self.assertEqual(
+                usage["infrastructure_error"]["failure_class"],
+                "tool_validation_error",
+            )
+            self.assertTrue(failure["retryable"])
 
     def test_openhands_runner_kills_command_when_log_limit_is_exceeded(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

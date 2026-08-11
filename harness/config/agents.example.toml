@@ -385,6 +385,163 @@ exec_contract = false
 self_contract = false
 test_first_lift = true
 
+[profiles.openhands_deepseek_v4_flash_contract_closure_gate]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = true
+
+# Frozen Lite V1 release candidate: reproduces the 12-task pilot prompt and
+# 2M/45 + 500k/10 budgets, with evaluator-blind runtime reliability hardening.
+[profiles.openhands_deepseek_v4_flash_contract_closure_gate_lite_v1_frozen]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+openhands_tool_alias_compat = true
+context_window_tokens = 65536
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 45
+llm_max_message_chars = 16000
+contract_closure_primary_token_limit = 2000000
+contract_closure_repair_token_limit = 500000
+contract_closure_primary_max_steps = 45
+contract_closure_repair_max_steps = 10
+contract_closure_infra_retry_limit = 1
+contract_closure_infra_retry_max_trigger_steps = 8
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_lite_v1 = true
+contract_closure_gate_v3 = false
+contract_closure_budget_control = false
+
+# Lite V2.1: early implementation checkpoints, deterministic structure closure,
+# selective local repair, independent phase budgets, and one early infrastructure retry.
+[profiles.openhands_deepseek_v4_flash_contract_closure_gate_lite]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+openhands_tool_alias_compat = true
+context_window_tokens = 65536
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 45
+llm_max_message_chars = 16000
+contract_closure_primary_token_limit = 2000000
+contract_closure_repair_token_limit = 200000
+contract_closure_primary_max_steps = 45
+contract_closure_repair_max_steps = 5
+contract_closure_infra_retry_limit = 1
+contract_closure_infra_retry_max_trigger_steps = 8
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = true
+
+# V3: Lite budgets plus at most three executable public-behavior smoke cases.
+[profiles.openhands_deepseek_v4_flash_contract_closure_gate_v3]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+openhands_tool_alias_compat = true
+context_window_tokens = 65536
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 45
+llm_max_message_chars = 16000
+contract_closure_primary_token_limit = 2000000
+contract_closure_repair_token_limit = 200000
+contract_closure_primary_max_steps = 45
+contract_closure_repair_max_steps = 5
+contract_closure_infra_retry_limit = 1
+contract_closure_infra_retry_max_trigger_steps = 8
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_v3 = true
+
+# Equal-budget causal control for the Lite Gate. It has the same primary
+# context/step/token limits but receives no PUBLIC_CONTRACT file or checker.
+[profiles.openhands_deepseek_v4_flash_contract_closure_budget_control]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 65536
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 45
+llm_max_message_chars = 16000
+openhands_total_token_limit = 2000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_budget_control = true
+
 [profiles.openhands_deepseek_v4_flash_rsg_pilot_p3]
 model = "deepseek/deepseek-v4-flash"
 api_key_env = "FEATURELIFTBENCH_API_KEY"

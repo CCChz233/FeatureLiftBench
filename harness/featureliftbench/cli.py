@@ -219,6 +219,89 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable Test-First Lift arm (default)",
     )
     run_agent_parser.set_defaults(test_first_lift=None)
+    contract_closure_gate = run_agent_parser.add_mutually_exclusive_group()
+    contract_closure_gate.add_argument(
+        "--contract-closure-gate",
+        dest="contract_closure_gate",
+        action="store_true",
+        help=(
+            "Public Contract Closure Gate arm: check public API and agent-authored "
+            "behavior evidence, then allow one bounded repair"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate",
+        dest="contract_closure_gate",
+        action="store_false",
+        help="Disable Public Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--contract-closure-gate-lite",
+        dest="contract_closure_gate_lite",
+        action="store_true",
+        help=(
+            "Low-token Public Contract Closure Gate arm: check deterministic public "
+            "API structure only, then allow one separately budgeted repair"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate-lite",
+        dest="contract_closure_gate_lite",
+        action="store_false",
+        help="Disable the low-token Public Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--contract-closure-gate-lite-v1-frozen",
+        dest="contract_closure_gate_lite_v1",
+        action="store_true",
+        help=(
+            "Frozen Lite V1 arm used by the 12-task pilot: deterministic public "
+            "API structure checks, no behavior cases, and the original repair budget"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate-lite-v1-frozen",
+        dest="contract_closure_gate_lite_v1",
+        action="store_false",
+        help="Disable the frozen Lite V1 Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--contract-closure-gate-v3",
+        dest="contract_closure_gate_v3",
+        action="store_true",
+        help=(
+            "V3 Public Contract Closure Gate arm: check deterministic structure and "
+            "a bounded set of public behavior smoke cases, then allow one short repair"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate-v3",
+        dest="contract_closure_gate_v3",
+        action="store_false",
+        help="Disable the V3 behavior-smoke Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--contract-closure-budget-control",
+        dest="contract_closure_budget_control",
+        action="store_true",
+        help=(
+            "Equal-budget control for the Lite Gate: same primary limits and a "
+            "generic review prompt, but no contract checker or gate feedback"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-budget-control",
+        dest="contract_closure_budget_control",
+        action="store_false",
+        help="Disable the equal-budget Contract Closure control arm (default)",
+    )
+    run_agent_parser.set_defaults(
+        contract_closure_gate=None,
+        contract_closure_gate_lite=None,
+        contract_closure_gate_lite_v1=None,
+        contract_closure_gate_v3=None,
+        contract_closure_budget_control=None,
+    )
     run_agent_parser.add_argument(
         "--env-file",
         type=Path,
@@ -597,6 +680,11 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             exec_contract_variant=args.exec_contract_variant,
             self_contract=args.self_contract,
             test_first_lift=args.test_first_lift,
+            contract_closure_gate=args.contract_closure_gate,
+            contract_closure_gate_lite=args.contract_closure_gate_lite,
+            contract_closure_gate_lite_v1=args.contract_closure_gate_lite_v1,
+            contract_closure_gate_v3=args.contract_closure_gate_v3,
+            contract_closure_budget_control=args.contract_closure_budget_control,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

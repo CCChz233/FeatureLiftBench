@@ -58,7 +58,7 @@ if [[ ! -f "$AGENT_CONFIG" ]]; then
   exit 2
 fi
 
-MODEL="$(
+PROFILE_INFO="$(
   PROFILE_NAME="$PROFILE" AGENT_CONFIG="$AGENT_CONFIG" "$PYTHON" - <<'PY'
 import os
 import tomllib
@@ -81,9 +81,51 @@ model = str(profile.get("model", "")).strip()
 command = str(profile.get("openhands_command", "")).strip()
 if not model or not command:
     raise SystemExit(f"Profile is missing model or openhands_command: {name}")
-print(model)
+method_flags = {
+    "td_cognition": bool(profile.get("td_cognition", False)),
+    "exec_contract": bool(profile.get("exec_contract", False)),
+    "self_contract": bool(profile.get("self_contract", False)),
+    "test_first_lift": bool(profile.get("test_first_lift", False)),
+    "contract_closure_gate": bool(profile.get("contract_closure_gate", False)),
+    "contract_closure_gate_lite": bool(
+        profile.get("contract_closure_gate_lite", False)
+    ),
+    "contract_closure_gate_lite_v1_frozen": bool(
+        profile.get("contract_closure_gate_lite_v1", False)
+    ),
+    "contract_closure_gate_v3": bool(
+        profile.get("contract_closure_gate_v3", False)
+    ),
+    "contract_closure_budget_control": bool(
+        profile.get("contract_closure_budget_control", False)
+    ),
+}
+selected = [arm for arm, enabled in method_flags.items() if enabled]
+if len(selected) > 1:
+    raise SystemExit(f"Profile enables mutually exclusive method arms: {selected}")
+arm = selected[0] if selected else "main"
+if arm == "contract_closure_gate_lite_v1_frozen":
+    expected = {
+        "context_window_tokens": 65536,
+        "openhands_max_steps": 45,
+        "llm_max_message_chars": 16000,
+        "contract_closure_primary_token_limit": 2000000,
+        "contract_closure_repair_token_limit": 500000,
+        "contract_closure_primary_max_steps": 45,
+        "contract_closure_repair_max_steps": 10,
+    }
+    mismatches = {
+        key: (profile.get(key), value)
+        for key, value in expected.items()
+        if profile.get(key) != value
+    }
+    if mismatches:
+        raise SystemExit(f"Frozen Lite V1 profile drift: {mismatches}")
+print(f"{model}\t{arm}")
 PY
 )"
+MODEL="${PROFILE_INFO%%$'\t'*}"
+METHOD_ARM="${PROFILE_INFO#*$'\t'}"
 MODEL_SLUG="$(printf '%s' "$MODEL" | tr '[:upper:]' '[:lower:]' | sed 's#^openai/##; s#^deepseek/##; s#[^a-z0-9._-]#-#g')"
 
 RUN_ID="python200-${MODEL_SLUG}-$(date +%Y%m%d-%H%M%S)"
@@ -221,12 +263,28 @@ COMMAND=(
   --eval-docker --eval-docker-image "$EVAL_IMAGE"
   --output "$OUTPUT_DIR"
 )
+case "$METHOD_ARM" in
+  main) ;;
+  td_cognition) COMMAND+=(--td-cognition) ;;
+  exec_contract) COMMAND+=(--exec-contract) ;;
+  self_contract) COMMAND+=(--self-contract) ;;
+  test_first_lift) COMMAND+=(--test-first-lift) ;;
+  contract_closure_gate) COMMAND+=(--contract-closure-gate) ;;
+  contract_closure_gate_lite) COMMAND+=(--contract-closure-gate-lite) ;;
+  contract_closure_gate_lite_v1_frozen)
+    COMMAND+=(--contract-closure-gate-lite-v1-frozen)
+    ;;
+  contract_closure_gate_v3) COMMAND+=(--contract-closure-gate-v3) ;;
+  contract_closure_budget_control) COMMAND+=(--contract-closure-budget-control) ;;
+  *) echo "Unsupported method arm resolved from profile: $METHOD_ARM" >&2; exit 2 ;;
+esac
 [[ -z "$RESUME_DIR" ]] || COMMAND+=(--resume "$OUTPUT_DIR")
 COMMAND+=("${TASK_ARGS[@]}")
 
 echo "Profile: $PROFILE"
 echo "Model: $MODEL"
-echo "Arm: Full-Repository / No-Hint (benchmark tests hidden)"
+echo "Method arm: $METHOD_ARM"
+echo "Information condition: Full-Repository / No-Hint (benchmark tests hidden)"
 echo "Selected: $SELECTION_LABEL"
 echo "Workers: $WORKERS"
 echo "Timeout: $TIMEOUT seconds/task"

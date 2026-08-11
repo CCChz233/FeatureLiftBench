@@ -14,9 +14,91 @@ from unittest import mock
 
 from featureliftbench.llm_usage_proxy import LLMUsageProxy
 from featureliftbench.llm_usage_proxy import LLMUsageProxyConfig
+from featureliftbench.llm_usage_proxy import _normalize_tool_argument_aliases
+from featureliftbench.openhands_runner import OpenHandsRunnerConfig
+from featureliftbench.openhands_runner import _write_usage
 
 
 class LLMUsageProxyTests(unittest.TestCase):
+    def test_tool_alias_compat_normalizes_only_terminal_security_field(self) -> None:
+        body = json.dumps(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "tool_calls": [
+                                {
+                                    "function": {
+                                        "name": "terminal",
+                                        "arguments": json.dumps(
+                                            {
+                                                "command": "pwd",
+                                                "security_rule": "LOW",
+                                            }
+                                        ),
+                                    }
+                                },
+                                {
+                                    "function": {
+                                        "name": "another_tool",
+                                        "arguments": json.dumps(
+                                            {"security_rule": "LOW"}
+                                        ),
+                                    }
+                                },
+                            ]
+                        }
+                    }
+                ],
+                "usage": {"prompt_tokens": 1, "completion_tokens": 1},
+            }
+        ).encode("utf-8")
+
+        normalized_body, count = _normalize_tool_argument_aliases(body)
+        payload = json.loads(normalized_body)
+        calls = payload["choices"][0]["message"]["tool_calls"]
+        terminal_args = json.loads(calls[0]["function"]["arguments"])
+        other_args = json.loads(calls[1]["function"]["arguments"])
+
+        self.assertEqual(count, 1)
+        self.assertEqual(terminal_args["security_risk"], "LOW")
+        self.assertNotIn("security_rule", terminal_args)
+        self.assertEqual(other_args["security_rule"], "LOW")
+
+    def test_openhands_usage_artifact_preserves_cache_accounting(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = OpenHandsRunnerConfig(
+                workspace_dir=root,
+                task_file=root / "TASK.md",
+                submission_dir=root / "submission",
+                agent_output_dir=root,
+                model="deepseek-v4-flash",
+            )
+            _write_usage(
+                config,
+                exit_status="passed",
+                returncode=0,
+                duration_seconds=1.0,
+                raw_usage={
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "prompt_cache_accounting_available": True,
+                    "prompt_cache_hit_tokens": 80,
+                    "prompt_cache_miss_tokens": 20,
+                    "effective_uncached_prompt_tokens": 20,
+                    "tool_alias_normalizations": 1,
+                },
+            )
+            usage = json.loads((root / "usage.json").read_text(encoding="utf-8"))
+
+        self.assertTrue(usage["prompt_cache_accounting_available"])
+        self.assertEqual(usage["prompt_cache_hit_tokens"], 80)
+        self.assertEqual(usage["prompt_cache_miss_tokens"], 20)
+        self.assertEqual(usage["effective_uncached_prompt_tokens"], 20)
+        self.assertEqual(usage["tool_alias_normalizations"], 1)
+
     def test_proxy_forwards_request_and_records_provider_usage(self) -> None:
         try:
             upstream = _FakeUpstreamServer()
@@ -70,6 +152,12 @@ class LLMUsageProxyTests(unittest.TestCase):
             self.assertEqual(usage["api_calls"], 1)
             self.assertEqual(usage["prompt_tokens"], 123)
             self.assertEqual(usage["completion_tokens"], 45)
+            self.assertTrue(usage["prompt_cache_accounting_available"])
+            self.assertEqual(usage["prompt_cache_hit_tokens"], 100)
+            self.assertEqual(usage["prompt_cache_miss_tokens"], 23)
+            self.assertAlmostEqual(usage["prompt_cache_hit_rate"], 100 / 123)
+            self.assertEqual(usage["effective_uncached_prompt_tokens"], 23)
+            self.assertEqual(audit_records[0]["prompt_cache_hit_tokens"], 100)
             self.assertFalse(usage["context_audit"]["usage_unverified"])
             self.assertEqual(usage["context_audit"]["token_source"], "openhands_proxy")
             self.assertEqual(usage["context_audit"]["context_window_tokens"], 131072)
@@ -223,6 +311,8 @@ class _FakeUpstreamHandler(BaseHTTPRequestHandler):
                     "prompt_tokens": 123,
                     "completion_tokens": 45,
                     "total_tokens": 168,
+                    "prompt_cache_hit_tokens": 100,
+                    "prompt_cache_miss_tokens": 23,
                 },
             }
         ).encode("utf-8")

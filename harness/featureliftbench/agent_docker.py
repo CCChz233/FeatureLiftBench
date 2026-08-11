@@ -69,6 +69,7 @@ def run_command_in_agent_docker(
     *,
     image: str = DEFAULT_AGENT_IMAGE,
     timeout_seconds: int = 300,
+    mount_harness: bool = False,
 ) -> AgentDockerCommandResult:
     """Run a short-lived command in the agent image with workspace mounted.
 
@@ -106,9 +107,10 @@ def run_command_in_agent_docker(
         str(CONTAINER_WORKSPACE),
         "-v",
         f"{workspace}:{CONTAINER_WORKSPACE}:rw",
-        image,
-        *argv,
     ]
+    if mount_harness:
+        command.extend(["-v", f"{HARNESS_ROOT}:{CONTAINER_HARNESS}:ro"])
+    command.extend([image, *argv])
     try:
         proc = subprocess.run(
             command,

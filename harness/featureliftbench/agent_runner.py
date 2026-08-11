@@ -44,6 +44,7 @@ from .repo_graph.runtime import initialize_repo_graph
 from .suite_utils import ALL_RUN_STATUSES
 from .suite_utils import DEFAULT_RETRY_ONLY_STATUSES
 from .suite_utils import compact_suite_run_entry
+from .suite_utils import effective_agent_usage_for_run
 from .suite_utils import evaluation_payload as _evaluation_payload
 from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
@@ -66,6 +67,10 @@ USAGE_SUM_FIELDS = (
     "total_tokens",
     "trace_tokens",
     "billed_tokens",
+    "prompt_cache_hit_tokens",
+    "prompt_cache_miss_tokens",
+    "effective_uncached_prompt_tokens",
+    "tool_alias_normalizations",
 )
 
 RATE_LIMIT_PATTERNS = tuple(
@@ -450,6 +455,7 @@ def run_agent_on_task(
     recovery_info: dict[str, Any] | None = None
     repo_graph_state: RepoGraphRunState | None = None
     repo_graph_usage: dict[str, Any] | None = None
+    contract_closure_audit: dict[str, Any] | None = None
     pre_agent_failure = False
     workspace_submission_dir = workspace_dir / "submission"
     stdout_log = agent_output_dir / "stdout.log"
@@ -1178,6 +1184,358 @@ def run_agent_on_task(
                 agent_implement=_agent_compact(agent_result),
                 agent_repair=_agent_compact(repair_agent_result),
             )
+        elif agent_ready and ablation.contract_closure_budget_control:
+            from .contract_closure_budget_control import CONTROL_PHASE_ENV
+            from .contract_closure_budget_control import DEFAULT_PRIMARY_MAX_STEPS
+            from .contract_closure_budget_control import DEFAULT_PRIMARY_TOKEN_LIMIT
+            from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
+
+            control_env = dict(run_config.env or {})
+            control_env[CONTROL_PHASE_ENV] = "primary"
+            control_env.setdefault(
+                "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS",
+                str(DEFAULT_PRIMARY_MAX_STEPS),
+            )
+            control_env.setdefault(
+                TOTAL_TOKEN_LIMIT_ENV,
+                str(DEFAULT_PRIMARY_TOKEN_LIMIT),
+            )
+            control_config = replace(run_config, env=control_env)
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        control_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(control_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        control_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(f"contract_closure_budget_control run failed: {exc}")
+        elif agent_ready and (
+            ablation.contract_closure_gate
+            or ablation.contract_closure_gate_lite
+            or ablation.contract_closure_gate_lite_v1
+            or ablation.contract_closure_gate_v3
+        ):
+            from .contract_closure_gate import check_workspace_isolated
+            from .contract_closure_gate import decide_repair
+            from .contract_closure_gate import prepare_repair_workspace
+            from .contract_closure_gate import write_contract_closure_audit
+            from .contract_closure_gate.common import CONTRACT_CLOSURE_GATE_ENV
+            from .contract_closure_gate.common import CONTRACT_CLOSURE_GATE_LITE_ENV
+            from .contract_closure_gate.common import (
+                CONTRACT_CLOSURE_GATE_LITE_V1_ENV,
+            )
+            from .contract_closure_gate.common import CONTRACT_CLOSURE_GATE_V3_ENV
+            from .contract_closure_gate.common import CONTRACT_CLOSURE_PHASE_ENV
+            from .contract_closure_gate.common import DEFAULT_LITE_PRIMARY_MAX_STEPS
+            from .contract_closure_gate.common import DEFAULT_LITE_PRIMARY_TOKEN_LIMIT
+            from .contract_closure_gate.common import DEFAULT_LITE_INFRA_RETRY_LIMIT
+            from .contract_closure_gate.common import (
+                DEFAULT_LITE_INFRA_RETRY_MAX_TRIGGER_STEPS,
+            )
+            from .contract_closure_gate.common import DEFAULT_LITE_REPAIR_MAX_STEPS
+            from .contract_closure_gate.common import DEFAULT_LITE_REPAIR_TOKEN_LIMIT
+            from .contract_closure_gate.common import (
+                DEFAULT_LITE_V1_REPAIR_MAX_STEPS,
+            )
+            from .contract_closure_gate.common import (
+                DEFAULT_LITE_V1_REPAIR_TOKEN_LIMIT,
+            )
+            from .contract_closure_gate.common import DEFAULT_REPAIR_MAX_STEPS
+            from .contract_closure_gate.common import DEFAULT_REPAIR_ROUNDS
+            from .contract_closure_gate.common import DEFAULT_REPAIR_TIMEOUT_SECONDS
+            from .contract_closure_gate.common import PRIMARY_MAX_STEPS_ENV
+            from .contract_closure_gate.common import PRIMARY_TOKEN_LIMIT_ENV
+            from .contract_closure_gate.common import REPAIR_MAX_STEPS_ENV
+            from .contract_closure_gate.common import REPAIR_TOKEN_LIMIT_ENV
+            from .contract_closure_gate.common import INFRA_RETRY_LIMIT_ENV
+            from .contract_closure_gate.common import INFRA_RETRY_MAX_STEPS_ENV
+            from .contract_closure_gate.common import LITE_POLICY_VERSION
+            from .contract_closure_gate.common import LITE_V1_POLICY_VERSION
+            from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
+
+            closure_v3 = ablation.contract_closure_gate_v3
+            closure_v1 = ablation.contract_closure_gate_lite_v1
+            closure_lite = (
+                ablation.contract_closure_gate_lite or closure_v1 or closure_v3
+            )
+            closure_check_mode = (
+                "micro" if closure_v3 else "structure" if closure_lite else "full"
+            )
+
+            def _closure_agent_compact(result: Any, output_dir: Path) -> dict[str, Any] | None:
+                if result is None:
+                    return None
+                return {
+                    "name": result.name,
+                    "passed": result.passed,
+                    "returncode": result.returncode,
+                    "duration_seconds": result.duration_seconds,
+                    "timed_out": result.timed_out,
+                    "reason": result.reason,
+                    "resource_limited": result.resource_limited,
+                    "usage": _collect_agent_usage(result.name, output_dir),
+                }
+
+            primary_env = dict(run_config.env or {})
+            primary_env[CONTRACT_CLOSURE_PHASE_ENV] = "primary"
+            primary_limit = _positive_env_int(
+                primary_env,
+                PRIMARY_TOKEN_LIMIT_ENV,
+                default=(DEFAULT_LITE_PRIMARY_TOKEN_LIMIT if closure_lite else None),
+            )
+            if primary_limit is not None:
+                primary_env[TOTAL_TOKEN_LIMIT_ENV] = str(primary_limit)
+            primary_steps = _positive_env_int(
+                primary_env,
+                PRIMARY_MAX_STEPS_ENV,
+                default=(DEFAULT_LITE_PRIMARY_MAX_STEPS if closure_lite else None),
+            )
+            if primary_steps is not None:
+                primary_env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"] = str(primary_steps)
+            primary_config = replace(run_config, env=primary_env)
+
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        primary_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(run_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        primary_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(f"contract_closure_gate primary run failed: {exc}")
+
+            infrastructure_retry = _contract_closure_infrastructure_retry_decision(
+                agent_result=agent_result,
+                agent_output_dir=agent_output_dir,
+                submission_dir=workspace_submission_dir,
+                enabled=closure_lite,
+                retry_limit=(
+                    _positive_env_int(
+                        primary_env,
+                        INFRA_RETRY_LIMIT_ENV,
+                        default=DEFAULT_LITE_INFRA_RETRY_LIMIT,
+                    )
+                    or 0
+                ),
+                max_trigger_steps=(
+                    _positive_env_int(
+                        primary_env,
+                        INFRA_RETRY_MAX_STEPS_ENV,
+                        default=DEFAULT_LITE_INFRA_RETRY_MAX_TRIGGER_STEPS,
+                    )
+                    or DEFAULT_LITE_INFRA_RETRY_MAX_TRIGGER_STEPS
+                ),
+                policy_version=(
+                    LITE_V1_POLICY_VERSION if closure_v1 else LITE_POLICY_VERSION
+                ),
+            )
+            primary_attempts: list[dict[str, Any]] = []
+            if agent_result is not None:
+                primary_attempts.append(
+                    _closure_agent_compact(agent_result, agent_output_dir) or {}
+                )
+            if infrastructure_retry.get("eligible"):
+                first_attempt_dir = output_path / "agent_primary_attempt1"
+                if first_attempt_dir.exists():
+                    shutil.rmtree(first_attempt_dir)
+                shutil.move(str(agent_output_dir), str(first_attempt_dir))
+                agent_output_dir.mkdir(parents=True, exist_ok=True)
+                prompt_path = agent_output_dir / "prompt.txt"
+                prompt_path.write_text(
+                    task_file.read_text(encoding="utf-8"), encoding="utf-8"
+                )
+                stdout_log = agent_output_dir / "stdout.log"
+                stderr_log = agent_output_dir / "stderr.log"
+                # The eligible class requires an empty submission, but reset it
+                # explicitly so a retry never inherits partial agent output.
+                _reset_dir(workspace_submission_dir)
+                retry_context = AgentRunContext(
+                    workspace_dir=workspace_dir,
+                    task_file=task_file,
+                    submission_dir=workspace_submission_dir,
+                    agent_output_dir=agent_output_dir,
+                    task_text=task_file.read_text(encoding="utf-8"),
+                )
+                try:
+                    if agent_docker:
+                        agent_result = run_agent_in_docker(
+                            retry_context,
+                            primary_config,
+                            image=agent_docker_image,
+                            stdout_log=stdout_log,
+                            stderr_log=stderr_log,
+                        )
+                    else:
+                        adapter = get_agent_adapter(primary_config.agent)
+                        agent_result = adapter.run(
+                            retry_context,
+                            primary_config,
+                            stdout_log=stdout_log,
+                            stderr_log=stderr_log,
+                        )
+                except ValueError as exc:
+                    agent_result = None
+                    errors.append(
+                        f"contract_closure_gate infrastructure retry failed: {exc}"
+                    )
+                infrastructure_retry["attempts_used"] = 1
+                infrastructure_retry["first_attempt_dir"] = str(first_attempt_dir)
+                if agent_result is not None:
+                    primary_attempts.append(
+                        _closure_agent_compact(agent_result, agent_output_dir) or {}
+                    )
+                    retry_usage = _collect_agent_usage(agent_result.name, agent_output_dir)
+                    infrastructure_retry["retry_exit_status"] = retry_usage.get(
+                        "exit_status", ""
+                    )
+                    infrastructure_retry["retry_passed"] = agent_result.passed
+
+            try:
+                closure_initial = check_workspace_isolated(
+                    workspace_dir,
+                    use_docker=bool(agent_docker),
+                    docker_image=agent_docker_image if agent_docker else None,
+                    check_mode=closure_check_mode,
+                )
+            except Exception as exc:  # noqa: BLE001 - preserve evaluator path
+                closure_initial = _contract_closure_checker_error(exc)
+            closure_final = closure_initial
+            repair_rounds_used = 0
+            repair_agent_result = None
+            repair_decision = decide_repair(
+                workspace_dir,
+                closure_initial,
+                lite=closure_lite and not closure_v1,
+                frozen_v1=closure_v1,
+                v3=closure_v3,
+            )
+            if repair_decision.get("eligible") and DEFAULT_REPAIR_ROUNDS > 0:
+                repair_rounds_used = 1
+                repair_task = prepare_repair_workspace(
+                    workspace_dir,
+                    check_result=closure_initial,
+                    task_markdown=task_file.read_text(encoding="utf-8"),
+                    lite=closure_lite,
+                    v3=closure_v3,
+                )
+                repair_dir = output_path / "agent_repair"
+                _reset_dir(repair_dir)
+                repair_stdout = repair_dir / "stdout.log"
+                repair_stderr = repair_dir / "stderr.log"
+                repair_env = {
+                    **(run_config.env or {}),
+                    CONTRACT_CLOSURE_GATE_ENV: "0" if closure_lite else "1",
+                    CONTRACT_CLOSURE_GATE_LITE_ENV: (
+                        "1" if closure_lite and not closure_v1 and not closure_v3 else "0"
+                    ),
+                    CONTRACT_CLOSURE_GATE_LITE_V1_ENV: "1" if closure_v1 else "0",
+                    CONTRACT_CLOSURE_GATE_V3_ENV: "1" if closure_v3 else "0",
+                    CONTRACT_CLOSURE_PHASE_ENV: "repair",
+                }
+                repair_steps = _positive_env_int(
+                    repair_env,
+                    REPAIR_MAX_STEPS_ENV,
+                    default=(
+                        DEFAULT_LITE_V1_REPAIR_MAX_STEPS
+                        if closure_v1
+                        else DEFAULT_LITE_REPAIR_MAX_STEPS
+                        if closure_lite
+                        else DEFAULT_REPAIR_MAX_STEPS
+                    ),
+                )
+                repair_env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"] = str(
+                    repair_steps or DEFAULT_REPAIR_MAX_STEPS
+                )
+                repair_limit = _positive_env_int(
+                    repair_env,
+                    REPAIR_TOKEN_LIMIT_ENV,
+                    default=(
+                        DEFAULT_LITE_V1_REPAIR_TOKEN_LIMIT
+                        if closure_v1
+                        else DEFAULT_LITE_REPAIR_TOKEN_LIMIT
+                        if closure_lite
+                        else None
+                    ),
+                )
+                if repair_limit is not None:
+                    repair_env[TOTAL_TOKEN_LIMIT_ENV] = str(repair_limit)
+                repair_config = replace(
+                    run_config,
+                    timeout_seconds=min(
+                        int(run_config.timeout_seconds or 3600),
+                        DEFAULT_REPAIR_TIMEOUT_SECONDS,
+                    ),
+                    env=repair_env,
+                )
+                repair_context = AgentRunContext(
+                    workspace_dir=workspace_dir,
+                    task_file=workspace_dir / "TASK.md",
+                    submission_dir=workspace_submission_dir,
+                    agent_output_dir=repair_dir,
+                    task_text=repair_task,
+                )
+                try:
+                    if agent_docker:
+                        repair_agent_result = run_agent_in_docker(
+                            repair_context,
+                            repair_config,
+                            image=agent_docker_image,
+                            stdout_log=repair_stdout,
+                            stderr_log=repair_stderr,
+                        )
+                    else:
+                        adapter = get_agent_adapter(repair_config.agent)
+                        repair_agent_result = adapter.run(
+                            repair_context,
+                            repair_config,
+                            stdout_log=repair_stdout,
+                            stderr_log=repair_stderr,
+                        )
+                except ValueError as exc:
+                    errors.append(f"contract_closure_gate repair failed: {exc}")
+                try:
+                    closure_final = check_workspace_isolated(
+                        workspace_dir,
+                        use_docker=bool(agent_docker),
+                        docker_image=agent_docker_image if agent_docker else None,
+                        check_mode=closure_check_mode,
+                    )
+                except Exception as exc:  # noqa: BLE001 - preserve evaluator path
+                    closure_final = _contract_closure_checker_error(exc)
+
+            contract_closure_audit = write_contract_closure_audit(
+                output_path,
+                initial=closure_initial,
+                final=closure_final,
+                repair_rounds_used=repair_rounds_used,
+                agent_primary=_closure_agent_compact(agent_result, agent_output_dir),
+                agent_repair=_closure_agent_compact(repair_agent_result, output_path / "agent_repair"),
+                arm=ablation.ablation_arm,
+                repair_decision=repair_decision,
+                agent_primary_attempts=primary_attempts,
+                infrastructure_retry=infrastructure_retry,
+            )
         elif agent_ready:
             try:
                 if agent_docker:
@@ -1293,6 +1651,22 @@ def run_agent_on_task(
         submission_exists=submission_exists,
         eval_result=eval_result,
     )
+    # In this experimental arm the private evaluator remains the formal outcome;
+    # primary/repair termination and closure state are recorded independently.
+    if (
+        (
+            ablation.contract_closure_gate
+            or ablation.contract_closure_gate_lite
+            or ablation.contract_closure_gate_lite_v1
+            or ablation.contract_closure_gate_v3
+            or ablation.contract_closure_budget_control
+        )
+        and validation.valid
+        and submission_exists
+        and eval_result is not None
+        and eval_result.get("status") == "passed"
+    ):
+        status = "passed"
     if pre_agent_failure:
         status = "failed"
     run_json_path = output_path / "run.json"
@@ -1341,6 +1715,8 @@ def run_agent_on_task(
     }
     if repo_graph_usage is not None:
         result["repo_graph"] = repo_graph_usage
+    if contract_closure_audit is not None:
+        result["contract_closure"] = contract_closure_audit
     if previous_attempt_json is not None:
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
@@ -2119,6 +2495,111 @@ def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
     return any(pattern.search(text) for pattern in RATE_LIMIT_PATTERNS)
 
 
+def _contract_closure_infrastructure_retry_decision(
+    *,
+    agent_result: Any,
+    agent_output_dir: Path,
+    submission_dir: Path,
+    enabled: bool,
+    retry_limit: int,
+    max_trigger_steps: int,
+    policy_version: str,
+) -> dict[str, Any]:
+    """Allow one fresh primary attempt for an explicit early runtime failure."""
+
+    decision: dict[str, Any] = {
+        "policy_version": policy_version,
+        "requested": False,
+        "eligible": False,
+        "retry_limit": max(0, int(retry_limit)),
+        "max_trigger_steps": max(0, int(max_trigger_steps)),
+        "attempts_used": 0,
+        "reason": "infrastructure retry not requested",
+    }
+    if not enabled or agent_result is None:
+        decision["reason"] = "infrastructure retry is only enabled for Lite V2.1"
+        return decision
+
+    usage = _collect_agent_usage(agent_result.name, agent_output_dir)
+    exit_status = str(usage.get("exit_status") or "")
+    assistant_steps = int(usage.get("assistant_steps") or 0)
+    submission_empty = not _package_has_python_files(submission_dir)
+    requested = exit_status == "tool_validation_error"
+    decision.update(
+        {
+            "requested": requested,
+            "exit_status": exit_status,
+            "assistant_steps": assistant_steps,
+            "submission_empty": submission_empty,
+        }
+    )
+    if not requested:
+        decision["reason"] = "primary did not end with a retryable tool validation error"
+        return decision
+    if retry_limit < 1:
+        decision["reason"] = "infrastructure retry limit is zero"
+        return decision
+    if not submission_empty:
+        decision["reason"] = "submission is non-empty; preserve output and use normal closure logic"
+        return decision
+    if assistant_steps > max_trigger_steps:
+        decision["reason"] = (
+            f"tool validation error occurred after {assistant_steps} steps, exceeding "
+            f"the early-retry threshold of {max_trigger_steps}"
+        )
+        return decision
+    decision["eligible"] = True
+    decision["reason"] = (
+        "explicit OpenHands tool validation error occurred early with an empty submission"
+    )
+    return decision
+
+
+def _contract_closure_checker_error(exc: BaseException) -> dict[str, Any]:
+    """Convert checker infrastructure errors into auditable, repairable results."""
+
+    message = f"{type(exc).__name__}: {exc}"
+    return {
+        "schema_version": "featureliftbench.contract_closure_check.v1",
+        "checker_version": "contract_closure_gate.v3",
+        "check_mode": "full",
+        "hard_gate_ok": False,
+        "behavior_gate_ok": False,
+        "closure_ok": False,
+        "repair_needed": True,
+        "summary": {"pass": 0, "fail": 1, "unknown": 0},
+        "hard_failure_count": 1,
+        "actionable_behavior_failure_count": 0,
+        "soft_open_count": 0,
+        "unknown_count": 0,
+        "checks": [
+            {
+                "id": "checker.infrastructure",
+                "category": "infrastructure",
+                "status": "fail",
+                "severity": "hard",
+                "message": message,
+            }
+        ],
+    }
+
+
+def _positive_env_int(
+    env: dict[str, str],
+    key: str,
+    *,
+    default: int | None = None,
+) -> int | None:
+    raw = str(env.get(key, "")).strip()
+    if not raw:
+        return default
+    try:
+        value = int(raw)
+    except ValueError:
+        return default
+    return value if value > 0 else default
+
+
 def prepare_agent_workspace(
     task_dir: str | Path,
     workspace_dir: str | Path,
@@ -2210,6 +2691,27 @@ def prepare_agent_workspace(
             workspace_path,
             required_api_paths=flatten_required_api_paths(metadata),
         )
+    elif options.contract_closure_budget_control:
+        (workspace_path / "submission").mkdir(exist_ok=True)
+    elif (
+        options.contract_closure_gate
+        or options.contract_closure_gate_lite
+        or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_v3
+    ):
+        from .contract_closure_gate import install_contract_closure_workspace
+
+        install_contract_closure_workspace(
+            workspace_path,
+            metadata=metadata,
+            lite=(
+                options.contract_closure_gate_lite
+                or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_v3
+            ),
+            frozen_v1=options.contract_closure_gate_lite_v1,
+            v3=options.contract_closure_gate_v3,
+        )
     else:
         (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
@@ -2254,6 +2756,27 @@ def prepare_agent_workspace(
             task_markdown.rstrip()
             + "\n\n"
             + tfl_appendix()
+        )
+    elif options.contract_closure_budget_control:
+        from .contract_closure_budget_control import task_appendix as control_appendix
+
+        task_markdown = task_markdown.rstrip() + "\n\n" + control_appendix()
+    elif (
+        options.contract_closure_gate
+        or options.contract_closure_gate_lite
+        or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_v3
+    ):
+        from .contract_closure_gate import task_appendix as closure_appendix
+
+        task_markdown = task_markdown.rstrip() + "\n\n" + closure_appendix(
+            lite=(
+                options.contract_closure_gate_lite
+                or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_v3
+            ),
+            frozen_v1=options.contract_closure_gate_lite_v1,
+            v3=options.contract_closure_gate_v3,
         )
     task_file.write_text(task_markdown, encoding="utf-8")
     if not options.expose_source_hints:
@@ -3126,6 +3649,9 @@ def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any
         value = _int_metric(data.get(key))
         if value is not None:
             usage[key] = value
+    cache_available = data.get("prompt_cache_accounting_available")
+    if isinstance(cache_available, bool):
+        usage["prompt_cache_accounting_available"] = cache_available
     exit_status = data.get("exit_status")
     if isinstance(exit_status, str):
         usage["exit_status"] = exit_status
@@ -3143,8 +3669,7 @@ def _sanitize_usage_payload(data: dict[str, Any], source: Path) -> dict[str, Any
 def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
     usages: list[dict[str, Any]] = []
     for run in runs:
-        agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}
-        usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
+        usage = effective_agent_usage_for_run(run)
         if usage.get("available") is True:
             usages.append(usage)
 
@@ -3156,6 +3681,13 @@ def _sum_agent_usage(runs: list[dict[str, Any]]) -> dict[str, Any]:
         totals[key] = sum(
             value for usage in usages if isinstance((value := usage.get(key)), int)
         )
+    totals["prompt_cache_accounting_available_runs"] = sum(
+        usage.get("prompt_cache_accounting_available") is True for usage in usages
+    )
+    cache_total = totals["prompt_cache_hit_tokens"] + totals["prompt_cache_miss_tokens"]
+    totals["prompt_cache_hit_rate"] = (
+        totals["prompt_cache_hit_tokens"] / cache_total if cache_total > 0 else None
+    )
     context_audits = [
         audit
         for usage in usages

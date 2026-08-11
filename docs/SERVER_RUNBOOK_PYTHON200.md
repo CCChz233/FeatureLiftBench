@@ -54,6 +54,19 @@ same agent/evaluator identities or re-evaluate the baseline submissions under th
 
 Expected selection is the exact frozen unified suite. No model calls occur without `--execute`.
 
+For the frozen Contract Closure Gate Lite V1 method run, use the exact profile
+below. The runner verifies the 2M/45 primary budget, 500k/10 repair budget, and
+prints `contract_closure_gate_lite_v1_frozen` as the resolved method arm:
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_contract_closure_gate_lite_v1_frozen \
+  lite-v1-plan \
+  --workers <n> \
+  --agent-image <agent-image-id> \
+  --eval-image <eval-image-id>
+```
+
 ## 5. Smoke Before Full Cost
 
 Run one representative task with the same profile and images using the standard CLI. Confirm:
@@ -81,6 +94,22 @@ Do not promote the smoke attempt into Pass@1 of the formal suite.
 
 The runner performs strict Docker preflight before model calls and writes under
 `experiments/python/openhands/<model>/<run-id>/`.
+
+Frozen Lite V1 example:
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_contract_closure_gate_lite_v1_frozen \
+  python200-deepseek-v4-flash-lite-v1-frozen-001 \
+  --workers <n> \
+  --timeout 3600 \
+  --agent-image <agent-image-id> \
+  --eval-image <eval-image-id> \
+  --execute
+```
+
+Do not edit the method profile after the plan-only preflight. If any setting
+changes, use a new release ID and rerun the smoke before the formal suite.
 
 ## 7. Launch External-50 Only
 

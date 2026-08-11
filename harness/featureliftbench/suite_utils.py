@@ -401,6 +401,12 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
         "prompt_tokens",
         "completion_tokens",
         "total_tokens",
+        "prompt_cache_hit_tokens",
+        "prompt_cache_miss_tokens",
+        "effective_uncached_prompt_tokens",
+        "tool_alias_normalizations",
+        "trace_tokens",
+        "billed_tokens",
     ):
         value = usage.get(key)
         if isinstance(value, int):
@@ -466,9 +472,21 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
     return compact
 
 
-def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
+def effective_agent_usage_for_run(run: dict[str, Any]) -> dict[str, Any]:
+    """Use all closure phases when present; otherwise use the primary agent usage."""
+
+    closure = run.get("contract_closure")
+    if isinstance(closure, dict):
+        totals = closure.get("usage_totals")
+        if isinstance(totals, dict) and totals.get("available") is True:
+            return totals
     agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}
     usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
+    return usage
+
+
+def compact_suite_run_entry(run: dict[str, Any]) -> dict[str, Any]:
+    usage = effective_agent_usage_for_run(run)
     evaluation = run.get("evaluation") if isinstance(run.get("evaluation"), dict) else {}
     scores = evaluation.get("scores") if isinstance(evaluation.get("scores"), dict) else {}
     submission = run.get("submission") if isinstance(run.get("submission"), dict) else {}

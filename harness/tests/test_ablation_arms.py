@@ -37,6 +37,50 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(expose_source_hints=True).ablation_arm,
             "entrypoint_hint",
         )
+        self.assertEqual(
+            AblationOptions(contract_closure_gate=True).ablation_arm,
+            "contract_closure_gate",
+        )
+        self.assertEqual(
+            AblationOptions(contract_closure_gate_lite=True).ablation_arm,
+            "contract_closure_gate_lite",
+        )
+        self.assertEqual(
+            AblationOptions(contract_closure_gate_lite_v1=True).ablation_arm,
+            "contract_closure_gate_lite_v1_frozen",
+        )
+        self.assertEqual(
+            AblationOptions(contract_closure_gate_v3=True).ablation_arm,
+            "contract_closure_gate_v3",
+        )
+        self.assertEqual(
+            AblationOptions(contract_closure_budget_control=True).ablation_arm,
+            "contract_closure_budget_control",
+        )
+
+    def test_contract_closure_gate_is_mutually_exclusive_with_other_methods(self) -> None:
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(contract_closure_gate=True, test_first_lift=True)
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate=True,
+                contract_closure_gate_lite=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate_lite=True,
+                contract_closure_budget_control=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate_lite=True,
+                contract_closure_gate_v3=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate_lite=True,
+                contract_closure_gate_lite_v1=True,
+            )
 
     def test_cli_overrides_profile(self) -> None:
         options = resolve_ablation_options(
@@ -139,6 +183,105 @@ class AblationWorkspaceTests(unittest.TestCase):
             prompt = (workspace / "TASK.md").read_text(encoding="utf-8")
             self.assertIn("Run `pytest public_tests/`", prompt)
             self.assertIn("Required Output API", prompt)
+
+    def test_contract_closure_workspace_contains_only_public_contract_material(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task_dir = (
+                Path(__file__).resolve().parents[2]
+                / "benchmark"
+                / "tasks"
+                / "sqlparse__token_tree_core__001"
+            )
+            metadata = load_metadata(task_dir).data
+            workspace = Path(tmp) / "ws"
+            prepare_agent_workspace(
+                task_dir,
+                workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_gate=True),
+            )
+            self.assertTrue((workspace / "PUBLIC_CONTRACT.json").is_file())
+            self.assertTrue((workspace / "contract_cases" / "README.md").is_file())
+            self.assertTrue((workspace / "flb-contract-check").is_file())
+            payload = (workspace / "PUBLIC_CONTRACT.json").read_text(encoding="utf-8")
+            self.assertNotIn("evaluation_spec", payload)
+            self.assertNotIn("hidden_test_mappings", payload)
+            self.assertIn("Public Contract Closure Gate", (workspace / "TASK.md").read_text())
+
+            lite_workspace = Path(tmp) / "lite"
+            prepare_agent_workspace(
+                task_dir,
+                lite_workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_gate_lite=True),
+            )
+            lite_prompt = (lite_workspace / "TASK.md").read_text(encoding="utf-8")
+            self.assertTrue((lite_workspace / "PUBLIC_CONTRACT.json").is_file())
+            self.assertTrue((lite_workspace / "flb-contract-check").is_file())
+            self.assertFalse((lite_workspace / "contract_cases").exists())
+            self.assertIn("Contract Closure Gate Lite", lite_prompt)
+            self.assertIn("--structure-only --summary", lite_prompt)
+
+            v1_workspace = Path(tmp) / "lite-v1-frozen"
+            prepare_agent_workspace(
+                task_dir,
+                v1_workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_gate_lite_v1=True),
+            )
+            v1_prompt = (v1_workspace / "TASK.md").read_text(encoding="utf-8")
+            self.assertTrue((v1_workspace / "PUBLIC_CONTRACT.json").is_file())
+            self.assertTrue((v1_workspace / "flb-contract-check").is_file())
+            self.assertFalse((v1_workspace / "contract_cases").exists())
+            self.assertIn("## Public Contract Closure Gate Lite", v1_prompt)
+            self.assertNotIn("Gate Lite V2", v1_prompt)
+            self.assertIn("Implement every Required Output API", v1_prompt)
+            self.assertNotIn("roughly the first 6 agent steps", v1_prompt)
+
+            v3_workspace = Path(tmp) / "v3"
+            prepare_agent_workspace(
+                task_dir,
+                v3_workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_gate_v3=True),
+            )
+            v3_prompt = (v3_workspace / "TASK.md").read_text(encoding="utf-8")
+            v3_readme = (v3_workspace / "contract_cases" / "README.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertTrue((v3_workspace / "PUBLIC_CONTRACT.json").is_file())
+            self.assertTrue((v3_workspace / "flb-contract-check").is_file())
+            self.assertIn("Contract Closure Gate V3", v3_prompt)
+            self.assertIn("--micro --summary", v3_prompt)
+            self.assertIn("exactly two", v3_readme)
+            self.assertIn("Full clause coverage is not required", v3_readme)
+
+            control_workspace = Path(tmp) / "control"
+            prepare_agent_workspace(
+                task_dir,
+                control_workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_budget_control=True),
+            )
+            control_prompt = (control_workspace / "TASK.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertFalse((control_workspace / "PUBLIC_CONTRACT.json").exists())
+            self.assertFalse((control_workspace / "contract_cases").exists())
+            self.assertFalse((control_workspace / "flb-contract-check").exists())
+            self.assertIn("Equal-Budget Implementation Review", control_prompt)
+            self.assertIn("No contract checker", control_prompt)
+
+            main_workspace = Path(tmp) / "main"
+            prepare_agent_workspace(
+                task_dir,
+                main_workspace,
+                metadata,
+                ablation=AblationOptions(),
+            )
+            self.assertFalse((main_workspace / "PUBLIC_CONTRACT.json").exists())
+            self.assertFalse((main_workspace / "contract_cases").exists())
+            self.assertFalse((main_workspace / "flb-contract-check").exists())
 
     def test_short_prompt_drops_closure_keeps_api(self) -> None:
         prompt = build_task_prompt(

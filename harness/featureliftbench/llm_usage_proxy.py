@@ -21,6 +21,7 @@ from .openhands_usage import openhands_context_limits
 
 PROXY_DISABLE_ENV = "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY"
 TOTAL_TOKEN_LIMIT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"
+TOOL_ALIAS_COMPAT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOOL_ALIAS_COMPAT"
 
 
 @dataclass(frozen=True)
@@ -31,6 +32,7 @@ class LLMUsageProxyConfig:
     usage_path: Path
     model: str = ""
     total_token_limit: int | None = None
+    tool_alias_compat: bool = False
 
 
 class LLMUsageProxy:
@@ -44,12 +46,16 @@ class LLMUsageProxy:
         self._api_calls = 0
         self._prompt_tokens = 0
         self._completion_tokens = 0
+        self._prompt_cache_hit_tokens = 0
+        self._prompt_cache_miss_tokens = 0
+        self._saw_prompt_cache_usage = False
         self._max_prompt_tokens_per_call = 0
         self._max_total_tokens_per_call = 0
         self._saw_verified_usage = False
         self._context_violation = False
         self._token_budget_exhausted = False
         self._budget_rejections = 0
+        self._tool_alias_normalizations = 0
 
     @property
     def base_url(self) -> str:
@@ -117,12 +123,19 @@ class LLMUsageProxy:
                 sort_keys=True,
             ).encode("utf-8")
 
+        alias_normalizations = 0
+        if self.config.tool_alias_compat and status < 400:
+            response_body, alias_normalizations = _normalize_tool_argument_aliases(
+                response_body
+            )
+
         self._record_call(
             path=handler.path,
             target_url=target_url,
             status=status,
             request_payload=request_payload,
             response_body=response_body,
+            alias_normalizations=alias_normalizations,
         )
         handler.send_response(status)
         for key, value in response_headers.items():
@@ -141,12 +154,16 @@ class LLMUsageProxy:
                 return
             prompt_tokens = self._prompt_tokens
             completion_tokens = self._completion_tokens
+            cache_hit_tokens = self._prompt_cache_hit_tokens
+            cache_miss_tokens = self._prompt_cache_miss_tokens
+            saw_cache_usage = self._saw_prompt_cache_usage
             max_prompt = self._max_prompt_tokens_per_call
             max_total = self._max_total_tokens_per_call
             saw_verified = self._saw_verified_usage
             context_violation = self._context_violation
             token_budget_exhausted = self._token_budget_exhausted
             budget_rejections = self._budget_rejections
+            tool_alias_normalizations = self._tool_alias_normalizations
 
         token_source = "openhands_proxy" if saw_verified else "openhands_proxy_no_provider_usage"
         usage = {
@@ -155,9 +172,22 @@ class LLMUsageProxy:
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
             "total_tokens": prompt_tokens + completion_tokens,
+            "prompt_cache_accounting_available": saw_cache_usage,
+            "prompt_cache_hit_tokens": cache_hit_tokens,
+            "prompt_cache_miss_tokens": cache_miss_tokens,
+            "prompt_cache_hit_rate": (
+                cache_hit_tokens / (cache_hit_tokens + cache_miss_tokens)
+                if saw_cache_usage and cache_hit_tokens + cache_miss_tokens > 0
+                else None
+            ),
+            "effective_uncached_prompt_tokens": (
+                cache_miss_tokens if saw_cache_usage else None
+            ),
             "total_token_limit": self.config.total_token_limit,
             "token_budget_exhausted": token_budget_exhausted,
             "budget_rejections": budget_rejections,
+            "tool_alias_compat": self.config.tool_alias_compat,
+            "tool_alias_normalizations": tool_alias_normalizations,
             "context_audit": {
                 "available": saw_verified,
                 "runtime": "openhands",
@@ -211,12 +241,17 @@ class LLMUsageProxy:
         status: int,
         request_payload: dict[str, Any] | None,
         response_body: bytes,
+        alias_normalizations: int = 0,
     ) -> None:
         response_payload = _json_object(response_body)
         usage = response_payload.get("usage") if isinstance(response_payload, dict) else None
         usage = usage if isinstance(usage, dict) else {}
         prompt = _int_metric(usage.get("prompt_tokens"))
         completion = _int_metric(usage.get("completion_tokens"))
+        cache_hit, cache_miss, cache_available = _prompt_cache_metrics(
+            usage,
+            prompt_tokens=prompt,
+        )
         total = _int_metric(usage.get("total_tokens"))
         if total is None and (prompt is not None or completion is not None):
             total = (prompt or 0) + (completion or 0)
@@ -244,14 +279,23 @@ class LLMUsageProxy:
             "prompt_tokens": prompt,
             "completion_tokens": completion,
             "total_tokens": total,
+            "prompt_cache_accounting_available": cache_available,
+            "prompt_cache_hit_tokens": cache_hit,
+            "prompt_cache_miss_tokens": cache_miss,
             "context_window_tokens": limits.context_window_tokens,
             "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "context_violation": context_violation,
+            "tool_alias_normalizations": alias_normalizations,
         }
         with self._lock:
             self._api_calls += 1
             self._prompt_tokens += prompt_value
             self._completion_tokens += completion_value
+            self._prompt_cache_hit_tokens += cache_hit or 0
+            self._prompt_cache_miss_tokens += cache_miss or 0
+            self._saw_prompt_cache_usage = (
+                self._saw_prompt_cache_usage or cache_available
+            )
             self._max_prompt_tokens_per_call = max(
                 self._max_prompt_tokens_per_call,
                 prompt_value,
@@ -262,6 +306,7 @@ class LLMUsageProxy:
             )
             self._saw_verified_usage = self._saw_verified_usage or verified
             self._context_violation = self._context_violation or bool(context_violation)
+            self._tool_alias_normalizations += alias_normalizations
             if (
                 self.config.total_token_limit is not None
                 and self._prompt_tokens + self._completion_tokens >= self.config.total_token_limit
@@ -365,7 +410,60 @@ def maybe_start_openhands_usage_proxy(
             usage_path=agent_output_dir / "openhands_usage.json",
             model=env.get("LLM_MODEL") or env.get("FEATURELIFTBENCH_MODEL", ""),
             total_token_limit=_positive_int(env.get(TOTAL_TOKEN_LIMIT_ENV)),
+            tool_alias_compat=_truthy(env.get(TOOL_ALIAS_COMPAT_ENV)),
         )
+    )
+
+
+def _normalize_tool_argument_aliases(response_body: bytes) -> tuple[bytes, int]:
+    """Normalize one known DeepSeek/OpenHands terminal schema alias.
+
+    The transformation is deliberately narrow: only ``terminal`` tool calls,
+    only JSON-object arguments, and only when ``security_risk`` is absent.
+    Task content and tool commands are left untouched.
+    """
+
+    payload = _json_object(response_body)
+    if payload is None:
+        return response_body, 0
+    choices = payload.get("choices")
+    if not isinstance(choices, list):
+        return response_body, 0
+    normalized = 0
+    for choice in choices:
+        if not isinstance(choice, dict):
+            continue
+        message = choice.get("message")
+        if not isinstance(message, dict):
+            continue
+        tool_calls = message.get("tool_calls")
+        if not isinstance(tool_calls, list):
+            continue
+        for tool_call in tool_calls:
+            if not isinstance(tool_call, dict):
+                continue
+            function = tool_call.get("function")
+            if not isinstance(function, dict) or function.get("name") != "terminal":
+                continue
+            arguments = function.get("arguments")
+            if not isinstance(arguments, str):
+                continue
+            try:
+                parsed = json.loads(arguments)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(parsed, dict):
+                continue
+            if "security_risk" in parsed or "security_rule" not in parsed:
+                continue
+            parsed["security_risk"] = parsed.pop("security_rule")
+            function["arguments"] = json.dumps(parsed, ensure_ascii=False, separators=(",", ":"))
+            normalized += 1
+    if normalized == 0:
+        return response_body, 0
+    return (
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8"),
+        normalized,
     )
 
 
@@ -395,6 +493,10 @@ def _safe_int(value: str | None) -> int | None:
     return parsed if parsed >= 0 else None
 
 
+def _truthy(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 def _positive_int(value: str | None) -> int | None:
     parsed = _safe_int(value)
     return parsed if parsed is not None and parsed > 0 else None
@@ -414,6 +516,26 @@ def _int_metric(value: Any) -> int | None:
             return None
         return parsed if parsed >= 0 else None
     return None
+
+
+def _prompt_cache_metrics(
+    usage: dict[str, Any],
+    *,
+    prompt_tokens: int | None,
+) -> tuple[int | None, int | None, bool]:
+    """Read DeepSeek/OpenAI-compatible cache accounting without inventing hits."""
+
+    hit = _int_metric(usage.get("prompt_cache_hit_tokens"))
+    miss = _int_metric(usage.get("prompt_cache_miss_tokens"))
+    details = usage.get("prompt_tokens_details")
+    if hit is None and isinstance(details, dict):
+        hit = _int_metric(details.get("cached_tokens"))
+    available = hit is not None or miss is not None
+    if available and hit is None:
+        hit = 0
+    if available and miss is None and prompt_tokens is not None:
+        miss = max(0, prompt_tokens - (hit or 0))
+    return hit, miss, available
 
 
 def _first_non_empty(*values: str | None) -> str:

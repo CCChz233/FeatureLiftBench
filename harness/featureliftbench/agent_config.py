@@ -10,6 +10,14 @@ from typing import Any
 
 from .ablation import resolve_ablation_options
 from .agent_adapters import AgentRunConfig
+from .contract_closure_gate.common import PRIMARY_MAX_STEPS_ENV
+from .contract_closure_gate.common import PRIMARY_TOKEN_LIMIT_ENV
+from .contract_closure_gate.common import REPAIR_MAX_STEPS_ENV
+from .contract_closure_gate.common import REPAIR_TOKEN_LIMIT_ENV
+from .contract_closure_gate.common import INFRA_RETRY_LIMIT_ENV
+from .contract_closure_gate.common import INFRA_RETRY_MAX_STEPS_ENV
+from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
+from .llm_usage_proxy import TOOL_ALIAS_COMPAT_ENV
 from .openhands_usage import CONDENSER_KEEP_FIRST_ENV
 from .openhands_usage import CONDENSER_MAX_EVENTS_ENV
 from .openhands_usage import CONDENSER_MODE_ENV
@@ -36,6 +44,7 @@ DEFAULT_API_KEY_ENV = "FEATURELIFTBENCH_API_KEY"
 DEFAULT_API_BASE_ENV = "FEATURELIFTBENCH_API_BASE"
 DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
 OPENHANDS_MAX_STEPS_ENV = "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"
+LLM_MAX_MESSAGE_CHARS_ENV = "LLM_MAX_MESSAGE_CHARS"
 DEFAULT_OPENHANDS_COMMAND = (
     "openhands --headless --override-with-envs --exit-without-confirmation "
     "-f {prompt_file} --json"
@@ -65,6 +74,11 @@ def load_agent_run_config(
     exec_contract_variant: str | None = None,
     self_contract: bool | None = None,
     test_first_lift: bool | None = None,
+    contract_closure_gate: bool | None = None,
+    contract_closure_gate_lite: bool | None = None,
+    contract_closure_gate_lite_v1: bool | None = None,
+    contract_closure_gate_v3: bool | None = None,
+    contract_closure_budget_control: bool | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
 
@@ -95,6 +109,11 @@ def load_agent_run_config(
         exec_contract_variant=exec_contract_variant,
         self_contract=self_contract,
         test_first_lift=test_first_lift,
+        contract_closure_gate=contract_closure_gate,
+        contract_closure_gate_lite=contract_closure_gate_lite,
+        contract_closure_gate_lite_v1=contract_closure_gate_lite_v1,
+        contract_closure_gate_v3=contract_closure_gate_v3,
+        contract_closure_budget_control=contract_closure_budget_control,
     )
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
@@ -335,6 +354,15 @@ def load_agent_run_config(
             "LLM_NATIVE_TOOL_CALLING",
             "true" if _truthy(native_tool_calling) else "false",
         )
+    tool_alias_compat_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=TOOL_ALIAS_COMPAT_ENV,
+        profile_value=profile.get("openhands_tool_alias_compat"),
+    )
+    tool_alias_compat = _truthy(tool_alias_compat_raw)
+    if _is_openhands_agent(base_config.agent) and tool_alias_compat_raw:
+        env[TOOL_ALIAS_COMPAT_ENV] = "1" if tool_alias_compat else "0"
     openhands_max_steps = _positive_int_value(
         _resolve_profile_env_value(
             base_config=base_config,
@@ -345,6 +373,32 @@ def load_agent_run_config(
     )
     if _is_openhands_agent(base_config.agent) and openhands_max_steps is not None:
         env[OPENHANDS_MAX_STEPS_ENV] = str(openhands_max_steps)
+
+    openhands_budget_values: dict[str, int] = {}
+    for env_name, profile_key in (
+        (TOTAL_TOKEN_LIMIT_ENV, "openhands_total_token_limit"),
+        (LLM_MAX_MESSAGE_CHARS_ENV, "llm_max_message_chars"),
+        (PRIMARY_TOKEN_LIMIT_ENV, "contract_closure_primary_token_limit"),
+        (REPAIR_TOKEN_LIMIT_ENV, "contract_closure_repair_token_limit"),
+        (PRIMARY_MAX_STEPS_ENV, "contract_closure_primary_max_steps"),
+        (REPAIR_MAX_STEPS_ENV, "contract_closure_repair_max_steps"),
+        (INFRA_RETRY_LIMIT_ENV, "contract_closure_infra_retry_limit"),
+        (
+            INFRA_RETRY_MAX_STEPS_ENV,
+            "contract_closure_infra_retry_max_trigger_steps",
+        ),
+    ):
+        value = _positive_int_value(
+            _resolve_profile_env_value(
+                base_config=base_config,
+                env_values=env_values,
+                env_name=env_name,
+                profile_value=profile.get(profile_key),
+            )
+        )
+        if _is_openhands_agent(base_config.agent) and value is not None:
+            env[env_name] = str(value)
+            openhands_budget_values[env_name] = value
 
     env.update(ablation.to_env())
 
@@ -411,8 +465,35 @@ def load_agent_run_config(
         if _is_openhands_agent(base_config.agent)
         else False,
         "openhands_max_steps": openhands_max_steps or "",
+        "llm_max_message_chars": openhands_budget_values.get(
+            LLM_MAX_MESSAGE_CHARS_ENV, ""
+        ),
+        "openhands_total_token_limit": openhands_budget_values.get(
+            TOTAL_TOKEN_LIMIT_ENV, ""
+        ),
+        "contract_closure_primary_token_limit": openhands_budget_values.get(
+            PRIMARY_TOKEN_LIMIT_ENV, ""
+        ),
+        "contract_closure_repair_token_limit": openhands_budget_values.get(
+            REPAIR_TOKEN_LIMIT_ENV, ""
+        ),
+        "contract_closure_primary_max_steps": openhands_budget_values.get(
+            PRIMARY_MAX_STEPS_ENV, ""
+        ),
+        "contract_closure_repair_max_steps": openhands_budget_values.get(
+            REPAIR_MAX_STEPS_ENV, ""
+        ),
+        "contract_closure_infra_retry_limit": openhands_budget_values.get(
+            INFRA_RETRY_LIMIT_ENV, ""
+        ),
+        "contract_closure_infra_retry_max_trigger_steps": openhands_budget_values.get(
+            INFRA_RETRY_MAX_STEPS_ENV, ""
+        ),
         "native_tool_calling": (
             env.get("LLM_NATIVE_TOOL_CALLING", "") if _is_openhands_agent(base_config.agent) else ""
+        ),
+        "openhands_tool_alias_compat": (
+            tool_alias_compat if _is_openhands_agent(base_config.agent) else False
         ),
         "repo_graph_mode": repo_graph_policy.mode,
         "repo_graph_transport": repo_graph_policy.transport,
@@ -435,6 +516,15 @@ def load_agent_run_config(
         "exec_contract_variant": ablation.exec_contract_variant,
         "self_contract": ablation.self_contract,
         "test_first_lift": ablation.test_first_lift,
+        "contract_closure_gate": ablation.contract_closure_gate,
+        "contract_closure_gate_lite": ablation.contract_closure_gate_lite,
+        "contract_closure_gate_lite_v1": (
+            ablation.contract_closure_gate_lite_v1
+        ),
+        "contract_closure_gate_v3": ablation.contract_closure_gate_v3,
+        "contract_closure_budget_control": (
+            ablation.contract_closure_budget_control
+        ),
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 

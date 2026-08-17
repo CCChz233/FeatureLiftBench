@@ -1,6 +1,6 @@
 # FeatureLiftBench 文档入口
 
-> **Status: current · Last verified: 2026-08-04**
+> **Status: current · Last verified: 2026-08-17**
 
 日常只需要从以下文档进入：
 
@@ -12,13 +12,17 @@
 | 理解 benchmark 构念 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
 | 设计或审核 task | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
 | 确认 source/freeze policy | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) · [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) |
-| 确认 Main、ablation、评分和结果留存 | [EVALUATION.md](EVALUATION.md) |
+| 确认 Main、两项核心指标、失败分类和结果留存 | [EVALUATION.md](EVALUATION.md) |
+| 看当前 Contract Closure / Rescue+ 方法协议 | [ContractClosureGate_LiteRescuePlus_20260816.md](ContractClosureGate_LiteRescuePlus_20260816.md) |
+| 看方法迭代的高区分度题单 | [RESCUE_PLUS_DIAGNOSTIC_SUITE.md](RESCUE_PLUS_DIAGNOSTIC_SUITE.md) |
 | 写论文 | [paper/](paper/README.md) |
 
 补充 schema、lifecycle、taxonomy、语言轨道和生成分析集中在
 [reference/](reference/README.md)；过期方法、计划、runbook 和旧规范集中在
 [archive/](archive/README.md)。实验与审计证据由 [reports/README.md](../reports/README.md)
-索引，原始运行保留在 `experiments/`。
+索引，原始运行保留在 `experiments/`。当前结果只使用 Functional Pass
+Rate 和 pass-conditioned RRES 作核心指标；历史 `summary.passed` 不得代替 evaluator
+`functional_gate`。
 
 `PLAN_EXTERNAL50_EXPANSION.md` 仅为旧 design cards 保留兼容路径，不是当前执行入口。
 动态数字只维护在 `STATUS.md`。修改文档后运行：

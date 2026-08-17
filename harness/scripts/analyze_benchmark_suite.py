@@ -16,6 +16,7 @@ if str(_REPO_ROOT / "harness") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT / "harness"))
 
 from featureliftbench.suite_utils import detect_eval_flake
+from featureliftbench.suite_utils import functional_gate_value
 from featureliftbench.suite_utils import resolve_suite_artifact_path
 from featureliftbench.closure_gold import load_closure_gold, score_closure
 from featureliftbench.trajectory_audit import audit_trajectory, read_event_jsonl
@@ -29,12 +30,19 @@ def aggregate_suite_summaries(suite_dirs: list[Path]) -> dict[str, Any]:
             raise FileNotFoundError(f"missing suite.json: {suite_path}")
         suite = load_json(suite_path)
         summary = suite.get("summary") if isinstance(suite.get("summary"), dict) else {}
+        runs = [run for run in suite.get("runs") or [] if isinstance(run, dict)]
+        functional_values = [functional_gate_value(run) for run in runs]
+        functional_passed = summary.get("functional_passed")
+        if not isinstance(functional_passed, int):
+            functional_passed = sum(value == 1.0 for value in functional_values)
+        total = summary.get("total", len(runs))
         summaries.append(
             {
                 "suite_dir": str(suite_dir),
                 "suite_name": suite_dir.name,
                 "passed": summary.get("passed", 0),
-                "total": summary.get("total", 0),
+                "functional_passed": functional_passed,
+                "total": total,
                 "missing_submissions": summary.get("missing_submissions", 0),
                 "recovered_submissions": summary.get("recovered_submissions", 0),
                 "average_final_score": summary.get("average_final_score", 0.0),
@@ -54,6 +62,10 @@ def aggregate_suite_summaries(suite_dirs: list[Path]) -> dict[str, Any]:
     pass_rates = [
         (item["passed"] / item["total"]) if item["total"] else 0.0 for item in summaries
     ]
+    functional_pass_rates = [
+        (item["functional_passed"] / item["total"]) if item["total"] else 0.0
+        for item in summaries
+    ]
     pass_rate_mean = sum(pass_rates) / len(pass_rates) if pass_rates else 0.0
     if len(pass_rates) > 1:
         pass_rate_std = (
@@ -61,17 +73,39 @@ def aggregate_suite_summaries(suite_dirs: list[Path]) -> dict[str, Any]:
         ) ** 0.5
     else:
         pass_rate_std = 0.0
+    functional_pass_rate_mean = (
+        sum(functional_pass_rates) / len(functional_pass_rates)
+        if functional_pass_rates
+        else 0.0
+    )
+    functional_pass_rate_std = (
+        (
+            sum(
+                (value - functional_pass_rate_mean) ** 2
+                for value in functional_pass_rates
+            )
+            / len(functional_pass_rates)
+        )
+        ** 0.5
+        if len(functional_pass_rates) > 1
+        else 0.0
+    )
 
     return {
         "run_count": len(summaries),
         "suites": summaries,
         "passed": _mean_std("passed"),
+        "functional_passed": _mean_std("functional_passed"),
         "missing_submissions": _mean_std("missing_submissions"),
         "recovered_submissions": _mean_std("recovered_submissions"),
         "average_final_score": _mean_std("average_final_score"),
         "pass_rate": {
             "mean": round(pass_rate_mean, 6),
             "std": round(pass_rate_std, 6),
+        },
+        "functional_pass_rate": {
+            "mean": round(functional_pass_rate_mean, 6),
+            "std": round(functional_pass_rate_std, 6),
         },
     }
 
@@ -241,9 +275,12 @@ def main() -> int:
             handle.write("\n")
         print(f"Wrote {aggregate_path}")
         print(
-            "pass_rate mean={mean} std={std} | recovered_submissions mean={rec_mean}".format(
-                mean=aggregate["pass_rate"]["mean"],
-                std=aggregate["pass_rate"]["std"],
+            "functional_pass_rate mean={mean} std={std} | "
+            "workflow_pass_rate mean={workflow_mean} | "
+            "recovered_submissions mean={rec_mean}".format(
+                mean=aggregate["functional_pass_rate"]["mean"],
+                std=aggregate["functional_pass_rate"]["std"],
+                workflow_mean=aggregate["pass_rate"]["mean"],
                 rec_mean=aggregate["recovered_submissions"]["mean"],
             )
         )

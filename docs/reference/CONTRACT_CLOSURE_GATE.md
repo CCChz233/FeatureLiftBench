@@ -1,5 +1,7 @@
 # Public Contract Closure Gate
 
+> **Documentation status: reference · Last verified: 2026-08-17**
+
 `contract_closure_gate` is an opt-in, Python-only agent experiment arm. It keeps
 Main unchanged and never mounts benchmark evaluator tests.
 

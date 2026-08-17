@@ -281,6 +281,35 @@ def detect_eval_flake(task_run_dir: Path) -> bool:
     return False
 
 
+def functional_gate_value(run: dict[str, Any]) -> float | None:
+    """Return the formal functional gate from full or compact suite records.
+
+    Current compact suite entries retain ``final_score`` but omit the nested
+    evaluator scores.  Since scoring v2 defines ``final_score`` as an exact
+    compatibility alias for the binary functional gate, it is a safe fallback
+    only when the value is exactly 0 or 1.
+    """
+
+    evaluation = run.get("evaluation")
+    if isinstance(evaluation, dict):
+        scores = evaluation.get("scores")
+        if isinstance(scores, dict):
+            value = scores.get("functional_gate")
+            if isinstance(value, (int, float)) and not isinstance(value, bool):
+                return float(value)
+    value = run.get("functional_gate")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        return float(value)
+    value = run.get("final_score")
+    if (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and float(value) in {0.0, 1.0}
+    ):
+        return float(value)
+    return None
+
+
 def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
     final_scores = [
         run.get("evaluation", {}).get("scores", {}).get("final_score")
@@ -288,6 +317,9 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         if isinstance(run.get("evaluation"), dict)
     ]
     numeric_scores = [score for score in final_scores if isinstance(score, (int, float))]
+    functional_values = [functional_gate_value(run) for run in runs]
+    functional_evaluated = [value for value in functional_values if value is not None]
+    functional_passed = sum(value == 1.0 for value in functional_evaluated)
     by_status: dict[str, int] = {}
     tasks_by_status: dict[str, list[str]] = {}
     for run in runs:
@@ -312,8 +344,19 @@ def rebuild_suite_summary(runs: list[dict[str, Any]]) -> dict[str, Any]:
         task_ids.sort()
     summary: dict[str, Any] = {
         "total": len(runs),
+        # ``passed`` is the historical end-to-end run status and is retained
+        # for resume compatibility.  Papers and experiment reports must use
+        # the explicit functional fields below.
         "passed": sum(1 for run in runs if run.get("status") == "passed"),
         "failed": sum(1 for run in runs if run.get("status") != "passed"),
+        "run_status_passed": sum(1 for run in runs if run.get("status") == "passed"),
+        "functional_passed": functional_passed,
+        "functional_failed": len(runs) - functional_passed,
+        "functional_evaluated": len(functional_evaluated),
+        "functional_unknown": len(runs) - len(functional_evaluated),
+        "functional_pass_rate": (
+            round(functional_passed / len(runs), 6) if runs else 0.0
+        ),
         "agent_failures": sum(1 for run in runs if not run.get("agent", {}).get("passed", False)),
         "missing_submissions": sum(
             1 for run in runs if not run.get("submission", {}).get("exists", False)

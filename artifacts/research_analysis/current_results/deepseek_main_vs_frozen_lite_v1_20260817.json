@@ -1,0 +1,461 @@
+{
+  "data_quality": {
+    "known_stale_label": "The results-pack README labels historical summary.passed counts as Functional pass; those values are run-status counts only.",
+    "missing_evidence": [
+      "API Main External-50 per-task eval/result.json",
+      "API Lite V1 per-task eval/result.json",
+      "local vLLM Main per-task eval/result.json"
+    ],
+    "not_safe_to_claim": [
+      "A paired Main-versus-Lite RRES difference",
+      "A complete API Main-200 per-task failure-stage distribution",
+      "API Lite V1 or local Main failure-stage distributions"
+    ],
+    "safe_to_cite": [
+      "Functional Pass counts and rates for all four Python-200 conditions",
+      "API Main-150 and local Lite V1 primary failure-stage distributions",
+      "API Main-150 and local Lite V1 pass-conditioned RRES summaries"
+    ],
+    "status": "partial_for_rres_and_failure_stage_comparison"
+  },
+  "generated_at": "2026-08-17T09:33:50.776194+00:00",
+  "headline": {
+    "api": {
+      "frozen_lite_v1": {
+        "assigned": 200,
+        "eval_result_coverage": 0,
+        "functional_pass_rate": 0.655,
+        "functional_passed": 131,
+        "primary_outcomes": {
+          "functional_pass": 131,
+          "missing_submission": 8,
+          "stage_evidence_unavailable": 61
+        },
+        "rres": {
+          "available": 0,
+          "coverage": 0.0,
+          "direction": "lower_is_better",
+          "eligible_functional_passes": 131,
+          "maximum": null,
+          "median": null,
+          "metric": "reference_relative_extraction_size",
+          "minimum": null,
+          "q1": null,
+          "q3": null
+        },
+        "run_status_passed": 131,
+        "task_ids_by_primary_outcome": {
+          "missing_submission": [
+            "cookiecutter__repo_finder_core__hard3_001",
+            "deepdiff__deep_compare_core__001",
+            "dynaconf__settings_merge_core__001",
+            "hatch__project_metadata_core__hard3_001",
+            "jupyter_server__extension_config_core__hard3_001",
+            "omegaconf__merge_interpolate_core__001",
+            "pyparsing__grammar_compose_core__001",
+            "python_statemachine__json_workflow_core__001"
+          ]
+        }
+      },
+      "lite_delta_passes": -13,
+      "lite_delta_percentage_points": -6.5,
+      "main": {
+        "assigned": 200,
+        "eval_result_coverage": 145,
+        "external50_functional_passed": 45,
+        "external50_stage_evidence_unavailable": 5,
+        "functional_pass_rate": 0.72,
+        "functional_passed": 144,
+        "primary_outcomes": {
+          "build_failure": 1,
+          "functional_pass": 144,
+          "hidden_failure": 21,
+          "missing_submission": 5,
+          "public_failure": 24,
+          "stage_evidence_unavailable": 5
+        },
+        "rres": {
+          "available": 99,
+          "coverage": 0.6875,
+          "direction": "lower_is_better",
+          "eligible_functional_passes": 144,
+          "maximum": 41.45098,
+          "median": 0.984576,
+          "metric": "reference_relative_extraction_size",
+          "minimum": 0.125092,
+          "q1": 0.785873,
+          "q3": 1.033551
+        },
+        "run_status_passed": 122
+      }
+    },
+    "local_vllm": {
+      "frozen_lite_v1": {
+        "assigned": 200,
+        "eval_result_coverage": 198,
+        "functional_pass_rate": 0.635,
+        "functional_passed": 127,
+        "primary_outcomes": {
+          "build_failure": 2,
+          "functional_pass": 127,
+          "hidden_failure": 30,
+          "missing_submission": 2,
+          "public_failure": 39
+        },
+        "rres": {
+          "available": 127,
+          "coverage": 1.0,
+          "direction": "lower_is_better",
+          "eligible_functional_passes": 127,
+          "maximum": 12.382353,
+          "median": 1.0,
+          "metric": "reference_relative_extraction_size",
+          "minimum": 0.027687,
+          "q1": 0.79757,
+          "q3": 1.0
+        },
+        "run_status_passed": 127,
+        "task_ids_by_primary_outcome": {
+          "build_failure": [
+            "jinja2__lexer_parser_core__001",
+            "referencing__json_schema_refs_core__001"
+          ],
+          "functional_pass": [
+            "anytree__tree_resolve_render_core__001",
+            "arrow__parse_format_core__001",
+            "attrs__validators_core__001",
+            "automat__methodical_workflow_core__001",
+            "babel__plural_core__001",
+            "bleach__sanitize_core__001",
+            "blinker__signal_registry_core__001",
+            "boltons__iterutils_core__001",
+            "boolean_py__expr_simplify_core__001",
+            "cachecontrol__heuristic_store_core__001",
+            "cacheout__ttl_policy_core__001",
+            "cachetools__cache_eviction_core__001",
+            "cachier__memoize_backend_core__001",
+            "cattrs__structure_core__001",
+            "cerberus__schema_validate_core__001",
+            "chameleon__template_compile_core__001",
+            "click__option_parser__001",
+            "configobj__roundtrip_config_core__001",
+            "configupdater__ini_roundtrip_core__001",
+            "coverage__config_merge_core__001",
+            "coverage__glob_matcher_core__001",
+            "coverage__path_remap_core__001",
+            "coverage__report_core__001",
+            "coverage__source_selection_core__001",
+            "croniter__cron_parse_core__001",
+            "dataclasses_json__serde_core__001",
+            "diskcache__eviction_policy_core__hard3_001",
+            "email_validator__validate_core__001",
+            "environs__typed_env_core__001",
+            "faker__provider_core__001",
+            "fasteners__process_lock_core__001",
+            "flask_cors__cors_options_core__001",
+            "flask_login__session_guard_core__001",
+            "freezegun__freeze_time_core__001",
+            "ftfy__fix_text_core__001",
+            "furl__url_mutate_core__001",
+            "glom__spec_eval_core__hard3_001",
+            "h11__message_parse_core__001",
+            "httpx__request_model_core__001",
+            "huey__task_schedule_core__001",
+            "humanize__naturaltime_core__001",
+            "hyperlink__url_parse_core__001",
+            "importlib_metadata__entry_points_core__001",
+            "intervaltree__interval_tree_core__001",
+            "isodate__duration_parse_core__001",
+            "isort__settings_resolver_core__hard3_001",
+            "jinja2__compile_render_core__001",
+            "jinja2__extensions_core__001",
+            "jinja2__filters_tests_core__001",
+            "jinja2__loader_inheritance_core__001",
+            "json5__parse_core__001",
+            "jsonpath_ng__expression_eval_core__001",
+            "jsonpickle__handler_roundtrip_core__001",
+            "jsonpointer__resolve_core__001",
+            "langcodes__language_metadata_core__001",
+            "lark__grammar_loader_core__001",
+            "lark__parse_tree_core__001",
+            "mako__lexer_expression_core__001",
+            "markdown__extensions_core__001",
+            "markdown_it__commonmark_render__001",
+            "marshmallow__schema_core__001",
+            "more_itertools__recipes_core__001",
+            "msgpack__pack_unpack_core__001",
+            "networkx__dag_topo_core__001",
+            "packageurl__purl_parse_core__001",
+            "packaging__requirement_marker_specifier__001",
+            "parso__python_parse_core__001",
+            "passlib__hash_context_core__001",
+            "pathvalidate__sanitize_core__001",
+            "phonenumbers__parse_format_core__001",
+            "platformdirs__app_dirs_core__hard3_001",
+            "pluggy__hook_call_order__001",
+            "pluggy__hook_specs_core__001",
+            "portalocker__file_lock_core__001",
+            "publicsuffixlist__metadata_lookup_core__001",
+            "puremagic__signature_resource_core__001",
+            "pyee__event_workflow_core__001",
+            "pygments__formatter_core__001",
+            "pyjwt__encode_decode_core__001",
+            "pyotp__totp_hotp_core__001",
+            "pyramid__configurator_action_core__hard3_001",
+            "pyrsistent__pmap_pvector_core__001",
+            "pytest__fixture_resolve_core__001",
+            "pytest__mark_expression_core__001",
+            "python_box__config_box_core__001",
+            "python_crontab__cron_item_core__001",
+            "python_dateutil__relativedelta_core__001",
+            "python_dateutil__rrule_core__001",
+            "python_dotenv__env_parse_core__001",
+            "python_frontmatter__roundtrip_core__001",
+            "python_json_logger__json_formatter_core__001",
+            "pyyaml__safe_load_dump__001",
+            "redis__resp_parser_core__001",
+            "returns__result_pipeline_core__hard3_001",
+            "rfc3986__uri_parse_core__001",
+            "rich__markup_parse_core__001",
+            "ruamel_yaml__roundtrip_core__001",
+            "semver__version_core__001",
+            "sortedcontainers__sorted_list_core__001",
+            "sqlalchemy__event_dispatch_core__hard3_001",
+            "sqlglot__parse_transpile_core__001",
+            "sqlparse__format_filters_core__001",
+            "sqlparse__parse_format_core__001",
+            "sqlparse__parse_split_core__001",
+            "sqlparse__token_tree_core__001",
+            "stamina__retry_context_core__001",
+            "stevedore__extension_manager_core__hard3_001",
+            "strictyaml__schema_load_core__001",
+            "structlog__processor_chain_core__001",
+            "tabulate__table_format_core__001",
+            "tinycss2__stylesheet_roundtrip_core__001",
+            "tinydb__query_storage_core__001",
+            "tldextract__suffix_resolve_core__001",
+            "tomlkit__roundtrip_document__001",
+            "toolz__compose_pipe_core__001",
+            "typeguard__check_type_pipeline_core__001",
+            "unidiff__patch_hunk_core__001",
+            "uritools__uri_join_normalize_core__001",
+            "urllib3__retry_backoff_core__001",
+            "venusian__scan_dispatch_core__001",
+            "voluptuous__schema_validate_core__001",
+            "watchdog__observer_dispatch_core__001",
+            "websockets__handshake_parse_core__001",
+            "werkzeug__routing_core__001",
+            "wsproto__frame_parse_core__001",
+            "xmltodict__xml_parse_core__001",
+            "yarl__url_model_core__001"
+          ],
+          "hidden_failure": [
+            "aiohttp__url_params_core__hard3_001",
+            "astroid__nodes_core__001",
+            "dateutil__zone_resolver_core__hard3_001",
+            "distlib__wheel_metadata_core__hard3_001",
+            "flask__route_dispatch_core__001",
+            "importlib_resources__traversable_tree_core__hard3_001",
+            "installer__wheel_record_core__hard3_001",
+            "json_logic__evaluator_core__hard3_001",
+            "jsonschema__validator_core__001",
+            "jupyter_server__extension_config_core__hard3_001",
+            "license_expression__policy_core__hard3_001",
+            "parse__format_parser_core__001",
+            "pydantic__field_validator_core__hard3_001",
+            "pydantic_v1__validation_error_core__001",
+            "pygments__lexer_core__001",
+            "pyparsing__grammar_compose_core__001",
+            "pytest__marker_registry_core__hard3_001",
+            "pytest__skipif_eval_core__001",
+            "python_decouple__config_repository_core__001",
+            "python_multipart__form_parse_core__001",
+            "requests_cache__cache_key_core__hard3_001",
+            "responses__request_matcher_core__hard3_001",
+            "schema__nested_validate_core__hard3_001",
+            "setuptools_scm__version_normalize_core__hard3_001",
+            "sphinx__extension_registry_core__hard3_001",
+            "starlette__route_matching_core__hard3_001",
+            "tenacity__retry_state_core__hard3_001",
+            "trafaret__validation_rules_core__hard3_001",
+            "virtualenv__interpreter_spec_core__hard3_001",
+            "wheel__metadata_normalize_core__hard3_001"
+          ],
+          "missing_submission": [
+            "dateparser__parse_settings_pipeline_core__001",
+            "scrapy__item_loader_core__hard3_001"
+          ],
+          "public_failure": [
+            "alembic__revision_map_core__hard3_001",
+            "apscheduler__cron_trigger_core__hard3_001",
+            "bidict__bidirectional_map_core__001",
+            "build__pyproject_backend_core__hard3_001",
+            "celery__signal_dispatch_core__hard3_001",
+            "click__lazy_command_core__hard3_001",
+            "cookiecutter__repo_finder_core__hard3_001",
+            "decorator__signature_preserving_core__001",
+            "deepdiff__deep_compare_core__001",
+            "dynaconf__settings_merge_core__001",
+            "filelock__reentrant_lock_core__001",
+            "flake8__plugin_options_core__hard3_001",
+            "fs__url_opener_core__hard3_001",
+            "fsspec__url_chain_core__hard3_001",
+            "h2__frame_parse_core__001",
+            "hatch__project_metadata_core__hard3_001",
+            "icalendar__component_roundtrip_core__001",
+            "invoke__collection_context_core__001",
+            "itsdangerous__timed_serializer_core__001",
+            "joserfc__jwt_claims_core__001",
+            "jupyter_core__paths_resolver_core__hard3_001",
+            "keyring__backend_select_core__hard3_001",
+            "lark__visitor_transform_core__001",
+            "mkdocs__plugin_config_core__hard3_001",
+            "multidict__multidict_mutation_core__hard3_001",
+            "omegaconf__merge_interpolate_core__001",
+            "parsel__selector_namespace_core__hard3_001",
+            "pendulum__parse_format_core__001",
+            "pluggy__hook_wrapper_core__hard3_001",
+            "poetry_core__dependency_groups_core__hard3_001",
+            "pydantic_settings__env_source_core__001",
+            "pytest__ini_markers_core__001",
+            "python_statemachine__json_workflow_core__001",
+            "readme_renderer__content_type_core__hard3_001",
+            "tox__factor_expression_core__hard3_001",
+            "transitions__state_machine_core__hard3_001",
+            "typer__command_parser_core__001",
+            "vcrpy__cassette_match_core__001",
+            "yamale__schema_validate_core__hard3_001"
+          ]
+        }
+      },
+      "lite_delta_passes": -18,
+      "lite_delta_percentage_points": -9.0,
+      "main": {
+        "assigned": 200,
+        "eval_result_coverage": 0,
+        "functional_pass_rate": 0.725,
+        "functional_passed": 145,
+        "primary_outcomes": {
+          "functional_pass": 145,
+          "missing_submission": 2,
+          "stage_evidence_unavailable": 53
+        },
+        "rres": {
+          "available": 0,
+          "coverage": 0.0,
+          "direction": "lower_is_better",
+          "eligible_functional_passes": 145,
+          "maximum": null,
+          "median": null,
+          "metric": "reference_relative_extraction_size",
+          "minimum": null,
+          "q1": null,
+          "q3": null
+        },
+        "run_status_passed": 117,
+        "task_ids_by_primary_outcome": {
+          "missing_submission": [
+            "requests_cache__cache_key_core__hard3_001",
+            "starlette__route_matching_core__hard3_001"
+          ]
+        }
+      }
+    }
+  },
+  "metric_contract": {
+    "functional_pass": "build AND public AND hidden AND isolation",
+    "primary": "functional_pass_rate",
+    "primary_failure_precedence": [
+      "missing_submission",
+      "build_failure",
+      "public_failure",
+      "hidden_failure",
+      "isolation_failure",
+      "functional_pass"
+    ],
+    "rres": "submission_normalized_loc / frozen_reference_normalized_loc",
+    "rres_population": "functionally passing submissions only",
+    "secondary": "reference_relative_extraction_size"
+  },
+  "paired_functional_outcomes": {
+    "api_main150": {
+      "both_fail": 47,
+      "both_pass": 84,
+      "lite_only_pass": 4,
+      "main_only_pass": 15
+    },
+    "local_vllm_python200": {
+      "both_fail": 53,
+      "both_pass": 125,
+      "lite_only_pass": 2,
+      "main_only_pass": 20
+    }
+  },
+  "resource_diagnostics_not_core_metrics": {
+    "api_main150": {
+      "frozen_lite_v1": {
+        "api_calls": 5878,
+        "assistant_steps": 6174,
+        "completion_tokens": 5034783,
+        "prompt_tokens": 236549477,
+        "total_tokens": 241584260
+      },
+      "main": {
+        "api_calls": 11057,
+        "assistant_steps": 10579,
+        "completion_tokens": 9004595,
+        "prompt_tokens": 497329116,
+        "total_tokens": 506333711
+      }
+    },
+    "local_vllm_python200": {
+      "frozen_lite_v1": {
+        "api_calls": 7565,
+        "assistant_steps": 7368,
+        "completion_tokens": 3653944,
+        "prompt_tokens": 233707990,
+        "total_tokens": 237361934
+      },
+      "main": {
+        "api_calls": 9799,
+        "assistant_steps": 9206,
+        "completion_tokens": 4979605,
+        "prompt_tokens": 344665153,
+        "total_tokens": 349644758
+      }
+    }
+  },
+  "schema_version": "featureliftbench.current_result_reconciliation.v1",
+  "sources": {
+    "api_main150_pack": {
+      "path": "experiments/FeatureLiftBench-deepseek-v4-flash-150-20260805.tar.gz",
+      "sha256": "d4b5303ccdaf1d5a188001e0b24de1694bf928af8647dacbae194db46cb6e28b"
+    },
+    "results_pack": {
+      "path": "experiments/python200-deepseek-v4-flash-lite-v1-vllm-local-0813-001-results-latest.tar.gz",
+      "sha256": "0d950fb1210a5a40ed746fe31eeedb40f1a3d53f1fca0badead6ad83f9612208"
+    }
+  },
+  "splits": {
+    "api": {
+      "external50": {
+        "frozen_lite_v1": 43,
+        "main": 45
+      },
+      "main150": {
+        "frozen_lite_v1": 88,
+        "main": 99
+      }
+    },
+    "local_vllm": {
+      "external50": {
+        "frozen_lite_v1": 42,
+        "main": 47
+      },
+      "main150": {
+        "frozen_lite_v1": 85,
+        "main": 98
+      }
+    }
+  }
+}

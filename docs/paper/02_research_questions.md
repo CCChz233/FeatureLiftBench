@@ -1,6 +1,6 @@
 # Research Questions
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-17**
 
 ## RQ1 — Functional capability
 
@@ -19,13 +19,16 @@ How compact are functionally passing submissions relative to frozen references?
 
 Evidence:
 
-- submission/reference LOC and file ratios；
+- Reference-Relative Extraction Size（RRES）：`submission_normalized_loc / reference_normalized_loc`；
+- 只在 Functional Pass 上报告 median/IQR，方法对比使用同题双通过 subset；
+- submission/reference file ratios；
 - copied LOC/fraction；
 - dependency footprint；
 - copy-heavy pass rate；
 - copy-all and reference controls。
 
-Compactness is separate from Functional Pass and is not a minimality proof.
+Compactness is separate from Functional Pass and is not a minimality proof. RQ1 和 RQ2
+是 leaderboard 的两项核心指标；RQ3 是运行诊断，不与前两者加权合并。
 
 ## RQ3 — Cost and efficiency
 

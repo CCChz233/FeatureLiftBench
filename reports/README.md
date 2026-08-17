@@ -1,6 +1,6 @@
 # FeatureLiftBench Reports
 
-> **Status: reference index · Last verified: 2026-08-04**
+> **Status: reference index · Last verified: 2026-08-17**
 > Current release numbers and blockers are maintained in [docs/STATUS.md](../docs/STATUS.md).
 
 `reports/` contains small, reviewable audits and derived analyses. Raw model runs belong under
@@ -26,6 +26,7 @@ registries under `artifacts/` and `benchmark/`.
 
 | Path | Condition |
 | --- | --- |
+| [Current DeepSeek Main vs Lite snapshot](../artifacts/research_analysis/current_results/deepseek_main_vs_frozen_lite_v1_20260817.json) | Python-200 Functional、failure-stage coverage 和 RRES 对账 |
 | [Frozen Python-150 archive audit](paper_analysis/python150_frozen_20260803/README.md) | Task-level recomputation of the supplied frozen result bundle |
 | [Paper analysis index](paper_analysis/README.md) | Available generated paper analyses and their boundaries |
 
@@ -54,7 +55,9 @@ A paper-candidate report must record:
 - suite/task-set and freeze/selection IDs;
 - model revision, agent profile, arm and attempt policy;
 - agent/evaluator image identities;
-- Functional Pass@1 separately from agent completion status;
+- Functional Pass Rate separately from agent completion/run status;
+- pass-conditioned RRES，包括 eligible/available coverage 和 paired-subset policy;
+- 互斥首败阶段与 `stage_evidence_unavailable`;
 - exact missing, context, rate-limit, infra and rerun ledger;
 - compactness and cost metrics with completeness caveats;
 - source archive or suite checksum and reproducible analysis command.

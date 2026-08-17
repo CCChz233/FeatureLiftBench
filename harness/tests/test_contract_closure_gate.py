@@ -64,7 +64,7 @@ def _metadata() -> dict:
                 {"id": "B001", "text": "wildcard doubles its first numeric argument."},
                 {
                     "id": "B002",
-                    "text": "the published constant remains equal to three.",
+                    "text": "the published state remains equal to constant three.",
                 },
             ],
             "exclusions": [],
@@ -145,6 +145,14 @@ class ContractClosureGateTests(unittest.TestCase):
         self.assertNotIn("6 agent steps", prompt)
         self.assertNotIn("70%", prompt)
 
+    def test_lite_rescue_prompt_keeps_v1_focus_without_frozen_identity(self) -> None:
+        prompt = openhands_appendix(lite=True, rescue=True)
+
+        self.assertIn("Implement the submission, then run", prompt)
+        self.assertIn("--structure-only --summary", prompt)
+        self.assertNotIn("6 agent steps", prompt)
+        self.assertNotIn("70%", prompt)
+
     def test_lite_v2_prompt_requires_early_implementation_checkpoints(self) -> None:
         prompt = openhands_appendix(lite=True)
 
@@ -160,6 +168,16 @@ class ContractClosureGateTests(unittest.TestCase):
         self.assertIn("never more than three", prompt)
         self.assertIn("--micro", prompt)
         self.assertIn("Do not chase full", prompt)
+
+    def test_lite_rescue_plus_prompt_has_smoke_and_finish_budget(self) -> None:
+        prompt = openhands_appendix(lite=True, rescue_plus=True)
+
+        self.assertIn("PUBLIC_WITNESS.json", prompt)
+        self.assertIn("exactly one direct case", prompt)
+        self.assertIn("--lite-plus", prompt)
+        self.assertIn("step 32", prompt)
+        self.assertIn("selected public clause is the primary oracle", prompt)
+        self.assertIn("never causes a paid repair", prompt)
 
     def test_complete_workspace_passes_with_dynamic_attribute_unknown(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -180,6 +198,265 @@ class ContractClosureGateTests(unittest.TestCase):
             )
             self.assertEqual(by_id["behavior.case.double"]["status"], "pass")
             self.assertEqual(by_id["behavior.case.constant"]["status"], "pass")
+
+    def test_lite_rescue_plus_missing_witness_is_telemetry_only(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            install_contract_closure_workspace(
+                workspace,
+                metadata=_metadata(),
+                lite=True,
+                rescue_plus=True,
+            )
+            for path in (workspace / "contract_cases").glob("*.py"):
+                path.unlink()
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            by_id = {item["id"]: item for item in result["checks"]}
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+
+            self.assertFalse(result["behavior_gate_ok"])
+            self.assertFalse(result["repair_needed"])
+            self.assertEqual(by_id["behavior.witness.required"]["status"], "fail")
+            self.assertFalse(decision["eligible"])
+            self.assertEqual(
+                decision["policy_version"],
+                "contract_closure_gate_lite_rescue_plus.v2.2",
+            )
+            self.assertEqual(decision["repair_kind"], "none")
+            self.assertIn("telemetry only", decision["reason"])
+
+    def test_differential_rejects_non_envelope_dict_without_false_pass(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            case = workspace / "contract_cases" / "case_double.py"
+            text = case.read_text(encoding="utf-8")
+            text = text.replace(
+                "return {'result': double(4), 'exception': None, 'state_after': None}",
+                "return {'composed': double(4)}",
+            )
+            text = text.replace(
+                "return {'result': wildcard(4), 'exception': None, 'state_after': None}",
+                "return {'composed': wildcard(4)}",
+            )
+            case.write_text(text, encoding="utf-8")
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            by_id = {item["id"]: item for item in result["checks"]}
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+
+            invalid = by_id["behavior.case.double"]
+            self.assertEqual(invalid["status"], "fail")
+            self.assertEqual(invalid["category"], "behavior_evidence")
+            self.assertIn("protocol invalid", invalid["message"])
+            self.assertFalse(result["behavior_gate_ok"])
+            self.assertFalse(result["repair_needed"])
+            self.assertEqual(decision["repair_kind"], "none")
+
+    def test_differential_mismatch_is_not_selected_direct_witness_repair(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            case = workspace / "contract_cases" / "case_double.py"
+            text = case.read_text(encoding="utf-8")
+            text = text.replace(
+                "return {'result': wildcard(4), 'exception': None, 'state_after': None}",
+                "return {'result': wildcard(4), 'exception': None, "
+                "'state_after': 'wrong'}",
+            )
+            case.write_text(text, encoding="utf-8")
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+
+            mismatch = next(
+                item
+                for item in result["checks"]
+                if item["id"] == "behavior.case.double"
+            )
+            self.assertEqual(mismatch["status"], "fail")
+            self.assertEqual(mismatch["category"], "behavior")
+            self.assertIn("differs from stable upstream", mismatch["message"])
+            self.assertEqual(decision["repair_kind"], "none")
+            self.assertFalse(decision["eligible"])
+
+    def test_selected_direct_witness_failure_is_repairable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            install_contract_closure_workspace(
+                workspace,
+                metadata=_metadata(),
+                lite=True,
+                rescue_plus=True,
+            )
+            package = workspace / "submission" / "featurelifted" / "__init__.py"
+            package.write_text(
+                package.read_text(encoding="utf-8").replace("CONSTANT = 3", "CONSTANT = 4"),
+                encoding="utf-8",
+            )
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+            witness = next(
+                item
+                for item in result["checks"]
+                if item["id"] == "behavior.case.constant"
+            )
+
+            self.assertEqual(result["public_witness_behavior_id"], "B002")
+            self.assertTrue(witness["evidence"]["public_witness"])
+            self.assertTrue(result["repair_needed"])
+            self.assertTrue(decision["eligible"])
+            self.assertEqual(decision["repair_kind"], "defect_repair")
+            self.assertIn("selected direct", decision["reason"])
+
+    def test_rescue_plus_empty_submission_is_bootstrap_repairable(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp) / "workspace"
+            workspace.mkdir()
+            install_contract_closure_workspace(
+                workspace,
+                metadata=_metadata(),
+                lite=True,
+                rescue_plus=True,
+            )
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+
+            self.assertTrue(decision["eligible"])
+            self.assertEqual(decision["python_file_count"], 0)
+            self.assertIn("submission:bootstrap", decision["repair_clusters"])
+            self.assertIn("empty submission bootstrap", decision["reason"])
+
+    def test_rescue_plus_groups_many_api_failures_by_owner(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = Path(tmp) / "workspace"
+            package = workspace / "submission" / "featurelifted"
+            package.mkdir(parents=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            failures = []
+            for module in ("markup", "text"):
+                failures.append(
+                    {
+                        "id": f"api.featurelifted.{module}",
+                        "category": "api",
+                        "status": "fail",
+                        "severity": "hard",
+                        "target": f"featurelifted.{module}",
+                        "evidence": {"kind": "module"},
+                    }
+                )
+                for member in ("first", "second"):
+                    failures.append(
+                        {
+                            "id": f"api.featurelifted.{module}.{member}",
+                            "category": "api",
+                            "status": "fail",
+                            "severity": "hard",
+                            "target": f"featurelifted.{module}.{member}",
+                            "evidence": {"kind": "function"},
+                        }
+                    )
+            failures.append(
+                {
+                    "id": "forbidden.imports",
+                    "category": "dependency",
+                    "status": "fail",
+                    "severity": "hard",
+                    "target": "submission/",
+                }
+            )
+
+            decision = decide_repair(
+                workspace,
+                {"repair_needed": True, "checks": failures},
+                lite=True,
+                rescue_plus=True,
+            )
+
+            self.assertEqual(len(failures), 7)
+            self.assertTrue(decision["eligible"])
+            self.assertEqual(decision["repair_cluster_count"], 3)
+
+    def test_lite_rescue_plus_external_dependency_unknown_does_not_repair(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            package = workspace / "submission" / "featurelifted" / "__init__.py"
+            package.write_text(
+                "import definitely_missing_checker_dependency\n",
+                encoding="utf-8",
+            )
+            cases = workspace / "contract_cases"
+            for path in cases.glob("*.py"):
+                path.unlink()
+            (cases / "case_unknown.py").write_text(
+                'CASE_ID = "unknown-dependency"\n'
+                'BEHAVIOR_IDS = ["B001"]\n'
+                'REQUIRED_API = ["featurelifted.Thing"]\n'
+                'MODE = "direct"\n'
+                'EVIDENCE = ["public_spec:B001"]\n'
+                "def check_featurelifted():\n"
+                "    import featurelifted\n"
+                "    assert featurelifted is not None\n",
+                encoding="utf-8",
+            )
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            decision = decide_repair(
+                workspace,
+                result,
+                lite=True,
+                rescue_plus=True,
+            )
+
+            self.assertFalse(result["closure_ok"])
+            self.assertFalse(result["repair_needed"])
+            self.assertGreater(result["unknown_count"], 0)
+            self.assertFalse(decision["eligible"])
+
+    def test_lite_rescue_plus_caps_cases_and_records_shared_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            source = workspace / "contract_cases" / "case_constant.py"
+            third = source.read_text(encoding="utf-8").replace(
+                'CASE_ID = "constant"', 'CASE_ID = "third"'
+            )
+            (workspace / "contract_cases" / "case_third.py").write_text(
+                third,
+                encoding="utf-8",
+            )
+
+            result = check_workspace(workspace, check_mode="lite_plus")
+            by_id = {item["id"]: item for item in result["checks"]}
+
+            self.assertEqual(result["behavior_execution_budget_seconds"], 60)
+            self.assertEqual(by_id["behavior.case.limit"]["status"], "fail")
+            self.assertNotIn("behavior.case.third", by_id)
 
     def test_missing_api_and_wrong_literal_default_are_hard_failures(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -202,6 +479,49 @@ class ContractClosureGateTests(unittest.TestCase):
             self.assertEqual(
                 by_id["signature.featurelifted.wildcard"]["status"], "fail"
             )
+            self.assertTrue(result["repair_needed"])
+
+    def test_missing_checker_dependency_is_unknown_and_does_not_request_repair(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            package = workspace / "submission" / "featurelifted" / "__init__.py"
+            package.write_text(
+                "import flb_dependency_that_is_not_installed\n"
+                + package.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+
+            result = check_workspace(workspace, check_mode="structure")
+            api_checks = [
+                item for item in result["checks"] if item["category"] == "api"
+            ]
+
+            self.assertTrue(api_checks)
+            self.assertTrue(all(item["status"] == "unknown" for item in api_checks))
+            self.assertTrue(result["hard_gate_ok"])
+            self.assertFalse(result["repair_needed"])
+            self.assertEqual(
+                result["checker_environment_unknown_count"], len(api_checks)
+            )
+
+    def test_missing_submission_internal_module_remains_a_hard_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            workspace = _materialize_workspace(Path(tmp))
+            package = workspace / "submission" / "featurelifted" / "__init__.py"
+            package.write_text(
+                "from .missing_internal_module import VALUE\n",
+                encoding="utf-8",
+            )
+
+            result = check_workspace(workspace, check_mode="structure")
+            api_checks = [
+                item for item in result["checks"] if item["category"] == "api"
+            ]
+
+            self.assertTrue(any(item["status"] == "fail" for item in api_checks))
+            self.assertFalse(result["hard_gate_ok"])
             self.assertTrue(result["repair_needed"])
 
     def test_forbidden_import_and_vacuous_behavior_case_are_detected(self) -> None:
@@ -538,6 +858,18 @@ class ContractClosureGateTests(unittest.TestCase):
 
             self.assertTrue(decision["eligible"])
             self.assertIn("local", decision["reason"])
+
+            rescue_decision = decide_repair(
+                workspace,
+                local,
+                lite=True,
+                rescue=True,
+            )
+            self.assertTrue(rescue_decision["eligible"])
+            self.assertEqual(
+                rescue_decision["policy_version"],
+                "contract_closure_gate_lite_rescue.v1",
+            )
 
     def test_v3_repair_policy_accepts_concrete_behavior_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -943,6 +1275,116 @@ class ContractClosureGateTests(unittest.TestCase):
         self.assertIn("Repair (Lite)", repair_task)
         self.assertNotIn("roughly the first 6 agent steps", repair_task)
 
+    def test_lite_rescue_runner_uses_v1_prompt_and_selective_budget(self) -> None:
+        task_dir = (
+            Path(__file__).resolve().parents[2]
+            / "benchmark"
+            / "tasks"
+            / "sqlparse__token_tree_core__001"
+        )
+        failed = {
+            "hard_gate_ok": False,
+            "behavior_gate_ok": True,
+            "closure_ok": False,
+            "repair_needed": True,
+            "summary": {"pass": 0, "fail": 1, "unknown": 0},
+            "hard_failure_count": 1,
+            "soft_open_count": 0,
+            "unknown_count": 0,
+            "checks": [
+                {
+                    "id": "api.featurelifted.missing",
+                    "category": "api",
+                    "status": "fail",
+                    "severity": "hard",
+                    "message": "missing API",
+                }
+            ],
+        }
+        configs = []
+
+        def fake_run(context, config, **_kwargs):
+            configs.append(config)
+            package = context.submission_dir / "featurelifted"
+            package.mkdir(parents=True, exist_ok=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            return AgentCommandResult(
+                name=config.agent,
+                command=[config.agent],
+                report_command=[config.agent],
+                returncode=0,
+                duration_seconds=0.01,
+                stdout="",
+                stderr="",
+            )
+
+        adapter = mock.MagicMock()
+        adapter.run.side_effect = fake_run
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            mock.patch(
+                "featureliftbench.agent_runner.get_agent_adapter", return_value=adapter
+            ),
+            mock.patch(
+                "featureliftbench.contract_closure_gate.check_workspace_isolated",
+                side_effect=[dict(failed), dict(failed)],
+            ) as checker,
+            mock.patch(
+                "featureliftbench.agent_runner._evaluate_collected_submission",
+                return_value={
+                    "status": "passed",
+                    "scores": {"functional_gate": 1.0},
+                    "functional_pass": True,
+                },
+            ),
+        ):
+            output = Path(tmp) / "output"
+            result = run_agent_on_task(
+                task_dir,
+                output,
+                AgentRunConfig(
+                    agent="command",
+                    env=AblationOptions(
+                        contract_closure_gate_lite_rescue=True
+                    ).to_env(),
+                    timeout_seconds=1200,
+                ),
+            )
+            repair_task = (output / "workspace" / "TASK.md").read_text(
+                encoding="utf-8"
+            )
+
+        closure = result["contract_closure"]
+        self.assertEqual(closure["arm"], "contract_closure_gate_lite_rescue")
+        self.assertEqual(adapter.run.call_count, 2)
+        self.assertTrue(
+            all(
+                call.kwargs["check_mode"] == "structure"
+                for call in checker.call_args_list
+            )
+        )
+        self.assertEqual(
+            closure["repair_decision"]["policy_version"],
+            "contract_closure_gate_lite_rescue.v1",
+        )
+        self.assertTrue(closure["repair_decision"]["eligible"])
+        self.assertEqual(
+            configs[1].env["FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"],
+            "200000",
+        )
+        self.assertEqual(
+            configs[1].env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"], "5"
+        )
+        self.assertEqual(
+            configs[1].env[
+                "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE"
+            ],
+            "1",
+        )
+        self.assertIn("## Public Contract Closure Gate Lite Rescue", repair_task)
+        self.assertNotIn("Gate Lite V2", repair_task)
+        self.assertNotIn("roughly the first 6 agent steps", repair_task)
+
     def test_v3_runner_uses_micro_checks_and_repairs_behavior_mismatch(self) -> None:
         task_dir = (
             Path(__file__).resolve().parents[2]
@@ -1056,6 +1498,234 @@ class ContractClosureGateTests(unittest.TestCase):
         self.assertIn("Repair (V3)", repair_task)
         self.assertIn("--micro --summary", repair_task)
         self.assertIn("exactly two", cases_readme)
+
+    def test_lite_rescue_plus_runner_uses_bounded_behavior_repair(self) -> None:
+        task_dir = (
+            Path(__file__).resolve().parents[2]
+            / "benchmark"
+            / "tasks"
+            / "sqlparse__token_tree_core__001"
+        )
+        mismatch = {
+            "hard_gate_ok": True,
+            "behavior_gate_ok": False,
+            "closure_ok": False,
+            "repair_needed": True,
+            "summary": {"pass": 1, "fail": 1, "unknown": 0},
+            "hard_failure_count": 0,
+            "soft_open_count": 1,
+            "actionable_behavior_failure_count": 1,
+            "unknown_count": 0,
+            "checks": [
+                {
+                    "id": "behavior.case.composed",
+                    "category": "behavior",
+                    "status": "fail",
+                    "severity": "soft",
+                    "message": "direct assertion failed: AssertionError",
+                    "evidence": {
+                        "mode": "direct",
+                        "public_witness": True,
+                        "behavior_ids": ["B002"],
+                    },
+                }
+            ],
+        }
+        closed = {
+            **mismatch,
+            "behavior_gate_ok": True,
+            "closure_ok": True,
+            "repair_needed": False,
+            "checks": [],
+        }
+        configs = []
+
+        def fake_run(context, config, **_kwargs):
+            configs.append(config)
+            package = context.submission_dir / "featurelifted"
+            package.mkdir(parents=True, exist_ok=True)
+            (package / "__init__.py").write_text("VALUE = 1\n", encoding="utf-8")
+            return AgentCommandResult(
+                name=config.agent,
+                command=[config.agent],
+                report_command=[config.agent],
+                returncode=0,
+                duration_seconds=0.01,
+                stdout="",
+                stderr="",
+            )
+
+        adapter = mock.MagicMock()
+        adapter.run.side_effect = fake_run
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            mock.patch(
+                "featureliftbench.agent_runner.get_agent_adapter",
+                return_value=adapter,
+            ),
+            mock.patch(
+                "featureliftbench.contract_closure_gate.check_workspace_isolated",
+                side_effect=[dict(mismatch), dict(closed)],
+            ) as checker,
+            mock.patch(
+                "featureliftbench.agent_runner._evaluate_collected_submission",
+                return_value={
+                    "status": "passed",
+                    "scores": {"functional_gate": 1.0},
+                    "functional_pass": True,
+                },
+            ),
+        ):
+            output = Path(tmp) / "output"
+            result = run_agent_on_task(
+                task_dir,
+                output,
+                AgentRunConfig(
+                    agent="command",
+                    env=AblationOptions(
+                        contract_closure_gate_lite_rescue_plus=True
+                    ).to_env(),
+                    timeout_seconds=1200,
+                ),
+            )
+            repair_task = (output / "workspace" / "TASK.md").read_text(
+                encoding="utf-8"
+            )
+
+        closure = result["contract_closure"]
+        self.assertEqual(closure["arm"], "contract_closure_gate_lite_rescue_plus")
+        self.assertEqual(adapter.run.call_count, 2)
+        self.assertTrue(
+            all(
+                call.kwargs["check_mode"] == "lite_plus"
+                for call in checker.call_args_list
+            )
+        )
+        self.assertEqual(
+            closure["repair_decision"]["policy_version"],
+            "contract_closure_gate_lite_rescue_plus.v2.2",
+        )
+        self.assertEqual(closure["repair_kind"], "defect_repair")
+        self.assertEqual(closure["defect_repair_rounds_used"], 1)
+        self.assertEqual(closure["evidence_completion_rounds_used"], 0)
+        self.assertEqual(
+            configs[1].env[
+                "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS"
+            ],
+            "1",
+        )
+        self.assertEqual(
+            configs[1].env["FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"],
+            "200000",
+        )
+        self.assertEqual(
+            configs[1].env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"],
+            "5",
+        )
+        self.assertIn("Targeted Public-Contract Defect Repair", repair_task)
+        self.assertIn("--lite-plus --summary", repair_task)
+        self.assertNotIn("first tool action must write", repair_task)
+        self.assertIn("reserved for an implementation defect", repair_task)
+        self.assertIn("PUBLIC_CONTRACT.json", repair_task)
+
+    def test_lite_rescue_plus_missing_witness_skips_paid_repair(self) -> None:
+        task_dir = (
+            Path(__file__).resolve().parents[2]
+            / "benchmark"
+            / "tasks"
+            / "sqlparse__token_tree_core__001"
+        )
+        missing_smoke = {
+            "hard_gate_ok": True,
+            "behavior_gate_ok": False,
+            "closure_ok": False,
+            "repair_needed": False,
+            "summary": {"pass": 1, "fail": 1, "unknown": 0},
+            "hard_failure_count": 0,
+            "soft_open_count": 1,
+            "actionable_behavior_failure_count": 0,
+            "unknown_count": 0,
+            "checks": [
+                {
+                    "id": "behavior.witness.required",
+                    "category": "behavior_evidence",
+                    "status": "fail",
+                    "severity": "soft",
+                    "message": (
+                        "no valid executable direct case was provided for the selected witness"
+                    ),
+                }
+            ],
+        }
+        configs = []
+
+        def fake_run(context, config, **_kwargs):
+            configs.append(config)
+            package = context.submission_dir / "featurelifted"
+            package.mkdir(parents=True, exist_ok=True)
+            (package / "__init__.py").write_text(
+                "VALUE = 1\n", encoding="utf-8"
+            )
+            return AgentCommandResult(
+                name=config.agent,
+                command=[config.agent],
+                report_command=[config.agent],
+                returncode=0,
+                duration_seconds=0.01,
+                stdout="",
+                stderr="",
+            )
+
+        adapter = mock.MagicMock()
+        adapter.run.side_effect = fake_run
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            mock.patch(
+                "featureliftbench.agent_runner.get_agent_adapter",
+                return_value=adapter,
+            ),
+            mock.patch(
+                "featureliftbench.contract_closure_gate.check_workspace_isolated",
+                return_value=dict(missing_smoke),
+            ),
+            mock.patch(
+                "featureliftbench.agent_runner._evaluate_collected_submission",
+                return_value={
+                    "status": "passed",
+                    "scores": {"functional_gate": 1.0},
+                    "functional_pass": True,
+                },
+            ),
+        ):
+            output = Path(tmp) / "output"
+            result = run_agent_on_task(
+                task_dir,
+                output,
+                AgentRunConfig(
+                    agent="command",
+                    env=AblationOptions(
+                        contract_closure_gate_lite_rescue_plus=True
+                    ).to_env(),
+                    timeout_seconds=1200,
+                ),
+            )
+            final_submission = (
+                output
+                / "workspace"
+                / "submission"
+                / "featurelifted"
+                / "__init__.py"
+            ).read_text(encoding="utf-8")
+
+        closure = result["contract_closure"]
+        self.assertEqual(final_submission, "VALUE = 1\n")
+        self.assertEqual(adapter.run.call_count, 1)
+        self.assertEqual(closure["repair_kind"], "none")
+        self.assertEqual(closure["evidence_completion_rounds_used"], 0)
+        self.assertEqual(closure["defect_repair_rounds_used"], 0)
+        self.assertFalse(closure["functional_rescue_candidate"])
+        self.assertIn("telemetry only", closure["repair_decision"]["reason"])
+        self.assertFalse((output / "agent_repair").exists())
 
     def test_lite_v2_runner_skips_broad_repair_and_records_decision(self) -> None:
         task_dir = (

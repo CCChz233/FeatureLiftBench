@@ -1,7 +1,7 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-08-04**
-> 本文件是当前规模、release、freeze、实验完成度和下一步的唯一手写事实源。
+> **Status: current · Last verified: 2026-08-17**
+> 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Release
 
@@ -20,7 +20,46 @@ Python-150 baseline 与独立冻结的 balanced External-50 组成统一 task ro
 权威组合清单是
 [`benchmark/selection/python200_suite.json`](../benchmark/selection/python200_suite.json)。
 `artifacts/research_analysis/v3/current_benchmark_freeze.json` 仍是不可变的 baseline
-freeze，不把 External-50 偷写进旧 freeze。
+freeze，不把 External-50 写入旧 freeze。
+
+## Metric Contract
+
+当前主结果只有两项核心指标：
+
+1. **Functional Pass Rate**：`build ∧ public ∧ hidden ∧ isolation`。
+2. **Reference-Relative Extraction Size (RRES)**：只在 Functional Pass 题上计算，越低越紧凑。
+
+`final_score` 等于 `functional_gate`，不是额外指标。Tokens、steps、time 和 agent
+completion 只是运行诊断。每道 Functional Fail 按 missing submission、build、public、
+hidden、isolation 的首败阶段分类。完整定义见 [EVALUATION.md](EVALUATION.md)。
+
+## Current DeepSeek Python-200 Evidence
+
+| 端点 | 方法 | Functional Pass | Pass Rate | RRES 证据 |
+| --- | --- | ---: | ---: | --- |
+| API | Main | **144/200** | **72.0%** | 99/144 pass 题可用，不完整 |
+| API | Frozen Lite V1 | 131/200 | 65.5% | 缺失 |
+| 本地 vLLM | Main | **145/200** | **72.5%** | 缺失 |
+| 本地 vLLM | Frozen Lite V1 | 127/200 | 63.5% | 127/127 pass 题可用 |
+
+结论：Main 在 API 上领先 6.5 个百分点，在本地 vLLM 上领先 9.0 个百分点。
+Frozen Lite V1 目前是 resource-saving trade-off，不是正确性改进。因证据不匹配，
+当前不能宣称 Lite 的 RRES 优于 Main。完整解释见 [FINDINGS.md](FINDINGS.md)。
+
+机器可读对账快照：
+[`deepseek_main_vs_frozen_lite_v1_20260817.json`](../artifacts/research_analysis/current_results/deepseek_main_vs_frozen_lite_v1_20260817.json)。
+
+## Evidence Completeness
+
+| Result set | Functional | Failure stages | RRES |
+| --- | --- | --- | --- |
+| API Main-200 | 完整 | Main-150 可分类；External-50 五个失败缺阶段 | 99/144，部分 |
+| API Frozen Lite V1-200 | 完整 | 除 missing 外缺失 | 缺失 |
+| 本地 Main-200 | 完整 | 除 missing 外缺失 | 缺失 |
+| 本地 Frozen Lite V1-200 | 完整 | 完整 | 完整 |
+
+原始结果包的 `summary.passed` 是 workflow/run status，不是 Functional Pass。历史 README
+对该字段的标签已过时；当前必须从 evaluator `final_score/functional_gate` 重算。
 
 ## Readiness
 
@@ -34,75 +73,35 @@ freeze，不把 External-50 偷写进旧 freeze。
 - baseline freeze：150/150 unchanged；
 - runnable task compliance：200/200。
 
-服务器正式运行仍必须执行 Docker strict preflight，并记录 agent/evaluator image
-identity。Runner 会在模型调用前执行该门禁。
+服务器正式运行仍必须执行 Docker strict preflight，并记录 agent/evaluator image identity。
 
-## Available Model Evidence
+## Historical Evidence
 
-冻结 Python-150 结果（Functional Pass@1；DeepSeek 已于 2026-08-05 补齐 150）：
+旧 Python-150 跨模型分析仍作为历史基线保留，但不再是当前 Main vs Lite
+结果入口：
 
-| Model | Coverage | Evaluator Functional Pass@1 | Use |
-| --- | ---: | ---: | --- |
-| DeepSeek V4 Flash | 150/150 | 99/150 | paper candidate；需 image/context 收尾 |
-| Qwen3.5 122B | 150/150 | 59/150 | candidate；需 context sensitivity |
-| Qwen3.6 35B | 150/150 | 59/150 | candidate；需 context sensitivity |
-| GPT-OSS 120B | 150/150 | 27/150 | Python-200 extension candidate |
+- DeepSeek V4 Flash：99/150；
+- Qwen3.5 122B：59/150；
+- Qwen3.6 35B：59/150；
+- GPT-OSS 120B：27/150。
 
-最新合并主表见
+来源见
 [`reports/paper_analysis/python150_with_deepseek150_20260805/`](../reports/paper_analysis/python150_with_deepseek150_20260805/README.md)。
-GPT-OSS/Qwen 逐题来源仍是
-[`reports/paper_analysis/python150_frozen_20260803/`](../reports/paper_analysis/python150_frozen_20260803/README.md)。
-归档自带 MANIFEST 的 pass 数不是主指标，不能引用。
+这些数据不与当前 Python-200 方法对比混表。
 
-## Result Eligibility
+## Current Evidence Gaps
 
-冻结 baseline 与 External-50 只能在以下条件完全一致时按 task ID 合并：exact model
-revision/endpoint、agent profile、prompt/arm、attempt policy、agent image、evaluator
-image/scoring code 和 Main information boundary。缺失 submission 计入分母并视为
-Functional failure；不相交 task shards 是分区，不是重复样本。
-
-当前结果资格：
-
-| Result set | Classification |
-| --- | --- |
-| DeepSeek、GPT-OSS、Qwen3.5、Qwen3.6 frozen baseline（均 150/150） | 解决 evaluator/context 条件后可接 External-50 |
-| Balanced External-50 | benchmark ready；model results 尚未完成 |
-| Older mixed-snapshot suites | historical；不得并入 current Main |
-
-主结果必须从逐题 evaluator `functional_gate` 重算，并与 `eval/result.json` 交叉核验；
-agent completion、bundle MANIFEST 和 stale suite summary 都不是 headline metric。实验条件、
-留存和统计要求见 [EVALUATION.md](EVALUATION.md)。
-
-## Evidence Boundary
-
-现有证据支持：
-
-- frozen baseline 能区分被测 coding agents；
-- Agent completion 不能替代 evaluator Functional Pass；
-- 完整 baseline 模型在环境问题解决后可做 task-paired comparison；
-- External-50 已 package-complete，可在兼容条件下扩展完整 baseline。
-
-现有证据尚不支持：
-
-- final Python-200 leaderboard；
-- 在 evaluator image mismatch 未解决时声称精确 frozen-environment 结果；
-- 未做 sensitivity analysis 时声称 Qwen/DeepSeek 排名与 context window 无关；
-- 仅由 `copied_fraction` 推导 plagiarism，或泛化到未覆盖的语言与仓库总体。
-
-## Blocking Issues Before Paper Tables
-
-1. 旧结果实际 evaluator image 与 baseline freeze 登记的 evaluator image 不同；需
-   attestation 或 evaluator-only re-evaluation。
-2. Qwen3.5、Qwen3.6 与 DeepSeek 存在 context-window violations；需重跑违规
-   model-task 或预注册 sensitivity analysis。
-3. Python-200 的模型 extension（External-50）结果尚未完成，不应提前发布完整
-   leaderboard。
+1. 补齐 API Main External-50 的逐题 `eval/result.json`。
+2. 补齐 API Frozen Lite V1 的逐题 evaluator 产物。
+3. 补齐本地 Main 的逐题 evaluator 产物。
+4. 在同 endpoint、同 task、两方都 Functional Pass 的样本上重算 paired RRES。
+5. 论文主表前仍需确认 evaluator image 和 context-window 实验资格。
 
 ## Next Actions
 
-1. 固定 model revision、agent profile、Main arm、attempt policy 和 image identities。
-2. 对四组完整 baseline 模型运行 External-50。
-3. 对旧 submission 统一 evaluator 环境并生成 200 题逐题合并表。
-4. 冻结论文统计口径后再生成 leaderboard、置信区间和 paired comparison。
+1. 先恢复上述缺失的 evaluator 产物，不重跑已有正式结果。
+2. 用统一脚本重建 Functional、失败阶段和 paired RRES。
+3. 保持 Main 为默认对照；新方法先在高区分度子集上验证，达到正确性不劣后
+   再扩展。
 
 运行入口见 [RUN.md](../RUN.md)，实验与结果规范见 [EVALUATION.md](EVALUATION.md)。

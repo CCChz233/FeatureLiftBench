@@ -542,6 +542,18 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
 
     task_text = config.task_file.read_text(encoding="utf-8")
     options = ablation_options_from_env(os.environ)
+    if options.contract_closure_gate_lite_rescue_plus:
+        from .contract_closure_gate.common import CONTRACT_CLOSURE_PHASE_ENV
+
+        closure_phase = (
+            str(os.environ.get(CONTRACT_CLOSURE_PHASE_ENV, "primary")).strip().lower()
+            or "primary"
+        )
+        if closure_phase == "repair":
+            # The repair task is already a complete, public-only, edit-first prompt.
+            # Wrapping it in the normal implementation prompt caused bounded repairs
+            # to restart repository discovery and exhaust their step budget.
+            return task_text
     if options.mount_public_tests:
         public_line = (
             "- Public tests are under `public_tests/` and may be run for feedback.\n"
@@ -704,6 +716,8 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         options.contract_closure_gate
         or options.contract_closure_gate_lite
         or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_lite_rescue
+        or options.contract_closure_gate_lite_rescue_plus
         or options.contract_closure_gate_v3
     ):
         from .contract_closure_gate import openhands_appendix
@@ -713,13 +727,28 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             + openhands_appendix(
                 lite=options.contract_closure_gate_lite
                 or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_lite_rescue
+                or options.contract_closure_gate_lite_rescue_plus
                 or options.contract_closure_gate_v3,
                 frozen_v1=options.contract_closure_gate_lite_v1,
+                rescue=options.contract_closure_gate_lite_rescue,
+                rescue_plus=options.contract_closure_gate_lite_rescue_plus,
                 v3=options.contract_closure_gate_v3,
             )
             + "\n"
         )
-        if options.contract_closure_gate_v3:
+        if options.contract_closure_gate_lite_rescue_plus:
+            test_hint = (
+                "After implementing, write one composed behavior case (a second only "
+                "when necessary) and run `./flb-contract-check --lite-plus --summary`. "
+                "Do not chase complete behavior coverage.\n\n"
+            )
+            required_finish = (
+                "## Required Finish State\n\n"
+                "Leave a working submission and one or two concise public behavior "
+                "smoke cases under `contract_cases/`.\n\n"
+            )
+        elif options.contract_closure_gate_v3:
             test_hint = (
                 "After implementing, write exactly two focused cases and run "
                 "`./flb-contract-check --micro --summary`. Do not chase complete "
@@ -730,7 +759,10 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
                 "Leave a working submission and two concise public behavior smoke "
                 "cases under `contract_cases/`.\n\n"
             )
-        elif options.contract_closure_gate_lite_v1:
+        elif (
+            options.contract_closure_gate_lite_v1
+            or options.contract_closure_gate_lite_rescue
+        ):
             test_hint = (
                 "Run `./flb-contract-check --structure-only --summary` after "
                 "implementing. Do not spend steps authoring behavior cases.\n\n"

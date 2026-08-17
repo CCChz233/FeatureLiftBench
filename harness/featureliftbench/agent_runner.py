@@ -1224,6 +1224,8 @@ def run_agent_on_task(
             ablation.contract_closure_gate
             or ablation.contract_closure_gate_lite
             or ablation.contract_closure_gate_lite_v1
+            or ablation.contract_closure_gate_lite_rescue
+            or ablation.contract_closure_gate_lite_rescue_plus
             or ablation.contract_closure_gate_v3
         ):
             from .contract_closure_gate import check_workspace_isolated
@@ -1234,6 +1236,12 @@ def run_agent_on_task(
             from .contract_closure_gate.common import CONTRACT_CLOSURE_GATE_LITE_ENV
             from .contract_closure_gate.common import (
                 CONTRACT_CLOSURE_GATE_LITE_V1_ENV,
+            )
+            from .contract_closure_gate.common import (
+                CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV,
+            )
+            from .contract_closure_gate.common import (
+                CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV,
             )
             from .contract_closure_gate.common import CONTRACT_CLOSURE_GATE_V3_ENV
             from .contract_closure_gate.common import CONTRACT_CLOSURE_PHASE_ENV
@@ -1261,16 +1269,34 @@ def run_agent_on_task(
             from .contract_closure_gate.common import INFRA_RETRY_LIMIT_ENV
             from .contract_closure_gate.common import INFRA_RETRY_MAX_STEPS_ENV
             from .contract_closure_gate.common import LITE_POLICY_VERSION
+            from .contract_closure_gate.common import LITE_RESCUE_POLICY_VERSION
+            from .contract_closure_gate.common import (
+                LITE_RESCUE_PLUS_POLICY_VERSION,
+            )
             from .contract_closure_gate.common import LITE_V1_POLICY_VERSION
             from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
 
             closure_v3 = ablation.contract_closure_gate_v3
             closure_v1 = ablation.contract_closure_gate_lite_v1
+            closure_rescue = ablation.contract_closure_gate_lite_rescue
+            closure_rescue_plus = (
+                ablation.contract_closure_gate_lite_rescue_plus
+            )
             closure_lite = (
-                ablation.contract_closure_gate_lite or closure_v1 or closure_v3
+                ablation.contract_closure_gate_lite
+                or closure_v1
+                or closure_rescue
+                or closure_rescue_plus
+                or closure_v3
             )
             closure_check_mode = (
-                "micro" if closure_v3 else "structure" if closure_lite else "full"
+                "lite_plus"
+                if closure_rescue_plus
+                else "micro"
+                if closure_v3
+                else "structure"
+                if closure_lite
+                else "full"
             )
 
             def _closure_agent_compact(result: Any, output_dir: Path) -> dict[str, Any] | None:
@@ -1347,7 +1373,13 @@ def run_agent_on_task(
                     or DEFAULT_LITE_INFRA_RETRY_MAX_TRIGGER_STEPS
                 ),
                 policy_version=(
-                    LITE_V1_POLICY_VERSION if closure_v1 else LITE_POLICY_VERSION
+                    LITE_V1_POLICY_VERSION
+                    if closure_v1
+                    else LITE_RESCUE_POLICY_VERSION
+                    if closure_rescue
+                    else LITE_RESCUE_PLUS_POLICY_VERSION
+                    if closure_rescue_plus
+                    else LITE_POLICY_VERSION
                 ),
             )
             primary_attempts: list[dict[str, Any]] = []
@@ -1428,15 +1460,24 @@ def run_agent_on_task(
                 closure_initial,
                 lite=closure_lite and not closure_v1,
                 frozen_v1=closure_v1,
+                rescue=closure_rescue,
+                rescue_plus=closure_rescue_plus,
                 v3=closure_v3,
             )
-            if repair_decision.get("eligible") and DEFAULT_REPAIR_ROUNDS > 0:
+            if (
+                repair_decision.get("eligible")
+                and repair_decision.get("repair_kind") == "defect_repair"
+                and DEFAULT_REPAIR_ROUNDS > 0
+            ):
                 repair_rounds_used = 1
+                repair_kind = "defect_repair"
                 repair_task = prepare_repair_workspace(
                     workspace_dir,
                     check_result=closure_initial,
                     task_markdown=task_file.read_text(encoding="utf-8"),
                     lite=closure_lite,
+                    rescue_plus=closure_rescue_plus,
+                    repair_kind=repair_kind,
                     v3=closure_v3,
                 )
                 repair_dir = output_path / "agent_repair"
@@ -1447,9 +1488,21 @@ def run_agent_on_task(
                     **(run_config.env or {}),
                     CONTRACT_CLOSURE_GATE_ENV: "0" if closure_lite else "1",
                     CONTRACT_CLOSURE_GATE_LITE_ENV: (
-                        "1" if closure_lite and not closure_v1 and not closure_v3 else "0"
+                        "1"
+                        if closure_lite
+                        and not closure_v1
+                        and not closure_rescue
+                        and not closure_rescue_plus
+                        and not closure_v3
+                        else "0"
                     ),
                     CONTRACT_CLOSURE_GATE_LITE_V1_ENV: "1" if closure_v1 else "0",
+                    CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV: (
+                        "1" if closure_rescue else "0"
+                    ),
+                    CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV: (
+                        "1" if closure_rescue_plus else "0"
+                    ),
                     CONTRACT_CLOSURE_GATE_V3_ENV: "1" if closure_v3 else "0",
                     CONTRACT_CLOSURE_PHASE_ENV: "repair",
                 }
@@ -1658,6 +1711,8 @@ def run_agent_on_task(
             ablation.contract_closure_gate
             or ablation.contract_closure_gate_lite
             or ablation.contract_closure_gate_lite_v1
+            or ablation.contract_closure_gate_lite_rescue
+            or ablation.contract_closure_gate_lite_rescue_plus
             or ablation.contract_closure_gate_v3
             or ablation.contract_closure_budget_control
         )
@@ -2517,7 +2572,7 @@ def _contract_closure_infrastructure_retry_decision(
         "reason": "infrastructure retry not requested",
     }
     if not enabled or agent_result is None:
-        decision["reason"] = "infrastructure retry is only enabled for Lite V2.1"
+        decision["reason"] = "infrastructure retry is only enabled for bounded Lite arms"
         return decision
 
     usage = _collect_agent_usage(agent_result.name, agent_output_dir)
@@ -2556,27 +2611,30 @@ def _contract_closure_infrastructure_retry_decision(
 
 
 def _contract_closure_checker_error(exc: BaseException) -> dict[str, Any]:
-    """Convert checker infrastructure errors into auditable, repairable results."""
+    """Record checker infrastructure errors without spending a model repair."""
+
+    from .contract_closure_gate.common import CHECKER_VERSION
 
     message = f"{type(exc).__name__}: {exc}"
     return {
         "schema_version": "featureliftbench.contract_closure_check.v1",
-        "checker_version": "contract_closure_gate.v3",
+        "checker_version": CHECKER_VERSION,
         "check_mode": "full",
         "hard_gate_ok": False,
         "behavior_gate_ok": False,
         "closure_ok": False,
-        "repair_needed": True,
-        "summary": {"pass": 0, "fail": 1, "unknown": 0},
-        "hard_failure_count": 1,
+        "repair_needed": False,
+        "summary": {"pass": 0, "fail": 0, "unknown": 1},
+        "hard_failure_count": 0,
         "actionable_behavior_failure_count": 0,
         "soft_open_count": 0,
-        "unknown_count": 0,
+        "unknown_count": 1,
+        "checker_environment_unknown_count": 1,
         "checks": [
             {
                 "id": "checker.infrastructure",
                 "category": "infrastructure",
-                "status": "fail",
+                "status": "unknown",
                 "severity": "hard",
                 "message": message,
             }
@@ -2697,6 +2755,8 @@ def prepare_agent_workspace(
         options.contract_closure_gate
         or options.contract_closure_gate_lite
         or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_lite_rescue
+        or options.contract_closure_gate_lite_rescue_plus
         or options.contract_closure_gate_v3
     ):
         from .contract_closure_gate import install_contract_closure_workspace
@@ -2707,9 +2767,13 @@ def prepare_agent_workspace(
             lite=(
                 options.contract_closure_gate_lite
                 or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_lite_rescue
+                or options.contract_closure_gate_lite_rescue_plus
                 or options.contract_closure_gate_v3
             ),
             frozen_v1=options.contract_closure_gate_lite_v1,
+            rescue=options.contract_closure_gate_lite_rescue,
+            rescue_plus=options.contract_closure_gate_lite_rescue_plus,
             v3=options.contract_closure_gate_v3,
         )
     else:
@@ -2765,6 +2829,8 @@ def prepare_agent_workspace(
         options.contract_closure_gate
         or options.contract_closure_gate_lite
         or options.contract_closure_gate_lite_v1
+        or options.contract_closure_gate_lite_rescue
+        or options.contract_closure_gate_lite_rescue_plus
         or options.contract_closure_gate_v3
     ):
         from .contract_closure_gate import task_appendix as closure_appendix
@@ -2773,9 +2839,13 @@ def prepare_agent_workspace(
             lite=(
                 options.contract_closure_gate_lite
                 or options.contract_closure_gate_lite_v1
+                or options.contract_closure_gate_lite_rescue
+                or options.contract_closure_gate_lite_rescue_plus
                 or options.contract_closure_gate_v3
             ),
             frozen_v1=options.contract_closure_gate_lite_v1,
+            rescue=options.contract_closure_gate_lite_rescue,
+            rescue_plus=options.contract_closure_gate_lite_rescue_plus,
             v3=options.contract_closure_gate_v3,
         )
     task_file.write_text(task_markdown, encoding="utf-8")

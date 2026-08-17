@@ -37,6 +37,7 @@ def check_workspace_isolated(
         "structure": ["--structure-only"],
         "behavior": ["--behavior-only"],
         "micro": ["--micro"],
+        "lite_plus": ["--lite-plus"],
     }.get(check_mode)
     if mode_arg is None:
         raise ValueError(f"unsupported contract check mode: {check_mode}")

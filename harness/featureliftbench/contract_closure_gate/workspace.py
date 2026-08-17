@@ -15,6 +15,8 @@ from .common import FAILURES_FILE
 from .common import GENERATOR_VERSION
 from .common import PUBLIC_CONTRACT_FILE
 from .common import PUBLIC_CONTRACT_SCHEMA
+from .common import PUBLIC_WITNESS_FILE
+from .common import PUBLIC_WITNESS_SCHEMA
 from .common import WRAPPER_NAME
 
 
@@ -114,6 +116,111 @@ Bxxx coverage is telemetry only; do not add cases merely to make coverage green.
 """
 
 
+_LITE_RESCUE_PLUS_README = """# Lite Rescue+ public-behavior smoke cases
+
+Read `../PUBLIC_WITNESS.json` and write exactly one concise direct-mode Python
+case for its selected public Bxxx clause. Do this immediately after the first
+structure check, before broad implementation work. Full Bxxx coverage is not
+required and a missing witness is telemetry only; it never triggers a paid
+evidence-completion run.
+
+The selected public clause is the primary oracle. Encode its explicit ordering,
+state transition, exception, nested result, repeated-call, reset, or roundtrip
+semantic as a real assertion. Differential mode is intentionally not accepted
+as the selected repair witness.
+
+Example:
+
+```python
+CASE_ID = "stable-short-id"
+BEHAVIOR_IDS = ["B002"]
+REQUIRED_API = ["featurelifted.SomeClass.method"]
+MODE = "direct"
+EVIDENCE = ["public_spec:B002", "repo/path.py:25"]
+
+def check_featurelifted():
+    from featurelifted import SomeClass
+    assert SomeClass().method() == "publicly justified value"
+```
+
+The checker gives behavior cases a shared 60-second execution budget. The
+selected case must execute submission code and fail against an empty package.
+Do not use assert True, unconditional skips, evaluator files, or hidden
+feedback. Do not inspect checker or harness source.
+
+Run `../flb-contract-check --lite-plus --summary` before finishing. Only a real
+failure of the selected direct witness may trigger semantic repair.
+"""
+
+
+_WITNESS_KEYWORDS = (
+    "raise",
+    "error",
+    "exception",
+    "reject",
+    "invalid",
+    "ambiguous",
+    "cycle",
+    "expired",
+    "state",
+    "transition",
+    "reset",
+    "repeated",
+    "nested",
+    "ordering",
+    "order",
+    "roundtrip",
+    "normalize",
+    "dependency",
+    "branch",
+    "graph",
+    "match",
+)
+
+
+def _public_witness_payload(public_spec: dict[str, Any]) -> dict[str, Any]:
+    """Select one deterministic high-risk clause using public text only."""
+
+    behaviors = [
+        item
+        for item in public_spec.get("behaviors", [])
+        if isinstance(item, dict) and item.get("id")
+    ]
+    ranked: list[tuple[int, int, dict[str, Any]]] = []
+    for index, item in enumerate(behaviors):
+        text = str(item.get("text") or "").lower()
+        score = sum(1 for keyword in _WITNESS_KEYWORDS if keyword in text)
+        ranked.append((-score, index, item))
+    selected = min(ranked)[2] if ranked else {"id": "", "text": ""}
+
+    def flatten(items: Any) -> list[str]:
+        paths: list[str] = []
+        if not isinstance(items, list):
+            return paths
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            path = str(item.get("path") or "").strip()
+            if path:
+                paths.append(path)
+            paths.extend(flatten(item.get("members")))
+        return paths
+
+    payload = {
+        "schema_version": PUBLIC_WITNESS_SCHEMA,
+        "generator_version": GENERATOR_VERSION,
+        "selection_policy": "public_keyword_risk_then_source_order.v1",
+        "mode": "direct",
+        "behavior_id": str(selected.get("id") or ""),
+        "public_clause": str(selected.get("text") or ""),
+        "candidate_required_api": flatten(public_spec.get("required_api")),
+    }
+    payload["witness_hash"] = hashlib.sha256(
+        canonical_json(payload).encode("utf-8")
+    ).hexdigest()
+    return payload
+
+
 _WRAPPER = """#!/usr/bin/env python3
 from __future__ import annotations
 
@@ -144,11 +251,12 @@ def main() -> int:
     modes.add_argument("--structure-only", action="store_true")
     modes.add_argument("--behavior-only", action="store_true")
     modes.add_argument("--micro", action="store_true")
+    modes.add_argument("--lite-plus", action="store_true")
     parser.add_argument("--summary", action="store_true")
     args = parser.parse_args()
     check_mode = (
         "structure" if args.structure_only else "behavior" if args.behavior_only
-        else "micro" if args.micro else "full"
+        else "micro" if args.micro else "lite_plus" if args.lite_plus else "full"
     )
     try:
         result = check_workspace(args.workspace, check_mode=check_mode)
@@ -165,6 +273,7 @@ def main() -> int:
                 "check_mode", "hard_gate_ok", "behavior_gate_ok", "closure_ok",
                 "repair_needed", "hard_failure_count",
                 "actionable_behavior_failure_count", "soft_open_count", "unknown_count",
+                "checker_environment_unknown_count",
             )
         }
         shown["failed_checks"] = [
@@ -185,6 +294,8 @@ def install_contract_closure_workspace(
     metadata: dict[str, Any],
     lite: bool = False,
     frozen_v1: bool = False,
+    rescue: bool = False,
+    rescue_plus: bool = False,
     v3: bool = False,
 ) -> dict[str, Any]:
     """Install only data derived from the Agent-visible public contract."""
@@ -207,11 +318,26 @@ def install_contract_closure_workspace(
     )
     (workspace / PUBLIC_CONTRACT_FILE).write_text(serialized, encoding="utf-8")
 
-    if not lite or v3:
+    witness_payload: dict[str, Any] | None = None
+    if rescue_plus:
+        witness_payload = _public_witness_payload(public_spec)
+        (workspace / PUBLIC_WITNESS_FILE).write_text(
+            json.dumps(witness_payload, indent=2, sort_keys=True, ensure_ascii=False)
+            + "\n",
+            encoding="utf-8",
+        )
+
+    if not lite or v3 or rescue_plus:
         cases = workspace / CASES_DIR
         cases.mkdir(parents=True, exist_ok=True)
         (cases / "README.md").write_text(
-            _MICRO_README if v3 else _README,
+            (
+                _LITE_RESCUE_PLUS_README
+                if rescue_plus
+                else _MICRO_README
+                if v3
+                else _README
+            ),
             encoding="utf-8",
         )
     wrapper = workspace / WRAPPER_NAME
@@ -222,8 +348,14 @@ def install_contract_closure_workspace(
         "contract_closure_gate": True,
         "contract_closure_gate_lite": bool(lite),
         "contract_closure_gate_lite_v1_frozen": bool(frozen_v1),
+        "contract_closure_gate_lite_rescue": bool(rescue),
+        "contract_closure_gate_lite_rescue_plus": bool(rescue_plus),
         "contract_closure_gate_v3": bool(v3),
         "public_contract_file": PUBLIC_CONTRACT_FILE,
+        "public_witness_file": PUBLIC_WITNESS_FILE if rescue_plus else "",
+        "public_witness_behavior_id": (
+            witness_payload.get("behavior_id") if witness_payload else ""
+        ),
         "public_contract_sha256": hashlib.sha256(
             serialized.encode("utf-8")
         ).hexdigest(),
@@ -234,8 +366,32 @@ def install_contract_closure_workspace(
 
 
 def task_appendix(
-    *, lite: bool = False, frozen_v1: bool = False, v3: bool = False
+    *,
+    lite: bool = False,
+    frozen_v1: bool = False,
+    rescue: bool = False,
+    rescue_plus: bool = False,
+    v3: bool = False,
 ) -> str:
+    if rescue_plus:
+        return (
+            "## Public Contract Closure Gate Lite Rescue+\n\n"
+            f"This low-token method uses only `{PUBLIC_CONTRACT_FILE}`, a structured "
+            "copy of the public contract already rendered above. Evaluator tests remain "
+            "hidden.\n\n"
+            "1. Create an importable package immediately and cover every Required Output "
+            "API with a minimal skeleton under `submission/featurelifted/`.\n"
+            f"2. Run `./{WRAPPER_NAME} --structure-only --summary` by roughly step 8.\n"
+            f"3. Read `{PUBLIC_WITNESS_FILE}` and immediately write exactly one direct "
+            f"case under `{CASES_DIR}/` for its selected Bxxx clause by roughly step 12.\n"
+            "4. Use the failing direct witness and visible upstream source to complete the "
+            "implementation. Do not write differential or coverage-only cases.\n"
+            f"5. Run `./{WRAPPER_NAME} --lite-plus --summary` and fix concrete structure "
+            "or executable behavior mismatches. Unknown external/environmental behavior "
+            "does not require repair.\n"
+            "6. By roughly step 32, stop exploration. Use the remaining budget only for "
+            "the final implementation, smoke check, and submission readiness.\n"
+        )
     if v3:
         return (
             "## Public Contract Closure Gate V3\n\n"
@@ -256,9 +412,11 @@ def task_appendix(
             "7. After about 70% of the budget, stop exploration and spend the remainder "
             "only on implementation, smoke checks, and local fixes.\n"
         )
-    if frozen_v1:
+    if frozen_v1 or rescue:
         return (
-            "## Public Contract Closure Gate Lite\n\n"
+            "## Public Contract Closure Gate Lite"
+            + (" Rescue" if rescue else "")
+            + "\n\n"
             f"This low-token method uses only `{PUBLIC_CONTRACT_FILE}`, a structured "
             "copy of the public contract already rendered above. Evaluator tests remain "
             "hidden.\n\n"
@@ -305,8 +463,27 @@ def task_appendix(
 
 
 def openhands_appendix(
-    *, lite: bool = False, frozen_v1: bool = False, v3: bool = False
+    *,
+    lite: bool = False,
+    frozen_v1: bool = False,
+    rescue: bool = False,
+    rescue_plus: bool = False,
+    v3: bool = False,
 ) -> str:
+    if rescue_plus:
+        return (
+            "Create the package immediately, cover all published APIs, and run the "
+            "structure-only checker by about step 8. Then read "
+            f"`{PUBLIC_WITNESS_FILE}` and `{CASES_DIR}/README.md`; by about step 12 write "
+            "exactly one direct case for the selected Bxxx clause. Use its failing "
+            "assertion to drive implementation, then run "
+            f"`./{WRAPPER_NAME} --lite-plus --summary`. Do not write differential or "
+            "coverage-only cases. By roughly step 32 stop repository exploration and spend all remaining "
+            "steps on implementation, the smoke check, and a ready submission. Resolve "
+            "only concrete findings. The selected public clause is the primary oracle. "
+            "Missing witness evidence is telemetry and never causes a paid repair. Do not inspect the wrapper or "
+            "`/flb/harness`.\n"
+        )
     if v3:
         return (
             "Start by writing: create the package immediately, cover all published APIs "
@@ -317,7 +494,7 @@ def openhands_appendix(
             "Resolve only concrete structural findings or executable behavior mismatches. "
             "Do not inspect the wrapper or `/flb/harness`.\n"
         )
-    if frozen_v1:
+    if frozen_v1 or rescue:
         return (
             "Implement the submission, then run "
             f"`./{WRAPPER_NAME} --structure-only --summary` and resolve hard "
@@ -352,6 +529,8 @@ def prepare_repair_workspace(
     check_result: dict[str, Any],
     task_markdown: str,
     lite: bool = False,
+    rescue_plus: bool = False,
+    repair_kind: str | None = None,
     v3: bool = False,
 ) -> str:
     workspace = Path(workspace_dir).resolve()
@@ -363,7 +542,62 @@ def prepare_repair_workspace(
         task_markdown,
         flags=re.DOTALL,
     ).rstrip()
-    if v3:
+    if rescue_plus:
+        public_contract_path = workspace / PUBLIC_CONTRACT_FILE
+        public_contract = (
+            public_contract_path.read_text(encoding="utf-8").strip()
+            if public_contract_path.is_file()
+            else base
+        )
+        case_readme_path = workspace / CASES_DIR / "README.md"
+        case_protocol = (
+            case_readme_path.read_text(encoding="utf-8").strip()
+            if case_readme_path.is_file()
+            else _LITE_RESCUE_PLUS_README.strip()
+        )
+        title = "FeatureLiftBench Targeted Public-Contract Defect Repair"
+        scope = (
+            "This is a defect-repair phase. Preserve unrelated code and make only "
+            "the smallest public-contract implementation correction. For an executable "
+            "selected-witness mismatch, treat the cited public clause as primary; correct "
+            "the case only when it contradicts that clause. Missing witness evidence never "
+            "starts this phase.\n\n"
+        )
+        action_order = (
+            "2. Inspect only the directly named submission or selected direct-witness file "
+            "and edit the implementation immediately. Do not add a case merely to close "
+            "missing evidence; this round is reserved for an implementation defect.\n"
+        )
+        repaired = "".join(
+            [
+                f"# {title}\n\n",
+                "This is a bounded continuation of an existing implementation, not a new "
+                "repository-exploration task. Evaluator tests and evaluator feedback are "
+                "not available. ",
+                scope,
+                "## Mandatory action order\n\n",
+                f"1. Use the embedded `{FAILURES_FILE}` report below; do not spend a tool "
+                "action reopening it, TASK.md, metadata.json, or PUBLIC_CONTRACT.json.\n",
+                action_order,
+                f"3. Run `./{WRAPPER_NAME} --lite-plus --summary` after the first edit. "
+                "Make at most one focused correction from that output, rerun the same "
+                "command, and finish.\n",
+                "4. Do not run `ls`, `find`, or `tree` to inventory the workspace; do not "
+                "read whole upstream modules or upstream test suites; do not install "
+                "dependencies; do not inspect flb-contract-check or /flb/harness. An exact "
+                "`rg` lookup in repo/ is allowed only after the first checker run and only "
+                "if a public assertion cannot otherwise be justified.\n\n",
+                "A passing smoke case must import and execute `submission/featurelifted`, "
+                "contain a meaningful assertion, and fail against an empty package. Missing "
+                "Bxxx coverage is telemetry; do not chase full coverage.\n\n",
+                f"## {FAILURES_FILE}\n\n{failures.strip()}\n\n",
+                f"## {PUBLIC_CONTRACT_FILE}\n\n```json\n{public_contract}\n```\n\n",
+                f"## {CASES_DIR}/README.md protocol\n\n{case_protocol}\n",
+            ]
+        )
+        (workspace / "TASK.md").write_text(repaired + "\n", encoding="utf-8")
+        return repaired
+    elif v3:
         appendix = (
             "## Public Contract Closure Repair (V3)\n\n"
             f"The bounded public checker found a concrete gap. Read `{FAILURES_FILE}`.\n"
@@ -407,7 +641,10 @@ def _failure_markdown(result: dict[str, Any]) -> str:
             continue
         if item.get("severity") == "hard":
             hard.append(item)
-        elif item.get("category") == "behavior" and item.get("status") == "fail":
+        elif (
+            item.get("category") in {"behavior", "behavior_evidence"}
+            or item.get("id") == "behavior.smoke.required"
+        ) and item.get("status") == "fail":
             behavior.append(item)
         else:
             evidence_quality.append(item)

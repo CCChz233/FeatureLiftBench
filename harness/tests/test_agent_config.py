@@ -219,8 +219,89 @@ class AgentConfigTests(unittest.TestCase):
             env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_V1_FROZEN"],
             "1",
         )
+
+    def test_contract_closure_lite_rescue_profile_is_short_and_selective(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        loaded = load_agent_run_config(
+            base_config=AgentRunConfig(agent="openhands"),
+            config_path=config_file,
+            profile_name=(
+                "openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue"
+            ),
+        )
+        env = loaded.run_config.env or {}
+
+        self.assertEqual(
+            loaded.summary["ablation_arm"],
+            "contract_closure_gate_lite_rescue",
+        )
+        self.assertEqual(loaded.summary["openhands_max_steps"], 45)
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_PRIMARY_TOKEN_LIMIT"],
+            "2000000",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_REPAIR_TOKEN_LIMIT"],
+            "200000",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_REPAIR_MAX_STEPS"],
+            "5",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE"],
+            "1",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_V1_FROZEN"],
+            "0",
+        )
         self.assertEqual(env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE"], "0")
         self.assertTrue(loaded.summary["openhands_tool_alias_compat"])
+
+    def test_contract_closure_lite_rescue_plus_profile_is_behavior_bounded(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        loaded = load_agent_run_config(
+            base_config=AgentRunConfig(agent="openhands"),
+            config_path=config_file,
+            profile_name=(
+                "openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue_plus"
+            ),
+        )
+        env = loaded.run_config.env or {}
+
+        self.assertEqual(
+            loaded.summary["ablation_arm"],
+            "contract_closure_gate_lite_rescue_plus",
+        )
+        self.assertEqual(loaded.summary["openhands_max_steps"], 45)
+        self.assertEqual(
+            loaded.summary["openhands_condenser_trigger_tokens"], 49152
+        )
+        self.assertEqual(
+            loaded.summary["openhands_condenser_target_tokens"], 24576
+        )
+        self.assertEqual(loaded.summary["llm_max_message_chars"], 8000)
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_REPAIR_TOKEN_LIMIT"],
+            "200000",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_REPAIR_MAX_STEPS"],
+            "5",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS"],
+            "1",
+        )
+        self.assertEqual(
+            env["FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE"],
+            "0",
+        )
 
     def test_contract_closure_budget_control_matches_lite_primary_budget(self) -> None:
         config_file = (

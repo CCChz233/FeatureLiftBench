@@ -12,7 +12,9 @@ sys.path.insert(0, str(_REPO_ROOT / "harness" / "scripts"))
 
 import summarize_suite_infra  # noqa: E402
 import validate_suite_resume  # noqa: E402
+from analyze_benchmark_suite import aggregate_suite_summaries  # noqa: E402
 from analyze_featurelift_suite import _output_paths  # noqa: E402
+from analyze_suite_results import classify_runs  # noqa: E402
 from analyze_suite_results import output_paths as suite_result_output_paths  # noqa: E402
 from featureliftbench.suite_utils import compact_agent_usage  # noqa: E402
 from featureliftbench.suite_utils import rebuild_suite_summary  # noqa: E402
@@ -90,6 +92,89 @@ class PortableSuitePathTests(unittest.TestCase):
         )
 
         self.assertEqual(summary["average_final_score"], 0.4)
+
+    def test_functional_pass_is_independent_of_workflow_status(self) -> None:
+        summary = rebuild_suite_summary(
+            [
+                {
+                    "task_id": "recovered_after_agent_limit",
+                    "status": "failed",
+                    "agent": {"passed": False},
+                    "submission": {"exists": True},
+                    "evaluation": {
+                        "scores": {"functional_gate": 1.0, "final_score": 1.0}
+                    },
+                },
+                {
+                    "task_id": "formal_failure",
+                    "status": "failed",
+                    "agent": {"passed": True},
+                    "submission": {"exists": True},
+                    "evaluation": {
+                        "scores": {"functional_gate": 0.0, "final_score": 0.0}
+                    },
+                },
+            ]
+        )
+
+        self.assertEqual(summary["passed"], 0)
+        self.assertEqual(summary["run_status_passed"], 0)
+        self.assertEqual(summary["functional_passed"], 1)
+        self.assertEqual(summary["functional_failed"], 1)
+        self.assertEqual(summary["functional_pass_rate"], 0.5)
+
+    def test_aggregate_reports_formal_and_workflow_pass_rates_separately(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            suite_dir = Path(tmp) / "suite"
+            suite_dir.mkdir()
+            (suite_dir / "suite.json").write_text(
+                json.dumps(
+                    {
+                        "summary": {"total": 2, "passed": 0},
+                        "runs": [
+                            {"task_id": "a", "status": "failed", "final_score": 1.0},
+                            {"task_id": "b", "status": "failed", "final_score": 0.0},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            aggregate = aggregate_suite_summaries([suite_dir])
+
+        self.assertEqual(aggregate["passed"]["mean"], 0.0)
+        self.assertEqual(aggregate["functional_passed"]["mean"], 1.0)
+        self.assertEqual(aggregate["pass_rate"]["mean"], 0.0)
+        self.assertEqual(aggregate["functional_pass_rate"]["mean"], 0.5)
+
+    def test_result_classification_uses_functional_gate_not_agent_status(self) -> None:
+        classifications = classify_runs(
+            [
+                {
+                    "suite": "demo",
+                    "task_id": "formal_pass",
+                    "status": "failed",
+                    "functional_gate": 1.0,
+                    "extraction_ratio": 0.9,
+                },
+                {
+                    "suite": "demo",
+                    "task_id": "formal_fail",
+                    "status": "passed",
+                    "functional_gate": 0.0,
+                    "extraction_ratio": 0.1,
+                },
+            ]
+        )
+
+        self.assertEqual(
+            [row["task_id"] for row in classifications["failures"]],
+            ["formal_fail"],
+        )
+        self.assertEqual(
+            [row["task_id"] for row in classifications["high_extraction_ratio_passes"]],
+            ["formal_pass"],
+        )
 
 
 class ValidateSuiteResumeTests(unittest.TestCase):

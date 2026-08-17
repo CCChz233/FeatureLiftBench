@@ -50,6 +50,16 @@ class AblationOptionsTests(unittest.TestCase):
             "contract_closure_gate_lite_v1_frozen",
         )
         self.assertEqual(
+            AblationOptions(contract_closure_gate_lite_rescue=True).ablation_arm,
+            "contract_closure_gate_lite_rescue",
+        )
+        self.assertEqual(
+            AblationOptions(
+                contract_closure_gate_lite_rescue_plus=True
+            ).ablation_arm,
+            "contract_closure_gate_lite_rescue_plus",
+        )
+        self.assertEqual(
             AblationOptions(contract_closure_gate_v3=True).ablation_arm,
             "contract_closure_gate_v3",
         )
@@ -80,6 +90,16 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(
                 contract_closure_gate_lite=True,
                 contract_closure_gate_lite_v1=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate_lite_v1=True,
+                contract_closure_gate_lite_rescue=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                contract_closure_gate_lite_rescue=True,
+                contract_closure_gate_lite_rescue_plus=True,
             )
 
     def test_cli_overrides_profile(self) -> None:
@@ -238,6 +258,52 @@ class AblationWorkspaceTests(unittest.TestCase):
             self.assertIn("Implement every Required Output API", v1_prompt)
             self.assertNotIn("roughly the first 6 agent steps", v1_prompt)
 
+            rescue_workspace = Path(tmp) / "lite-rescue"
+            prepare_agent_workspace(
+                task_dir,
+                rescue_workspace,
+                metadata,
+                ablation=AblationOptions(contract_closure_gate_lite_rescue=True),
+            )
+            rescue_prompt = (rescue_workspace / "TASK.md").read_text(
+                encoding="utf-8"
+            )
+            self.assertTrue((rescue_workspace / "PUBLIC_CONTRACT.json").is_file())
+            self.assertTrue((rescue_workspace / "flb-contract-check").is_file())
+            self.assertFalse((rescue_workspace / "contract_cases").exists())
+            self.assertIn("Public Contract Closure Gate Lite Rescue", rescue_prompt)
+            self.assertIn("Implement every Required Output API", rescue_prompt)
+            self.assertNotIn("Gate Lite V2", rescue_prompt)
+            self.assertNotIn("roughly the first 6 agent steps", rescue_prompt)
+
+            plus_workspace = Path(tmp) / "lite-rescue-plus"
+            prepare_agent_workspace(
+                task_dir,
+                plus_workspace,
+                metadata,
+                ablation=AblationOptions(
+                    contract_closure_gate_lite_rescue_plus=True
+                ),
+            )
+            plus_prompt = (plus_workspace / "TASK.md").read_text(
+                encoding="utf-8"
+            )
+            plus_readme = (
+                plus_workspace / "contract_cases" / "README.md"
+            ).read_text(encoding="utf-8")
+            self.assertTrue((plus_workspace / "PUBLIC_CONTRACT.json").is_file())
+            witness = plus_workspace / "PUBLIC_WITNESS.json"
+            self.assertTrue(witness.is_file())
+            witness_payload = witness.read_text(encoding="utf-8")
+            self.assertNotIn("evaluation_spec", witness_payload)
+            self.assertNotIn("hidden_test_mappings", witness_payload)
+            self.assertTrue((plus_workspace / "flb-contract-check").is_file())
+            self.assertIn("Lite Rescue+", plus_prompt)
+            self.assertIn("--lite-plus --summary", plus_prompt)
+            self.assertIn("step 32", plus_prompt)
+            self.assertIn("exactly one concise direct-mode", plus_readme)
+            self.assertIn("shared 60-second", plus_readme)
+
             v3_workspace = Path(tmp) / "v3"
             prepare_agent_workspace(
                 task_dir,
@@ -316,6 +382,37 @@ class AblationWorkspaceTests(unittest.TestCase):
             self.assertIn("not mounted", text)
             self.assertIn("upstream tests", text)
             self.assertNotIn("PYTHONPATH=submission pytest public_tests/", text)
+
+    def test_openhands_lite_rescue_plus_repair_uses_targeted_prompt_verbatim(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = root / "TASK.md"
+            targeted = (
+                "# FeatureLiftBench Targeted Public-Contract Repair\n\n"
+                "first tool action must write contract_cases/test_public_smoke.py\n"
+            )
+            task.write_text(targeted, encoding="utf-8")
+            config = OpenHandsRunnerConfig(
+                workspace_dir=root,
+                task_file=task,
+                submission_dir=root / "submission",
+                agent_output_dir=root / "agent",
+                model="test-model",
+            )
+            with mock.patch.dict(
+                "os.environ",
+                {
+                    "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS": "1",
+                    "FEATURELIFTBENCH_CONTRACT_CLOSURE_PHASE": "repair",
+                },
+                clear=False,
+            ):
+                text = _build_openhands_prompt(config)
+
+            self.assertEqual(text, targeted)
+            self.assertNotIn("Create the package immediately", text)
 
 
 if __name__ == "__main__":

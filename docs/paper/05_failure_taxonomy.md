@@ -1,6 +1,6 @@
 # Failure Taxonomy
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-17**
 
 ## Labeling policy
 
@@ -15,6 +15,21 @@ trajectory/code evidence and may remain `unknown`; do not force a narrative from
 the last error line.
 
 ## Functional stages
+
+对每道 assigned task 使用下列固定优先级产生一个互斥 primary outcome：
+
+```text
+missing_submission
+  > build_failure
+  > public_failure
+  > hidden_failure
+  > isolation_failure
+  > functional_pass
+```
+
+各 gate 的原始状态可为 `pass / fail / not_evaluated / infra_unknown`。缺少逐题
+evaluator 证据时使用 `stage_evidence_unavailable`；它是证据完整性标记，不是
+第六种 agent 失败原因。
 
 ### 1. Missing or unusable submission
 
@@ -143,6 +158,7 @@ These must be quarantined or fixed and re-frozen, not counted as model failures.
 
 At minimum publish:
 
+- 互斥首败阶段及 evidence-unavailable 计数；
 - mechanical funnel；
 - process/infra counts；
 - primary semantic cause + unknown rate；

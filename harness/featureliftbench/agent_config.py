@@ -77,6 +77,8 @@ def load_agent_run_config(
     contract_closure_gate: bool | None = None,
     contract_closure_gate_lite: bool | None = None,
     contract_closure_gate_lite_v1: bool | None = None,
+    contract_closure_gate_lite_rescue: bool | None = None,
+    contract_closure_gate_lite_rescue_plus: bool | None = None,
     contract_closure_gate_v3: bool | None = None,
     contract_closure_budget_control: bool | None = None,
 ) -> LoadedAgentConfig:
@@ -112,6 +114,10 @@ def load_agent_run_config(
         contract_closure_gate=contract_closure_gate,
         contract_closure_gate_lite=contract_closure_gate_lite,
         contract_closure_gate_lite_v1=contract_closure_gate_lite_v1,
+        contract_closure_gate_lite_rescue=contract_closure_gate_lite_rescue,
+        contract_closure_gate_lite_rescue_plus=(
+            contract_closure_gate_lite_rescue_plus
+        ),
         contract_closure_gate_v3=contract_closure_gate_v3,
         contract_closure_budget_control=contract_closure_budget_control,
     )
@@ -520,6 +526,12 @@ def load_agent_run_config(
         "contract_closure_gate_lite": ablation.contract_closure_gate_lite,
         "contract_closure_gate_lite_v1": (
             ablation.contract_closure_gate_lite_v1
+        ),
+        "contract_closure_gate_lite_rescue": (
+            ablation.contract_closure_gate_lite_rescue
+        ),
+        "contract_closure_gate_lite_rescue_plus": (
+            ablation.contract_closure_gate_lite_rescue_plus
         ),
         "contract_closure_gate_v3": ablation.contract_closure_gate_v3,
         "contract_closure_budget_control": (

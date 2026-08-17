@@ -1,6 +1,6 @@
 # FeatureLiftBench 评测与实验规范
 
-> **Status: current · Last verified: 2026-08-04**
+> **Status: current · Last verified: 2026-08-17**
 > 本文件是 Main 条件、正式实验臂、评分和结果留存要求的唯一当前规范。
 
 ## Official Main
@@ -14,8 +14,8 @@
 | Prompt | standard |
 | Attempts | one per task；不得重试已完成失败 |
 | Execution | agent Docker + isolated evaluator Docker |
-| Primary metric | evaluator Functional Pass@1 |
-| Secondary metrics | compactness、cost 和 process diagnostics |
+| Core metric 1 | Functional Pass Rate |
+| Core metric 2 | Reference-Relative Extraction Size (RRES) |
 
 Main 是 leaderboard 和论文主结果的唯一默认条件。Task contract 与可见性以
 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 为准，当前 suite identity 以
@@ -50,7 +50,7 @@ TD-Cognition、Exec/Self-Contract、CGCC-lite、FCEC 和 PDR 是历史方法研�
 Runner 必须在模型调用前通过 strict Docker preflight。任何 source、task、evaluator、
 visibility 或 attempt-policy 变化都会形成不同实验条件。
 
-## Functional Pass
+## Core Metric 1: Functional Pass Rate
 
 ```text
 FunctionalPass =
@@ -60,26 +60,59 @@ FunctionalPass =
   AND IsolationPass
 ```
 
-`functional_gate` 为 0/1，一次完整 task attempt 对应一次 Pass@1 观察。兼容字段
+`functional_gate` 为 0/1，一次完整 task attempt 对应一次 Pass@1 观察：
+
+```text
+Functional Pass Rate = sum(functional_gate) / assigned_tasks
+```
+
+兼容字段
 `test_pass` 等于 public 与 hidden 的合取，`original_import_pass` 等于 isolation，
-`final_score` 等于 `functional_gate`。
+`final_score` 等于 `functional_gate`。因此 Average Final Score 与 Functional Pass Rate
+数学上相同，不是第三个指标，不应重复报告。
 
 Agent completion、step/context limit、rate limit 和 infra failure 必须另列。若 Agent
 流程超时但已留下 evaluator 可通过的 submission，Functional 仍为 pass，Agent
-completion 为 fail；不能用 `run.status` 覆盖 benchmark correctness。
+completion 为 fail；不能用 `run.status`、`summary.passed` 或 bundle MANIFEST
+覆盖 benchmark correctness。
 
-## Compactness And Cost
+## Core Metric 2: Reference-Relative Extraction Size
 
-Compactness 是 reference-relative 次指标，不与 Functional 相乘：
+RRES 表示功能通过的提取模块相对冻结 reference 的规模，越低越紧凑：
 
 ```text
-reference_relative_loc_ratio = submitted_loc / reference_loc
-compactness_score = min(1, reference_loc / submitted_loc)
+RRES = submission_normalized_loc / frozen_reference_normalized_loc
 ```
 
-同时报告 submitted/reference file count、copied LOC/fraction、runtime dependency、
-tokens、API calls、steps 和 time。Reference 是可行紧凑实现，不是数学最小解；
-`copied_fraction` 也不能单独支撑 plagiarism claim。
+只对 `functional_gate = 1` 的 submission 计算；失败样本的 RRES 记为 N/A，不用一个
+小而错的实现换取“紧凑”。主表报 median 和 IQR（Q1–Q3）；两方法比较时，
+优先报告同一模型、同一 task 且两方都 Functional Pass 的 paired subset。
+
+Reference 是可行紧凑实现，不是数学最小解。`copied_fraction`、文件数和依赖数可作
+解释性诊断，但不是核心得分，也不能单独支撑 plagiarism claim。
+
+## Functional Failure Classification
+
+每道未通过题必须按首个确定失败阶段记一个互斥 primary outcome：
+
+```text
+missing_submission
+  > build_failure
+  > public_failure
+  > hidden_failure
+  > isolation_failure
+  > functional_pass
+```
+
+这是诊断分类，不是新的得分。各 gate 仍保留 `pass / fail / not_evaluated / infra_unknown`
+状态；缺少逐题 evaluator 证据时必须标为 `stage_evidence_unavailable`，不得根据
+suite summary 猜测 public 或 hidden 失败。语义原因可另行人工标注，但不覆盖
+机械阶段。
+
+## Operational Diagnostics
+
+Tokens、API calls、steps、time、agent completion、context/rate-limit 和 infra 信息只用于
+成本和运行诊断，不进入核心排名，不与 Functional Pass 或 RRES 加权混合。
 
 ## Execution And Resume Rules
 
@@ -101,9 +134,10 @@ tokens、API calls、steps 和 time。Reference 是可行紧凑实现，不是�
 - per-task `run.json`、`eval/result.json`、submission、trajectory、usage/context audit；
 - exception ledger 和可复现分析命令。
 
-Primary table 报告 Functional Pass@1、assigned/completed、置信区间和 task-paired
-comparison。Secondary table 报告 correctness funnel、compactness、cost 和明确预注册的
-slices。不同 source、visibility、attempt 或 evaluator 条件不得并入同一 leaderboard。
+Core table 只报告 Functional Pass Rate 和 pass-conditioned RRES，同时给出 assigned、
+evidence coverage、置信区间和 task-paired comparison。Failure table 报告互斥首败阶段及
+`stage_evidence_unavailable`。运行资源只放 appendix/diagnostics。不同 source、
+visibility、attempt 或 evaluator 条件不得并入同一 leaderboard。
 
 当前结果资格和解释边界见 [STATUS.md](STATUS.md)，证据位置见
 [reports/README.md](../reports/README.md)。旧版细节保存在

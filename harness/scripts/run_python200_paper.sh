@@ -93,6 +93,12 @@ method_flags = {
     "contract_closure_gate_lite_v1_frozen": bool(
         profile.get("contract_closure_gate_lite_v1", False)
     ),
+    "contract_closure_gate_lite_rescue": bool(
+        profile.get("contract_closure_gate_lite_rescue", False)
+    ),
+    "contract_closure_gate_lite_rescue_plus": bool(
+        profile.get("contract_closure_gate_lite_rescue_plus", False)
+    ),
     "contract_closure_gate_v3": bool(
         profile.get("contract_closure_gate_v3", False)
     ),
@@ -104,15 +110,34 @@ selected = [arm for arm, enabled in method_flags.items() if enabled]
 if len(selected) > 1:
     raise SystemExit(f"Profile enables mutually exclusive method arms: {selected}")
 arm = selected[0] if selected else "main"
-if arm == "contract_closure_gate_lite_v1_frozen":
+if arm in {
+    "contract_closure_gate_lite_v1_frozen",
+    "contract_closure_gate_lite_rescue",
+    "contract_closure_gate_lite_rescue_plus",
+}:
+    repair_token_limit = (
+        500000 if arm == "contract_closure_gate_lite_v1_frozen" else 200000
+    )
+    repair_max_steps = (
+        10 if arm == "contract_closure_gate_lite_v1_frozen" else 5
+    )
     expected = {
         "context_window_tokens": 65536,
+        "reserved_output_tokens": (
+            16384
+            if arm == "contract_closure_gate_lite_rescue_plus"
+            else 8192
+        ),
         "openhands_max_steps": 45,
-        "llm_max_message_chars": 16000,
+        "llm_max_message_chars": (
+            8000
+            if arm == "contract_closure_gate_lite_rescue_plus"
+            else 16000
+        ),
         "contract_closure_primary_token_limit": 2000000,
-        "contract_closure_repair_token_limit": 500000,
+        "contract_closure_repair_token_limit": repair_token_limit,
         "contract_closure_primary_max_steps": 45,
-        "contract_closure_repair_max_steps": 10,
+        "contract_closure_repair_max_steps": repair_max_steps,
     }
     mismatches = {
         key: (profile.get(key), value)
@@ -120,7 +145,7 @@ if arm == "contract_closure_gate_lite_v1_frozen":
         if profile.get(key) != value
     }
     if mismatches:
-        raise SystemExit(f"Frozen Lite V1 profile drift: {mismatches}")
+        raise SystemExit(f"{arm} profile drift: {mismatches}")
 print(f"{model}\t{arm}")
 PY
 )"
@@ -273,6 +298,12 @@ case "$METHOD_ARM" in
   contract_closure_gate_lite) COMMAND+=(--contract-closure-gate-lite) ;;
   contract_closure_gate_lite_v1_frozen)
     COMMAND+=(--contract-closure-gate-lite-v1-frozen)
+    ;;
+  contract_closure_gate_lite_rescue)
+    COMMAND+=(--contract-closure-gate-lite-rescue)
+    ;;
+  contract_closure_gate_lite_rescue_plus)
+    COMMAND+=(--contract-closure-gate-lite-rescue-plus)
     ;;
   contract_closure_gate_v3) COMMAND+=(--contract-closure-gate-v3) ;;
   contract_closure_budget_control) COMMAND+=(--contract-closure-budget-control) ;;

@@ -111,6 +111,39 @@ Frozen Lite V1 example:
 Do not edit the method profile after the plan-only preflight. If any setting
 changes, use a new release ID and rerun the smoke before the formal suite.
 
+Lite Rescue is a separate development arm and must not be labeled as frozen
+Lite V1. Before any paid pilot, run its plan-only preflight:
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue \
+  lite-rescue-plan \
+  --workers 2 \
+  --agent-image <agent-image-id> \
+  --eval-image <eval-image-id>
+```
+
+The profile pins 2M/45 for the primary phase and 200k/5 for selective repair.
+Do not launch a full Python-200 run until the paired rescue/control pilot has
+passed its predeclared Functional Pass and token-per-pass criteria.
+
+Lite Rescue+ is the behavior-smoke development arm. It keeps the 2M/45 primary
+and 200k/5 repair limits, caps behavior evidence at two cases under one shared
+60-second checker budget, and moves condensation to 49,152 tokens. Validate its
+plan without model calls:
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue_plus \
+  lite-rescue-plus-plan \
+  --workers 2 \
+  --agent-image <agent-image-id> \
+  --eval-image <eval-image-id>
+```
+
+Do not tune this arm to failures observed in private evaluator logs. Freeze the
+generic public-evidence rule before any External-50 run.
+
 ## 7. Launch External-50 Only
 
 Use this only when a complete baseline exists under identical experiment conditions:

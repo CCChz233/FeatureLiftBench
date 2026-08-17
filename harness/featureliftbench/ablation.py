@@ -24,6 +24,12 @@ CONTRACT_CLOSURE_GATE_LITE_ENV = "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE"
 CONTRACT_CLOSURE_GATE_LITE_V1_ENV = (
     "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_V1_FROZEN"
 )
+CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV = (
+    "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE"
+)
+CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV = (
+    "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS"
+)
 CONTRACT_CLOSURE_GATE_V3_ENV = "FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_V3"
 CONTRACT_CLOSURE_BUDGET_CONTROL_ENV = (
     "FEATURELIFTBENCH_CONTRACT_CLOSURE_BUDGET_CONTROL"
@@ -53,6 +59,8 @@ class AblationOptions:
     contract_closure_gate: bool = False
     contract_closure_gate_lite: bool = False
     contract_closure_gate_lite_v1: bool = False
+    contract_closure_gate_lite_rescue: bool = False
+    contract_closure_gate_lite_rescue_plus: bool = False
     contract_closure_gate_v3: bool = False
     contract_closure_budget_control: bool = False
 
@@ -96,6 +104,16 @@ class AblationOptions:
         )
         object.__setattr__(
             self,
+            "contract_closure_gate_lite_rescue",
+            bool(self.contract_closure_gate_lite_rescue),
+        )
+        object.__setattr__(
+            self,
+            "contract_closure_gate_lite_rescue_plus",
+            bool(self.contract_closure_gate_lite_rescue_plus),
+        )
+        object.__setattr__(
+            self,
             "contract_closure_gate_v3",
             bool(self.contract_closure_gate_v3),
         )
@@ -114,6 +132,8 @@ class AblationOptions:
                 self.contract_closure_gate,
                 self.contract_closure_gate_lite,
                 self.contract_closure_gate_lite_v1,
+                self.contract_closure_gate_lite_rescue,
+                self.contract_closure_gate_lite_rescue_plus,
                 self.contract_closure_gate_v3,
                 self.contract_closure_budget_control,
             )
@@ -123,7 +143,9 @@ class AblationOptions:
             raise ValueError(
                 "td_cognition, exec_contract, self_contract, test_first_lift, and "
                 "contract_closure_gate, contract_closure_gate_lite, "
-                "contract_closure_gate_lite_v1, contract_closure_gate_v3, and "
+                "contract_closure_gate_lite_v1, contract_closure_gate_lite_rescue, "
+                "contract_closure_gate_lite_rescue_plus, "
+                "contract_closure_gate_v3, and "
                 "contract_closure_budget_control "
                 "are mutually exclusive"
             )
@@ -134,6 +156,10 @@ class AblationOptions:
             return "contract_closure_budget_control"
         if self.contract_closure_gate_lite_v1:
             return "contract_closure_gate_lite_v1_frozen"
+        if self.contract_closure_gate_lite_rescue:
+            return "contract_closure_gate_lite_rescue"
+        if self.contract_closure_gate_lite_rescue_plus:
+            return "contract_closure_gate_lite_rescue_plus"
         if self.contract_closure_gate_v3:
             return "contract_closure_gate_v3"
         if self.contract_closure_gate_lite:
@@ -184,6 +210,12 @@ class AblationOptions:
             CONTRACT_CLOSURE_GATE_LITE_V1_ENV: (
                 "1" if self.contract_closure_gate_lite_v1 else "0"
             ),
+            CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV: (
+                "1" if self.contract_closure_gate_lite_rescue else "0"
+            ),
+            CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV: (
+                "1" if self.contract_closure_gate_lite_rescue_plus else "0"
+            ),
             CONTRACT_CLOSURE_GATE_V3_ENV: (
                 "1" if self.contract_closure_gate_v3 else "0"
             ),
@@ -208,6 +240,12 @@ class AblationOptions:
             "contract_closure_gate": self.contract_closure_gate,
             "contract_closure_gate_lite": self.contract_closure_gate_lite,
             "contract_closure_gate_lite_v1": self.contract_closure_gate_lite_v1,
+            "contract_closure_gate_lite_rescue": (
+                self.contract_closure_gate_lite_rescue
+            ),
+            "contract_closure_gate_lite_rescue_plus": (
+                self.contract_closure_gate_lite_rescue_plus
+            ),
             "contract_closure_gate_v3": self.contract_closure_gate_v3,
             "contract_closure_budget_control": self.contract_closure_budget_control,
         }
@@ -260,6 +298,26 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         "off",
         "",
     }
+    ccg_lite_rescue_raw = str(
+        values.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV, "0")
+    ).strip().lower()
+    contract_closure_gate_lite_rescue = ccg_lite_rescue_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
+    ccg_lite_rescue_plus_raw = str(
+        values.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV, "0")
+    ).strip().lower()
+    contract_closure_gate_lite_rescue_plus = ccg_lite_rescue_plus_raw not in {
+        "0",
+        "false",
+        "no",
+        "off",
+        "",
+    }
     ccg_v3_raw = str(values.get(CONTRACT_CLOSURE_GATE_V3_ENV, "0")).strip().lower()
     contract_closure_gate_v3 = ccg_v3_raw not in {
         "0",
@@ -291,6 +349,10 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         contract_closure_gate=contract_closure_gate,
         contract_closure_gate_lite=contract_closure_gate_lite,
         contract_closure_gate_lite_v1=contract_closure_gate_lite_v1,
+        contract_closure_gate_lite_rescue=contract_closure_gate_lite_rescue,
+        contract_closure_gate_lite_rescue_plus=(
+            contract_closure_gate_lite_rescue_plus
+        ),
         contract_closure_gate_v3=contract_closure_gate_v3,
         contract_closure_budget_control=contract_closure_budget_control,
     )
@@ -313,6 +375,8 @@ def resolve_ablation_options(
     contract_closure_gate: bool | None = None,
     contract_closure_gate_lite: bool | None = None,
     contract_closure_gate_lite_v1: bool | None = None,
+    contract_closure_gate_lite_rescue: bool | None = None,
+    contract_closure_gate_lite_rescue_plus: bool | None = None,
     contract_closure_gate_v3: bool | None = None,
     contract_closure_budget_control: bool | None = None,
 ) -> AblationOptions:
@@ -442,6 +506,26 @@ def resolve_ablation_options(
     else:
         resolved_ccg_lite_v1 = bool(contract_closure_gate_lite_v1)
 
+    if contract_closure_gate_lite_rescue is None:
+        resolved_ccg_lite_rescue = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_ENV),
+            profile.get("contract_closure_gate_lite_rescue"),
+            default=False,
+        )
+    else:
+        resolved_ccg_lite_rescue = bool(contract_closure_gate_lite_rescue)
+
+    if contract_closure_gate_lite_rescue_plus is None:
+        resolved_ccg_lite_rescue_plus = _first_bool(
+            process_env.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV),
+            env_values.get(CONTRACT_CLOSURE_GATE_LITE_RESCUE_PLUS_ENV),
+            profile.get("contract_closure_gate_lite_rescue_plus"),
+            default=False,
+        )
+    else:
+        resolved_ccg_lite_rescue_plus = bool(contract_closure_gate_lite_rescue_plus)
+
     if contract_closure_gate_v3 is None:
         resolved_ccg_v3 = _first_bool(
             process_env.get(CONTRACT_CLOSURE_GATE_V3_ENV),
@@ -467,27 +551,51 @@ def resolve_ablation_options(
     if contract_closure_gate is True:
         resolved_ccg_lite = False
         resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
         resolved_ccg_v3 = False
         resolved_ccg_control = False
     elif contract_closure_gate_lite is True:
         resolved_ccg = False
         resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
         resolved_ccg_v3 = False
         resolved_ccg_control = False
     elif contract_closure_gate_lite_v1 is True:
         resolved_ccg = False
         resolved_ccg_lite = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+    elif contract_closure_gate_lite_rescue is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue_plus = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+    elif contract_closure_gate_lite_rescue_plus is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
         resolved_ccg_v3 = False
         resolved_ccg_control = False
     elif contract_closure_gate_v3 is True:
         resolved_ccg = False
         resolved_ccg_lite = False
         resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
         resolved_ccg_control = False
     elif contract_closure_budget_control is True:
         resolved_ccg = False
         resolved_ccg_lite = False
         resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
         resolved_ccg_v3 = False
 
     return AblationOptions(
@@ -503,6 +611,8 @@ def resolve_ablation_options(
         contract_closure_gate=resolved_ccg,
         contract_closure_gate_lite=resolved_ccg_lite,
         contract_closure_gate_lite_v1=resolved_ccg_lite_v1,
+        contract_closure_gate_lite_rescue=resolved_ccg_lite_rescue,
+        contract_closure_gate_lite_rescue_plus=resolved_ccg_lite_rescue_plus,
         contract_closure_gate_v3=resolved_ccg_v3,
         contract_closure_budget_control=resolved_ccg_control,
     )

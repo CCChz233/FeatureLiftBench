@@ -69,7 +69,8 @@ def _render_markdown(summary: dict[str, Any]) -> str:
         "",
         f"- Generated: {summary['generated_at']}",
         f"- Suite: `{summary['suite_dir']}`",
-        f"- Passed: {summary['passed']}/{summary['total']}",
+        f"- Functional pass: {summary['functional_passed']}/{summary['total']}",
+        f"- Workflow pass: {summary['workflow_passed']}/{summary['total']}",
         f"- Average final score: {summary['average_final_score']}",
         f"- Context violation runs: {summary['context_violation_runs']}",
         f"- Usage unverified runs: {summary['usage_unverified_runs']}",
@@ -101,11 +102,14 @@ def analyze_featurelift_suite(suite_dir: Path) -> dict[str, Any]:
 
     context_violation_runs = sum(1 for row in tasks if row.get("context_violation") is True)
     usage_unverified_runs = sum(1 for row in tasks if row.get("usage_unverified") is True)
+    functional_passed = sum(row.get("functional_gate") == 1.0 for row in tasks)
 
     return {
         "generated_at": datetime.now(UTC).replace(microsecond=0).isoformat(),
         "suite_dir": str(suite_dir.resolve()),
-        "passed": summary.get("passed", 0),
+        "passed": functional_passed,
+        "functional_passed": functional_passed,
+        "workflow_passed": summary.get("passed", 0),
         "total": summary.get("total", len(tasks)),
         "average_final_score": summary.get("average_final_score", 0.0),
         "context_violation_runs": context_violation_runs,

@@ -12,11 +12,20 @@ from pathlib import Path
 from typing import Any
 
 
+class ResolutionFailure(LookupError):
+    """A probe failure with a machine-readable origin."""
+
+    def __init__(self, message: str, *, error_kind: str) -> None:
+        super().__init__(message)
+        self.error_kind = error_kind
+
+
 def _resolve(path: str) -> tuple[Any, str | None]:
     parts = path.split(".")
     imported = None
     consumed = 0
     import_error = ""
+    import_error_kind = "missing_api"
     for index in range(len(parts), 0, -1):
         name = ".".join(parts[:index])
         try:
@@ -25,13 +34,24 @@ def _resolve(path: str) -> tuple[Any, str | None]:
             break
         except ModuleNotFoundError as exc:
             if exc.name != name and not name.startswith(f"{exc.name}."):
-                import_error = f"dependency import failed: {exc}"
+                if exc.name == "featurelifted" or str(exc.name).startswith(
+                    "featurelifted."
+                ):
+                    import_error = f"submission import failed: {exc}"
+                    import_error_kind = "submission_import_error"
+                else:
+                    import_error = f"checker dependency unavailable: {exc}"
+                    import_error_kind = "checker_dependency_unavailable"
                 break
         except Exception as exc:  # noqa: BLE001 - report import behavior
             import_error = f"import failed: {type(exc).__name__}: {exc}"
+            import_error_kind = "submission_import_error"
             break
     if imported is None:
-        raise LookupError(import_error or f"cannot import any module prefix of {path}")
+        raise ResolutionFailure(
+            import_error or f"cannot import any module prefix of {path}",
+            error_kind=import_error_kind,
+        )
     current = imported
     for part in parts[consumed:]:
         try:
@@ -40,7 +60,9 @@ def _resolve(path: str) -> tuple[Any, str | None]:
             # Dynamic proxies and instance-only attributes cannot be safely traversed.
             if not isinstance(current, (types.ModuleType, type)):
                 return current, f"dynamic attribute {part!r} cannot be inspected safely"
-            raise LookupError(f"missing attribute {part!r} in {path}") from exc
+            raise ResolutionFailure(
+                f"missing attribute {part!r} in {path}", error_kind="missing_api"
+            ) from exc
     return current, None
 
 
@@ -100,7 +122,7 @@ def inspect_apis(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
         kind = str(entry.get("kind") or "")
         try:
             value, unknown = _resolve(path)
-        except LookupError as exc:
+        except ResolutionFailure as exc:
             if (
                 kind.strip().lower() in {"attribute", "property"}
                 and path.count(".") >= 2
@@ -110,6 +132,7 @@ def inspect_apis(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
                         "path": path,
                         "kind": kind,
                         "status": "unknown",
+                        "error_kind": exc.error_kind,
                         "error": (
                             "nested attribute may be instance-only and cannot be "
                             f"inspected safely: {exc}"
@@ -118,7 +141,17 @@ def inspect_apis(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 )
                 continue
             results.append(
-                {"path": path, "kind": kind, "status": "fail", "error": str(exc)}
+                {
+                    "path": path,
+                    "kind": kind,
+                    "status": (
+                        "unknown"
+                        if exc.error_kind == "checker_dependency_unavailable"
+                        else "fail"
+                    ),
+                    "error": str(exc),
+                    "error_kind": exc.error_kind,
+                }
             )
             continue
         if unknown:

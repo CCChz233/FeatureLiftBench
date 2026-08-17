@@ -164,6 +164,8 @@ def write_contract_closure_audit(
         phase_name = "primary" if len(primary_attempts) == 1 else f"primary_attempt_{index}"
         named_agents.append((phase_name, attempt))
     named_agents.append(("repair", agent_repair))
+    decision = repair_decision or {}
+    repair_kind = str(decision.get("repair_kind") or "none")
 
     payload = {
         "schema_version": AUDIT_SCHEMA,
@@ -171,7 +173,17 @@ def write_contract_closure_audit(
         "method_freeze": compute_method_freeze(),
         "repair_rounds_used": int(repair_rounds_used),
         "repair_triggered": bool(repair_rounds_used),
-        "repair_decision": repair_decision or {},
+        "repair_kind": repair_kind,
+        "evidence_completion_rounds_used": (
+            int(repair_rounds_used) if repair_kind == "evidence_completion" else 0
+        ),
+        "defect_repair_rounds_used": (
+            int(repair_rounds_used) if repair_kind == "defect_repair" else 0
+        ),
+        "functional_rescue_candidate": bool(
+            repair_rounds_used and repair_kind == "defect_repair"
+        ),
+        "repair_decision": decision,
         "initial": initial,
         "final": final,
         "agent_primary": agent_primary or {},

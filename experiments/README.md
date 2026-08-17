@@ -1,6 +1,6 @@
 # experiments/
 
-> **Documentation status: reference · Last verified: 2026-08-04**
+> **Documentation status: reference · Last verified: 2026-08-17**
 
 原始模型运行和验证证据只进入以下七个目录：
 
@@ -48,3 +48,12 @@ PYTHONPATH=harness python3 harness/scripts/build_experiment_registry.py
 
 Raw evidence 默认不进 Git；不得覆盖 completed suite。Resume 只能补没有 terminal
 `run.json` 的 task。
+
+## Current Result Correction
+
+2026-08-17 对账确认：
+`python200-deepseek-v4-flash-lite-v1-vllm-local-0813-001-results-latest.tar.gz`
+内的 README 把历史 `summary.passed` 误标为 Functional pass。原始包作为不可变证据
+保留，但当前结论必须以 [`docs/FINDINGS.md`](../docs/FINDINGS.md) 和
+[`deepseek_main_vs_frozen_lite_v1_20260817.json`](../artifacts/research_analysis/current_results/deepseek_main_vs_frozen_lite_v1_20260817.json)
+为准。

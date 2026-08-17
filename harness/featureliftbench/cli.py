@@ -266,6 +266,36 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable the frozen Lite V1 Contract Closure Gate arm (default)",
     )
     contract_closure_gate.add_argument(
+        "--contract-closure-gate-lite-rescue",
+        dest="contract_closure_gate_lite_rescue",
+        action="store_true",
+        help=(
+            "Lite Rescue arm: the short V1 implementation prompt with checker v5 "
+            "and selective bounded local repair"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate-lite-rescue",
+        dest="contract_closure_gate_lite_rescue",
+        action="store_false",
+        help="Disable the Lite Rescue Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--contract-closure-gate-lite-rescue-plus",
+        dest="contract_closure_gate_lite_rescue_plus",
+        action="store_true",
+        help=(
+            "Lite Rescue+ arm: selective structural repair plus one or two "
+            "public behavior smoke cases under a shared 60-second budget"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-contract-closure-gate-lite-rescue-plus",
+        dest="contract_closure_gate_lite_rescue_plus",
+        action="store_false",
+        help="Disable the Lite Rescue+ Contract Closure Gate arm (default)",
+    )
+    contract_closure_gate.add_argument(
         "--contract-closure-gate-v3",
         dest="contract_closure_gate_v3",
         action="store_true",
@@ -299,6 +329,8 @@ def main(argv: list[str] | None = None) -> int:
         contract_closure_gate=None,
         contract_closure_gate_lite=None,
         contract_closure_gate_lite_v1=None,
+        contract_closure_gate_lite_rescue=None,
+        contract_closure_gate_lite_rescue_plus=None,
         contract_closure_gate_v3=None,
         contract_closure_budget_control=None,
     )
@@ -683,6 +715,12 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             contract_closure_gate=args.contract_closure_gate,
             contract_closure_gate_lite=args.contract_closure_gate_lite,
             contract_closure_gate_lite_v1=args.contract_closure_gate_lite_v1,
+            contract_closure_gate_lite_rescue=(
+                args.contract_closure_gate_lite_rescue
+            ),
+            contract_closure_gate_lite_rescue_plus=(
+                args.contract_closure_gate_lite_rescue_plus
+            ),
             contract_closure_gate_v3=args.contract_closure_gate_v3,
             contract_closure_budget_control=args.contract_closure_budget_control,
         )

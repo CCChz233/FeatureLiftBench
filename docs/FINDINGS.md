@@ -1,110 +1,97 @@
-# 当前实验结果能说明什么
+# 当前实验结果：Main vs Frozen Lite V1
 
-> **Status: current · Last verified: 2026-08-05**  
-> 本文是冻结 Python-150 实验结果的解释结论，不是运行手册。  
-> 规模、资格与 blocker 以 [STATUS.md](STATUS.md) 为准。  
-> **最新完整多指标主表：**
-> [`reports/paper_analysis/python150_with_deepseek150_20260805/RESULTS.md`](../reports/paper_analysis/python150_with_deepseek150_20260805/RESULTS.md)  
-> （Functional + 漏斗 + 过程 + 成本 + 紧凑性 + 成对比较）  
-> 旧 20260803 审计仍保留作 GPT-OSS/Qwen 原始归档对照。
+> **Status: current · Last verified: 2026-08-17**
+> 本文是当前 DeepSeek Python-200 方法对比的唯一手写结论。指标定义见
+> [EVALUATION.md](EVALUATION.md)，机器可读快照见
+> [`deepseek_main_vs_frozen_lite_v1_20260817.json`](../artifacts/research_analysis/current_results/deepseek_main_vs_frozen_lite_v1_20260817.json)。
 
-## 1. 证据范围
+## 结论先行
 
-本结论基于：
+Frozen Lite V1 尚不能替代 Main。在两个 DeepSeek 运行端点上，Main 的 Functional Pass
+Rate 都明显更高：API 高 **6.5 个百分点**，本地 vLLM 高 **9.0 个百分点**。
+Lite V1 是“更省资源但牺牲正确性”的方法，不是已经改进好的新主方法。
 
-- 冻结 suite：Python-150 Full-Repository / No-Hint Main；
-- 主指标：逐题 evaluator `functional_gate`（Functional Pass@1）；
-- DeepSeek V4 Flash：**150/150**（归档 `FeatureLiftBench-deepseek-v4-flash-150-20260805.tar.gz`）；
-- GPT-OSS 120B、Qwen3.5 122B、Qwen3.6 35B：各 150/150（归档 20260803）。
+RRES 证据目前不足以回答“Lite 是否比 Main 更紧凑”：API Lite 和本地 Main
+缺少逐题 evaluator 产物，无法在同一端点、同一题、两方都通过的样本上成对比较。
 
-以下材料**不**作为结论依据：MANIFEST / suite summary 的 run-status 通过数、历史 mixed-snapshot 拼表、方法 pilot，以及尚未开始的 Python-200 External-50 模型 run。
+## 两项核心指标
 
-## 2. 主结果（Functional Pass@1）
+| 运行端点 | 方法 | Functional Pass | Pass Rate | RRES（通过题） |
+| --- | --- | ---: | ---: | --- |
+| API | Main | **144/200** | **72.0%** | 部分可用：99/144，median 0.985 [0.786, 1.034] |
+| API | Frozen Lite V1 | 131/200 | 65.5% | 不可用：0/131 |
+| 本地 vLLM | Main | **145/200** | **72.5%** | 不可用：0/145 |
+| 本地 vLLM | Frozen Lite V1 | 127/200 | 63.5% | 完整：127/127，median 1.000 [0.798, 1.000] |
 
-| 模型 | 覆盖 | Pass@1 | 通过率 | Wilson 95% CI | Context 违规 |
-| --- | ---: | ---: | ---: | --- | ---: |
-| DeepSeek V4 Flash | 150/150 | **99/150** | **66.0%** | 58.1%–73.1% | 8 |
-| Qwen3.5 122B | 150/150 | **59/150** | **39.3%** | 31.9%–47.3% | 9 |
-| Qwen3.6 35B | 150/150 | **59/150** | **39.3%** | 31.9%–47.3% | 31 |
-| GPT-OSS 120B | 150/150 | **27/150** | **18.0%** | 12.7%–24.9% | 0 |
+注：表中两个 RRES 数值来自不同端点、不同方法且覆盖不同，**不能直接比较**。
+在补齐缺失证据前，紧凑度方法对比必须记为 N/A。
 
-四模型现均可同覆盖比较。资格 caveat：evaluator image 与 freeze 登记仍不一致；Qwen/DeepSeek 的 context 违规需 sensitivity 或重跑。
+`final_score` 在当前 evaluator 中等于 `functional_gate`，所以 Average Final Score 只是
+Pass Rate 的另一种写法，不是“模块更紧凑”的指标。
 
-正确性漏斗（绝对题数 / 150）：
+## Functional 成对对比
 
-| 模型 | Build | Public | Hidden | Isolation | Functional |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| DeepSeek | 144 | 120 | 106 | 144 | **99** |
-| Qwen3.5 | 150 | 90 | 69 | 148 | **59** |
-| Qwen3.6 | 137 | 85 | 64 | 135 | **59** |
-| GPT-OSS | 134 | 66 | 32 | 130 | **27** |
+| 可成对范围 | 两者都过 | 仅 Main 过 | 仅 Lite 过 | 两者都失败 |
+| --- | ---: | ---: | ---: | ---: |
+| API Main-150 | 84 | **15** | 4 | 47 |
+| 本地 vLLM Python-200 | 125 | **20** | 2 | 53 |
 
-任务成对比较（McNemar exact）：
+两个端点都呈现同一方向：Lite 救回的 Main 失败题很少，但会丢掉更多 Main
+本来能通过的题。这不是单一 endpoint 的偶然现象。
 
-| 对比 | Both pass | Left only | Right only | Both fail | p | 解读 |
-| --- | ---: | ---: | ---: | ---: | ---: | --- |
-| GPT-OSS vs Qwen3.5 | 18 | 9 | 41 | 82 | 5.6e-06 | Qwen3.5 更强 |
-| GPT-OSS vs Qwen3.6 | 17 | 10 | 42 | 81 | 9.1e-06 | Qwen3.6 更强 |
-| GPT-OSS vs DeepSeek | 24 | 3 | 75 | 48 | 5.2e-19 | DeepSeek 更强 |
-| Qwen3.5 vs Qwen3.6 | 39 | 20 | 20 | 71 | 1.0 | 打平 |
-| Qwen3.5 vs DeepSeek | 53 | 6 | 46 | 45 | 1.0e-08 | DeepSeek 更强 |
-| Qwen3.6 vs DeepSeek | 53 | 6 | 46 | 45 | 1.0e-08 | DeepSeek 更强 |
+## 失败阶段
 
-DeepSeek 补齐：旧 100 题与新归档 **无翻转**；新增 50 题通过 33；总通过率仍约 66%。
+下表按 `missing → build → public → hidden → isolation` 的首败优先级计数。没有
+逐题 `eval/result.json` 时标为“阶段证据缺失”，不猜测失败关卡。
 
-## 3. 可以得出的结论
+| 运行端点 / 方法 | Pass | 未交付 | Build | Public | Hidden | Isolation | 阶段证据缺失 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| API Main | 144 | 5 | 1 | 24 | 21 | 0 | 5 |
+| API Lite V1 | 131 | 8 | — | — | — | — | 61 |
+| 本地 Main | 145 | 2 | — | — | — | — | 53 |
+| 本地 Lite V1 | 127 | 2 | 2 | 39 | 30 | 0 | 0 |
 
-### C1. Benchmark 对当前 coding agent 有区分度
+API Main 的细分关卡来自 Main-150；External-50 只能确认 45 过、5 失败，无法
+进一步分解。因此只有本地 Lite V1 是完整 Python-200 失败阶段分布。它的 73 个
+失败中，Public 39，Hidden 30，说明主要损失确实在契约主路径和深层行为闭包，
+不是 isolation。
 
-同覆盖下 Pass@1 从 **18%**（GPT-OSS）到 **66%**（DeepSeek），成对检验显著。任务集能拉开被测 agent。
+## 数据口径纠正
 
-### C2. 任务整体偏难；Public 过不等于最终通过
+历史 results-pack README 把 `summary.passed` 标成了 Functional pass。这个字段是
+workflow/run status，导致 API Main 被误写为 122，本地 Main 被误写为 117。本文统一
+使用 evaluator `final_score/functional_gate`。原始包作为不可变证据保留，但其 README
+不再是当前结果入口。
 
-漏斗显示大量失败在 public→hidden→functional。主难度不只是构建或“找到文件”。
+## 可以与不可以宣称的结论
 
-### C3. Agent 完成状态不能替代 Functional Pass
+可以宣称：
 
-必须以 evaluator `functional_gate` 为准。
+- Main 在 API 和本地 vLLM 两组 Python-200 证据上都显著保留了更多 Functional Pass；
+- Frozen Lite V1 的正确性代价为 6.5–9.0 个百分点；
+- 本地 Lite V1 的已知失败主要集中在 Public 和 Hidden。
 
-### C4. 同覆盖排名：DeepSeek ≫ Qwen3.5 ≈ Qwen3.6 ≫ GPT-OSS
+不可以宣称：
 
-DeepSeek 相对两款 Qwen 各多过 46 题、少输 6 题（p≈1e-08）。两款 Qwen 打平。均显著强于 GPT-OSS。
+- Lite V1 已经优于 Main；
+- Lite V1 的 RRES 优于 Main；
+- 从两组不匹配的 RRES 摘要推导方法紧凑度因果；
+- 将 token 节省当作功能质量改进。
 
-### C5. DeepSeek 现已可进入完整 150 横向比较
+## 证据与复现
 
-补齐前只能作 partial；补齐后覆盖与其它模型一致，**可以**进入 Python-150 成对排名（仍受 image/context 资格约束）。
+数据源：
 
-### C6. Context window 仍是真实实验因素
+- `python200-deepseek-v4-flash-lite-v1-vllm-local-0813-001-results-latest.tar.gz`
+  SHA256 `0d950fb1210a5a40ed746fe31eeedb40f1a3d53f1fca0badead6ad83f9612208`
+- `FeatureLiftBench-deepseek-v4-flash-150-20260805.tar.gz`
+  SHA256 `d4b5303ccdaf1d5a188001e0b24de1694bf928af8647dacbae194db46cb6e28b`
 
-GPT-OSS 0；DeepSeek 8；Qwen3.5 9；Qwen3.6 31。报告 Qwen/DeepSeek 结论时须附带 context 说明。
+重建命令：
 
-### C7. 逐题证据可用于失败归因与过程分析
+```bash
+python harness/scripts/reconcile_current_deepseek_results.py
+```
 
-不足以完整复现 OpenHands 逐事件轨迹（归档缺 event trajectory）。
-
-### C8. Python-200 扩展仍无模型结果
-
-External-50 包就绪；agent 扩展 run 未齐。不能出最终 Python-200 leaderboard。
-
-## 4. 尚不能得出的结论
-
-1. 最终 Python-200 排名。  
-2. 严格冻结 evaluator 环境下的精确分数（image mismatch）。  
-3. 与 context 无关的 Qwen/DeepSeek 排名。  
-4. 抄袭 / `copied_fraction` headline。  
-5. 外推到未测语言、应用仓或未测 agent 条件。  
-6. 历史方法 pilot 的 Main 结果地位。
-
-## 5. 对论文叙述的直接含义
-
-可写（在完成环境资格处理后）：
-
-- 冻结 Python-150 有区分度；  
-- 主指标 Functional Pass@1；  
-- **DeepSeek 显著强于两款 Qwen，Qwen 显著强于 GPT-OSS；两款 Qwen 同档。**
-
-应延后：Python-200 总榜；未附带 image/context 说明的精确百分比。
-
-## 6. 一句话总结
-
-**DeepSeek 已补齐为 99/150（66%），四模型现可同覆盖比较：DeepSeek ≫ Qwen ≈ 39% ≫ GPT-OSS 18%。Benchmark 有效且偏难；仍缺 eval-image/context 收尾与 Python-200 扩展实验结果。**
+当前最大的证据缺口是 API Lite、本地 Main 和 API Main External-50 的逐题
+`eval/result.json`。补齐它们后，才能做完整的失败阶段和 paired RRES 对比。

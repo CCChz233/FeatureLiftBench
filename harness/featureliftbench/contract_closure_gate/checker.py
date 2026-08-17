@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import Any
 
@@ -16,11 +17,14 @@ from ..task_spec import canonical_json
 from ..test_first_lift.cases import canonical_json as observation_json
 from ..test_first_lift.cases import normalize_observation
 from .common import CASES_DIR
+from .common import CHECKER_VERSION
 from .common import CHECK_SCHEMA
 from .common import DEFAULT_CASE_TIMEOUT_SECONDS
+from .common import DEFAULT_LITE_RESCUE_PLUS_BEHAVIOR_BUDGET_SECONDS
+from .common import DEFAULT_LITE_RESCUE_PLUS_MAX_CASES
 from .common import DEFAULT_V3_MAX_CASES
-from .common import GENERATOR_VERSION
 from .common import PUBLIC_CONTRACT_FILE
+from .common import PUBLIC_WITNESS_FILE
 
 
 _CASE_RUNNER = r"""
@@ -64,6 +68,7 @@ except BaseException as exc:
         "ok": False,
         "error_type": type(exc).__name__,
         "error": str(exc),
+        "error_module": getattr(exc, "name", None),
         "traceback_tail": traceback.format_exc()[-1500:],
         "executed_submission": executed_submission,
     }
@@ -789,13 +794,57 @@ def _run_case(
     )
 
 
-def _normalized_run(result: dict[str, Any]) -> tuple[bool, dict[str, Any] | None, str]:
+def _normalized_run(
+    result: dict[str, Any],
+) -> tuple[bool, dict[str, Any] | None, str, str]:
     if not result.get("ok"):
-        return False, None, f"{result.get('error_type')}: {result.get('error')}"
+        return (
+            False,
+            None,
+            f"{result.get('error_type')}: {result.get('error')}",
+            "execution_error",
+        )
+    raw = result.get("raw")
+    required_keys = {"result", "exception", "state_after"}
+    if not isinstance(raw, dict):
+        return (
+            False,
+            None,
+            "differential observation must be a dict with exactly result, "
+            "exception, and state_after",
+            "case_protocol_invalid",
+        )
+    actual_keys = set(raw)
+    if actual_keys != required_keys:
+        missing = sorted(required_keys - actual_keys)
+        extra = sorted(actual_keys - required_keys)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if extra:
+            details.append("unexpected " + ", ".join(extra))
+        return (
+            False,
+            None,
+            "differential observation must contain exactly result, exception, and "
+            "state_after (" + "; ".join(details) + ")",
+            "case_protocol_invalid",
+        )
     try:
-        return True, normalize_observation(result.get("raw")), ""
+        return True, normalize_observation(raw), "", ""
     except ValueError as exc:
-        return False, None, str(exc)
+        return False, None, str(exc), "case_protocol_invalid"
+
+
+def _checker_dependency_unavailable(result: dict[str, Any]) -> bool:
+    """Match probe.v5: external missing modules are checker-env unknowns."""
+
+    if result.get("error_type") != "ModuleNotFoundError":
+        return False
+    missing = str(result.get("error_module") or "").strip()
+    return bool(missing) and missing != "featurelifted" and not missing.startswith(
+        "featurelifted."
+    )
 
 
 def _upstream_dependency_unavailable(observation: Any) -> bool:
@@ -833,7 +882,23 @@ def _evaluate_case(
     meta: dict[str, Any],
     *,
     timeout_seconds: int,
+    deadline: float | None = None,
 ) -> tuple[str, str, dict[str, Any]]:
+    def remaining_timeout() -> int:
+        if deadline is None:
+            return max(1, int(timeout_seconds))
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return 0
+        return max(1, min(int(timeout_seconds), int(remaining + 0.999)))
+
+    def budget_exhausted() -> tuple[str, str, dict[str, Any]]:
+        return (
+            "unknown",
+            "shared behavior execution budget exhausted",
+            {"budget_exhausted": True},
+        )
+
     path = meta["path"]
     submission = workspace / "submission"
     with tempfile.TemporaryDirectory(prefix="flb-empty-contract-") as temporary:
@@ -853,23 +918,42 @@ def _evaluate_case(
             # A temporary synthetic root lets _case_env receive both repo roots.
             env = os.environ.copy()
             env["PYTHONPATH"] = upstream_path
+            current_timeout = remaining_timeout()
+            if current_timeout <= 0:
+                return budget_exhausted()
             first = _run_case_with_env(
                 workspace,
                 path,
                 "run_upstream",
                 env=env,
-                timeout_seconds=timeout_seconds,
+                timeout_seconds=current_timeout,
             )
+            current_timeout = remaining_timeout()
+            if current_timeout <= 0:
+                return budget_exhausted()
             second = _run_case_with_env(
                 workspace,
                 path,
                 "run_upstream",
                 env=env,
-                timeout_seconds=timeout_seconds,
+                timeout_seconds=current_timeout,
             )
-            first_ok, expected, first_error = _normalized_run(first)
-            second_ok, expected_again, second_error = _normalized_run(second)
+            first_ok, expected, first_error, first_error_kind = _normalized_run(first)
+            second_ok, expected_again, second_error, second_error_kind = (
+                _normalized_run(second)
+            )
             if not first_ok or not second_ok:
+                if "case_protocol_invalid" in {first_error_kind, second_error_kind}:
+                    return (
+                        "fail",
+                        "differential case protocol invalid: "
+                        f"{first_error or second_error}",
+                        {
+                            "error_kind": "case_protocol_invalid",
+                            "upstream_first": first,
+                            "upstream_second": second,
+                        },
+                    )
                 return (
                     "unknown",
                     f"upstream case unavailable: {first_error or second_error}",
@@ -896,16 +980,36 @@ def _evaluate_case(
                         "upstream_second": expected_again,
                     },
                 )
+            current_timeout = remaining_timeout()
+            if current_timeout <= 0:
+                return budget_exhausted()
             candidate = _run_case(
                 workspace,
                 path,
                 "run_featurelifted",
                 target_root=submission,
                 submission_root=submission,
-                timeout_seconds=timeout_seconds,
+                timeout_seconds=current_timeout,
             )
-            candidate_ok, actual, candidate_error = _normalized_run(candidate)
+            candidate_ok, actual, candidate_error, candidate_error_kind = (
+                _normalized_run(candidate)
+            )
             if not candidate_ok:
+                if _checker_dependency_unavailable(candidate):
+                    return (
+                        "unknown",
+                        "checker dependency unavailable while running featurelifted case",
+                        {"candidate": candidate},
+                    )
+                if candidate_error_kind == "case_protocol_invalid":
+                    return (
+                        "fail",
+                        f"differential case protocol invalid: {candidate_error}",
+                        {
+                            "error_kind": "case_protocol_invalid",
+                            "candidate": candidate,
+                        },
+                    )
                 return (
                     "fail",
                     f"featurelifted case failed: {candidate_error}",
@@ -926,15 +1030,18 @@ def _evaluate_case(
                         "actual": actual,
                     },
                 )
+            current_timeout = remaining_timeout()
+            if current_timeout <= 0:
+                return budget_exhausted()
             stub_result = _run_case(
                 workspace,
                 path,
                 "run_featurelifted",
                 target_root=stub,
                 submission_root=stub,
-                timeout_seconds=timeout_seconds,
+                timeout_seconds=current_timeout,
             )
-            stub_ok, stub_observation, _ = _normalized_run(stub_result)
+            stub_ok, stub_observation, _, _ = _normalized_run(stub_result)
             if stub_ok and observation_json(stub_observation) == observation_json(
                 expected
             ):
@@ -952,15 +1059,24 @@ def _evaluate_case(
                 },
             )
 
+        current_timeout = remaining_timeout()
+        if current_timeout <= 0:
+            return budget_exhausted()
         candidate = _run_case(
             workspace,
             path,
             "check_featurelifted",
             target_root=submission,
             submission_root=submission,
-            timeout_seconds=timeout_seconds,
+            timeout_seconds=current_timeout,
         )
         if not candidate.get("ok"):
+            if _checker_dependency_unavailable(candidate):
+                return (
+                    "unknown",
+                    "checker dependency unavailable while running direct case",
+                    {"candidate": candidate},
+                )
             return (
                 "fail",
                 f"direct assertion failed: {candidate.get('error_type')}: {candidate.get('error')}",
@@ -972,13 +1088,16 @@ def _evaluate_case(
                 "direct case did not execute code under submission/featurelifted",
                 {"candidate": candidate},
             )
+        current_timeout = remaining_timeout()
+        if current_timeout <= 0:
+            return budget_exhausted()
         stub_result = _run_case(
             workspace,
             path,
             "check_featurelifted",
             target_root=stub,
             submission_root=stub,
-            timeout_seconds=timeout_seconds,
+            timeout_seconds=current_timeout,
         )
         if stub_result.get("ok"):
             return (
@@ -1043,6 +1162,8 @@ def _behavior_checks(
     *,
     timeout_seconds: int,
     max_cases: int | None = None,
+    total_budget_seconds: int | None = None,
+    witness_behavior_id: str = "",
 ) -> list[dict[str, Any]]:
     behaviors = (
         public_spec.get("behaviors")
@@ -1067,7 +1188,7 @@ def _behavior_checks(
                 status="fail",
                 severity="soft",
                 message=(
-                    f"{len(case_paths)} behavior cases exceed the V3 execution limit "
+                    f"{len(case_paths)} behavior cases exceed the bounded execution limit "
                     f"of {max_cases}; only the first {max_cases} are evaluated"
                 ),
                 target=CASES_DIR,
@@ -1132,15 +1253,28 @@ def _behavior_checks(
             continue
         valid_cases.append(meta)
     covered: set[str] = set()
+    deadline = (
+        time.monotonic() + max(1, int(total_budget_seconds))
+        if total_budget_seconds is not None
+        else None
+    )
     for meta in valid_cases:
         covered.update(meta["behavior_ids"])
         status, message, evidence = _evaluate_case(
-            workspace, meta, timeout_seconds=timeout_seconds
+            workspace,
+            meta,
+            timeout_seconds=timeout_seconds,
+            deadline=deadline,
+        )
+        category = (
+            "behavior_evidence"
+            if evidence.get("error_kind") == "case_protocol_invalid"
+            else "behavior"
         )
         checks.append(
             _check(
                 f"behavior.case.{meta['case_id']}",
-                category="behavior",
+                category=category,
                 status=status,
                 severity="soft",
                 message=message,
@@ -1149,6 +1283,11 @@ def _behavior_checks(
                     "behavior_ids": meta["behavior_ids"],
                     "required_api": meta["required_api"],
                     "mode": meta["mode"],
+                    "public_witness": bool(
+                        witness_behavior_id
+                        and meta["mode"] == "direct"
+                        and witness_behavior_id in meta["behavior_ids"]
+                    ),
                     "sources": meta["evidence"],
                     "runtime": evidence,
                 },
@@ -1216,19 +1355,56 @@ def _actionable_behavior_failure(item: dict[str, Any]) -> bool:
     )
 
 
+def _repairable_behavior_evidence_failure(item: dict[str, Any]) -> bool:
+    if item.get("status") != "fail":
+        return False
+    if item.get("id") in {"behavior.smoke.required", "behavior.witness.required"}:
+        return True
+    evidence = item.get("evidence")
+    runtime = evidence.get("runtime") if isinstance(evidence, dict) else None
+    return (
+        item.get("category") == "behavior_evidence"
+        and isinstance(runtime, dict)
+        and runtime.get("error_kind") == "case_protocol_invalid"
+    )
+
+
+def _load_public_witness_behavior_id(workspace: Path) -> str:
+    path = workspace / PUBLIC_WITNESS_FILE
+    if not path.is_file():
+        return ""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ""
+    if not isinstance(payload, dict):
+        return ""
+    claimed = str(payload.get("witness_hash") or "")
+    unhashed = {key: value for key, value in payload.items() if key != "witness_hash"}
+    actual = hashlib.sha256(canonical_json(unhashed).encode("utf-8")).hexdigest()
+    if not claimed or claimed != actual or payload.get("mode") != "direct":
+        return ""
+    return str(payload.get("behavior_id") or "")
+
+
 def check_workspace(
     workspace_dir: str | Path,
     *,
     case_timeout_seconds: int = DEFAULT_CASE_TIMEOUT_SECONDS,
     check_mode: str = "full",
 ) -> dict[str, Any]:
-    if check_mode not in {"full", "structure", "behavior", "micro"}:
+    if check_mode not in {"full", "structure", "behavior", "micro", "lite_plus"}:
         raise ValueError(f"unsupported contract check mode: {check_mode}")
     workspace = Path(workspace_dir).resolve()
     contract, checks = _load_contract(workspace)
     public_spec = contract["public_spec"]
+    witness_behavior_id = (
+        _load_public_witness_behavior_id(workspace)
+        if check_mode == "lite_plus"
+        else ""
+    )
     entries = _flatten_api(public_spec.get("required_api"))
-    if check_mode in {"full", "structure", "micro"}:
+    if check_mode in {"full", "structure", "micro", "lite_plus"}:
         checks.extend(_compile_checks(workspace / "submission"))
         forbidden = public_spec.get("forbidden")
         checks.extend(
@@ -1238,14 +1414,54 @@ def check_workspace(
             )
         )
         checks.extend(_api_checks(workspace, entries))
-    if check_mode in {"full", "behavior", "micro"}:
+    if check_mode in {"full", "behavior", "micro", "lite_plus"}:
         checks.extend(
             _behavior_checks(
                 workspace,
                 public_spec,
                 entries,
                 timeout_seconds=case_timeout_seconds,
-                max_cases=DEFAULT_V3_MAX_CASES if check_mode == "micro" else None,
+                max_cases=(
+                    DEFAULT_LITE_RESCUE_PLUS_MAX_CASES
+                    if check_mode == "lite_plus"
+                    else DEFAULT_V3_MAX_CASES
+                    if check_mode == "micro"
+                    else None
+                ),
+                total_budget_seconds=(
+                    DEFAULT_LITE_RESCUE_PLUS_BEHAVIOR_BUDGET_SECONDS
+                    if check_mode == "lite_plus"
+                    else None
+                ),
+                witness_behavior_id=witness_behavior_id,
+            )
+        )
+
+    executable_behavior_checks = [
+        item
+        for item in checks
+        if item.get("category") == "behavior"
+        and isinstance(item.get("evidence"), dict)
+        and "runtime" in item["evidence"]
+    ]
+    public_witness_checks = [
+        item
+        for item in executable_behavior_checks
+        if isinstance(item.get("evidence"), dict)
+        and item["evidence"].get("public_witness") is True
+    ]
+    if check_mode == "lite_plus" and not public_witness_checks:
+        checks.append(
+            _check(
+                "behavior.witness.required",
+                category="behavior_evidence",
+                status="fail",
+                severity="soft",
+                message=(
+                    "no valid executable direct case was provided for the selected "
+                    f"public witness {witness_behavior_id or '<missing>'}"
+                ),
+                target=CASES_DIR,
             )
         )
 
@@ -1260,8 +1476,24 @@ def check_workspace(
         if item["severity"] == "soft" and item["status"] in {"fail", "unknown"}
     ]
     unknown = [item for item in checks if item["status"] == "unknown"]
+    checker_environment_unknown = [
+        item
+        for item in unknown
+        if isinstance(item.get("evidence"), dict)
+        and item["evidence"].get("error_kind")
+        == "checker_dependency_unavailable"
+    ]
     actionable_behavior_failures = [
         item for item in checks if _actionable_behavior_failure(item)
+    ]
+    actionable_public_witness_failures = [
+        item
+        for item in actionable_behavior_failures
+        if isinstance(item.get("evidence"), dict)
+        and item["evidence"].get("public_witness") is True
+    ]
+    repairable_behavior_evidence_failures = [
+        item for item in checks if _repairable_behavior_evidence_failure(item)
     ]
     micro_behavior_passes = [
         item
@@ -1271,14 +1503,27 @@ def check_workspace(
         and isinstance(item.get("evidence"), dict)
         and "runtime" in item["evidence"]
     ]
+    public_witness_passes = [
+        item
+        for item in micro_behavior_passes
+        if isinstance(item.get("evidence"), dict)
+        and item["evidence"].get("public_witness") is True
+    ]
     hard_gate_ok = not hard_failures
-    behavior_gate_ok = (
-        bool(micro_behavior_passes) and not actionable_behavior_failures
-        if check_mode == "micro"
-        else not soft_open
-    )
+    if check_mode == "lite_plus":
+        behavior_gate_ok = bool(public_witness_passes) and not (
+            actionable_public_witness_failures
+        )
+    elif check_mode == "micro":
+        behavior_gate_ok = bool(micro_behavior_passes) and not (
+            actionable_behavior_failures
+        )
+    else:
+        behavior_gate_ok = not soft_open
     closure_ok = hard_gate_ok and (
-        behavior_gate_ok if check_mode in {"full", "behavior", "micro"} else True
+        behavior_gate_ok
+        if check_mode in {"full", "behavior", "micro", "lite_plus"}
+        else True
     )
     summary = {
         status: sum(1 for item in checks if item["status"] == status)
@@ -1286,7 +1531,7 @@ def check_workspace(
     }
     return {
         "schema_version": CHECK_SCHEMA,
-        "checker_version": GENERATOR_VERSION,
+        "checker_version": CHECKER_VERSION,
         "task_id": contract.get("task_id"),
         "spec_hash": contract.get("spec_hash"),
         "contract_hash": contract.get("contract_hash"),
@@ -1294,14 +1539,36 @@ def check_workspace(
         "hard_gate_ok": hard_gate_ok,
         "behavior_gate_ok": behavior_gate_ok,
         "closure_ok": closure_ok,
-        "repair_needed": bool(hard_failures or actionable_behavior_failures),
+        "repair_needed": bool(
+            hard_failures
+            or (
+                actionable_public_witness_failures
+                if check_mode == "lite_plus"
+                else actionable_behavior_failures
+                or repairable_behavior_evidence_failures
+            )
+        ),
         "summary": summary,
         "required_api_count": len(entries),
         "behavior_count": len(public_spec.get("behaviors") or []),
         "hard_failure_count": len(hard_failures),
         "soft_open_count": len(soft_open),
         "actionable_behavior_failure_count": len(actionable_behavior_failures),
+        "actionable_public_witness_failure_count": len(
+            actionable_public_witness_failures
+        ),
+        "repairable_behavior_evidence_failure_count": len(
+            repairable_behavior_evidence_failures
+        ),
         "micro_behavior_pass_count": len(micro_behavior_passes),
+        "public_witness_behavior_id": witness_behavior_id,
+        "public_witness_pass_count": len(public_witness_passes),
+        "behavior_execution_budget_seconds": (
+            DEFAULT_LITE_RESCUE_PLUS_BEHAVIOR_BUDGET_SECONDS
+            if check_mode == "lite_plus"
+            else None
+        ),
         "unknown_count": len(unknown),
+        "checker_environment_unknown_count": len(checker_environment_unknown),
         "checks": checks,
     }

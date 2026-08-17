@@ -60,13 +60,17 @@ def fmt_seconds(value: Any) -> str:
 def summarize_suite(name: str, suite: dict[str, Any]) -> dict[str, Any]:
     summary = suite.get("summary") or {}
     totals = suite.get("agent_usage_totals") or {}
+    runs = [run for run in suite.get("runs") or [] if isinstance(run, dict)]
+    functional_passed = sum(run.get("functional_gate") == 1.0 for run in runs)
     return {
         "suite": name,
         "model": suite.get("model"),
         "profile": suite.get("profile"),
         "api_base": suite.get("api_base"),
-        "passed": summary.get("passed"),
-        "failed": summary.get("failed"),
+        "passed": functional_passed,
+        "functional_passed": functional_passed,
+        "workflow_passed": summary.get("passed"),
+        "failed": (summary.get("total", len(runs)) or 0) - functional_passed,
         "total": summary.get("total"),
         "average_final_score": summary.get("average_final_score"),
         "assistant_steps": totals.get("assistant_steps"),
@@ -135,19 +139,19 @@ def classify_runs(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]
     failures = [
         row
         for row in rows
-        if row.get("status") != "passed" or row.get("functional_gate") != 1.0
+        if row.get("functional_gate") != 1.0
     ]
     high_ratio_passes = [
         row
         for row in rows
-        if row.get("status") == "passed"
+        if row.get("functional_gate") == 1.0
         and isinstance(row.get("extraction_ratio"), (int, float))
         and row["extraction_ratio"] >= HIGH_EXTRACTION_RATIO
     ]
     compact_passes = [
         row
         for row in rows
-        if row.get("status") == "passed"
+        if row.get("functional_gate") == 1.0
         and isinstance(row.get("extraction_ratio"), (int, float))
         and row["extraction_ratio"] <= LOW_EXTRACTION_RATIO
     ]
@@ -236,8 +240,8 @@ def render_md(analysis: dict[str, Any]) -> str:
     lines.append("")
     lines.append("## Summary")
     lines.append("")
-    lines.append("| suite | model | endpoint | passed | avg final_score | steps | tokens | agent wall time |")
-    lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |")
+    lines.append("| suite | model | endpoint | functional pass | workflow pass | avg final_score | steps | tokens | agent wall time |")
+    lines.append("| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |")
     for suite in analysis["suite_summaries"]:
         passed = f"{suite.get('passed')}/{suite.get('total')}"
         lines.append(
@@ -248,6 +252,7 @@ def render_md(analysis: dict[str, Any]) -> str:
                     f"`{suite.get('model') or ''}`",
                     f"`{suite.get('api_base') or ''}`",
                     passed,
+                    f"{suite.get('workflow_passed')}/{suite.get('total')}",
                     fmt_float(suite.get("average_final_score"), 6),
                     fmt_int(suite.get("assistant_steps")),
                     fmt_int(suite.get("total_tokens")),

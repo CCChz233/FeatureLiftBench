@@ -1,5 +1,9 @@
 # Public Contract Closure Gate：2026-08-10 实验记录
 
+> **Status: archived · Last verified: 2026-08-17**
+> 过程记录，不是当前协议。Rescue+ 已停，见
+> [ContractClosureGate_LiteRescuePlus_20260816.md](ContractClosureGate_LiteRescuePlus_20260816.md)。
+
 ## 1. 今天解决的问题
 
 本轮工作从 Agent 失败分析出发，聚焦一个具体问题：Agent 经常完成了大部分实现，

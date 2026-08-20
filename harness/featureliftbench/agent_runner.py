@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -29,6 +30,7 @@ from .agent_adapters import get_agent_adapter
 from .agent_docker import DEFAULT_AGENT_IMAGE
 from .agent_docker import run_agent_in_docker
 from .benchmark_freeze import benchmark_freeze_provenance
+from .contract_closure_gate.common import LITE_V1_SILENT_FINISH_ENV
 from .docker_eval import DEFAULT_EVAL_IMAGE
 from .docker_eval import evaluate_submission_docker
 from .evaluator import evaluate_submission
@@ -456,12 +458,16 @@ def run_agent_on_task(
     repo_graph_state: RepoGraphRunState | None = None
     repo_graph_usage: dict[str, Any] | None = None
     contract_closure_audit: dict[str, Any] | None = None
+    adaptive_budget_v2_audit: dict[str, Any] | None = None
     pre_agent_failure = False
     workspace_submission_dir = workspace_dir / "submission"
     stdout_log = agent_output_dir / "stdout.log"
     stderr_log = agent_output_dir / "stderr.log"
 
     if validation.valid:
+        silent_finish = (config.env or {}).get(LITE_V1_SILENT_FINISH_ENV, "").strip()
+        if silent_finish:
+            os.environ[LITE_V1_SILENT_FINISH_ENV] = silent_finish
         task_file = prepare_agent_workspace(
             task_path,
             workspace_dir,
@@ -1589,6 +1595,185 @@ def run_agent_on_task(
                 agent_primary_attempts=primary_attempts,
                 infrastructure_retry=infrastructure_retry,
             )
+        elif agent_ready and ablation.adaptive_budget_v2:
+            from .adaptive_budget_v2 import ADAPTIVE_BUDGET_V2_PHASE_ENV
+            from .adaptive_budget_v2 import DEFAULT_EXTRA_TOKEN_LIMIT
+            from .adaptive_budget_v2 import DEFAULT_MAX_STEPS
+            from .adaptive_budget_v2 import evaluate_progress
+            from .adaptive_budget_v2 import extra_token_limit
+            from .adaptive_budget_v2 import primary_needs_checkpoint
+            from .adaptive_budget_v2 import primary_token_limit
+            from .adaptive_budget_v2 import recent_action_window
+            from .adaptive_budget_v2 import targeted_repair_task_appendix
+            from .adaptive_budget_v2 import write_audit as write_v2_audit
+            from .adaptive_budget_v2 import write_checkpoint
+            from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
+
+            def _v2_agent_compact(
+                result: Any, output_dir: Path
+            ) -> dict[str, Any] | None:
+                if result is None:
+                    return None
+                return {
+                    "name": result.name,
+                    "passed": result.passed,
+                    "returncode": result.returncode,
+                    "duration_seconds": result.duration_seconds,
+                    "timed_out": result.timed_out,
+                    "reason": result.reason,
+                    "resource_limited": result.resource_limited,
+                    "usage": _collect_agent_usage(result.name, output_dir),
+                }
+
+            primary_env = dict(run_config.env or {})
+            primary_env[ADAPTIVE_BUDGET_V2_PHASE_ENV] = "primary"
+            primary_limit = primary_token_limit(primary_env)
+            primary_env.setdefault(TOTAL_TOKEN_LIMIT_ENV, str(primary_limit))
+            primary_env.setdefault(
+                "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS",
+                str(DEFAULT_MAX_STEPS),
+            )
+            primary_config = replace(run_config, env=primary_env)
+            repair_agent_result = None
+            repair_rounds_used = 0
+            checkpoint_payload: dict[str, Any] = {}
+
+            try:
+                if agent_docker:
+                    agent_result = run_agent_in_docker(
+                        context,
+                        primary_config,
+                        image=agent_docker_image,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+                else:
+                    adapter = get_agent_adapter(primary_config.agent)
+                    agent_result = adapter.run(
+                        context,
+                        primary_config,
+                        stdout_log=stdout_log,
+                        stderr_log=stderr_log,
+                    )
+            except ValueError as exc:
+                errors.append(f"adaptive_budget_v2 primary run failed: {exc}")
+
+            primary_usage = _collect_agent_usage(
+                (agent_result.name if agent_result is not None else config.agent),
+                agent_output_dir,
+            )
+            extra_limit = extra_token_limit(primary_env)
+            needs_check = primary_needs_checkpoint(
+                primary_usage, primary_limit=primary_limit
+            )
+            if not needs_check:
+                checkpoint_payload = write_checkpoint(
+                    agent_output_dir,
+                    signals=evaluate_progress(
+                        agent_output_dir=agent_output_dir,
+                        submission_dir=workspace_submission_dir,
+                        recent_n=recent_action_window(primary_env),
+                    ),
+                    primary_usage=primary_usage,
+                    primary_limit=primary_limit,
+                    extra_limit=extra_limit,
+                    granted_extra=False,
+                )
+                checkpoint_payload["decision"] = "skip_voluntary_finish"
+                checkpoint_payload["reason"] = "primary_finished_below_checkpoint_threshold"
+                checkpoint_payload["granted_extra"] = False
+                (agent_output_dir / "v2_checkpoint.json").write_text(
+                    json.dumps(checkpoint_payload, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            else:
+                signals = evaluate_progress(
+                    agent_output_dir=agent_output_dir,
+                    submission_dir=workspace_submission_dir,
+                    recent_n=recent_action_window(primary_env),
+                )
+                grant_extra = signals.decision == "continue"
+                checkpoint_payload = write_checkpoint(
+                    agent_output_dir,
+                    signals=signals,
+                    primary_usage=primary_usage,
+                    primary_limit=primary_limit,
+                    extra_limit=extra_limit,
+                    granted_extra=grant_extra,
+                )
+                if grant_extra:
+                    task_path_ws = workspace_dir / "TASK.md"
+                    try:
+                        existing = task_path_ws.read_text(encoding="utf-8")
+                    except OSError:
+                        existing = context.task_text or ""
+                    if "## Targeted Repair Mode" not in existing:
+                        task_path_ws.write_text(
+                            existing.rstrip() + "\n\n" + targeted_repair_task_appendix(),
+                            encoding="utf-8",
+                        )
+                    repair_dir = output_path / "agent_repair"
+                    _reset_dir(repair_dir)
+                    repair_stdout = repair_dir / "stdout.log"
+                    repair_stderr = repair_dir / "stderr.log"
+                    repair_env = {
+                        **(run_config.env or {}),
+                        ADAPTIVE_BUDGET_V2_PHASE_ENV: "repair",
+                        TOTAL_TOKEN_LIMIT_ENV: str(extra_limit or DEFAULT_EXTRA_TOKEN_LIMIT),
+                        "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS": str(
+                            primary_env.get(
+                                "FEATURELIFTBENCH_OPENHANDS_MAX_STEPS",
+                                str(DEFAULT_MAX_STEPS),
+                            )
+                        ),
+                    }
+                    repair_config = replace(
+                        run_config,
+                        timeout_seconds=min(
+                            int(run_config.timeout_seconds or 3600),
+                            1800,
+                        ),
+                        env=repair_env,
+                    )
+                    repair_context = AgentRunContext(
+                        workspace_dir=workspace_dir,
+                        task_file=task_path_ws,
+                        submission_dir=workspace_submission_dir,
+                        agent_output_dir=repair_dir,
+                        task_text=task_path_ws.read_text(encoding="utf-8"),
+                    )
+                    try:
+                        if agent_docker:
+                            repair_agent_result = run_agent_in_docker(
+                                repair_context,
+                                repair_config,
+                                image=agent_docker_image,
+                                stdout_log=repair_stdout,
+                                stderr_log=repair_stderr,
+                            )
+                        else:
+                            adapter = get_agent_adapter(repair_config.agent)
+                            repair_agent_result = adapter.run(
+                                repair_context,
+                                repair_config,
+                                stdout_log=repair_stdout,
+                                stderr_log=repair_stderr,
+                            )
+                        repair_rounds_used = 1
+                    except ValueError as exc:
+                        errors.append(
+                            f"adaptive_budget_v2 targeted repair failed: {exc}"
+                        )
+
+            adaptive_budget_v2_audit = write_v2_audit(
+                output_path,
+                checkpoint=checkpoint_payload,
+                agent_primary=_v2_agent_compact(agent_result, agent_output_dir),
+                agent_repair=_v2_agent_compact(
+                    repair_agent_result, output_path / "agent_repair"
+                ),
+                repair_rounds_used=repair_rounds_used,
+            )
         elif agent_ready:
             try:
                 if agent_docker:
@@ -1772,6 +1957,8 @@ def run_agent_on_task(
         result["repo_graph"] = repo_graph_usage
     if contract_closure_audit is not None:
         result["contract_closure"] = contract_closure_audit
+    if adaptive_budget_v2_audit is not None:
+        result["adaptive_budget_v2"] = adaptive_budget_v2_audit
     if previous_attempt_json is not None:
         result["previous_attempt_json"] = previous_attempt_json
     run_json_path.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
@@ -2749,6 +2936,23 @@ def prepare_agent_workspace(
             workspace_path,
             required_api_paths=flatten_required_api_paths(metadata),
         )
+    elif options.spec_adversarial_self_test:
+        from .spec_adversarial import install_spec_adversarial_workspace
+
+        public_spec = (
+            metadata.get("public_spec")
+            if isinstance(metadata.get("public_spec"), dict)
+            else {}
+        )
+        if not isinstance(public_spec, dict) or not public_spec:
+            raise ValueError(
+                "spec_adversarial_self_test requires metadata.public_spec"
+            )
+        install_spec_adversarial_workspace(
+            workspace_path,
+            public_spec=public_spec,
+        )
+        (workspace_path / "submission").mkdir(exist_ok=True)
     elif options.contract_closure_budget_control:
         (workspace_path / "submission").mkdir(exist_ok=True)
     elif (
@@ -2825,6 +3029,16 @@ def prepare_agent_workspace(
         from .contract_closure_budget_control import task_appendix as control_appendix
 
         task_markdown = task_markdown.rstrip() + "\n\n" + control_appendix()
+    elif options.pre_submit_contract_audit:
+        from .pre_submit_contract_audit import task_appendix as audit_appendix
+
+        task_markdown = task_markdown.rstrip() + "\n\n" + audit_appendix()
+    elif options.spec_adversarial_self_test:
+        from .spec_adversarial import task_appendix as spec_adversarial_appendix
+
+        task_markdown = (
+            task_markdown.rstrip() + "\n\n" + spec_adversarial_appendix()
+        )
     elif (
         options.contract_closure_gate
         or options.contract_closure_gate_lite

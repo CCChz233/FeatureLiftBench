@@ -30,6 +30,22 @@ class OpenHandsUsageTests(unittest.TestCase):
         self.assertEqual(policy.condenser_trigger_tokens, 57344)
         self.assertEqual(policy.condenser_target_tokens, 28672)
         self.assertTrue(policy.token_compression_enabled)
+        self.assertTrue(policy.requires_seeded_settings)
+
+    def test_custom_condenser_modes_are_seeded_but_not_token_summarizer(self) -> None:
+        for mode in ("recency_masking", "artifact_aware", "verification_aware"):
+            policy = openhands_context_policy(
+                {
+                    "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE": mode,
+                    "FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS": "131072",
+                    "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS": "8192",
+                }
+            )
+            self.assertEqual(policy.compression_mode, mode)
+            self.assertTrue(policy.requires_seeded_settings)
+            self.assertFalse(policy.token_compression_enabled)
+            self.assertEqual(policy.condenser_trigger_tokens, 122880)
+            self.assertEqual(policy.condenser_attention_window, 100)
 
     def test_parse_condensation_events_counts_without_retaining_content(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

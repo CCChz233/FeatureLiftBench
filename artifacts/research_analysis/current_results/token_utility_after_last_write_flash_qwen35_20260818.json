@@ -1,0 +1,2881 @@
+{
+  "blocks": [
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/deepseek-v4-flash/python200-deepseek-v4-flash-vllm-local-0812-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "python200-deepseek-v4-flash-vllm-local-0812-001:pass:after_last_write",
+        "n": 47,
+        "tail_median": 444412,
+        "tail_p25": 211909.0,
+        "tail_p90": 1170091.4,
+        "tail_frac_median": 0.45969756197922024,
+        "tail_frac_p25": 0.2507936618111932,
+        "tail_frac_p90": 0.7064266797883192,
+        "total_median": 1347594,
+        "cutoff_median": 584324,
+        "pooled_tokens": {
+          "self_test_run": 12658500,
+          "other": 4589149,
+          "isolation_check": 1297860,
+          "inspect_submission": 1911996,
+          "inspect_repo": 801640,
+          "meta": 1442780,
+          "finish": 1846233,
+          "inspect_upstream_tests": 1161019,
+          "self_test_write": 918683,
+          "cleanup": 463886,
+          "package_write": 113717,
+          "inspect_spec": 45397
+        },
+        "pooled_share": {
+          "self_test_run": 0.4645174500914834,
+          "other": 0.16840382285182925,
+          "isolation_check": 0.04762638683696588,
+          "inspect_submission": 0.07016277651420909,
+          "inspect_repo": 0.029417053259970512,
+          "meta": 0.05294438414053722,
+          "finish": 0.06774953157441636,
+          "inspect_upstream_tests": 0.042604857241202665,
+          "self_test_write": 0.03371207367400515,
+          "cleanup": 0.017022802216150244,
+          "package_write": 0.004172969220053973,
+          "inspect_spec": 0.0016658923791762902
+        },
+        "pooled_self_test_share": 0.4982295237654885,
+        "pooled_inspect_share": 0.14385057939455856,
+        "pooled_package_write_share": 0.004172969220053973,
+        "pooled_actions": {
+          "self_test_run": 311,
+          "other": 106,
+          "isolation_check": 30,
+          "inspect_submission": 47,
+          "inspect_repo": 20,
+          "meta": 33,
+          "finish": 39,
+          "inspect_upstream_tests": 30,
+          "self_test_write": 25,
+          "cleanup": 10,
+          "package_write": 3,
+          "inspect_spec": 1
+        },
+        "n_tail_ge_50k": 47,
+        "rates": {
+          "has_self_test": 0.9574468085106383,
+          "has_package_write": 0.06382978723404255,
+          "has_inspect_repo": 0.425531914893617,
+          "has_upstream_tests": 0.3191489361702128,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.19148936170212766,
+          "tail_frac_ge_50": 0.40425531914893614
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0028910348755433234,
+          "self_test_write": 0.024785745358550763,
+          "self_test_run": 0.4746997616854651,
+          "inspect_repo": 0.01805452347365829,
+          "inspect_upstream_tests": 0.031488970937860565,
+          "inspect_submission": 0.08000111873801878,
+          "inspect_spec": 0.003088981473732056,
+          "isolation_check": 0.049865787134049135,
+          "cleanup": 0.016793846361984506,
+          "meta": 0.06403473731642152,
+          "finish": 0.11869277089886038,
+          "other": 0.11560272174585558
+        }
+      },
+      "n_tasks": 47
+    },
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "python200-qwen3.6-35b-a3b-fp8-v1-0817-001:pass:after_last_write",
+        "n": 20,
+        "tail_median": 258800.0,
+        "tail_p25": 160081.25,
+        "tail_p90": 469684.5000000003,
+        "tail_frac_median": 0.24001864070504553,
+        "tail_frac_p25": 0.12816309660976863,
+        "tail_frac_p90": 0.5322593861587985,
+        "total_median": 1406163.0,
+        "cutoff_median": 1013726.0,
+        "pooled_tokens": {
+          "meta": 971969,
+          "finish": 777522,
+          "inspect_submission": 564014,
+          "self_test_run": 2050167,
+          "other": 642557,
+          "self_test_write": 753979,
+          "inspect_spec": 28281,
+          "isolation_check": 118419
+        },
+        "pooled_share": {
+          "meta": 0.16454784804503472,
+          "finish": 0.1316292720320005,
+          "inspect_submission": 0.09548379626024309,
+          "self_test_run": 0.3470795549888368,
+          "other": 0.10878060061202917,
+          "self_test_write": 0.12764359966330946,
+          "inspect_spec": 0.004787784065707473,
+          "isolation_check": 0.02004754433283877
+        },
+        "pooled_self_test_share": 0.47472315465214626,
+        "pooled_inspect_share": 0.10027158032595057,
+        "pooled_package_write_share": 0.0,
+        "pooled_actions": {
+          "meta": 24,
+          "finish": 16,
+          "inspect_submission": 11,
+          "self_test_run": 57,
+          "other": 17,
+          "self_test_write": 22,
+          "inspect_spec": 1,
+          "isolation_check": 3
+        },
+        "n_tail_ge_50k": 18,
+        "rates": {
+          "has_self_test": 0.8,
+          "has_package_write": 0.0,
+          "has_inspect_repo": 0.0,
+          "has_upstream_tests": 0.0,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.0,
+          "tail_frac_ge_50": 0.15
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0,
+          "self_test_write": 0.11592349007557781,
+          "self_test_run": 0.32161519259325005,
+          "inspect_repo": 0.0,
+          "inspect_upstream_tests": 0.0,
+          "inspect_submission": 0.0923595374496785,
+          "inspect_spec": 0.00407121319302828,
+          "isolation_check": 0.01455676223061933,
+          "cleanup": 0.0,
+          "meta": 0.16822658116972716,
+          "finish": 0.157834778495416,
+          "other": 0.1254124447927029
+        }
+      },
+      "n_tasks": 20
+    },
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/external50-qwen3.6-35b-a3b-fp8-0817-main-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "external50-qwen3.6-35b-a3b-fp8-0817-main-001:pass:after_last_write",
+        "n": 36,
+        "tail_median": 554190.0,
+        "tail_p25": 309611.0,
+        "tail_p90": 1108318.0,
+        "tail_frac_median": 0.2921931013269642,
+        "tail_frac_p25": 0.18159109181832728,
+        "tail_frac_p90": 0.5306936485312537,
+        "total_median": 2044801.0,
+        "cutoff_median": 1363456.5,
+        "pooled_tokens": {
+          "other": 2471585,
+          "inspect_spec": 353925,
+          "self_test_run": 7642576,
+          "inspect_submission": 2045459,
+          "meta": 3427126,
+          "finish": 3162765,
+          "self_test_write": 1511097,
+          "isolation_check": 590683,
+          "inspect_upstream_tests": 59933,
+          "inspect_repo": 236103
+        },
+        "pooled_share": {
+          "other": 0.11495074798434994,
+          "inspect_spec": 0.016460669360091218,
+          "self_test_run": 0.35544795251923006,
+          "inspect_submission": 0.09513208812212423,
+          "meta": 0.1593919275026403,
+          "finish": 0.14709678301524023,
+          "self_test_write": 0.0702794888409289,
+          "isolation_check": 0.027472028140500843,
+          "inspect_upstream_tests": 0.0027874190768053878,
+          "inspect_repo": 0.010980895438088908
+        },
+        "pooled_self_test_share": 0.42572744136015894,
+        "pooled_inspect_share": 0.12536107199710975,
+        "pooled_package_write_share": 0.0,
+        "pooled_actions": {
+          "other": 44,
+          "inspect_spec": 6,
+          "self_test_run": 123,
+          "inspect_submission": 35,
+          "meta": 54,
+          "finish": 34,
+          "self_test_write": 33,
+          "isolation_check": 8,
+          "inspect_upstream_tests": 1,
+          "inspect_repo": 3
+        },
+        "n_tail_ge_50k": 36,
+        "rates": {
+          "has_self_test": 0.8055555555555556,
+          "has_package_write": 0.0,
+          "has_inspect_repo": 0.05555555555555555,
+          "has_upstream_tests": 0.027777777777777776,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.1388888888888889,
+          "tail_frac_ge_50": 0.16666666666666666
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0,
+          "self_test_write": 0.060075943920960155,
+          "self_test_run": 0.3011737716678153,
+          "inspect_repo": 0.007125747288538213,
+          "inspect_upstream_tests": 0.003013970080464397,
+          "inspect_submission": 0.086199925222878,
+          "inspect_spec": 0.015155840579740816,
+          "isolation_check": 0.018667209316524627,
+          "cleanup": 0.0,
+          "meta": 0.179084219602316,
+          "finish": 0.21664731143465685,
+          "other": 0.1128560608861057
+        }
+      },
+      "n_tasks": 36
+    }
+  ],
+  "full": [
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/deepseek-v4-flash/python200-deepseek-v4-flash-vllm-local-0812-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "python200-deepseek-v4-flash-vllm-local-0812-001:pass:after_last_write",
+        "n": 47,
+        "tail_median": 444412,
+        "tail_p25": 211909.0,
+        "tail_p90": 1170091.4,
+        "tail_frac_median": 0.45969756197922024,
+        "tail_frac_p25": 0.2507936618111932,
+        "tail_frac_p90": 0.7064266797883192,
+        "total_median": 1347594,
+        "cutoff_median": 584324,
+        "pooled_tokens": {
+          "self_test_run": 12658500,
+          "other": 4589149,
+          "isolation_check": 1297860,
+          "inspect_submission": 1911996,
+          "inspect_repo": 801640,
+          "meta": 1442780,
+          "finish": 1846233,
+          "inspect_upstream_tests": 1161019,
+          "self_test_write": 918683,
+          "cleanup": 463886,
+          "package_write": 113717,
+          "inspect_spec": 45397
+        },
+        "pooled_share": {
+          "self_test_run": 0.4645174500914834,
+          "other": 0.16840382285182925,
+          "isolation_check": 0.04762638683696588,
+          "inspect_submission": 0.07016277651420909,
+          "inspect_repo": 0.029417053259970512,
+          "meta": 0.05294438414053722,
+          "finish": 0.06774953157441636,
+          "inspect_upstream_tests": 0.042604857241202665,
+          "self_test_write": 0.03371207367400515,
+          "cleanup": 0.017022802216150244,
+          "package_write": 0.004172969220053973,
+          "inspect_spec": 0.0016658923791762902
+        },
+        "pooled_self_test_share": 0.4982295237654885,
+        "pooled_inspect_share": 0.14385057939455856,
+        "pooled_package_write_share": 0.004172969220053973,
+        "pooled_actions": {
+          "self_test_run": 311,
+          "other": 106,
+          "isolation_check": 30,
+          "inspect_submission": 47,
+          "inspect_repo": 20,
+          "meta": 33,
+          "finish": 39,
+          "inspect_upstream_tests": 30,
+          "self_test_write": 25,
+          "cleanup": 10,
+          "package_write": 3,
+          "inspect_spec": 1
+        },
+        "n_tail_ge_50k": 47,
+        "rates": {
+          "has_self_test": 0.9574468085106383,
+          "has_package_write": 0.06382978723404255,
+          "has_inspect_repo": 0.425531914893617,
+          "has_upstream_tests": 0.3191489361702128,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.19148936170212766,
+          "tail_frac_ge_50": 0.40425531914893614
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0028910348755433234,
+          "self_test_write": 0.024785745358550763,
+          "self_test_run": 0.4746997616854651,
+          "inspect_repo": 0.01805452347365829,
+          "inspect_upstream_tests": 0.031488970937860565,
+          "inspect_submission": 0.08000111873801878,
+          "inspect_spec": 0.003088981473732056,
+          "isolation_check": 0.049865787134049135,
+          "cleanup": 0.016793846361984506,
+          "meta": 0.06403473731642152,
+          "finish": 0.11869277089886038,
+          "other": 0.11560272174585558
+        }
+      },
+      "tasks": [
+        {
+          "task_id": "anytree__tree_resolve_render_core__001",
+          "cutoff": 1393232,
+          "total": 2027470,
+          "tail": 634238,
+          "tail_frac": 0.3128223845482301,
+          "tok": {
+            "self_test_run": 359897,
+            "other": 57212,
+            "isolation_check": 29513,
+            "inspect_submission": 83677,
+            "inspect_repo": 29198,
+            "meta": 37085,
+            "finish": 37656
+          },
+          "act": {
+            "self_test_run": 9,
+            "other": 1,
+            "isolation_check": 1,
+            "inspect_submission": 3,
+            "inspect_repo": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "automat__methodical_workflow_core__001",
+          "cutoff": 480263,
+          "total": 593861,
+          "tail": 113598,
+          "tail_frac": 0.1912871867322488,
+          "tok": {
+            "self_test_run": 37302,
+            "inspect_submission": 37668,
+            "finish": 38628
+          },
+          "act": {
+            "self_test_run": 1,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "boolean_py__expr_simplify_core__001",
+          "cutoff": 296711,
+          "total": 846371,
+          "tail": 549660,
+          "tail_frac": 0.6494315140759785,
+          "tok": {
+            "self_test_run": 286656,
+            "other": 154273,
+            "inspect_submission": 53602,
+            "finish": 55129
+          },
+          "act": {
+            "self_test_run": 6,
+            "other": 3,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cachecontrol__heuristic_store_core__001",
+          "cutoff": 418834,
+          "total": 821318,
+          "tail": 402484,
+          "tail_frac": 0.4900464862574545,
+          "tok": {
+            "self_test_run": 194978,
+            "inspect_submission": 39965,
+            "other": 83080,
+            "meta": 41795,
+            "finish": 42666
+          },
+          "act": {
+            "self_test_run": 5,
+            "inspect_submission": 1,
+            "other": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cacheout__ttl_policy_core__001",
+          "cutoff": 523842,
+          "total": 719106,
+          "tail": 195264,
+          "tail_frac": 0.271537158638643,
+          "tok": {
+            "self_test_run": 114703,
+            "other": 39913,
+            "finish": 40648
+          },
+          "act": {
+            "self_test_run": 3,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cachier__memoize_backend_core__001",
+          "cutoff": 1843258,
+          "total": 3541759,
+          "tail": 1698501,
+          "tail_frac": 0.4795642504190714,
+          "tok": {
+            "self_test_run": 795699,
+            "inspect_repo": 392680,
+            "inspect_submission": 83303,
+            "inspect_upstream_tests": 213964,
+            "other": 103323,
+            "meta": 61066,
+            "finish": 48466
+          },
+          "act": {
+            "self_test_run": 17,
+            "inspect_repo": 9,
+            "inspect_submission": 2,
+            "inspect_upstream_tests": 4,
+            "other": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "configupdater__ini_roundtrip_core__001",
+          "cutoff": 328470,
+          "total": 772882,
+          "tail": 444412,
+          "tail_frac": 0.5750062752140689,
+          "tok": {
+            "self_test_run": 145023,
+            "inspect_upstream_tests": 69560,
+            "other": 111357,
+            "isolation_check": 38507,
+            "meta": 39365,
+            "finish": 40600
+          },
+          "act": {
+            "self_test_run": 4,
+            "inspect_upstream_tests": 2,
+            "other": 3,
+            "isolation_check": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "fasteners__process_lock_core__001",
+          "cutoff": 249817,
+          "total": 383911,
+          "tail": 134094,
+          "tail_frac": 0.3492840788620279,
+          "tok": {
+            "self_test_run": 104730,
+            "finish": 29364
+          },
+          "act": {
+            "self_test_run": 4,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "flask_cors__cors_options_core__001",
+          "cutoff": 747328,
+          "total": 1535694,
+          "tail": 788366,
+          "tail_frac": 0.51336138579691,
+          "tok": {
+            "other": 305292,
+            "inspect_submission": 108796,
+            "self_test_run": 268527,
+            "isolation_check": 62120,
+            "finish": 43631
+          },
+          "act": {
+            "other": 6,
+            "inspect_submission": 2,
+            "self_test_run": 5,
+            "isolation_check": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "flask_login__session_guard_core__001",
+          "cutoff": 597086,
+          "total": 1802356,
+          "tail": 1205270,
+          "tail_frac": 0.6687191653591188,
+          "tok": {
+            "isolation_check": 73212,
+            "other": 316219,
+            "meta": 41513,
+            "self_test_write": 195352,
+            "self_test_run": 273752,
+            "inspect_submission": 236445,
+            "inspect_upstream_tests": 29766,
+            "finish": 39011
+          },
+          "act": {
+            "isolation_check": 2,
+            "other": 8,
+            "meta": 1,
+            "self_test_write": 5,
+            "self_test_run": 7,
+            "inspect_submission": 8,
+            "inspect_upstream_tests": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "freezegun__freeze_time_core__001",
+          "cutoff": 559716,
+          "total": 1400705,
+          "tail": 840989,
+          "tail_frac": 0.6004040822300198,
+          "tok": {
+            "self_test_run": 313304,
+            "self_test_write": 43475,
+            "other": 189501,
+            "isolation_check": 47197,
+            "inspect_submission": 47396,
+            "meta": 99667,
+            "cleanup": 48672,
+            "finish": 51777
+          },
+          "act": {
+            "self_test_run": 7,
+            "self_test_write": 1,
+            "other": 4,
+            "isolation_check": 1,
+            "inspect_submission": 1,
+            "meta": 2,
+            "cleanup": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "ftfy__fix_text_core__001",
+          "cutoff": 257833,
+          "total": 679480,
+          "tail": 421647,
+          "tail_frac": 0.6205436510272562,
+          "tok": {
+            "package_write": 26290,
+            "self_test_run": 228680,
+            "other": 28589,
+            "inspect_upstream_tests": 29598,
+            "isolation_check": 34725,
+            "meta": 36656,
+            "finish": 37109
+          },
+          "act": {
+            "package_write": 1,
+            "self_test_run": 7,
+            "other": 1,
+            "inspect_upstream_tests": 1,
+            "isolation_check": 1,
+            "meta": 1
+          },
+          "has_self_test": true,
+          "has_package_write": true,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "furl__url_mutate_core__001",
+          "cutoff": 507412,
+          "total": 768528,
+          "tail": 261116,
+          "tail_frac": 0.3397612058376533,
+          "tok": {
+            "isolation_check": 29925,
+            "self_test_run": 128051,
+            "cleanup": 34028,
+            "meta": 34290,
+            "finish": 34822
+          },
+          "act": {
+            "isolation_check": 1,
+            "self_test_run": 4,
+            "cleanup": 1,
+            "meta": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "huey__task_schedule_core__001",
+          "cutoff": 1538040,
+          "total": 2100551,
+          "tail": 562511,
+          "tail_frac": 0.267792117401577,
+          "tok": {
+            "self_test_run": 227036,
+            "inspect_upstream_tests": 109373,
+            "self_test_write": 73619,
+            "isolation_check": 39596,
+            "meta": 42623,
+            "cleanup": 42742,
+            "finish": 27522
+          },
+          "act": {
+            "self_test_run": 6,
+            "inspect_upstream_tests": 3,
+            "self_test_write": 2,
+            "isolation_check": 1,
+            "meta": 1,
+            "cleanup": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "hyperlink__url_parse_core__001",
+          "cutoff": 886522,
+          "total": 1324936,
+          "tail": 438414,
+          "tail_frac": 0.3308944733934318,
+          "tok": {
+            "self_test_run": 235130,
+            "isolation_check": 95998,
+            "inspect_submission": 82190,
+            "finish": 25096
+          },
+          "act": {
+            "self_test_run": 5,
+            "isolation_check": 2,
+            "inspect_submission": 2
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "icalendar__component_roundtrip_core__001",
+          "cutoff": 605174,
+          "total": 1716750,
+          "tail": 1111576,
+          "tail_frac": 0.6474885685160915,
+          "tok": {
+            "package_write": 42182,
+            "self_test_run": 504058,
+            "self_test_write": 143931,
+            "inspect_submission": 104175,
+            "isolation_check": 95562,
+            "inspect_repo": 51969,
+            "other": 110879,
+            "meta": 28280,
+            "finish": 30540
+          },
+          "act": {
+            "package_write": 1,
+            "self_test_run": 12,
+            "self_test_write": 3,
+            "inspect_submission": 2,
+            "isolation_check": 2,
+            "inspect_repo": 1,
+            "other": 3,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": true,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "invoke__collection_context_core__001",
+          "cutoff": 773923,
+          "total": 1920562,
+          "tail": 1146639,
+          "tail_frac": 0.5970330559492482,
+          "tok": {
+            "self_test_run": 279028,
+            "inspect_upstream_tests": 53522,
+            "other": 328186,
+            "isolation_check": 271337,
+            "inspect_submission": 109621,
+            "meta": 71005,
+            "finish": 33940
+          },
+          "act": {
+            "self_test_run": 5,
+            "inspect_upstream_tests": 1,
+            "other": 5,
+            "isolation_check": 4,
+            "inspect_submission": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "joserfc__jwt_claims_core__001",
+          "cutoff": 1887693,
+          "total": 1988092,
+          "tail": 100399,
+          "tail_frac": 0.05050017806017025,
+          "tok": {
+            "isolation_check": 32512,
+            "meta": 33699,
+            "finish": 34188
+          },
+          "act": {
+            "isolation_check": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "jsonpickle__handler_roundtrip_core__001",
+          "cutoff": 2358332,
+          "total": 2638651,
+          "tail": 280319,
+          "tail_frac": 0.10623572423939354,
+          "tok": {
+            "self_test_run": 91312,
+            "cleanup": 45753,
+            "meta": 46144,
+            "inspect_repo": 48213,
+            "finish": 48897
+          },
+          "act": {
+            "self_test_run": 2,
+            "cleanup": 1,
+            "meta": 1,
+            "inspect_repo": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "langcodes__language_metadata_core__001",
+          "cutoff": 912563,
+          "total": 2745685,
+          "tail": 1833122,
+          "tail_frac": 0.6676374019598024,
+          "tok": {
+            "other": 488530,
+            "inspect_upstream_tests": 178333,
+            "self_test_run": 777346,
+            "meta": 108802,
+            "inspect_repo": 67201,
+            "isolation_check": 35927,
+            "inspect_submission": 35379,
+            "cleanup": 92148,
+            "finish": 49456
+          },
+          "act": {
+            "other": 11,
+            "inspect_upstream_tests": 5,
+            "self_test_run": 20,
+            "meta": 3,
+            "inspect_repo": 2,
+            "isolation_check": 1,
+            "inspect_submission": 1,
+            "cleanup": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "more_itertools__recipes_core__001",
+          "cutoff": 147867,
+          "total": 252182,
+          "tail": 104315,
+          "tail_frac": 0.41364966571761663,
+          "tok": {
+            "self_test_run": 60786,
+            "isolation_check": 21154,
+            "finish": 22375
+          },
+          "act": {
+            "self_test_run": 3,
+            "isolation_check": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "packageurl__purl_parse_core__001",
+          "cutoff": 165103,
+          "total": 1000010,
+          "tail": 834907,
+          "tail_frac": 0.8348986510134898,
+          "tok": {
+            "self_test_run": 254787,
+            "self_test_write": 29560,
+            "inspect_upstream_tests": 30198,
+            "other": 379299,
+            "inspect_repo": 32275,
+            "isolation_check": 32697,
+            "cleanup": 37713,
+            "finish": 38378
+          },
+          "act": {
+            "self_test_run": 8,
+            "self_test_write": 1,
+            "inspect_upstream_tests": 1,
+            "other": 11,
+            "inspect_repo": 1,
+            "isolation_check": 1,
+            "cleanup": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "portalocker__file_lock_core__001",
+          "cutoff": 1223330,
+          "total": 1386808,
+          "tail": 163478,
+          "tail_frac": 0.11788077369037386,
+          "tok": {
+            "self_test_run": 68496,
+            "inspect_submission": 73680,
+            "finish": 21302
+          },
+          "act": {
+            "self_test_run": 2,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "publicsuffixlist__metadata_lookup_core__001",
+          "cutoff": 486518,
+          "total": 636779,
+          "tail": 150261,
+          "tail_frac": 0.23597040731556787,
+          "tok": {
+            "self_test_run": 73688,
+            "inspect_submission": 37636,
+            "finish": 38937
+          },
+          "act": {
+            "self_test_run": 2,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "puremagic__signature_resource_core__001",
+          "cutoff": 226880,
+          "total": 949348,
+          "tail": 722468,
+          "tail_frac": 0.7610149281401551,
+          "tok": {
+            "meta": 114967,
+            "self_test_run": 404286,
+            "self_test_write": 31179,
+            "isolation_check": 83119,
+            "other": 43878,
+            "finish": 45039
+          },
+          "act": {
+            "meta": 3,
+            "self_test_run": 11,
+            "self_test_write": 1,
+            "isolation_check": 2,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyee__event_workflow_core__001",
+          "cutoff": 175708,
+          "total": 285282,
+          "tail": 109574,
+          "tail_frac": 0.3840901283642151,
+          "tok": {
+            "self_test_run": 86299,
+            "finish": 23275
+          },
+          "act": {
+            "self_test_run": 4,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyjwt__encode_decode_core__001",
+          "cutoff": 993362,
+          "total": 1430178,
+          "tail": 436816,
+          "tail_frac": 0.305427715990597,
+          "tok": {
+            "self_test_run": 214250,
+            "other": 110685,
+            "isolation_check": 53281,
+            "finish": 58600
+          },
+          "act": {
+            "self_test_run": 4,
+            "other": 2,
+            "isolation_check": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyotp__totp_hotp_core__001",
+          "cutoff": 262614,
+          "total": 486050,
+          "tail": 223436,
+          "tail_frac": 0.45969756197922024,
+          "tok": {
+            "self_test_run": 155213,
+            "other": 33858,
+            "finish": 34365
+          },
+          "act": {
+            "self_test_run": 5,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyrsistent__pmap_pvector_core__001",
+          "cutoff": 315489,
+          "total": 1338537,
+          "tail": 1023048,
+          "tail_frac": 0.7643031160139765,
+          "tok": {
+            "meta": 120368,
+            "self_test_run": 667183,
+            "inspect_upstream_tests": 54864,
+            "other": 112323,
+            "finish": 68310
+          },
+          "act": {
+            "meta": 2,
+            "self_test_run": 11,
+            "inspect_upstream_tests": 1,
+            "other": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "python_crontab__cron_item_core__001",
+          "cutoff": 787537,
+          "total": 875515,
+          "tail": 87978,
+          "tail_frac": 0.10048714185365185,
+          "tok": {
+            "inspect_submission": 43489,
+            "finish": 44489
+          },
+          "act": {
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_json_logger__json_formatter_core__001",
+          "cutoff": 234275,
+          "total": 709361,
+          "tail": 475086,
+          "tail_frac": 0.6697379754455066,
+          "tok": {
+            "self_test_write": 143498,
+            "self_test_run": 235499,
+            "isolation_check": 29255,
+            "other": 33144,
+            "finish": 33690
+          },
+          "act": {
+            "self_test_write": 5,
+            "self_test_run": 8,
+            "isolation_check": 1,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_statemachine__json_workflow_core__001",
+          "cutoff": 6908128,
+          "total": 7097945,
+          "tail": 189817,
+          "tail_frac": 0.026742528999590728,
+          "tok": {
+            "self_test_run": 112573,
+            "meta": 37649,
+            "finish": 39595
+          },
+          "act": {
+            "self_test_run": 3,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "semver__version_core__001",
+          "cutoff": 286602,
+          "total": 781922,
+          "tail": 495320,
+          "tail_frac": 0.6334647189873158,
+          "tok": {
+            "self_test_run": 306047,
+            "inspect_upstream_tests": 33205,
+            "isolation_check": 76520,
+            "inspect_submission": 39159,
+            "finish": 40389
+          },
+          "act": {
+            "self_test_run": 9,
+            "inspect_upstream_tests": 1,
+            "isolation_check": 2,
+            "inspect_submission": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "sqlglot__parse_transpile_core__001",
+          "cutoff": 2161362,
+          "total": 3089701,
+          "tail": 928339,
+          "tail_frac": 0.30046240720380385,
+          "tok": {
+            "self_test_write": 100065,
+            "self_test_run": 375815,
+            "inspect_upstream_tests": 69046,
+            "other": 173168,
+            "inspect_repo": 39937,
+            "meta": 41877,
+            "inspect_submission": 84792,
+            "finish": 43639
+          },
+          "act": {
+            "self_test_write": 3,
+            "self_test_run": 11,
+            "inspect_upstream_tests": 2,
+            "other": 5,
+            "inspect_repo": 1,
+            "meta": 1,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "stamina__retry_context_core__001",
+          "cutoff": 463005,
+          "total": 2006606,
+          "tail": 1543601,
+          "tail_frac": 0.7692596354241938,
+          "tok": {
+            "self_test_run": 659780,
+            "other": 643700,
+            "inspect_upstream_tests": 48157,
+            "inspect_submission": 59921,
+            "inspect_repo": 61486,
+            "meta": 34968,
+            "finish": 35589
+          },
+          "act": {
+            "self_test_run": 16,
+            "other": 14,
+            "inspect_upstream_tests": 1,
+            "inspect_submission": 2,
+            "inspect_repo": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "strictyaml__schema_load_core__001",
+          "cutoff": 543450,
+          "total": 1159372,
+          "tail": 615922,
+          "tail_frac": 0.531254851764576,
+          "tok": {
+            "self_test_run": 230366,
+            "other": 144823,
+            "inspect_repo": 36334,
+            "self_test_write": 79460,
+            "inspect_submission": 39636,
+            "meta": 42358,
+            "finish": 42945
+          },
+          "act": {
+            "self_test_run": 6,
+            "other": 4,
+            "inspect_repo": 1,
+            "self_test_write": 2,
+            "inspect_submission": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "structlog__processor_chain_core__001",
+          "cutoff": 2097525,
+          "total": 2410215,
+          "tail": 312690,
+          "tail_frac": 0.12973531406949174,
+          "tok": {
+            "inspect_repo": 42347,
+            "self_test_run": 177374,
+            "inspect_spec": 45397,
+            "finish": 47572
+          },
+          "act": {
+            "inspect_repo": 1,
+            "self_test_run": 4,
+            "inspect_spec": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinycss2__stylesheet_roundtrip_core__001",
+          "cutoff": 1476708,
+          "total": 1757155,
+          "tail": 280447,
+          "tail_frac": 0.1596028807931002,
+          "tok": {
+            "inspect_submission": 85818,
+            "self_test_run": 105806,
+            "meta": 29227,
+            "other": 29448,
+            "finish": 30148
+          },
+          "act": {
+            "inspect_submission": 2,
+            "self_test_run": 4,
+            "meta": 1,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinydb__query_storage_core__001",
+          "cutoff": 1252533,
+          "total": 1688923,
+          "tail": 436390,
+          "tail_frac": 0.2583835971207687,
+          "tok": {
+            "self_test_run": 226951,
+            "meta": 118607,
+            "cleanup": 60293,
+            "finish": 30539
+          },
+          "act": {
+            "self_test_run": 4,
+            "meta": 2,
+            "cleanup": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tldextract__suffix_resolve_core__001",
+          "cutoff": 712154,
+          "total": 1347594,
+          "tail": 635440,
+          "tail_frac": 0.47153667944499605,
+          "tok": {
+            "self_test_run": 431871,
+            "isolation_check": 49589,
+            "cleanup": 50847,
+            "meta": 51135,
+            "finish": 51998
+          },
+          "act": {
+            "self_test_run": 9,
+            "isolation_check": 1,
+            "cleanup": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "toolz__compose_pipe_core__001",
+          "cutoff": 229965,
+          "total": 603309,
+          "tail": 373344,
+          "tail_frac": 0.6188271681675559,
+          "tok": {
+            "self_test_run": 155539,
+            "inspect_upstream_tests": 114014,
+            "other": 67407,
+            "finish": 36384
+          },
+          "act": {
+            "self_test_run": 5,
+            "inspect_upstream_tests": 4,
+            "other": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "typeguard__check_type_pipeline_core__001",
+          "cutoff": 788195,
+          "total": 1487354,
+          "tail": 699159,
+          "tail_frac": 0.47006899500724103,
+          "tok": {
+            "self_test_run": 436596,
+            "inspect_upstream_tests": 96780,
+            "other": 51271,
+            "inspect_submission": 54815,
+            "meta": 32948,
+            "finish": 26749
+          },
+          "act": {
+            "self_test_run": 9,
+            "inspect_upstream_tests": 2,
+            "other": 1,
+            "inspect_submission": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "unidiff__patch_hunk_core__001",
+          "cutoff": 215700,
+          "total": 744147,
+          "tail": 528447,
+          "tail_frac": 0.7101379162987959,
+          "tok": {
+            "self_test_run": 353004,
+            "inspect_upstream_tests": 30639,
+            "other": 70752,
+            "isolation_check": 33844,
+            "finish": 40208
+          },
+          "act": {
+            "self_test_run": 11,
+            "inspect_upstream_tests": 1,
+            "other": 2,
+            "isolation_check": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "uritools__uri_join_normalize_core__001",
+          "cutoff": 584324,
+          "total": 759989,
+          "tail": 175665,
+          "tail_frac": 0.23114150336386446,
+          "tok": {
+            "self_test_run": 86653,
+            "meta": 44210,
+            "finish": 44802
+          },
+          "act": {
+            "self_test_run": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "vcrpy__cassette_match_core__001",
+          "cutoff": 3957069,
+          "total": 5228711,
+          "tail": 1271642,
+          "tail_frac": 0.2432037265016177,
+          "tok": {
+            "package_write": 45245,
+            "self_test_run": 643896,
+            "inspect_submission": 237761,
+            "other": 271054,
+            "isolation_check": 32270,
+            "finish": 41416
+          },
+          "act": {
+            "package_write": 1,
+            "self_test_run": 15,
+            "inspect_submission": 5,
+            "other": 7,
+            "isolation_check": 1
+          },
+          "has_self_test": true,
+          "has_package_write": true,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "venusian__scan_dispatch_core__001",
+          "cutoff": 450102,
+          "total": 1520371,
+          "tail": 1070269,
+          "tail_frac": 0.7039525221146681,
+          "tok": {
+            "self_test_run": 667286,
+            "self_test_write": 78544,
+            "cleanup": 51690,
+            "other": 107985,
+            "inspect_submission": 108597,
+            "finish": 56167
+          },
+          "act": {
+            "self_test_run": 14,
+            "self_test_write": 2,
+            "cleanup": 1,
+            "other": 2,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "watchdog__observer_dispatch_core__001",
+          "cutoff": 1152345,
+          "total": 1352727,
+          "tail": 200382,
+          "tail_frac": 0.148131884704009,
+          "tok": {
+            "self_test_run": 103244,
+            "meta": 52476,
+            "inspect_submission": 24475,
+            "finish": 20187
+          },
+          "act": {
+            "self_test_run": 2,
+            "meta": 1,
+            "inspect_submission": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        }
+      ]
+    },
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "python200-qwen3.6-35b-a3b-fp8-v1-0817-001:pass:after_last_write",
+        "n": 20,
+        "tail_median": 258800.0,
+        "tail_p25": 160081.25,
+        "tail_p90": 469684.5000000003,
+        "tail_frac_median": 0.24001864070504553,
+        "tail_frac_p25": 0.12816309660976863,
+        "tail_frac_p90": 0.5322593861587985,
+        "total_median": 1406163.0,
+        "cutoff_median": 1013726.0,
+        "pooled_tokens": {
+          "meta": 971969,
+          "finish": 777522,
+          "inspect_submission": 564014,
+          "self_test_run": 2050167,
+          "other": 642557,
+          "self_test_write": 753979,
+          "inspect_spec": 28281,
+          "isolation_check": 118419
+        },
+        "pooled_share": {
+          "meta": 0.16454784804503472,
+          "finish": 0.1316292720320005,
+          "inspect_submission": 0.09548379626024309,
+          "self_test_run": 0.3470795549888368,
+          "other": 0.10878060061202917,
+          "self_test_write": 0.12764359966330946,
+          "inspect_spec": 0.004787784065707473,
+          "isolation_check": 0.02004754433283877
+        },
+        "pooled_self_test_share": 0.47472315465214626,
+        "pooled_inspect_share": 0.10027158032595057,
+        "pooled_package_write_share": 0.0,
+        "pooled_actions": {
+          "meta": 24,
+          "finish": 16,
+          "inspect_submission": 11,
+          "self_test_run": 57,
+          "other": 17,
+          "self_test_write": 22,
+          "inspect_spec": 1,
+          "isolation_check": 3
+        },
+        "n_tail_ge_50k": 18,
+        "rates": {
+          "has_self_test": 0.8,
+          "has_package_write": 0.0,
+          "has_inspect_repo": 0.0,
+          "has_upstream_tests": 0.0,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.0,
+          "tail_frac_ge_50": 0.15
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0,
+          "self_test_write": 0.11592349007557781,
+          "self_test_run": 0.32161519259325005,
+          "inspect_repo": 0.0,
+          "inspect_upstream_tests": 0.0,
+          "inspect_submission": 0.0923595374496785,
+          "inspect_spec": 0.00407121319302828,
+          "isolation_check": 0.01455676223061933,
+          "cleanup": 0.0,
+          "meta": 0.16822658116972716,
+          "finish": 0.157834778495416,
+          "other": 0.1254124447927029
+        }
+      },
+      "tasks": [
+        {
+          "task_id": "automat__methodical_workflow_core__001",
+          "cutoff": 1445876,
+          "total": 1542656,
+          "tail": 96780,
+          "tail_frac": 0.0627359566876867,
+          "tok": {
+            "meta": 48077,
+            "finish": 48703
+          },
+          "act": {
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cachecontrol__heuristic_store_core__001",
+          "cutoff": 1110931,
+          "total": 1261428,
+          "tail": 150497,
+          "tail_frac": 0.11930684906312529,
+          "tok": {
+            "inspect_submission": 36635,
+            "self_test_run": 37121,
+            "other": 38093,
+            "finish": 38648
+          },
+          "act": {
+            "inspect_submission": 1,
+            "self_test_run": 1,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "fasteners__process_lock_core__001",
+          "cutoff": 186652,
+          "total": 572573,
+          "tail": 385921,
+          "tail_frac": 0.6740118727219062,
+          "tok": {
+            "self_test_write": 83512,
+            "self_test_run": 117478,
+            "other": 41084,
+            "inspect_spec": 28281,
+            "inspect_submission": 28641,
+            "meta": 57602,
+            "finish": 29323
+          },
+          "act": {
+            "self_test_write": 4,
+            "self_test_run": 5,
+            "other": 1,
+            "inspect_spec": 1,
+            "inspect_submission": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "flask_cors__cors_options_core__001",
+          "cutoff": 1855568,
+          "total": 2021838,
+          "tail": 166270,
+          "tail_frac": 0.08223705361161478,
+          "tok": {
+            "self_test_run": 81351,
+            "self_test_write": 84919
+          },
+          "act": {
+            "self_test_run": 1,
+            "self_test_write": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "huey__task_schedule_core__001",
+          "cutoff": 1084085,
+          "total": 1247674,
+          "tail": 163589,
+          "tail_frac": 0.1311151791253164,
+          "tok": {
+            "self_test_run": 60417,
+            "other": 41220,
+            "meta": 39962,
+            "finish": 21990
+          },
+          "act": {
+            "self_test_run": 3,
+            "other": 2,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "more_itertools__recipes_core__001",
+          "cutoff": 288345,
+          "total": 371500,
+          "tail": 83155,
+          "tail_frac": 0.223835800807537,
+          "tok": {
+            "other": 41233,
+            "self_test_run": 20644,
+            "finish": 21278
+          },
+          "act": {
+            "other": 2,
+            "self_test_run": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "portalocker__file_lock_core__001",
+          "cutoff": 517417,
+          "total": 763949,
+          "tail": 246532,
+          "tail_frac": 0.32270740586086244,
+          "tok": {
+            "self_test_write": 33646,
+            "self_test_run": 69538,
+            "other": 35050,
+            "meta": 71734,
+            "finish": 36564
+          },
+          "act": {
+            "self_test_write": 1,
+            "self_test_run": 2,
+            "other": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "puremagic__signature_resource_core__001",
+          "cutoff": 937137,
+          "total": 1606293,
+          "tail": 669156,
+          "tail_frac": 0.41658402296467706,
+          "tok": {
+            "self_test_run": 391806,
+            "isolation_check": 36293,
+            "other": 47713,
+            "inspect_submission": 47791,
+            "meta": 96478,
+            "finish": 49075
+          },
+          "act": {
+            "self_test_run": 11,
+            "isolation_check": 1,
+            "other": 1,
+            "inspect_submission": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyjwt__encode_decode_core__001",
+          "cutoff": 488938,
+          "total": 652214,
+          "tail": 163276,
+          "tail_frac": 0.2503411456975778,
+          "tok": {
+            "meta": 20444,
+            "self_test_write": 45882,
+            "self_test_run": 71593,
+            "finish": 25357
+          },
+          "act": {
+            "meta": 1,
+            "self_test_write": 1,
+            "self_test_run": 3
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_json_logger__json_formatter_core__001",
+          "cutoff": 588538,
+          "total": 966768,
+          "tail": 378230,
+          "tail_frac": 0.3912314019495887,
+          "tok": {
+            "meta": 129743,
+            "self_test_write": 90476,
+            "self_test_run": 91395,
+            "isolation_check": 32570,
+            "finish": 34046
+          },
+          "act": {
+            "meta": 3,
+            "self_test_write": 3,
+            "self_test_run": 3,
+            "isolation_check": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "semver__version_core__001",
+          "cutoff": 200361,
+          "total": 462176,
+          "tail": 261815,
+          "tail_frac": 0.5664833310254103,
+          "tok": {
+            "meta": 18318,
+            "self_test_write": 46757,
+            "self_test_run": 118038,
+            "other": 51969,
+            "finish": 26733
+          },
+          "act": {
+            "meta": 1,
+            "self_test_write": 2,
+            "self_test_run": 5,
+            "other": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "stamina__retry_context_core__001",
+          "cutoff": 2009970,
+          "total": 2009970,
+          "tail": 0,
+          "tail_frac": 0.0,
+          "tok": {},
+          "act": {},
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "structlog__processor_chain_core__001",
+          "cutoff": 1967509,
+          "total": 2015584,
+          "tail": 48075,
+          "tail_frac": 0.023851647959102672,
+          "tok": {
+            "finish": 48075
+          },
+          "act": {},
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinycss2__stylesheet_roundtrip_core__001",
+          "cutoff": 990266,
+          "total": 1421240,
+          "tail": 430974,
+          "tail_frac": 0.30323801750583995,
+          "tok": {
+            "inspect_submission": 55458,
+            "self_test_run": 180002,
+            "other": 64657,
+            "meta": 65194,
+            "finish": 65663
+          },
+          "act": {
+            "inspect_submission": 1,
+            "self_test_run": 3,
+            "other": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinydb__query_storage_core__001",
+          "cutoff": 640797,
+          "total": 1088318,
+          "tail": 447521,
+          "tail_frac": 0.4112042619896023,
+          "tok": {
+            "self_test_run": 255281,
+            "other": 47387,
+            "meta": 96392,
+            "finish": 48461
+          },
+          "act": {
+            "self_test_run": 6,
+            "other": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tldextract__suffix_resolve_core__001",
+          "cutoff": 1308006,
+          "total": 1563791,
+          "tail": 255785,
+          "tail_frac": 0.1635672541918965,
+          "tok": {
+            "inspect_submission": 169171,
+            "finish": 86614
+          },
+          "act": {
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "toolz__compose_pipe_core__001",
+          "cutoff": 1037186,
+          "total": 1391086,
+          "tail": 353900,
+          "tail_frac": 0.25440555077112414,
+          "tok": {
+            "self_test_run": 130839,
+            "meta": 88575,
+            "inspect_submission": 88752,
+            "finish": 45734
+          },
+          "act": {
+            "self_test_run": 3,
+            "meta": 2,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "typeguard__check_type_pipeline_core__001",
+          "cutoff": 1365872,
+          "total": 1773160,
+          "tail": 407288,
+          "tail_frac": 0.22969613571251327,
+          "tok": {
+            "isolation_check": 49556,
+            "self_test_run": 100143,
+            "inspect_submission": 50176,
+            "meta": 102982,
+            "other": 51926,
+            "finish": 52505
+          },
+          "act": {
+            "isolation_check": 1,
+            "self_test_run": 2,
+            "inspect_submission": 1,
+            "meta": 2,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "uritools__uri_join_normalize_core__001",
+          "cutoff": 712964,
+          "total": 1511980,
+          "tail": 799016,
+          "tail_frac": 0.5284567256180638,
+          "tok": {
+            "self_test_write": 318814,
+            "self_test_run": 226608,
+            "meta": 37715,
+            "other": 81274,
+            "inspect_submission": 87390,
+            "finish": 47215
+          },
+          "act": {
+            "self_test_write": 9,
+            "self_test_run": 6,
+            "meta": 1,
+            "other": 2,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "watchdog__observer_dispatch_core__001",
+          "cutoff": 1625683,
+          "total": 2024811,
+          "tail": 399128,
+          "tail_frac": 0.19711864465374793,
+          "tok": {
+            "meta": 98753,
+            "self_test_run": 97913,
+            "self_test_write": 49973,
+            "other": 100951,
+            "finish": 51538
+          },
+          "act": {
+            "meta": 2,
+            "self_test_run": 2,
+            "self_test_write": 1,
+            "other": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        }
+      ]
+    },
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/external50-qwen3.6-35b-a3b-fp8-0817-main-001",
+      "mode": "last_write_pass",
+      "summary": {
+        "label": "external50-qwen3.6-35b-a3b-fp8-0817-main-001:pass:after_last_write",
+        "n": 36,
+        "tail_median": 554190.0,
+        "tail_p25": 309611.0,
+        "tail_p90": 1108318.0,
+        "tail_frac_median": 0.2921931013269642,
+        "tail_frac_p25": 0.18159109181832728,
+        "tail_frac_p90": 0.5306936485312537,
+        "total_median": 2044801.0,
+        "cutoff_median": 1363456.5,
+        "pooled_tokens": {
+          "other": 2471585,
+          "inspect_spec": 353925,
+          "self_test_run": 7642576,
+          "inspect_submission": 2045459,
+          "meta": 3427126,
+          "finish": 3162765,
+          "self_test_write": 1511097,
+          "isolation_check": 590683,
+          "inspect_upstream_tests": 59933,
+          "inspect_repo": 236103
+        },
+        "pooled_share": {
+          "other": 0.11495074798434994,
+          "inspect_spec": 0.016460669360091218,
+          "self_test_run": 0.35544795251923006,
+          "inspect_submission": 0.09513208812212423,
+          "meta": 0.1593919275026403,
+          "finish": 0.14709678301524023,
+          "self_test_write": 0.0702794888409289,
+          "isolation_check": 0.027472028140500843,
+          "inspect_upstream_tests": 0.0027874190768053878,
+          "inspect_repo": 0.010980895438088908
+        },
+        "pooled_self_test_share": 0.42572744136015894,
+        "pooled_inspect_share": 0.12536107199710975,
+        "pooled_package_write_share": 0.0,
+        "pooled_actions": {
+          "other": 44,
+          "inspect_spec": 6,
+          "self_test_run": 123,
+          "inspect_submission": 35,
+          "meta": 54,
+          "finish": 34,
+          "self_test_write": 33,
+          "isolation_check": 8,
+          "inspect_upstream_tests": 1,
+          "inspect_repo": 3
+        },
+        "n_tail_ge_50k": 36,
+        "rates": {
+          "has_self_test": 0.8055555555555556,
+          "has_package_write": 0.0,
+          "has_inspect_repo": 0.05555555555555555,
+          "has_upstream_tests": 0.027777777777777776,
+          "kept_mutating": 0.0,
+          "tail_ge_1m": 0.1388888888888889,
+          "tail_frac_ge_50": 0.16666666666666666
+        },
+        "mean_tail_share_ge_50k": {
+          "package_write": 0.0,
+          "self_test_write": 0.060075943920960155,
+          "self_test_run": 0.3011737716678153,
+          "inspect_repo": 0.007125747288538213,
+          "inspect_upstream_tests": 0.003013970080464397,
+          "inspect_submission": 0.086199925222878,
+          "inspect_spec": 0.015155840579740816,
+          "isolation_check": 0.018667209316524627,
+          "cleanup": 0.0,
+          "meta": 0.179084219602316,
+          "finish": 0.21664731143465685,
+          "other": 0.1128560608861057
+        }
+      },
+      "tasks": [
+        {
+          "task_id": "automat__methodical_workflow_core__001",
+          "cutoff": 1380829,
+          "total": 2088556,
+          "tail": 707727,
+          "tail_frac": 0.3388594799469107,
+          "tok": {
+            "other": 132825,
+            "inspect_spec": 82506,
+            "self_test_run": 242654,
+            "inspect_submission": 61879,
+            "meta": 124718,
+            "finish": 63145
+          },
+          "act": {
+            "other": 2,
+            "inspect_spec": 1,
+            "self_test_run": 4,
+            "inspect_submission": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cachecontrol__heuristic_store_core__001",
+          "cutoff": 426217,
+          "total": 684002,
+          "tail": 257785,
+          "tail_frac": 0.3768775529896111,
+          "tok": {
+            "self_test_write": 30716,
+            "self_test_run": 63183,
+            "meta": 97597,
+            "other": 32947,
+            "finish": 33342
+          },
+          "act": {
+            "self_test_write": 1,
+            "self_test_run": 2,
+            "meta": 2,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cacheout__ttl_policy_core__001",
+          "cutoff": 1113598,
+          "total": 1583729,
+          "tail": 470131,
+          "tail_frac": 0.29685066068752924,
+          "tok": {
+            "self_test_run": 257942,
+            "other": 105773,
+            "inspect_submission": 52172,
+            "finish": 54244
+          },
+          "act": {
+            "self_test_run": 5,
+            "other": 2,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "cachier__memoize_backend_core__001",
+          "cutoff": 835696,
+          "total": 1407582,
+          "tail": 571886,
+          "tail_frac": 0.406289651331148,
+          "tok": {
+            "self_test_write": 110249,
+            "self_test_run": 170911,
+            "inspect_submission": 53677,
+            "other": 56209,
+            "inspect_spec": 59961,
+            "meta": 60275,
+            "finish": 60604
+          },
+          "act": {
+            "self_test_write": 2,
+            "self_test_run": 3,
+            "inspect_submission": 1,
+            "other": 1,
+            "inspect_spec": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "configupdater__ini_roundtrip_core__001",
+          "cutoff": 4010550,
+          "total": 4208133,
+          "tail": 197583,
+          "tail_frac": 0.0469526509737216,
+          "tok": {
+            "meta": 98556,
+            "finish": 99027
+          },
+          "act": {
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "fasteners__process_lock_core__001",
+          "cutoff": 416150,
+          "total": 1204936,
+          "tail": 788786,
+          "tail_frac": 0.6546289595463991,
+          "tok": {
+            "self_test_write": 245864,
+            "other": 142793,
+            "self_test_run": 294538,
+            "inspect_spec": 52018,
+            "finish": 53573
+          },
+          "act": {
+            "self_test_write": 5,
+            "other": 3,
+            "self_test_run": 6,
+            "inspect_spec": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "flask_cors__cors_options_core__001",
+          "cutoff": 1389131,
+          "total": 1700118,
+          "tail": 310987,
+          "tail_frac": 0.18292083255397568,
+          "tok": {
+            "self_test_run": 122481,
+            "meta": 125207,
+            "finish": 63299
+          },
+          "act": {
+            "self_test_run": 2,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "flask_login__session_guard_core__001",
+          "cutoff": 684807,
+          "total": 1521260,
+          "tail": 836453,
+          "tail_frac": 0.5498422360411764,
+          "tok": {
+            "meta": 108610,
+            "other": 162710,
+            "self_test_run": 277697,
+            "self_test_write": 180892,
+            "inspect_submission": 52580,
+            "finish": 53964
+          },
+          "act": {
+            "meta": 3,
+            "other": 4,
+            "self_test_run": 6,
+            "self_test_write": 4,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "ftfy__fix_text_core__001",
+          "cutoff": 11095540,
+          "total": 11179112,
+          "tail": 83572,
+          "tail_frac": 0.007475727946906695,
+          "tok": {
+            "finish": 83572
+          },
+          "act": {},
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "furl__url_mutate_core__001",
+          "cutoff": 3237986,
+          "total": 4618726,
+          "tail": 1380740,
+          "tail_frac": 0.29894390790880426,
+          "tok": {
+            "self_test_run": 860970,
+            "other": 128467,
+            "meta": 258108,
+            "finish": 133195
+          },
+          "act": {
+            "self_test_run": 7,
+            "other": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "huey__task_schedule_core__001",
+          "cutoff": 1825320,
+          "total": 2495750,
+          "tail": 670430,
+          "tail_frac": 0.26862866873685265,
+          "tok": {
+            "self_test_run": 404156,
+            "other": 88268,
+            "meta": 88744,
+            "finish": 89262
+          },
+          "act": {
+            "self_test_run": 5,
+            "other": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "hyperlink__url_parse_core__001",
+          "cutoff": 1980500,
+          "total": 2408201,
+          "tail": 427701,
+          "tail_frac": 0.1776018696113821,
+          "tok": {
+            "self_test_run": 177789,
+            "other": 62056,
+            "inspect_submission": 62257,
+            "meta": 62612,
+            "finish": 62987
+          },
+          "act": {
+            "self_test_run": 2,
+            "other": 1,
+            "inspect_submission": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "invoke__collection_context_core__001",
+          "cutoff": 5973664,
+          "total": 7176559,
+          "tail": 1202895,
+          "tail_frac": 0.16761445143835646,
+          "tok": {
+            "inspect_submission": 89145,
+            "self_test_run": 182037,
+            "other": 94166,
+            "finish": 837547
+          },
+          "act": {
+            "inspect_submission": 1,
+            "self_test_run": 2,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "jsonpickle__handler_roundtrip_core__001",
+          "cutoff": 2235042,
+          "total": 2787416,
+          "tail": 552374,
+          "tail_frac": 0.19816704790386508,
+          "tok": {
+            "inspect_submission": 232064,
+            "self_test_run": 77182,
+            "other": 80709,
+            "meta": 81053,
+            "finish": 81366
+          },
+          "act": {
+            "inspect_submission": 3,
+            "self_test_run": 1,
+            "other": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "langcodes__language_metadata_core__001",
+          "cutoff": 5321549,
+          "total": 5431043,
+          "tail": 109494,
+          "tail_frac": 0.020160768382794982,
+          "tok": {
+            "finish": 109494
+          },
+          "act": {
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "more_itertools__recipes_core__001",
+          "cutoff": 957462,
+          "total": 1040202,
+          "tail": 82740,
+          "tail_frac": 0.07954224275669533,
+          "tok": {
+            "other": 41098,
+            "finish": 41642
+          },
+          "act": {
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "packageurl__purl_parse_core__001",
+          "cutoff": 2092529,
+          "total": 2209742,
+          "tail": 117213,
+          "tail_frac": 0.05304374899875189,
+          "tok": {
+            "meta": 58361,
+            "finish": 58852
+          },
+          "act": {
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "portalocker__file_lock_core__001",
+          "cutoff": 921920,
+          "total": 1697026,
+          "tail": 775106,
+          "tail_frac": 0.4567437387523821,
+          "tok": {
+            "self_test_run": 148855,
+            "meta": 156972,
+            "self_test_write": 251053,
+            "inspect_submission": 53471,
+            "isolation_check": 54446,
+            "inspect_spec": 54929,
+            "finish": 55380
+          },
+          "act": {
+            "self_test_run": 3,
+            "meta": 3,
+            "self_test_write": 5,
+            "inspect_submission": 1,
+            "isolation_check": 1,
+            "inspect_spec": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "publicsuffixlist__metadata_lookup_core__001",
+          "cutoff": 1648017,
+          "total": 2200380,
+          "tail": 552363,
+          "tail_frac": 0.25103073105554496,
+          "tok": {
+            "inspect_upstream_tests": 59933,
+            "self_test_run": 182245,
+            "other": 61429,
+            "meta": 186131,
+            "finish": 62625
+          },
+          "act": {
+            "inspect_upstream_tests": 1,
+            "self_test_run": 3,
+            "other": 1,
+            "meta": 3,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": true
+        },
+        {
+          "task_id": "puremagic__signature_resource_core__001",
+          "cutoff": 1469682,
+          "total": 1929607,
+          "tail": 459925,
+          "tail_frac": 0.23835164362484174,
+          "tok": {
+            "self_test_run": 178917,
+            "inspect_submission": 132549,
+            "other": 48946,
+            "meta": 49609,
+            "finish": 49904
+          },
+          "act": {
+            "self_test_run": 4,
+            "inspect_submission": 3,
+            "other": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyee__event_workflow_core__001",
+          "cutoff": 245196,
+          "total": 887292,
+          "tail": 642096,
+          "tail_frac": 0.7236580516898609,
+          "tok": {
+            "meta": 72664,
+            "self_test_write": 109198,
+            "self_test_run": 184804,
+            "inspect_submission": 70245,
+            "other": 173378,
+            "finish": 31807
+          },
+          "act": {
+            "meta": 3,
+            "self_test_write": 4,
+            "self_test_run": 7,
+            "inspect_submission": 3,
+            "other": 6,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyjwt__encode_decode_core__001",
+          "cutoff": 1018073,
+          "total": 1560796,
+          "tail": 542723,
+          "tail_frac": 0.3477219316297582,
+          "tok": {
+            "inspect_submission": 175186,
+            "self_test_run": 177383,
+            "meta": 126025,
+            "finish": 64129
+          },
+          "act": {
+            "inspect_submission": 3,
+            "self_test_run": 3,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyotp__totp_hotp_core__001",
+          "cutoff": 861465,
+          "total": 1209134,
+          "tail": 347669,
+          "tail_frac": 0.2875355419663991,
+          "tok": {
+            "self_test_run": 145135,
+            "other": 100795,
+            "meta": 49876,
+            "finish": 51863
+          },
+          "act": {
+            "self_test_run": 3,
+            "other": 2,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "pyrsistent__pmap_pvector_core__001",
+          "cutoff": 530909,
+          "total": 1086915,
+          "tail": 556006,
+          "tail_frac": 0.511545061021331,
+          "tok": {
+            "inspect_submission": 70492,
+            "meta": 198316,
+            "self_test_write": 80034,
+            "self_test_run": 122382,
+            "other": 41339,
+            "finish": 43443
+          },
+          "act": {
+            "inspect_submission": 2,
+            "meta": 4,
+            "self_test_write": 2,
+            "self_test_run": 3,
+            "other": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_crontab__cron_item_core__001",
+          "cutoff": 1983795,
+          "total": 2711452,
+          "tail": 727657,
+          "tail_frac": 0.2683643302555236,
+          "tok": {
+            "self_test_run": 348483,
+            "other": 150947,
+            "inspect_submission": 75492,
+            "meta": 76051,
+            "finish": 76684
+          },
+          "act": {
+            "self_test_run": 5,
+            "other": 2,
+            "inspect_submission": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_json_logger__json_formatter_core__001",
+          "cutoff": 1070427,
+          "total": 1628205,
+          "tail": 557778,
+          "tail_frac": 0.34257234193483005,
+          "tok": {
+            "self_test_write": 95179,
+            "self_test_run": 149838,
+            "meta": 101238,
+            "inspect_spec": 104511,
+            "other": 53091,
+            "finish": 53921
+          },
+          "act": {
+            "self_test_write": 2,
+            "self_test_run": 3,
+            "meta": 2,
+            "inspect_spec": 2,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "python_statemachine__json_workflow_core__001",
+          "cutoff": 1508813,
+          "total": 2001046,
+          "tail": 492233,
+          "tail_frac": 0.24598784835531018,
+          "tok": {
+            "self_test_run": 206646,
+            "isolation_check": 69665,
+            "meta": 70207,
+            "inspect_submission": 70290,
+            "finish": 75425
+          },
+          "act": {
+            "self_test_run": 3,
+            "isolation_check": 1,
+            "meta": 1,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "semver__version_core__001",
+          "cutoff": 664552,
+          "total": 970035,
+          "tail": 305483,
+          "tail_frac": 0.31491956475797267,
+          "tok": {
+            "self_test_write": 40043,
+            "self_test_run": 128914,
+            "inspect_submission": 44216,
+            "meta": 45948,
+            "finish": 46362
+          },
+          "act": {
+            "self_test_write": 1,
+            "self_test_run": 3,
+            "inspect_submission": 1,
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "sqlglot__parse_transpile_core__001",
+          "cutoff": 4914308,
+          "total": 5928049,
+          "tail": 1013741,
+          "tail_frac": 0.17100752709702635,
+          "tok": {
+            "other": 68390,
+            "isolation_check": 466572,
+            "inspect_submission": 256814,
+            "meta": 146603,
+            "finish": 75362
+          },
+          "act": {
+            "other": 1,
+            "isolation_check": 6,
+            "inspect_submission": 3,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "stamina__retry_context_core__001",
+          "cutoff": 1561291,
+          "total": 3125933,
+          "tail": 1564642,
+          "tail_frac": 0.5005359999718484,
+          "tok": {
+            "inspect_submission": 72535,
+            "self_test_run": 874301,
+            "meta": 411529,
+            "other": 101750,
+            "finish": 104527
+          },
+          "act": {
+            "inspect_submission": 1,
+            "self_test_run": 10,
+            "meta": 4,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinycss2__stylesheet_roundtrip_core__001",
+          "cutoff": 2664009,
+          "total": 2821910,
+          "tail": 157901,
+          "tail_frac": 0.05595536356581181,
+          "tok": {
+            "meta": 78681,
+            "finish": 79220
+          },
+          "act": {
+            "meta": 1,
+            "finish": 1
+          },
+          "has_self_test": false,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tinydb__query_storage_core__001",
+          "cutoff": 816428,
+          "total": 2164646,
+          "tail": 1348218,
+          "tail_frac": 0.6228353273468271,
+          "tok": {
+            "self_test_write": 329488,
+            "self_test_run": 491106,
+            "other": 173695,
+            "inspect_submission": 172556,
+            "meta": 119918,
+            "finish": 61455
+          },
+          "act": {
+            "self_test_write": 6,
+            "self_test_run": 9,
+            "other": 3,
+            "inspect_submission": 3,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "tldextract__suffix_resolve_core__001",
+          "cutoff": 1346084,
+          "total": 2266467,
+          "tail": 920383,
+          "tail_frac": 0.40608709502498824,
+          "tok": {
+            "inspect_repo": 236103,
+            "meta": 66817,
+            "self_test_run": 272213,
+            "other": 138535,
+            "inspect_submission": 134924,
+            "finish": 71791
+          },
+          "act": {
+            "inspect_repo": 3,
+            "meta": 1,
+            "self_test_run": 3,
+            "other": 2,
+            "inspect_submission": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "toolz__compose_pipe_core__001",
+          "cutoff": 691424,
+          "total": 967892,
+          "tail": 276468,
+          "tail_frac": 0.2856393068648155,
+          "tok": {
+            "self_test_write": 38381,
+            "self_test_run": 78164,
+            "inspect_submission": 39152,
+            "meta": 39977,
+            "other": 40126,
+            "finish": 40668
+          },
+          "act": {
+            "self_test_write": 1,
+            "self_test_run": 2,
+            "inspect_submission": 1,
+            "meta": 1,
+            "other": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "uritools__uri_join_normalize_core__001",
+          "cutoff": 1309513,
+          "total": 2177862,
+          "tail": 868349,
+          "tail_frac": 0.3987162639322418,
+          "tok": {
+            "self_test_run": 435602,
+            "other": 133583,
+            "meta": 146839,
+            "inspect_submission": 73763,
+            "finish": 78562
+          },
+          "act": {
+            "self_test_run": 7,
+            "other": 2,
+            "meta": 2,
+            "inspect_submission": 1,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        },
+        {
+          "task_id": "watchdog__observer_dispatch_core__001",
+          "cutoff": 981426,
+          "total": 1605440,
+          "tail": 624014,
+          "tail_frac": 0.3886872134741878,
+          "tok": {
+            "self_test_run": 386048,
+            "other": 57560,
+            "meta": 119884,
+            "finish": 60522
+          },
+          "act": {
+            "self_test_run": 7,
+            "other": 1,
+            "meta": 2,
+            "finish": 1
+          },
+          "has_self_test": true,
+          "has_package_write": false,
+          "has_upstream_tests": false
+        }
+      ]
+    }
+  ]
+}

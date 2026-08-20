@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-17**
 
 FeatureLiftBench evaluates whether a coding agent can extract and reconstruct a
 coherent feature from a real upstream repository under a controlled information
@@ -17,6 +17,7 @@ are maintained only in [docs/STATUS.md](docs/STATUS.md).
 | --- | --- |
 | Understand the benchmark | [Design](docs/BENCHMARK_DESIGN.md) |
 | Check readiness and current results | [Status](docs/STATUS.md) |
+| Current V1 method (Main + 2M cap) | [V1](docs/METHOD_V1.md) |
 | Run an experiment | [Run quick reference](RUN.md) |
 | Operate a server run | [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md) |
 | Create or review a task | [Task design rules](docs/TASK_DESIGN_RULES.md) |
@@ -51,10 +52,11 @@ making model calls.
 
 ## Result Boundary
 
-The primary metric is evaluator `Functional Pass@1`, not agent completion
-status. Results are comparable only when the task set, attempt policy, model
-revision, agent profile, information arm, and agent/evaluator image identities
-match. Historical and current conditions must not be silently combined.
+The primary metrics are evaluator `Functional Pass@1` and pass-conditioned
+Reference-Relative Extraction Size (RRES). Agent completion status is not a
+correctness score. Results are comparable only when the task set, attempt policy,
+model revision, agent profile, information arm, and agent/evaluator image
+identities match. Historical and current conditions must not be silently combined.
 
 ## Citation and License
 

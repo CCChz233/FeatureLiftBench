@@ -1,7 +1,8 @@
 # Server Runbook: Python-200 Main
 
-> **Status: current · Last verified: 2026-08-04**  
+> **Status: current · Last verified: 2026-08-18**  
 > Condition: Full-Repository / No-Hint, benchmark tests hidden, one task attempt.
+> Launch Main or current V1 only. Rescue+ / Lite checker arms are discontinued.
 
 ## 1. Prerequisites
 
@@ -54,9 +55,42 @@ same agent/evaluator identities or re-evaluate the baseline submissions under th
 
 Expected selection is the exact frozen unified suite. No model calls occur without `--execute`.
 
-For the frozen Contract Closure Gate Lite V1 method run, use the exact profile
-below. The runner verifies the 2M/45 primary budget, 500k/10 repair budget, and
-prints `contract_closure_gate_lite_v1_frozen` as the resolved method arm:
+## 4b. Current V1 cost arm (Main + 2M cap)
+
+Canonical V1 is Main protocol plus a 2M total-token cap. It is **not** the
+retired `contract_closure_gate_lite_v1*` checker/repair protocol. Spec:
+[METHOD_V1.md](METHOD_V1.md).
+
+Plan-only:
+
+```bash
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_v1 \
+  python200-v1-plan \
+  --workers <n> \
+  --agent-image <agent-image-id> \
+  --eval-image <eval-image-id>
+```
+
+The runner must print `Method arm: v1` and the 120-step / 128k / 2M envelope.
+
+Qwen3.6-35B local four-way shard (50 tasks per replica on `:8030`–`:8033`):
+
+```bash
+export FEATURELIFTBENCH_AGENT_DOCKER_NETWORK=host
+./logs/start_python200_v1_qwen35b_4shard_tmux.sh
+```
+
+Do not share a vLLM port with an in-progress Main run. Merge waits on
+`logs/<shard>.done` and writes the unified suite under
+`experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001/`.
+
+Historical Frozen Lite V1 (45+10) and main-budget Lite V1 profiles remain in
+`agents.toml` for replay only. Do not launch them as the current V1 method.
+
+For the frozen Contract Closure Gate Lite V1 **replay**, the runner still
+verifies the 2M/45 primary budget, 500k/10 repair budget, and prints
+`contract_closure_gate_lite_v1_frozen` as the resolved method arm:
 
 ```bash
 ./harness/scripts/run_python200_paper.sh \
@@ -95,12 +129,12 @@ Do not promote the smoke attempt into Pass@1 of the formal suite.
 The runner performs strict Docker preflight before model calls and writes under
 `experiments/python/openhands/<model>/<run-id>/`.
 
-Frozen Lite V1 example:
+Lite V1 **main-budget replay** (historical fair-vs-Main, 120 steps; not current V1):
 
 ```bash
 ./harness/scripts/run_python200_paper.sh \
-  openhands_deepseek_v4_flash_contract_closure_gate_lite_v1_frozen \
-  python200-deepseek-v4-flash-lite-v1-frozen-001 \
+  openhands_deepseek_v4_flash_contract_closure_gate_lite_v1_main_budget \
+  python200-deepseek-v4-flash-lite-v1-main-budget-001 \
   --workers <n> \
   --timeout 3600 \
   --agent-image <agent-image-id> \
@@ -111,38 +145,10 @@ Frozen Lite V1 example:
 Do not edit the method profile after the plan-only preflight. If any setting
 changes, use a new release ID and rerun the smoke before the formal suite.
 
-Lite Rescue is a separate development arm and must not be labeled as frozen
-Lite V1. Before any paid pilot, run its plan-only preflight:
-
-```bash
-./harness/scripts/run_python200_paper.sh \
-  openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue \
-  lite-rescue-plan \
-  --workers 2 \
-  --agent-image <agent-image-id> \
-  --eval-image <eval-image-id>
-```
-
-The profile pins 2M/45 for the primary phase and 200k/5 for selective repair.
-Do not launch a full Python-200 run until the paired rescue/control pilot has
-passed its predeclared Functional Pass and token-per-pass criteria.
-
-Lite Rescue+ is the behavior-smoke development arm. It keeps the 2M/45 primary
-and 200k/5 repair limits, caps behavior evidence at two cases under one shared
-60-second checker budget, and moves condensation to 49,152 tokens. Validate its
-plan without model calls:
-
-```bash
-./harness/scripts/run_python200_paper.sh \
-  openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue_plus \
-  lite-rescue-plus-plan \
-  --workers 2 \
-  --agent-image <agent-image-id> \
-  --eval-image <eval-image-id>
-```
-
-Do not tune this arm to failures observed in private evaluator logs. Freeze the
-generic public-evidence rule before any External-50 run.
+Lite Rescue、Rescue+ 和 Adaptive Budget V2 已停。不要再跑
+`contract_closure_gate_lite_rescue*` profile，也不要把它们标成当前 V1。历史协议见
+[archive/methods/](archive/methods/README.md)。当前 cost arm 规范见
+[METHOD_V1.md](METHOD_V1.md)。
 
 ## 7. Launch External-50 Only
 

@@ -1,0 +1,49 @@
+{
+  "as_of": "2026-08-18",
+  "metric": "functional_gate",
+  "v1_definition": "Main protocol + 2M total-token cap; no checker/stop/repair",
+  "v1_suite": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001",
+  "v1_python200": {
+    "assigned": 200,
+    "functional_passed": 55,
+    "pass_rate": 0.275,
+    "tokens": 329300000,
+    "stages": {
+      "pass": 55,
+      "missing_submission": 10,
+      "build": 15,
+      "public": 86,
+      "hidden": 34,
+      "isolation": 0
+    },
+    "tasks_at_or_above_1_9m_tokens": 118
+  },
+  "paired_both_known": {
+    "n": 181,
+    "main_pass": 75,
+    "v1_pass": 53,
+    "YY": 42,
+    "YN": 33,
+    "NY": 11,
+    "NN": 95,
+    "main_tokens": 504500000,
+    "v1_tokens": 302200000,
+    "token_delta_pct": -40.1,
+    "caveat": "c150 Main used default condenser and is ~3 weeks older than V1; not a clean protocol contrast"
+  },
+  "external50_clean_slice": {
+    "n": 46,
+    "main_pass": 35,
+    "v1_pass": 19,
+    "YN": 17,
+    "NY": 1,
+    "main_tokens": 133100000,
+    "v1_tokens": 60500000,
+    "main_passes_that_used_ge_2m": 18
+  },
+  "do_not": [
+    "mix with DeepSeek Main vs retired Lite V1 Python-200 table",
+    "treat NY=11 as a cap benefit",
+    "report Core-12 / V2 rates as Python-200"
+  ]
+}

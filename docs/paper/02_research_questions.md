@@ -1,6 +1,6 @@
 # Research Questions
 
-> **Documentation status: current · Last verified: 2026-08-17**
+> **Documentation status: current · Last verified: 2026-08-20**
 
 ## RQ1 — Functional capability
 
@@ -42,6 +42,13 @@ Evidence:
 - agent/evaluator/wall-clock time；
 - step/context/rate/infra failures。
 
+**Where sufficiency occurs.** On trajectories that eventually pass, report
+\(T^\*/T_{\mathrm{total}}\) using the earliest unique `featurelifted` tree with
+`functional_gate=1.0`, not last package write. Stratify Flash / Qwen / OSS and
+Direct / Adapted / Composite. Draft:
+[03_results_token_utility.md](03_results_token_utility.md). This is a cost
+slice, not a new protocol and not a stopping rule.
+
 ## RQ4 — Failure mechanisms
 
 Where does FeatureLift fail?
@@ -75,7 +82,10 @@ Candidate variables:
 - historical Core-100/Hard-50 construction slice。
 
 Use correlations and stratified comparisons, not causal language from small
-subgroups.
+subgroups. For cost-on-pass trajectories, lift type (Direct / Adapted /
+Composite) is the task axis that moves \(T^\*\); informal difficulty and
+`metadata.difficulty` do not. See
+[03_results_token_utility.md](03_results_token_utility.md).
 
 ## RQ6 — Information ablations
 
@@ -90,13 +100,21 @@ How do controlled information changes affect results?
 | Reference Support Set | What is the closure-information upper bound? |
 
 All arms use the same task/spec/model/agent/evaluator/environment and are
-compared on the same task subset.
+compared on the same task subset. Public-feedback is the first arm; it is an
+information ablation of Main, not a competing method. Draft:
+[04_results_rq6.md](04_results_rq6.md).
 
 ## Evidence order
 
-1. Run frozen v3 Main baseline。
-2. Report RQ1–RQ5 on complete suites。
-3. Select a preregistered paired subset for RQ6。
-4. Run method experiments only after failure mechanisms are established。
+1. 跨模型 Python-200 Main 已出（见 [STATUS.md](../STATUS.md)）。
+2. DeepSeek Python-200 上报告 RQ1–RQ4（Main vs 已退役 Lite V1 协议）。
+3. Cost arm：**Qwen3.6-35B V1-200 已完成**（55/200）；Flash 全量 V1 未跑，Core-12
+   诊断已表明 cap 税。见 [FINDINGS.md](../FINDINGS.md)。已有 Main 轨迹上的
+   \(T^\*\) 成本切片见 [03_results_token_utility.md](03_results_token_utility.md)。
+4. RQ6：Flash-12 Public-feedback 同日成对已齐（Main 0/12 → 4/12）。机制稿
+   [04_results_rq6.md](04_results_rq6.md)。Entrypoint-Hint 等其余臂未跑。
+   数字不进 Python-200 主表。
+5. 不再开新方法臂，也不再从 token 尾巴写 early-stopping。历史脚手架负结果只作
+   RQ4，见 [archive/methods/](../archive/methods/README.md)。
 
 Current evidence and gaps: [STATUS.md](../STATUS.md)。

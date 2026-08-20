@@ -1,6 +1,6 @@
 # Known Limitations
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-20**
 
 ## Dataset Construction
 
@@ -45,12 +45,27 @@
 
 ## Experimental Evidence
 
-- The balanced extension has not yet been completed across the paper model set, so no final
-  Python-200 leaderboard is available.
-- The archived DeepSeek baseline is partial and cannot be extended to a complete score by only
-  running the new extension.
-- Pass@1 uses one trajectory per task and does not estimate sampling variance. Repeated trials
-  require a separately preregistered experiment.
+- Python-200 Main is complete for DeepSeek V4 Flash (API and local vLLM),
+  Qwen3.5 122B, Qwen3.6 35B, and GPT-OSS 120B. Pass-conditioned RRES medians
+  sit at 1.000 and there is no paired cross-model RRES, so compactness cannot
+  be ranked across models.
+- Lite V1 **protocol** (checker / repair) has been compared with Main only on
+  DeepSeek. That comparison shows a token saving, a Functional Pass drop, and no
+  paired RRES advantage. The current cost arm is **V1 = Main + 2M cap**, not
+  that protocol; Qwen3.6 Python-200 V1 is complete (55/200).
+- Pass-conditioned \(T^\*\) is undefined on failures. Public-test green on a
+  failing trajectory is not proximity to Hidden. RQ6 Public-feedback on
+  Flash-12 recovers public on all six public-failure tasks; four of five
+  paired hidden-failure tasks stay hidden 0
+  ([04_results_rq6.md](04_results_rq6.md)).
+- RQ6 numbers are an information ablation of Main. They are not Python-200
+  pass rates and must not replace uncapped Main.
+- Default unique-tree sampling makes \(T^\*/T\) an upper bound on tasks that
+  pass before 2M; those bounds are still below 2M.
+- Qwen V1-200 has no Phase 1 gold. Do not invent \(T^\*\) for unmatched
+  replay.
+- `metadata.difficulty` is construction metadata, not a scientific
+  easy/medium/hard rubric.
 - Historical mixed-snapshot and method-pilot results may support mechanism hypotheses or negative
   results, but their absolute rates are not current Main results.
 - Go remains calibration evidence and is not part of the Python paper leaderboard.
@@ -67,6 +82,6 @@
 - Model APIs and serving stacks can change after a run even when a model name remains constant;
   exact model revision and image identity are required.
 
-Current gate status is maintained in [STATUS.md](../STATUS.md), result boundaries in
-[STATUS.md](../STATUS.md), and design assumptions in
+Current gate status and result boundaries are in [STATUS.md](../STATUS.md);
+interpretation is in [FINDINGS.md](../FINDINGS.md); design assumptions are in
 [BENCHMARK_DESIGN.md](../BENCHMARK_DESIGN.md).

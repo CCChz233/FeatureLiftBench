@@ -1,6 +1,7 @@
 # 当前研究入口
 
 > **Documentation status: archived · Indexed: 2026-08-04**
+> 2026-07-31 研究优先级快照。当前事实源是 [STATUS.md](../../STATUS.md)。
 
 **更新时间：** 2026-07-31
 
@@ -26,16 +27,16 @@
 
 Lift 定义已冻结：[LIFT_TAXONOMY.md](../../reference/LIFT_TAXONOMY.md)
 （**Direct / Adapted / Composite**）。  
-全量标注：[`reports/lift_taxonomy/`](../../../reports/lift_taxonomy)（**150/150 labeled**，AI-assisted v1；
+全量标注：`reports/lift_taxonomy/`（**150/150 labeled**，AI-assisted v1；
 约 Direct 56 / Adapted 76 / Composite 18）。  
 闭合审计：opened hard closed **1/28**（仅 `glom`）。
 
 TFL 裁决：
-[`dev6_tfl_p0_20260731/VERDICT.md`](../../../experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731/VERDICT.md) ·
+`experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731/VERDICT.md` ·
 审计：[CONTRACT_CLOSURE_AUDIT.md](CONTRACT_CLOSURE_AUDIT.md) ·
 候选方法：[METHOD_SPEC_CLOSURE.md](../methods/METHOD_SPEC_CLOSURE.md)。  
 更早路径：`experiments/exec_contract_pilot/`（当前 checkout 未保留） ·
-[`cgcc_lite_pilot`](../../../experiments/methods/cgcc_lite_pilot) ·
+`experiments/methods/cgcc_lite_pilot` ·
 `experiments/self_contract_pilot/`（当前 checkout 未保留） ·
 [METHOD_PAIRED_DIFFERENTIAL_REPAIR.md](../methods/METHOD_PAIRED_DIFFERENTIAL_REPAIR.md)。
 
@@ -73,7 +74,7 @@ Python-150 已满足八条核心原则：
 
 已归档负结果：TFL；PDR held-out clean-6；FCEC admission 0/6。  
 **暂停方法实验；不加仓。** 合规表述：历史 150/150 仅表示通过旧自动门禁，**不**表示 contract-closed。  
-审计主表：[`reports/contract_closure_audit/OPENED_HARD_SUMMARY.md`](../../../reports/contract_closure_audit/OPENED_HARD_SUMMARY.md)。
+审计主表：`reports/contract_closure_audit/OPENED_HARD_SUMMARY.md`。
 
 ## PDR held-out clean-6（2026-07-30—31）
 
@@ -96,9 +97,9 @@ Python-150 已满足八条核心原则：
   精确要求不闭合，不能反向塞进方法 prompt。
 
 结果、哈希与尸检：
-[PDR clean-6 RESULTS](../../../experiments/methods/pdr_clean6_20260730/RESULTS_20260731.md) ·
-[selection audit](../../../experiments/methods/pdr_clean6_20260730/SELECTION_AUDIT.md) ·
-[submission freeze](../../../experiments/methods/pdr_clean6_20260730/SUBMISSION_FREEZE.json)。
+`experiments/methods/pdr_clean6_20260730/RESULTS_20260731.md` ·
+`experiments/methods/pdr_clean6_20260730/SELECTION_AUDIT.md` ·
+`experiments/methods/pdr_clean6_20260730/SUBMISSION_FREEZE.json`。
 
 ## Focus 方法快照（alembic + click，2026-07-30）
 
@@ -116,8 +117,8 @@ Python-150 已满足八条核心原则：
 | **paired DPR / PDR** | **p✓ h✓ (1 seed)** | p✓ h✗ | 开发集 1/2 Functional；双 oracle + 整域 control；Click 暴露 TASK admission 边界 |
 
 详表历史路径：`experiments/exec_contract_pilot/CLEAN_FOCUS.md`（当前 checkout 未保留） ·
-[CGCC RESULTS](../../../experiments/methods/cgcc_lite_pilot/RESULTS_20260730.md) ·
-[PDR RESULTS](../../../experiments/methods/dpr_pilot/RESULTS_20260730.md) ·
+`experiments/methods/cgcc_lite_pilot/RESULTS_20260730.md` ·
+`experiments/methods/dpr_pilot/RESULTS_20260730.md` ·
 `experiments/self_contract_pilot/FOCUS_RESULTS.md`（当前 checkout 未保留）
 导出：`exports/flb-useful-focus-expts-20260730-144258.tar.gz`
 
@@ -213,8 +214,8 @@ OpenHands
 - [方法故事：Fail-Closed Execution Contract](../methods/METHOD_FAIL_CLOSED_EXEC_CONTRACT.md)
 - [方法故事：Self-Authored Contract](../methods/METHOD_SELF_CONTRACT.md)
 - Exec-Contract focus 结果历史路径：`experiments/exec_contract_pilot/CLEAN_FOCUS.md`（当前 checkout 未保留）
-- [CGCC focus 开发结果](../../../experiments/methods/cgcc_lite_pilot/RESULTS_20260730.md)
-- [PDR focus 开发结果](../../../experiments/methods/dpr_pilot/RESULTS_20260730.md)
+- `experiments/methods/cgcc_lite_pilot/RESULTS_20260730.md`
+- `experiments/methods/dpr_pilot/RESULTS_20260730.md`
 - Self-Contract focus 结果历史路径：`experiments/self_contract_pilot/FOCUS_RESULTS.md`（当前 checkout 未保留）
 - [TD 负对照故事](../methods/METHOD_TEST_DRIVEN_COGNITION.md)
 - [实验规范](../../EVALUATION.md)

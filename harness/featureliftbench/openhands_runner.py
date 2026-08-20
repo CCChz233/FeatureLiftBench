@@ -19,6 +19,7 @@ from typing import Any
 from .llm_env import apply_openhands_llm_env
 from .llm_usage_proxy import maybe_start_openhands_usage_proxy
 from .openhands_usage import CONDENSER_MODE_ENV
+from .openhands_usage import CUSTOM_CONDENSER_MODES
 from .openhands_usage import context_policy_audit_fields
 from .openhands_usage import looks_like_openhands_step
 from .openhands_usage import openhands_context_policy
@@ -177,8 +178,18 @@ def run(config: OpenHandsRunnerConfig) -> int:
     )
     env = apply_openhands_llm_env(env)
     env.setdefault("OPENHANDS_SUPPRESS_BANNER", "1")
+    _ensure_harness_pythonpath(env)
     try:
         _maybe_seed_agent_settings(command, env, config.agent_output_dir)
+        command = _wrap_custom_condenser_command(command, env)
+        _write_command_record(
+            config,
+            prompt_file=prompt_file,
+            command_template=command_template,
+            command=command,
+            configured=True,
+            error="",
+        )
     except (RuntimeError, ValueError) as exc:
         try:
             _write_context_policy(
@@ -242,6 +253,7 @@ def run(config: OpenHandsRunnerConfig) -> int:
         raw_usage,
         parse_openhands_compression_events(events_path),
     )
+    _maybe_write_pre_submit_audit(config, env, events_path)
     exit_status = "passed" if returncode == 0 else "openhands_failed"
     if command_result.log_limit_exceeded:
         exit_status = "log_limit_exceeded"
@@ -290,80 +302,8 @@ def _point_openhands_to_proxy(env: dict[str, str], proxy_base_url: str) -> None:
 _TRUTHY = {"true", "1", "yes", "on"}
 
 _AGENT_SETTINGS_GENERATOR = """
-import importlib.metadata
-import json
-import os
-from openhands.sdk.llm import LLM
-from openhands_cli.utils import get_default_cli_agent
-
-out = os.environ["FLB_AGENT_SETTINGS_OUT"]
-meta_out = os.environ["FLB_AGENT_SETTINGS_META_OUT"]
-mode = os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE", "default")
-token_mode = mode == "token"
-native_raw = os.environ.get("LLM_NATIVE_TOOL_CALLING", "true").strip().lower()
-native = native_raw not in {"false", "0", "no", "off"}
-trigger = int(os.environ["FEATURELIFTBENCH_CONTEXT_WINDOW_TOKENS"]) - int(
-    os.environ["FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS"]
-) if token_mode else None
-keep_first = int(os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST", "4"))
-max_events = int(os.environ.get("FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS", "1000000"))
-llm = LLM(
-    model=os.environ.get("LLM_MODEL", "openai/placeholder"),
-    api_key="placeholder",
-    usage_id="agent",
-    native_tool_calling=native,
-    max_input_tokens=trigger,
-)
-agent = get_default_cli_agent(llm)
-
-
-def _configure_llm(inner):
-    updates = {"native_tool_calling": native}
-    if token_mode:
-        updates["max_input_tokens"] = trigger
-    return inner.model_copy(update=updates)
-
-
-updates = {"llm": _configure_llm(agent.llm)}
-condenser = getattr(agent, "condenser", None)
-if token_mode and (condenser is None or not hasattr(condenser, "llm")):
-    raise RuntimeError("OpenHands LLMSummarizingCondenser is unavailable")
-if condenser is not None and hasattr(condenser, "llm"):
-    condenser_updates = {"llm": _configure_llm(condenser.llm)}
-    if token_mode:
-        condenser_updates.update({
-            "max_tokens": trigger,
-            "max_size": max_events,
-            "keep_first": keep_first,
-        })
-    updates["condenser"] = condenser.model_copy(update=condenser_updates)
-agent = agent.model_copy(update=updates)
-os.makedirs(os.path.dirname(out), exist_ok=True)
-with open(out, "w", encoding="utf-8") as handle:
-    handle.write(agent.model_dump_json())
-
-
-def _version(name):
-    try:
-        return importlib.metadata.version(name)
-    except importlib.metadata.PackageNotFoundError:
-        return "unknown"
-
-
-metadata = {
-    "openhands_version": _version("openhands"),
-    "openhands_sdk_version": _version("openhands-sdk"),
-    "settings": {
-        "agent_max_input_tokens": agent.llm.max_input_tokens,
-        "condenser_max_tokens": getattr(agent.condenser, "max_tokens", None),
-        "condenser_max_size": getattr(agent.condenser, "max_size", None),
-        "condenser_keep_first": getattr(agent.condenser, "keep_first", None),
-        "native_tool_calling": agent.llm.native_tool_calling,
-        "same_model_after_environment_override": True,
-    },
-}
-with open(meta_out, "w", encoding="utf-8") as handle:
-    json.dump(metadata, handle, indent=2, sort_keys=True)
+from featureliftbench.openhands_condenser.seed import seed_agent_settings
+seed_agent_settings()
 """
 
 
@@ -374,8 +314,8 @@ def _maybe_seed_agent_settings(
 ) -> None:
     """Create an isolated persistence directory and any required agent settings.
 
-    Token mode always generates a strict settings file. Legacy mode only creates
-    one for the existing native-tool-calling override, preserving its behavior.
+    Token mode and custom condensers always generate a strict settings file.
+    Legacy mode only creates one for the existing native-tool-calling override.
     """
     policy = openhands_context_policy(env)
     native = env.get("LLM_NATIVE_TOOL_CALLING")
@@ -393,18 +333,19 @@ def _maybe_seed_agent_settings(
         agent_output_dir=agent_output_dir,
         status="configured",
     )
-    if not policy.token_compression_enabled and not needs_native_override:
+    if not policy.requires_seeded_settings and not needs_native_override:
         return
 
     interpreter = _resolve_openhands_python(command)
     if interpreter is None:
         message = "could not resolve the OpenHands interpreter for agent settings"
-        if policy.token_compression_enabled:
+        if policy.requires_seeded_settings:
             raise RuntimeError(message)
         print(f"FeatureLiftBench: {message}; override skipped.", file=sys.stderr)
         return
 
     gen_env = dict(env)
+    _ensure_harness_pythonpath(gen_env)
     gen_env["FLB_AGENT_SETTINGS_OUT"] = str(settings_path)
     gen_env["FLB_AGENT_SETTINGS_META_OUT"] = str(metadata_path)
     try:
@@ -416,7 +357,7 @@ def _maybe_seed_agent_settings(
             timeout=120,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
-        if policy.token_compression_enabled:
+        if policy.requires_seeded_settings:
             raise RuntimeError(f"OpenHands agent settings generation failed: {exc}") from exc
         print(f"FeatureLiftBench: OpenHands settings override skipped: {exc}", file=sys.stderr)
         return
@@ -428,11 +369,11 @@ def _maybe_seed_agent_settings(
         encoding="utf-8",
     )
     succeeded = result.returncode == 0 and settings_path.is_file()
-    if policy.token_compression_enabled:
+    if policy.requires_seeded_settings:
         succeeded = succeeded and metadata_path.is_file()
     if not succeeded:
         message = "failed to generate isolated OpenHands agent settings"
-        if policy.token_compression_enabled:
+        if policy.requires_seeded_settings:
             raise RuntimeError(f"{message} (see agent_settings_seed.log)")
         print(f"FeatureLiftBench: {message} (see agent_settings_seed.log).", file=sys.stderr)
         return
@@ -496,6 +437,8 @@ def _write_context_policy(
         "model": (config.model if config is not None else env.get("FEATURELIFTBENCH_MODEL", "")),
         "status": status,
         "compression_mode": policy.compression_mode,
+        "condenser_kind": _condenser_kind_for_mode(policy.compression_mode),
+        "attention_window": policy.condenser_attention_window,
         "context_window_tokens": policy.context_window_tokens,
         "reserved_output_tokens": policy.reserved_output_tokens,
         "trigger_tokens": policy.condenser_trigger_tokens,
@@ -712,6 +655,51 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "Use ordinary local checks that you judge useful, then perform one final "
             "review against the public Required Output API.\n\n"
         )
+    elif options.pre_submit_contract_audit:
+        from .pre_submit_contract_audit import openhands_appendix
+
+        closure_section = (
+            "## Pre-submit Explicit-Contract Audit\n\n"
+            + openhands_appendix()
+            + "\n"
+        )
+        test_hint = (
+            "Before finishing, walk the public Required API and Bxxx clauses already "
+            "in TASK.md against `submission/`. Do not invent new contracts or hunt "
+            "for evaluator tests.\n\n"
+        )
+    elif options.spec_adversarial_self_test:
+        from .spec_adversarial import openhands_appendix as sa_openhands_appendix
+
+        closure_section = (
+            "## Spec-grounded adversarial self-test\n\n"
+            + sa_openhands_appendix()
+            + "\n"
+        )
+        test_hint = (
+            "Fill contract_cases/ stubs from contract_matrix.json and run "
+            "./run_contract_check.py until ok=true. Do not finish while red. "
+            "Do not hunt public_tests/ or hidden_tests/.\n\n"
+        )
+    elif options.adaptive_budget_v2:
+        from .adaptive_budget_v2 import ADAPTIVE_BUDGET_V2_PHASE_ENV
+        from .adaptive_budget_v2 import targeted_repair_openhands_appendix
+
+        phase = (
+            str(os.environ.get(ADAPTIVE_BUDGET_V2_PHASE_ENV, "primary")).strip().lower()
+            or "primary"
+        )
+        if phase == "repair":
+            closure_section = (
+                "## Targeted Repair Mode\n\n"
+                + targeted_repair_openhands_appendix()
+                + "\n"
+            )
+            test_hint = (
+                "Run agent-authored local checks after each change "
+                "(for example `python -c \"from featurelifted import ...\"`). "
+                "Do not hunt for benchmark evaluator tests.\n\n"
+            )
     elif (
         options.contract_closure_gate
         or options.contract_closure_gate_lite
@@ -763,15 +751,27 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             options.contract_closure_gate_lite_v1
             or options.contract_closure_gate_lite_rescue
         ):
+            from .contract_closure_gate.workspace import _lite_v1_silent_finish
+
+            silent_finish = (
+                options.contract_closure_gate_lite_v1 and _lite_v1_silent_finish()
+            )
             test_hint = (
                 "Run `./flb-contract-check --structure-only --summary` after "
-                "implementing. Do not spend steps authoring behavior cases.\n\n"
+                "implementing."
+                + (
+                    ""
+                    if silent_finish
+                    else " Do not spend steps authoring behavior cases."
+                )
+                + "\n\n"
             )
-            required_finish = (
-                "## Required Finish State\n\n"
-                "Leave a structurally closed working submission under "
-                "`submission/featurelifted/`.\n\n"
-            )
+            if not silent_finish:
+                required_finish = (
+                    "## Required Finish State\n\n"
+                    "Leave a structurally closed working submission under "
+                    "`submission/featurelifted/`.\n\n"
+                )
         elif options.contract_closure_gate_lite:
             test_hint = (
                 "Run `./flb-contract-check --structure-only --summary` after "
@@ -867,6 +867,75 @@ def _render_openhands_command(
     if not command:
         raise ValueError("OpenHands command template rendered to an empty command")
     return command
+
+
+def _wrap_custom_condenser_command(
+    command: list[str],
+    env: dict[str, str],
+) -> list[str]:
+    policy = openhands_context_policy(env)
+    if policy.compression_mode not in CUSTOM_CONDENSER_MODES:
+        return command
+    if len(command) >= 3 and command[1:3] == [
+        "-m",
+        "featureliftbench.openhands_condenser.launch",
+    ]:
+        return command
+    interpreter = _resolve_openhands_python(command)
+    if interpreter is None:
+        raise RuntimeError(
+            "could not resolve the OpenHands interpreter for a custom condenser"
+        )
+    return [
+        interpreter,
+        "-m",
+        "featureliftbench.openhands_condenser.launch",
+        *command[1:],
+    ]
+
+
+def _ensure_harness_pythonpath(env: dict[str, str]) -> None:
+    harness_root = str(Path(__file__).resolve().parent.parent)
+    existing = [part for part in env.get("PYTHONPATH", "").split(os.pathsep) if part]
+    if harness_root not in existing:
+        env["PYTHONPATH"] = os.pathsep.join([harness_root, *existing])
+
+
+def _condenser_kind_for_mode(mode: str) -> str:
+    mapping = {
+        "token": "LLMSummarizingCondenser",
+        "recency_masking": "RecencyMaskingCondenser",
+        "artifact_aware": "ArtifactAwareCondenser",
+        "verification_aware": "VerificationAwareCondenser",
+        "default": "LLMSummarizingCondenser",
+    }
+    return mapping.get(mode, mode)
+
+
+def _maybe_write_pre_submit_audit(
+    config: OpenHandsRunnerConfig,
+    env: dict[str, str],
+    events_path: Path | None,
+) -> None:
+    from .ablation import ablation_options_from_env
+
+    options = ablation_options_from_env(env)
+    if options.pre_submit_contract_audit:
+        from .pre_submit_contract_audit import write_pre_submit_audit
+
+        source = events_path or (config.agent_output_dir / "openhands_events.jsonl")
+        write_pre_submit_audit(
+            source,
+            config.agent_output_dir / "pre_submit_audit.json",
+        )
+        return
+    if options.spec_adversarial_self_test:
+        from .spec_adversarial import write_audit
+
+        write_audit(
+            config.workspace_dir,
+            config.agent_output_dir / "spec_adversarial_audit.json",
+        )
 
 
 def _run_command(

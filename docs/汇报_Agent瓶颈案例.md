@@ -1,6 +1,7 @@
 # Agent 瓶颈：具体案例汇报
 
-> 冻结 Python-150 · Full-Repository / No-Hint · 2026-08-06
+> **Status: current · Last verified: 2026-08-18**
+> 冻结 Python-150 · Full-Repository / No-Hint · 定性案例，不更新 Python-200 数字。
 > 目的：把「契约闭合失败 / 过早停止」讲成能听懂的例子，不讲抽象词。
 
 ---
@@ -8,6 +9,9 @@
 ## 1. 先说结论（30 秒）
 
 当前 agent **不是**主要败在「找不到文件」或「装不上包」。
+
+Python-200 上：Flash 的功能失败主体是 Hidden；Qwen / GPT-OSS 更多卡在 Public。
+方法侧的自测、结构门、上游双跑都补不了评测私有行为，见 [FINDINGS.md](FINDINGS.md)。
 
 常见失败是：
 

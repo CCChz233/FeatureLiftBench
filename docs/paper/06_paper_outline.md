@@ -1,6 +1,6 @@
 # Paper Outline
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-20**
 
 ## Working title
 
@@ -21,14 +21,19 @@ repository, but no source-location hints or benchmark tests before submission.
 
 1. **Task formulation**：repository-level behavior-preserving feature
    extraction。
-2. **Benchmark**：150 external Python OSS tasks、126 repositories、132
-   immutable snapshots，Full-Repository / No-Hint。
+2. **Benchmark**：200 Python OSS tasks（frozen 150 + External-50）、177
+   repositories，Full-Repository / No-Hint。
 3. **Specification discipline**：generated public contract、private
    public/hidden mapping、No-Hint leak gates。
 4. **Evaluation**：Functional Pass@1 separated from reference-relative
    compactness and process cost。
-5. **Empirical study**：cross-model correctness、compactness、cost and failure
-   mechanisms（v3 baseline 待跑）。
+5. **Empirical study**：Python-200 跨模型 Main；DeepSeek Python-200 上的
+   Main vs 已退役 Lite V1 协议；Qwen3.6-35B 上的 V1 = Main+2M cost arm
+   （[METHOD_V1.md](../METHOD_V1.md)）；已有轨迹上的 \(T^\*\) 成本切片
+   （[03_results_token_utility.md](03_results_token_utility.md)）。脚手架方法已停，
+   负结果作 RQ4。RQ6 Public-feedback 是 Main 的信息消融，Flash-12 同日成对已齐
+   （Main 0/12 → 4/12；[04_results_rq6.md](04_results_rq6.md)）；数字不进
+   Python-200 主表。
 
 ## Research questions
 
@@ -36,11 +41,12 @@ repository, but no source-location hints or benchmark tests before submission.
   isolated feature packages?
 - **RQ2 — Compactness:** When they pass, how compact are solutions relative to
   frozen references?
-- **RQ3 — Cost:** How many tokens、steps and seconds are required?
+- **RQ3 — Cost:** How many tokens、steps and seconds are required, and where
+  on a passing trajectory does functional sufficiency first occur?
 - **RQ4 — Failure mechanisms:** Where do localization、closure recovery、
   behavior preservation、packaging and isolation fail?
-- **RQ5 — Task factors:** How do repository size、domain、entanglement and task
-  footprint relate to outcomes?
+- **RQ5 — Task factors:** How do lift type、repository size、domain、
+  entanglement and task footprint relate to outcomes?
 - **RQ6 — Information ablations:** What changes under Entrypoint-Hint、
   Public-feedback and Pruned-Context?
 
@@ -66,7 +72,7 @@ repository, but no source-location hints or benchmark tests before submission.
 - canonical source registry and immutable snapshots；
 - task/spec/evaluator construction；
 - source、contract、reference、isolation and freeze gates；
-- 150-task distribution and task footprint。
+- 200-task distribution（150 baseline + External-50）and task footprint。
 
 The replacement selection ledger and complete reference file/LOC footprint are
 frozen; the original 143-task historical selection protocol must still be
@@ -78,6 +84,8 @@ described candidly before paper submission.
 - reference-relative LOC/file/copy/dependency vector；
 - agent completion、step/context/infra failures；
 - token、step and latency；
+- earliest-sufficient \(T^\*\) on passing trajectories（offline replay of
+  unique `featurelifted` trees；not last write；not a stopping rule）；
 - statistical comparison and paired ablations。
 
 ### 5. Experimental setup
@@ -93,12 +101,19 @@ described candidly before paper submission.
 Do not populate with historical mixed-snapshot numbers as the main table.
 Required v3 tables:
 
-1. cross-model Python-150 Functional Pass@1；
-2. correctness funnel；
-3. compactness among functional passes；
-4. tokens/steps/latency；
-5. repository/domain/entanglement/task-footprint slices；
-6. paired information ablations。
+1. cross-model Python-200 Functional Pass@1（含 150 / External-50 分解）；
+2. correctness funnel（互斥首败）；
+3. compactness among functional passes（拆 150 / E50；报 copy 比例）；
+4. tokens/steps/latency（只做同模型方法对比）；
+5. \(T^\*/T_{\mathrm{total}}\) on gold passing trajectories, by model and
+   lift type（[03_results_token_utility.md](03_results_token_utility.md)；
+   不是 last-write fraction，不是停机规则）；
+6. repository/domain/entanglement/task-footprint slices；
+7. paired information ablations（RQ6 Public-feedback Flash-12 已齐。稿
+   [04_results_rq6.md](04_results_rq6.md)；不进主表）。
+
+Do not put Core-12 / Rescue+ / V2 / TFL rates in the main tables. Historical
+scaffolding negative results belong in failure analysis / discussion.
 
 Historical v1 results may appear only in a clearly labeled development-history
 or source-context comparison.
@@ -116,8 +131,16 @@ or source-context comparison.
 ### 8. Discussion
 
 - why localization alone is insufficient；
+- why legal self-tests、upstream dual-run and structure gates do not close hidden
+  behavior；
+- Public-feedback recovers the public gate without automatically recovering
+  Hidden（[04_results_rq6.md](04_results_rq6.md)）；
 - tension between behavior completeness and compactness；
-- how upstream evidence quality affects agents；
+- cost of a 2M token cap on conversion tails（true tax is earliest-sufficient
+  \(\ge 2\mathrm{M}\), not last write after 2M）；
+- post-sufficiency self-testing cannot see Hidden, so legal novelty signals
+  do not yield a stopping rule
+  ([03_results_token_utility.md](03_results_token_utility.md))；
 - implications for repository-aware agent design。
 
 ### 9. Limitations and ethics

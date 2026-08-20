@@ -17,9 +17,23 @@ RESERVED_OUTPUT_ENV = "FEATURELIFTBENCH_RESERVED_OUTPUT_TOKENS"
 CONDENSER_MODE_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE"
 CONDENSER_KEEP_FIRST_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_KEEP_FIRST"
 CONDENSER_MAX_EVENTS_ENV = "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MAX_EVENTS"
+CONDENSER_ATTENTION_WINDOW_ENV = (
+    "FEATURELIFTBENCH_OPENHANDS_CONDENSER_ATTENTION_WINDOW"
+)
 
 DEFAULT_CONDENSER_KEEP_FIRST = 4
 DEFAULT_CONDENSER_MAX_EVENTS = 1_000_000
+DEFAULT_CONDENSER_ATTENTION_WINDOW = 100
+
+KNOWN_CONDENSER_MODES = frozenset(
+    {"default", "token", "recency_masking", "artifact_aware", "verification_aware"}
+)
+SEEDED_CONDENSER_MODES = frozenset(
+    {"token", "recency_masking", "artifact_aware", "verification_aware"}
+)
+CUSTOM_CONDENSER_MODES = frozenset(
+    {"recency_masking", "artifact_aware", "verification_aware"}
+)
 
 DEFAULT_EVENTS_FILENAME = "openhands_events.jsonl"
 DEFAULT_USAGE_FILENAME = "openhands_usage.json"
@@ -50,10 +64,15 @@ class OpenHandsContextPolicy:
     condenser_target_tokens: int | None
     condenser_keep_first: int
     condenser_max_events: int
+    condenser_attention_window: int = DEFAULT_CONDENSER_ATTENTION_WINDOW
 
     @property
     def token_compression_enabled(self) -> bool:
         return self.compression_mode == "token"
+
+    @property
+    def requires_seeded_settings(self) -> bool:
+        return self.compression_mode in SEEDED_CONDENSER_MODES
 
 
 def openhands_context_limits(env: dict[str, str] | None = None) -> OpenHandsContextLimits:
@@ -77,10 +96,10 @@ def openhands_context_policy(env: dict[str, str] | None = None) -> OpenHandsCont
 
     source = os.environ if env is None else env
     mode = str(source.get(CONDENSER_MODE_ENV, "default")).strip().lower() or "default"
-    if mode not in {"default", "token"}:
+    if mode not in KNOWN_CONDENSER_MODES:
         raise ValueError(f"unknown OpenHands condenser mode: {mode}")
 
-    if mode == "token":
+    if mode in SEEDED_CONDENSER_MODES:
         context_window = _required_positive_int_env(source, CONTEXT_WINDOW_ENV)
         reserved_output = _required_positive_int_env(source, RESERVED_OUTPUT_ENV)
         if context_window <= reserved_output:
@@ -98,6 +117,11 @@ def openhands_context_policy(env: dict[str, str] | None = None) -> OpenHandsCont
             CONDENSER_MAX_EVENTS_ENV,
             default=DEFAULT_CONDENSER_MAX_EVENTS,
         )
+        attention_window = _required_positive_int_env(
+            source,
+            CONDENSER_ATTENTION_WINDOW_ENV,
+            default=DEFAULT_CONDENSER_ATTENTION_WINDOW,
+        )
         trigger = context_window - reserved_output
         return OpenHandsContextPolicy(
             compression_mode=mode,
@@ -108,6 +132,7 @@ def openhands_context_policy(env: dict[str, str] | None = None) -> OpenHandsCont
             condenser_target_tokens=trigger // 2,
             condenser_keep_first=keep_first,
             condenser_max_events=max_events,
+            condenser_attention_window=attention_window,
         )
 
     limits = openhands_context_limits(source)
@@ -136,6 +161,7 @@ def context_policy_audit_fields(
         "condenser_target_tokens": policy.condenser_target_tokens,
         "condenser_keep_first": policy.condenser_keep_first,
         "condenser_max_events": policy.condenser_max_events,
+        "condenser_attention_window": policy.condenser_attention_window,
     }
 
 

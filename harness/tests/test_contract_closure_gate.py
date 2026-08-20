@@ -19,7 +19,9 @@ from featureliftbench.contract_closure_gate import decide_repair
 from featureliftbench.contract_closure_gate import install_contract_closure_workspace
 from featureliftbench.contract_closure_gate import openhands_appendix
 from featureliftbench.contract_closure_gate import prepare_repair_workspace
+from featureliftbench.contract_closure_gate import task_appendix
 from featureliftbench.contract_closure_gate import write_contract_closure_audit
+from featureliftbench.contract_closure_gate.common import LITE_V1_SILENT_FINISH_ENV
 from featureliftbench.contract_closure_gate.checker import compare_signature
 from featureliftbench.contract_closure_gate.checker import parse_public_signature
 
@@ -137,13 +139,32 @@ def _materialize_workspace(root: Path) -> Path:
 
 class ContractClosureGateTests(unittest.TestCase):
     def test_lite_v1_frozen_prompt_matches_pilot_protocol(self) -> None:
-        prompt = openhands_appendix(lite=True, frozen_v1=True)
+        with mock.patch.dict(os.environ, {LITE_V1_SILENT_FINISH_ENV: ""}, clear=False):
+            prompt = openhands_appendix(lite=True, frozen_v1=True)
 
         self.assertIn("Implement the submission, then run", prompt)
         self.assertIn("--structure-only --summary", prompt)
         self.assertIn("Do not create contract_cases", prompt)
+        self.assertIn("deterministic public API closure only", prompt)
         self.assertNotIn("6 agent steps", prompt)
         self.assertNotIn("70%", prompt)
+
+    def test_lite_v1_silent_finish_prompt_drops_stop_policy(self) -> None:
+        with mock.patch.dict(os.environ, {LITE_V1_SILENT_FINISH_ENV: "1"}, clear=False):
+            prompt = openhands_appendix(lite=True, frozen_v1=True)
+            task = task_appendix(lite=True, frozen_v1=True)
+
+        self.assertIn("Implement the submission, then run", prompt)
+        self.assertIn("--structure-only --summary", prompt)
+        self.assertIn("Do not create contract_cases", prompt)
+        self.assertNotIn("deterministic public API closure only", prompt)
+        self.assertNotIn("completion signal", prompt)
+        self.assertNotIn("not a reason to finish", prompt)
+        self.assertNotIn("keep using remaining steps", prompt)
+        self.assertNotIn("before finishing", task)
+        self.assertNotIn("structural gate", task)
+        self.assertNotIn("Do not treat a passing structure check", task)
+        self.assertIn("after submission", task)
 
     def test_lite_rescue_prompt_keeps_v1_focus_without_frozen_identity(self) -> None:
         prompt = openhands_appendix(lite=True, rescue=True)

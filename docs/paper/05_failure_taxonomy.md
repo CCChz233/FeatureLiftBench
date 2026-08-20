@@ -1,6 +1,6 @@
 # Failure Taxonomy
 
-> **Documentation status: current · Last verified: 2026-08-17**
+> **Documentation status: current · Last verified: 2026-08-20**
 
 ## Labeling policy
 
@@ -57,6 +57,13 @@ miss, packaging defect or a narrow stub.
 Public passes but hidden fails on deeper combinations、state sequences、edge
 inputs、exception semantics or resource behavior. Hidden must still map to the
 published contract；otherwise the task is defective.
+
+RQ6 Public-feedback (Flash-12) shows the two layers can move separately:
+mounting `public_tests/` flipped public 0→1 on all six public-failure tasks
+while three of those stayed hidden 0, and four of five paired hidden-failure
+tasks stayed hidden 0. That is the intended construct, not a scoring bug.
+Do not treat public-green on a failing trajectory as proximity to Hidden.
+See [04_results_rq6.md](04_results_rq6.md).
 
 ### 5. Isolation failure
 

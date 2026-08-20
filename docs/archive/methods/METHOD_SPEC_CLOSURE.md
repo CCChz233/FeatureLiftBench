@@ -3,7 +3,7 @@
 > **Documentation status: archived · Indexed: 2026-08-04**
 
 **方法简称：** Spec-Closure（暂定）  
-**状态：** 设计草案 · **TFL 归档负结果之后的候选主线** · 尚未实现/跑实验  
+**状态：** 设计草案 · 从未实现 · **不是**当前主线  
 **前置：** 完成 [CONTRACT_CLOSURE_AUDIT.md](../plans/CONTRACT_CLOSURE_AUDIT.md)；只用
 contract-closed 题开发。  
 **更新时间：** 2026-07-31

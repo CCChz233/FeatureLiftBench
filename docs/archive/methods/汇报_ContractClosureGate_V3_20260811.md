@@ -1,5 +1,8 @@
 # Contract Closure Gate V3 阶段结论（2026-08-11）
 
+> **Status: archived · Last verified: 2026-08-17**
+> 负结果切片，不是当前协议。
+
 ## 结论先行
 
 V3 已实现并完成真实 API 三题小切片，但当前版本失败，不能扩大实验：

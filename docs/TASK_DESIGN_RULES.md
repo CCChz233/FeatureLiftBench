@@ -184,7 +184,8 @@ forbidden、输出布局与功能门说明），不见上游实现定位。
 - `repo/` 内随 pinned 上游快照保留的 tests/docs/examples 属于源码上下文，
   Agent 可以检查、改写并用于自测。
 - Public-feedback 臂可显式挂载 `public_tests/`；它与 Main 必须共用相同
-  `public_spec`、任务版本和 evaluator，结果须分报。
+  `public_spec`、任务版本和 evaluator，结果须分报。规范见
+  [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 
 ---
 

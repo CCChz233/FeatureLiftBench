@@ -8,7 +8,7 @@
 
 正式 pilot：`experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731` →
 Functional **1/6**，相对 Main **−1**。裁决：
-[VERDICT.md](../../../experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731/VERDICT.md)。
+`experiments/methods/test_first_lift_pilot/dev6_tfl_p0_20260731/VERDICT.md`。
 
 **实验臂：** `--arm test_first_lift`（保留可复现；默认研究主线已离开本臂）
 

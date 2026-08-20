@@ -1,13 +1,14 @@
 # Rescue+ 高区分度诊断集
 
-> **Status: current · Last verified: 2026-08-17**
+> **Status: archived · Last verified: 2026-08-18**
+> Rescue+ 诊断集已停止使用。Core-12 现仅作历史方法诊断，不能换算成 Python-200。
 
 ## 结论
 
 后续 DeepSeek API 方法迭代默认不重复运行 Python-200 全量。固定使用 `rescue_plus_distill24_v1`，其中前 12 题组成更便宜的 `core12`。
 
 - `core12`：实现或 checker 小改动后的快速诊断，只运行待测方法。
-- `distill24`：方法版本比较，在完全相同条件下配对运行 Frozen Lite V1 和 Rescue+。
+- `distill24`：方法版本比较，在完全相同条件下配对运行 Frozen Lite V1（45+10 信封）和 Rescue+。这不是 Python-200 主表里的 120 步旧 Lite V1 协议，也不是当前 [V1 = Main+2M](../../METHOD_V1.md)。
 - Python-200：只在方法和 checker 冻结后运行一次，作为最终无偏结果；诊断集结果不能换算成全量通过率。
 
 任务文件：

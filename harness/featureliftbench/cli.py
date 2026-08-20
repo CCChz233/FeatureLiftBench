@@ -325,6 +325,51 @@ def main(argv: list[str] | None = None) -> int:
         action="store_false",
         help="Disable the equal-budget Contract Closure control arm (default)",
     )
+    contract_closure_gate.add_argument(
+        "--adaptive-budget-v2",
+        dest="adaptive_budget_v2",
+        action="store_true",
+        help=(
+            "V2 Adaptive Budget: Main prompt with a 1.5M primary token cap, "
+            "one progress checkpoint, and an optional 500K targeted-repair phase"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-adaptive-budget-v2",
+        dest="adaptive_budget_v2",
+        action="store_false",
+        help="Disable the V2 Adaptive Budget arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--pre-submit-contract-audit",
+        dest="pre_submit_contract_audit",
+        action="store_true",
+        help=(
+            "Prompt-only explicit-contract audit: checklist the public Bxxx clauses "
+            "before finishing; no checker, Hidden, or evaluator-test hunting"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-pre-submit-contract-audit",
+        dest="pre_submit_contract_audit",
+        action="store_false",
+        help="Disable the pre-submit explicit-contract audit arm (default)",
+    )
+    contract_closure_gate.add_argument(
+        "--spec-adversarial-self-test",
+        dest="spec_adversarial_self_test",
+        action="store_true",
+        help=(
+            "Spec-grounded adversarial self-test: harness matrix + filled scenarios; "
+            "no Hidden, no public_tests mount, no self-reflection checklist"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-spec-adversarial-self-test",
+        dest="spec_adversarial_self_test",
+        action="store_false",
+        help="Disable the spec-adversarial self-test arm (default)",
+    )
     run_agent_parser.set_defaults(
         contract_closure_gate=None,
         contract_closure_gate_lite=None,
@@ -333,6 +378,9 @@ def main(argv: list[str] | None = None) -> int:
         contract_closure_gate_lite_rescue_plus=None,
         contract_closure_gate_v3=None,
         contract_closure_budget_control=None,
+        adaptive_budget_v2=None,
+        pre_submit_contract_audit=None,
+        spec_adversarial_self_test=None,
     )
     run_agent_parser.add_argument(
         "--env-file",
@@ -723,6 +771,9 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             ),
             contract_closure_gate_v3=args.contract_closure_gate_v3,
             contract_closure_budget_control=args.contract_closure_budget_control,
+            adaptive_budget_v2=args.adaptive_budget_v2,
+            pre_submit_contract_audit=args.pre_submit_contract_audit,
+            spec_adversarial_self_test=args.spec_adversarial_self_test,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

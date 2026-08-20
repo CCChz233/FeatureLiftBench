@@ -20,7 +20,7 @@ from featureliftbench.openhands_runner import _write_usage
 
 
 class LLMUsageProxyTests(unittest.TestCase):
-    def test_tool_alias_compat_normalizes_only_terminal_security_field(self) -> None:
+    def test_tool_alias_compat_normalizes_terminal_security_field_and_defaults(self) -> None:
         body = json.dumps(
             {
                 "choices": [
@@ -40,9 +40,24 @@ class LLMUsageProxyTests(unittest.TestCase):
                                 },
                                 {
                                     "function": {
-                                        "name": "another_tool",
+                                        "name": "file_editor",
                                         "arguments": json.dumps(
-                                            {"security_rule": "LOW"}
+                                            {
+                                                "command": "create",
+                                                "path": "/tmp/a.py",
+                                            }
+                                        ),
+                                    }
+                                },
+                                {
+                                    "function": {
+                                        "name": "think",
+                                        "arguments": json.dumps(
+                                            {
+                                                "thought": "plan work",
+                                                "command": "plan",
+                                                "task_list": [{"title": "step 1"}],
+                                            }
                                         ),
                                     }
                                 },
@@ -58,12 +73,17 @@ class LLMUsageProxyTests(unittest.TestCase):
         payload = json.loads(normalized_body)
         calls = payload["choices"][0]["message"]["tool_calls"]
         terminal_args = json.loads(calls[0]["function"]["arguments"])
-        other_args = json.loads(calls[1]["function"]["arguments"])
+        editor_args = json.loads(calls[1]["function"]["arguments"])
+        think_args = json.loads(calls[2]["function"]["arguments"])
 
-        self.assertEqual(count, 1)
+        self.assertEqual(count, 3)
         self.assertEqual(terminal_args["security_risk"], "LOW")
         self.assertNotIn("security_rule", terminal_args)
-        self.assertEqual(other_args["security_rule"], "LOW")
+        self.assertEqual(editor_args["security_risk"], "LOW")
+        self.assertEqual(think_args["security_risk"], "LOW")
+        self.assertNotIn("command", think_args)
+        self.assertNotIn("task_list", think_args)
+        self.assertEqual(think_args["thought"], "plan work")
 
     def test_openhands_usage_artifact_preserves_cache_accounting(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

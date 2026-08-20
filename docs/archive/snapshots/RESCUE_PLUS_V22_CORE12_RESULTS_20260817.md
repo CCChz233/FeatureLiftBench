@@ -1,6 +1,6 @@
 # Rescue+ v2.2 Core-12 真实 API 结果
 
-> **Status: reference · Last verified: 2026-08-17**
+> **Status: archived · Last verified: 2026-08-17**
 
 日期：2026-08-17  
 模型：`deepseek/deepseek-v4-flash`  

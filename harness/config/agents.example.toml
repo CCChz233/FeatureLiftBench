@@ -133,6 +133,86 @@ context_window_tokens = 131072
 reserved_output_tokens = 8192
 openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
 
+# V1 = Main paper protocol + 2M total-token cap only.
+# No checker, no structural finish/stop policy, no repair.
+# Runtime ablation_arm stays "main"; paper.sh labels the method as v1.
+[profiles.openhands_deepseek_v4_flash_v1]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_max_steps = 120
+openhands_total_token_limit = 2000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_lite_v1 = false
+contract_closure_gate_v3 = false
+contract_closure_budget_control = false
+
+# V2 Adaptive Budget: Main prompt + 1.5M primary + checkpoint + optional 500K repair.
+# Runtime ablation_arm is adaptive_budget_v2; paper.sh labels the method as v2.
+# Extra 500K is applied only in phase 2 by the agent runner.
+[profiles.openhands_deepseek_v4_flash_v2]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_max_steps = 120
+openhands_total_token_limit = 1500000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_lite_v1 = false
+contract_closure_gate_v3 = false
+contract_closure_budget_control = false
+adaptive_budget_v2 = true
+
+# Alias kept so Core-12 / Distill-24 paths still resolve.
+[profiles.openhands_deepseek_v4_flash_main_2m_cap]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_max_steps = 120
+openhands_total_token_limit = 2000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_lite_v1 = false
+contract_closure_gate_v3 = false
+contract_closure_budget_control = false
+
 # Opt-in token-threshold context compression experiments.
 [profiles.openhands_deepseek_v4_flash_ctx64k]
 model = "deepseek/deepseek-v4-flash"
@@ -211,6 +291,162 @@ mount_public_tests = false
 prompt_style = "standard"
 expose_source_hints = false
 
+# Context-efficiency screening (Core-12). Same 128k Main envelope, no 2M cap.
+# ablation_arm stays main; condenser_mode is the independent variable.
+[profiles.openhands_deepseek_v4_flash_llm_summary]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+[profiles.openhands_deepseek_v4_flash_recency_masking]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "recency_masking"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_condenser_attention_window = 100
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+[profiles.openhands_deepseek_v4_flash_artifact_aware]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "artifact_aware"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_condenser_attention_window = 100
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+# Verification-aware compression (Core-12). Same Main envelope; compress old
+# self-test stdout into a ledger. Do not stack with artifact-aware / audit.
+[profiles.openhands_deepseek_v4_flash_verification_aware]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "verification_aware"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+# Local vLLM Core-12 screening (DeepSeek-V4-Flash @ :8000).
+[profiles.openhands_deepseek_v4_flash_vllm_local_llm_summary]
+model = "openai/DeepSeek-V4-Flash"
+api_key_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_KEY"
+api_base_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_BASE"
+openhands_tool_alias_compat = true
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+# Spec-adversarial self-test (local vLLM). Same envelope as vllm_local_llm_summary.
+[profiles.openhands_deepseek_v4_flash_vllm_local_spec_adversarial]
+model = "openai/DeepSeek-V4-Flash"
+api_key_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_KEY"
+api_base_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_BASE"
+openhands_tool_alias_compat = true
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+spec_adversarial_self_test = true
+
+[profiles.openhands_deepseek_v4_flash_vllm_local_verification_aware]
+model = "openai/DeepSeek-V4-Flash"
+api_key_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_KEY"
+api_base_env = "VLLM_DEEPSEEK_V4_FLASH_LOCAL_API_BASE"
+openhands_tool_alias_compat = true
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "verification_aware"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+
+# Prompt-only explicit-contract audit. Independent of condenser screening.
+# First B run must not stack with artifact-aware / recency masking.
+[profiles.openhands_deepseek_v4_flash_pre_submit_audit]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+pre_submit_contract_audit = true
+
 # Same Main / test-blind OpenHands settings as flash_main, DeepSeek-V4-Pro API.
 [profiles.openhands_deepseek_v4_pro_main]
 model = "deepseek/deepseek-v4-pro"
@@ -284,6 +520,26 @@ openhands_command = "openhands --headless --override-with-envs --exit-without-co
 mount_public_tests = true
 prompt_style = "standard"
 expose_source_hints = false
+
+# Spec-adversarial self-test (API). Same envelope as llm_summary; matrix from public_spec.
+[profiles.openhands_deepseek_v4_flash_spec_adversarial]
+model = "deepseek/deepseek-v4-flash"
+api_key_env = "FEATURELIFTBENCH_API_KEY"
+api_base_env = "FEATURELIFTBENCH_API_BASE"
+cost_limit = "0"
+call_limit = "0"
+native_tool_calling = true
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_condenser_mode = "token"
+openhands_condenser_keep_first = 4
+openhands_condenser_max_events = 1000000
+openhands_max_steps = 120
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+spec_adversarial_self_test = true
 
 [profiles.openhands_deepseek_v4_flash_short_prompt]
 model = "deepseek/deepseek-v4-flash"
@@ -742,6 +998,32 @@ call_limit = "0"
 context_window_tokens = 131072
 reserved_output_tokens = 8192
 openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+
+# V1 = this model's Main paper profile + 2M total-token cap only.
+[profiles.openhands_qwen3_6_35b_a3b_fp8_v1]
+model = "openai/Qwen3.6-35B-A3B-FP8"
+api_key_env = "VLLM_QWEN3_6_35B_A3B_FP8_API_KEY"
+api_base_env = "VLLM_QWEN3_6_35B_A3B_FP8_API_BASE"
+native_tool_calling = false
+cost_limit = "0"
+call_limit = "0"
+context_window_tokens = 131072
+reserved_output_tokens = 8192
+openhands_max_steps = 120
+openhands_total_token_limit = 2000000
+openhands_command = "openhands --headless --override-with-envs --exit-without-confirmation -f {prompt_file} --json"
+mount_public_tests = false
+prompt_style = "standard"
+expose_source_hints = false
+td_cognition = false
+exec_contract = false
+self_contract = false
+test_first_lift = false
+contract_closure_gate = false
+contract_closure_gate_lite = false
+contract_closure_gate_lite_v1 = false
+contract_closure_gate_v3 = false
+contract_closure_budget_control = false
 
 [profiles.openhands_qwen3_coder_30b_paper]
 model = "openai/Qwen3-Coder-30B-A3B-Instruct"

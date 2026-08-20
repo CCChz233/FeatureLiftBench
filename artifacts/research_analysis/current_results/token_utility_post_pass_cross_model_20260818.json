@@ -1,0 +1,273 @@
+{
+  "question": "post-functional-pass token spend across models",
+  "gold": "earliest unique tree with functional_gate=1.0",
+  "split": "External-50 Main unless noted",
+  "models": [
+    {
+      "name": "Flash local Main-200",
+      "e50": false,
+      "n_gold_pass": 138,
+      "tail_frac_median": 0.603393360295761,
+      "tail_median": 746057.0,
+      "total_median": 1361097.5,
+      "cutoff_median": 466984.0,
+      "pooled_self_test_share": 0.5267980292607781,
+      "pooled_inspect_share": 0.18563021184103387,
+      "pooled_package_write_share": 0.05524340328198338,
+      "rates": {
+        "has_self_test": 0.9927536231884058,
+        "has_package_write": 0.4420289855072464,
+        "has_inspect_repo": 0.572463768115942,
+        "has_upstream_tests": 0.4927536231884058,
+        "kept_mutating": 0.463768115942029,
+        "tail_ge_1m": 0.34782608695652173,
+        "tail_frac_ge_50": 0.6304347826086957
+      },
+      "pooled_share": {
+        "self_test_run": 0.4805425131665633,
+        "other": 0.10447753827866145,
+        "package_write": 0.05524340328198338,
+        "isolation_check": 0.03558939953574223,
+        "inspect_submission": 0.08288987857079154,
+        "inspect_repo": 0.037717100865358066,
+        "meta": 0.038267956601473314,
+        "finish": 0.04273494988091228,
+        "inspect_upstream_tests": 0.061808478152991043,
+        "self_test_write": 0.046255516094214855,
+        "cleanup": 0.011258511319415306,
+        "inspect_spec": 0.003214754251893221
+      },
+      "phase1_rollup": {
+        "replay_ok": 189,
+        "assigned": 200,
+        "pass_with_gold": 138,
+        "earliest_pass_frac_median": 0.39660663970423904,
+        "late_pass_n": 7,
+        "pass_with_2m_snapshot": 136,
+        "would_fail_at_2m": 5,
+        "eval_jobs": 648
+      }
+    },
+    {
+      "name": "Flash local E50",
+      "e50": true,
+      "n_gold_pass": 46,
+      "tail_frac_median": 0.5784292870154055,
+      "tail_median": 632839.0,
+      "total_median": 1343065.5,
+      "cutoff_median": 434468.0,
+      "pooled_self_test_share": 0.4850164407060497,
+      "pooled_inspect_share": 0.17968841565751362,
+      "pooled_package_write_share": 0.0787145053885228,
+      "rates": {
+        "has_self_test": 1.0,
+        "has_package_write": 0.41304347826086957,
+        "has_inspect_repo": 0.5217391304347826,
+        "has_upstream_tests": 0.43478260869565216,
+        "kept_mutating": 0.41304347826086957,
+        "tail_ge_1m": 0.2608695652173913,
+        "tail_frac_ge_50": 0.5652173913043478
+      },
+      "pooled_share": {
+        "self_test_run": 0.4441197498160439,
+        "other": 0.12232262321368417,
+        "package_write": 0.0787145053885228,
+        "isolation_check": 0.035281360976947056,
+        "inspect_submission": 0.10562255040856344,
+        "inspect_repo": 0.031459468894615636,
+        "meta": 0.03879671909779287,
+        "finish": 0.0479152451839414,
+        "self_test_write": 0.040896690890005784,
+        "inspect_upstream_tests": 0.03855964043360093,
+        "cleanup": 0.012264689775548347,
+        "inspect_spec": 0.0040467559207336065
+      },
+      "phase1_rollup": {
+        "note": "Flash local E50 is a subset of python200 gold; phase1 rollup below is the full 200",
+        "replay_ok": 189,
+        "assigned": 200,
+        "pass_with_gold": 138,
+        "earliest_pass_frac_median": 0.39660663970423904,
+        "late_pass_n": 7,
+        "pass_with_2m_snapshot": 136,
+        "would_fail_at_2m": 5,
+        "eval_jobs": 648
+      }
+    },
+    {
+      "name": "Flash API E50",
+      "e50": true,
+      "n_gold_pass": 42,
+      "tail_frac_median": 0.6374271179860048,
+      "tail_median": 950000.5,
+      "total_median": 2067833.5,
+      "cutoff_median": 530086.5,
+      "pooled_self_test_share": 0.4960226061795316,
+      "pooled_inspect_share": 0.247025001979394,
+      "pooled_package_write_share": 0.04759809763803775,
+      "rates": {
+        "has_self_test": 1.0,
+        "has_package_write": 0.47619047619047616,
+        "has_inspect_repo": 0.5952380952380952,
+        "has_upstream_tests": 0.5238095238095238,
+        "kept_mutating": 0.47619047619047616,
+        "tail_ge_1m": 0.4523809523809524,
+        "tail_frac_ge_50": 0.7142857142857143
+      },
+      "pooled_share": {
+        "self_test_run": 0.4452522705225071,
+        "inspect_upstream_tests": 0.07911677467411118,
+        "meta": 0.010126879745974229,
+        "isolation_check": 0.020624156440247024,
+        "inspect_submission": 0.08650256869558963,
+        "inspect_repo": 0.07416550888829648,
+        "other": 0.1430778290983964,
+        "finish": 0.03250384056368018,
+        "package_write": 0.04759809763803775,
+        "self_test_write": 0.05077033565702449,
+        "inspect_spec": 0.007240149721396712,
+        "cleanup": 0.0030215883547388207
+      },
+      "phase1_rollup": {
+        "replay_ok": 47,
+        "assigned": 50,
+        "pass_with_gold": 42,
+        "earliest_pass_frac_median": 0.36257288201399523,
+        "late_pass_n": 5,
+        "pass_with_2m_snapshot": 42,
+        "would_fail_at_2m": 5,
+        "eval_jobs": 144
+      }
+    },
+    {
+      "name": "Qwen3.6-35B E50",
+      "e50": true,
+      "n_gold_pass": 34,
+      "tail_frac_median": 0.4638409690370684,
+      "tail_median": 860913.0,
+      "total_median": 2044801.0,
+      "cutoff_median": 951673.0,
+      "pooled_self_test_share": 0.5050931513263133,
+      "pooled_inspect_share": 0.12643713033321988,
+      "pooled_package_write_share": 0.05968040663385663,
+      "rates": {
+        "has_self_test": 1.0,
+        "has_package_write": 0.47058823529411764,
+        "has_inspect_repo": 0.08823529411764706,
+        "has_upstream_tests": 0.029411764705882353,
+        "kept_mutating": 0.4411764705882353,
+        "tail_ge_1m": 0.4411764705882353,
+        "tail_frac_ge_50": 0.47058823529411764
+      },
+      "pooled_share": {
+        "self_test_write": 0.09330833457221971,
+        "other": 0.1008749637233879,
+        "meta": 0.12243724531321049,
+        "inspect_spec": 0.011005083454538751,
+        "self_test_run": 0.4117848167540936,
+        "inspect_submission": 0.10167937202647345,
+        "finish": 0.0806958425381971,
+        "package_write": 0.05968040663385663,
+        "inspect_repo": 0.01216046233432972,
+        "isolation_check": 0.004781260131814676,
+        "inspect_upstream_tests": 0.001592212517877954
+      },
+      "phase1_rollup": {
+        "replay_ok": 45,
+        "assigned": 50,
+        "pass_with_gold": 34,
+        "earliest_pass_frac_median": 0.5361590309629316,
+        "late_pass_n": 5,
+        "pass_with_2m_snapshot": 33,
+        "would_fail_at_2m": 4,
+        "eval_jobs": 207
+      }
+    },
+    {
+      "name": "Qwen3.5-122B E50",
+      "e50": true,
+      "n_gold_pass": 37,
+      "tail_frac_median": 0.48845199232170583,
+      "tail_median": 507285,
+      "total_median": 1152145,
+      "cutoff_median": 492867,
+      "pooled_self_test_share": 0.49535117186826216,
+      "pooled_inspect_share": 0.13797576889907495,
+      "pooled_package_write_share": 0.04503060500438012,
+      "rates": {
+        "has_self_test": 1.0,
+        "has_package_write": 0.2702702702702703,
+        "has_inspect_repo": 0.13513513513513514,
+        "has_upstream_tests": 0.10810810810810811,
+        "kept_mutating": 0.24324324324324326,
+        "tail_ge_1m": 0.16216216216216217,
+        "tail_frac_ge_50": 0.43243243243243246
+      },
+      "pooled_share": {
+        "self_test_write": 0.07465511236528462,
+        "self_test_run": 0.4206960595029775,
+        "isolation_check": 0.015749077906676175,
+        "inspect_submission": 0.11628323571927193,
+        "other": 0.11365789327421454,
+        "finish": 0.07708394763065311,
+        "inspect_spec": 0.0037656060403346583,
+        "meta": 0.11515153541673896,
+        "package_write": 0.04503060500438012,
+        "inspect_upstream_tests": 0.015739943727748947,
+        "inspect_repo": 0.002186983411719404
+      },
+      "phase1_rollup": {
+        "replay_ok": 50,
+        "assigned": 50,
+        "pass_with_gold": 37,
+        "earliest_pass_frac_median": 0.5115480076782941,
+        "late_pass_n": 1,
+        "pass_with_2m_snapshot": 37,
+        "would_fail_at_2m": 1,
+        "eval_jobs": 151
+      }
+    },
+    {
+      "name": "GPT-OSS 120B E50",
+      "e50": true,
+      "n_gold_pass": 16,
+      "tail_frac_median": 0.5136003206288344,
+      "tail_median": 104137.0,
+      "total_median": 371009.0,
+      "cutoff_median": 168074.5,
+      "pooled_self_test_share": 0.3371970731831939,
+      "pooled_inspect_share": 0.11372091501927097,
+      "pooled_package_write_share": 0.1117309180346525,
+      "rates": {
+        "has_self_test": 0.9375,
+        "has_package_write": 0.25,
+        "has_inspect_repo": 0.25,
+        "has_upstream_tests": 0.0625,
+        "kept_mutating": 0.25,
+        "tail_ge_1m": 0.0,
+        "tail_frac_ge_50": 0.5
+      },
+      "pooled_share": {
+        "inspect_repo": 0.06886798551223358,
+        "isolation_check": 0.009465743291550236,
+        "other": 0.2902043453235071,
+        "self_test_run": 0.2867163346585787,
+        "finish": 0.1376810051478253,
+        "inspect_upstream_tests": 0.013588958206966654,
+        "self_test_write": 0.05048073852461523,
+        "package_write": 0.1117309180346525,
+        "inspect_submission": 0.03126397130007072
+      },
+      "phase1_rollup": {
+        "replay_ok": 46,
+        "assigned": 50,
+        "pass_with_gold": 16,
+        "earliest_pass_frac_median": 0.48639967937116557,
+        "late_pass_n": 0,
+        "pass_with_2m_snapshot": 16,
+        "would_fail_at_2m": 0,
+        "eval_jobs": 75
+      }
+    }
+  ]
+}

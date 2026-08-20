@@ -184,7 +184,8 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 `…_main` / `…_public_feedback` / `…_short_prompt`，以及显式 opt-in
 `--agent-public-tests`。可验证的 No-Hint Main 与 Entrypoint-Hint 切换已
 落地；当前 release 的 Full-Repository materialization 状态见
-[STATUS.md](STATUS.md)。历史 `no_public`
+[STATUS.md](STATUS.md)。RQ6 Public-feedback 的 Flash-12 成对规范见
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。历史 `no_public`
 名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。
 
 ---

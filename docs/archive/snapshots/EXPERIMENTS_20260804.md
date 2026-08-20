@@ -15,10 +15,10 @@ identity 的 Docker image 中运行。完整定义见
 
 | Result set | Completeness | Classification | Source |
 | --- | --- | --- | --- |
-| Frozen Python baseline: GPT-OSS 120B | complete | core candidate after environment resolution | [audit](../../../reports/paper_analysis/python150_frozen_20260803/README.md) |
-| Frozen Python baseline: Qwen3.5 122B | complete | core candidate after context/environment resolution | [audit](../../../reports/paper_analysis/python150_frozen_20260803/README.md) |
-| Frozen Python baseline: Qwen3.6 35B | complete union of three shards | core candidate after context/environment resolution | [audit](../../../reports/paper_analysis/python150_frozen_20260803/README.md) |
-| Frozen Python baseline: DeepSeek V4 Flash | partial | supporting evidence only | [audit](../../../reports/paper_analysis/python150_frozen_20260803/README.md) |
+| Frozen Python baseline: GPT-OSS 120B | complete | core candidate after environment resolution | historical audit `reports/paper_analysis/python150_frozen_20260803/` |
+| Frozen Python baseline: Qwen3.5 122B | complete | core candidate after context/environment resolution | historical audit `reports/paper_analysis/python150_frozen_20260803/` |
+| Frozen Python baseline: Qwen3.6 35B | complete union of three shards | core candidate after context/environment resolution | historical audit `reports/paper_analysis/python150_frozen_20260803/` |
+| Frozen Python baseline: DeepSeek V4 Flash | partial | supporting evidence only | historical audit `reports/paper_analysis/python150_frozen_20260803/` |
 | Balanced External extension | not yet complete | required for Python-200 model tables | [suite definition](../../../benchmark/selection/python200_suite.json) |
 | Older mixed-snapshot suites | historical | not comparable with current Main | [reports](../../../reports/README.md) |
 

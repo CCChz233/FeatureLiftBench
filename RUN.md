@@ -1,6 +1,6 @@
 # FeatureLiftBench 运行速查
 
-> **Status: current · Last verified: 2026-08-04**
+> **Status: current · Last verified: 2026-08-18**
 > 完整服务器流程见 [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md)，
 > 当前 release 事实见 [STATUS.md](docs/STATUS.md)。
 
@@ -39,6 +39,25 @@ Python 3.11 wheels、冻结 Python baseline 和全部 runnable task。
 ```
 
 正式实验必须固定镜像 identity，不使用未记录 digest 的浮动 `latest` 作为论文条件。
+
+## Run V1 (Main + 2M cap)
+
+当前 cost arm 规范见 [METHOD_V1.md](docs/METHOD_V1.md)。
+
+DeepSeek API：
+
+```bash
+./logs/run_python200_v1_deepseek_flash.sh
+```
+
+Qwen3.6-35B 本机四路（`:8030`–`:8033`，各 50 题，自动合并）：
+
+```bash
+export FEATURELIFTBENCH_AGENT_DOCKER_NETWORK=host
+./logs/start_python200_v1_qwen35b_4shard_tmux.sh
+```
+
+不要再开 `contract_closure_gate_lite_v1*` 作为正式 V1。
 
 ## Run Only External-50
 
@@ -82,6 +101,17 @@ PYTHONPATH=harness python3 harness/scripts/report_entanglement_coverage.py \
 
 主结果读取逐题 `run.json -> evaluation.scores.functional_gate`，并与
 `eval/result.json` 交叉检查；`suite.summary` 只是可重建缓存。
+`--aggregate` 是跨 suite 的均值/方差，不是 200 题并集。
+
+跨模型 Python-200 Main（冻结 150 + External-50 按题号合并）：
+
+```bash
+PYTHONPATH=harness python3 harness/scripts/merge_python200_main_results.py
+```
+
+输出：
+`artifacts/research_analysis/current_results/python200_cross_model_main_20260818.{json,md}`。
+这不是当前 V1。
 
 ## Task Maintenance
 

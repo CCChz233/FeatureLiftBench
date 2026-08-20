@@ -1,6 +1,8 @@
 # Contract Closure Gate Lite Rescue+（2026-08-16）
 
-> **Status: current · Last verified: 2026-08-17**
+> **Status: archived · Last verified: 2026-08-18**
+> Rescue+ 开发臂已停止。当前正式 cost arm **V1 = Main + 2M**，见
+> [../../METHOD_V1.md](../../METHOD_V1.md)；不要把 Rescue+ 或 Frozen Lite V1 叫做当前 V1。
 
 ## 目的
 
@@ -97,4 +99,4 @@ v2.1 的 3/12。它在主要救援目标上新增救回 `json_logic`，但 `deep
 
 结论是：公开 witness 在 primary 中有单点价值，但当前第二轮模型 repair 不具备成本收益。
 Rescue+ v2.2 不进入 Distill-24 或 Python-200。完整结果见
-`docs/RESCUE_PLUS_V22_CORE12_RESULTS_20260817.md`。
+[../snapshots/RESCUE_PLUS_V22_CORE12_RESULTS_20260817.md](../snapshots/RESCUE_PLUS_V22_CORE12_RESULTS_20260817.md)。

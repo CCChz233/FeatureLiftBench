@@ -37,6 +37,20 @@ class AgentConfigTests(unittest.TestCase):
         self.assertEqual(hint.summary["ablation_arm"], "entrypoint_hint")
         self.assertTrue(hint.summary["expose_source_hints"])
 
+    def test_example_public_feedback_profile_mounts_public_tests(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        loaded = load_agent_run_config(
+            base_config=AgentRunConfig(agent="openhands-agent"),
+            config_path=config_file,
+            profile_name="openhands_deepseek_v4_flash_public_feedback",
+        )
+        self.assertEqual(loaded.summary["ablation_arm"], "public_feedback")
+        self.assertTrue(loaded.summary["mount_public_tests"])
+        self.assertFalse(loaded.summary["expose_source_hints"])
+        self.assertEqual(loaded.summary["prompt_style"], "standard")
+
     def test_repo_graph_profile_is_opt_in_validated_and_uses_environment_precedence(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -183,6 +197,79 @@ class AgentConfigTests(unittest.TestCase):
         self.assertEqual(env["FEATURELIFTBENCH_OPENHANDS_TOOL_ALIAS_COMPAT"], "1")
         self.assertTrue(loaded.summary["openhands_tool_alias_compat"])
         self.assertEqual(env["LLM_MAX_MESSAGE_CHARS"], "16000")
+
+    def test_main_2m_cap_profile_is_main_plus_token_limit_only(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        loaded = load_agent_run_config(
+            base_config=AgentRunConfig(agent="openhands"),
+            config_path=config_file,
+            profile_name="openhands_deepseek_v4_flash_main_2m_cap",
+        )
+        env = loaded.run_config.env or {}
+
+        self.assertEqual(loaded.summary["ablation_arm"], "main")
+        self.assertEqual(loaded.summary["context_window_tokens"], 131072)
+        self.assertEqual(loaded.summary["openhands_max_steps"], 120)
+        self.assertEqual(loaded.summary["openhands_total_token_limit"], 2000000)
+        self.assertEqual(env["FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"], "2000000")
+        self.assertEqual(env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"], "120")
+        self.assertEqual(
+            env.get("FEATURELIFTBENCH_CONTRACT_CLOSURE_GATE_LITE_V1_FROZEN"),
+            "0",
+        )
+        self.assertFalse(loaded.summary["contract_closure_gate_lite_v1"])
+        self.assertFalse(loaded.summary["contract_closure_gate"])
+        self.assertFalse(loaded.summary["contract_closure_gate_lite"])
+        self.assertFalse(loaded.summary["contract_closure_budget_control"])
+        self.assertEqual(loaded.summary["prompt_style"], "standard")
+        self.assertFalse(loaded.summary["mount_public_tests"])
+        self.assertFalse(loaded.summary["expose_source_hints"])
+        # No Lite V1 primary/repair budgets: Main + total token cap only.
+        self.assertEqual(loaded.summary.get("contract_closure_primary_token_limit"), "")
+        self.assertEqual(loaded.summary.get("contract_closure_repair_token_limit"), "")
+
+    def test_v1_profiles_are_main_plus_2m_cap_only(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        for profile_name in (
+            "openhands_deepseek_v4_flash_v1",
+            "openhands_qwen3_6_35b_a3b_fp8_v1",
+        ):
+            with self.subTest(profile_name=profile_name):
+                loaded = load_agent_run_config(
+                    base_config=AgentRunConfig(agent="openhands"),
+                    config_path=config_file,
+                    profile_name=profile_name,
+                )
+                env = loaded.run_config.env or {}
+                self.assertEqual(loaded.summary["ablation_arm"], "main")
+                self.assertEqual(loaded.summary["context_window_tokens"], 131072)
+                self.assertEqual(loaded.summary["openhands_max_steps"], 120)
+                self.assertEqual(
+                    loaded.summary["openhands_total_token_limit"], 2000000
+                )
+                self.assertEqual(
+                    env["FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"],
+                    "2000000",
+                )
+                self.assertEqual(env["FEATURELIFTBENCH_OPENHANDS_MAX_STEPS"], "120")
+                self.assertFalse(loaded.summary["contract_closure_gate_lite_v1"])
+                self.assertFalse(loaded.summary["contract_closure_gate"])
+                self.assertFalse(loaded.summary["contract_closure_budget_control"])
+                self.assertEqual(loaded.summary["prompt_style"], "standard")
+                self.assertFalse(loaded.summary["mount_public_tests"])
+                self.assertFalse(loaded.summary["expose_source_hints"])
+                self.assertEqual(
+                    loaded.summary.get("contract_closure_primary_token_limit"),
+                    "",
+                )
+                self.assertEqual(
+                    loaded.summary.get("contract_closure_repair_token_limit"),
+                    "",
+                )
 
     def test_contract_closure_lite_v1_frozen_profile_matches_pilot_budget(self) -> None:
         config_file = (
@@ -440,6 +527,107 @@ class AgentConfigTests(unittest.TestCase):
                 "FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE",
                 loaded.run_config.env or {},
             )
+
+    def test_openhands_custom_condenser_modes_seed_and_keep_main_arm(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            config_file = Path(tmp) / "agents.toml"
+            config_file.write_text(
+                "[profiles.recency]\n"
+                "context_window_tokens = 131072\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "recency_masking"\n'
+                "[profiles.artifact]\n"
+                "context_window_tokens = 131072\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "artifact_aware"\n'
+                "[profiles.verification]\n"
+                "context_window_tokens = 131072\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "verification_aware"\n'
+                "[profiles.audit]\n"
+                "context_window_tokens = 131072\n"
+                "reserved_output_tokens = 8192\n"
+                'openhands_condenser_mode = "token"\n'
+                "pre_submit_contract_audit = true\n",
+                encoding="utf-8",
+            )
+            recency = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+                profile_name="recency",
+            )
+            artifact = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+                profile_name="artifact",
+            )
+            verification = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+                profile_name="verification",
+            )
+            audit = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+                profile_name="audit",
+            )
+        recency_env = recency.run_config.env or {}
+        self.assertEqual(recency.summary["openhands_condenser_mode"], "recency_masking")
+        self.assertEqual(recency.summary["ablation_arm"], "main")
+        self.assertEqual(recency.summary["openhands_condenser_attention_window"], 100)
+        self.assertEqual(
+            recency_env["FEATURELIFTBENCH_OPENHANDS_CONDENSER_MODE"],
+            "recency_masking",
+        )
+        self.assertEqual(artifact.summary["openhands_condenser_mode"], "artifact_aware")
+        self.assertEqual(artifact.summary["ablation_arm"], "main")
+        self.assertEqual(
+            verification.summary["openhands_condenser_mode"], "verification_aware"
+        )
+        self.assertEqual(verification.summary["ablation_arm"], "main")
+        self.assertEqual(audit.summary["ablation_arm"], "pre_submit_contract_audit")
+        self.assertEqual(audit.summary["openhands_condenser_mode"], "token")
+        self.assertTrue(audit.summary["pre_submit_contract_audit"])
+
+    def test_example_screening_profiles_keep_main_envelope(self) -> None:
+        config_file = (
+            Path(__file__).resolve().parents[1] / "config" / "agents.example.toml"
+        )
+        for name, mode, arm in (
+            ("openhands_deepseek_v4_flash_llm_summary", "token", "main"),
+            ("openhands_deepseek_v4_flash_recency_masking", "recency_masking", "main"),
+            ("openhands_deepseek_v4_flash_artifact_aware", "artifact_aware", "main"),
+            (
+                "openhands_deepseek_v4_flash_verification_aware",
+                "verification_aware",
+                "main",
+            ),
+            (
+                "openhands_deepseek_v4_flash_vllm_local_llm_summary",
+                "token",
+                "main",
+            ),
+            (
+                "openhands_deepseek_v4_flash_vllm_local_verification_aware",
+                "verification_aware",
+                "main",
+            ),
+            (
+                "openhands_deepseek_v4_flash_pre_submit_audit",
+                "token",
+                "pre_submit_contract_audit",
+            ),
+        ):
+            loaded = load_agent_run_config(
+                base_config=AgentRunConfig(agent="openhands"),
+                config_path=config_file,
+                profile_name=name,
+            )
+            self.assertEqual(loaded.summary["openhands_condenser_mode"], mode)
+            self.assertEqual(loaded.summary["ablation_arm"], arm)
+            self.assertEqual(loaded.summary["context_window_tokens"], 131072)
+            self.assertEqual(loaded.summary["openhands_max_steps"], 120)
+            self.assertEqual(loaded.summary["openhands_total_token_limit"] or "", "")
 
     def test_load_agent_run_config_maps_shared_key_to_common_env(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,6 +1,6 @@
 # FeatureLiftBench 评测与实验规范
 
-> **Status: current · Last verified: 2026-08-17**
+> **Status: current · Last verified: 2026-08-20**
 > 本文件是 Main 条件、正式实验臂、评分和结果留存要求的唯一当前规范。
 
 ## Official Main
@@ -31,9 +31,22 @@ Main 是 leaderboard 和论文主结果的唯一默认条件。Task contract 与
 | Short-Prompt | alter prompt wording only | prompt sensitivity |
 
 每个 ablation 必须记录 `ablation_arm` 和 changed dimension，并保持 task、model、
-agent、evaluator、image、attempt policy 与其余 Main 条件不变。Test-First Lift、
-TD-Cognition、Exec/Self-Contract、CGCC-lite、FCEC 和 PDR 是历史方法研究，不是当前
-正式实验臂，见 [archive/methods/](archive/methods/README.md)。
+agent、evaluator、image、attempt policy 与其余 Main 条件不变。
+
+Contract Closure 的旧 **Lite V1 协议**（checker / stop / repair）是已退役的方法
+实验臂，不是默认 leaderboard，也不是当前 V1。DeepSeek Python-200 上那次对比
+使用 Main 预算（120 步 + repair），不得与 45+10 Frozen 信封混比。
+
+当前 cost arm **V1 = Main + 2M token cap**，见 [METHOD_V1.md](METHOD_V1.md)。
+Rescue+、Adaptive Budget V2、Test-First Lift、TD-Cognition、Exec/Self-Contract、
+CGCC-lite、FCEC 和 PDR 是历史方法研究，**停止扩样本**，见
+[archive/methods/](archive/methods/README.md)。不要在 Core-12 / Distill-24 上继续
+叠脚手架。正式信息消融是上表 Public-Feedback / Entrypoint-Hint 等臂。
+
+RQ6 只跑 **Public-feedback**，且只在 Flash-12 同日成对切片上。规范见
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。读出是
+`functional_gate` 加 public/hidden 翻转。**不要**把该切片写入 Python-200 主表。
+Entrypoint-Hint / Pruned-Context / Short-prompt 尚未跑，不要与本臂叠。
 
 ## Evaluation Pipeline
 

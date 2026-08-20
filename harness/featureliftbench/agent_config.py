@@ -16,15 +16,21 @@ from .contract_closure_gate.common import REPAIR_MAX_STEPS_ENV
 from .contract_closure_gate.common import REPAIR_TOKEN_LIMIT_ENV
 from .contract_closure_gate.common import INFRA_RETRY_LIMIT_ENV
 from .contract_closure_gate.common import INFRA_RETRY_MAX_STEPS_ENV
+from .contract_closure_gate.common import LITE_V1_SILENT_FINISH_ENV
 from .llm_usage_proxy import TOTAL_TOKEN_LIMIT_ENV
 from .llm_usage_proxy import TOOL_ALIAS_COMPAT_ENV
+from .openhands_usage import CONDENSER_ATTENTION_WINDOW_ENV
 from .openhands_usage import CONDENSER_KEEP_FIRST_ENV
 from .openhands_usage import CONDENSER_MAX_EVENTS_ENV
 from .openhands_usage import CONDENSER_MODE_ENV
 from .openhands_usage import CONTEXT_WINDOW_ENV
+from .openhands_usage import CUSTOM_CONDENSER_MODES
+from .openhands_usage import DEFAULT_CONDENSER_ATTENTION_WINDOW
 from .openhands_usage import DEFAULT_CONDENSER_KEEP_FIRST
 from .openhands_usage import DEFAULT_CONDENSER_MAX_EVENTS
+from .openhands_usage import KNOWN_CONDENSER_MODES
 from .openhands_usage import RESERVED_OUTPUT_ENV
+from .openhands_usage import SEEDED_CONDENSER_MODES
 from .paths import DEFAULT_AGENT_CONFIG
 from .repo_graph.policy import BOOTSTRAP_MAX_CHARS_ENV
 from .repo_graph.policy import BOOTSTRAP_MAX_NODES_ENV
@@ -81,6 +87,9 @@ def load_agent_run_config(
     contract_closure_gate_lite_rescue_plus: bool | None = None,
     contract_closure_gate_v3: bool | None = None,
     contract_closure_budget_control: bool | None = None,
+    adaptive_budget_v2: bool | None = None,
+    pre_submit_contract_audit: bool | None = None,
+    spec_adversarial_self_test: bool | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
 
@@ -120,6 +129,9 @@ def load_agent_run_config(
         ),
         contract_closure_gate_v3=contract_closure_gate_v3,
         contract_closure_budget_control=contract_closure_budget_control,
+        adaptive_budget_v2=adaptive_budget_v2,
+        pre_submit_contract_audit=pre_submit_contract_audit,
+        spec_adversarial_self_test=spec_adversarial_self_test,
     )
 
     api_key_env = _string_value(profile.get("api_key_env")) or DEFAULT_API_KEY_ENV
@@ -177,7 +189,7 @@ def load_agent_run_config(
         env_name=CONDENSER_MODE_ENV,
         profile_value=profile.get("openhands_condenser_mode"),
     ).lower()
-    if context_mode and context_mode not in {"default", "token"}:
+    if context_mode and context_mode not in KNOWN_CONDENSER_MODES:
         raise ValueError(f"unknown OpenHands condenser mode: {context_mode}")
 
     context_window_raw = _resolve_profile_env_value(
@@ -210,7 +222,15 @@ def load_agent_run_config(
     keep_first = _non_negative_int_value(keep_first_raw)
     max_events = _positive_int_value(max_events_raw)
 
-    if context_mode == "token":
+    attention_window_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=CONDENSER_ATTENTION_WINDOW_ENV,
+        profile_value=profile.get("openhands_condenser_attention_window"),
+    )
+    attention_window = _positive_int_value(attention_window_raw)
+
+    if context_mode in SEEDED_CONDENSER_MODES:
         if not _is_openhands_agent(base_config.agent):
             raise ValueError("OpenHands token condenser mode requires an OpenHands agent")
         if context_window_tokens is None or reserved_output_tokens is None:
@@ -231,18 +251,24 @@ def load_agent_run_config(
             DEFAULT_CONDENSER_KEEP_FIRST if keep_first is None else keep_first
         )
         max_events = DEFAULT_CONDENSER_MAX_EVENTS if max_events is None else max_events
-        env[CONDENSER_MODE_ENV] = "token"
+        attention_window = (
+            DEFAULT_CONDENSER_ATTENTION_WINDOW
+            if attention_window is None
+            else attention_window
+        )
+        env[CONDENSER_MODE_ENV] = context_mode
         env[CONDENSER_KEEP_FIRST_ENV] = str(keep_first)
         env[CONDENSER_MAX_EVENTS_ENV] = str(max_events)
+        env[CONDENSER_ATTENTION_WINDOW_ENV] = str(attention_window)
         env["FEATURELIFTBENCH_AGENT_PROFILE"] = selected_profile
 
     if context_window_tokens is not None:
         env[CONTEXT_WINDOW_ENV] = str(context_window_tokens)
-    elif context_mode == "token":
+    elif context_mode in SEEDED_CONDENSER_MODES:
         raise ValueError("context_window_tokens must be a positive integer")
     if reserved_output_tokens is not None:
         env[RESERVED_OUTPUT_ENV] = str(reserved_output_tokens)
-    elif context_mode == "token":
+    elif context_mode in SEEDED_CONDENSER_MODES:
         raise ValueError("reserved_output_tokens must be a positive integer")
 
     repo_graph_values = {
@@ -407,6 +433,14 @@ def load_agent_run_config(
             openhands_budget_values[env_name] = value
 
     env.update(ablation.to_env())
+    silent_finish_raw = _resolve_profile_env_value(
+        base_config=base_config,
+        env_values=env_values,
+        env_name=LITE_V1_SILENT_FINISH_ENV,
+        profile_value=profile.get("lite_v1_silent_finish"),
+    )
+    if _truthy(silent_finish_raw):
+        env[LITE_V1_SILENT_FINISH_ENV] = "1"
 
     extra_args = _merge_extra_args(
         _featurelift_profile_extra_args(profile, agent=base_config.agent),
@@ -452,20 +486,23 @@ def load_agent_run_config(
         "openhands_condenser_mode": context_mode or "default",
         "openhands_condenser_trigger_tokens": (
             context_window_tokens - reserved_output_tokens
-            if context_mode == "token"
+            if context_mode in SEEDED_CONDENSER_MODES
             and context_window_tokens is not None
             and reserved_output_tokens is not None
             else ""
         ),
         "openhands_condenser_target_tokens": (
             (context_window_tokens - reserved_output_tokens) // 2
-            if context_mode == "token"
+            if context_mode in SEEDED_CONDENSER_MODES
             and context_window_tokens is not None
             and reserved_output_tokens is not None
             else ""
         ),
-        "openhands_condenser_keep_first": keep_first if context_mode == "token" else "",
-        "openhands_condenser_max_events": max_events if context_mode == "token" else "",
+        "openhands_condenser_keep_first": keep_first if context_mode in SEEDED_CONDENSER_MODES else "",
+        "openhands_condenser_max_events": max_events if context_mode in SEEDED_CONDENSER_MODES else "",
+        "openhands_condenser_attention_window": (
+            attention_window if context_mode in CUSTOM_CONDENSER_MODES else ""
+        ),
         "openhands_command": openhands_command if _is_openhands_agent(base_config.agent) else "",
         "openhands_command_configured": bool(openhands_command)
         if _is_openhands_agent(base_config.agent)
@@ -527,6 +564,7 @@ def load_agent_run_config(
         "contract_closure_gate_lite_v1": (
             ablation.contract_closure_gate_lite_v1
         ),
+        "lite_v1_silent_finish": env.get(LITE_V1_SILENT_FINISH_ENV) == "1",
         "contract_closure_gate_lite_rescue": (
             ablation.contract_closure_gate_lite_rescue
         ),
@@ -537,6 +575,9 @@ def load_agent_run_config(
         "contract_closure_budget_control": (
             ablation.contract_closure_budget_control
         ),
+        "adaptive_budget_v2": ablation.adaptive_budget_v2,
+        "pre_submit_contract_audit": ablation.pre_submit_contract_audit,
+        "spec_adversarial_self_test": ablation.spec_adversarial_self_test,
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)
 

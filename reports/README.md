@@ -1,6 +1,6 @@
 # FeatureLiftBench Reports
 
-> **Status: reference index · Last verified: 2026-08-17**
+> **Status: reference index · Last verified: 2026-08-18**
 > Current release numbers and blockers are maintained in [docs/STATUS.md](../docs/STATUS.md).
 
 `reports/` contains small, reviewable audits and derived analyses. Raw model runs belong under
@@ -26,9 +26,11 @@ registries under `artifacts/` and `benchmark/`.
 
 | Path | Condition |
 | --- | --- |
-| [Current DeepSeek Main vs Lite snapshot](../artifacts/research_analysis/current_results/deepseek_main_vs_frozen_lite_v1_20260817.json) | Python-200 Functional、failure-stage coverage 和 RRES 对账 |
-| [Frozen Python-150 archive audit](paper_analysis/python150_frozen_20260803/README.md) | Task-level recomputation of the supplied frozen result bundle |
-| [Paper analysis index](paper_analysis/README.md) | Available generated paper analyses and their boundaries |
+| [Current Python-200 cross-model Main](../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json) | 五组 Main Functional / 失败阶段 / RRES；150+Ext50 按题号合并；不是当前 V1 |
+| [Current Qwen V1 vs Main](../artifacts/research_analysis/current_results/qwen_v1_vs_main_20260818.json) | Qwen3.6-35B V1-200；E50 干净切片；不是 Lite 协议 |
+| [Current DeepSeek Main vs retired Lite V1 protocol](../artifacts/research_analysis/current_results/deepseek_main_vs_lite_v1_20260817.json) | DeepSeek 方法对比；不是当前 V1 |
+| [Current V1 method spec](../docs/METHOD_V1.md) | V1 = Main + 2M cap |
+| [Paper analysis index](paper_analysis/README.md) | 历史 mixed-snapshot 分析已不在树中 |
 
 Only results classified in [docs/STATUS.md](../docs/STATUS.md) may enter current paper tables.
 Historical pass counts must not be relabeled as current Main.

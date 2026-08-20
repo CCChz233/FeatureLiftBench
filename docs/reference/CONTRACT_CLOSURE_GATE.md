@@ -118,11 +118,22 @@ usage, including
 `effective_uncached_prompt_tokens`. Raw token totals remain available so cache
 savings are not confused with algorithmic token reduction.
 
-## Frozen Lite V1 release arm
+## Current V1 is not this arm
 
-`contract_closure_gate_lite_v1_frozen` is the release candidate for the
-Python-200 method run. It preserves the prompt and budgets used by the paired
-12-task Lite V1 pilot rather than silently reusing the later V2.1 prompt:
+The live cost method named **V1** is Main protocol plus a 2M total-token cap.
+It does **not** enable `contract_closure_gate_lite_v1`. See
+[METHOD_V1.md](../METHOD_V1.md). The sections below describe the **retired**
+Lite V1 checker protocol and its frozen 45+10 envelope.
+
+## Frozen Lite V1 envelope (retired protocol)
+
+`contract_closure_gate_lite_v1_frozen` is the 45+10 step envelope used by the
+12-task Lite V1 pilot. It is **not** the Python-200 method comparison in
+[FINDINGS.md](../FINDINGS.md). That comparison used the same protocol with Main's
+120-step budget (`*_lite_v1_main_budget` profiles).
+
+The frozen envelope preserves the prompt and budgets of the paired 12-task
+pilot rather than silently reusing the later V2.1 prompt:
 
 - structure-only checker and no behavior cases;
 - primary budget of 2,000,000 tokens and 45 OpenHands steps;

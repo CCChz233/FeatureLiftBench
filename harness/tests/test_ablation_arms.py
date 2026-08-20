@@ -67,6 +67,18 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(contract_closure_budget_control=True).ablation_arm,
             "contract_closure_budget_control",
         )
+        self.assertEqual(
+            AblationOptions(adaptive_budget_v2=True).ablation_arm,
+            "adaptive_budget_v2",
+        )
+        self.assertEqual(
+            AblationOptions(pre_submit_contract_audit=True).ablation_arm,
+            "pre_submit_contract_audit",
+        )
+        self.assertEqual(
+            AblationOptions(spec_adversarial_self_test=True).ablation_arm,
+            "spec_adversarial_self_test",
+        )
 
     def test_contract_closure_gate_is_mutually_exclusive_with_other_methods(self) -> None:
         with self.assertRaisesRegex(ValueError, "mutually exclusive"):
@@ -80,6 +92,11 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(
                 contract_closure_gate_lite=True,
                 contract_closure_budget_control=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                adaptive_budget_v2=True,
+                contract_closure_gate=True,
             )
         with self.assertRaisesRegex(ValueError, "mutually exclusive"):
             AblationOptions(
@@ -100,6 +117,21 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(
                 contract_closure_gate_lite_rescue=True,
                 contract_closure_gate_lite_rescue_plus=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                pre_submit_contract_audit=True,
+                contract_closure_gate=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                spec_adversarial_self_test=True,
+                pre_submit_contract_audit=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                spec_adversarial_self_test=True,
+                test_first_lift=True,
             )
 
     def test_cli_overrides_profile(self) -> None:

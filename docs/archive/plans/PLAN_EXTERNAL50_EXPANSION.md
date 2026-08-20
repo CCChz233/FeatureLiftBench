@@ -17,7 +17,7 @@
 | W3 materialize 脚本 | [`harness/scripts/materialize_external50_w3.py`](../../../harness/scripts/materialize_external50_w3.py) |
 | W4 materialize 脚本 | [`harness/scripts/materialize_external50_w4.py`](../../../harness/scripts/materialize_external50_w4.py) |
 | W5 materialize 脚本 | [`harness/scripts/materialize_external50_w5.py`](../../../harness/scripts/materialize_external50_w5.py) |
-| Staging（50 题） | [`benchmark/staging/`](../../../benchmark/staging/) |
+| Staging（50 题） | `benchmark/staging/`（release 后已清空） |
 
 **目标：** 新增 50 道题（50 个新 upstream 仓，不复用 External-150）。  
 **本波不做：** 旧 150 全量 contract audit、方法实验、旧题 baseline。

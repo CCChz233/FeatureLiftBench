@@ -1,0 +1,3447 @@
+{
+  "n": 138,
+  "tail_median": 746057.0,
+  "tail_frac_median": 0.603393360295761,
+  "pooled_tokens": {
+    "self_test_run": 59302511,
+    "other": 15306150,
+    "package_write": 7215486,
+    "isolation_check": 4903719,
+    "inspect_submission": 10681751,
+    "inspect_repo": 4860481,
+    "meta": 4931468,
+    "finish": 5507115,
+    "inspect_upstream_tests": 7965059,
+    "self_test_write": 6327908,
+    "cleanup": 1450848,
+    "inspect_spec": 414275
+  },
+  "pooled_actions": {
+    "self_test_run": 1414,
+    "other": 373,
+    "package_write": 162,
+    "isolation_check": 121,
+    "inspect_submission": 237,
+    "inspect_repo": 94,
+    "meta": 115,
+    "finish": 114,
+    "inspect_upstream_tests": 190,
+    "self_test_write": 151,
+    "cleanup": 33,
+    "inspect_spec": 9
+  },
+  "rates": {
+    "has_self_test": 0.9855072463768116,
+    "has_package_write": 0.4420289855072464,
+    "has_inspect_repo": 0.572463768115942,
+    "kept_mutating": 0.463768115942029,
+    "tail_ge_1m": 0.34782608695652173,
+    "tail_frac_ge_50": 0.6304347826086957
+  },
+  "tasks": [
+    {
+      "task_id": "anytree__tree_resolve_render_core__001",
+      "tail": 905167,
+      "tail_frac": 0.44645148880131397,
+      "tok": {
+        "self_test_run": 468188,
+        "other": 110227,
+        "package_write": 109623,
+        "isolation_check": 29513,
+        "inspect_submission": 83677,
+        "inspect_repo": 29198,
+        "meta": 37085,
+        "finish": 37656
+      },
+      "act": {
+        "self_test_run": 11,
+        "other": 2,
+        "package_write": 2,
+        "isolation_check": 1,
+        "inspect_submission": 3,
+        "inspect_repo": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "arrow__parse_format_core__001",
+      "tail": 1549982,
+      "tail_frac": 0.5069079271182211,
+      "tok": {
+        "self_test_run": 1084799,
+        "inspect_upstream_tests": 80209,
+        "self_test_write": 38786,
+        "inspect_repo": 81799,
+        "package_write": 49788,
+        "other": 111911,
+        "cleanup": 33075,
+        "inspect_submission": 33660,
+        "finish": 35955
+      },
+      "act": {
+        "self_test_run": 21,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 1,
+        "inspect_repo": 2,
+        "package_write": 1,
+        "other": 2,
+        "cleanup": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "attrs__validators_core__001",
+      "tail": 2559219,
+      "tail_frac": 0.5415827592073887,
+      "tok": {
+        "inspect_repo": 434829,
+        "self_test_run": 790859,
+        "inspect_spec": 96250,
+        "inspect_submission": 542981,
+        "package_write": 216913,
+        "self_test_write": 286804,
+        "other": 34252,
+        "meta": 71583,
+        "cleanup": 34571,
+        "finish": 50177
+      },
+      "act": {
+        "inspect_repo": 11,
+        "self_test_run": 20,
+        "inspect_spec": 3,
+        "inspect_submission": 15,
+        "package_write": 6,
+        "self_test_write": 7,
+        "other": 1,
+        "meta": 2,
+        "cleanup": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "automat__methodical_workflow_core__001",
+      "tail": 360107,
+      "tail_frac": 0.6063826383615021,
+      "tok": {
+        "self_test_write": 33554,
+        "self_test_run": 179000,
+        "inspect_upstream_tests": 34483,
+        "package_write": 36774,
+        "inspect_submission": 37668,
+        "finish": 38628
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 5,
+        "inspect_upstream_tests": 1,
+        "package_write": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "bidict__bidirectional_map_core__001",
+      "tail": 596430,
+      "tail_frac": 0.49059332155442154,
+      "tok": {
+        "self_test_run": 294495,
+        "self_test_write": 46647,
+        "inspect_upstream_tests": 47135,
+        "isolation_check": 50094,
+        "meta": 52047,
+        "inspect_submission": 52179,
+        "finish": 53833
+      },
+      "act": {
+        "self_test_run": 6,
+        "self_test_write": 1,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 1,
+        "meta": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "blinker__signal_registry_core__001",
+      "tail": 286732,
+      "tail_frac": 0.5287526738954046,
+      "tok": {
+        "self_test_write": 93203,
+        "self_test_run": 127205,
+        "isolation_check": 31454,
+        "finish": 34870
+      },
+      "act": {
+        "self_test_write": 3,
+        "self_test_run": 4,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "boltons__iterutils_core__001",
+      "tail": 958541,
+      "tail_frac": 0.7776186821691591,
+      "tok": {
+        "self_test_run": 322304,
+        "isolation_check": 43761,
+        "package_write": 138053,
+        "inspect_submission": 45579,
+        "inspect_upstream_tests": 145638,
+        "other": 152749,
+        "cleanup": 54814,
+        "finish": 55643
+      },
+      "act": {
+        "self_test_run": 7,
+        "isolation_check": 1,
+        "package_write": 3,
+        "inspect_submission": 1,
+        "inspect_upstream_tests": 3,
+        "other": 3,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "boolean_py__expr_simplify_core__001",
+      "tail": 633466,
+      "tail_frac": 0.7484495569909649,
+      "tok": {
+        "self_test_run": 370462,
+        "other": 154273,
+        "inspect_submission": 53602,
+        "finish": 55129
+      },
+      "act": {
+        "self_test_run": 8,
+        "other": 3,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "cachecontrol__heuristic_store_core__001",
+      "tail": 402484,
+      "tail_frac": 0.4900464862574545,
+      "tok": {
+        "self_test_run": 194978,
+        "inspect_submission": 39965,
+        "other": 83080,
+        "meta": 41795,
+        "finish": 42666
+      },
+      "act": {
+        "self_test_run": 5,
+        "inspect_submission": 1,
+        "other": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "cacheout__ttl_policy_core__001",
+      "tail": 195264,
+      "tail_frac": 0.271537158638643,
+      "tok": {
+        "self_test_run": 114703,
+        "other": 39913,
+        "finish": 40648
+      },
+      "act": {
+        "self_test_run": 3,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "cachetools__cache_eviction_core__001",
+      "tail": 1160964,
+      "tail_frac": 0.7595108624542709,
+      "tok": {
+        "self_test_run": 652060,
+        "isolation_check": 93638,
+        "other": 185641,
+        "package_write": 96052,
+        "cleanup": 52114,
+        "meta": 53934,
+        "finish": 27525
+      },
+      "act": {
+        "self_test_run": 14,
+        "isolation_check": 2,
+        "other": 4,
+        "package_write": 2,
+        "cleanup": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "cachier__memoize_backend_core__001",
+      "tail": 1698501,
+      "tail_frac": 0.4795642504190714,
+      "tok": {
+        "self_test_run": 795699,
+        "inspect_repo": 392680,
+        "inspect_submission": 83303,
+        "inspect_upstream_tests": 213964,
+        "other": 103323,
+        "meta": 61066,
+        "finish": 48466
+      },
+      "act": {
+        "self_test_run": 17,
+        "inspect_repo": 9,
+        "inspect_submission": 2,
+        "inspect_upstream_tests": 4,
+        "other": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "cattrs__structure_core__001",
+      "tail": 1839588,
+      "tail_frac": 0.6865346010695171,
+      "tok": {
+        "package_write": 58393,
+        "self_test_run": 964075,
+        "inspect_repo": 102047,
+        "meta": 110596,
+        "isolation_check": 213409,
+        "self_test_write": 121701,
+        "inspect_upstream_tests": 79536,
+        "inspect_spec": 42137,
+        "other": 43716,
+        "inspect_submission": 51591,
+        "finish": 52387
+      },
+      "act": {
+        "package_write": 1,
+        "self_test_run": 17,
+        "inspect_repo": 2,
+        "meta": 2,
+        "isolation_check": 3,
+        "self_test_write": 2,
+        "inspect_upstream_tests": 2,
+        "inspect_spec": 1,
+        "other": 1,
+        "inspect_submission": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "cerberus__schema_validate_core__001",
+      "tail": 1609044,
+      "tail_frac": 0.5534692007455979,
+      "tok": {
+        "self_test_run": 1024564,
+        "isolation_check": 111769,
+        "inspect_upstream_tests": 57493,
+        "other": 213458,
+        "inspect_submission": 98100,
+        "package_write": 30737,
+        "cleanup": 34666,
+        "finish": 38257
+      },
+      "act": {
+        "self_test_run": 29,
+        "isolation_check": 3,
+        "inspect_upstream_tests": 2,
+        "other": 7,
+        "inspect_submission": 3,
+        "package_write": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "chameleon__template_compile_core__001",
+      "tail": 1723380,
+      "tail_frac": 0.7428333252155487,
+      "tok": {
+        "isolation_check": 33704,
+        "self_test_run": 491476,
+        "inspect_upstream_tests": 402885,
+        "other": 601031,
+        "meta": 35485,
+        "inspect_submission": 84037,
+        "inspect_spec": 36813,
+        "finish": 37949
+      },
+      "act": {
+        "isolation_check": 1,
+        "self_test_run": 13,
+        "inspect_upstream_tests": 11,
+        "other": 18,
+        "meta": 1,
+        "inspect_submission": 2,
+        "inspect_spec": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "click__option_parser__001",
+      "tail": 901366,
+      "tail_frac": 0.7686002914549468,
+      "tok": {
+        "self_test_run": 496292,
+        "self_test_write": 96235,
+        "inspect_upstream_tests": 69269,
+        "other": 103060,
+        "inspect_submission": 76503,
+        "isolation_check": 38240,
+        "finish": 21767
+      },
+      "act": {
+        "self_test_run": 16,
+        "self_test_write": 3,
+        "inspect_upstream_tests": 2,
+        "other": 3,
+        "inspect_submission": 3,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "configobj__roundtrip_config_core__001",
+      "tail": 2550614,
+      "tail_frac": 0.8447920837858507,
+      "tok": {
+        "self_test_run": 1418866,
+        "inspect_upstream_tests": 378163,
+        "meta": 164382,
+        "other": 245554,
+        "inspect_submission": 122640,
+        "isolation_check": 127960,
+        "cleanup": 46205,
+        "finish": 46844
+      },
+      "act": {
+        "self_test_run": 25,
+        "inspect_upstream_tests": 6,
+        "meta": 3,
+        "other": 4,
+        "inspect_submission": 3,
+        "isolation_check": 3,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "configupdater__ini_roundtrip_core__001",
+      "tail": 444412,
+      "tail_frac": 0.5750062752140689,
+      "tok": {
+        "self_test_run": 145023,
+        "inspect_upstream_tests": 69560,
+        "other": 111357,
+        "isolation_check": 38507,
+        "meta": 39365,
+        "finish": 40600
+      },
+      "act": {
+        "self_test_run": 4,
+        "inspect_upstream_tests": 2,
+        "other": 3,
+        "isolation_check": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "coverage__config_merge_core__001",
+      "tail": 577016,
+      "tail_frac": 0.46868545092869435,
+      "tok": {
+        "self_test_run": 357902,
+        "isolation_check": 48296,
+        "inspect_submission": 56232,
+        "meta": 56924,
+        "finish": 57662
+      },
+      "act": {
+        "self_test_run": 7,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "coverage__glob_matcher_core__001",
+      "tail": 300514,
+      "tail_frac": 0.4736315365593415,
+      "tok": {
+        "other": 27433,
+        "self_test_run": 234853,
+        "finish": 38228
+      },
+      "act": {
+        "other": 1,
+        "self_test_run": 7,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "coverage__path_remap_core__001",
+      "tail": 1249032,
+      "tail_frac": 0.8353365738300906,
+      "tok": {
+        "self_test_run": 952339,
+        "isolation_check": 53990,
+        "other": 54605,
+        "inspect_submission": 61671,
+        "inspect_repo": 62889,
+        "finish": 63538
+      },
+      "act": {
+        "self_test_run": 20,
+        "isolation_check": 1,
+        "other": 1,
+        "inspect_submission": 1,
+        "inspect_repo": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "coverage__report_core__001",
+      "tail": 237838,
+      "tail_frac": 0.11282498413207427,
+      "tok": {
+        "self_test_run": 192063,
+        "other": 45775
+      },
+      "act": {
+        "self_test_run": 4,
+        "other": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "coverage__source_selection_core__001",
+      "tail": 730747,
+      "tail_frac": 0.537441612971316,
+      "tok": {
+        "self_test_write": 137767,
+        "self_test_run": 212743,
+        "other": 239062,
+        "isolation_check": 47308,
+        "inspect_submission": 30839,
+        "meta": 31245,
+        "finish": 31783
+      },
+      "act": {
+        "self_test_write": 3,
+        "self_test_run": 5,
+        "other": 5,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "croniter__cron_parse_core__001",
+      "tail": 1317243,
+      "tail_frac": 0.8153269278738996,
+      "tok": {
+        "self_test_run": 849002,
+        "other": 119177,
+        "self_test_write": 39876,
+        "inspect_upstream_tests": 45764,
+        "package_write": 49940,
+        "isolation_check": 108376,
+        "inspect_submission": 80593,
+        "finish": 24515
+      },
+      "act": {
+        "self_test_run": 18,
+        "other": 3,
+        "self_test_write": 1,
+        "inspect_upstream_tests": 1,
+        "package_write": 1,
+        "isolation_check": 2,
+        "inspect_submission": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "dataclasses_json__serde_core__001",
+      "tail": 1650334,
+      "tail_frac": 0.662671100176797,
+      "tok": {
+        "self_test_run": 874370,
+        "meta": 114697,
+        "other": 210489,
+        "inspect_upstream_tests": 63963,
+        "self_test_write": 128999,
+        "isolation_check": 38019,
+        "inspect_submission": 165701,
+        "finish": 54096
+      },
+      "act": {
+        "self_test_run": 18,
+        "meta": 2,
+        "other": 5,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 3,
+        "isolation_check": 1,
+        "inspect_submission": 4,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "deepdiff__deep_compare_core__001",
+      "tail": 2193287,
+      "tail_frac": 0.5564836963747282,
+      "tok": {
+        "isolation_check": 102299,
+        "self_test_run": 1239969,
+        "inspect_upstream_tests": 268529,
+        "other": 33117,
+        "package_write": 110439,
+        "inspect_submission": 137014,
+        "inspect_repo": 166845,
+        "meta": 88357,
+        "finish": 46718
+      },
+      "act": {
+        "isolation_check": 3,
+        "self_test_run": 33,
+        "inspect_upstream_tests": 7,
+        "other": 1,
+        "package_write": 3,
+        "inspect_submission": 4,
+        "inspect_repo": 4,
+        "meta": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "diskcache__eviction_policy_core__hard3_001",
+      "tail": 179190,
+      "tail_frac": 0.5225447483071755,
+      "tok": {
+        "self_test_run": 98353,
+        "package_write": 26143,
+        "cleanup": 27033,
+        "finish": 27661
+      },
+      "act": {
+        "self_test_run": 4,
+        "package_write": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "email_validator__validate_core__001",
+      "tail": 326674,
+      "tail_frac": 0.20275248945503838,
+      "tok": {
+        "self_test_run": 165164,
+        "cleanup": 55361,
+        "meta": 58419,
+        "finish": 47730
+      },
+      "act": {
+        "self_test_run": 3,
+        "cleanup": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "environs__typed_env_core__001",
+      "tail": 1201158,
+      "tail_frac": 0.6948938097791847,
+      "tok": {
+        "self_test_run": 740103,
+        "self_test_write": 125808,
+        "inspect_upstream_tests": 85023,
+        "isolation_check": 44930,
+        "inspect_submission": 85340,
+        "meta": 76692,
+        "finish": 43262
+      },
+      "act": {
+        "self_test_run": 16,
+        "self_test_write": 3,
+        "inspect_upstream_tests": 2,
+        "isolation_check": 1,
+        "inspect_submission": 2,
+        "meta": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "faker__provider_core__001",
+      "tail": 673206,
+      "tail_frac": 0.21963238981204503,
+      "tok": {
+        "inspect_submission": 235528,
+        "self_test_run": 269803,
+        "isolation_check": 26958,
+        "package_write": 27398,
+        "other": 34024,
+        "meta": 38965,
+        "finish": 40530
+      },
+      "act": {
+        "inspect_submission": 7,
+        "self_test_run": 8,
+        "isolation_check": 1,
+        "package_write": 1,
+        "other": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "fasteners__process_lock_core__001",
+      "tail": 134094,
+      "tail_frac": 0.3492840788620279,
+      "tok": {
+        "self_test_run": 104730,
+        "finish": 29364
+      },
+      "act": {
+        "self_test_run": 4,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "flask_cors__cors_options_core__001",
+      "tail": 788366,
+      "tail_frac": 0.51336138579691,
+      "tok": {
+        "other": 305292,
+        "inspect_submission": 108796,
+        "self_test_run": 268527,
+        "isolation_check": 62120,
+        "finish": 43631
+      },
+      "act": {
+        "other": 6,
+        "inspect_submission": 2,
+        "self_test_run": 5,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "flask_login__session_guard_core__001",
+      "tail": 1205270,
+      "tail_frac": 0.6687191653591188,
+      "tok": {
+        "isolation_check": 73212,
+        "other": 316219,
+        "meta": 41513,
+        "self_test_write": 195352,
+        "self_test_run": 273752,
+        "inspect_submission": 236445,
+        "inspect_upstream_tests": 29766,
+        "finish": 39011
+      },
+      "act": {
+        "isolation_check": 2,
+        "other": 8,
+        "meta": 1,
+        "self_test_write": 5,
+        "self_test_run": 7,
+        "inspect_submission": 8,
+        "inspect_upstream_tests": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "freezegun__freeze_time_core__001",
+      "tail": 840989,
+      "tail_frac": 0.6004040822300198,
+      "tok": {
+        "self_test_run": 313304,
+        "self_test_write": 43475,
+        "other": 189501,
+        "isolation_check": 47197,
+        "inspect_submission": 47396,
+        "meta": 99667,
+        "cleanup": 48672,
+        "finish": 51777
+      },
+      "act": {
+        "self_test_run": 7,
+        "self_test_write": 1,
+        "other": 4,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "meta": 2,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "ftfy__fix_text_core__001",
+      "tail": 395357,
+      "tail_frac": 0.5818522988167422,
+      "tok": {
+        "self_test_run": 228680,
+        "other": 28589,
+        "inspect_upstream_tests": 29598,
+        "isolation_check": 34725,
+        "meta": 36656,
+        "finish": 37109
+      },
+      "act": {
+        "self_test_run": 7,
+        "other": 1,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 1,
+        "meta": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "furl__url_mutate_core__001",
+      "tail": 632212,
+      "tail_frac": 0.8226271521662191,
+      "tok": {
+        "self_test_run": 283527,
+        "inspect_upstream_tests": 18450,
+        "self_test_write": 19131,
+        "isolation_check": 97398,
+        "other": 52221,
+        "inspect_repo": 28883,
+        "package_write": 29462,
+        "cleanup": 34028,
+        "meta": 34290,
+        "finish": 34822
+      },
+      "act": {
+        "self_test_run": 11,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 1,
+        "isolation_check": 4,
+        "other": 2,
+        "inspect_repo": 1,
+        "package_write": 1,
+        "cleanup": 1,
+        "meta": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "tail": 3051650,
+      "tail_frac": 0.7423181811215982,
+      "tok": {
+        "package_write": 216269,
+        "self_test_run": 1322281,
+        "inspect_upstream_tests": 107990,
+        "inspect_repo": 400189,
+        "inspect_submission": 371077,
+        "self_test_write": 267145,
+        "other": 207510,
+        "isolation_check": 46706,
+        "meta": 73938,
+        "finish": 38545
+      },
+      "act": {
+        "package_write": 3,
+        "self_test_run": 26,
+        "inspect_upstream_tests": 2,
+        "inspect_repo": 8,
+        "inspect_submission": 7,
+        "self_test_write": 6,
+        "other": 5,
+        "isolation_check": 1,
+        "meta": 2
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "h11__message_parse_core__001",
+      "tail": 831387,
+      "tail_frac": 0.7293021958357018,
+      "tok": {
+        "self_test_run": 318925,
+        "inspect_upstream_tests": 38932,
+        "self_test_write": 219436,
+        "inspect_repo": 48435,
+        "isolation_check": 50017,
+        "other": 50820,
+        "meta": 52119,
+        "finish": 52703
+      },
+      "act": {
+        "self_test_run": 7,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 5,
+        "inspect_repo": 1,
+        "isolation_check": 1,
+        "other": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "httpx__request_model_core__001",
+      "tail": 1926274,
+      "tail_frac": 0.6514685719580982,
+      "tok": {
+        "self_test_run": 1129054,
+        "other": 290356,
+        "inspect_upstream_tests": 143542,
+        "package_write": 225896,
+        "isolation_check": 74460,
+        "inspect_submission": 38482,
+        "finish": 24484
+      },
+      "act": {
+        "self_test_run": 23,
+        "other": 7,
+        "inspect_upstream_tests": 2,
+        "package_write": 5,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "huey__task_schedule_core__001",
+      "tail": 562511,
+      "tail_frac": 0.267792117401577,
+      "tok": {
+        "self_test_run": 227036,
+        "inspect_upstream_tests": 109373,
+        "self_test_write": 73619,
+        "isolation_check": 39596,
+        "meta": 42623,
+        "cleanup": 42742,
+        "finish": 27522
+      },
+      "act": {
+        "self_test_run": 6,
+        "inspect_upstream_tests": 3,
+        "self_test_write": 2,
+        "isolation_check": 1,
+        "meta": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "humanize__naturaltime_core__001",
+      "tail": 573170,
+      "tail_frac": 0.4257539663969539,
+      "tok": {
+        "package_write": 184838,
+        "inspect_submission": 95027,
+        "self_test_run": 95609,
+        "meta": 48712,
+        "cleanup": 48836,
+        "other": 49717,
+        "finish": 50431
+      },
+      "act": {
+        "package_write": 4,
+        "inspect_submission": 2,
+        "self_test_run": 2,
+        "meta": 1,
+        "cleanup": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "hyperlink__url_parse_core__001",
+      "tail": 438414,
+      "tail_frac": 0.3308944733934318,
+      "tok": {
+        "self_test_run": 235130,
+        "isolation_check": 95998,
+        "inspect_submission": 82190,
+        "finish": 25096
+      },
+      "act": {
+        "self_test_run": 5,
+        "isolation_check": 2,
+        "inspect_submission": 2
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "icalendar__component_roundtrip_core__001",
+      "tail": 1069394,
+      "tail_frac": 0.6229177224406582,
+      "tok": {
+        "self_test_run": 504058,
+        "self_test_write": 143931,
+        "inspect_submission": 104175,
+        "isolation_check": 95562,
+        "inspect_repo": 51969,
+        "other": 110879,
+        "meta": 28280,
+        "finish": 30540
+      },
+      "act": {
+        "self_test_run": 12,
+        "self_test_write": 3,
+        "inspect_submission": 2,
+        "isolation_check": 2,
+        "inspect_repo": 1,
+        "other": 3,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "tail": 1056184,
+      "tail_frac": 0.7676849318652947,
+      "tok": {
+        "self_test_run": 591593,
+        "self_test_write": 180841,
+        "other": 44550,
+        "inspect_submission": 97307,
+        "inspect_spec": 46873,
+        "inspect_repo": 63263,
+        "finish": 31757
+      },
+      "act": {
+        "self_test_run": 15,
+        "self_test_write": 4,
+        "other": 1,
+        "inspect_submission": 2,
+        "inspect_spec": 1,
+        "inspect_repo": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "tail": 1224759,
+      "tail_frac": 0.7556970718226249,
+      "tok": {
+        "self_test_run": 652309,
+        "self_test_write": 334791,
+        "cleanup": 43669,
+        "package_write": 48926,
+        "meta": 56564,
+        "inspect_submission": 56701,
+        "finish": 31799
+      },
+      "act": {
+        "self_test_run": 13,
+        "self_test_write": 7,
+        "cleanup": 1,
+        "package_write": 1,
+        "meta": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "intervaltree__interval_tree_core__001",
+      "tail": 480425,
+      "tail_frac": 0.22238480011405654,
+      "tok": {
+        "self_test_run": 301405,
+        "cleanup": 27763,
+        "inspect_submission": 85999,
+        "meta": 32339,
+        "finish": 32919
+      },
+      "act": {
+        "self_test_run": 6,
+        "cleanup": 1,
+        "inspect_submission": 3,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "isodate__duration_parse_core__001",
+      "tail": 1147568,
+      "tail_frac": 0.7069248036744359,
+      "tok": {
+        "self_test_run": 547752,
+        "isolation_check": 48349,
+        "inspect_upstream_tests": 151948,
+        "self_test_write": 53178,
+        "other": 228084,
+        "meta": 58610,
+        "finish": 59647
+      },
+      "act": {
+        "self_test_run": 11,
+        "isolation_check": 1,
+        "inspect_upstream_tests": 3,
+        "self_test_write": 1,
+        "other": 4,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "isort__settings_resolver_core__hard3_001",
+      "tail": 3348757,
+      "tail_frac": 0.7880021554564108,
+      "tok": {
+        "self_test_run": 1454186,
+        "package_write": 470550,
+        "other": 729222,
+        "inspect_repo": 408039,
+        "inspect_upstream_tests": 68753,
+        "isolation_check": 39641,
+        "inspect_submission": 82156,
+        "meta": 47432,
+        "finish": 48778
+      },
+      "act": {
+        "self_test_run": 28,
+        "package_write": 8,
+        "other": 15,
+        "inspect_repo": 10,
+        "inspect_upstream_tests": 2,
+        "isolation_check": 1,
+        "inspect_submission": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "tail": 149151,
+      "tail_frac": 0.15514325300402756,
+      "tok": {
+        "self_test_run": 97646,
+        "finish": 51505
+      },
+      "act": {
+        "self_test_run": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "jinja2__compile_render_core__001",
+      "tail": 1934459,
+      "tail_frac": 0.9160007822514161,
+      "tok": {
+        "other": 93701,
+        "self_test_run": 386338,
+        "inspect_upstream_tests": 54218,
+        "inspect_repo": 1057266,
+        "package_write": 32203,
+        "isolation_check": 150001,
+        "inspect_submission": 33064,
+        "meta": 83165,
+        "finish": 44503
+      },
+      "act": {
+        "other": 3,
+        "self_test_run": 11,
+        "inspect_upstream_tests": 2,
+        "inspect_repo": 2,
+        "package_write": 1,
+        "isolation_check": 4,
+        "inspect_submission": 1,
+        "meta": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jinja2__extensions_core__001",
+      "tail": 722594,
+      "tail_frac": 0.5980862075672687,
+      "tok": {
+        "self_test_run": 344697,
+        "inspect_upstream_tests": 37629,
+        "inspect_submission": 120897,
+        "other": 83176,
+        "inspect_repo": 44758,
+        "package_write": 45140,
+        "finish": 46297
+      },
+      "act": {
+        "self_test_run": 9,
+        "inspect_upstream_tests": 1,
+        "inspect_submission": 3,
+        "other": 2,
+        "inspect_repo": 1,
+        "package_write": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jinja2__filters_tests_core__001",
+      "tail": 1164736,
+      "tail_frac": 0.549329665903562,
+      "tok": {
+        "self_test_run": 258055,
+        "other": 192430,
+        "inspect_repo": 51534,
+        "inspect_submission": 215265,
+        "self_test_write": 94139,
+        "inspect_upstream_tests": 84843,
+        "package_write": 179664,
+        "isolation_check": 47606,
+        "finish": 41200
+      },
+      "act": {
+        "self_test_run": 6,
+        "other": 5,
+        "inspect_repo": 2,
+        "inspect_submission": 5,
+        "self_test_write": 3,
+        "inspect_upstream_tests": 2,
+        "package_write": 4,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jinja2__lexer_parser_core__001",
+      "tail": 1428678,
+      "tail_frac": 0.46768314380095055,
+      "tok": {
+        "package_write": 36762,
+        "self_test_run": 530328,
+        "inspect_upstream_tests": 226171,
+        "self_test_write": 183279,
+        "other": 183433,
+        "inspect_repo": 36741,
+        "inspect_submission": 122714,
+        "inspect_spec": 39142,
+        "isolation_check": 44131,
+        "finish": 25977
+      },
+      "act": {
+        "package_write": 1,
+        "self_test_run": 13,
+        "inspect_upstream_tests": 5,
+        "self_test_write": 5,
+        "other": 5,
+        "inspect_repo": 1,
+        "inspect_submission": 3,
+        "inspect_spec": 1,
+        "isolation_check": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jinja2__loader_inheritance_core__001",
+      "tail": 742626,
+      "tail_frac": 0.6652000412040541,
+      "tok": {
+        "self_test_run": 392657,
+        "inspect_upstream_tests": 65602,
+        "isolation_check": 37519,
+        "meta": 80699,
+        "inspect_submission": 40197,
+        "other": 82766,
+        "finish": 43186
+      },
+      "act": {
+        "self_test_run": 11,
+        "inspect_upstream_tests": 2,
+        "isolation_check": 1,
+        "meta": 2,
+        "inspect_submission": 1,
+        "other": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "joserfc__jwt_claims_core__001",
+      "tail": 100399,
+      "tail_frac": 0.05050017806017025,
+      "tok": {
+        "isolation_check": 32512,
+        "meta": 33699,
+        "finish": 34188
+      },
+      "act": {
+        "isolation_check": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": false,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "json5__parse_core__001",
+      "tail": 370711,
+      "tail_frac": 0.6152920517314637,
+      "tok": {
+        "meta": 69855,
+        "self_test_run": 181184,
+        "isolation_check": 38468,
+        "inspect_submission": 40243,
+        "finish": 40961
+      },
+      "act": {
+        "meta": 2,
+        "self_test_run": 5,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jsonpath_ng__expression_eval_core__001",
+      "tail": 978278,
+      "tail_frac": 0.679354060938381,
+      "tok": {
+        "self_test_run": 460489,
+        "other": 264811,
+        "cleanup": 94991,
+        "inspect_submission": 51794,
+        "meta": 52342,
+        "finish": 53851
+      },
+      "act": {
+        "self_test_run": 10,
+        "other": 6,
+        "cleanup": 2,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "jsonpickle__handler_roundtrip_core__001",
+      "tail": 1080425,
+      "tail_frac": 0.4094611223689681,
+      "tok": {
+        "self_test_run": 535062,
+        "inspect_upstream_tests": 41294,
+        "isolation_check": 79520,
+        "other": 40450,
+        "inspect_spec": 107663,
+        "package_write": 43544,
+        "inspect_submission": 43885,
+        "cleanup": 45753,
+        "meta": 46144,
+        "inspect_repo": 48213,
+        "finish": 48897
+      },
+      "act": {
+        "self_test_run": 10,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 2,
+        "other": 1,
+        "inspect_spec": 1,
+        "package_write": 1,
+        "inspect_submission": 1,
+        "cleanup": 1,
+        "meta": 1,
+        "inspect_repo": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "jsonpointer__resolve_core__001",
+      "tail": 192622,
+      "tail_frac": 0.657327718589398,
+      "tok": {
+        "other": 19374,
+        "self_test_run": 126713,
+        "isolation_check": 22570,
+        "finish": 23965
+      },
+      "act": {
+        "other": 1,
+        "self_test_run": 6,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "jsonschema__validator_core__001",
+      "tail": 2274346,
+      "tail_frac": 0.748278710827038,
+      "tok": {
+        "self_test_run": 1173576,
+        "package_write": 47178,
+        "meta": 115857,
+        "self_test_write": 218150,
+        "other": 444076,
+        "inspect_repo": 64958,
+        "inspect_upstream_tests": 33853,
+        "isolation_check": 68649,
+        "inspect_submission": 84424,
+        "finish": 23625
+      },
+      "act": {
+        "self_test_run": 30,
+        "package_write": 1,
+        "meta": 3,
+        "self_test_write": 4,
+        "other": 12,
+        "inspect_repo": 2,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 2,
+        "inspect_submission": 3
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "langcodes__language_metadata_core__001",
+      "tail": 1883566,
+      "tail_frac": 0.6860095021825154,
+      "tok": {
+        "package_write": 50444,
+        "other": 488530,
+        "inspect_upstream_tests": 178333,
+        "self_test_run": 777346,
+        "meta": 108802,
+        "inspect_repo": 67201,
+        "isolation_check": 35927,
+        "inspect_submission": 35379,
+        "cleanup": 92148,
+        "finish": 49456
+      },
+      "act": {
+        "package_write": 1,
+        "other": 11,
+        "inspect_upstream_tests": 5,
+        "self_test_run": 20,
+        "meta": 3,
+        "inspect_repo": 2,
+        "isolation_check": 1,
+        "inspect_submission": 1,
+        "cleanup": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "lark__grammar_loader_core__001",
+      "tail": 898572,
+      "tail_frac": 0.6760134875889806,
+      "tok": {
+        "self_test_run": 392480,
+        "other": 204776,
+        "isolation_check": 75149,
+        "inspect_upstream_tests": 119991,
+        "self_test_write": 40951,
+        "meta": 32325,
+        "finish": 32900
+      },
+      "act": {
+        "self_test_run": 11,
+        "other": 5,
+        "isolation_check": 2,
+        "inspect_upstream_tests": 3,
+        "self_test_write": 1,
+        "meta": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "lark__visitor_transform_core__001",
+      "tail": 619736,
+      "tail_frac": 0.4548461011157284,
+      "tok": {
+        "self_test_run": 402958,
+        "other": 51897,
+        "isolation_check": 54460,
+        "cleanup": 54828,
+        "finish": 55593
+      },
+      "act": {
+        "self_test_run": 8,
+        "other": 1,
+        "isolation_check": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "mako__lexer_expression_core__001",
+      "tail": 1597235,
+      "tail_frac": 0.44767098193127175,
+      "tok": {
+        "self_test_run": 608812,
+        "other": 259357,
+        "inspect_repo": 112102,
+        "inspect_submission": 217400,
+        "inspect_upstream_tests": 225455,
+        "isolation_check": 35933,
+        "meta": 91654,
+        "finish": 46522
+      },
+      "act": {
+        "self_test_run": 14,
+        "other": 7,
+        "inspect_repo": 3,
+        "inspect_submission": 5,
+        "inspect_upstream_tests": 5,
+        "isolation_check": 1,
+        "meta": 2
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "markdown__extensions_core__001",
+      "tail": 914743,
+      "tail_frac": 0.7102681607970904,
+      "tok": {
+        "self_test_run": 396488,
+        "inspect_upstream_tests": 172961,
+        "isolation_check": 54253,
+        "other": 171606,
+        "cleanup": 58302,
+        "finish": 61133
+      },
+      "act": {
+        "self_test_run": 8,
+        "inspect_upstream_tests": 5,
+        "isolation_check": 1,
+        "other": 3,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "marshmallow__schema_core__001",
+      "tail": 1235339,
+      "tail_frac": 0.769630790739054,
+      "tok": {
+        "isolation_check": 86929,
+        "self_test_run": 704389,
+        "inspect_repo": 166973,
+        "other": 125444,
+        "meta": 74142,
+        "package_write": 51252,
+        "finish": 26210
+      },
+      "act": {
+        "isolation_check": 2,
+        "self_test_run": 16,
+        "inspect_repo": 4,
+        "other": 3,
+        "meta": 2,
+        "package_write": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "more_itertools__recipes_core__001",
+      "tail": 104315,
+      "tail_frac": 0.41364966571761663,
+      "tok": {
+        "self_test_run": 60786,
+        "isolation_check": 21154,
+        "finish": 22375
+      },
+      "act": {
+        "self_test_run": 3,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "msgpack__pack_unpack_core__001",
+      "tail": 566373,
+      "tail_frac": 0.8407488721938446,
+      "tok": {
+        "self_test_run": 406812,
+        "inspect_upstream_tests": 22246,
+        "other": 46803,
+        "inspect_repo": 24229,
+        "isolation_check": 28519,
+        "finish": 37764
+      },
+      "act": {
+        "self_test_run": 15,
+        "inspect_upstream_tests": 1,
+        "other": 2,
+        "inspect_repo": 1,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "networkx__dag_topo_core__001",
+      "tail": 633339,
+      "tail_frac": 0.5624880102312693,
+      "tok": {
+        "self_test_write": 33717,
+        "self_test_run": 239868,
+        "package_write": 184964,
+        "other": 128913,
+        "finish": 45877
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 6,
+        "package_write": 5,
+        "other": 3,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "packageurl__purl_parse_core__001",
+      "tail": 862804,
+      "tail_frac": 0.8627953720462795,
+      "tok": {
+        "package_write": 27897,
+        "self_test_run": 254787,
+        "self_test_write": 29560,
+        "inspect_upstream_tests": 30198,
+        "other": 379299,
+        "inspect_repo": 32275,
+        "isolation_check": 32697,
+        "cleanup": 37713,
+        "finish": 38378
+      },
+      "act": {
+        "package_write": 1,
+        "self_test_run": 8,
+        "self_test_write": 1,
+        "inspect_upstream_tests": 1,
+        "other": 11,
+        "inspect_repo": 1,
+        "isolation_check": 1,
+        "cleanup": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "packaging__requirement_marker_specifier__001",
+      "tail": 749488,
+      "tail_frac": 0.8461887590011313,
+      "tok": {
+        "self_test_run": 236487,
+        "inspect_submission": 99076,
+        "package_write": 104956,
+        "inspect_repo": 22898,
+        "isolation_check": 23680,
+        "inspect_upstream_tests": 24168,
+        "other": 138019,
+        "meta": 65824,
+        "finish": 34380
+      },
+      "act": {
+        "self_test_run": 9,
+        "inspect_submission": 5,
+        "package_write": 5,
+        "inspect_repo": 1,
+        "isolation_check": 1,
+        "inspect_upstream_tests": 1,
+        "other": 5,
+        "meta": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "parso__python_parse_core__001",
+      "tail": 1053398,
+      "tail_frac": 0.7161787771635486,
+      "tok": {
+        "self_test_run": 693603,
+        "meta": 128244,
+        "self_test_write": 94436,
+        "inspect_upstream_tests": 39555,
+        "isolation_check": 41638,
+        "other": 27085,
+        "finish": 28837
+      },
+      "act": {
+        "self_test_run": 20,
+        "meta": 4,
+        "self_test_write": 3,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pathvalidate__sanitize_core__001",
+      "tail": 865860,
+      "tail_frac": 0.48116271264051,
+      "tok": {
+        "self_test_run": 400571,
+        "inspect_upstream_tests": 57761,
+        "self_test_write": 120623,
+        "isolation_check": 124729,
+        "meta": 65106,
+        "cleanup": 66260,
+        "finish": 30810
+      },
+      "act": {
+        "self_test_run": 7,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 2,
+        "isolation_check": 2,
+        "meta": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pendulum__parse_format_core__001",
+      "tail": 2533025,
+      "tail_frac": 0.4265331298298128,
+      "tok": {
+        "package_write": 58919,
+        "other": 423652,
+        "inspect_repo": 60850,
+        "self_test_run": 1237976,
+        "self_test_write": 63492,
+        "inspect_upstream_tests": 512818,
+        "inspect_submission": 129696,
+        "finish": 45622
+      },
+      "act": {
+        "package_write": 1,
+        "other": 10,
+        "inspect_repo": 1,
+        "self_test_run": 29,
+        "self_test_write": 1,
+        "inspect_upstream_tests": 10,
+        "inspect_submission": 3
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "phonenumbers__parse_format_core__001",
+      "tail": 1124038,
+      "tail_frac": 0.29054752139549084,
+      "tok": {
+        "meta": 153288,
+        "self_test_run": 526279,
+        "inspect_repo": 28103,
+        "other": 173762,
+        "isolation_check": 104932,
+        "inspect_submission": 74409,
+        "package_write": 30920,
+        "finish": 32345
+      },
+      "act": {
+        "meta": 3,
+        "self_test_run": 15,
+        "inspect_repo": 1,
+        "other": 4,
+        "isolation_check": 3,
+        "inspect_submission": 2,
+        "package_write": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "pluggy__hook_call_order__001",
+      "tail": 245460,
+      "tail_frac": 0.18682483782407594,
+      "tok": {
+        "self_test_run": 96391,
+        "other": 49260,
+        "meta": 49632,
+        "finish": 50177
+      },
+      "act": {
+        "self_test_run": 2,
+        "other": 1,
+        "meta": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pluggy__hook_specs_core__001",
+      "tail": 873517,
+      "tail_frac": 0.6745206054891859,
+      "tok": {
+        "self_test_run": 441190,
+        "inspect_upstream_tests": 318259,
+        "cleanup": 44503,
+        "inspect_submission": 44990,
+        "finish": 24575
+      },
+      "act": {
+        "self_test_run": 11,
+        "inspect_upstream_tests": 8,
+        "cleanup": 1,
+        "inspect_submission": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "portalocker__file_lock_core__001",
+      "tail": 921447,
+      "tail_frac": 0.6644373265801755,
+      "tok": {
+        "self_test_run": 469679,
+        "isolation_check": 42637,
+        "other": 43138,
+        "package_write": 178949,
+        "meta": 45949,
+        "inspect_submission": 119793,
+        "finish": 21302
+      },
+      "act": {
+        "self_test_run": 12,
+        "isolation_check": 1,
+        "other": 1,
+        "package_write": 4,
+        "meta": 1,
+        "inspect_submission": 3,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "publicsuffixlist__metadata_lookup_core__001",
+      "tail": 513015,
+      "tail_frac": 0.8056405754586756,
+      "tok": {
+        "self_test_run": 408092,
+        "package_write": 28350,
+        "inspect_submission": 37636,
+        "finish": 38937
+      },
+      "act": {
+        "self_test_run": 13,
+        "package_write": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "puremagic__signature_resource_core__001",
+      "tail": 722468,
+      "tail_frac": 0.7610149281401551,
+      "tok": {
+        "meta": 114967,
+        "self_test_run": 404286,
+        "self_test_write": 31179,
+        "isolation_check": 83119,
+        "other": 43878,
+        "finish": 45039
+      },
+      "act": {
+        "meta": 3,
+        "self_test_run": 11,
+        "self_test_write": 1,
+        "isolation_check": 2,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pydantic_settings__env_source_core__001",
+      "tail": 430643,
+      "tail_frac": 0.12620799262873555,
+      "tok": {
+        "other": 293254,
+        "isolation_check": 41918,
+        "meta": 47437,
+        "finish": 48034
+      },
+      "act": {
+        "other": 7,
+        "isolation_check": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": false,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pyee__event_workflow_core__001",
+      "tail": 109574,
+      "tail_frac": 0.3840901283642151,
+      "tok": {
+        "self_test_run": 86299,
+        "finish": 23275
+      },
+      "act": {
+        "self_test_run": 4,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pygments__formatter_core__001",
+      "tail": 1056812,
+      "tail_frac": 0.401692654634522,
+      "tok": {
+        "self_test_run": 688736,
+        "inspect_upstream_tests": 81782,
+        "self_test_write": 89208,
+        "other": 65877,
+        "inspect_submission": 63594,
+        "meta": 32973,
+        "finish": 34642
+      },
+      "act": {
+        "self_test_run": 12,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 1,
+        "other": 2,
+        "inspect_submission": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pyjwt__encode_decode_core__001",
+      "tail": 436816,
+      "tail_frac": 0.305427715990597,
+      "tok": {
+        "self_test_run": 214250,
+        "other": 110685,
+        "isolation_check": 53281,
+        "finish": 58600
+      },
+      "act": {
+        "self_test_run": 4,
+        "other": 2,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pyotp__totp_hotp_core__001",
+      "tail": 223436,
+      "tail_frac": 0.45969756197922024,
+      "tok": {
+        "self_test_run": 155213,
+        "other": 33858,
+        "finish": 34365
+      },
+      "act": {
+        "self_test_run": 5,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pyramid__configurator_action_core__hard3_001",
+      "tail": 138710,
+      "tail_frac": 0.3732807315451955,
+      "tok": {
+        "self_test_run": 80597,
+        "isolation_check": 28773,
+        "finish": 29340
+      },
+      "act": {
+        "self_test_run": 3,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pyrsistent__pmap_pvector_core__001",
+      "tail": 1023048,
+      "tail_frac": 0.7643031160139765,
+      "tok": {
+        "meta": 120368,
+        "self_test_run": 667183,
+        "inspect_upstream_tests": 54864,
+        "other": 112323,
+        "finish": 68310
+      },
+      "act": {
+        "meta": 2,
+        "self_test_run": 11,
+        "inspect_upstream_tests": 1,
+        "other": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pytest__fixture_resolve_core__001",
+      "tail": 704997,
+      "tail_frac": 0.6575335949799661,
+      "tok": {
+        "self_test_run": 315992,
+        "self_test_write": 189551,
+        "other": 69188,
+        "package_write": 40940,
+        "inspect_submission": 42124,
+        "finish": 47202
+      },
+      "act": {
+        "self_test_run": 8,
+        "self_test_write": 5,
+        "other": 2,
+        "package_write": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "pytest__mark_expression_core__001",
+      "tail": 204352,
+      "tail_frac": 0.7355368628678998,
+      "tok": {
+        "self_test_run": 82358,
+        "other": 88871,
+        "finish": 33123
+      },
+      "act": {
+        "self_test_run": 3,
+        "other": 3,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "pytest__skipif_eval_core__001",
+      "tail": 153294,
+      "tail_frac": 0.41591105178335963,
+      "tok": {
+        "self_test_run": 99752,
+        "other": 26048,
+        "finish": 27494
+      },
+      "act": {
+        "self_test_run": 4,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "python_box__config_box_core__001",
+      "tail": 1961852,
+      "tail_frac": 0.8424394799841118,
+      "tok": {
+        "self_test_run": 922776,
+        "inspect_upstream_tests": 496028,
+        "self_test_write": 62542,
+        "other": 152409,
+        "inspect_submission": 288810,
+        "package_write": 39287
+      },
+      "act": {
+        "self_test_run": 14,
+        "inspect_upstream_tests": 7,
+        "self_test_write": 1,
+        "other": 2,
+        "inspect_submission": 6,
+        "package_write": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "python_crontab__cron_item_core__001",
+      "tail": 609120,
+      "tail_frac": 0.6957276574359091,
+      "tok": {
+        "self_test_run": 296760,
+        "package_write": 147974,
+        "isolation_check": 36834,
+        "inspect_submission": 83063,
+        "finish": 44489
+      },
+      "act": {
+        "self_test_run": 8,
+        "package_write": 4,
+        "isolation_check": 1,
+        "inspect_submission": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "python_dateutil__relativedelta_core__001",
+      "tail": 248171,
+      "tail_frac": 0.6521771122679862,
+      "tok": {
+        "self_test_run": 135343,
+        "other": 27330,
+        "isolation_check": 56197,
+        "finish": 29301
+      },
+      "act": {
+        "self_test_run": 5,
+        "other": 1,
+        "isolation_check": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "python_dateutil__rrule_core__001",
+      "tail": 1546972,
+      "tail_frac": 0.6443869424098425,
+      "tok": {
+        "self_test_run": 643259,
+        "meta": 132058,
+        "inspect_upstream_tests": 242471,
+        "self_test_write": 232348,
+        "inspect_submission": 51211,
+        "other": 124343,
+        "isolation_check": 79850,
+        "finish": 41432
+      },
+      "act": {
+        "self_test_run": 16,
+        "meta": 3,
+        "inspect_upstream_tests": 5,
+        "self_test_write": 6,
+        "inspect_submission": 1,
+        "other": 3,
+        "isolation_check": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "python_dotenv__env_parse_core__001",
+      "tail": 856571,
+      "tail_frac": 0.7962517452874914,
+      "tok": {
+        "meta": 77772,
+        "self_test_run": 324755,
+        "self_test_write": 197500,
+        "cleanup": 36640,
+        "inspect_upstream_tests": 83517,
+        "isolation_check": 44642,
+        "other": 44973,
+        "finish": 46772
+      },
+      "act": {
+        "meta": 2,
+        "self_test_run": 8,
+        "self_test_write": 5,
+        "cleanup": 1,
+        "inspect_upstream_tests": 3,
+        "isolation_check": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "python_frontmatter__roundtrip_core__001",
+      "tail": 204235,
+      "tail_frac": 0.444685159379899,
+      "tok": {
+        "meta": 65483,
+        "self_test_run": 66638,
+        "inspect_submission": 35696,
+        "finish": 36418
+      },
+      "act": {
+        "meta": 2,
+        "self_test_run": 3,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "python_json_logger__json_formatter_core__001",
+      "tail": 475086,
+      "tail_frac": 0.6697379754455066,
+      "tok": {
+        "self_test_write": 143498,
+        "self_test_run": 235499,
+        "isolation_check": 29255,
+        "other": 33144,
+        "finish": 33690
+      },
+      "act": {
+        "self_test_write": 5,
+        "self_test_run": 8,
+        "isolation_check": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "python_multipart__form_parse_core__001",
+      "tail": 520896,
+      "tail_frac": 0.14099972795965682,
+      "tok": {
+        "package_write": 87396,
+        "inspect_submission": 188818,
+        "self_test_run": 104291,
+        "other": 32746,
+        "isolation_check": 35364,
+        "meta": 35768,
+        "finish": 36513
+      },
+      "act": {
+        "package_write": 2,
+        "inspect_submission": 5,
+        "self_test_run": 3,
+        "other": 1,
+        "isolation_check": 1,
+        "meta": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "python_statemachine__json_workflow_core__001",
+      "tail": 3520964,
+      "tail_frac": 0.4960539987278008,
+      "tok": {
+        "other": 222135,
+        "self_test_run": 559970,
+        "inspect_submission": 1526980,
+        "package_write": 652104,
+        "self_test_write": 227817,
+        "inspect_repo": 254714,
+        "meta": 37649,
+        "finish": 39595
+      },
+      "act": {
+        "other": 5,
+        "self_test_run": 13,
+        "inspect_submission": 9,
+        "package_write": 12,
+        "self_test_write": 5,
+        "inspect_repo": 4,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "redis__resp_parser_core__001",
+      "tail": 467123,
+      "tail_frac": 0.46916056433088904,
+      "tok": {
+        "self_test_run": 366461,
+        "other": 49566,
+        "finish": 51096
+      },
+      "act": {
+        "self_test_run": 8,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "referencing__json_schema_refs_core__001",
+      "tail": 792177,
+      "tail_frac": 0.6728469250036735,
+      "tok": {
+        "self_test_run": 302700,
+        "inspect_repo": 39536,
+        "other": 170760,
+        "self_test_write": 43766,
+        "package_write": 45193,
+        "inspect_submission": 45392,
+        "meta": 95535,
+        "finish": 49295
+      },
+      "act": {
+        "self_test_run": 7,
+        "inspect_repo": 1,
+        "other": 4,
+        "self_test_write": 1,
+        "package_write": 1,
+        "inspect_submission": 1,
+        "meta": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "returns__result_pipeline_core__hard3_001",
+      "tail": 339029,
+      "tail_frac": 0.4974177570285426,
+      "tok": {
+        "self_test_write": 27950,
+        "self_test_run": 151600,
+        "package_write": 60002,
+        "isolation_check": 32152,
+        "other": 33267,
+        "finish": 34058
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 5,
+        "package_write": 2,
+        "isolation_check": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "rfc3986__uri_parse_core__001",
+      "tail": 623350,
+      "tail_frac": 0.33803533332827196,
+      "tok": {
+        "package_write": 165261,
+        "other": 55391,
+        "self_test_run": 212723,
+        "inspect_submission": 89891,
+        "cleanup": 30933,
+        "isolation_check": 34222,
+        "finish": 34929
+      },
+      "act": {
+        "package_write": 3,
+        "other": 1,
+        "self_test_run": 6,
+        "inspect_submission": 3,
+        "cleanup": 1,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "rich__markup_parse_core__001",
+      "tail": 853655,
+      "tail_frac": 0.39522272439806033,
+      "tok": {
+        "self_test_run": 568822,
+        "self_test_write": 158756,
+        "isolation_check": 35566,
+        "other": 39948,
+        "finish": 50563
+      },
+      "act": {
+        "self_test_run": 13,
+        "self_test_write": 3,
+        "isolation_check": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "ruamel_yaml__roundtrip_core__001",
+      "tail": 1678608,
+      "tail_frac": 0.8562225290630208,
+      "tok": {
+        "self_test_run": 349028,
+        "other": 474144,
+        "inspect_submission": 388350,
+        "isolation_check": 137856,
+        "package_write": 83477,
+        "inspect_repo": 56018,
+        "inspect_upstream_tests": 86152,
+        "meta": 50379,
+        "finish": 53204
+      },
+      "act": {
+        "self_test_run": 8,
+        "other": 10,
+        "inspect_submission": 12,
+        "isolation_check": 3,
+        "package_write": 2,
+        "inspect_repo": 1,
+        "inspect_upstream_tests": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "semver__version_core__001",
+      "tail": 495320,
+      "tail_frac": 0.6334647189873158,
+      "tok": {
+        "self_test_run": 306047,
+        "inspect_upstream_tests": 33205,
+        "isolation_check": 76520,
+        "inspect_submission": 39159,
+        "finish": 40389
+      },
+      "act": {
+        "self_test_run": 9,
+        "inspect_upstream_tests": 1,
+        "isolation_check": 2,
+        "inspect_submission": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "tail": 361392,
+      "tail_frac": 0.4624272722968711,
+      "tok": {
+        "inspect_submission": 56881,
+        "self_test_run": 124024,
+        "other": 86242,
+        "package_write": 60203,
+        "finish": 34042
+      },
+      "act": {
+        "inspect_submission": 2,
+        "self_test_run": 4,
+        "other": 3,
+        "package_write": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+      "tail": 430332,
+      "tail_frac": 0.5959377323922012,
+      "tok": {
+        "self_test_write": 40888,
+        "self_test_run": 213953,
+        "package_write": 84575,
+        "inspect_submission": 43745,
+        "finish": 47171
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 5,
+        "package_write": 2,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "sqlglot__parse_transpile_core__001",
+      "tail": 1501093,
+      "tail_frac": 0.4858376263593144,
+      "tok": {
+        "package_write": 251159,
+        "inspect_submission": 142597,
+        "self_test_run": 490867,
+        "self_test_write": 188501,
+        "other": 201496,
+        "isolation_check": 31974,
+        "inspect_upstream_tests": 69046,
+        "inspect_repo": 39937,
+        "meta": 41877,
+        "finish": 43639
+      },
+      "act": {
+        "package_write": 7,
+        "inspect_submission": 4,
+        "self_test_run": 15,
+        "self_test_write": 6,
+        "other": 6,
+        "isolation_check": 1,
+        "inspect_upstream_tests": 2,
+        "inspect_repo": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "sqlparse__format_filters_core__001",
+      "tail": 580753,
+      "tail_frac": 0.7391658510322813,
+      "tok": {
+        "self_test_run": 390318,
+        "inspect_upstream_tests": 23371,
+        "self_test_write": 31658,
+        "isolation_check": 32914,
+        "meta": 33814,
+        "other": 33993,
+        "finish": 34685
+      },
+      "act": {
+        "self_test_run": 14,
+        "inspect_upstream_tests": 1,
+        "self_test_write": 1,
+        "isolation_check": 1,
+        "meta": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "sqlparse__parse_format_core__001",
+      "tail": 634925,
+      "tail_frac": 0.7802352287711011,
+      "tok": {
+        "package_write": 22406,
+        "self_test_run": 304715,
+        "inspect_upstream_tests": 106081,
+        "other": 25377,
+        "isolation_check": 64168,
+        "inspect_submission": 34247,
+        "meta": 38649,
+        "finish": 39282
+      },
+      "act": {
+        "package_write": 1,
+        "self_test_run": 10,
+        "inspect_upstream_tests": 4,
+        "other": 1,
+        "isolation_check": 2,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "sqlparse__parse_split_core__001",
+      "tail": 840164,
+      "tail_frac": 0.6916723265702631,
+      "tok": {
+        "self_test_run": 511183,
+        "meta": 73584,
+        "inspect_upstream_tests": 65201,
+        "self_test_write": 33135,
+        "isolation_check": 40844,
+        "other": 42841,
+        "cleanup": 43167,
+        "finish": 30209
+      },
+      "act": {
+        "self_test_run": 14,
+        "meta": 2,
+        "inspect_upstream_tests": 2,
+        "self_test_write": 1,
+        "isolation_check": 1,
+        "other": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "sqlparse__token_tree_core__001",
+      "tail": 221454,
+      "tail_frac": 0.10433492106118641,
+      "tok": {
+        "self_test_run": 73289,
+        "other": 72971,
+        "meta": 37128,
+        "finish": 38066
+      },
+      "act": {
+        "self_test_run": 2,
+        "other": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "stamina__retry_context_core__001",
+      "tail": 1658866,
+      "tail_frac": 0.8267024019663053,
+      "tok": {
+        "self_test_run": 697283,
+        "other": 682325,
+        "package_write": 39137,
+        "inspect_upstream_tests": 48157,
+        "inspect_submission": 59921,
+        "inspect_repo": 61486,
+        "meta": 34968,
+        "finish": 35589
+      },
+      "act": {
+        "self_test_run": 17,
+        "other": 15,
+        "package_write": 1,
+        "inspect_upstream_tests": 1,
+        "inspect_submission": 2,
+        "inspect_repo": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "tail": 511515,
+      "tail_frac": 0.42198080146777367,
+      "tok": {
+        "self_test_run": 247027,
+        "inspect_submission": 208020,
+        "finish": 56468
+      },
+      "act": {
+        "self_test_run": 5,
+        "inspect_submission": 4,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "strictyaml__schema_load_core__001",
+      "tail": 866370,
+      "tail_frac": 0.7472752490141215,
+      "tok": {
+        "self_test_run": 290288,
+        "other": 175577,
+        "inspect_submission": 134638,
+        "package_write": 64770,
+        "inspect_repo": 36334,
+        "self_test_write": 79460,
+        "meta": 42358,
+        "finish": 42945
+      },
+      "act": {
+        "self_test_run": 8,
+        "other": 5,
+        "inspect_submission": 4,
+        "package_write": 2,
+        "inspect_repo": 1,
+        "self_test_write": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "structlog__processor_chain_core__001",
+      "tail": 1005946,
+      "tail_frac": 0.41736774520115427,
+      "tok": {
+        "self_test_run": 523224,
+        "self_test_write": 166869,
+        "isolation_check": 31806,
+        "inspect_upstream_tests": 33646,
+        "inspect_repo": 119040,
+        "other": 38392,
+        "inspect_spec": 45397,
+        "finish": 47572
+      },
+      "act": {
+        "self_test_run": 12,
+        "self_test_write": 3,
+        "isolation_check": 1,
+        "inspect_upstream_tests": 1,
+        "inspect_repo": 3,
+        "other": 1,
+        "inspect_spec": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "tabulate__table_format_core__001",
+      "tail": 504890,
+      "tail_frac": 0.8038113736228746,
+      "tok": {
+        "inspect_submission": 67831,
+        "package_write": 59850,
+        "isolation_check": 20685,
+        "self_test_run": 147720,
+        "inspect_upstream_tests": 21781,
+        "other": 125756,
+        "inspect_repo": 30143,
+        "finish": 31124
+      },
+      "act": {
+        "inspect_submission": 3,
+        "package_write": 3,
+        "isolation_check": 1,
+        "self_test_run": 6,
+        "inspect_upstream_tests": 1,
+        "other": 5,
+        "inspect_repo": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "tenacity__retry_state_core__hard3_001",
+      "tail": 964175,
+      "tail_frac": 0.6254228459747658,
+      "tok": {
+        "self_test_run": 630910,
+        "isolation_check": 62656,
+        "package_write": 63154,
+        "other": 67692,
+        "inspect_submission": 69122,
+        "finish": 70641
+      },
+      "act": {
+        "self_test_run": 10,
+        "isolation_check": 1,
+        "package_write": 1,
+        "other": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "tinycss2__stylesheet_roundtrip_core__001",
+      "tail": 696996,
+      "tail_frac": 0.39666164908616486,
+      "tok": {
+        "self_test_write": 49558,
+        "self_test_run": 317692,
+        "isolation_check": 50188,
+        "package_write": 104917,
+        "inspect_submission": 85818,
+        "meta": 29227,
+        "other": 29448,
+        "finish": 30148
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 8,
+        "isolation_check": 1,
+        "package_write": 2,
+        "inspect_submission": 2,
+        "meta": 1,
+        "other": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "tinydb__query_storage_core__001",
+      "tail": 597534,
+      "tail_frac": 0.35379588057004374,
+      "tok": {
+        "package_write": 106797,
+        "self_test_run": 281298,
+        "meta": 118607,
+        "cleanup": 60293,
+        "finish": 30539
+      },
+      "act": {
+        "package_write": 2,
+        "self_test_run": 5,
+        "meta": 2,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "tldextract__suffix_resolve_core__001",
+      "tail": 962829,
+      "tail_frac": 0.7144800288514196,
+      "tok": {
+        "self_test_run": 510135,
+        "inspect_upstream_tests": 117632,
+        "self_test_write": 42783,
+        "package_write": 88710,
+        "isolation_check": 49589,
+        "cleanup": 50847,
+        "meta": 51135,
+        "finish": 51998
+      },
+      "act": {
+        "self_test_run": 11,
+        "inspect_upstream_tests": 3,
+        "self_test_write": 1,
+        "package_write": 2,
+        "isolation_check": 1,
+        "cleanup": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "tomlkit__roundtrip_document__001",
+      "tail": 1093337,
+      "tail_frac": 0.8888383950884255,
+      "tok": {
+        "self_test_run": 492122,
+        "inspect_upstream_tests": 48327,
+        "meta": 155307,
+        "other": 251747,
+        "cleanup": 28215,
+        "package_write": 28907,
+        "isolation_check": 40208,
+        "finish": 48504
+      },
+      "act": {
+        "self_test_run": 14,
+        "inspect_upstream_tests": 2,
+        "meta": 4,
+        "other": 7,
+        "cleanup": 1,
+        "package_write": 1,
+        "isolation_check": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "toolz__compose_pipe_core__001",
+      "tail": 373344,
+      "tail_frac": 0.6188271681675559,
+      "tok": {
+        "self_test_run": 155539,
+        "inspect_upstream_tests": 114014,
+        "other": 67407,
+        "finish": 36384
+      },
+      "act": {
+        "self_test_run": 5,
+        "inspect_upstream_tests": 4,
+        "other": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "transitions__state_machine_core__hard3_001",
+      "tail": 2996529,
+      "tail_frac": 0.7418632880379818,
+      "tok": {
+        "self_test_write": 363342,
+        "self_test_run": 880374,
+        "other": 278567,
+        "inspect_submission": 515438,
+        "inspect_upstream_tests": 388424,
+        "inspect_repo": 41230,
+        "package_write": 373964,
+        "isolation_check": 84414,
+        "meta": 37427,
+        "finish": 33349
+      },
+      "act": {
+        "self_test_write": 6,
+        "self_test_run": 18,
+        "other": 5,
+        "inspect_submission": 7,
+        "inspect_upstream_tests": 8,
+        "inspect_repo": 1,
+        "package_write": 8,
+        "isolation_check": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "typeguard__check_type_pipeline_core__001",
+      "tail": 699159,
+      "tail_frac": 0.47006899500724103,
+      "tok": {
+        "self_test_run": 436596,
+        "inspect_upstream_tests": 96780,
+        "other": 51271,
+        "inspect_submission": 54815,
+        "meta": 32948,
+        "finish": 26749
+      },
+      "act": {
+        "self_test_run": 9,
+        "inspect_upstream_tests": 2,
+        "other": 1,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "unidiff__patch_hunk_core__001",
+      "tail": 528447,
+      "tail_frac": 0.7101379162987959,
+      "tok": {
+        "self_test_run": 353004,
+        "inspect_upstream_tests": 30639,
+        "other": 70752,
+        "isolation_check": 33844,
+        "finish": 40208
+      },
+      "act": {
+        "self_test_run": 11,
+        "inspect_upstream_tests": 1,
+        "other": 2,
+        "isolation_check": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "uritools__uri_join_normalize_core__001",
+      "tail": 380449,
+      "tail_frac": 0.5005980349715587,
+      "tok": {
+        "self_test_run": 208545,
+        "package_write": 82892,
+        "meta": 44210,
+        "finish": 44802
+      },
+      "act": {
+        "self_test_run": 5,
+        "package_write": 2,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "urllib3__retry_backoff_core__001",
+      "tail": 261046,
+      "tail_frac": 0.5645910248008599,
+      "tok": {
+        "self_test_run": 129513,
+        "inspect_repo": 28933,
+        "self_test_write": 33102,
+        "cleanup": 34275,
+        "finish": 35223
+      },
+      "act": {
+        "self_test_run": 4,
+        "inspect_repo": 1,
+        "self_test_write": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "vcrpy__cassette_match_core__001",
+      "tail": 3442329,
+      "tail_frac": 0.65835136040221,
+      "tok": {
+        "inspect_repo": 27958,
+        "inspect_upstream_tests": 105435,
+        "other": 344018,
+        "self_test_run": 1293286,
+        "inspect_submission": 620977,
+        "package_write": 927289,
+        "meta": 49680,
+        "isolation_check": 32270,
+        "finish": 41416
+      },
+      "act": {
+        "inspect_repo": 1,
+        "inspect_upstream_tests": 3,
+        "other": 9,
+        "self_test_run": 28,
+        "inspect_submission": 13,
+        "package_write": 16,
+        "meta": 1,
+        "isolation_check": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "venusian__scan_dispatch_core__001",
+      "tail": 1070269,
+      "tail_frac": 0.7039525221146681,
+      "tok": {
+        "self_test_run": 667286,
+        "self_test_write": 78544,
+        "cleanup": 51690,
+        "other": 107985,
+        "inspect_submission": 108597,
+        "finish": 56167
+      },
+      "act": {
+        "self_test_run": 14,
+        "self_test_write": 2,
+        "cleanup": 1,
+        "other": 2,
+        "inspect_submission": 2,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "voluptuous__schema_validate_core__001",
+      "tail": 451865,
+      "tail_frac": 0.4262314411304167,
+      "tok": {
+        "self_test_run": 198335,
+        "isolation_check": 47427,
+        "inspect_submission": 152308,
+        "finish": 53795
+      },
+      "act": {
+        "self_test_run": 4,
+        "isolation_check": 1,
+        "inspect_submission": 3,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "watchdog__observer_dispatch_core__001",
+      "tail": 251447,
+      "tail_frac": 0.18588155629332453,
+      "tok": {
+        "package_write": 51065,
+        "self_test_run": 103244,
+        "meta": 52476,
+        "inspect_submission": 24475,
+        "finish": 20187
+      },
+      "act": {
+        "package_write": 1,
+        "self_test_run": 2,
+        "meta": 1,
+        "inspect_submission": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "websockets__handshake_parse_core__001",
+      "tail": 1123758,
+      "tail_frac": 0.5453629555719803,
+      "tok": {
+        "self_test_run": 765858,
+        "other": 104190,
+        "inspect_upstream_tests": 127049,
+        "isolation_check": 38964,
+        "meta": 43310,
+        "finish": 44387
+      },
+      "act": {
+        "self_test_run": 14,
+        "other": 2,
+        "inspect_upstream_tests": 2,
+        "isolation_check": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "werkzeug__routing_core__001",
+      "tail": 1153847,
+      "tail_frac": 0.4316813036259304,
+      "tok": {
+        "package_write": 121002,
+        "self_test_run": 279635,
+        "inspect_upstream_tests": 211078,
+        "self_test_write": 183516,
+        "isolation_check": 32771,
+        "other": 252224,
+        "inspect_submission": 37383,
+        "finish": 36238
+      },
+      "act": {
+        "package_write": 3,
+        "self_test_run": 9,
+        "inspect_upstream_tests": 8,
+        "self_test_write": 6,
+        "isolation_check": 1,
+        "other": 8,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "wsproto__frame_parse_core__001",
+      "tail": 578388,
+      "tail_frac": 0.735959037889189,
+      "tok": {
+        "self_test_run": 308453,
+        "inspect_upstream_tests": 60422,
+        "self_test_write": 30720,
+        "package_write": 67553,
+        "other": 34447,
+        "inspect_submission": 35474,
+        "finish": 41319
+      },
+      "act": {
+        "self_test_run": 9,
+        "inspect_upstream_tests": 2,
+        "self_test_write": 1,
+        "package_write": 2,
+        "other": 1,
+        "inspect_submission": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    },
+    {
+      "task_id": "xmltodict__xml_parse_core__001",
+      "tail": 503558,
+      "tail_frac": 0.658361072396995,
+      "tok": {
+        "self_test_write": 43091,
+        "self_test_run": 272276,
+        "inspect_upstream_tests": 44424,
+        "inspect_submission": 46452,
+        "meta": 48333,
+        "finish": 48982
+      },
+      "act": {
+        "self_test_write": 1,
+        "self_test_run": 6,
+        "inspect_upstream_tests": 1,
+        "inspect_submission": 1,
+        "meta": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": false,
+      "kept_mutating": false
+    },
+    {
+      "task_id": "yarl__url_model_core__001",
+      "tail": 1169910,
+      "tail_frac": 0.6652817884150176,
+      "tok": {
+        "inspect_submission": 164908,
+        "package_write": 68166,
+        "self_test_run": 447872,
+        "inspect_upstream_tests": 190212,
+        "meta": 73934,
+        "other": 81349,
+        "isolation_check": 32629,
+        "inspect_repo": 35986,
+        "cleanup": 36741,
+        "finish": 38113
+      },
+      "act": {
+        "inspect_submission": 5,
+        "package_write": 2,
+        "self_test_run": 14,
+        "inspect_upstream_tests": 5,
+        "meta": 2,
+        "other": 2,
+        "isolation_check": 1,
+        "inspect_repo": 1,
+        "cleanup": 1,
+        "finish": 1
+      },
+      "has_self_test": true,
+      "has_package_write": true,
+      "kept_mutating": true
+    }
+  ]
+}

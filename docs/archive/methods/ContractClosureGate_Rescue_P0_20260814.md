@@ -1,6 +1,6 @@
 # Contract Closure Gate 抢救 P0（2026-08-14）
 
-> **Status: reference · Last verified: 2026-08-17**
+> **Status: archived · Last verified: 2026-08-17**
 
 ## 结论先行
 

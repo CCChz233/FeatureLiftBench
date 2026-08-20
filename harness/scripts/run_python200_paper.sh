@@ -105,16 +105,85 @@ method_flags = {
     "contract_closure_budget_control": bool(
         profile.get("contract_closure_budget_control", False)
     ),
+    "adaptive_budget_v2": bool(profile.get("adaptive_budget_v2", False)),
+    "pre_submit_contract_audit": bool(
+        profile.get("pre_submit_contract_audit", False)
+    ),
+    "spec_adversarial_self_test": bool(
+        profile.get("spec_adversarial_self_test", False)
+    ),
 }
 selected = [arm for arm, enabled in method_flags.items() if enabled]
 if len(selected) > 1:
     raise SystemExit(f"Profile enables mutually exclusive method arms: {selected}")
 arm = selected[0] if selected else "main"
+# Canonical V1 is Main protocol + 2M total-token cap (no checker / repair).
+# Name-gated so other Main profiles are not relabeled.
+is_v1 = (
+    str(name).endswith("_v1")
+    or str(name).endswith("_main_2m_cap")
+    or "_v1_p" in str(name)
+)
+if is_v1:
+    if arm != "main":
+        raise SystemExit(
+            f"V1 must be Main protocol + 2M cap only; found method flags: {arm}"
+        )
+    expected_v1 = {
+        "context_window_tokens": 131072,
+        "reserved_output_tokens": 8192,
+        "openhands_max_steps": 120,
+        "openhands_total_token_limit": 2000000,
+    }
+    mismatches = {
+        key: (profile.get(key), value)
+        for key, value in expected_v1.items()
+        if profile.get(key) != value
+    }
+    if mismatches:
+        raise SystemExit(f"v1 profile drift: {mismatches}")
+    arm = "v1"
+# Canonical V2 = Main + 1.5M primary + checkpoint + optional 500K repair.
+is_v2 = str(name).endswith("_v2")
+if is_v2:
+    if arm != "adaptive_budget_v2":
+        raise SystemExit(
+            f"V2 profile must enable adaptive_budget_v2; found method arm: {arm}"
+        )
+    expected_v2 = {
+        "context_window_tokens": 131072,
+        "reserved_output_tokens": 8192,
+        "openhands_max_steps": 120,
+        "openhands_total_token_limit": 1500000,
+        "adaptive_budget_v2": True,
+        "mount_public_tests": False,
+        "prompt_style": "standard",
+        "expose_source_hints": False,
+    }
+    mismatches = {
+        key: (profile.get(key), value)
+        for key, value in expected_v2.items()
+        if profile.get(key) != value
+    }
+    if mismatches:
+        raise SystemExit(f"v2 profile drift: {mismatches}")
+    arm = "v2"
+condenser = str(profile.get("openhands_condenser_mode", "default")).strip().lower() or "default"
+if arm == "main" and condenser in {
+    "recency_masking",
+    "artifact_aware",
+    "verification_aware",
+}:
+    arm = condenser
+# Frozen Lite-V1 envelope check is name-gated so Main-budget Lite V1 profiles
+# (same method flag, 120 steps / 128k) are not rejected as drift.
+enforce_frozen_envelope = arm == "contract_closure_gate_lite_v1_frozen" and str(
+    name
+).endswith("_frozen")
 if arm in {
-    "contract_closure_gate_lite_v1_frozen",
     "contract_closure_gate_lite_rescue",
     "contract_closure_gate_lite_rescue_plus",
-}:
+} or enforce_frozen_envelope:
     repair_token_limit = (
         500000 if arm == "contract_closure_gate_lite_v1_frozen" else 200000
     )
@@ -195,6 +264,13 @@ export FEATURELIFTBENCH_PROMPT_STYLE=standard
 export FEATURELIFTBENCH_EXPOSE_SOURCE_HINTS=0
 export FEATURELIFTBENCH_SOURCE_CONTEXT=full_repository
 export FEATURELIFTBENCH_OPENHANDS_MAX_STEPS="${FEATURELIFTBENCH_OPENHANDS_MAX_STEPS:-120}"
+if [[ "$METHOD_ARM" == "v1" ]]; then
+  export FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT="${FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT:-2000000}"
+fi
+if [[ "$METHOD_ARM" == "v2" ]]; then
+  export FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT="${FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT:-1500000}"
+  export FEATURELIFTBENCH_ADAPTIVE_BUDGET_V2=1
+fi
 
 "$PYTHON" -B benchmark/selection/scripts/materialize_python200_release.py --check
 "$PYTHON" -B benchmark/selection/scripts/finalize_python200_source_registry.py --check
@@ -289,7 +365,8 @@ COMMAND=(
   --output "$OUTPUT_DIR"
 )
 case "$METHOD_ARM" in
-  main) ;;
+  main|v1|recency_masking|artifact_aware|verification_aware) ;;
+  v2) COMMAND+=(--adaptive-budget-v2) ;;
   td_cognition) COMMAND+=(--td-cognition) ;;
   exec_contract) COMMAND+=(--exec-contract) ;;
   self_contract) COMMAND+=(--self-contract) ;;
@@ -307,6 +384,8 @@ case "$METHOD_ARM" in
     ;;
   contract_closure_gate_v3) COMMAND+=(--contract-closure-gate-v3) ;;
   contract_closure_budget_control) COMMAND+=(--contract-closure-budget-control) ;;
+  pre_submit_contract_audit) COMMAND+=(--pre-submit-contract-audit) ;;
+  spec_adversarial_self_test) COMMAND+=(--spec-adversarial-self-test) ;;
   *) echo "Unsupported method arm resolved from profile: $METHOD_ARM" >&2; exit 2 ;;
 esac
 [[ -z "$RESUME_DIR" ]] || COMMAND+=(--resume "$OUTPUT_DIR")
@@ -315,6 +394,12 @@ COMMAND+=("${TASK_ARGS[@]}")
 echo "Profile: $PROFILE"
 echo "Model: $MODEL"
 echo "Method arm: $METHOD_ARM"
+if [[ "$METHOD_ARM" == "v1" ]]; then
+  echo "V1 envelope: Main protocol + 2M total-token cap (no checker / stop / repair)"
+fi
+if [[ "$METHOD_ARM" == "v2" ]]; then
+  echo "V2 envelope: Main + 1.5M primary + one checkpoint + optional 500K targeted repair"
+fi
 echo "Information condition: Full-Repository / No-Hint (benchmark tests hidden)"
 echo "Selected: $SELECTION_LABEL"
 echo "Workers: $WORKERS"
@@ -324,9 +409,18 @@ echo "Eval image: $EVAL_IMAGE"
 echo "Output: $OUTPUT_DIR"
 printf 'Command:'; printf ' %q' "${COMMAND[@]}"; printf '\n'
 
+if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" ]]; then
+  echo "Screening arm: $METHOD_ARM is Core-12 / Hidden-4 only. Full Python-200 --execute is refused."
+fi
+
 if [[ "$EXECUTE" -ne 1 ]]; then
   echo "Plan only. Re-run with --execute after approving API/data transmission and cost."
   exit 0
+fi
+
+if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" ]]; then
+  echo "Refusing full Python-200 execute for $METHOD_ARM. Use the dedicated screening runner." >&2
+  exit 2
 fi
 
 PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \

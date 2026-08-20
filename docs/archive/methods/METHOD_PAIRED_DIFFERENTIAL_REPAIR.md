@@ -67,7 +67,7 @@ PDR **1/2**. This is mechanism evidence, not a held-out result: the focus tasks
 and the symbolic-id collision rule were already part of method development.
 
 The detailed trajectory and artifact paths are in
-[`experiments/methods/dpr_pilot/RESULTS_20260730.md`](../../../experiments/methods/dpr_pilot/RESULTS_20260730.md).
+`experiments/methods/dpr_pilot/RESULTS_20260730.md`.
 
 ## Held-out clean-6 result
 
@@ -92,7 +92,7 @@ contract invocation still passed. PDR then accepted one TASK-undeclared
 Pyramid target and spent four tasks' budgets up to the OpenHands step limit.
 
 Full frozen results and trajectory analysis:
-[`RESULTS_20260731.md`](../../../experiments/methods/pdr_clean6_20260730/RESULTS_20260731.md).
+`experiments/methods/pdr_clean6_20260730/RESULTS_20260731.md`.
 
 ## Decision
 

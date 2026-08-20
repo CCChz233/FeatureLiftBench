@@ -2,7 +2,7 @@
 
 > **Documentation status: archived · Indexed: 2026-08-04**
 
-**状态：** 设计落地 v1（2026-07-29）— 完全体已实现；12 题 Flash 试点进行中  
+**状态：** 已归档 · clean3 可抬 public、Functional 未翻盘 · 停止扩样本  
 **定位：** FeatureLiftBench 上的方法研究假说与协议；**不是**已验证结论  
 **上位：** [CURRENT_RESEARCH.md](../plans/CURRENT_RESEARCH.md) · [EVALUATION.md](../../EVALUATION.md) · [STATUS.md](../../STATUS.md)  
 **对照方法：** [METHOD_TEST_DRIVEN_COGNITION.md](METHOD_TEST_DRIVEN_COGNITION.md)（已降级，不扩）  

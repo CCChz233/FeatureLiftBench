@@ -1,10 +1,10 @@
 # Feature-Lift 类型（Direct / Adapted / Composite）
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: reference · Last verified: 2026-08-17**
 
-**状态：** 定义已冻结；release 分布与标注完成度见 [STATUS.md](../STATUS.md) 和 balance audit
-**最近复核：** 2026-08-04
-**产物：** [`reports/lift_taxonomy/`](../../reports/lift_taxonomy/)
+**状态：** 定义已冻结；release 分布见 [STATUS.md](../STATUS.md) 和 balance audit。
+**最近复核：** 2026-08-17
+**产物：** 定义以本文为准。历史生成目录 `reports/lift_taxonomy/` 已不在当前树中。
 
 ## 一句话
 
@@ -59,7 +59,7 @@
 
 ## 字段 schema
 
-每题一行 JSONL（[`reports/lift_taxonomy/LIFT_LABELS.jsonl`](../../reports/lift_taxonomy/LIFT_LABELS.jsonl)）：
+每题一行 JSONL（历史产物 `reports/lift_taxonomy/LIFT_LABELS.jsonl`）：
 
 ```json
 {
@@ -102,5 +102,6 @@
 → 与 taxonomy / footprint 交叉出论文表
 ```
 
-当前分布见 [`reports/lift_taxonomy/SUMMARY.md`](../../reports/lift_taxonomy/SUMMARY.md)。
+当前分布以冻结 release 与 balance audit 为准；历史摘要路径为
+`reports/lift_taxonomy/SUMMARY.md`。
 标签在报告层，**尚未**写入 `benchmark/tasks/*/metadata.json`。

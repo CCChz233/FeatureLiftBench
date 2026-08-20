@@ -416,11 +416,12 @@ def maybe_start_openhands_usage_proxy(
 
 
 def _normalize_tool_argument_aliases(response_body: bytes) -> tuple[bytes, int]:
-    """Normalize one known DeepSeek/OpenHands terminal schema alias.
+    """Normalize known DeepSeek/vLLM tool-call schema mismatches for OpenHands.
 
-    The transformation is deliberately narrow: only ``terminal`` tool calls,
-    only JSON-object arguments, and only when ``security_risk`` is absent.
-    Task content and tool commands are left untouched.
+    Transformations are deliberately narrow:
+    - ``terminal``: rename ``security_rule`` -> ``security_risk`` when absent.
+    - all tools: default ``security_risk`` to ``LOW`` when still absent.
+    - ``think``: drop ``command``/``task_list`` extras that vLLM sometimes emits.
     """
 
     payload = _json_object(response_body)
@@ -443,7 +444,10 @@ def _normalize_tool_argument_aliases(response_body: bytes) -> tuple[bytes, int]:
             if not isinstance(tool_call, dict):
                 continue
             function = tool_call.get("function")
-            if not isinstance(function, dict) or function.get("name") != "terminal":
+            if not isinstance(function, dict):
+                continue
+            tool_name = function.get("name")
+            if not isinstance(tool_name, str):
                 continue
             arguments = function.get("arguments")
             if not isinstance(arguments, str):
@@ -454,9 +458,20 @@ def _normalize_tool_argument_aliases(response_body: bytes) -> tuple[bytes, int]:
                 continue
             if not isinstance(parsed, dict):
                 continue
-            if "security_risk" in parsed or "security_rule" not in parsed:
+            changed = False
+            if tool_name == "terminal" and "security_risk" not in parsed and "security_rule" in parsed:
+                parsed["security_risk"] = parsed.pop("security_rule")
+                changed = True
+            if tool_name == "think":
+                for extra_key in ("command", "task_list"):
+                    if extra_key in parsed:
+                        parsed.pop(extra_key)
+                        changed = True
+            if "security_risk" not in parsed:
+                parsed["security_risk"] = "LOW"
+                changed = True
+            if not changed:
                 continue
-            parsed["security_risk"] = parsed.pop("security_rule")
             function["arguments"] = json.dumps(parsed, ensure_ascii=False, separators=(",", ":"))
             normalized += 1
     if normalized == 0:

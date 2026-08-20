@@ -175,7 +175,24 @@ benchmark/submissions/*
 !benchmark/submissions/go_dummy__adder_core__001/oracle/
 !benchmark/submissions/go_dummy__adder_core__001/oracle/**
 
-# Nested git metadata copied into task repo snapshots.
+# Experiment dump bundles. Nested agent workspaces often contain
+# uninitialized .git (no HEAD); git then treats them as submodules and
+# `git add .` fails with "does not have a commit checked out".
+exports/*
+!exports/*.README.md
+!exports/*.sha256
+
+# Suite logs; not part of the tracked source tree.
+logs/
+
+# Local result tarballs at repo root.
+/*.tar.gz
+
+# Runnable bundles are rebuilt locally; only checksums are tracked.
+benchmark/*.tar.gz
+
+# Replay trees used to gold-label token utility; regenerated locally.
+artifacts/research_analysis/token_utility_phase1_work/
 benchmark/tasks/**/repo/.git/
 
 # Reproducible canonical source archives are rebuilt from registry revisions.

@@ -467,6 +467,7 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
             "condenser_target_tokens",
             "condenser_keep_first",
             "condenser_max_events",
+            "condenser_attention_window",
             "condensation_events",
             "forgotten_event_count",
             "condensation_summaries_nonempty",
@@ -481,6 +482,12 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
         compression_mode = context_audit.get("compression_mode")
         if isinstance(compression_mode, str) and compression_mode:
             compact_audit["compression_mode"] = compression_mode
+        condenser_kind = context_audit.get("condenser_kind")
+        if isinstance(condenser_kind, str) and condenser_kind:
+            compact_audit["condenser_kind"] = condenser_kind
+        attention_window = context_audit.get("attention_window")
+        if isinstance(attention_window, int):
+            compact_audit["attention_window"] = attention_window
         if compact_audit:
             compact["context_audit"] = compact_audit
     tool_summary = usage.get("tool_summary")
@@ -516,11 +523,16 @@ def compact_agent_usage(usage: dict[str, Any]) -> dict[str, Any]:
 
 
 def effective_agent_usage_for_run(run: dict[str, Any]) -> dict[str, Any]:
-    """Use all closure phases when present; otherwise use the primary agent usage."""
+    """Use all closure/V2 phases when present; otherwise use the primary agent usage."""
 
     closure = run.get("contract_closure")
     if isinstance(closure, dict):
         totals = closure.get("usage_totals")
+        if isinstance(totals, dict) and totals.get("available") is True:
+            return totals
+    v2 = run.get("adaptive_budget_v2")
+    if isinstance(v2, dict):
+        totals = v2.get("usage_totals")
         if isinstance(totals, dict) and totals.get("available") is True:
             return totals
     agent = run.get("agent") if isinstance(run.get("agent"), dict) else {}

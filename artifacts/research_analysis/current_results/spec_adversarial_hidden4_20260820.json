@@ -1,0 +1,144 @@
+{
+  "schema_version": "featureliftbench.spec_adversarial_hidden4_screen.v1",
+  "generated_at": "2026-08-20",
+  "endpoint": "api",
+  "pair_dir": "experiments/methods/spec_adversarial/hidden4-deepseek-v4-flash-20260820-091254",
+  "task_list": "harness/config/experiments/spec_adversarial_hidden4_v1.txt",
+  "decision": "kill",
+  "functional_passed": {
+    "main": 0,
+    "treatment": 0,
+    "delta": 0
+  },
+  "hidden_0_to_1": {
+    "count": 0,
+    "tasks": []
+  },
+  "integrity": {
+    "main_not_mounted": 4,
+    "treatment_not_mounted": 4,
+    "expected_n": 4,
+    "task_set_match": true
+  },
+  "rows": [
+    {
+      "task_id": "parse__format_parser_core__001",
+      "main_functional_gate": 0,
+      "treatment_functional_gate": 0,
+      "main_public": 1,
+      "treatment_public": 1,
+      "main_hidden": 0,
+      "treatment_hidden": 0,
+      "hidden_flip": "unchanged",
+      "functional_flip": "unchanged",
+      "main_public_tests_mounted": false,
+      "treatment_public_tests_mounted": false,
+      "main_prompt_tokens": 0,
+      "treatment_prompt_tokens": 0
+    },
+    {
+      "task_id": "pygments__lexer_core__001",
+      "main_functional_gate": 0,
+      "treatment_functional_gate": 0,
+      "main_public": 1,
+      "treatment_public": 1,
+      "main_hidden": 0,
+      "treatment_hidden": 0,
+      "hidden_flip": "unchanged",
+      "functional_flip": "unchanged",
+      "main_public_tests_mounted": false,
+      "treatment_public_tests_mounted": false,
+      "main_prompt_tokens": 0,
+      "treatment_prompt_tokens": 0
+    },
+    {
+      "task_id": "python_decouple__config_repository_core__001",
+      "main_functional_gate": 0,
+      "treatment_functional_gate": 0,
+      "main_public": 1,
+      "treatment_public": 1,
+      "main_hidden": 0,
+      "treatment_hidden": 0,
+      "hidden_flip": "unchanged",
+      "functional_flip": "unchanged",
+      "main_public_tests_mounted": false,
+      "treatment_public_tests_mounted": false,
+      "main_prompt_tokens": 0,
+      "treatment_prompt_tokens": 0
+    },
+    {
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "main_functional_gate": 0,
+      "treatment_functional_gate": 0,
+      "main_public": 1,
+      "treatment_public": 1,
+      "main_hidden": 0,
+      "treatment_hidden": 0,
+      "hidden_flip": "unchanged",
+      "functional_flip": "unchanged",
+      "main_public_tests_mounted": false,
+      "treatment_public_tests_mounted": false,
+      "main_prompt_tokens": 0,
+      "treatment_prompt_tokens": 0
+    }
+  ],
+  "process_audits": {
+    "parse__format_parser_core__001": {
+      "all_stubs_filled": true,
+      "checker_ok": true,
+      "checker_ran": true,
+      "checker_runs": 4,
+      "finished_while_red": false,
+      "last_green_count": 9,
+      "last_red_count": 0,
+      "matrix_present": true,
+      "oracle_used": true,
+      "stubs_expected": 5,
+      "stubs_filled": 5
+    },
+    "pygments__lexer_core__001": {
+      "all_stubs_filled": true,
+      "checker_ok": true,
+      "checker_ran": true,
+      "checker_runs": 6,
+      "finished_while_red": false,
+      "last_green_count": 10,
+      "last_red_count": 0,
+      "matrix_present": true,
+      "oracle_used": true,
+      "stubs_expected": 6,
+      "stubs_filled": 6
+    },
+    "python_decouple__config_repository_core__001": {
+      "all_stubs_filled": true,
+      "checker_ok": true,
+      "checker_ran": true,
+      "checker_runs": 3,
+      "finished_while_red": false,
+      "last_green_count": 11,
+      "last_red_count": 0,
+      "matrix_present": true,
+      "oracle_used": false,
+      "stubs_expected": 5,
+      "stubs_filled": 5
+    },
+    "schema__nested_validate_core__hard3_001": {
+      "all_stubs_filled": true,
+      "checker_ok": true,
+      "checker_ran": true,
+      "checker_runs": 4,
+      "finished_while_red": false,
+      "last_green_count": 11,
+      "last_red_count": 0,
+      "matrix_present": true,
+      "oracle_used": true,
+      "stubs_expected": 4,
+      "stubs_filled": 4
+    }
+  },
+  "notes": [
+    "Same-day Main then treatment on Hidden-4.",
+    "Kill: Hidden 0→1 is 0/4. Do not Distill-24 / Python-200 / stack Entrypoint-Hint or Public-feedback.",
+    "Numbers do not enter the Python-200 main table."
+  ]
+}

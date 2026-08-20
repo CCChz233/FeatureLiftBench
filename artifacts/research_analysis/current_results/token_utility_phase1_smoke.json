@@ -1,0 +1,342 @@
+{
+  "mode": "eval",
+  "reports": [
+    {
+      "suite": "/data1/FeatureLiftBench/experiments/python/openhands/deepseek-v4-flash/python200-deepseek-v4-flash-vllm-local-0812-001",
+      "tasks_root": "/data1/FeatureLiftBench/benchmark/python200_tasks",
+      "n_tasks": 2,
+      "n_replay_ok": 2,
+      "n_eval_jobs": 6,
+      "reports": [
+        {
+          "task_id": "aiohttp__url_params_core__hard3_001",
+          "replay_ok": true,
+          "last_hash": "d0c8e031e3463ce395641760632e7d7ca1641f9fe300cdc2c0ef219cfd70e6c4",
+          "disk_hash": "d0c8e031e3463ce395641760632e7d7ca1641f9fe300cdc2c0ef219cfd70e6c4",
+          "total_tokens": 1879257,
+          "editor_writes": 17,
+          "terminal_runs": 3,
+          "terminal_errors": 0,
+          "n_unique": 12,
+          "unique": [
+            {
+              "index": 0,
+              "tree_hash": "ec22a55a38765db8825f738da772cf4e5f749decb9c333316f6d17f858027b24",
+              "tokens": 273776,
+              "n_files": 1,
+              "n_bytes": 9081,
+              "source": "editor:create"
+            },
+            {
+              "index": 1,
+              "tree_hash": "ec879acbbfff0e2cd9188bd855cb4727760cb051ed11a9aba8bdd6025e20ecd0",
+              "tokens": 342050,
+              "n_files": 2,
+              "n_bytes": 10763,
+              "source": "editor:create"
+            },
+            {
+              "index": 2,
+              "tree_hash": "c08aba0a52671ed41fc2efdda2816c44154e871cc4cca2e08835b3a95017ac4f",
+              "tokens": 376776,
+              "n_files": 3,
+              "n_bytes": 11202,
+              "source": "editor:create"
+            },
+            {
+              "index": 3,
+              "tree_hash": "59152e3df6695e555e3aebe8d793e8514265e5b1883714f416598d729a49dba9",
+              "tokens": 447879,
+              "n_files": 3,
+              "n_bytes": 11202,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 4,
+              "tree_hash": "43cca737559786b77da4c4ed746be820b98b4952d61b7d2d6bace48c8e5a2aeb",
+              "tokens": 563149,
+              "n_files": 3,
+              "n_bytes": 11363,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 5,
+              "tree_hash": "2599d5f26f2219ba79529b057bb4112656246a4e71fa543f1033311dc68ecd84",
+              "tokens": 692505,
+              "n_files": 3,
+              "n_bytes": 11418,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 6,
+              "tree_hash": "c2bcbdf6373396364f57e45aea1ef8519b4da898776fcd43909ce7a6ce018a55",
+              "tokens": 928370,
+              "n_files": 3,
+              "n_bytes": 11756,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 7,
+              "tree_hash": "82e530986360f310ef68a9f52f3d800fe03410f553bd385c27790429cbd842f8",
+              "tokens": 1135681,
+              "n_files": 3,
+              "n_bytes": 11744,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 8,
+              "tree_hash": "dd4b382afe2a08750220ef9246ffe82dfb1631fef3a69ce49fa7b04a2a91e156",
+              "tokens": 1189226,
+              "n_files": 3,
+              "n_bytes": 11726,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 9,
+              "tree_hash": "eaa07e8b46664d24ca299d29034f203a833aef521a6bcbb0a6b1e8920f33b45e",
+              "tokens": 1354877,
+              "n_files": 3,
+              "n_bytes": 11712,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 10,
+              "tree_hash": "d7d7dbca15c25e0c9c069cd91681ba22e8961149b074db45053ff3a14bf17496",
+              "tokens": 1452793,
+              "n_files": 3,
+              "n_bytes": 12345,
+              "source": "editor:str_replace"
+            },
+            {
+              "index": 11,
+              "tree_hash": "d0c8e031e3463ce395641760632e7d7ca1641f9fe300cdc2c0ef219cfd70e6c4",
+              "tokens": 1556172,
+              "n_files": 3,
+              "n_bytes": 12335,
+              "source": "editor:str_replace"
+            }
+          ],
+          "sampled_hashes": [
+            "ec22a55a38765db8825f738da772cf4e5f749decb9c333316f6d17f858027b24",
+            "59152e3df6695e555e3aebe8d793e8514265e5b1883714f416598d729a49dba9",
+            "c2bcbdf6373396364f57e45aea1ef8519b4da898776fcd43909ce7a6ce018a55",
+            "82e530986360f310ef68a9f52f3d800fe03410f553bd385c27790429cbd842f8",
+            "d0c8e031e3463ce395641760632e7d7ca1641f9fe300cdc2c0ef219cfd70e6c4"
+          ],
+          "original": {
+            "functional_gate": 0.0,
+            "build_pass": true,
+            "public_tests_pass": true,
+            "hidden_tests_pass": false,
+            "isolation_pass": true
+          },
+          "error": null,
+          "snapshots": [
+            {
+              "index": 0,
+              "tree_hash": "ec22a55a38765db8825f738da772cf4e5f749decb9c333316f6d17f858027b24",
+              "tokens": 273776,
+              "n_files": 1,
+              "n_bytes": 9081,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": false,
+              "hidden_tests_pass": false,
+              "isolation_pass": true
+            },
+            {
+              "index": 3,
+              "tree_hash": "59152e3df6695e555e3aebe8d793e8514265e5b1883714f416598d729a49dba9",
+              "tokens": 447879,
+              "n_files": 3,
+              "n_bytes": 11202,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": true,
+              "hidden_tests_pass": false,
+              "isolation_pass": true
+            },
+            {
+              "index": 6,
+              "tree_hash": "c2bcbdf6373396364f57e45aea1ef8519b4da898776fcd43909ce7a6ce018a55",
+              "tokens": 928370,
+              "n_files": 3,
+              "n_bytes": 11756,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": true,
+              "hidden_tests_pass": false,
+              "isolation_pass": true
+            },
+            {
+              "index": 7,
+              "tree_hash": "82e530986360f310ef68a9f52f3d800fe03410f553bd385c27790429cbd842f8",
+              "tokens": 1135681,
+              "n_files": 3,
+              "n_bytes": 11744,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": true,
+              "hidden_tests_pass": false,
+              "isolation_pass": true
+            },
+            {
+              "index": 11,
+              "tree_hash": "d0c8e031e3463ce395641760632e7d7ca1641f9fe300cdc2c0ef219cfd70e6c4",
+              "tokens": 1556172,
+              "n_files": 3,
+              "n_bytes": 12335,
+              "source": "original_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": true,
+              "hidden_tests_pass": false,
+              "isolation_pass": true
+            }
+          ],
+          "summary": {
+            "task_id": "aiohttp__url_params_core__hard3_001",
+            "replay_ok": true,
+            "original_functional_gate": 0.0,
+            "total_tokens": 1879257,
+            "n_unique": 12,
+            "n_evaled": 5,
+            "earliest_pass_tokens": null,
+            "earliest_pass_frac": null,
+            "earliest_pass_hash": null,
+            "gate_at_2m": 0.0,
+            "passed_before_2m": false,
+            "late_pass": null
+          }
+        },
+        {
+          "task_id": "ftfy__fix_text_core__001",
+          "replay_ok": true,
+          "last_hash": "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede",
+          "disk_hash": "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede",
+          "total_tokens": 679480,
+          "editor_writes": 0,
+          "terminal_runs": 7,
+          "terminal_errors": 0,
+          "n_unique": 3,
+          "unique": [
+            {
+              "index": 0,
+              "tree_hash": "63fc5953f1acdad1a433c1dd8a43451b7bb2f197ef00fbd83ab4acc524096861",
+              "tokens": 233716,
+              "n_files": 8,
+              "n_bytes": 94647,
+              "source": "terminal"
+            },
+            {
+              "index": 1,
+              "tree_hash": "79b30c6e3e506f3edf24c160a908b19c21b27adec53b88c3642bfb306942737a",
+              "tokens": 257833,
+              "n_files": 9,
+              "n_bytes": 124240,
+              "source": "terminal"
+            },
+            {
+              "index": 2,
+              "tree_hash": "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede",
+              "tokens": 284123,
+              "n_files": 9,
+              "n_bytes": 124346,
+              "source": "terminal"
+            }
+          ],
+          "sampled_hashes": [
+            "63fc5953f1acdad1a433c1dd8a43451b7bb2f197ef00fbd83ab4acc524096861",
+            "79b30c6e3e506f3edf24c160a908b19c21b27adec53b88c3642bfb306942737a",
+            "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede"
+          ],
+          "original": {
+            "functional_gate": 1.0,
+            "build_pass": true,
+            "public_tests_pass": true,
+            "hidden_tests_pass": true,
+            "isolation_pass": true
+          },
+          "error": null,
+          "snapshots": [
+            {
+              "index": 0,
+              "tree_hash": "63fc5953f1acdad1a433c1dd8a43451b7bb2f197ef00fbd83ab4acc524096861",
+              "tokens": 233716,
+              "n_files": 8,
+              "n_bytes": 94647,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": true,
+              "public_tests_pass": false,
+              "hidden_tests_pass": false,
+              "isolation_pass": false
+            },
+            {
+              "index": 1,
+              "tree_hash": "79b30c6e3e506f3edf24c160a908b19c21b27adec53b88c3642bfb306942737a",
+              "tokens": 257833,
+              "n_files": 9,
+              "n_bytes": 124240,
+              "source": "docker_eval",
+              "evaled": true,
+              "functional_gate": 0.0,
+              "build_pass": false,
+              "public_tests_pass": false,
+              "hidden_tests_pass": false,
+              "isolation_pass": false
+            },
+            {
+              "index": 2,
+              "tree_hash": "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede",
+              "tokens": 284123,
+              "n_files": 9,
+              "n_bytes": 124346,
+              "source": "original_eval",
+              "evaled": true,
+              "functional_gate": 1.0,
+              "build_pass": true,
+              "public_tests_pass": true,
+              "hidden_tests_pass": true,
+              "isolation_pass": true
+            }
+          ],
+          "summary": {
+            "task_id": "ftfy__fix_text_core__001",
+            "replay_ok": true,
+            "original_functional_gate": 1.0,
+            "total_tokens": 679480,
+            "n_unique": 3,
+            "n_evaled": 3,
+            "earliest_pass_tokens": 284123,
+            "earliest_pass_frac": 0.4181477011832578,
+            "earliest_pass_hash": "6bb0cb133f4283f4d6081a31c9c1526c9347a5e88dc619c1a75306d24d3b1ede",
+            "gate_at_2m": 1.0,
+            "passed_before_2m": true,
+            "late_pass": false
+          }
+        }
+      ],
+      "rollup": {
+        "replay_ok": 2,
+        "assigned": 2,
+        "pass_with_gold": 1,
+        "earliest_pass_frac_median": 0.4181477011832578,
+        "late_pass_n": 0,
+        "pass_with_2m_snapshot": 1,
+        "would_fail_at_2m": 0,
+        "eval_jobs": 6
+      }
+    }
+  ]
+}

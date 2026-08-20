@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -17,7 +18,19 @@ from .common import PUBLIC_CONTRACT_FILE
 from .common import PUBLIC_CONTRACT_SCHEMA
 from .common import PUBLIC_WITNESS_FILE
 from .common import PUBLIC_WITNESS_SCHEMA
+from .common import LITE_V1_SILENT_FINISH_ENV
 from .common import WRAPPER_NAME
+
+
+def _lite_v1_silent_finish(explicit: bool | None = None) -> bool:
+    if explicit is not None:
+        return bool(explicit)
+    return os.environ.get(LITE_V1_SILENT_FINISH_ENV, "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
 
 
 _README = """# Public-contract behavior cases
@@ -348,6 +361,7 @@ def install_contract_closure_workspace(
         "contract_closure_gate": True,
         "contract_closure_gate_lite": bool(lite),
         "contract_closure_gate_lite_v1_frozen": bool(frozen_v1),
+        "lite_v1_silent_finish": bool(frozen_v1 and _lite_v1_silent_finish()),
         "contract_closure_gate_lite_rescue": bool(rescue),
         "contract_closure_gate_lite_rescue_plus": bool(rescue_plus),
         "contract_closure_gate_v3": bool(v3),
@@ -413,6 +427,20 @@ def task_appendix(
             "only on implementation, smoke checks, and local fixes.\n"
         )
     if frozen_v1 or rescue:
+        if frozen_v1 and _lite_v1_silent_finish():
+            return (
+                "## Public Contract Closure Gate Lite\n\n"
+                f"This method uses only `{PUBLIC_CONTRACT_FILE}`, a structured "
+                "copy of the public contract already rendered above. Evaluator tests remain "
+                "hidden.\n\n"
+                "1. Implement every Required Output API under "
+                "`submission/featurelifted/`.\n"
+                f"2. Run `./{WRAPPER_NAME} --structure-only --summary`.\n"
+                "3. Fix compilation, import, forbidden-dependency, API-path, member, and "
+                "signature findings.\n"
+                "4. Do not author behavior-case files in this arm; the formal private "
+                "evaluator still runs after submission.\n"
+            )
         return (
             "## Public Contract Closure Gate Lite"
             + (" Rescue" if rescue else "")
@@ -495,6 +523,13 @@ def openhands_appendix(
             "Do not inspect the wrapper or `/flb/harness`.\n"
         )
     if frozen_v1 or rescue:
+        if frozen_v1 and _lite_v1_silent_finish():
+            return (
+                "Implement the submission, then run "
+                f"`./{WRAPPER_NAME} --structure-only --summary` and resolve hard "
+                "findings. Do not create contract_cases or inspect the wrapper or "
+                "`/flb/harness`.\n"
+            )
         return (
             "Implement the submission, then run "
             f"`./{WRAPPER_NAME} --structure-only --summary` and resolve hard "

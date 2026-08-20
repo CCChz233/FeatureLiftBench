@@ -1,6 +1,8 @@
 # FeatureLiftBench 组会汇报：Benchmark 怎么设计的
 
-> 用途：组会介绍设计思路与当前进展  
+> **Status: archived · Last verified: 2026-08-17**
+> 用途：2026-08-05 组会设计稿；当前数字以 [STATUS.md](../../STATUS.md) 为准。
+> 题集构成以 [汇报_题集构成.md](../../汇报_题集构成.md) 为准。
 > 日期：2026-08-05  
 > 旗舰例题三道（互补）：安全 token · CLI 框架 · 配置 round-trip  
 > 详细规范见 `docs/BENCHMARK_DESIGN.md`；数字以 `docs/STATUS.md` / `docs/FINDINGS.md` 为准
@@ -222,14 +224,14 @@ Compactness 单独报告。
 | Qwen3.6 35B | 150/150 | **59/150（39.3%）** | context 违规更多 |
 | GPT-OSS 120B | 150/150 | **27/150（18.0%）** | 显著更弱 |
 
-完整表：[`reports/paper_analysis/python150_with_deepseek150_20260805/`](../reports/paper_analysis/python150_with_deepseek150_20260805/README.md)
+数字仍以 [STATUS.md](../../STATUS.md) 的 Historical Evidence 为准。
 
 ### 组会可说的结论
 
 1. 任务偏难、有区分度（约 18%–66%）  
 2. 同覆盖排名：**DeepSeek ≫ Qwen3.5 ≈ Qwen3.6 ≫ GPT-OSS**  
 3. 旗舰题说明失败常在 **契约细节 / Hidden**，不只是找不到代码  
-4. 必须以 Functional Pass 为准；尚无最终 Python-200 leaderboard  
+4. 必须以 Functional Pass 为准；跨模型 Python-200 leaderboard 仍未完成  
 
 ---
 

@@ -48,7 +48,7 @@ Evaluate a prepared submission:
 PYTHONPATH=harness python3 -B -m featureliftbench.cli eval <task_dir> <submission_dir> --output <output_dir>
 ```
 
-Run an agent suite:
+Run an agent suite (Official Main uses OpenHands):
 
 ```bash
 PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent <task_root> \
@@ -59,6 +59,15 @@ PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent <task_root> \
   --output <experiments/.../suite-id> \
   --task-id <task_id>
 ```
+
+Optional DeepSeek Harness / Codex runtime ablation (not Official Main, not the
+Python-200 table):
+
+```bash
+./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
+```
+
+See `docs/METHOD_AGENT_RUNTIME.md`.
 
 Resume an interrupted run:
 

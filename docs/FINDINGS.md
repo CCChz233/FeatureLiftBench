@@ -1,12 +1,12 @@
 # 当前方法结论
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: current · Last verified: 2026-08-21**
 > 跨模型 Main leaderboard 只维护在 [STATUS.md](STATUS.md)。
 > **当前 cost arm V1 = Main + 2M cap**，规范见 [METHOD_V1.md](METHOD_V1.md)。
 > 指标定义见 [EVALUATION.md](EVALUATION.md)。
 
-本文只解释方法对比。Rescue+、V2、TFL、Core-12、RQ6 Flash-12 和 Spec-adversarial
-Hidden-4 通过率不进入 Python-200 主表。
+本文只解释方法对比。Rescue+、V2、TFL、Core-12、RQ6 Flash-12、Spec-adversarial
+Hidden-4 和 DeepSeek Harness / Codex runtime 通过率不进入 Python-200 主表。
 
 ## 结论先行
 
@@ -36,6 +36,11 @@ Hidden-4 通过率不进入 Python-200 主表。
    Flash 通过题中位数 60% 的 token 花在已经 Functional Pass 之后，主要是自测。
    Direct \(T^\*/T\) 0.36、Composite 0.51；非正式难度分不开。不要写一条跨模型
    停机规则。
+
+10. **Agent runtime ablation 尚未出分。** DeepSeek Harness / Codex 与 OpenHands
+    同级，但是独立实验因子。基础设施见
+    [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。不要把空列或 Core-12
+    试跑写进 Python-200 主表。
 
 ## 瓶颈
 

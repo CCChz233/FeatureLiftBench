@@ -1,6 +1,6 @@
 # Known Limitations
 
-> **Documentation status: current · Last verified: 2026-08-20**
+> **Documentation status: current · Last verified: 2026-08-21**
 
 ## Dataset Construction
 
@@ -46,9 +46,13 @@
 ## Experimental Evidence
 
 - Python-200 Main is complete for DeepSeek V4 Flash (API and local vLLM),
-  Qwen3.5 122B, Qwen3.6 35B, and GPT-OSS 120B. Pass-conditioned RRES medians
-  sit at 1.000 and there is no paired cross-model RRES, so compactness cannot
-  be ranked across models.
+  Qwen3.5 122B, Qwen3.6 35B, and GPT-OSS 120B under **OpenHands**. Pass-conditioned
+  RRES medians sit at 1.000 and there is no paired cross-model RRES, so
+  compactness cannot be ranked across models.
+- Official Main is OpenHands. DeepSeek Harness and Codex adapters exist as an
+  optional runtime ablation with pinned revisions, but they have no scored
+  Core-12 or Python-200 results yet and must not be merged into the OpenHands
+  leaderboard ([METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)).
 - Lite V1 **protocol** (checker / repair) has been compared with Main only on
   DeepSeek. That comparison shows a token saving, a Functional Pass drop, and no
   paired RRES advantage. The current cost arm is **V1 = Main + 2M cap**, not

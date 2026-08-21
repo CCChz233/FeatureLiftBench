@@ -1,6 +1,6 @@
 # FeatureLiftBench 文档入口
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: current · Last verified: 2026-08-21**
 
 日常只从这里进入。动态数字只维护在 [STATUS.md](STATUS.md)，方法对比结论只维护在
 [FINDINGS.md](FINDINGS.md)。
@@ -17,6 +17,7 @@
 | 看 RQ6 Public-feedback 信息消融 | [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
 | 看 Hidden 合同出处审计（进行中） | [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md) |
 | 用 Agent 自动校准/审计 Hidden 行为的 repository recoverability | [AGENTIC_EVIDENCE_AUDIT.md](AGENTIC_EVIDENCE_AUDIT.md) |
+| 可选：把 DeepSeek Harness / Codex 当 OpenHands 同级 runtime | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
 | 看方法结论：V1 cost tax、旧 Lite、已停脚手架、RQ6 | [FINDINGS.md](FINDINGS.md) |
 | 离线拆已有轨迹的 token 尾巴（不是新方法） | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
 | 组会投屏：跨模型 Main / 方法对比 / 失败阶段 / 题集 / 案例 | [汇报_Python200跨模型Main.md](汇报_Python200跨模型Main.md) · [汇报_实验结果表.md](汇报_实验结果表.md) · [汇报_失败原因.md](汇报_失败原因.md) · [汇报_题集构成.md](汇报_题集构成.md) · [汇报_Agent瓶颈案例.md](汇报_Agent瓶颈案例.md) |
@@ -44,6 +45,8 @@ Hidden-4 已 Kill（Hidden 0→1 = 0/4），见
 [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md)。论文 RQ3/RQ5
 token 切片已有稿；RQ6 机制稿见
 [paper/04_results_rq6.md](paper/04_results_rq6.md)。数字不进 Python-200 主表。
+DeepSeek Harness / Codex runtime ablation 只有基础设施，见
+[METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)，同样不进主表。
 
 `PLAN_EXTERNAL50_EXPANSION.md` 仅为旧 design cards 保留兼容路径，不是当前执行入口。
 

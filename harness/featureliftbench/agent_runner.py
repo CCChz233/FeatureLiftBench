@@ -148,7 +148,6 @@ def run_agent_on_path(
             progress=progress,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
-            evaluation=eval_result,
             agent_docker=agent_docker,
             agent_docker_image=agent_docker_image,
         )

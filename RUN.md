@@ -1,6 +1,6 @@
 # FeatureLiftBench 运行速查
 
-> **Status: current · Last verified: 2026-08-18**
+> **Status: current · Last verified: 2026-08-21**
 > 完整服务器流程见 [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md)，
 > 当前 release 事实见 [STATUS.md](docs/STATUS.md)。
 
@@ -39,6 +39,19 @@ Python 3.11 wheels、冻结 Python baseline 和全部 runnable task。
 ```
 
 正式实验必须固定镜像 identity，不使用未记录 digest 的浮动 `latest` 作为论文条件。
+
+## Run Runtime Ablation (optional)
+
+DeepSeek Harness / Codex 与 OpenHands 同级，但不是 Official Main。钉版本、Core-12
+成对，数字不进 Python-200 主表。见 [METHOD_AGENT_RUNTIME.md](docs/METHOD_AGENT_RUNTIME.md)。
+
+```bash
+./harness/scripts/pin_runtime_agents.sh
+# copy dsh_deepseek_v4_flash_main / codex_gpt_main into agents.toml
+./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
+./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main \
+  runtime-dsh-flash-core12 --execute
+```
 
 ## Run V1 (Main + 2M cap)
 
@@ -112,6 +125,10 @@ PYTHONPATH=harness python3 harness/scripts/merge_python200_main_results.py
 输出：
 `artifacts/research_analysis/current_results/python200_cross_model_main_20260818.{json,md}`。
 这不是当前 V1。
+
+Runtime ablation 输出在
+`experiments/python/runtime/<adapter>/<model>/<run-id>/`，用同一
+`analyze_benchmark_suite.py` 分析，但不要并入上表。
 
 ## Task Maintenance
 

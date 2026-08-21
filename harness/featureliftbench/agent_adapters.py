@@ -94,9 +94,13 @@ class AgentAdapter:
     """Base class for an agent command adapter."""
 
     name = "agent"
+    close_stdin = False
 
     def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
         raise NotImplementedError
+
+    def prepare(self, context: AgentRunContext, config: AgentRunConfig) -> None:
+        """Write adapter-specific files into the host workspace before launch."""
 
     def build_report_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
         return self.build_command(context, config)
@@ -109,6 +113,7 @@ class AgentAdapter:
         stdout_log: Path | None = None,
         stderr_log: Path | None = None,
     ) -> AgentCommandResult:
+        self.prepare(context, config)
         command = self.build_command(context, config)
         report_command = self.build_report_command(context, config)
         env = os.environ.copy()
@@ -149,6 +154,7 @@ class AgentAdapter:
                 text=True,
                 timeout=config.timeout_seconds,
                 check=False,
+                stdin=subprocess.DEVNULL if self.close_stdin else None,
             )
         except FileNotFoundError as exc:
             return AgentCommandResult(
@@ -209,6 +215,7 @@ class AgentAdapter:
                 command,
                 cwd=cwd,
                 env=env,
+                stdin=subprocess.DEVNULL if self.close_stdin else None,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -392,6 +399,41 @@ class FeatureLiftAgentAdapter(AgentAdapter):
         return command
 
 
+class DeepSeekHarnessAdapter(AgentAdapter):
+    """Pinned DeepSeek Harness (`dsh --profile headless`) runtime ablation."""
+
+    name = "deepseek-harness"
+
+    def prepare(self, context: AgentRunContext, config: AgentRunConfig) -> None:
+        from .runtime_agents import write_runtime_task_file
+
+        del config
+        write_runtime_task_file(context)
+
+    def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
+        from .runtime_agents import build_deepseek_harness_command
+
+        return build_deepseek_harness_command(context, config)
+
+
+class CodexAdapter(AgentAdapter):
+    """Pinned OpenAI Codex CLI (`codex exec`) runtime ablation."""
+
+    name = "codex"
+    close_stdin = True
+
+    def prepare(self, context: AgentRunContext, config: AgentRunConfig) -> None:
+        from .runtime_agents import write_runtime_task_file
+
+        del config
+        write_runtime_task_file(context)
+
+    def build_command(self, context: AgentRunContext, config: AgentRunConfig) -> list[str]:
+        from .runtime_agents import build_codex_command
+
+        return build_codex_command(context, config)
+
+
 class OpenHandsAgentAdapter(AgentAdapter):
     """Adapter for running OpenHands as the evaluated FeatureLiftBench agent."""
 
@@ -452,9 +494,20 @@ def get_agent_adapter(name: str) -> AgentAdapter:
         return FeatureLiftAgentAdapter()
     if normalized in {"openhands", "openhands-agent", "openhandsagent"}:
         return OpenHandsAgentAdapter()
+    if normalized in {"deepseek-harness", "deepseekharness", "dsh"}:
+        return DeepSeekHarnessAdapter()
+    if normalized in {"codex", "codex-cli", "openai-codex"}:
+        return CodexAdapter()
     if normalized in {"command", "custom"}:
         return CommandAgentAdapter()
     raise ValueError(f"unsupported agent: {name}")
 
 
-SUPPORTED_AGENTS = ("mini-swe-agent", "featurelift-agent", "openhands-agent", "command")
+SUPPORTED_AGENTS = (
+    "mini-swe-agent",
+    "featurelift-agent",
+    "openhands-agent",
+    "deepseek-harness",
+    "codex",
+    "command",
+)

@@ -1,6 +1,6 @@
 # FeatureLiftBench 整体设计思路
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-21**
 
 - **状态：** 当前 Full-Repository / No-Hint 设计；release 数字见 [STATUS.md](STATUS.md)
 - **简明原则：** [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
@@ -37,7 +37,10 @@ tests/docs/examples、恢复依赖并解耦目标功能，最终构造
 
 ### 1.3 与当前实验环境的关系
 
-当前采用的 **OpenHands** 配置已具备仓库搜索、代码编辑、测试执行及上下文管理等通用能力。v3 Main 同时测量自主定位、契约完成、依赖发现、解耦与验证。
+当前采用的 **OpenHands** 配置是 Official Main 的 coding runtime，具备仓库搜索、
+代码编辑、测试执行及上下文管理等通用能力。v3 Main 同时测量自主定位、契约完成、
+依赖发现、解耦与验证。DeepSeek Harness / Codex 可作为同信息边界的可选 runtime
+消融，不是 Main，见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 
 1. **从完整仓库自主定位实现**
 2. **从完整契约与上游证据自行构造验证**
@@ -146,7 +149,7 @@ FunctionalPass =
 
 网络隔离、allowlist 安装等若失败，通常表现为 BuildPass/环境失败，计入 gate 失败路径；不另设省略号项。
 
-**口径分离：** `functional_gate` 与 OpenHands suite 的 `run_status`（Agent 是否正常结束工作流）**分开计算**。主榜 **Pass@1** 采用 evaluator 功能门，不采用 Agent 工作流是否正常结束。这避免「hidden 通过数」与「formal pass」因工作流状态被混淆。
+**口径分离：** `functional_gate` 与 Agent suite 的 `run_status`（Agent 是否正常结束工作流）**分开计算**。主榜 **Pass@1** 采用 evaluator 功能门，不采用 Agent 工作流是否正常结束。这避免「hidden 通过数」与「formal pass」因工作流状态被混淆。
 
 - Gate：行为是否在干净环境成立（含 Agent 交卷前可能从未跑过的 hidden）
 - 紧凑项：功能结果之外独立报告，使用 reference/reference-support-set
@@ -186,7 +189,9 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 落地；当前 release 的 Full-Repository materialization 状态见
 [STATUS.md](STATUS.md)。RQ6 Public-feedback 的 Flash-12 成对规范见
 [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。历史 `no_public`
-名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。
+名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。换 coding runtime
+（DeepSeek Harness / Codex）不是上表信息消融，见
+[METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 
 ---
 

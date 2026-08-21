@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: current · Last verified: 2026-08-21**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Release
@@ -118,6 +118,7 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 | 本地 Main-200 | 完整 | 完整 | 145/145 | 与 Lite 成对 125/125 |
 | 本地 Lite V1-200 | 完整 | 完整 | 127/127 | 同上 |
 | Qwen3.6-35B V1-200 | 完整 | 完整 | 未作跨方法 RRES 主表 | E50 成对 n=46 |
+| DeepSeek Harness / Codex runtime | 未跑 | — | — | — |
 
 原始结果包的 `summary.passed` 是 workflow/run status，不是 Functional Pass。
 
@@ -163,8 +164,17 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 | RQ6 Public-feedback Flash-12 | 同日 Main 0/12 → PF **4/12**；public 6/6 救回；Hidden 多数不动 | [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
 | Spec-adversarial Hidden-4 | 同日 Main 0/4 → SA 0/4；Hidden 0→1 **0/4** → **Kill** | [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md) |
 | Best-so-far checkpoint 离线 | Flash 失败 51 题全量独特树 Functional 0→1 = **0/51** → **Kill** | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
+| DeepSeek Harness / Codex runtime | adapter + pin 已落地，尚无 Core-12 分数 | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
 
-12 题通过率不能换算成 Python-200。RQ6 / Spec-adversarial 数字不进 Python-200 主表。
+12 题通过率不能换算成 Python-200。RQ6 / Spec-adversarial / runtime ablation
+数字不进 Python-200 主表。
+
+## Runtime Ablation
+
+基础设施已落地，**尚无正式分数**。DeepSeek Harness 与 Codex 是与 OpenHands
+同级的 coding runtime，不是信息消融，也不是 Official Main。先 Core-12 成对，
+输出在 `experiments/python/runtime/`。见
+[METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 
 ## Current Evidence Gaps
 
@@ -176,14 +186,17 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
    Underdetermined vs Recoverable 后再进论文。见
    [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
 4. DeepSeek API 全量 V1-200 未跑；不是 blocker，Flash Core-12 已表明 cap 税。
-4. Python-200 RRES 中位数贴 1.000；紧凑度应拆 Python-150 与 External-50，并报 copy 比例。
-5. 跨模型没有成对 RRES；不得用无配对中位数比较紧凑度。
-6. 论文主表前仍需确认 evaluator image 和 context-window 实验资格。
-7. Token utility 金标与分层已写入论文 RQ3/RQ5 稿
+5. Python-200 RRES 中位数贴 1.000；紧凑度应拆 Python-150 与 External-50，并报 copy 比例。
+6. 跨模型没有成对 RRES；不得用无配对中位数比较紧凑度。
+7. 论文主表前仍需确认 evaluator image 和 context-window 实验资格。
+8. Token utility 金标与分层已写入论文 RQ3/RQ5 稿
    [paper/03_results_token_utility.md](paper/03_results_token_utility.md)。Flash 138
    道通过题最早充分中位数 0.40（Direct 0.36 / Composite 0.51）；7 道需要 2M 之后。
    验证循环组合 AUC 弱，不写停机规则。Best-so-far checkpoint 离线已 Kill（失败题
    全量独特树 0/51 Functional 0→1）。见 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
+9. DeepSeek Harness / Codex runtime ablation 只有 adapter 与 pin，没有 Core-12
+   分数。不要把空列写进 Python-200 主表。见
+   [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 
 ## Next Actions
 
@@ -201,9 +214,11 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
    Underdetermined 18。人工复核 Underdetermined 后再写进论文 RQ4。见
    [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
    可写卷宗；RRES 拆 150 / E50。不要叠 Entrypoint-Hint。数字不进 Python-200 主表。
-5. 不要把 Rescue+、Frozen 45 步信封、V2、Core-12、RQ6 Flash-12 或 Spec-adversarial
-   Hidden-4 通过率写进 Python-200 主表。
+5. 不要把 Rescue+、Frozen 45 步信封、V2、Core-12、RQ6 Flash-12、Spec-adversarial
+   Hidden-4，或 DeepSeek Harness / Codex runtime 通过率写进 Python-200 主表。
 6. Token utility 论文稿已写（RQ3/RQ5）。不要写 stop 规则；不要把 Phase 0
    `last_write_frac` 当 utility。分析底稿 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
+7. 可选 runtime ablation（DeepSeek Harness / Codex）可在 Core-12 上与
+   OpenHands+Flash 成对，见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 
 运行入口见 [RUN.md](../RUN.md)，实验与结果规范见 [EVALUATION.md](EVALUATION.md)。

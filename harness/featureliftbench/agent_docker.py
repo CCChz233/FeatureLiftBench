@@ -164,6 +164,7 @@ def run_agent_in_docker(
     stdout_log: Path | None = None,
     stderr_log: Path | None = None,
 ) -> AgentCommandResult:
+    get_agent_adapter(config.agent).prepare(context, config)
     invocation = build_agent_docker_invocation(context, config, image=image)
     start = time.monotonic()
     redact_values = _redaction_values(config.env)

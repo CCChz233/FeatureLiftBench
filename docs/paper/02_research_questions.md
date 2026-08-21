@@ -1,6 +1,6 @@
 # Research Questions
 
-> **Documentation status: current · Last verified: 2026-08-20**
+> **Documentation status: current · Last verified: 2026-08-21**
 
 ## RQ1 — Functional capability
 
@@ -104,6 +104,11 @@ compared on the same task subset. Public-feedback is the first arm; it is an
 information ablation of Main, not a competing method. Draft:
 [04_results_rq6.md](04_results_rq6.md).
 
+Changing the coding runtime (DeepSeek Harness / Codex vs OpenHands) is **not**
+RQ6. It is an optional appendix factor with the same information boundary; see
+[METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md). Do not merge those scores
+into the OpenHands Python-200 Main table.
+
 ## Evidence order
 
 1. 跨模型 Python-200 Main 已出（见 [STATUS.md](../STATUS.md)）。
@@ -116,5 +121,8 @@ information ablation of Main, not a competing method. Draft:
    数字不进 Python-200 主表。
 5. 不再开新方法臂，也不再从 token 尾巴写 early-stopping。历史脚手架负结果只作
    RQ4，见 [archive/methods/](../archive/methods/README.md)。
+6. Optional DeepSeek Harness / Codex runtime ablation 只有基础设施，没有正式
+   分数；不进 Python-200 主表。见
+   [METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)。
 
 Current evidence and gaps: [STATUS.md](../STATUS.md)。

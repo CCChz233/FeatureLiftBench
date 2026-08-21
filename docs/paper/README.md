@@ -1,6 +1,6 @@
 # Paper Documents
 
-> **Status: current index · Last verified: 2026-08-20**
+> **Status: current index · Last verified: 2026-08-21**
 
 | Document | Role |
 | --- | --- |
@@ -14,5 +14,7 @@
 Current evidence and numerical status remain in [../STATUS.md](../STATUS.md)
 and [../FINDINGS.md](../FINDINGS.md). The live cost method is
 [../METHOD_V1.md](../METHOD_V1.md). RQ6 Public-feedback is
-[../METHOD_RQ6_PUBLIC_FEEDBACK.md](../METHOD_RQ6_PUBLIC_FEEDBACK.md).
-Metric definitions are in [../EVALUATION.md](../EVALUATION.md).
+[../METHOD_RQ6_PUBLIC_FEEDBACK.md](../METHOD_RQ6_PUBLIC_FEEDBACK.md). Optional
+DeepSeek Harness / Codex runtime ablation is
+[../METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md); it is not Official
+Main. Metric definitions are in [../EVALUATION.md](../EVALUATION.md).

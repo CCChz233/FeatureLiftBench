@@ -1,6 +1,6 @@
 # FeatureLiftBench 评测与实验规范
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: current · Last verified: 2026-08-21**
 > 本文件是 Main 条件、正式实验臂、评分和结果留存要求的唯一当前规范。
 
 ## Official Main
@@ -33,6 +33,22 @@ Main 是 leaderboard 和论文主结果的唯一默认条件。Task contract 与
 每个 ablation 必须记录 `ablation_arm` 和 changed dimension，并保持 task、model、
 agent、evaluator、image、attempt policy 与其余 Main 条件不变。
 
+## Optional Runtime Ablation
+
+换 **coding runtime**，不换信息边界。不是上表信息消融，也不是 Official Main。
+
+| Dimension | Required value |
+| --- | --- |
+| Agent | `deepseek-harness` 或 `codex`，记录 pin tag + commit |
+| Source / hints / tests / prompt / attempts | 与 Official Main 相同 |
+| Evaluator | isolated eval Docker，`functional_gate` + RRES |
+| Execution | 默认 host PATH + eval Docker；stock OpenHands agent 镜像不含 `dsh`/`codex` |
+| Slice | 先 Core-12，与同日 OpenHands+Flash Main 成对 |
+| Reporting | 独立 runtime 表；**不得并入** 5-model OpenHands Python-200 主表 |
+
+Pins、adapter 与入口见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
+尚无正式分数时，STATUS / FINDINGS 只记基础设施就绪，不编造通过率。
+
 Contract Closure 的旧 **Lite V1 协议**（checker / stop / repair）是已退役的方法
 实验臂，不是默认 leaderboard，也不是当前 V1。DeepSeek Python-200 上那次对比
 使用 Main 预算（120 步 + repair），不得与 45+10 Frozen 信封混比。
@@ -51,7 +67,9 @@ Entrypoint-Hint / Pruned-Context / Short-prompt 尚未跑，不要与本臂叠�
 ## Evaluation Pipeline
 
 1. 校验 suite selection、freeze 和 canonical source mapping。
-2. 物化完整 pinned source，构造 No-Hint workspace，在 agent Docker 中运行一次。
+2. 物化完整 pinned source，构造 No-Hint workspace；Official Main 在 agent Docker
+   中运行一次。Runtime ablation 默认在 host PATH 上运行钉住的 `dsh`/`codex`，
+   evaluator 仍进隔离 Docker。
 3. 只收集 `submission/`，不把原仓库加入 runtime `PYTHONPATH`。
 4. 在 source-free evaluator capsule 中运行 build、public、hidden 和 isolation gates；
    禁止网络、forbidden imports、submission subprocess 和 evaluator-private path access。
@@ -130,7 +148,7 @@ Tokens、API calls、steps、time、agent completion、context/rate-limit 和 in
 ## Execution And Resume Rules
 
 - checkout exact revision，验证 suite/task-set hash、source archives 和 image identities；
-- 固定 model revision、agent profile、prompt arm、timeouts、workers 和 attempt policy；
+- 固定 model revision、agent runtime/adapter pin、agent profile、prompt arm、timeouts、workers 和 attempt policy；
 - 先用同一 images、visibility 跑 end-to-end smoke；
 - resume 只处理没有 terminal `run.json` 的题；
 - 不查看 hidden failure 来调整正在运行的模型或 prompt；
@@ -142,15 +160,15 @@ Tokens、API calls、steps、time、agent completion、context/rate-limit 和 in
 每个 paper-candidate suite 必须保留：
 
 - exact task IDs、suite/task-set hash、freeze/selection IDs；
-- model、agent profile、arm、attempt/resume policy；
-- agent/evaluator image identities；
+- model、agent runtime/adapter、agent profile、arm、attempt/resume policy；
+- agent/evaluator image identities（runtime ablation 另记 host binary pin）；
 - per-task `run.json`、`eval/result.json`、submission、trajectory、usage/context audit；
 - exception ledger 和可复现分析命令。
 
 Core table 只报告 Functional Pass Rate 和 pass-conditioned RRES，同时给出 assigned、
 evidence coverage、置信区间和 task-paired comparison。Failure table 报告互斥首败阶段及
 `stage_evidence_unavailable`。运行资源只放 appendix/diagnostics。不同 source、
-visibility、attempt 或 evaluator 条件不得并入同一 leaderboard。
+visibility、attempt、evaluator **或 agent runtime** 条件不得并入同一 leaderboard。
 
 当前结果资格和解释边界见 [STATUS.md](STATUS.md)，证据位置见
 [reports/README.md](../reports/README.md)。旧版细节保存在

@@ -1,6 +1,6 @@
 # Paper Outline
 
-> **Documentation status: current · Last verified: 2026-08-20**
+> **Documentation status: current · Last verified: 2026-08-21**
 
 ## Working title
 
@@ -33,7 +33,8 @@ repository, but no source-location hints or benchmark tests before submission.
    （[03_results_token_utility.md](03_results_token_utility.md)）。脚手架方法已停，
    负结果作 RQ4。RQ6 Public-feedback 是 Main 的信息消融，Flash-12 同日成对已齐
    （Main 0/12 → 4/12；[04_results_rq6.md](04_results_rq6.md)）；数字不进
-   Python-200 主表。
+   Python-200 主表。DeepSeek Harness / Codex 是可选 runtime 附录，不是 Main，
+   见 [METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)。
 
 ## Research questions
 
@@ -90,8 +91,9 @@ described candidly before paper submission.
 
 ### 5. Experimental setup
 
-- exact OpenHands/model profiles；
-- agent/eval Docker；
+- Official Main：exact OpenHands/model profiles and agent/eval Docker；
+- optional runtime ablation：pinned DeepSeek Harness / Codex on host PATH
+  ([METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)；not the main table)；
 - active benchmark freeze and image digests；
 - one attempt per task；
 - baselines and ablation definitions。
@@ -112,8 +114,9 @@ Required v3 tables:
 7. paired information ablations（RQ6 Public-feedback Flash-12 已齐。稿
    [04_results_rq6.md](04_results_rq6.md)；不进主表）。
 
-Do not put Core-12 / Rescue+ / V2 / TFL rates in the main tables. Historical
-scaffolding negative results belong in failure analysis / discussion.
+Do not put Core-12 / Rescue+ / V2 / TFL / DeepSeek Harness / Codex runtime
+rates in the main tables. Historical scaffolding negative results belong in
+failure analysis / discussion.
 
 Historical v1 results may appear only in a clearly labeled development-history
 or source-context comparison.

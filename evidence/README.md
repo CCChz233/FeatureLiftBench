@@ -5,7 +5,7 @@
 历史出题 gate 证据（oracle / naive / copy_all / Flash 校准），不是 v2
 Agent 主榜跑分。
 
-与 `experiments/`（OpenHands 结果）分离。
+与 `experiments/`（OpenHands leaderboard 与可选 runtime ablation）分离。
 
 ```text
 evidence/

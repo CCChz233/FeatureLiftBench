@@ -1,12 +1,12 @@
 # experiments/
 
-> **Documentation status: reference · Last verified: 2026-08-18**
+> **Documentation status: reference · Last verified: 2026-08-21**
 
 原始模型运行和验证证据只进入以下七个目录：
 
 | Directory | Purpose |
 | --- | --- |
-| `python/` | Python OpenHands leaderboard 和历史正式 runs |
+| `python/` | OpenHands leaderboard（`openhands/`）与可选 runtime ablation（`runtime/`；不是 Main） |
 | `GO/` | Go calibration runs |
 | `smoke/` | 临时 smoke/debug，不进入论文主表 |
 | `methods/` | 方法 pilot、历史 ablation 和负结果 |
@@ -20,6 +20,15 @@ Python-200 当前状态见 [`docs/STATUS.md`](../docs/STATUS.md)，正式实验�
 ```text
 experiments/python/openhands/<model>/<run-id>/
 ```
+
+可选 runtime ablation 写入：
+
+```text
+experiments/python/runtime/<adapter>/<model>/<run-id>/
+```
+
+不得把该目录并入 OpenHands Python-200 主表。规范见
+[`docs/METHOD_AGENT_RUNTIME.md`](../docs/METHOD_AGENT_RUNTIME.md)。
 
 正式 ablation 也应使用标准 suite 布局，并在 suite/run metadata 中登记 arm；
 `methods/ablation/` 只保留历史方法实验。

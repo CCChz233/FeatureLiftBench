@@ -1,6 +1,6 @@
 # FeatureLiftBench Reports
 
-> **Status: reference index · Last verified: 2026-08-18**
+> **Status: reference index · Last verified: 2026-08-21**
 > Current release numbers and blockers are maintained in [docs/STATUS.md](../docs/STATUS.md).
 
 `reports/` contains small, reviewable audits and derived analyses. Raw model runs belong under
@@ -30,6 +30,7 @@ registries under `artifacts/` and `benchmark/`.
 | [Current Qwen V1 vs Main](../artifacts/research_analysis/current_results/qwen_v1_vs_main_20260818.json) | Qwen3.6-35B V1-200；E50 干净切片；不是 Lite 协议 |
 | [Current DeepSeek Main vs retired Lite V1 protocol](../artifacts/research_analysis/current_results/deepseek_main_vs_lite_v1_20260817.json) | DeepSeek 方法对比；不是当前 V1 |
 | [Current V1 method spec](../docs/METHOD_V1.md) | V1 = Main + 2M cap |
+| [Agent runtime ablation](../docs/METHOD_AGENT_RUNTIME.md) | DeepSeek Harness / Codex；不是 Official Main；尚无正式分数 |
 | [Paper analysis index](paper_analysis/README.md) | 历史 mixed-snapshot 分析已不在树中 |
 
 Only results classified in [docs/STATUS.md](../docs/STATUS.md) may enter current paper tables.

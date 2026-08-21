@@ -100,6 +100,25 @@ def _finalize_citations(
     return result
 
 
+def coerce_confidence(value: Any, *, default: float = 0.5) -> float:
+    """Coerce Agent confidence to a float in [0, 1]."""
+
+    if isinstance(value, bool):
+        return default
+    if isinstance(value, (int, float)):
+        return max(0.0, min(1.0, float(value)))
+    if isinstance(value, str):
+        stripped = value.strip().rstrip("%")
+        try:
+            parsed = float(stripped)
+        except ValueError:
+            return default
+        if parsed > 1.0 and parsed <= 100.0:
+            parsed = parsed / 100.0
+        return max(0.0, min(1.0, parsed))
+    return default
+
+
 def finalize_proposed_record(
     proposal: Mapping[str, Any],
     *,
@@ -116,7 +135,7 @@ def finalize_proposed_record(
         "nodeid": str(proposal.get("nodeid") or ""),
         "agent_id": agent_id,
         "verdict": str(proposal.get("verdict") or "").lower(),
-        "confidence": proposal.get("confidence"),
+        "confidence": coerce_confidence(proposal.get("confidence")),
         "public_obligation_ids": [str(value) for value in obligations],
         "evidence": _finalize_citations(root, proposal.get("evidence") or []),
         "counterevidence": _finalize_citations(

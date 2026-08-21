@@ -20,7 +20,9 @@ from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_adapters import get_agent_adapter
 from featureliftbench.agent_config import load_agent_run_config
+from featureliftbench.agentic_evidence.citation_validator import build_citation
 from featureliftbench.agentic_evidence.citation_validator import validate_citation
+from featureliftbench.agentic_evidence.direct_auditor import coerce_confidence
 from featureliftbench.agentic_evidence.prompts import auditor_prompt
 from featureliftbench.agentic_evidence.schema import validate_audit_record
 
@@ -44,6 +46,51 @@ def _tree_digest(root: Path) -> str:
     return digest.hexdigest()
 
 
+def _repair_citations(
+    workspace: Path,
+    values: Any,
+) -> list[dict[str, Any]]:
+    if not isinstance(values, list):
+        return []
+    repaired: list[dict[str, Any]] = []
+    for value in values:
+        if not isinstance(value, dict):
+            continue
+        try:
+            path = str(value.get("path") or "")
+            kind = str(value.get("kind") or "")
+            if path == "TASK.md":
+                kind = "task"
+            elif path == "metadata.json":
+                kind = "public_spec"
+            elif path.startswith("repo/"):
+                kind = "repository"
+            repaired.append(
+                build_citation(
+                    workspace,
+                    path=path,
+                    kind=kind,
+                    start_line=int(value["start_line"]),
+                    end_line=int(value["end_line"]),
+                    claim=str(value.get("claim") or ""),
+                    clamp=True,
+                )
+            )
+        except (KeyError, TypeError, ValueError, OSError, UnicodeError):
+            repaired.append(value)
+    return repaired
+
+
+def _repair_record(record: dict[str, Any], *, workspace: Path) -> dict[str, Any]:
+    fixed = dict(record)
+    fixed["confidence"] = coerce_confidence(fixed.get("confidence"))
+    fixed["evidence"] = _repair_citations(workspace, fixed.get("evidence") or [])
+    fixed["counterevidence"] = _repair_citations(
+        workspace, fixed.get("counterevidence") or []
+    )
+    return fixed
+
+
 def _validate_record(
     record_path: Path,
     *,
@@ -57,22 +104,48 @@ def _validate_record(
         record = json.loads(record_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         return None, [f"invalid audit_record.json: {exc}"]
+    if not isinstance(record, dict):
+        return None, ["audit_record.json must be an object"]
+    record = _repair_record(record, workspace=workspace)
     errors = validate_audit_record(record)
-    if isinstance(record, dict):
-        if record.get("task_id") != case_id:
-            errors.append(
-                f"task_id mismatch: expected {case_id!r}, got {record.get('task_id')!r}"
-            )
-        if record.get("agent_id") != agent_id:
-            errors.append(
-                f"agent_id mismatch: expected {agent_id!r}, got {record.get('agent_id')!r}"
-            )
-        for citation in (record.get("evidence") or []) + (
-            record.get("counterevidence") or []
-        ):
-            for error in validate_citation(workspace, citation):
-                errors.append(f"citation: {error}")
-    return record if isinstance(record, dict) else None, sorted(set(errors))
+    expected_task_id = case_id
+    expected_nodeid: str | None = None
+    packet_path = workspace / "audit_packet.json"
+    if packet_path.is_file():
+        try:
+            packet = json.loads(packet_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            packet = None
+        if isinstance(packet, dict):
+            if packet.get("task_id"):
+                expected_task_id = str(packet["task_id"])
+            if packet.get("nodeid"):
+                expected_nodeid = str(packet["nodeid"])
+    if record.get("task_id") not in {case_id, expected_task_id}:
+        errors.append(
+            f"task_id mismatch: expected {expected_task_id!r} or {case_id!r}, "
+            f"got {record.get('task_id')!r}"
+        )
+    if record.get("agent_id") != agent_id:
+        errors.append(
+            f"agent_id mismatch: expected {agent_id!r}, got {record.get('agent_id')!r}"
+        )
+    if expected_nodeid is not None and record.get("nodeid") != expected_nodeid:
+        errors.append(
+            f"nodeid mismatch: expected {expected_nodeid!r}, "
+            f"got {record.get('nodeid')!r}"
+        )
+    for citation in (record.get("evidence") or []) + (
+        record.get("counterevidence") or []
+    ):
+        for error in validate_citation(workspace, citation):
+            errors.append(f"citation: {error}")
+    if not errors:
+        record_path.write_text(
+            json.dumps(record, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    return record, sorted(set(errors))
 
 
 def _parser() -> argparse.ArgumentParser:

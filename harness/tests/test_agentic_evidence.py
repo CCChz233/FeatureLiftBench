@@ -9,6 +9,8 @@ from featureliftbench.agentic_evidence import AUDIT_RECORD_SCHEMA
 from featureliftbench.agentic_evidence import EVIDENCE_PACK_SCHEMA
 from featureliftbench.agentic_evidence import adjudicate_records
 from featureliftbench.agentic_evidence import build_citation
+from featureliftbench.agentic_evidence import clamp_line_range
+from featureliftbench.agentic_evidence import coerce_confidence
 from featureliftbench.agentic_evidence import generate_canary_suite
 from featureliftbench.agentic_evidence import validate_audit_record
 from featureliftbench.agentic_evidence import validate_citation
@@ -305,6 +307,51 @@ class AgenticEvidenceTests(unittest.TestCase):
         for source, expected in _EXAMPLES:
             self.assertEqual(unicodedata.normalize("NFKC", source).casefold(), expected)
             self.assertNotEqual(source.lower(), expected)
+
+    def test_clamp_line_range_repairs_overshoot(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "sample.py"
+            path.write_text("a\nb\nc\n", encoding="utf-8")
+            self.assertEqual(clamp_line_range(path, 1, 5), (1, 3))
+            self.assertEqual(clamp_line_range(path, 4, 6), (3, 3))
+            task = _task(Path(tmp) / "task_root")
+            citation = build_citation(
+                task,
+                path="repo/pkg/normalize.py",
+                kind="repository",
+                start_line=1,
+                end_line=99,
+                claim="clamped repository excerpt",
+            )
+            line_count = len(
+                (task / "repo/pkg/normalize.py").read_text(encoding="utf-8").splitlines()
+            )
+            self.assertEqual(citation["end_line"], line_count)
+            self.assertEqual(validate_citation(task, citation), [])
+
+    def test_coerce_confidence_accepts_strings_and_percentages(self) -> None:
+        self.assertEqual(coerce_confidence(0.9), 0.9)
+        self.assertEqual(coerce_confidence("0.75"), 0.75)
+        self.assertEqual(coerce_confidence("80%"), 0.8)
+        self.assertEqual(coerce_confidence("high"), 0.5)
+        self.assertEqual(coerce_confidence(True), 0.5)
+        with tempfile.TemporaryDirectory() as tmp:
+            record = finalize_proposed_record(
+                {
+                    "task_id": "demo",
+                    "nodeid": "t",
+                    "verdict": "underdetermined",
+                    "confidence": "medium",
+                    "public_obligation_ids": [],
+                    "evidence": [],
+                    "counterevidence": [],
+                    "abstain_reason": "",
+                },
+                task_dir=_task(Path(tmp)),
+                agent_id="a",
+            )
+            self.assertEqual(record["confidence"], 0.5)
+            self.assertEqual(validate_audit_record(record), [])
 
 
 if __name__ == "__main__":

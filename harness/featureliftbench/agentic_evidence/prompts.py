@@ -67,5 +67,32 @@ Required shape:
 
 Do not read any parent directory. Do not use or mention Hidden tests, evaluator
 files, private manifests, expected labels, reports, or prior audit outputs.
-Finish only after the JSON file exists.
+
+Before finishing you MUST create the JSON file with a shell command such as:
+
+```bash
+python - <<'PY'
+from pathlib import Path
+import json, os
+record = {
+  "schema_version": "featureliftbench.agentic_evidence.audit_record.v1",
+  "task_id": "...",
+  "nodeid": "...",
+  "agent_id": "...",
+  "verdict": "explicit",
+  "confidence": 0.9,
+  "public_obligation_ids": [],
+  "evidence": [],
+  "counterevidence": [],
+  "abstain_reason": ""
+}
+path = Path(os.environ["FEATURELIFTBENCH_AGENT_OUTPUT_DIR"]) / "audit_record.json"
+path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+print(path)
+PY
+```
+
+Finish only after that file exists and
+`python -m featureliftbench.agentic_evidence.cli validate-record \"$FEATURELIFTBENCH_AGENT_OUTPUT_DIR/audit_record.json\" --task-dir .`
+reports `valid`.
 """

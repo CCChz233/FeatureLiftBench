@@ -24,6 +24,34 @@ def citation_digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def clamp_line_range(
+    path: str | Path,
+    start_line: int,
+    end_line: int,
+) -> tuple[int, int]:
+    """Clamp a 1-indexed inclusive line range to the file length.
+
+    Agents often overshoot the last line by one or two. Clamping keeps the
+    citation usable while still failing empty or inverted ranges.
+    """
+
+    resolved = Path(path)
+    line_count = len(
+        resolved.read_text(encoding="utf-8", errors="strict").splitlines()
+    )
+    if line_count < 1:
+        raise ValueError(f"citation file is empty: {resolved}")
+    if not isinstance(start_line, int) or isinstance(start_line, bool) or start_line < 1:
+        raise ValueError("start_line must be a positive integer")
+    if not isinstance(end_line, int) or isinstance(end_line, bool) or end_line < 1:
+        raise ValueError("end_line must be a positive integer")
+    start = min(start_line, line_count)
+    end = min(max(end_line, start), line_count)
+    if end < start:
+        raise ValueError(f"line range {start}-{end} is empty after clamping")
+    return start, end
+
+
 def _resolve_path(task_dir: Path, relative: str, kind: str) -> Path:
     normalized = Path(relative)
     if normalized.is_absolute() or ".." in normalized.parts:
@@ -58,9 +86,12 @@ def build_citation(
     start_line: int,
     end_line: int,
     claim: str,
+    clamp: bool = True,
 ) -> dict[str, Any]:
     root = Path(task_dir)
     resolved = _resolve_path(root, path, kind)
+    if clamp:
+        start_line, end_line = clamp_line_range(resolved, start_line, end_line)
     excerpt = _excerpt(resolved, start_line, end_line)
     return {
         "path": path,

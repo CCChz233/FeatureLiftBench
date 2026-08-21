@@ -15,10 +15,22 @@ if str(_REPO / "harness") not in sys.path:
 
 from featureliftbench.agent_adapters import AgentRunConfig
 from featureliftbench.agent_config import load_agent_run_config
+from featureliftbench.agentic_evidence.direct_auditor import coerce_confidence
 from featureliftbench.agentic_evidence.direct_auditor import finalize_proposed_record
 from featureliftbench.agentic_evidence.direct_auditor import parse_json_response
 from featureliftbench.agentic_evidence.direct_auditor import render_case_prompt
 from featureliftbench.agentic_evidence.schema import validate_audit_record
+
+
+def _normalize_openai_model(model: str) -> str:
+    """Strip LiteLLM-style provider prefixes for raw OpenAI-compatible APIs."""
+
+    if "/" not in model:
+        return model
+    provider, name = model.split("/", 1)
+    if provider in {"deepseek", "openai", "hosted_vllm"}:
+        return name
+    return model
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -32,7 +44,13 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--agent-id")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--max-output-tokens", type=int, default=8000)
+    parser.add_argument("--max-output-tokens", type=int, default=16384)
+    parser.add_argument(
+        "--retry-max-output-tokens",
+        type=int,
+        default=32768,
+        help="Second-pass max tokens when the first response truncates or fails JSON.",
+    )
     return parser
 
 
@@ -45,6 +63,81 @@ def _usage_payload(response: Any) -> dict[str, Any]:
         "completion_tokens": getattr(usage, "completion_tokens", None),
         "total_tokens": getattr(usage, "total_tokens", None),
     }
+
+
+def _merge_usage(left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
+    if not left:
+        return dict(right)
+    if not right:
+        return dict(left)
+    merged: dict[str, Any] = {}
+    for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        a = left.get(key)
+        b = right.get(key)
+        if isinstance(a, int) and isinstance(b, int):
+            merged[key] = a + b
+        elif isinstance(b, int):
+            merged[key] = b
+        elif isinstance(a, int):
+            merged[key] = a
+    return merged
+
+
+def _looks_truncated(raw: str, usage: dict[str, Any], max_tokens: int) -> bool:
+    completion = usage.get("completion_tokens")
+    if isinstance(completion, int) and completion >= max(1, max_tokens - 8):
+        return True
+    stripped = raw.strip()
+    if not stripped:
+        return False
+    try:
+        parse_json_response(raw)
+    except (json.JSONDecodeError, ValueError):
+        return True
+    return False
+
+
+def _call_once(
+    client: Any,
+    *,
+    model: str,
+    prompt: str,
+    max_tokens: int,
+    case_dir: Path,
+    case_id: str,
+    agent_id: str,
+) -> tuple[dict[str, Any] | None, list[str], str, dict[str, Any]]:
+    errors: list[str] = []
+    record: dict[str, Any] | None = None
+    raw = ""
+    usage: dict[str, Any] = {}
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=max_tokens,
+        )
+        message = response.choices[0].message
+        raw = message.content or getattr(message, "reasoning_content", None) or ""
+        usage = _usage_payload(response)
+        proposal = parse_json_response(raw)
+        record = finalize_proposed_record(
+            proposal,
+            task_dir=case_dir,
+            agent_id=agent_id,
+        )
+        errors.extend(validate_audit_record(record))
+        packet = json.loads(
+            (case_dir / "audit_packet.json").read_text(encoding="utf-8")
+        )
+        if record.get("task_id") != case_id:
+            errors.append("record task_id does not match case directory")
+        if record.get("nodeid") != packet.get("nodeid"):
+            errors.append("record nodeid does not match audit packet")
+    except Exception as exc:  # API/provider failures are recorded per case.
+        errors.append(f"{type(exc).__name__}: {exc}")
+    return record, errors, raw, usage
 
 
 def main() -> int:
@@ -70,7 +163,7 @@ def main() -> int:
     env = loaded.run_config.env or {}
     api_key = env.get("OPENAI_API_KEY") or env.get("FEATURELIFTBENCH_API_KEY")
     api_base = env.get("OPENAI_BASE_URL") or env.get("FEATURELIFTBENCH_API_BASE")
-    model = loaded.run_config.model
+    model = _normalize_openai_model(str(loaded.run_config.model or ""))
     if not api_key or not api_base or not model:
         print("selected profile must resolve API key, API base, and model", file=sys.stderr)
         return 2
@@ -96,36 +189,31 @@ def main() -> int:
                 continue
         case_output.mkdir(parents=True, exist_ok=True)
         prompt = render_case_prompt(case_dir, agent_id=agent_id)
-        errors: list[str] = []
-        record: dict[str, Any] | None = None
-        raw = ""
-        usage: dict[str, Any] = {}
-        try:
-            response = client.chat.completions.create(
+        record, errors, raw, usage = _call_once(
+            client,
+            model=model,
+            prompt=prompt,
+            max_tokens=args.max_output_tokens,
+            case_dir=case_dir,
+            case_id=case_id,
+            agent_id=agent_id,
+        )
+        retried = False
+        if errors and _looks_truncated(raw, usage, args.max_output_tokens):
+            retried = True
+            retry_record, retry_errors, retry_raw, retry_usage = _call_once(
+                client,
                 model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0,
-                max_tokens=args.max_output_tokens,
-            )
-            message = response.choices[0].message
-            raw = message.content or getattr(message, "reasoning_content", None) or ""
-            usage = _usage_payload(response)
-            proposal = parse_json_response(raw)
-            record = finalize_proposed_record(
-                proposal,
-                task_dir=case_dir,
+                prompt=prompt,
+                max_tokens=args.retry_max_output_tokens,
+                case_dir=case_dir,
+                case_id=case_id,
                 agent_id=agent_id,
             )
-            errors.extend(validate_audit_record(record))
-            packet = json.loads(
-                (case_dir / "audit_packet.json").read_text(encoding="utf-8")
-            )
-            if record.get("task_id") != case_id:
-                errors.append("record task_id does not match case directory")
-            if record.get("nodeid") != packet.get("nodeid"):
-                errors.append("record nodeid does not match audit packet")
-        except Exception as exc:  # API/provider failures are recorded per case.
-            errors.append(f"{type(exc).__name__}: {exc}")
+            usage = _merge_usage(usage, retry_usage)
+            raw = retry_raw
+            record = retry_record
+            errors = retry_errors
         (case_output / "raw_response.txt").write_text(raw, encoding="utf-8")
         if record is not None:
             (case_output / "audit_record.json").write_text(
@@ -141,6 +229,7 @@ def main() -> int:
             "errors": sorted(set(errors)),
             "record_verdict": record.get("verdict") if record else None,
             "usage": usage,
+            "retried_on_truncation": retried,
         }
         validation_path.write_text(
             json.dumps(validation, indent=2, sort_keys=True) + "\n",
@@ -150,6 +239,7 @@ def main() -> int:
         print(
             f"{case_id}: {'valid' if validation['valid'] else 'invalid'} "
             f"verdict={validation['record_verdict']}"
+            + (" (retried)" if retried else "")
         )
     summary = {
         "schema_version": "featureliftbench.agentic_evidence.direct_canary_run.v1",

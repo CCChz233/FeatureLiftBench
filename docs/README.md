@@ -16,6 +16,7 @@
 | 看 pre-submit explicit-contract audit | [METHOD_PRE_SUBMIT_AUDIT.md](METHOD_PRE_SUBMIT_AUDIT.md) |
 | 看 RQ6 Public-feedback 信息消融 | [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
 | 看 Hidden 合同出处审计（进行中） | [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md) |
+| 用 Agent 自动校准/审计 Hidden 行为的 repository recoverability | [AGENTIC_EVIDENCE_AUDIT.md](AGENTIC_EVIDENCE_AUDIT.md) |
 | 看方法结论：V1 cost tax、旧 Lite、已停脚手架、RQ6 | [FINDINGS.md](FINDINGS.md) |
 | 离线拆已有轨迹的 token 尾巴（不是新方法） | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
 | 组会投屏：跨模型 Main / 方法对比 / 失败阶段 / 题集 / 案例 | [汇报_Python200跨模型Main.md](汇报_Python200跨模型Main.md) · [汇报_实验结果表.md](汇报_实验结果表.md) · [汇报_失败原因.md](汇报_失败原因.md) · [汇报_题集构成.md](汇报_题集构成.md) · [汇报_Agent瓶颈案例.md](汇报_Agent瓶颈案例.md) |

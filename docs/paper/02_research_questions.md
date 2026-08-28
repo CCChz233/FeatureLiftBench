@@ -1,6 +1,6 @@
 # Research Questions
 
-> **Documentation status: current · Last verified: 2026-08-21**
+> **Documentation status: current · Last verified: 2026-08-28**
 
 ## RQ1 — Functional capability
 
@@ -111,18 +111,20 @@ into the OpenHands Python-200 Main table.
 
 ## Evidence order
 
-1. 跨模型 Python-200 Main 已出（见 [STATUS.md](../STATUS.md)）。
-2. DeepSeek Python-200 上报告 RQ1–RQ4（Main vs 已退役 Lite V1 协议）。
-3. Cost arm：**Qwen3.6-35B V1-200 已完成**（55/200）；Flash 全量 V1 未跑，Core-12
-   诊断已表明 cap 税。见 [FINDINGS.md](../FINDINGS.md)。已有 Main 轨迹上的
+1. 论文主表是 Python-200'（150+Hard-50），**尚未出分**。旧跨模型 Python-200
+   （150+E50，21.5%–72.5%）见 [STATUS.md](../STATUS.md)，只作 superseded 对照。
+2. DeepSeek 旧 Python-200 上可报告 RQ1–RQ4 机制（Main vs 已退役 Lite V1），换套件后
+   主表数字要重跑。
+3. Cost arm：**Qwen3.6-35B V1-200 已完成**（55/200，旧套件）；Flash 全量 V1 未跑，
+   Core-12 诊断已表明 cap 税。见 [FINDINGS.md](../FINDINGS.md)。已有 Main 轨迹上的
    \(T^\*\) 成本切片见 [03_results_token_utility.md](03_results_token_utility.md)。
 4. RQ6：Flash-12 Public-feedback 同日成对已齐（Main 0/12 → 4/12）。机制稿
    [04_results_rq6.md](04_results_rq6.md)。Entrypoint-Hint 等其余臂未跑。
-   数字不进 Python-200 主表。
+   数字不进主表。
 5. 不再开新方法臂，也不再从 token 尾巴写 early-stopping。历史脚手架负结果只作
-   RQ4，见 [archive/methods/](../archive/methods/README.md)。
+   RQ4，见 [archive/methods/](../archive/methods/README.md)。不要单列 ADE。
 6. Optional DeepSeek Harness / Codex runtime ablation 只有基础设施，没有正式
-   分数；不进 Python-200 主表。见
+   分数；不进主表。见
    [METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)。
 
 Current evidence and gaps: [STATUS.md](../STATUS.md)。

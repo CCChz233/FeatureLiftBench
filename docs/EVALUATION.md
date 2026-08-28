@@ -42,7 +42,7 @@ agent、evaluator、image、attempt policy 与其余 Main 条件不变。
 | Agent | `deepseek-harness` 或 `codex`，记录 pin tag + commit |
 | Source / hints / tests / prompt / attempts | 与 Official Main 相同 |
 | Evaluator | isolated eval Docker，`functional_gate` + RRES |
-| Execution | 默认 host PATH + eval Docker；stock OpenHands agent 镜像不含 `dsh`/`codex` |
+| Execution | 默认 host CLI + eval Docker；agent 镜像可用 `FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1` 装入 `dsh`/`codex` |
 | Slice | 先 Core-12，与同日 OpenHands+Flash Main 成对 |
 | Reporting | 独立 runtime 表；**不得并入** 5-model OpenHands Python-200 主表 |
 
@@ -68,7 +68,7 @@ Entrypoint-Hint / Pruned-Context / Short-prompt 尚未跑，不要与本臂叠�
 
 1. 校验 suite selection、freeze 和 canonical source mapping。
 2. 物化完整 pinned source，构造 No-Hint workspace；Official Main 在 agent Docker
-   中运行一次。Runtime ablation 默认在 host PATH 上运行钉住的 `dsh`/`codex`，
+   中运行一次。Runtime ablation 默认使用 `./setup.sh` 安装的 host `dsh`/`codex`，
    evaluator 仍进隔离 Docker。
 3. 只收集 `submission/`，不把原仓库加入 runtime `PYTHONPATH`。
 4. 在 source-free evaluator capsule 中运行 build、public、hidden 和 isolation gates；

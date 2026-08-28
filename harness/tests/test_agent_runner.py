@@ -12,6 +12,7 @@ from unittest import mock
 from featureliftbench import featurelift_agent
 from featureliftbench import openhands_runner
 from featureliftbench.agent_adapters import AgentRunConfig
+from featureliftbench.agent_adapters import AgentAdapter
 from featureliftbench.agent_adapters import AgentCommandResult
 from featureliftbench.agent_adapters import AgentRunContext
 from featureliftbench.agent_adapters import FeatureLiftAgentAdapter
@@ -38,6 +39,45 @@ from featureliftbench.repo_graph.runtime import initialize_repo_graph
 
 
 class AgentRunnerTests(unittest.TestCase):
+    def test_adapter_stops_after_completion_artifact_is_detected(self) -> None:
+        class SleepingWriterAdapter(AgentAdapter):
+            def build_command(self, context, config):
+                del config
+                marker = context.agent_output_dir / "done.json"
+                script = (
+                    "from pathlib import Path; import time; "
+                    f"Path({str(marker)!r}).write_text('done'); time.sleep(30)"
+                )
+                return [sys.executable, "-c", script]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            output = root / "agent"
+            workspace.mkdir()
+            output.mkdir()
+            marker = output / "done.json"
+            context = AgentRunContext(
+                workspace_dir=workspace,
+                task_file=workspace / "TASK.md",
+                submission_dir=workspace / "submission",
+                agent_output_dir=output,
+                task_text="write marker",
+            )
+
+            result = SleepingWriterAdapter().run(
+                context,
+                AgentRunConfig(timeout_seconds=10),
+                completion_check=lambda: marker.read_text() == "done"
+                if marker.is_file()
+                else False,
+            )
+
+            self.assertTrue(result.passed)
+            self.assertTrue(result.completion_detected)
+            self.assertFalse(result.timed_out)
+            self.assertLess(result.duration_seconds, 5)
+
     def test_progress_broken_pipe_does_not_fail_task(self) -> None:
         with mock.patch("builtins.print", side_effect=BrokenPipeError):
             _progress(True, "detached progress")
@@ -1869,6 +1909,8 @@ class AgentRunnerTests(unittest.TestCase):
                 model="openai/example",
                 config="mini.yaml",
                 yolo=True,
+                step_limit=24,
+                extra_args=("--final-prompt", "write the record now"),
             )
 
             command = adapter.build_command(context, config)
@@ -1885,8 +1927,43 @@ class AgentRunnerTests(unittest.TestCase):
             self.assertIn("--config", command)
             self.assertIn("mini.yaml", command)
             self.assertIn("--yolo", command)
+            self.assertIn("--step-limit", command)
+            self.assertIn("24", command)
+            self.assertIn("--final-prompt", command)
+            self.assertIn("write the record now", command)
             self.assertIn("@TASK.md", report_command)
             self.assertNotIn("Solve this task", report_command)
+
+    def test_mini_adapter_uses_agent_environment_python(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bin_dir = root / "miniswe" / "bin"
+            bin_dir.mkdir(parents=True)
+            mini = bin_dir / "mini"
+            python = bin_dir / "python"
+            mini.write_text("#!/bin/sh\n", encoding="utf-8")
+            python.write_text("#!/bin/sh\n", encoding="utf-8")
+            mini.chmod(0o755)
+            python.chmod(0o755)
+            context = AgentRunContext(
+                workspace_dir=root / "workspace",
+                task_file=root / "workspace" / "TASK.md",
+                submission_dir=root / "workspace" / "submission",
+                agent_output_dir=root / "agent",
+                task_text="Audit this task",
+            )
+            config = AgentRunConfig(
+                agent="mini-swe-agent",
+                agent_bin=str(mini),
+                model="openai/example",
+            )
+
+            command = MiniSweAgentAdapter().build_command(context, config)
+
+            self.assertEqual(command[0], str(python))
+            self.assertEqual(
+                command[1:3], ["-m", "featureliftbench.mini_live_runner"]
+            )
 
     def test_featurelift_agent_adapter_builds_expected_command(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

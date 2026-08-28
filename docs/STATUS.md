@@ -1,26 +1,73 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-08-21**
+> **Status: current · Last verified: 2026-08-28**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
-## Release
+## Paper main suite（Python-200'）
 
-当前可运行 release 为 **Python-200 Full-Repository / No-Hint Main**：冻结的
-Python-150 baseline 与独立冻结的 balanced External-50 组成统一 task root。
+论文主套件是 **冻结 Python-150 + Hard-50**，不是 150 + External-50。
+Hard-50 **不得**写入 `benchmark/tasks/`。旧 E50 实体与历史分数保留，只作旁路。
 
 | Item | Current value |
 | --- | --- |
+| Suite | `python200-hard-full-repository-no-hint-unreleased` |
+| Task count | 200（150 + 50） |
+| Repositories / snapshots | 176 / 182 |
+| Baseline freeze | `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd` |
+| Hard-50 selection | `hard50-expansion-20260827-v1-reviewed` |
+| Hard-50 release tree | `6b1cac758212…`（全哈希见 suite JSON） |
+| Unified task root | `benchmark/python200_hard_tasks/` |
+| Unified source registry | `benchmark/sources/python200_hard_registry.json` |
+| Hard-50 packages | `benchmark/hard50/`（无 `reference_solution/`） |
+| Paper table | **未出分**。不得把本 suite 写成已冻结主表。 |
+
+权威组合清单：
+[`benchmark/selection/python200_hard_suite.json`](../benchmark/selection/python200_hard_suite.json)。
+计划：[PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。
+题集口径：[汇报_题集构成.md](汇报_题集构成.md)。
+
+Hard-50 Flash 校准（functional_gate，不是 suite `status`）：
+
+- Pilot 10：**4/10 = 40%**（换题后）
+- 余 40：**25/40 = 62.5%**
+- 6 道 copy-heavy 换题：**6/6** 功能过，通过解 RRES 约 0.10–0.72
+- **合计 29/50 = 58%**（目标带 40%–65%）
+
+整套 200 Flash **未跑**。`run_python200_paper.sh` 仍指向旧 150+E50，且会跑
+150 freeze check。新主表入口：
+
+```bash
+./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main \
+  --output experiments/<run-id> --docker --workers 1 --timeout 3600
+```
+
+等价写法：`--arm` 是 `--method` 的别名；也可显式传
+`--tasks-root benchmark/python200_hard_tasks` 与
+`--source-registry benchmark/sources/python200_hard_registry.json`。
+
+工作区 `benchmark/tasks/` 相对 freeze artifact 有预先存在的 drift（约
+95/150 unchanged），**不是** Hard-50 造成的，不要 revert。论文 150 分应对
+freeze artifact，不要把脏工作树上的 150 分写成冻结主表。
+
+## Superseded suite（150 + External-50）
+
+下列 leaderboard 仍有效，但是 **旧 Python-200**
+（`python200-full-repository-no-hint-20260801-v1`）。Flash 在 External-50 上
+**90%–94%**，通过解 RRES 中位数贴 1.000。这些数字 **不得** 当作新主表，也不得
+与 Hard-50 58% 混排。
+
+| Item | Historical value |
+| --- | --- |
 | Unified suite | `python200-full-repository-no-hint-20260801-v1` |
 | Task set SHA256 | `cee22c263a3c190e8b13b0c3c70d9fabac5c6c767010e5c21220f2c8c61bfa74` |
-| Baseline freeze | `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd` |
 | External selection | `external50-expansion-20260801-v2` |
 | Unified task root | `benchmark/python200_tasks/` |
 | Unified source registry | `benchmark/sources/python200_registry.json` |
 
-权威组合清单是
+权威组合清单（旧）：
 [`benchmark/selection/python200_suite.json`](../benchmark/selection/python200_suite.json)。
-`artifacts/research_analysis/v3/current_benchmark_freeze.json` 仍是不可变的 baseline
-freeze，不把 External-50 写入旧 freeze。
+`artifacts/research_analysis/v3/current_benchmark_freeze.json` 仍是不可变的
+Python-150 freeze，不把 External-50 或 Hard-50 写入该 freeze。
 
 ## Metric Contract
 
@@ -33,11 +80,12 @@ freeze，不把 External-50 写入旧 freeze。
 completion 只是运行诊断。每道 Functional Fail 按 missing submission、build、public、
 hidden、isolation 的首败阶段分类。完整定义见 [EVALUATION.md](EVALUATION.md)。
 
-## Current Python-200 Main Leaderboard
+## Historical Python-200 Main Leaderboard（150 + External-50）
 
-条件：Full-Repository / No-Hint Main，120 步，每题一次。指标来自逐题
-`eval/result.json` 的 `functional_gate`，**不是** `summary.passed` / `run.status`。
-这不是当前 [V1 = Main+2M](METHOD_V1.md)，也不是旧 Lite V1 checker/repair 协议。
+**不是论文新主表。** 条件：旧 suite 上 Full-Repository / No-Hint Main，120 步，
+每题一次。指标来自逐题 `eval/result.json` 的 `functional_gate`，**不是**
+`summary.passed` / `run.status`。这不是当前 [V1 = Main+2M](METHOD_V1.md)，也不是
+旧 Lite V1 checker/repair 协议。新主表见上文 Paper main suite。
 
 | 模型 | 端点 | Functional Pass | Pass Rate | Wilson 95% |
 | --- | --- | ---: | ---: | --- |
@@ -124,22 +172,24 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 
 ## Readiness
 
-最近一次本地无模型 preflight：
+最近一次针对 **旧 150+E50** 的本地无模型 preflight（2026-08-21 口径）：
 
 - release materialization：150 frozen + 50 external；
 - External source mapping：50/50 ready；
 - dependency closure：50/50 current；
 - balance design：PASS；
 - Python 3.11 wheel coverage：200/200；
-- baseline freeze：150/150 unchanged；
+- baseline freeze：当时记录 150/150 unchanged（**当前工作树已 drift，约 95/150**）；
 - runnable task compliance：200/200。
 
-服务器正式运行仍必须执行 Docker strict preflight，并记录 agent/evaluator image identity。
+Hard-50 / Python-200' 工程门：50 题 release、无 oracle、symlink 200/200 无断链、
+registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 strict preflight，
+并记录 agent/evaluator image identity。**不要**用 `run_python200_paper.sh` 跑新主表。
 
 ## Historical Evidence
 
-旧 Python-150 跨模型 Main 数字已并入上表的 150 列，**不得**单独当作当前主表，
-也不得与方法对比混排：
+旧 Python-150 跨模型 Main 数字已并入 superseded 150+E50 表的 150 列，**不得**单独
+当作当前论文主表，也不得与方法对比混排：
 
 - DeepSeek V4 Flash：99/150（66.0%）；
 - Qwen3.5 122B：59/150（39.3%）；
@@ -164,7 +214,7 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 | RQ6 Public-feedback Flash-12 | 同日 Main 0/12 → PF **4/12**；public 6/6 救回；Hidden 多数不动 | [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
 | Spec-adversarial Hidden-4 | 同日 Main 0/4 → SA 0/4；Hidden 0→1 **0/4** → **Kill** | [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md) |
 | Best-so-far checkpoint 离线 | Flash 失败 51 题全量独特树 Functional 0→1 = **0/51** → **Kill** | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
-| DeepSeek Harness / Codex runtime | adapter + pin 已落地，尚无 Core-12 分数 | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
+| DeepSeek Harness / Codex runtime | `./setup.sh` 安装 CLI，尚无 Core-12 分数 | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
 
 12 题通过率不能换算成 Python-200。RQ6 / Spec-adversarial / runtime ablation
 数字不进 Python-200 主表。
@@ -178,15 +228,23 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 
 ## Current Evidence Gaps
 
+0. **Python-200' 主表未出。** Hard-50 已 release 且 Flash 校准 29/50=58%；整套
+   200 Flash 未跑。150 工作树相对 freeze 有 drift。分析层已合并：
+   `artifacts/research_analysis/python200_hard_task_taxonomy.csv`（200 行，
+   `python200_hard_v1`）。旧 150+E50 的 21.5%–72.5% **不是** 新主表。
 1. RQ6 Public-feedback Flash-12 同日成对已齐：Main 0/12 → PF 4/12。Entrypoint-Hint
    未跑。见 [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 2. Spec-adversarial Hidden-4 已 Kill（Hidden 0→1 = 0/4）。不要扩面。见
    [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md)。
-3. Hidden provenance Flash-33 初标已落盘（AI 辅助，非 gold）。人工复核
-   Underdetermined vs Recoverable 后再进论文。见
+3. Hidden provenance Flash-33 初标已落盘（AI 辅助，非 gold）。下一步按
+   [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md) 做双 Agent
+   consensus；冲突和无法证明的 obligation 保持 abstain 后再做敏感性分析。见
    [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
 4. DeepSeek API 全量 V1-200 未跑；不是 blocker，Flash Core-12 已表明 cap 税。
-5. Python-200 RRES 中位数贴 1.000；紧凑度应拆 Python-150 与 External-50，并报 copy 比例。
+5. 旧 Python-200（150+E50）RRES 中位数贴 1.000，主要来自 E50 copy-heavy。新主表
+   紧凑度应拆 Python-150 与 Hard-50，并报 copy 比例。E50 只作旁路对照。独立升格
+   计划见 [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
+   （不并进 150，也不进新主表）。
 6. 跨模型没有成对 RRES；不得用无配对中位数比较紧凑度。
 7. 论文主表前仍需确认 evaluator image 和 context-window 实验资格。
 8. Token utility 金标与分层已写入论文 RQ3/RQ5 稿
@@ -200,9 +258,14 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
 
 ## Next Actions
 
+0. **论文主套件。** 分析层已合并（`python200_hard_task_taxonomy.csv`）。下一步在
+   **干净 freeze checkout** 上跑 Python-200' Flash；不要在脏 150 工作树上写冻结
+   主表。旧 150+E50 分数只作 superseded 对照。
 1. **停止脚手架迭代。** 不再开 V3、behavior_probe、TFL、Rescue+、V2 扩到 200；
    Spec-adversarial 已 Kill；Best-so-far checkpoint 离线已 Kill，不要实现 Agent。
-2. 保持 Main 为默认对照和论文 RQ1；cost arm 用已完成的 Qwen V1 + Flash Core-12。
+   不要把 Active Dynamic Exploration 写成论文核心贡献。
+2. 保持 Main 为默认对照和论文 RQ1；cost arm 用已完成的 Qwen V1 + Flash Core-12
+   （数字在旧 200 上，换套件后需重标，不把 55/200 直接写成 200'）。
 3. Context-efficiency / pre-submit audit 的 Core-12 筛选已结束，**不要扩到
    Distill-24 或 Python-200**。相对 LLM summary（8/12，65.0M tokens）：recency
    与 artifact-aware 也是 8/12，但 token 升到 73.8M / 85.9M；pre-submit audit
@@ -211,14 +274,22 @@ Main 预算 120 步），不是 45+10 Frozen 信封，也不是当前 V1。
    [METHOD_PRE_SUBMIT_AUDIT.md](METHOD_PRE_SUBMIT_AUDIT.md)。
 4. RQ6 n=12 已冻结，不要扩到 Python-200。Hidden provenance Flash-33 初标已落盘
    （AI 辅助，非 gold）：Explicit 11 / Recoverable 4 / Ambiguous 0 /
-   Underdetermined 18。人工复核 Underdetermined 后再写进论文 RQ4。见
+   Underdetermined 18。按 [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md)
+   完成双 Agent consensus 和 sensitivity 后再写进论文 RQ4。见
    [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
-   可写卷宗；RRES 拆 150 / E50。不要叠 Entrypoint-Hint。数字不进 Python-200 主表。
+   可写卷宗；新主表 RRES 拆 150 / Hard-50。不要叠 Entrypoint-Hint。数字不进主表。
 5. 不要把 Rescue+、Frozen 45 步信封、V2、Core-12、RQ6 Flash-12、Spec-adversarial
-   Hidden-4，或 DeepSeek Harness / Codex runtime 通过率写进 Python-200 主表。
+   Hidden-4，或 DeepSeek Harness / Codex runtime 通过率写进论文主表。
+   旧 150+E50 的 72% 同样不进新主表。
 6. Token utility 论文稿已写（RQ3/RQ5）。不要写 stop 规则；不要把 Phase 0
    `last_write_frac` 当 utility。分析底稿 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
 7. 可选 runtime ablation（DeepSeek Harness / Codex）可在 Core-12 上与
    OpenHands+Flash 成对，见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
+8. External-50 升格（合同重写 / 反 copy / 独立 freeze）：按
+   [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
+   执行。2026-08-27 **一天做完合同升格**（50/50 validate、无模板句）；不改 Python-150、不重跑主表、不换仓。
+9. Hard-50 已在上文 Paper main suite：release 齐、Flash 58%、200 主表未跑。
+   不得把旧 E50 90%–94% 写进新主表。计划见
+   [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。
 
 运行入口见 [RUN.md](../RUN.md)，实验与结果规范见 [EVALUATION.md](EVALUATION.md)。

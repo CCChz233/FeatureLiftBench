@@ -8,6 +8,10 @@ from typing import Any, Mapping
 AUDIT_RECORD_SCHEMA = "featureliftbench.agentic_evidence.audit_record.v1"
 CONSENSUS_SCHEMA = "featureliftbench.agentic_evidence.consensus.v1"
 EVIDENCE_PACK_SCHEMA = "featureliftbench.agentic_evidence.pack.v1"
+FLASH33_CONSENSUS_LABELS_SCHEMA = (
+    "featureliftbench.hidden_provenance_labels.agent_consensus.v1"
+)
+FLASH33_AGREEMENT_SCHEMA = "featureliftbench.agentic_evidence.flash33_agreement.v1"
 
 VERDICTS = frozenset(
     {"explicit", "recoverable", "ambiguous", "underdetermined", "abstain"}

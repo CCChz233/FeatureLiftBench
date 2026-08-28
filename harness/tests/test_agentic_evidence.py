@@ -19,6 +19,7 @@ from featureliftbench.agentic_evidence.canaries import validate_canary_suite
 from featureliftbench.agentic_evidence.canaries import _EXAMPLES
 from featureliftbench.agentic_evidence.calibration import load_record_directory
 from featureliftbench.agentic_evidence.calibration import score_canary_records
+from featureliftbench.agentic_evidence.prompts import AUDITOR_FINAL_PROMPT
 from featureliftbench.agentic_evidence.prompts import auditor_prompt
 from featureliftbench.agentic_evidence.direct_auditor import finalize_proposed_record
 from featureliftbench.agentic_evidence.direct_auditor import parse_json_response
@@ -146,6 +147,28 @@ class AgenticEvidenceTests(unittest.TestCase):
             self.assertEqual(result["verdict"], "abstain")
             self.assertIn("share", result["abstain_reason"])
 
+    def test_consensus_abstains_on_two_agent_label_conflict(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = _task(Path(tmp))
+            citation = build_citation(
+                task,
+                path="repo/pkg/normalize.py",
+                kind="repository",
+                start_line=3,
+                end_line=4,
+                claim="The implementation applies NFKC and casefold.",
+            )
+
+            result = adjudicate_records(
+                [
+                    _audit("agent-a", citation, verdict="explicit"),
+                    _audit("agent-b", citation, verdict="underdetermined"),
+                ]
+            )
+
+            self.assertEqual(result["verdict"], "abstain")
+            self.assertIn("no verdict reached 2 votes", result["abstain_reason"])
+
     def test_evidence_pack_firewall_blocks_hidden_material(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             task = _task(Path(tmp))
@@ -229,6 +252,14 @@ class AgenticEvidenceTests(unittest.TestCase):
         prompt = auditor_prompt(agent_id="auditor-a")
         self.assertNotIn("private_manifest.json", prompt)
         self.assertNotIn("expected_verdict", prompt)
+        self.assertIn('"agent_id": "auditor-a"', prompt)
+        self.assertIn("record = {\n", prompt)
+        self.assertIn('json.dumps(record, indent=2) + "\\n"', prompt)
+        self.assertIn("Use at most 24 shell/tool actions", prompt)
+        self.assertIn("A valid record is terminal", prompt)
+        self.assertIn("exactly one model response", AUDITOR_FINAL_PROMPT)
+        self.assertIn("audit_record.json", AUDITOR_FINAL_PROMPT)
+        self.assertIn("complete conservative record", AUDITOR_FINAL_PROMPT)
 
     def test_record_loader_excludes_unvalidated_audits(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

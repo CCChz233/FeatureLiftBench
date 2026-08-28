@@ -1,0 +1,66 @@
+{
+  "taxonomy_version": "python200_hard_v1",
+  "task_count": 200,
+  "python150_count": 150,
+  "hard50_count": 50,
+  "copytrap_count": 5,
+  "by_suite_split": {
+    "python150": 150,
+    "hard50": 50
+  },
+  "by_paper_situation": {
+    "parse_codec": 64,
+    "plugin_registry": 38,
+    "schema_validate": 33,
+    "config_merge": 26,
+    "session_lifecycle": 22,
+    "resource_or_copytrap": 17
+  },
+  "by_feature_family_v2": {
+    "registry_plugin_dispatch": 38,
+    "parse_tokenize_decode": 37,
+    "config_resolve_discover": 26,
+    "validate_normalize_construct": 22,
+    "serialize_format_render": 19,
+    "workflow_session_orchestration": 14,
+    "resource_metadata_loading": 14,
+    "algorithm_data_structure": 11,
+    "protocol_state_transition": 11,
+    "cache_retry_policy": 8
+  },
+  "by_lift_type": {
+    "Adapted": 100,
+    "Direct": 68,
+    "Composite": 32
+  },
+  "hard50_by_feature_family_selection": {
+    "registry_plugin_dispatch": 16,
+    "workflow_session_orchestration": 9,
+    "config_resolve_discover": 8,
+    "validate_normalize_construct": 7,
+    "parse_tokenize_decode": 5,
+    "direct_tooling_copytrap": 5
+  },
+  "hard50_by_lift_type": {
+    "Adapted": 24,
+    "Composite": 14,
+    "Direct": 12
+  },
+  "python150_by_paper_situation": {
+    "parse_codec": 59,
+    "schema_validate": 26,
+    "plugin_registry": 22,
+    "config_merge": 18,
+    "session_lifecycle": 13,
+    "resource_or_copytrap": 12
+  },
+  "hard50_by_paper_situation": {
+    "plugin_registry": 16,
+    "session_lifecycle": 9,
+    "config_merge": 8,
+    "schema_validate": 7,
+    "parse_codec": 5,
+    "resource_or_copytrap": 5
+  },
+  "csv": "artifacts/research_analysis/python200_hard_task_taxonomy.csv"
+}

@@ -1,6 +1,6 @@
 # Agentic Evidence Audit
 
-> **Status: calibration foundation implemented · Last verified: 2026-08-20**
+> **Status: calibrated; Flash-33 full run pending · Last verified: 2026-08-26**
 > This is an automated provenance audit. It is not yet a coding-agent method
 > arm and does not enter the Python-200 leaderboard.
 
@@ -25,6 +25,7 @@ The current implementation provides:
 - conservative consensus requiring both label agreement and a shared citation;
 - 40 opaque, construction-labeled canaries, ten per verdict class;
 - one-Agent canary runner using the existing FeatureLiftBench AgentAdapter;
+- independent early-stop validation once a stable audit record is written;
 - optional direct structured canary runner for environments without a local
   Mini-SWE-Agent/OpenHands installation;
 - deterministic calibration scoring.
@@ -40,11 +41,11 @@ Choose a new output directory; the generator never replaces a non-empty one.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/generate_agentic_evidence_canaries.py \
-  --output artifacts/research_analysis/agentic_evidence/canaries_v1
+  --output reports/agentic_evidence/canaries_v1
 
 PYTHONPATH=harness python3.12 \
   harness/scripts/generate_agentic_evidence_canaries.py \
-  --output artifacts/research_analysis/agentic_evidence/canaries_v1 \
+  --output reports/agentic_evidence/canaries_v1 \
   --check
 ```
 
@@ -57,8 +58,8 @@ profile and a placeholder key if its client requires a non-empty value.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries.py \
-  artifacts/research_analysis/agentic_evidence/canaries_v1 \
-  artifacts/research_analysis/agentic_evidence/runs/auditor-r1 \
+  reports/agentic_evidence/canaries_v1 \
+  reports/agentic_evidence/runs/auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-auditor-r1 \
   --limit 2
@@ -71,8 +72,8 @@ require a tool-capable Agent that can search the repository.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries_direct.py \
-  artifacts/research_analysis/agentic_evidence/canaries_v1 \
-  artifacts/research_analysis/agentic_evidence/runs/direct-auditor-r1 \
+  reports/agentic_evidence/canaries_v1 \
+  reports/agentic_evidence/runs/direct-auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-direct-auditor-r1 \
   --limit 2
@@ -84,27 +85,44 @@ or schema failures are retried:
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries.py \
-  artifacts/research_analysis/agentic_evidence/canaries_v1 \
-  artifacts/research_analysis/agentic_evidence/runs/auditor-r1 \
+  reports/agentic_evidence/canaries_v1 \
+  reports/agentic_evidence/runs/auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-auditor-r1 \
   --resume
 ```
+
+The tool runner polls a newly written record until its contents are stable and
+then applies the same independent schema, identity, and citation validation used
+at finalization. A valid record terminates the Agent early. `run.json` reports
+record validity separately from normal Agent exit, early-stop completion, and
+timeout counts. Mini-SWE-Agent audits also enforce a 24-step hard limit by
+default; override it with `--max-agent-steps`, or use `0` to disable it. Use
+`--no-early-stop` only for diagnostics. The final allowed model call receives
+an audit-specific instruction to stop searching and write the complete record
+in one action. Reaching the step limit without a record is a non-zero Agent
+exit, not a normal completion.
 
 ## Score
 
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/score_agentic_evidence_canaries.py \
-  artifacts/research_analysis/agentic_evidence/canaries_v1 \
-  artifacts/research_analysis/agentic_evidence/runs/auditor-r1 \
-  --output artifacts/research_analysis/agentic_evidence/runs/auditor-r1/calibration.json
+  reports/agentic_evidence/canaries_v1 \
+  reports/agentic_evidence/runs/auditor-r1 \
+  --output reports/agentic_evidence/runs/auditor-r1/calibration.json
 ```
 
-The first gate is macro-F1, per-class precision/recall, abstention, citation
-validity, and source-tree integrity. Miner, Critic/Judge, metamorphic-transition
-scoring, Flash-33 execution, and the Hidden-blind coding-agent evidence arm are
-not implemented yet.
+The repaired 40-case synthetic freeze reached 40/40 valid and 40/40 correct.
+The Flash-33 public audit suite is materialized, but a full multi-Agent run is
+still pending. A 2026-08-26 one-case tool smoke produced a valid record but also
+showed that unconstrained searching can consume the entire 900-second budget. A
+second independent run reached its 24-step limit after creating citations but
+before writing the record; the preserved invalid run motivated fail-closed
+headless limit handling and the audit-specific final-call instruction. The
+action budget and independently validated early stop now address both failure
+modes. Miner, Critic/Judge, metamorphic-transition scoring, and the Hidden-blind
+coding-agent evidence arm are not implemented yet.
 
 ## Safety Rule
 

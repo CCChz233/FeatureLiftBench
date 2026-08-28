@@ -350,8 +350,13 @@ def build_agent_docker_invocation(
 
 
 def _container_config(config: AgentRunConfig) -> AgentRunConfig:
-    if config.agent.strip().lower().replace("_", "-") in {"mini", "mini-swe-agent", "minisweagent"}:
+    normalized = config.agent.strip().lower().replace("_", "-")
+    if normalized in {"mini", "mini-swe-agent", "minisweagent"}:
         return replace(config, agent_bin="mini")
+    if normalized in {"deepseek-harness", "deepseekharness", "dsh"}:
+        return replace(config, agent_bin="/usr/local/bin/dsh")
+    if normalized in {"codex", "codex-cli", "openai-codex"}:
+        return replace(config, agent_bin="/usr/local/bin/codex")
     return config
 
 

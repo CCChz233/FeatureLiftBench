@@ -1,0 +1,63 @@
+schema = "featureliftbench.benchmark_suites.v1"
+description = """
+Named task suites. Task packages, source registries, and freeze artifacts stay
+under benchmark/. This file only names the runnable combinations used by
+--benchmark / --suite. Python-200' (python200_hard) is the paper main suite and
+is unreleased. Do not promote Hard-50 into benchmark/tasks/.
+"""
+
+[suites.python200_hard]
+aliases = ["python200-hard", "python200_hard", "200-hard", "python200-prime"]
+tasks_root = "benchmark/python200_hard_tasks"
+source_registry = "benchmark/sources/python200_hard_registry.json"
+status = "unreleased"
+paper_main = true
+description = "Paper main suite: frozen Python-150 + Hard-50. Full Flash table not run."
+
+[suites.python150]
+aliases = ["python-150", "python150", "suite-main"]
+tasks_root = "benchmark/tasks"
+source_registry = "benchmark/sources/registry.json"
+status = "frozen"
+paper_main = false
+description = "Frozen Python-150 leaderboard root. Workspace tree may drift; paper 150 scores should use the freeze artifact."
+
+[suites.hard50]
+aliases = ["hard-50", "hard50"]
+tasks_root = "benchmark/hard50"
+source_registry = "benchmark/sources/python200_hard_registry.json"
+status = "calibration"
+paper_main = false
+description = "Hard-50 packages only (no reference_solution/). Do not copy into benchmark/tasks/."
+
+[suites.python200_legacy]
+aliases = ["python200-e50", "python200_e50", "legacy-python200"]
+tasks_root = "benchmark/python200_tasks"
+source_registry = "benchmark/sources/python200_registry.json"
+status = "superseded"
+paper_main = false
+description = "Superseded 150 + External-50. Do not report as the new paper main table."
+
+[suites.sanity]
+aliases = ["sanity"]
+tasks_root = "benchmark/sanity"
+source_registry = "benchmark/sources/registry.json"
+status = "internal"
+paper_main = false
+description = "Tiny smoke suite."
+
+[suites.staging]
+aliases = ["staging"]
+tasks_root = "benchmark/staging"
+source_registry = "benchmark/sources/external50_registry.json"
+status = "internal"
+paper_main = false
+description = "Staging / candidate tasks. Not a leaderboard."
+
+[suites.batch3_pilot]
+aliases = ["pilot", "batch3", "batch3_pilot"]
+tasks_root = "benchmark/batch3_pilot"
+source_registry = "benchmark/sources/registry.json"
+status = "internal"
+paper_main = false
+description = "Batch-3 pilot root."

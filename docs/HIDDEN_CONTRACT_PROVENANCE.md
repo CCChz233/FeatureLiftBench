@@ -1,6 +1,6 @@
 # Hidden contract provenance audit
 
-> **Status: in progress · Started: 2026-08-20**
+> **Status: in progress · Agent adjudication planned · Started: 2026-08-20**
 > 这是 RQ4 机制标注，不是新 Agent 方法。不看 Hidden 测试源码当「仓库证据」。
 > 切片：Flash Main Hidden-failure 并集 33 题。
 
@@ -49,7 +49,7 @@ Flash No-Hint Main-200 Hidden 首败并集（本地 0812 ∪ API）：
 - 数据包：`artifacts/research_analysis/hidden_provenance/flash33_packets.json`
 - 标注（**AI 初标，非 gold**）：`artifacts/research_analysis/hidden_provenance/flash33_labels.json`
 
-## 初标分布（n=33，待人工复核）
+## 初标分布（n=33，待双 Agent consensus）
 
 | 档 | n | 读法 |
 | --- | ---: | --- |
@@ -58,6 +58,6 @@ Flash No-Hint Main-200 Hidden 首败并集（本地 0812 ∪ API）：
 | Ambiguous | 0 | 初标没有「多目标打架」 |
 | Underdetermined | 18 | Hidden 观测在 spec+repo 下无法唯一确定 |
 
-初标 **Underdetermined 过半**，但容易把「没逐字写进 spec」标成这一档。论文表前必须人工复核 Underdetermined vs Recoverable，尤其是错误字符串、JSON 空格、`__all__` 黑名单。
+初标 **Underdetermined 过半**，但容易把「没逐字写进 spec」标成这一档。论文表前必须由两个独立 Agent 按同一公开输入复核 Underdetermined vs Recoverable；错误字符串、JSON 空格、`__all__` 黑名单等冲突保持 `abstain`，不强行归类。该 Agent 审计本身不是 human gold。
 
 不要把这 33 题分布写成 Qwen/OSS 结论。不要据此改 Hidden 测试。

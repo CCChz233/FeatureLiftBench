@@ -1,0 +1,326 @@
+schema = "featureliftbench.method_registry.v1"
+description = """
+Public method catalog. --arm is an alias of --method. run_agent_flags are
+passed to featureliftbench.cli run-agent. profiles maps agent registry id to
+an agents.example.toml profile. Official paper Main is method=main with
+agent=openhands. Scaffolding and screening methods stay listed so old runs
+can be reproduced; do not expand them onto Python-200'.
+"""
+
+[methods.main]
+aliases = ["main", "nopublic", "no_public", "no-public"]
+status = "official"
+paper_table = true
+docs = "docs/EVALUATION.md"
+description = "Official No-Hint Full-Repository Main."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.main.profiles]
+openhands = "openhands_deepseek_v4_flash_main"
+"deepseek-harness" = "dsh_deepseek_v4_flash_main"
+codex = "codex_deepseek_v4_flash_main"
+
+[methods.v1]
+aliases = ["v1"]
+status = "cost_arm"
+paper_table = false
+spec = "harness/config/methods/v1.json"
+docs = "docs/METHOD_V1.md"
+description = "Main plus a 2M total-token cap. Cost arm, not the unreleased Python-200' table."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.v1.profiles]
+openhands = "openhands_deepseek_v4_flash_v1"
+
+[methods.entrypoint_hint]
+aliases = ["entrypoint_hint", "entrypoint-hint", "hints"]
+status = "ablation"
+paper_table = false
+docs = "docs/EVALUATION.md"
+description = "Entrypoint-Hint information ablation."
+run_agent_flags = [
+  "--agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.entrypoint_hint.profiles]
+openhands = "openhands_deepseek_v4_flash_entrypoint_hint"
+
+[methods.public_feedback]
+aliases = ["public_feedback", "public-feedback", "public"]
+status = "ablation"
+paper_table = false
+spec = "harness/config/methods/rq6_public_feedback.json"
+docs = "docs/METHOD_RQ6_PUBLIC_FEEDBACK.md"
+description = "RQ6 Public-feedback: mount public_tests/. Hidden stays evaluator-only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.public_feedback.profiles]
+openhands = "openhands_deepseek_v4_flash_public_feedback"
+
+[methods.short_prompt]
+aliases = ["short", "short_prompt", "short-prompt"]
+status = "ablation"
+paper_table = false
+description = "Short-prompt information ablation."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "short",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.short_prompt.profiles]
+openhands = "openhands_deepseek_v4_flash_short_prompt"
+
+[methods.pruned_context]
+aliases = ["pruned", "pruned_context", "pruned-context"]
+status = "ablation"
+paper_table = false
+description = "Pruned-context information ablation. Same OpenHands Main profile as method=main."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "pruned_context",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.pruned_context.profiles]
+openhands = "openhands_deepseek_v4_flash_main"
+
+[methods.td_cognition]
+aliases = ["td", "td_cognition", "td-cognition", "cognition"]
+status = "retired"
+paper_table = false
+description = "Retired TD-cognition scaffolding. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.td_cognition.profiles]
+openhands = "openhands_deepseek_v4_flash_td_cognition"
+
+[methods.exec_contract]
+aliases = ["exec", "exec_contract", "exec-contract", "execution_contract"]
+status = "retired"
+paper_table = false
+description = "Retired exec-contract scaffolding (clean3). Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--exec-contract",
+  "--exec-contract-variant", "clean3",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.exec_contract.profiles]
+openhands = "openhands_deepseek_v4_flash_exec_contract"
+
+[methods.cgcc_lite]
+aliases = ["cgcc", "cgcc_lite", "cgcc-lite"]
+status = "retired"
+paper_table = false
+description = "Retired CGCC-Lite. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--exec-contract",
+  "--exec-contract-variant", "cgcc_lite",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.cgcc_lite.profiles]
+openhands = "openhands_deepseek_v4_flash_exec_contract"
+
+[methods.cgcc_roc]
+aliases = ["cgcc_roc", "cgcc-roc"]
+status = "retired"
+paper_table = false
+description = "Retired CGCC-ROC. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--exec-contract",
+  "--exec-contract-variant", "cgcc_roc",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.cgcc_roc.profiles]
+openhands = "openhands_deepseek_v4_flash_exec_contract"
+
+[methods.cgcc_rmc]
+aliases = ["cgcc_rmc", "cgcc-rmc"]
+status = "retired"
+paper_table = false
+description = "Retired CGCC-RMC. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--exec-contract",
+  "--exec-contract-variant", "cgcc_rmc",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.cgcc_rmc.profiles]
+openhands = "openhands_deepseek_v4_flash_exec_contract"
+
+[methods.fcec]
+aliases = ["fcec"]
+status = "retired"
+paper_table = false
+description = "Retired FCEC. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--exec-contract",
+  "--exec-contract-variant", "fcec",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.fcec.profiles]
+openhands = "openhands_deepseek_v4_flash_exec_contract"
+
+[methods.self_contract]
+aliases = ["self", "self_contract", "self-contract", "sac"]
+status = "retired"
+paper_table = false
+description = "Retired self-contract scaffolding. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.self_contract.profiles]
+openhands = "openhands_deepseek_v4_flash_self_contract"
+
+[methods.test_first_lift]
+aliases = ["tfl", "test_first", "test-first", "test_first_lift", "test-first-lift"]
+status = "retired"
+paper_table = false
+description = "Retired test-first-lift scaffolding. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--test-first-lift",
+]
+
+[methods.test_first_lift.profiles]
+openhands = "openhands_deepseek_v4_flash_test_first_lift"
+
+[methods.v2]
+aliases = ["v2", "adaptive_budget_v2"]
+status = "retired"
+paper_table = false
+spec = "harness/config/methods/v2.json"
+description = "Retired V2 adaptive budget. Reproducible only."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.v2.profiles]
+openhands = "openhands_deepseek_v4_flash_v2"
+
+[methods.p0]
+aliases = ["p0"]
+status = "screening"
+paper_table = false
+description = "RSG P0 pilot profile. Not a paper table arm."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.p0.profiles]
+openhands = "openhands_deepseek_v4_flash_rsg_pilot_p0"

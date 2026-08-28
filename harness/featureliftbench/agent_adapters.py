@@ -11,7 +11,7 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from .active_agent_processes import register_process
 from .active_agent_processes import terminate_active_agent_processes
@@ -41,6 +41,7 @@ class AgentRunConfig:
     config: str | None = None
     yolo: bool = False
     timeout_seconds: int = 3600
+    step_limit: int = 0
     command: str | None = None
     extra_args: tuple[str, ...] = ()
     env: dict[str, str] | None = None
@@ -64,6 +65,7 @@ class AgentCommandResult:
     stdout_truncated: bool = False
     stderr_truncated: bool = False
     log_limit_exceeded: bool = False
+    completion_detected: bool = False
 
     @property
     def passed(self) -> bool:
@@ -82,6 +84,7 @@ class AgentCommandResult:
             "stdout_truncated": self.stdout_truncated,
             "stderr_truncated": self.stderr_truncated,
             "log_limit_exceeded": self.log_limit_exceeded,
+            "completion_detected": self.completion_detected,
         }
         if stdout_log is not None:
             payload["stdout_log"] = str(stdout_log)
@@ -112,6 +115,7 @@ class AgentAdapter:
         *,
         stdout_log: Path | None = None,
         stderr_log: Path | None = None,
+        completion_check: Callable[[], bool] | None = None,
     ) -> AgentCommandResult:
         self.prepare(context, config)
         command = self.build_command(context, config)
@@ -135,7 +139,11 @@ class AgentAdapter:
 
         start = time.monotonic()
         try:
-            if stdout_log is not None or stderr_log is not None:
+            if (
+                stdout_log is not None
+                or stderr_log is not None
+                or completion_check is not None
+            ):
                 return self._run_streaming(
                     command=command,
                     report_command=report_command,
@@ -145,6 +153,7 @@ class AgentAdapter:
                     start=start,
                     stdout_log=stdout_log,
                     stderr_log=stderr_log,
+                    completion_check=completion_check,
                 )
             completed = subprocess.run(
                 command,
@@ -201,6 +210,7 @@ class AgentAdapter:
         start: float,
         stdout_log: Path | None,
         stderr_log: Path | None,
+        completion_check: Callable[[], bool] | None,
     ) -> AgentCommandResult:
         if stdout_log is not None:
             stdout_log.parent.mkdir(parents=True, exist_ok=True)
@@ -269,24 +279,63 @@ class AgentAdapter:
             thread.start()
 
         try:
-            try:
-                returncode = process.wait(timeout=timeout_seconds)
-            except subprocess.TimeoutExpired:
-                _kill_process_group(process)
-                process.wait(timeout=5)
-                for thread in threads:
-                    thread.join(timeout=1)
-                return AgentCommandResult(
-                    name=self.name,
-                    command=command,
-                    report_command=report_command,
-                    returncode=124,
-                    duration_seconds=time.monotonic() - start,
-                    stdout="".join(stdout_chunks),
-                    stderr="".join(stderr_chunks) or f"agent timed out after {timeout_seconds}s",
-                    timed_out=True,
-                    reason=f"agent timed out after {timeout_seconds}s",
-                )
+            deadline = start + timeout_seconds
+            completion_check_error = ""
+            while True:
+                remaining = max(0.0, deadline - time.monotonic())
+                try:
+                    returncode = process.wait(timeout=min(0.25, remaining))
+                    break
+                except subprocess.TimeoutExpired:
+                    completion_detected = False
+                    if completion_check is not None:
+                        try:
+                            completion_detected = completion_check()
+                        except Exception as exc:  # Keep supervising the child.
+                            completion_check_error = (
+                                f"completion check failed: {type(exc).__name__}: {exc}"
+                            )
+                            completion_check = None
+                    if completion_detected:
+                        _kill_process_group(process)
+                        process.wait(timeout=5)
+                        for thread in threads:
+                            thread.join(timeout=1)
+                        return AgentCommandResult(
+                            name=self.name,
+                            command=command,
+                            report_command=report_command,
+                            returncode=0,
+                            duration_seconds=time.monotonic() - start,
+                            stdout="".join(stdout_chunks),
+                            stderr="".join(stderr_chunks),
+                            reason="validated completion artifact detected",
+                            completion_detected=True,
+                        )
+                    if remaining <= 0:
+                        _kill_process_group(process)
+                        process.wait(timeout=5)
+                        for thread in threads:
+                            thread.join(timeout=1)
+                        return AgentCommandResult(
+                            name=self.name,
+                            command=command,
+                            report_command=report_command,
+                            returncode=124,
+                            duration_seconds=time.monotonic() - start,
+                            stdout="".join(stdout_chunks),
+                            stderr=(
+                                "".join(stderr_chunks)
+                                or f"agent timed out after {timeout_seconds}s"
+                            )
+                            + (
+                                f"\n{completion_check_error}"
+                                if completion_check_error
+                                else ""
+                            ),
+                            timed_out=True,
+                            reason=f"agent timed out after {timeout_seconds}s",
+                        )
 
             for thread in threads:
                 thread.join()
@@ -322,7 +371,7 @@ class MiniSweAgentAdapter(AgentAdapter):
         trajectory_path = context.agent_output_dir / "trajectory.json"
         if _use_live_trajectory_runner(agent_bin):
             command = [
-                sys.executable,
+                _mini_live_runner_python(agent_bin),
                 "-m",
                 "featureliftbench.mini_live_runner",
                 "--task",
@@ -346,6 +395,8 @@ class MiniSweAgentAdapter(AgentAdapter):
             command.extend(["--config", config.config])
         if config.yolo:
             command.append("--yolo")
+        if config.step_limit > 0:
+            command.extend(["--step-limit", str(config.step_limit)])
         command.extend(config.extra_args)
         return command
 
@@ -482,6 +533,25 @@ def _use_live_trajectory_runner(agent_bin: str) -> bool:
         return False
     normalized = Path(agent_bin).name
     return normalized in {"mini", "mini-swe-agent"}
+
+
+def _mini_live_runner_python(agent_bin: str) -> str:
+    """Use the Python environment that owns an absolute mini executable.
+
+    ``mini_live_runner`` imports ``minisweagent`` directly. Profiles commonly
+    point at a conda/venv ``bin/mini`` while FeatureLiftBench itself runs under
+    another interpreter, so using ``sys.executable`` can make the wrapper fail
+    before the Agent starts. Bare executable names retain the old behavior for
+    Docker command normalization and PATH-based installs.
+    """
+
+    path = Path(agent_bin)
+    if path.is_absolute():
+        for name in ("python", "python3"):
+            candidate = path.parent / name
+            if candidate.is_file() and os.access(candidate, os.X_OK):
+                return str(candidate)
+    return sys.executable
 
 
 def get_agent_adapter(name: str) -> AgentAdapter:

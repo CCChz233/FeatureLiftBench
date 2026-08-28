@@ -3,6 +3,17 @@
 from __future__ import annotations
 
 
+AUDITOR_FINAL_PROMPT = """FINAL ACTION: you have exactly one model response and shell action left.
+Do not search, inspect more files, or create standalone citation files. Your next
+action must be one shell command that writes the complete JSON object to
+$FEATURELIFTBENCH_AGENT_OUTPUT_DIR/audit_record.json. Build any citations inside
+that same Python/shell action and validate the record in the same action if room
+permits. If you cannot support explicit, recoverable, or ambiguous now, write a
+schema-valid underdetermined or abstain record with empty evidence arrays. A
+complete conservative record is more important than further investigation.
+"""
+
+
 def auditor_prompt(*, agent_id: str) -> str:
     return f"""# Agentic Evidence Canary Audit
 
@@ -31,6 +42,10 @@ paths, backends, documentation, and upstream tests before choosing recoverable.
 Use ambiguous when two incompatible semantics are publicly supported and the
 contract does not select one; cite both sides. Use underdetermined when the
 public inputs provide no sufficient implementation evidence.
+
+Use at most 24 shell/tool actions. By action 18, stop broad searching and begin
+building citations and the final record. If the evidence is still insufficient,
+choose `underdetermined` or `abstain` instead of continuing to search.
 
 Every `explicit`, `recoverable`, or `ambiguous` answer requires reproducible
 citations. Generate each citation with:
@@ -74,7 +89,7 @@ Before finishing you MUST create the JSON file with a shell command such as:
 python - <<'PY'
 from pathlib import Path
 import json, os
-record = {
+record = {{
   "schema_version": "featureliftbench.agentic_evidence.audit_record.v1",
   "task_id": "...",
   "nodeid": "...",
@@ -85,9 +100,9 @@ record = {
   "evidence": [],
   "counterevidence": [],
   "abstain_reason": ""
-}
+}}
 path = Path(os.environ["FEATURELIFTBENCH_AGENT_OUTPUT_DIR"]) / "audit_record.json"
-path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+path.write_text(json.dumps(record, indent=2) + "\\n", encoding="utf-8")
 print(path)
 PY
 ```
@@ -95,4 +110,7 @@ PY
 Finish only after that file exists and
 `python -m featureliftbench.agentic_evidence.cli validate-record \"$FEATURELIFTBENCH_AGENT_OUTPUT_DIR/audit_record.json\" --task-dir .`
 reports `valid`.
+
+A valid record is terminal. Once validation reports `valid`, stop immediately:
+do not run another search, inspect another file, or revise the record.
 """

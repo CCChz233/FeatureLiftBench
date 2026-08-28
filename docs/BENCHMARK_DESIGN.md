@@ -1,6 +1,6 @@
 # FeatureLiftBench 整体设计思路
 
-> **Documentation status: current · Last verified: 2026-08-21**
+> **Documentation status: current · Last verified: 2026-08-28**
 
 - **状态：** 当前 Full-Repository / No-Hint 设计；release 数字见 [STATUS.md](STATUS.md)
 - **简明原则：** [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
@@ -116,9 +116,9 @@ source entrypoints 若作为维护 provenance 保留，必须位于 evaluator �
 门禁。操作与准入规则见 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 和
 [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)。
 
-当前 release 规模、source registry、Oracle 和 canary 状态不在本文重复维护，
-统一见 [STATUS.md](STATUS.md)。Compactness 使用 frozen-reference-relative
-独立指标，release 由 readiness、Oracle 与对抗性 canary 门禁共同约束。
+当前 **论文主套件** 是冻结 Python-150 + Hard-50（尚未出分）。规模、registry、
+资格与 blocker 统一见 [STATUS.md](STATUS.md)。旧 150+External-50 分数是
+superseded 对照。Compactness 使用 frozen-reference-relative 独立指标。
 
 历史任务目录中的 pruned/mixed `repo/` 保留作 provenance 和旧协议复现，
 但 v3 Agent workspace 只从经 digest 校验的 canonical source archive

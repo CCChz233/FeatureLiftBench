@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-> **Documentation status: current · Last verified: 2026-08-21**
+> **Documentation status: current · Last verified: 2026-08-28**
 
 FeatureLiftBench evaluates whether a coding agent can extract and reconstruct a
 coherent feature from a real upstream repository under a controlled information
@@ -19,7 +19,7 @@ are maintained only in [docs/STATUS.md](docs/STATUS.md).
 | Check readiness and current results | [Status](docs/STATUS.md) |
 | Current V1 method (Main + 2M cap) | [V1](docs/METHOD_V1.md) |
 | Optional DeepSeek Harness / Codex runtime | [Agent runtime](docs/METHOD_AGENT_RUNTIME.md) |
-| Run an experiment | [Run quick reference](RUN.md) |
+| Run an experiment | [Run quick reference](RUN.md) · `./scripts/run_benchmark.sh` |
 | Operate a server run | [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md) |
 | Create or review a task | [Task design rules](docs/TASK_DESIGN_RULES.md) |
 | Navigate all documentation | [Documentation portal](docs/README.md) |
@@ -31,36 +31,59 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ./harness
 
-./harness/scripts/run_python200_paper.sh \
-  <openhands-profile> \
-  preflight-plan
+PYTHONPATH=harness python -B -m featureliftbench.cli catalog check
 ```
 
-Without `--execute`, the runner validates the release, source registry,
-dependency closure, wheel coverage, task packages, and experiment plan without
-making model calls.
+`catalog check` validates `benchmark/suites.toml`, `agent/registry.toml`, and
+`method/registry.toml` against adapters and OpenHands profiles. Paper Main
+execution is `./scripts/run_benchmark.sh --benchmark python200_hard --agent
+openhands --method main`. `./harness/scripts/run_python200_paper.sh` still
+validates the superseded 150+External-50 release; do not use it for Python-200'.
 
 ## Repository Layout
 
+Experiments are **benchmark × agent × method**. List ids with
+`PYTHONPATH=harness python -B -m featureliftbench.cli catalog list`.
+
 | Path | Role |
 | --- | --- |
-| `benchmark/` | Frozen task packages, source registries, references, and release selections |
-| `harness/` | Validation, agent execution, Docker evaluation, and analysis code |
+| `benchmark/` | Task packages, source registries, freeze artifacts, and named suites (`suites.toml`) |
+| `agent/` | Public catalog of coding runtimes (`--agent`). Adapters stay in `harness/` |
+| `method/` | Public catalog of protocols / information arms (`--method` / `--arm`) |
+| `harness/` | Evaluator, Docker capsule, agent adapters, and CLI. Not a third experiment axis |
 | `docs/` | Current specifications, runbooks, paper material, and archived narratives |
 | `reports/` | Audits and derived analysis; not a substitute for raw task results |
 | `experiments/` | Local run outputs and transfer bundles; large artifacts are normally ignored by Git |
 | `artifacts/` | Machine-readable freezes and research-analysis state |
+
+```bash
+./scripts/run_benchmark.sh \
+  --benchmark python200_hard \
+  --agent openhands \
+  --method main \
+  --docker --workers 1 --timeout 3600
+```
+
+`--arm` is an alias of `--method`. Official paper numbers use OpenHands + `main`.
+DeepSeek Harness and Codex share this CLI but stay off the OpenHands table.
+
+Task packages and source archives are **not** stored on GitHub. For a server
+run, copy `experiments/bundles/outgoing/FeatureLiftBench-benchmark-20260828.tar.gz`
+(about 690 MB) and unpack it at the repository root so `benchmark/` is restored.
+Verify with
+[`experiments/bundles/outgoing/current/FeatureLiftBench-benchmark-20260828.tar.gz.sha256`](experiments/bundles/outgoing/current/FeatureLiftBench-benchmark-20260828.tar.gz.sha256).
+Do not commit `.env` or `harness/config/agents.toml`.
 
 ## Result Boundary
 
 The primary metrics are evaluator `Functional Pass@1` and pass-conditioned
 Reference-Relative Extraction Size (RRES). Agent completion status is not a
 correctness score. Official Main uses OpenHands. DeepSeek Harness and Codex are
-an optional runtime ablation and must not be merged into the OpenHands
-Python-200 table. Results are comparable only when the task set, attempt policy,
-model revision, agent runtime, agent profile, information arm, and
-agent/evaluator image identities match. Historical and current conditions must
-not be silently combined.
+the same CLI level after `./setup.sh`, but remain a runtime ablation and must
+not be merged into the OpenHands Python-200 table. Results are comparable only
+when the task set, attempt policy, model revision, agent runtime, agent
+profile, information arm, and agent/evaluator image identities match.
+Historical and current conditions must not be silently combined.
 
 ## Citation and License
 

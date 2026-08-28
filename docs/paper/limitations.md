@@ -1,6 +1,6 @@
 # Known Limitations
 
-> **Documentation status: current · Last verified: 2026-08-21**
+> **Documentation status: current · Last verified: 2026-08-28**
 
 ## Dataset Construction
 
@@ -45,10 +45,11 @@
 
 ## Experimental Evidence
 
-- Python-200 Main is complete for DeepSeek V4 Flash (API and local vLLM),
-  Qwen3.5 122B, Qwen3.6 35B, and GPT-OSS 120B under **OpenHands**. Pass-conditioned
-  RRES medians sit at 1.000 and there is no paired cross-model RRES, so
-  compactness cannot be ranked across models.
+- 论文主套件 Python-200'（150+Hard-50）的跨模型 Main **尚未跑**。旧 Python-200
+  （150+External-50）Main 在 OpenHands 下对 Flash / Qwen3.5 / Qwen3.6 / GPT-OSS
+  完整，Pass@1 为 21.5%–72.5%；该套件上 pass-conditioned RRES 中位数贴 1.000，
+  主要来自 External-50 copy-heavy，**不能**当新主表，也不能跨模型排紧凑度。
+- Hard-50 Flash 校准为 29/50 = 58%，只说明难子集落在目标带，不是 200' 主表。
 - Official Main is OpenHands. DeepSeek Harness and Codex adapters exist as an
   optional runtime ablation with pinned revisions, but they have no scored
   Core-12 or Python-200 results yet and must not be merged into the OpenHands

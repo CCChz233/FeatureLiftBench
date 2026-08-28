@@ -9,8 +9,9 @@ import json
 import shutil
 import sys
 import tempfile
+from dataclasses import replace
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 _REPO = Path(__file__).resolve().parents[2]
 if str(_REPO / "harness") not in sys.path:
@@ -23,6 +24,7 @@ from featureliftbench.agent_config import load_agent_run_config
 from featureliftbench.agentic_evidence.citation_validator import build_citation
 from featureliftbench.agentic_evidence.citation_validator import validate_citation
 from featureliftbench.agentic_evidence.direct_auditor import coerce_confidence
+from featureliftbench.agentic_evidence.prompts import AUDITOR_FINAL_PROMPT
 from featureliftbench.agentic_evidence.prompts import auditor_prompt
 from featureliftbench.agentic_evidence.schema import validate_audit_record
 
@@ -102,7 +104,7 @@ def _validate_record(
         return None, ["Agent did not create audit_record.json"]
     try:
         record = json.loads(record_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         return None, [f"invalid audit_record.json: {exc}"]
     if not isinstance(record, dict):
         return None, ["audit_record.json must be an object"]
@@ -148,6 +150,42 @@ def _validate_record(
     return record, sorted(set(errors))
 
 
+def _validated_record_completion_check(
+    record_path: Path,
+    *,
+    workspace: Path,
+    case_id: str,
+    agent_id: str,
+) -> Callable[[], bool]:
+    """Stop an Agent after a stable record passes independent validation."""
+
+    last_content: bytes | None = None
+    stable_observations = 0
+
+    def check() -> bool:
+        nonlocal last_content, stable_observations
+        try:
+            content = record_path.read_bytes()
+        except OSError:
+            return False
+        if content != last_content:
+            last_content = content
+            stable_observations = 1
+            return False
+        stable_observations += 1
+        if stable_observations < 2:
+            return False
+        _record, errors = _validate_record(
+            record_path,
+            workspace=workspace,
+            case_id=case_id,
+            agent_id=agent_id,
+        )
+        return not errors
+
+    return check
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("suite", type=Path)
@@ -163,6 +201,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--agent-id")
+    parser.add_argument("--no-early-stop", action="store_true")
+    parser.add_argument("--max-agent-steps", type=int, default=24)
     return parser
 
 
@@ -200,8 +240,23 @@ def main() -> int:
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 2
+    run_config = loaded.run_config
+    run_summary = dict(loaded.summary)
+    normalized_agent = run_config.agent.strip().lower().replace("_", "-")
+    if normalized_agent in {"mini", "mini-swe-agent", "minisweagent"}:
+        max_agent_steps = max(0, args.max_agent_steps)
+        extra_args = run_config.extra_args
+        if max_agent_steps > 0:
+            extra_args = (*extra_args, "--final-prompt", AUDITOR_FINAL_PROMPT)
+        run_config = replace(
+            run_config,
+            step_limit=max_agent_steps,
+            extra_args=extra_args,
+        )
+        run_summary["audit_max_agent_steps"] = max_agent_steps
+        run_summary["audit_final_prompt_enabled"] = max_agent_steps > 0
     agent_id = args.agent_id or (
-        f"{args.agent_profile or loaded.run_config.model or loaded.run_config.agent}-auditor-r1"
+        f"{args.agent_profile or run_config.model or run_config.agent}-auditor-r1"
     )
     case_dirs = sorted(path for path in cases_root.iterdir() if path.is_dir())
     if args.limit is not None:
@@ -235,14 +290,23 @@ def main() -> int:
                 agent_output_dir=temporary_agent_output,
                 task_text=prompt,
             )
+            temporary_record_path = temporary_agent_output / "audit_record.json"
+            completion_check = None
+            if not args.no_early_stop:
+                completion_check = _validated_record_completion_check(
+                    temporary_record_path,
+                    workspace=workspace,
+                    case_id=case_id,
+                    agent_id=agent_id,
+                )
             result = adapter.run(
                 context,
-                loaded.run_config,
+                run_config,
                 stdout_log=case_output / "agent.stdout.log",
                 stderr_log=case_output / "agent.stderr.log",
+                completion_check=completion_check,
             )
             after = _tree_digest(workspace)
-            temporary_record_path = temporary_agent_output / "audit_record.json"
             record, errors = _validate_record(
                 temporary_record_path,
                 workspace=workspace,
@@ -257,6 +321,12 @@ def main() -> int:
                 "case_id": case_id,
                 "agent_id": agent_id,
                 "valid": not errors,
+                "record_valid": not errors,
+                "agent_exited_normally": (
+                    result.returncode == 0
+                    and not result.timed_out
+                    and not result.completion_detected
+                ),
                 "errors": sorted(set(errors)),
                 "source_tree_unchanged": before == after,
                 "agent_result": result.payload(
@@ -278,9 +348,20 @@ def main() -> int:
         "schema_version": "featureliftbench.agentic_evidence.canary_run.v1",
         "suite": str(args.suite.resolve()),
         "agent_id": agent_id,
-        "agent_config": loaded.summary,
+        "agent_config": run_summary,
         "case_count": len(results),
         "valid_count": sum(bool(row.get("valid")) for row in results),
+        "normal_exit_count": sum(
+            bool(row.get("agent_exited_normally")) for row in results
+        ),
+        "early_stop_count": sum(
+            bool((row.get("agent_result") or {}).get("completion_detected"))
+            for row in results
+        ),
+        "timeout_count": sum(
+            bool((row.get("agent_result") or {}).get("timed_out"))
+            for row in results
+        ),
         "results": results,
     }
     (output / "run.json").write_text(

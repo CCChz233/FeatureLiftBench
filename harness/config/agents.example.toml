@@ -1,12 +1,13 @@
 # FeatureLiftBench shared agent config.
 # Secrets live in .env (never commit .env).
 #
-# Fresh clone: ./setup.sh creates harness/config/agents.toml from this file.
+# Fresh clone: ./setup.sh creates harness/config/agents.toml from this file
+# and installs OpenHands (opt-in), DeepSeek Harness, and Codex CLIs.
 # Switch models: AGENT_PROFILE=deepseek_v4_flash ./run.sh  or  --agent-profile
 #
 # Official Main uses OpenHands profiles (openhands_*). DeepSeek Harness / Codex
-# profiles (dsh_*, codex_*) are a runtime ablation, not the Python-200 table.
-# See docs/METHOD_AGENT_RUNTIME.md.
+# are the same CLI level (`--agent openhands|deepseek-harness|codex`). Runtime
+# scores stay off the Python-200 Main table. See docs/METHOD_AGENT_RUNTIME.md.
 
 profile = "deepseek_v4_pro"
 env_file = ".env"
@@ -1081,14 +1082,13 @@ api_key_env = "SILICONFLOW_API_KEY"
 cost_limit = "0"
 call_limit = "0"
 
-# --- Runtime ablation (not Official Main / not Python-200 table) ---
+# --- Runtime agents (same CLI level as OpenHands; not Official Main) ---
+# ./setup.sh installs pinned dsh/codex into third_party/runtimes/bin.
 # Pair against OpenHands+Flash Main on Core-12 first.
-# Host PATH binaries; stock OpenHands agent image does not include dsh/codex.
 # Pins: harness/config/runtime_pins.json
 
 [profiles.dsh_deepseek_v4_flash_main]
 model = "deepseek/deepseek-v4-flash"
-agent_bin = "dsh"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
@@ -1100,7 +1100,6 @@ source_context = "full_repository"
 
 [profiles.codex_deepseek_v4_flash_main]
 model = "deepseek-v4-flash"
-agent_bin = "codex"
 api_key_env = "FEATURELIFTBENCH_API_KEY"
 api_base_env = "FEATURELIFTBENCH_API_BASE"
 cost_limit = "0"
@@ -1112,7 +1111,6 @@ source_context = "full_repository"
 
 [profiles.codex_gpt_main]
 model = "gpt-5"
-agent_bin = "codex"
 api_key_env = "OPENAI_API_KEY"
 api_base_env = "OPENAI_BASE_URL"
 cost_limit = "0"

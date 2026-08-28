@@ -1,15 +1,18 @@
 # FeatureLiftBench 文档入口
 
-> **Status: current · Last verified: 2026-08-21**
+> **Status: current · Last verified: 2026-08-28**
 
 日常只从这里进入。动态数字只维护在 [STATUS.md](STATUS.md)，方法对比结论只维护在
-[FINDINGS.md](FINDINGS.md)。
+[FINDINGS.md](FINDINGS.md)。**论文主套件是 Python-200'（冻结 150 + Hard-50）**，
+整套 Flash 未跑；旧 150+E50 的 21.5%–72.5% 不是新主表。题集口径见
+[汇报_题集构成.md](汇报_题集构成.md)。
 
 ## 当前入口
 
 | Need | Document |
 | --- | --- |
 | 看当前规模、完成度、可用结果和 blocker | [STATUS.md](STATUS.md) |
+| 看论文主套件 Hard-50 / Python-200' | [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md) · [汇报_题集构成.md](汇报_题集构成.md) |
 | 看当前 V1 方法（Main + 2M cap） | [METHOD_V1.md](METHOD_V1.md) |
 | 看 context-efficiency 筛选（LLM Summary / Recency / Artifact-aware） | [METHOD_ARTIFACT_AWARE.md](METHOD_ARTIFACT_AWARE.md) |
 | 看 verification-aware 自测压缩筛选（已停） | [METHOD_VERIFICATION_AWARE.md](METHOD_VERIFICATION_AWARE.md) |
@@ -22,6 +25,7 @@
 | 离线拆已有轨迹的 token 尾巴（不是新方法） | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
 | 组会投屏：跨模型 Main / 方法对比 / 失败阶段 / 题集 / 案例 | [汇报_Python200跨模型Main.md](汇报_Python200跨模型Main.md) · [汇报_实验结果表.md](汇报_实验结果表.md) · [汇报_失败原因.md](汇报_失败原因.md) · [汇报_题集构成.md](汇报_题集构成.md) · [汇报_Agent瓶颈案例.md](汇报_Agent瓶颈案例.md) |
 | 本地或服务器开始跑实验 | [RUN.md](../RUN.md) · [SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md) |
+| 仓库结构：benchmark × agent × method | [agent/](../agent/README.md) · [method/](../method/README.md) · `benchmark/suites.toml` |
 | 理解 benchmark 构念 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
 | 设计或审核 task | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
 | 确认 source/freeze policy | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) · [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) |

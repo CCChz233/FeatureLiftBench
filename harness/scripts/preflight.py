@@ -91,6 +91,35 @@ def _is_openhands_agent(agent: str) -> bool:
     return normalized in {"openhands", "openhands-agent", "openhandsagent"}
 
 
+def _is_runtime_agent(agent: str) -> bool:
+    normalized = agent.strip().lower().replace("_", "-")
+    return normalized in {
+        "deepseek-harness",
+        "deepseekharness",
+        "dsh",
+        "codex",
+        "codex-cli",
+        "openai-codex",
+    }
+
+
+def _runtime_binary_name(agent: str) -> str:
+    normalized = agent.strip().lower().replace("_", "-")
+    if normalized in {"codex", "codex-cli", "openai-codex"}:
+        return "codex"
+    return "dsh"
+
+
+def _runtime_available_in_docker(image: str, binary: str) -> bool:
+    completed = subprocess.run(
+        ["docker", "run", "--rm", "--entrypoint", "which", image, binary],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return completed.returncode == 0
+
+
 def _openhands_available_locally() -> bool:
     return shutil.which("openhands") is not None
 
@@ -424,8 +453,9 @@ def main(argv: list[str] | None = None) -> int:
 
     featurelift_agent = _is_featurelift_agent(args.agent)
     openhands_agent = _is_openhands_agent(args.agent)
+    runtime_agent = _is_runtime_agent(args.agent)
     mini_bin = ""
-    if not featurelift_agent and not openhands_agent:
+    if not featurelift_agent and not openhands_agent and not runtime_agent:
         mini_bin = _resolve_mini_bin(mini_bin_arg=args.mini_bin, profile_name=args.agent_profile)
         if mini_bin:
             _patch_agent_bin(mini_bin)
@@ -490,7 +520,7 @@ def main(argv: list[str] | None = None) -> int:
         if network_message:
             return _fail(network_message)
 
-    if not featurelift_agent and not openhands_agent:
+    if not featurelift_agent and not openhands_agent and not runtime_agent:
         agent_bin = summary.get("agent_bin") or mini_bin
         if not Path(agent_bin).is_file() and shutil.which(agent_bin) is None:
             return _fail(f"agent_bin not executable: {agent_bin}")
@@ -523,6 +553,31 @@ def main(argv: list[str] | None = None) -> int:
             return _fail(
                 "openhands CLI not found on PATH; pip install openhands (Python 3.12+) "
                 "or set FEATURELIFTBENCH_AGENT_DOCKER=1 for Docker agent runs"
+            )
+    elif runtime_agent:
+        from featureliftbench.runtime_agents import resolve_runtime_binary
+
+        binary_name = _runtime_binary_name(args.agent)
+        env_name = (
+            "FEATURELIFTBENCH_CODEX_BIN"
+            if binary_name == "codex"
+            else "FEATURELIFTBENCH_DSH_BIN"
+        )
+        resolved = resolve_runtime_binary(
+            loaded.run_config, env_name=env_name, default=binary_name
+        )
+        if args.docker_suite:
+            if not _runtime_available_in_docker(args.agent_docker_image, binary_name):
+                return _fail(
+                    f"{binary_name} CLI not found in Docker image "
+                    f"{args.agent_docker_image}; rebuild with "
+                    "FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1 "
+                    "./docker/build_agent_image.sh or run the agent on the host"
+                )
+        elif not Path(resolved).is_file() and shutil.which(resolved) is None:
+            return _fail(
+                f"{binary_name} CLI not found; run ./setup.sh "
+                "(installs pinned DeepSeek Harness and Codex next to OpenHands)"
             )
 
     if args.llm_health_check and not args.skip_llm_health_check:
@@ -567,6 +622,14 @@ def main(argv: list[str] | None = None) -> int:
             f"profile={profile_label} "
             f"model={summary.get('model', '')} "
             f"openhands_command={'set' if summary.get('openhands_command_configured') else 'missing'}",
+            file=sys.stderr,
+        )
+    elif runtime_agent:
+        print(
+            "preflight: ok "
+            f"agent={args.agent} "
+            f"profile={profile_label} "
+            f"model={summary.get('model', '')}",
             file=sys.stderr,
         )
     else:

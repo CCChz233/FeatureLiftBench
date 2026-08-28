@@ -1,6 +1,9 @@
 ARG PYTHON_BASE=python:3.11-slim
 ARG INSTALL_OPENHANDS=0
 ARG OPENHANDS_VERSION=1.16.0
+ARG INSTALL_RUNTIME_AGENTS=0
+ARG NODE_VERSION=22.19.0
+ARG NODE_DIST_BASE=https://nodejs.org/dist
 FROM ${PYTHON_BASE}
 
 WORKDIR /flb
@@ -11,12 +14,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 ARG INSTALL_OPENHANDS
 ARG OPENHANDS_VERSION
+ARG INSTALL_RUNTIME_AGENTS
 
-RUN if [ "$INSTALL_OPENHANDS" = "1" ]; then \
+RUN if [ "$INSTALL_OPENHANDS" = "1" ] || [ "$INSTALL_RUNTIME_AGENTS" = "1" ]; then \
       sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true; \
       sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list 2>/dev/null || true; \
       apt-get update \
-      && apt-get install -y --no-install-recommends git ca-certificates \
+      && apt-get install -y --no-install-recommends git ca-certificates curl xz-utils \
       && rm -rf /var/lib/apt/lists/*; \
     fi
 
@@ -40,6 +44,23 @@ COPY benchmark/vendor-wheels /flb/benchmark/vendor-wheels
 COPY harness /flb/harness
 
 ENV PIP_FIND_LINKS=/flb/benchmark/vendor-wheels
+
+ARG INSTALL_RUNTIME_AGENTS
+ARG NODE_VERSION
+ARG NODE_DIST_BASE
+ENV FEATURELIFTBENCH_RUNTIME_BIN_DIR=/usr/local/bin
+
+RUN if [ "$INSTALL_RUNTIME_AGENTS" = "1" ]; then \
+      arch="$(uname -m)"; \
+      case "$arch" in \
+        x86_64) node_arch=x64 ;; \
+        aarch64) node_arch=arm64 ;; \
+        *) echo "unsupported arch: $arch" >&2; exit 1 ;; \
+      esac; \
+      curl -fsSL "${NODE_DIST_BASE}/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${node_arch}.tar.xz" \
+        | tar -xJ -C /usr/local --strip-components=1; \
+      python -m featureliftbench.runtime_install all; \
+    fi
 
 RUN printf '%s\n' \
     '#!/usr/bin/env sh' \

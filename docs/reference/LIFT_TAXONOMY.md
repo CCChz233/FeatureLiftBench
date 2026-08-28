@@ -4,7 +4,10 @@
 
 **状态：** 定义已冻结；release 分布见 [STATUS.md](../STATUS.md) 和 balance audit。
 **最近复核：** 2026-08-17
-**产物：** 定义以本文为准。历史生成目录 `reports/lift_taxonomy/` 已不在当前树中。
+**产物：** 定义以本文为准。150 题标签仍在
+[`reports/lift_taxonomy/LIFT_LABELS.jsonl`](../../reports/lift_taxonomy/LIFT_LABELS.jsonl)
+（AI-assisted v1，未写入 `metadata.json`）。Hard-50 的 planned lift 在
+`benchmark/selection/hard50_expansion_20260827.json`，尚未并进该 JSONL。
 
 ## 一句话
 
@@ -102,6 +105,6 @@
 → 与 taxonomy / footprint 交叉出论文表
 ```
 
-当前分布以冻结 release 与 balance audit 为准；历史摘要路径为
-`reports/lift_taxonomy/SUMMARY.md`。
+150 分布以 `LIFT_LABELS.jsonl` 为准（Adapted 76 / Direct 56 / Composite 18）。
+旧 150+E50 合计见 superseded balance audit；Hard-50 planned lift 见 ledger。
 标签在报告层，**尚未**写入 `benchmark/tasks/*/metadata.json`。

@@ -48,7 +48,8 @@ Evaluate a prepared submission:
 PYTHONPATH=harness python3 -B -m featureliftbench.cli eval <task_dir> <submission_dir> --output <output_dir>
 ```
 
-Run an agent suite (Official Main uses OpenHands):
+Run an agent suite. OpenHands is Official Main. DeepSeek Harness / Codex are
+the same CLI level after `./setup.sh` (not the Python-200 table):
 
 ```bash
 PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent <task_root> \
@@ -58,13 +59,14 @@ PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent <task_root> \
   --eval-docker \
   --output <experiments/.../suite-id> \
   --task-id <task_id>
-```
 
-Optional DeepSeek Harness / Codex runtime ablation (not Official Main, not the
-Python-200 table):
-
-```bash
-./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
+PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent <task_root> \
+  --agent deepseek-harness \
+  --agent-profile dsh_deepseek_v4_flash_main \
+  --env-file .env \
+  --eval-docker \
+  --output <experiments/.../suite-id> \
+  --task-id <task_id>
 ```
 
 See `docs/METHOD_AGENT_RUNTIME.md`.

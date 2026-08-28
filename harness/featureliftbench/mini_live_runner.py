@@ -15,8 +15,8 @@ from prompt_toolkit.shortcuts import PromptSession
 from rich.console import Console
 
 from minisweagent import global_config_dir
-from minisweagent.agents.default import NonTerminatingException
-from minisweagent.agents.default import TerminatingException
+from minisweagent.agents.default import DefaultAgent
+from minisweagent.agents.default import LimitsExceeded
 from minisweagent.agents.interactive import InteractiveAgent
 from minisweagent.config import builtin_config_dir, get_config_path
 from minisweagent.environments.local import LocalEnvironment
@@ -46,6 +46,18 @@ class LiveTrajectoryInteractiveAgent(InteractiveAgent):
             if self._trajectory_path is not None:
                 save_traj(self, self._trajectory_path, print_path=False)
 
+    def query(self) -> dict:
+        """Use the non-interactive limit behavior in headless harness runs.
+
+        ``InteractiveAgent.query`` asks for new limits after a limit is reached.
+        Harness subprocesses have no stdin, so that prompt raises ``EOFError``
+        and used to be misreported as a successful process exit.
+        """
+
+        if self.config.mode == "human":
+            return super().query()
+        return DefaultAgent.query(self)
+
 
 @app.command()
 def main(
@@ -54,6 +66,12 @@ def main(
     model_class: str | None = typer.Option(None, "--model-class", help="Model class override"),
     yolo: bool = typer.Option(False, "-y", "--yolo", help="Run without confirmation"),
     cost_limit: float | None = typer.Option(None, "-l", "--cost-limit", help="Cost limit"),
+    step_limit: int | None = typer.Option(None, "--step-limit", help="Agent step limit"),
+    final_prompt: str | None = typer.Option(
+        None,
+        "--final-prompt",
+        help="Prompt injected immediately before the final allowed model call",
+    ),
     config_spec: Path = typer.Option(DEFAULT_CONFIG, "-c", "--config", help="Path to config file"),
     output: Path | None = typer.Option(DEFAULT_OUTPUT, "-o", "--output", help="Output trajectory file"),
     exit_immediately: bool = typer.Option(False, "--exit-immediately", help="Exit when agent finishes"),
@@ -67,6 +85,10 @@ def main(
         config.setdefault("agent", {})["mode"] = "yolo"
     if cost_limit is not None:
         config.setdefault("agent", {})["cost_limit"] = cost_limit
+    if step_limit is not None:
+        config.setdefault("agent", {})["step_limit"] = max(0, step_limit)
+    if final_prompt is not None:
+        config.setdefault("agent", {})["final_prompt_template"] = final_prompt
     if exit_immediately:
         config.setdefault("agent", {})["confirm_exit"] = False
     if model_class is not None:
@@ -82,14 +104,20 @@ def main(
     )
 
     exit_status, result, extra_info = None, None, None
+    unexpected_error = False
     try:
         exit_status, result = agent.run(task)  # type: ignore[arg-type]
     except Exception as exc:
         logger.error("Error running agent: %s", exc, exc_info=True)
         exit_status, result = type(exc).__name__, str(exc)
         extra_info = {"traceback": traceback.format_exc()}
+        unexpected_error = True
     finally:
         save_traj(agent, output, exit_status=exit_status, result=result, extra_info=extra_info)  # type: ignore[arg-type]
+    if exit_status == LimitsExceeded.__name__:
+        raise typer.Exit(code=3)
+    if unexpected_error:
+        raise typer.Exit(code=1)
     return agent
 
 

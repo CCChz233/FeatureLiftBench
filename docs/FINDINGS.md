@@ -1,12 +1,17 @@
 # 当前方法结论
 
-> **Status: current · Last verified: 2026-08-21**
+> **Status: current · Last verified: 2026-08-28**
 > 跨模型 Main leaderboard 只维护在 [STATUS.md](STATUS.md)。
 > **当前 cost arm V1 = Main + 2M cap**，规范见 [METHOD_V1.md](METHOD_V1.md)。
 > 指标定义见 [EVALUATION.md](EVALUATION.md)。
+>
+> 下文 Functional 数字（Flash 144/200、Qwen V1 55/200 等）全部落在 **旧**
+> 150+External-50 套件上。论文新主表是 150+Hard-50，**尚未出分**。方法机制
+> （无帽 Main 最强、脚手架补不了 Hidden、2M 有 Pass 税）仍成立；不要把 72%
+> 写进新主表。
 
 本文只解释方法对比。Rescue+、V2、TFL、Core-12、RQ6 Flash-12、Spec-adversarial
-Hidden-4 和 DeepSeek Harness / Codex runtime 通过率不进入 Python-200 主表。
+Hidden-4 和 DeepSeek Harness / Codex runtime 通过率不进入主表。
 
 ## 结论先行
 

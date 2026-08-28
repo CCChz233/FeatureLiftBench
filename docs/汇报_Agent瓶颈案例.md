@@ -1,7 +1,8 @@
 # Agent 瓶颈：具体案例汇报
 
-> **Status: current · Last verified: 2026-08-18**
-> 冻结 Python-150 · Full-Repository / No-Hint · 定性案例，不更新 Python-200 数字。
+> **Status: current · Last verified: 2026-08-28**
+> 冻结 Python-150 · Full-Repository / No-Hint · 定性案例，不更新主表数字。
+> 旧 150+E50 的 72% **不是** Python-200' 主表。Hard-50 校准见 [STATUS.md](STATUS.md)。
 > 目的：把「契约闭合失败 / 过早停止」讲成能听懂的例子，不讲抽象词。
 
 ---

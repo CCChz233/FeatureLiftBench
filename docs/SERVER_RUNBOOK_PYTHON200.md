@@ -79,19 +79,25 @@ The runner must print `Method arm: v1` and the 120-step / 128k / 2M envelope.
 ## 4c. Optional runtime ablation (not Official Main)
 
 DeepSeek Harness and Codex share the Main information boundary and evaluator,
-but they are a different agent runtime. Pin binaries first, then plan Core-12.
-Do not write those scores into the OpenHands Python-200 table.
+but they are a different agent runtime. `./setup.sh` installs the pinned CLIs
+at the same level as OpenHands. Plan Core-12 next. Do not write those scores
+into the OpenHands Python-200 table.
 
 ```bash
-./harness/scripts/pin_runtime_agents.sh
+./setup.sh
 ./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
 ./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main \
   runtime-dsh-flash-core12 --execute
 ```
 
-Default execution is host PATH + eval Docker. The stock OpenHands agent image
-does not contain `dsh` or `codex`. Spec:
-[METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md).
+Default execution is host CLI + eval Docker. To bake `dsh`/`codex` into the
+agent image the same way as OpenHands:
+
+```bash
+FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1 ./docker/build_agent_image.sh
+```
+
+Spec: [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md).
 
 Qwen3.6-35B local four-way shard (50 tasks per replica on `:8030`–`:8033`):
 

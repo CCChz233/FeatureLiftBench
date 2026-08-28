@@ -1,8 +1,9 @@
 # FeatureLiftBench 运行速查
 
-> **Status: current · Last verified: 2026-08-21**
+> **Status: current · Last verified: 2026-08-28**
 > 完整服务器流程见 [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md)，
 > 当前 release 事实见 [STATUS.md](docs/STATUS.md)。
+> 实验轴是 **benchmark × agent × method**（`--arm` 是 `--method` 的别名）。
 
 ## Setup
 
@@ -13,7 +14,33 @@ pip install -e ./harness
 cp harness/config/agents.example.toml harness/config/agents.toml
 ```
 
+或直接 `./setup.sh`：会写出 `agents.toml`，并安装 pinned DeepSeek Harness / Codex CLI
+（与 OpenHands 同级）。OpenHands host CLI 仍用 `INSTALL_OPENHANDS=1`。
+
 配置 `.env` 和 `harness/config/agents.toml`，不要提交凭据。
+
+## Run (benchmark × agent × method)
+
+论文主套件 Python-200'（冻结 150 + Hard-50，**未出分**）：
+
+```bash
+./scripts/run_benchmark.sh \
+  --benchmark python200_hard \
+  --agent openhands \
+  --method main \
+  --docker --workers 1 --timeout 3600
+```
+
+列出已注册的 suite / agent / method：
+
+```bash
+PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog list
+PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog check
+```
+
+`--arm` 等于 `--method`。换 runtime 只改 `--agent`（`openhands`、`deepseek-harness`、
+`codex`），不要改 evaluator。DeepSeek Harness / Codex 的数字不进 OpenHands 主表。
+`./harness/scripts/run_python200_paper.sh` 仍指向旧 150+External-50，不要用来跑新主表。
 
 ## Validate Without Model Calls
 
@@ -42,12 +69,10 @@ Python 3.11 wheels、冻结 Python baseline 和全部 runnable task。
 
 ## Run Runtime Ablation (optional)
 
-DeepSeek Harness / Codex 与 OpenHands 同级，但不是 Official Main。钉版本、Core-12
-成对，数字不进 Python-200 主表。见 [METHOD_AGENT_RUNTIME.md](docs/METHOD_AGENT_RUNTIME.md)。
+DeepSeek Harness / Codex 与 OpenHands 同级 CLI：`./setup.sh` 之后用 `--agent`
+即可。数字不进 Python-200 主表。见 [METHOD_AGENT_RUNTIME.md](docs/METHOD_AGENT_RUNTIME.md)。
 
 ```bash
-./harness/scripts/pin_runtime_agents.sh
-# copy dsh_deepseek_v4_flash_main / codex_gpt_main into agents.toml
 ./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
 ./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main \
   runtime-dsh-flash-core12 --execute

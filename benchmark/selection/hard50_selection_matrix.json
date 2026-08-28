@@ -1,0 +1,89 @@
+{
+  "schema_version": "featureliftbench.hard50_selection_matrix.v1",
+  "doc": "docs/hard50_selection_matrix.md",
+  "families": [
+    {
+      "id": "registry_plugin_dispatch",
+      "target_n": 13,
+      "rqs": [
+        "RQ1",
+        "RQ4",
+        "RQ5"
+      ]
+    },
+    {
+      "id": "config_resolve_discover",
+      "target_n": 11,
+      "rqs": [
+        "RQ1",
+        "RQ4"
+      ]
+    },
+    {
+      "id": "workflow_session_orchestration",
+      "target_n": 8,
+      "rqs": [
+        "RQ1",
+        "RQ4"
+      ]
+    },
+    {
+      "id": "validate_normalize_construct",
+      "target_n": 9,
+      "rqs": [
+        "RQ1",
+        "RQ4"
+      ]
+    },
+    {
+      "id": "parse_tokenize_decode",
+      "target_n": 4,
+      "rqs": [
+        "RQ1",
+        "RQ5"
+      ]
+    },
+    {
+      "id": "direct_tooling_copytrap",
+      "target_n": 5,
+      "rqs": [
+        "RQ2",
+        "RQ5"
+      ]
+    }
+  ],
+  "realized_selected_families": {
+    "registry_plugin_dispatch": 13,
+    "config_resolve_discover": 11,
+    "workflow_session_orchestration": 8,
+    "validate_normalize_construct": 9,
+    "parse_tokenize_decode": 4,
+    "direct_tooling_copytrap": 5
+  },
+  "realized_selected_lifts": {
+    "Composite": 13,
+    "Adapted": 25,
+    "Direct": 12
+  },
+  "entanglement_policy": {
+    "level": "high",
+    "min_types": 2,
+    "prefer": [
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ]
+  },
+  "repo_policy": {
+    "min_python_loc_median_target": 8000,
+    "no_overlap_with": [
+      "benchmark/sources/registry.json",
+      "benchmark/sources/external50_registry.json"
+    ]
+  },
+  "calibration": {
+    "flash_replace_if": ">85% or RRES≈1.0",
+    "flash_prefer": "40%-65%",
+    "flash_keep_if_reasonable": "20%-40%",
+    "forbid": "post-hoc hidden tests to tune pass rate"
+  }
+}

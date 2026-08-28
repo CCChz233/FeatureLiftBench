@@ -1,6 +1,6 @@
 # Research analysis evidence
 
-> **Documentation status: generated/reference · Last verified: 2026-08-04**
+> **Documentation status: generated/reference · Last verified: 2026-08-28**
 
 本目录只保留仍可复查的历史分析证据，不再承担当前研究路线规划。
 历史优先级见 [CURRENT_RESEARCH.md](../../archive/plans/CURRENT_RESEARCH.md)。
@@ -8,7 +8,8 @@
 | 文档 | 口径 |
 | --- | --- |
 | [BENCHMARK_TAXONOMY_SPEC.md](BENCHMARK_TAXONOMY_SPEC.md) | External Python-150 v2 taxonomy 方法 |
-| [BENCHMARK_TAXONOMY_REPORT.md](BENCHMARK_TAXONOMY_REPORT.md) | v2 taxonomy 生成报告 |
+| [BENCHMARK_TAXONOMY_REPORT.md](BENCHMARK_TAXONOMY_REPORT.md) | v2 taxonomy 生成报告（仅 150） |
+| [PYTHON200_HARD_TAXONOMY_REPORT.md](PYTHON200_HARD_TAXONOMY_REPORT.md) | Python-200' 合并分析层（150+Hard-50） |
 | [TRAJECTORY_FINDINGS.md](TRAJECTORY_FINDINGS.md) | mixed-snapshot 历史轨迹 |
 
 这些材料的分类方法和案例可复用，但 source snapshots、entrypoint visibility、

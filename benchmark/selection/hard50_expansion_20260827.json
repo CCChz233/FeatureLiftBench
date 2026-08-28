@@ -1,0 +1,1277 @@
+{
+  "schema_version": "featureliftbench.hard50_expansion.v1",
+  "selection_id": "hard50-expansion-20260827-v1-reviewed",
+  "status": "hard50_python200_hard_release_rebuilt",
+  "notes": "Copy-heavy swaps complete. Hard-50 Flash reconstructed 29/50=58%. python200-hard release rebuilt 2026-08-28 (digest 6b1cac758212); suite still unreleased. Do not run 200 Flash until this release is the eval root.",
+  "python150_freeze_id": "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd",
+  "keep_external50": true,
+  "new_main_suite": "python200-hard (150 + Hard-50); External-50 is a side split",
+  "targets": {
+    "selected": 50,
+    "backup": 15,
+    "families": {
+      "registry_plugin_dispatch": 16,
+      "config_resolve_discover": 8,
+      "workflow_session_orchestration": 9,
+      "validate_normalize_construct": 7,
+      "parse_tokenize_decode": 5,
+      "direct_tooling_copytrap": 5
+    },
+    "lift_types": {
+      "Composite": 14,
+      "Adapted": 24,
+      "Direct": 12
+    }
+  },
+  "pilot_candidates": [
+    "zope_interface__adapter_registry_core__001",
+    "cliff__command_dispatch_core__001",
+    "hydra_core__compose_initialize_core__001",
+    "dogpile_cache__region_backend_core__001",
+    "paste__dispatch_map_core__001",
+    "oslo_config__opt_group_core__001",
+    "polyfactory__model_factory_core__001",
+    "luigi__task_requires_core__001",
+    "taskiq__broker_task_core__001",
+    "graphene__schema_execute_core__001"
+  ],
+  "rows": [
+    {
+      "task_id": "zope_interface__adapter_registry_core__001",
+      "package": "zope.interface",
+      "repository_url": "https://github.com/zopefoundation/zope.interface",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "commit": "2bd6aec44be61493d3bc5c8b1e73624287e63d9e",
+      "design_card": "benchmark/selection/hard50_design_cards/zope_interface__adapter_registry_core__001.md",
+      "paper_fit": "RQ1/RQ4: implicit registry closure. Removing it leaves no ZCA-style dispatch evidence.",
+      "why_hard": "Lookup is global and interface-driven; copy of one module misses registration side effects."
+    },
+    {
+      "task_id": "zope_component__site_lookup_core__001",
+      "package": "zope.component",
+      "repository_url": "https://github.com/zopefoundation/zope.component",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "commit": "bb12836f35b40f427fc313a0bc033816c30d890d",
+      "design_card": "benchmark/selection/hard50_design_cards/zope_component__site_lookup_core__001.md",
+      "paper_fit": "RQ4: site-manager closure on top of zope.interface.",
+      "why_hard": "Depends on interface identities and a global site; naive extract misses get/query semantics."
+    },
+    {
+      "task_id": "cliff__command_dispatch_core__001",
+      "package": "cliff",
+      "repository_url": "https://github.com/openstack/cliff",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "89efc71e3660e0f5b5fc56fa455890950c205401",
+      "design_card": "benchmark/selection/hard50_design_cards/cliff__command_dispatch_core__001.md",
+      "paper_fit": "RQ5 lift=Adapted registry: command plugins without writing a new CLI framework.",
+      "why_hard": "Commands are entry-point loaded; Hard vs E50 Direct CLI helpers."
+    },
+    {
+      "task_id": "hydra_core__compose_initialize_core__001",
+      "package": "hydra-core",
+      "repository_url": "https://github.com/facebookresearch/hydra",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "02ba9be659d07e9cdcf4c6d48bc8e7bd02df4ca3",
+      "design_card": "benchmark/selection/hard50_design_cards/hydra_core__compose_initialize_core__001.md",
+      "paper_fit": "RQ1+RQ4: plugin search path + global initialize. Distinct from OmegaConf-only merge.",
+      "why_hard": "GlobalHydra plus config groups; copy-all pulls launchers the slice forbids."
+    },
+    {
+      "task_id": "dogpile_cache__region_backend_core__001",
+      "package": "dogpile.cache",
+      "repository_url": "https://github.com/sqlalchemy/dogpile.cache",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "resource_coupling"
+      ],
+      "commit": "185db4fb6cd844cddac17cc3dcbbd51a876891da",
+      "design_card": "benchmark/selection/hard50_design_cards/dogpile_cache__region_backend_core__001.md",
+      "paper_fit": "RQ2+RQ4: backend registry with a large unused backend tree as copy-all decoy.",
+      "why_hard": "Must wire region+backend+creator; copying redis backend fails isolation."
+    },
+    {
+      "task_id": "kombu__serialization_registry_core__001",
+      "package": "kombu",
+      "repository_url": "https://github.com/celery/kombu",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "data_model_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/kombu__serialization_registry_core__001.md",
+      "paper_fit": "RQ4 registry without requiring a live broker.",
+      "why_hard": "Serializers live in a global registry; transport code is a copy-all trap.",
+      "replaced_by": "routes__mapper_match_core__001",
+      "replace_reason": "selected review: serializer registry too copyable"
+    },
+    {
+      "task_id": "connexion__openapi_resolver_core__001",
+      "package": "connexion",
+      "repository_url": "https://github.com/spec-first/connexion",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "a23d44e0e0421fd83f5ba132269bcfd04b855a16",
+      "design_card": "benchmark/selection/hard50_design_cards/connexion__openapi_resolver_core__001.md",
+      "paper_fit": "RQ1 framework_plugin: spec-driven dispatch, not greenfield Flask.",
+      "why_hard": "Resolver+spec+framework coupling; E50 flask_cors never required spec closure."
+    },
+    {
+      "task_id": "apispec__plugin_documenter_core__001",
+      "package": "apispec",
+      "repository_url": "https://github.com/marshmallow-code/apispec",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "b8a369570aa6a8f24cb60577ab11cdbff26445f3",
+      "design_card": "benchmark/selection/hard50_design_cards/apispec__plugin_documenter_core__001.md",
+      "paper_fit": "RQ5 Adapted plugin surface for OpenAPI documenters.",
+      "why_hard": "Plugins mutate spec in-place via hooks; skipping plugin init looks like a pass then fails Hidden."
+    },
+    {
+      "task_id": "limits__strategy_storage_core__001",
+      "package": "limits",
+      "repository_url": "https://github.com/alisaifee/limits",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "cb0ff4294d1b713b7892f975443d04cd21d98dfa",
+      "design_card": "benchmark/selection/hard50_design_cards/limits__strategy_storage_core__001.md",
+      "paper_fit": "RQ4 strategy+storage registry with unused network backends as decoy.",
+      "why_hard": "Strategy objects are not a single function; wrong storage silently breaks windows."
+    },
+    {
+      "task_id": "oauthlib__grant_dispatch_core__001",
+      "package": "oauthlib",
+      "repository_url": "https://github.com/oauthlib/oauthlib",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "40b0ab56da3682c2484a4b78bbff309f8025d950",
+      "design_card": "benchmark/selection/hard50_design_cards/oauthlib__grant_dispatch_core__001.md",
+      "paper_fit": "RQ1 protocol dispatch: grant type is a registry of handlers.",
+      "why_hard": "Validator callbacks and grant classes are split; copy of tokens.py is insufficient."
+    },
+    {
+      "task_id": "traitlets__configurable_core__001",
+      "package": "traitlets",
+      "repository_url": "https://github.com/ipython/traitlets",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "framework_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/traitlets__configurable_core__001.md",
+      "paper_fit": "RQ1+RQ5: Jupyter-stack config objects without jupyter_core overlap.",
+      "why_hard": "Trait validation + config merge + help metadata; E50-style one-file extract fails.",
+      "replaced_by": "injector__module_bind_core__001",
+      "replace_reason": "pilot review: Configurable slice too close to vendoring traitlets core"
+    },
+    {
+      "task_id": "cement__controller_plugin_core__001",
+      "package": "cement",
+      "repository_url": "https://github.com/datafolklabs/cement",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": "b5af20431d4c50f0c1bfb7ed5544b620edbe4c73",
+      "design_card": "benchmark/selection/hard50_design_cards/cement__controller_plugin_core__001.md",
+      "paper_fit": "RQ4 framework plugin + hooks, a realistic extraction target.",
+      "why_hard": "App lifecycle registers handlers; missing hook registration fails Hidden."
+    },
+    {
+      "task_id": "falcon__responder_routing_core__001",
+      "package": "falcon",
+      "repository_url": "https://github.com/falconry/falcon",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "ea2b14d34bdb0dc7c92c5cced84c8be021e3cb86",
+      "design_card": "benchmark/selection/hard50_design_cards/falcon__responder_routing_core__001.md",
+      "paper_fit": "RQ1 Direct-but-framework: routing table is the feature, rest of falcon is decoy.",
+      "why_hard": "Router+responders+error handlers; copying whole falcon still fails compactness."
+    },
+    {
+      "task_id": "confuse__nested_view_core__001",
+      "package": "confuse",
+      "repository_url": "https://github.com/beetbox/confuse",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "99d55efbd30d04701ea896041b2edb80f3838eb4",
+      "design_card": "benchmark/selection/hard50_design_cards/confuse__nested_view_core__001.md",
+      "paper_fit": "RQ1 multi-source config. Distinct from python-dotenv/dynaconf already in 150/E50.",
+      "why_hard": "Views are lazy and templated; naive dict merge fails Hidden.",
+      "replaced_by": "paste__dispatch_map_core__001",
+      "replace_reason": "pilot Flash pass with RRES 0.87 (copy-heavy); waitress backup failed isolation (getaddrinfo)"
+    },
+    {
+      "task_id": "oslo_config__opt_group_core__001",
+      "package": "oslo.config",
+      "repository_url": "https://github.com/openstack/oslo.config",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "37b787699a6c2138fb2a38e3699c26a8adf892d0",
+      "design_card": "benchmark/selection/hard50_design_cards/oslo_config__opt_group_core__001.md",
+      "paper_fit": "RQ4 global CONF + group registry, the classic implicit config closure.",
+      "why_hard": "Opts must be registered before parse; copy of cfg.py without Opt types fails."
+    },
+    {
+      "task_id": "pre_commit__config_load_core__001",
+      "package": "pre-commit",
+      "repository_url": "https://github.com/pre-commit/pre-commit",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "resource_coupling"
+      ],
+      "commit": "a9bba55a3f74068b53f4bd4d831d7e05e34eae6c",
+      "design_card": "benchmark/selection/hard50_design_cards/pre_commit__config_load_core__001.md",
+      "paper_fit": "RQ2: huge installer/language tree is decoy around a bounded config slice.",
+      "why_hard": "Schema+normalization+language defaults; copy-all of pre-commit is RRES~1."
+    },
+    {
+      "task_id": "pylint__config_find_core__001",
+      "package": "pylint",
+      "repository_url": "https://github.com/pylint-dev/pylint",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "parser_state_coupling"
+      ],
+      "commit": "46d7486dd3d1313165b901d52227037d14951495",
+      "design_card": "benchmark/selection/hard50_design_cards/pylint__config_find_core__001.md",
+      "paper_fit": "RQ1 discovery chain inside a large linter (copy-all trap).",
+      "why_hard": "Config search + checker enablement; extracting one checker misses merge order."
+    },
+    {
+      "task_id": "configargparse__layered_parse_core__001",
+      "package": "ConfigArgParse",
+      "repository_url": "https://github.com/bw2/ConfigArgParse",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/configargparse__layered_parse_core__001.md",
+      "paper_fit": "RQ5 Adapted config: argparse-shaped API with extra overlay semantics.",
+      "why_hard": "Precedence is easy to get wrong; Hidden checks env-over-file.",
+      "replaced_by": "oslo_policy__enforcer_core__001",
+      "replace_reason": "selected review: single-file overlay, likely Flash>85%"
+    },
+    {
+      "task_id": "django_environ__env_cast_core__001",
+      "package": "django-environ",
+      "repository_url": "https://github.com/joke2k/django-environ",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": "9c1fc30b2b2330f297187904190c3baf80919876",
+      "design_card": "benchmark/selection/hard50_design_cards/django_environ__env_cast_core__001.md",
+      "paper_fit": "RQ5 framework_coupling without vendoring Django.",
+      "why_hard": "Cast helpers encode Django URL dialects; naive getenv fails db/list.",
+      "replaced_by": "dulwich__config_parse_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo slice"
+    },
+    {
+      "task_id": "copier__template_answers_core__001",
+      "package": "copier",
+      "repository_url": "https://github.com/copier-org/copier",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "resource_coupling"
+      ],
+      "commit": "5f71fad40920cd03f0fe6bf2292daa43cf089fff",
+      "design_card": "benchmark/selection/hard50_design_cards/copier__template_answers_core__001.md",
+      "paper_fit": "RQ2 large template engine with a bounded answers/config slice.",
+      "why_hard": "Question schema + exclusion + answers file; copy-all of jinja render is wrong closure."
+    },
+    {
+      "task_id": "python_configuration__layered_config_core__001",
+      "package": "python-configuration",
+      "repository_url": "https://github.com/tr11/python-configuration",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "f9da97f5e6a387753052d9f3850d7d41f4a75e10",
+      "design_card": "benchmark/selection/hard50_design_cards/python_configuration__layered_config_core__001.md",
+      "paper_fit": "RQ1 layered config distinct from dynaconf/omegaconf already used.",
+      "why_hard": "Merge order and dotted keys; shallow dict wrap fails Hidden."
+    },
+    {
+      "task_id": "goodconf__typed_env_core__001",
+      "package": "goodconf",
+      "repository_url": "https://github.com/lincolnloop/goodconf",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "6fd9a4561ba69aad95fac87836652debed3e33a6",
+      "design_card": "benchmark/selection/hard50_design_cards/goodconf__typed_env_core__001.md",
+      "paper_fit": "RQ1 typed settings object (not pydantic-settings, already in 150).",
+      "why_hard": "Field env aliases + file overlay; copying pydantic-settings mental model fails."
+    },
+    {
+      "task_id": "bandit__config_plugin_core__001",
+      "package": "bandit",
+      "repository_url": "https://github.com/PyCQA/bandit",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "f8b9f1a2210f50539d0e28b1b457462cdb4036a1",
+      "design_card": "benchmark/selection/hard50_design_cards/bandit__config_plugin_core__001.md",
+      "paper_fit": "RQ2: security scanner repo as decoy around config+plugin ids.",
+      "why_hard": "Plugin ids are registered dynamically; config skip lists are Hidden-sensitive."
+    },
+    {
+      "task_id": "fabric__env_config_core__001",
+      "package": "fabric",
+      "repository_url": "https://github.com/fabric/fabric",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/fabric__env_config_core__001.md",
+      "paper_fit": "RQ4 Invoke-adjacent config (invoke already in E50) at Fabric layer.",
+      "why_hard": "Config object is nested and SSH-flavored; tests must stay offline.",
+      "replaced_by": "cherrypy__dispatch_tool_core__001",
+      "replace_reason": "selected review: thin Invoke Config layer"
+    },
+    {
+      "task_id": "trio__nursery_cancel_core__001",
+      "package": "trio",
+      "repository_url": "https://github.com/python-trio/trio",
+      "disposition": "backup",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/trio__nursery_cancel_core__001.md",
+      "paper_fit": "RQ4 lifecycle/cancel Hidden. Distinct from tenacity retry in 150.",
+      "why_hard": "Structured concurrency invariants; copying trio.socket fails isolation.",
+      "replaced_by": "taskiq__broker_task_core__001",
+      "replace_reason": "pilot review: nursery/cancel needs Trio runtime vendoring"
+    },
+    {
+      "task_id": "anyio__task_group_core__001",
+      "package": "anyio",
+      "repository_url": "https://github.com/agronholm/anyio",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "ae250440c90020b030ba4e83cccc37e9a84512c5",
+      "design_card": "benchmark/selection/hard50_design_cards/anyio__task_group_core__001.md",
+      "paper_fit": "RQ5 Adapted workflow over a backend factory (implicit backend pick).",
+      "why_hard": "Backend plugin via sniffio; wrong backend or missing cancel semantics fail Hidden."
+    },
+    {
+      "task_id": "luigi__task_requires_core__001",
+      "package": "luigi",
+      "repository_url": "https://github.com/spotify/luigi",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "resource_coupling"
+      ],
+      "commit": "715f65c4a56a908ef0a1df4df6fc33b8420e2e6c",
+      "design_card": "benchmark/selection/hard50_design_cards/luigi__task_requires_core__001.md",
+      "paper_fit": "RQ2+RQ4: DAG orchestration with a huge unused contrib/ tree.",
+      "why_hard": "requires() graph + complete() + targets; copy scheduler web fails compactness."
+    },
+    {
+      "task_id": "dramatiq__actor_stub_broker_core__001",
+      "package": "dramatiq",
+      "repository_url": "https://github.com/Bogdanp/dramatiq",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "commit": "848b35f2f960457ff54a72f9edb3af0de754f72f",
+      "design_card": "benchmark/selection/hard50_design_cards/dramatiq__actor_stub_broker_core__001.md",
+      "paper_fit": "RQ4 actor registry + broker; unused brokers are copy-all decoy.",
+      "why_hard": "Global broker and middleware chain; extracting @actor decorator only fails."
+    },
+    {
+      "task_id": "spiffworkflow__bpmn_engine_core__001",
+      "package": "SpiffWorkflow",
+      "repository_url": "https://github.com/sartography/SpiffWorkflow",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "parser_state_coupling"
+      ],
+      "commit": "d4d6915ca2aeb4cececacfce779dacc82ad06e30",
+      "design_card": "benchmark/selection/hard50_design_cards/spiffworkflow__bpmn_engine_core__001.md",
+      "paper_fit": "RQ4 real process-engine extraction, not a toy state enum.",
+      "why_hard": "Parser+spec+workflow instance; E50 python-statemachine is a smaller cousin."
+    },
+    {
+      "task_id": "authlib__oauth2_server_core__001",
+      "package": "authlib",
+      "repository_url": "https://github.com/lepture/authlib",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "772bc72fe8440e6c5dd0a6615fb42d7466f85546",
+      "design_card": "benchmark/selection/hard50_design_cards/authlib__oauth2_server_core__001.md",
+      "paper_fit": "RQ1 session protocol. joserfc/pyjwt in E50 are token codecs, not grant workflow.",
+      "why_hard": "Grant registry + validator + token mixing; token-only extract fails Hidden."
+    },
+    {
+      "task_id": "beaker__session_cache_core__001",
+      "package": "Beaker",
+      "repository_url": "https://github.com/bbangert/beaker",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "framework_coupling"
+      ],
+      "commit": "14368d97c2dafa16260bcc79df97a513b553a841",
+      "design_card": "benchmark/selection/hard50_design_cards/beaker__session_cache_core__001.md",
+      "paper_fit": "RQ4 session+cache backends; unused backends are decoy.",
+      "why_hard": "Namespace managers are plugin-like; cookie vs memory mismatch fails Hidden."
+    },
+    {
+      "task_id": "rocketry__cond_schedule_core__001",
+      "package": "rocketry",
+      "repository_url": "https://github.com/Miksus/rocketry",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": "8da223c743003166f5567a017b4ba3dfb34454ef",
+      "design_card": "benchmark/selection/hard50_design_cards/rocketry__cond_schedule_core__001.md",
+      "paper_fit": "RQ5 Direct scheduler DSL inside a larger session object.",
+      "why_hard": "Condition language + session; Hidden checks combination operators."
+    },
+    {
+      "task_id": "pandera__dataframe_schema_core__001",
+      "package": "pandera",
+      "repository_url": "https://github.com/unionai-oss/pandera",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "third_party_dependency_coupling"
+      ],
+      "commit": "9777c23b4bbc146c115a479b7551d0671c76ebcd",
+      "design_card": "benchmark/selection/hard50_design_cards/pandera__dataframe_schema_core__001.md",
+      "paper_fit": "RQ1+RQ4 stateful schema over a third-party dataframe (allowed pandas).",
+      "why_hard": "Column checks compose; copying examples without SchemaModel fails Hidden."
+    },
+    {
+      "task_id": "openapi_core__request_validate_core__001",
+      "package": "openapi-core",
+      "repository_url": "https://github.com/python-openapi/openapi-core",
+      "disposition": "backup",
+      "planned_lift_type": "Composite",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "framework_coupling"
+      ],
+      "commit": "0337b43bd65dac2f5ed041b78996383370f72da3",
+      "design_card": "benchmark/selection/hard50_design_cards/openapi_core__request_validate_core__001.md",
+      "paper_fit": "RQ4 unmarshalling vs jsonschema-only (jsonschema already in 150).",
+      "why_hard": "Spec+request+unmarshal types; naive jsonschema.validate misses media types.",
+      "replaced_by": "graphene__schema_execute_core__001",
+      "replace_reason": "pilot Flash missing_submission plus urllib/offline spec conflict"
+    },
+    {
+      "task_id": "mashumaro__dataclass_codec_core__001",
+      "package": "mashumaro",
+      "repository_url": "https://github.com/Fatal1ty/mashumaro",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "0ad3eaed34f09e4a361613b607aa78e9a51d9999",
+      "design_card": "benchmark/selection/hard50_design_cards/mashumaro__dataclass_codec_core__001.md",
+      "paper_fit": "RQ5 Adapted codec distinct from marshmallow/pydantic/cattrs already used.",
+      "why_hard": "Mixin codegen and config; copying mashumaro/json only fails dialects."
+    },
+    {
+      "task_id": "fastjsonschema__compile_validate_core__001",
+      "package": "fastjsonschema",
+      "repository_url": "https://github.com/horejsek/python-fastjsonschema",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "02bde116258b8ff92375b484be39f4d5e98cdba1",
+      "design_card": "benchmark/selection/hard50_design_cards/fastjsonschema__compile_validate_core__001.md",
+      "paper_fit": "RQ1 compiled validator vs jsonschema library already in 150.",
+      "why_hard": "Compiler output must match formats/required; wrong draft fails Hidden.",
+      "replaced_by": "stdnum__isbn_validate_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo or fat-oracle slice"
+    },
+    {
+      "task_id": "dependency_injector__container_core__001",
+      "package": "dependency-injector",
+      "repository_url": "https://github.com/ets-labs/python-dependency-injector",
+      "disposition": "backup",
+      "planned_lift_type": "Composite",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/dependency_injector__container_core__001.md",
+      "paper_fit": "RQ4 construct+registry: DI graph is the extraction target.",
+      "why_hard": "Provider graph and wiring by name; copying examples/flask fails isolation.",
+      "replaced_by": "quart__blueprint_dispatch_core__001",
+      "replace_reason": "selected review: Cython/native container"
+    },
+    {
+      "task_id": "apischema__serialization_core__001",
+      "package": "apischema",
+      "repository_url": "https://github.com/wyfo/apischema",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "a35301341c71d354b2553ae3dabc5262be521756",
+      "design_card": "benchmark/selection/hard50_design_cards/apischema__serialization_core__001.md",
+      "paper_fit": "RQ5 typed (de)ser not covered by mashumaro/pydantic slices.",
+      "why_hard": "Conversion registry is implicit; Hidden checks alias and error paths."
+    },
+    {
+      "task_id": "typedload__type_load_core__001",
+      "package": "typedload",
+      "repository_url": "https://github.com/ltworf/typedload",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "parser_state_coupling"
+      ],
+      "commit": "0806c8192a9cef94a7ece26f9f7b79e634281674",
+      "design_card": "benchmark/selection/hard50_design_cards/typedload__type_load_core__001.md",
+      "paper_fit": "RQ1 Direct constructor from types; still needs union/error Hidden.",
+      "why_hard": "Union and extra-key policy; naive json.loads+TypeError fails."
+    },
+    {
+      "task_id": "polyfactory__model_factory_core__001",
+      "package": "polyfactory",
+      "repository_url": "https://github.com/litestar-org/polyfactory",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "e420486b11b9f82b7816d86a8f53c20ce29df86f",
+      "design_card": "benchmark/selection/hard50_design_cards/polyfactory__model_factory_core__001.md",
+      "paper_fit": "RQ5 construct factories; Litestar monorepo is a copy-all trap.",
+      "why_hard": "Factory metaclass + type inspection; copying faker calls is not the feature.",
+      "replaces": "injector__module_bind_core__001"
+    },
+    {
+      "task_id": "openapi_schema_validator__draft_core__001",
+      "package": "openapi-schema-validator",
+      "repository_url": "https://github.com/python-openapi/openapi-schema-validator",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "parser_state_coupling"
+      ],
+      "commit": "005e0804dd853714e6ddd8d6e8c808266df6a3c1",
+      "design_card": "benchmark/selection/hard50_design_cards/openapi_schema_validator__draft_core__001.md",
+      "paper_fit": "RQ5 dialect validator vs jsonschema 150 and openapi-core companion.",
+      "why_hard": "OAS nullable/discriminator differ from JSON Schema; copy jsonschema fails."
+    },
+    {
+      "task_id": "docutils__rst_transform_core__001",
+      "package": "docutils",
+      "repository_url": "https://github.com/docutils/docutils",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "80d74774f8f2c464c3b251ec671ea9e28d79ef5f",
+      "design_card": "benchmark/selection/hard50_design_cards/docutils__rst_transform_core__001.md",
+      "paper_fit": "RQ5 deep parser state, not E50 tinycss2 roundtrip.",
+      "why_hard": "Settings+parser+transforms; copy rst2html launcher is the wrong closure.",
+      "replaced_by": "tornado__http_headers_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo or fat-oracle slice"
+    },
+    {
+      "task_id": "mistune__markdown_plugin_core__001",
+      "package": "mistune",
+      "repository_url": "https://github.com/lepture/mistune",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "a1b50bc12e066e5707ff797f821829bfcdab03b5",
+      "design_card": "benchmark/selection/hard50_design_cards/mistune__markdown_plugin_core__001.md",
+      "paper_fit": "RQ4 plugin-parser: unused plugins are decoy.",
+      "why_hard": "Plugin tokens + renderer methods; copying mistune.md examples fails Hidden."
+    },
+    {
+      "task_id": "asttokens__token_annotate_core__001",
+      "package": "asttokens",
+      "repository_url": "https://github.com/gristlabs/asttokens",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "f97a6e1403d9f0e93940a11b507524550a5c3896",
+      "design_card": "benchmark/selection/hard50_design_cards/asttokens__token_annotate_core__001.md",
+      "paper_fit": "RQ1 parser-state Direct with real AST coupling.",
+      "why_hard": "Token/AST alignment is Hidden-sensitive; ast.parse alone fails."
+    },
+    {
+      "task_id": "bytecode__code_roundtrip_core__001",
+      "package": "bytecode",
+      "repository_url": "https://github.com/MatthieuDartiailh/bytecode",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "9eea62692be09d07a454aa5244029cc5434096d7",
+      "design_card": "benchmark/selection/hard50_design_cards/bytecode__code_roundtrip_core__001.md",
+      "paper_fit": "RQ4 instruction-stream state, not a string parser.",
+      "why_hard": "Label/jump and opcode versions; copy dis.dis wrappers fail Hidden.",
+      "replaced_by": "pika__channel_spec_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo or fat-oracle slice"
+    },
+    {
+      "task_id": "pyfakefs__os_patch_core__001",
+      "package": "pyfakefs",
+      "repository_url": "https://github.com/pytest-dev/pyfakefs",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "framework_coupling"
+      ],
+      "commit": "6b77856b216e283c31300ce08525cb0b61136485",
+      "design_card": "benchmark/selection/hard50_design_cards/pyfakefs__os_patch_core__001.md",
+      "paper_fit": "RQ2: large fake-os tree; feature is Patcher+FakeFilesystem, rest is decoy.",
+      "why_hard": "Must patch the right modules; copying tests/examples leaks real FS.",
+      "replaced_by": "webob__request_response_core__001",
+      "replace_reason": "eval runtime: Patcher + sitecustomize os.path.realpath RecursionError"
+    },
+    {
+      "task_id": "httpretty__uri_stub_core__001",
+      "package": "HTTPretty",
+      "repository_url": "https://github.com/gabrielfalcao/HTTPretty",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "resource_coupling"
+      ],
+      "commit": "f9f012711597634d40066d144a36888b3addcc46",
+      "design_card": "benchmark/selection/hard50_design_cards/httpretty__uri_stub_core__001.md",
+      "paper_fit": "RQ2 HTTP stub inside a repo with many unused adapters.",
+      "why_hard": "Socket intercept vs requests adapters; E50 vcrpy is cassette file IO, this is monkeypatch."
+    },
+    {
+      "task_id": "respx__route_mock_core__001",
+      "package": "respx",
+      "repository_url": "https://github.com/lundberg/respx",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "57d8c29705fdbbaeb5cd216f1ea3bb0386d7ba16",
+      "design_card": "benchmark/selection/hard50_design_cards/respx__route_mock_core__001.md",
+      "paper_fit": "RQ2 httpx-oriented mock (httpx already in 150) with a bounded router slice.",
+      "why_hard": "Route matching patterns; copying httpx internals fails isolation.",
+      "replaced_by": "mitmproxy__url_parse_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo or fat-oracle slice"
+    },
+    {
+      "task_id": "betamax__cassette_match_core__001",
+      "package": "betamax",
+      "repository_url": "https://github.com/betamaxpy/betamax",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "framework_coupling"
+      ],
+      "commit": "8f3d284103676a43d1481b5cffae96f3a601e0be",
+      "design_card": "benchmark/selection/hard50_design_cards/betamax__cassette_match_core__001.md",
+      "paper_fit": "RQ5 vs E50 vcrpy: requests Session integration, still copy-trap on unused matchers.",
+      "why_hard": "Matcher set + cassette format; naive json dump fails Hidden matchers."
+    },
+    {
+      "task_id": "pyhamcrest__matcher_core__001",
+      "package": "PyHamcrest",
+      "repository_url": "https://github.com/hamcrest/PyHamcrest",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/pyhamcrest__matcher_core__001.md",
+      "paper_fit": "RQ2 matcher library with many unused combinators as decoy.",
+      "why_hard": "Mismatch descriptions and combinators; copying assertEqual fails Hidden.",
+      "replaced_by": "wcmatch__globmatch_core__001",
+      "replace_reason": "selected review: matcher subset rewritable"
+    },
+    {
+      "task_id": "oslo_policy__enforcer_core__001",
+      "package": "oslo.policy",
+      "repository_url": "https://github.com/openstack/oslo.policy",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": "69890e47048014944c80aae27f82941a598fb573",
+      "design_card": "benchmark/selection/hard50_design_cards/oslo_policy__enforcer_core__001.md",
+      "paper_fit": "Backup for registry slot: policy rule registry.",
+      "why_hard": "Rule parsers + enforcer; same family as oslo.config.",
+      "replaces": "configargparse__layered_parse_core__001"
+    },
+    {
+      "task_id": "cherrypy__dispatch_tool_core__001",
+      "package": "CherryPy",
+      "repository_url": "https://github.com/cherrypy/cherrypy",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "commit": "1f75bc9eed8e0e385f64f368bd69f58d96fb8c2b",
+      "design_card": "benchmark/selection/hard50_design_cards/cherrypy__dispatch_tool_core__001.md",
+      "paper_fit": "Backup framework dispatch if falcon/connexion blocked.",
+      "why_hard": "Tools registry + dispatch; huge unused servers.",
+      "replaces": "fabric__env_config_core__001"
+    },
+    {
+      "task_id": "quart__blueprint_dispatch_core__001",
+      "package": "quart",
+      "repository_url": "https://github.com/pallets/quart",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "47dcc0119287c5ef912472a8744b09363d1599d8",
+      "design_card": "benchmark/selection/hard50_design_cards/quart__blueprint_dispatch_core__001.md",
+      "paper_fit": "Backup Flask-family async dispatch without duplicating Flask 150.",
+      "why_hard": "ASGI+blueprint; copy flask mental model misses async app.",
+      "replaces": "dependency_injector__container_core__001"
+    },
+    {
+      "task_id": "injector__module_bind_core__001",
+      "package": "injector",
+      "repository_url": "https://github.com/python-injector/injector",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "ee3bd35c34e8162fde260ac4bfcdfaae3ddd858b",
+      "design_card": "benchmark/selection/hard50_design_cards/injector__module_bind_core__001.md",
+      "paper_fit": "Backup DI if dependency-injector native bits block.",
+      "why_hard": "Binder graph; similar RQ4 construct+registry.",
+      "replaces": "traitlets__configurable_core__001",
+      "replaced_by": "polyfactory__model_factory_core__001",
+      "replace_reason": "pilot review: single-file oracle, compactness artificial"
+    },
+    {
+      "task_id": "myst_parser__md_to_docutils_core__001",
+      "package": "myst-parser",
+      "repository_url": "https://github.com/executablebooks/MyST-Parser",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "framework_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/myst_parser__md_to_docutils_core__001.md",
+      "paper_fit": "Backup deep markdown/docutils if docutils slice blocked.",
+      "why_hard": "Sphinx-coupled parser; copy markdown-it-py (already in 150) is not enough."
+    },
+    {
+      "task_id": "redbaron__fst_mutate_core__001",
+      "package": "redbaron",
+      "repository_url": "https://github.com/PyCQA/redbaron",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "9b4a1825d160269815ca7bc90f55fff8a5e76e29",
+      "design_card": "benchmark/selection/hard50_design_cards/redbaron__fst_mutate_core__001.md",
+      "paper_fit": "Backup if asttokens/bytecode too VM-specific.",
+      "why_hard": "FST vs AST; Hidden checks formatting preservation.",
+      "replaces": "polyfactory__model_factory_core__001"
+    },
+    {
+      "task_id": "executing__source_node_core__001",
+      "package": "executing",
+      "repository_url": "https://github.com/alexmojaki/executing",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "resource_coupling"
+      ],
+      "commit": null,
+      "design_card": "benchmark/selection/hard50_design_cards/executing__source_node_core__001.md",
+      "paper_fit": "Backup parser-state Direct.",
+      "why_hard": "Frame/AST mapping is fragile; naive inspect.getsource fails."
+    },
+    {
+      "task_id": "graphene__schema_execute_core__001",
+      "package": "graphene",
+      "repository_url": "https://github.com/graphql-python/graphene",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "framework_coupling"
+      ],
+      "commit": "82903263080b3b7f22c2ad84319584d7a3b1a1f6",
+      "design_card": "benchmark/selection/hard50_design_cards/graphene__schema_execute_core__001.md",
+      "paper_fit": "Backup workflow: GraphQL execution session.",
+      "why_hard": "Type registry + execute; copy graphql-core only fails graphene mapping.",
+      "replaces": "openapi_core__request_validate_core__001"
+    },
+    {
+      "task_id": "taskiq__broker_task_core__001",
+      "package": "taskiq",
+      "repository_url": "https://github.com/taskiq-python/taskiq",
+      "disposition": "selected",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "commit": "ced1909574128687c6dd0d09976c6eb0131ab085",
+      "design_card": "benchmark/selection/hard50_design_cards/taskiq__broker_task_core__001.md",
+      "paper_fit": "Backup for dramatiq slot.",
+      "why_hard": "Broker plugin + task registry.",
+      "replaces": "trio__nursery_cancel_core__001"
+    },
+    {
+      "task_id": "webob__request_response_core__001",
+      "package": "WebOb",
+      "repository_url": "https://github.com/Pylons/webob",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "c0d70f985ff6f04dcc59822ca5216cfd0ada666c",
+      "design_card": "benchmark/selection/hard50_design_cards/webob__request_response_core__001.md",
+      "paper_fit": "Backup WSGI request object with Pyramid decoy nearby in ecosystem.",
+      "why_hard": "Ad-hoc dict environ vs Request API; Hidden header case.",
+      "replaces": "pyfakefs__os_patch_core__001"
+    },
+    {
+      "task_id": "routes__mapper_match_core__001",
+      "package": "routes",
+      "repository_url": "https://github.com/bbangert/routes",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "framework_coupling"
+      ],
+      "commit": "7e82bd895a120cbf73f271c32ac289d51124303f",
+      "design_card": "benchmark/selection/hard50_design_cards/routes__mapper_match_core__001.md",
+      "paper_fit": "Backup routing table if falcon blocked.",
+      "why_hard": "Match vs generate inverse; conditions.",
+      "replaces": "kombu__serialization_registry_core__001"
+    },
+    {
+      "task_id": "pika__channel_spec_core__001",
+      "package": "pika",
+      "repository_url": "https://github.com/pika/pika",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "2126d43a76c14fb8d365d96bd1bdcef13dad75b5",
+      "design_card": "benchmark/selection/hard50_design_cards/pika__channel_spec_core__001.md",
+      "paper_fit": "RQ2: AMQP frame codec vs adapters/connection decoy.",
+      "why_hard": "Frame marshal/decode; copying BlockingConnection fails isolation."
+    },
+    {
+      "task_id": "waitress__adjustments_core__001",
+      "package": "waitress",
+      "repository_url": "https://github.com/Pylons/waitress",
+      "disposition": "backup",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "framework_coupling"
+      ],
+      "commit": "7a855a2d36e4a672b4ff2db8c8483dde3de590dd",
+      "design_card": "benchmark/selection/hard50_design_cards/waitress__adjustments_core__001.md",
+      "paper_fit": "Backup config object inside a server (copy-all trap).",
+      "why_hard": "Many knobs; Hidden checks aliases and validation.",
+      "replace_reason": "pilot isolation: Adjustments.__init__ calls socket.getaddrinfo"
+    },
+    {
+      "task_id": "paste__dispatch_map_core__001",
+      "package": "Paste",
+      "repository_url": "https://github.com/cdent/paste",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "config_environment_coupling"
+      ],
+      "commit": "28e461548498138b8814b243be432a04a7895dba",
+      "design_card": "benchmark/selection/hard50_design_cards/paste__dispatch_map_core__001.md",
+      "paper_fit": "Backup composite WSGI dispatch.",
+      "why_hard": "Prefix matching + factory config.",
+      "replaces": "confuse__nested_view_core__001"
+    },
+    {
+      "task_id": "wcmatch__globmatch_core__001",
+      "package": "wcmatch",
+      "repository_url": "https://github.com/facelessuser/wcmatch",
+      "disposition": "backup",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "9f8a9f6b7479e8ee4d033976d0a24faaca4a1830",
+      "design_card": "benchmark/selection/hard50_design_cards/wcmatch__globmatch_core__001.md",
+      "paper_fit": "Backup Direct copy-trap if pathspec-like needed; larger than pathspec.",
+      "why_hard": "Flag combinations; Hidden brace/negate.",
+      "replaces": "pyhamcrest__matcher_core__001",
+      "replaced_by": "mimesis__person_address_core__001",
+      "replace_reason": "Flash copy_heavy_pass RRES~1 on small-repo slice"
+    },
+    {
+      "task_id": "dulwich__config_parse_core__001",
+      "package": "dulwich",
+      "repository_url": "https://github.com/jelmer/dulwich",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "2f039e67903559e279cb61250c6ea31bfa5f727c",
+      "design_card": "benchmark/selection/hard50_design_cards/dulwich__config_parse_core__001.md",
+      "paper_fit": "RQ2: Git config slice inside a large porcelain/pack tree.",
+      "why_hard": "Section tuples and includes; copying porcelain fails isolation."
+    },
+    {
+      "task_id": "mimesis__person_address_core__001",
+      "package": "mimesis",
+      "repository_url": "https://github.com/lk-geimfari/mimesis",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "resource_coupling"
+      ],
+      "commit": "b285fd17ada4c916338c08fc105b8b72bda0630a",
+      "design_card": "benchmark/selection/hard50_design_cards/mimesis__person_address_core__001.md",
+      "paper_fit": "RQ2: Person/Address vs dozens of unused locale JSON trees.",
+      "why_hard": "Must load the right dataset files; copying Generic pulls unused providers."
+    },
+    {
+      "task_id": "mitmproxy__url_parse_core__001",
+      "package": "mitmproxy",
+      "repository_url": "https://github.com/mitmproxy/mitmproxy",
+      "disposition": "selected",
+      "planned_lift_type": "Direct",
+      "feature_family": "direct_tooling_copytrap",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "resource_coupling"
+      ],
+      "commit": "2ac5b089d953585c66026a53f678270e094e48e5",
+      "design_card": "benchmark/selection/hard50_design_cards/mitmproxy__url_parse_core__001.md",
+      "paper_fit": "RQ2: URL parse slice inside a large proxy/addon tree.",
+      "why_hard": "Must extract parse plus host checks; copying addons fails isolation."
+    },
+    {
+      "task_id": "stdnum__isbn_validate_core__001",
+      "package": "stdnum",
+      "repository_url": "https://github.com/arthurdejong/python-stdnum",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "resource_coupling"
+      ],
+      "commit": "006192e59be8ed6e08fd680256868a6c31eb2ba9",
+      "design_card": "benchmark/selection/hard50_design_cards/stdnum__isbn_validate_core__001.md",
+      "paper_fit": "RQ2: ISBN slice vs hundreds of unused country modules.",
+      "why_hard": "Checksum and ISBN-10/13 conversion; country modules are the copy-all trap."
+    },
+    {
+      "task_id": "tornado__http_headers_core__001",
+      "package": "tornado",
+      "repository_url": "https://github.com/tornadoweb/tornado",
+      "disposition": "selected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "commit": "0096f2897c98facdcd9716009ee934a7381af5ef",
+      "design_card": "benchmark/selection/hard50_design_cards/tornado__http_headers_core__001.md",
+      "paper_fit": "RQ2: HTTPHeaders slice inside IOLoop/web; unlike fat docutils oracle.",
+      "why_hard": "Header case and multi-value cookies; copying IOLoop is the wrong closure."
+    }
+  ]
+}

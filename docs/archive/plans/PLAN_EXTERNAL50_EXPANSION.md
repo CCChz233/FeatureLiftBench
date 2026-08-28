@@ -1,6 +1,8 @@
 # Plan: External-50 扩题（+50 → Python-200）
 
-> **Documentation status: archived · Indexed: 2026-08-04**
+> **Documentation status: archived · Indexed: 2026-08-04**  
+> 扩题已结束。要把已发布的 External-50 **提升到 Python-150 工程规格**，见现行
+> [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](../../PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)。
 
 **状态：** 已冻结 External-50 release · **50/50 design cards 已填** · **Python-200 release checks 通过**  
 **日期：** 2026-08-01  

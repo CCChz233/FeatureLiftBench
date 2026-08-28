@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 # Path-independent FeatureLiftBench experiment runner.
 #
+# Experiments are benchmark × agent × method. Catalogs:
+#   benchmark/suites.toml  agent/registry.toml  method/registry.toml
+#
 # Usage (from anywhere, after cloning the repo):
+#   ./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main
 #   ./run_experiment.sh --arm main --tasks iniconfig__parse_config__001
-#   ./run_experiment.sh --compare-arms main,entrypoint_hint,public_feedback,short_prompt \
-#       --tasks iniconfig__parse_config__001,transitions__state_machine_core__hard3_001
-#   ./run_experiment.sh --suite sanity --arm main
+#   ./run_experiment.sh --compare-methods main,entrypoint_hint \
+#       --tasks iniconfig__parse_config__001
+#   ./run_experiment.sh --suite sanity --method main
 #
 # All paths are resolved relative to the repository root (script location).
 set -euo pipefail
@@ -19,40 +23,46 @@ export PATH="${FLB_ROOT}/.venv/bin:${PATH}"
 
 usage() {
   cat <<'EOF'
-FeatureLiftBench experiment runner (relative paths; machine-independent)
+FeatureLiftBench experiment runner (benchmark × agent × method)
 
 Usage:
-  ./run_experiment.sh [options]
+  ./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main [options]
+  ./scripts/run_experiment.sh --method main --suite sanity [options]
 
-Arms / profiles:
-  --arm main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|cgcc_lite|cgcc_roc|cgcc_rmc|fcec|self_contract|test_first_lift|p0
-      Map to OpenHands DeepSeek profiles (uses harness/config/agents.example.toml)
-  --profile NAME
-      Explicit --agent-profile (overrides --arm mapping)
-  --compare-arms a,b,c
-      Run the same tasks once per arm (sequential)
+Catalog (list ids):
+  PYTHONPATH=harness python -B -m featureliftbench.cli catalog list
+  PYTHONPATH=harness python -B -m featureliftbench.cli catalog check
 
-Tasks:
+Benchmark:
+  --benchmark python200_hard|python150|hard50|python200_legacy|sanity|staging|batch3_pilot
+      Named suite from benchmark/suites.toml (sets --tasks-root and --source-registry)
+  --suite sanity|main|staging|pilot
+      Legacy alias. `main` means python150, not the paper Python-200' suite.
+  --tasks-root REL_PATH        Override suite root. Default: benchmark/tasks
+  --source-registry REL_PATH   Override the canonical source registry
   --tasks id1,id2,...          Comma-separated task ids under --tasks-root
   --task-file PATH             File with one task id per line (# comments ok)
-  --suite sanity|main|staging|pilot
-                               Run all tasks under a known root
-  --tasks-root REL_PATH        Default: benchmark/tasks
-                               sanity -> benchmark/sanity
-                               pilot  -> benchmark/batch3_pilot
-  --source-registry REL_PATH   Override the canonical source registry
+
+Agent:
+  --agent NAME                 Registry id or CLI name. Default: openhands-agent
+                               openhands | deepseek-harness | codex | mini-swe-agent | ...
+  --agent-config REL_PATH      Default: agents.example.toml for methods; else agents.toml
+  --profile NAME               Explicit --agent-profile (overrides method mapping)
+
+Method:
+  --method NAME                Registry id from method/registry.toml. Default: main
+  --arm NAME                   Alias of --method (kept for old scripts)
+  --compare-methods a,b,c      Run the same tasks once per method (sequential)
+  --compare-arms a,b,c         Alias of --compare-methods
 
 Agent / eval:
-  --agent NAME                 Default: openhands-agent
-  --agent-config REL_PATH      Default: agents.example.toml for arms; else agents.toml
   --env-file REL_PATH          Default: .env
   --docker / --no-docker       Default: --docker (agent+eval docker)
   --agent-image NAME           Default: featureliftbench-agent:latest
-                               (or FEATURELIFTBENCH_AGENT_DOCKER_IMAGE)
   --eval-image NAME            Default: featureliftbench-eval:latest
   --workers N                  Default: 1
   --timeout SEC                Default: 3600
-  --retry-only-status LIST    Resume-only statuses to rerun
+  --retry-only-status LIST     Resume-only statuses to rerun
   --no-progress
 
 Output:
@@ -61,10 +71,12 @@ Output:
   --resume DIR                 Resume an existing suite dir
 
 Examples:
-  ./run_experiment.sh --arm main --tasks iniconfig__parse_config__001
-  ./run_experiment.sh --compare-arms main,entrypoint_hint,public_feedback,short_prompt \
-      --tasks iniconfig__parse_config__001,transitions__state_machine_core__hard3_001
-  ./run_experiment.sh --suite sanity --arm main --docker
+  ./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main \
+      --docker --workers 1 --timeout 3600
+  ./run_experiment.sh --method main --tasks iniconfig__parse_config__001
+  ./run_experiment.sh --compare-methods main,entrypoint_hint,public_feedback,short_prompt \
+      --tasks iniconfig__parse_config__001
+  ./run_experiment.sh --suite sanity --method main --docker
 EOF
 }
 
@@ -74,7 +86,9 @@ COMPARE_ARMS=""
 TASKS_CSV=""
 TASK_FILE=""
 SUITE=""
+BENCHMARK=""
 TASKS_ROOT="benchmark/tasks"
+TASKS_ROOT_SET=0
 AGENT="openhands-agent"
 AGENT_CONFIG=""
 ENV_FILE=".env"
@@ -93,13 +107,14 @@ SOURCE_REGISTRY=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help) usage; exit 0 ;;
-    --arm) ARM="$2"; shift 2 ;;
+    --arm|--method) ARM="$2"; shift 2 ;;
     --profile) PROFILE="$2"; shift 2 ;;
-    --compare-arms) COMPARE_ARMS="$2"; shift 2 ;;
+    --compare-arms|--compare-methods) COMPARE_ARMS="$2"; shift 2 ;;
     --tasks) TASKS_CSV="$2"; shift 2 ;;
     --task-file) TASK_FILE="$2"; shift 2 ;;
     --suite) SUITE="$2"; shift 2 ;;
-    --tasks-root) TASKS_ROOT="$2"; shift 2 ;;
+    --benchmark) BENCHMARK="$2"; shift 2 ;;
+    --tasks-root) TASKS_ROOT="$2"; TASKS_ROOT_SET=1; shift 2 ;;
     --source-registry) SOURCE_REGISTRY="$2"; shift 2 ;;
     --agent) AGENT="$2"; shift 2 ;;
     --agent-config) AGENT_CONFIG="$2"; shift 2 ;;
@@ -123,38 +138,43 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-arm_to_profile() {
-  case "$1" in
-    main) echo "openhands_deepseek_v4_flash_main" ;;
-    entrypoint_hint|entrypoint-hint|hints) echo "openhands_deepseek_v4_flash_entrypoint_hint" ;;
-    public_feedback|public-feedback|public) echo "openhands_deepseek_v4_flash_public_feedback" ;;
-    nopublic|no_public|no-public) echo "openhands_deepseek_v4_flash_main" ;;
-    short|short_prompt|short-prompt) echo "openhands_deepseek_v4_flash_short_prompt" ;;
-    pruned|pruned_context|pruned-context) echo "openhands_deepseek_v4_flash_main" ;;
-    td|td_cognition|td-cognition|cognition) echo "openhands_deepseek_v4_flash_td_cognition" ;;
-    exec|exec_contract|exec-contract|execution_contract) echo "openhands_deepseek_v4_flash_exec_contract" ;;
-    cgcc|cgcc_lite|cgcc-lite|cgcc_roc|cgcc-roc|cgcc_rmc|cgcc-rmc|fcec) echo "openhands_deepseek_v4_flash_exec_contract" ;;
-    self|self_contract|self-contract|sac) echo "openhands_deepseek_v4_flash_self_contract" ;;
-    tfl|test_first|test-first|test_first_lift|test-first-lift) echo "openhands_deepseek_v4_flash_test_first_lift" ;;
-    p0) echo "openhands_deepseek_v4_flash_rsg_pilot_p0" ;;
-    *)
-      echo "Unknown arm: $1 (use main|entrypoint_hint|public_feedback|short_prompt|pruned_context|td_cognition|exec_contract|cgcc_lite|cgcc_roc|cgcc_rmc|fcec|self_contract|test_first_lift|p0 or --profile)" >&2
-      return 2
-      ;;
-  esac
+catalog() {
+  "${PYTHON}" -B -m featureliftbench.cli catalog "$@"
 }
 
-case "${SUITE}" in
-  "") ;;
-  sanity) TASKS_ROOT="benchmark/sanity" ;;
-  main) TASKS_ROOT="benchmark/tasks" ;;
-  staging) TASKS_ROOT="benchmark/staging" ;;
-  pilot|batch3) TASKS_ROOT="benchmark/batch3_pilot" ;;
-  *)
-    echo "Unknown --suite: ${SUITE}" >&2
-    exit 2
-    ;;
-esac
+if [[ "${SUITE}" == "main" ]]; then
+  SUITE="python150"
+fi
+if [[ -n "${SUITE}" && -n "${BENCHMARK}" && "${SUITE}" != "${BENCHMARK}" ]]; then
+  echo "Use either --benchmark or --suite, not both (${BENCHMARK} vs ${SUITE})" >&2
+  exit 2
+fi
+if [[ -z "${BENCHMARK}" && -n "${SUITE}" ]]; then
+  BENCHMARK="${SUITE}"
+fi
+
+if [[ -n "${BENCHMARK}" ]]; then
+  eval "$(catalog suite --benchmark "${BENCHMARK}" --format bash)"
+  if [[ "${TASKS_ROOT_SET}" -eq 0 ]]; then
+    TASKS_ROOT="${CATALOG_TASKS_ROOT}"
+  fi
+  if [[ -z "${SOURCE_REGISTRY}" ]]; then
+    SOURCE_REGISTRY="${CATALOG_SOURCE_REGISTRY}"
+  fi
+  SUITE="${CATALOG_BENCHMARK_ID}"
+fi
+
+eval "$(catalog agent --agent "${AGENT}" --format bash)"
+AGENT="${CATALOG_AGENT_CLI}"
+AGENT_ID="${CATALOG_AGENT_ID}"
+
+method_profile() {
+  catalog profile --agent "${AGENT_ID}" --method "$1"
+}
+
+method_flags() {
+  catalog flags --method "$1"
+}
 
 if [[ -z "${SOURCE_REGISTRY}" ]]; then
   if [[ "${TASKS_ROOT}" == "benchmark/staging" ]]; then
@@ -202,13 +222,12 @@ if [[ ${#TASK_IDS[@]} -gt 0 ]]; then
     TASK_ARGS+=(--task-id "$t")
   done
 elif [[ -z "${SUITE}" && -z "${RESUME}" ]]; then
-  echo "Specify --tasks, --task-file, --suite, or --resume" >&2
+  echo "Specify --tasks, --task-file, --benchmark, --suite, or --resume" >&2
   exit 2
 fi
 
 if [[ -z "${AGENT_CONFIG}" ]]; then
   if [[ -n "${ARM}" || -n "${COMPARE_ARMS}" || -n "${PROFILE}" ]]; then
-    # Ablation / OpenHands profiles
     if [[ "${AGENT}" == openhands-agent || "${AGENT}" == openhands ]]; then
       AGENT_CONFIG="$(flb_ablation_agent_config)"
     else
@@ -253,54 +272,18 @@ run_one() {
   local arm_label="$2"
   local out="$3"
   local arm_flags=()
-  case "${arm_label}" in
-    entrypoint_hint|entrypoint-hint|hints)
-      arm_flags+=(--agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-    public_feedback|public-feedback|public)
-      arm_flags+=(--no-agent-source-hints --agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-    short|short_prompt|short-prompt)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style short --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-    pruned|pruned_context|pruned-context)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context pruned_context --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-    td|td_cognition|td-cognition|cognition)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-    exec|exec_contract|exec-contract|execution_contract)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant clean3 --no-self-contract --no-test-first-lift)
-      ;;
-    cgcc|cgcc_lite|cgcc-lite)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_lite --no-self-contract --no-test-first-lift)
-      ;;
-    cgcc_roc|cgcc-roc)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_roc --no-self-contract --no-test-first-lift)
-      ;;
-    cgcc_rmc|cgcc-rmc)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant cgcc_rmc --no-self-contract --no-test-first-lift)
-      ;;
-    fcec)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --exec-contract --exec-contract-variant fcec --no-self-contract --no-test-first-lift)
-      ;;
-    self|self_contract|self-contract|sac)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --self-contract --no-test-first-lift)
-      ;;
-    tfl|test_first|test-first|test_first_lift|test-first-lift)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --test-first-lift)
-      ;;
-    *)
-      arm_flags+=(--no-agent-source-hints --no-agent-public-tests --prompt-style standard --source-context full_repository --no-td-cognition --no-exec-contract --no-self-contract --no-test-first-lift)
-      ;;
-  esac
+  local flag
+  while IFS= read -r flag; do
+    [[ -n "${flag}" ]] && arm_flags+=("${flag}")
+  done < <(method_flags "${arm_label}")
 
   mkdir -p "$out"
   echo "============================================================"
   echo "FLB_ROOT=${FLB_ROOT}"
   echo "Python:  ${PYTHON}"
-  echo "Agent:   ${AGENT}"
-  echo "Profile: ${profile}  (arm=${arm_label})"
+  echo "Agent:   ${AGENT} (${AGENT_ID})"
+  echo "Method:  ${arm_label}"
+  echo "Profile: ${profile}"
   echo "Config:  ${AGENT_CONFIG}"
   echo "Tasks:   ${TASKS_ROOT} (${#TASK_IDS[@]} explicit ids)"
   echo "Sources: ${SOURCE_REGISTRY}"
@@ -368,7 +351,7 @@ PY
     echo "run-agent hard-failed (exit ${status})" >&2
     return "$status"
   fi
-  echo "Finished arm=${arm_label} -> ${out} (exit ${status})"
+  echo "Finished method=${arm_label} -> ${out} (exit ${status})"
   return 0
 }
 
@@ -384,7 +367,7 @@ if [[ -n "${COMPARE_ARMS}" ]]; then
   for arm in "${ARMS[@]}"; do
     arm="$(echo "$arm" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
     [[ -z "$arm" ]] && continue
-    profile="$(arm_to_profile "$arm")"
+    profile="$(method_profile "$arm")"
     out="${COMPARE_ROOT}/${arm}"
     if ! run_one "$profile" "$arm" "$out"; then
       overall=1
@@ -394,11 +377,11 @@ if [[ -n "${COMPARE_ARMS}" ]]; then
   exit "$overall"
 fi
 
+if [[ -z "${ARM}" ]]; then
+  ARM="main"
+fi
 if [[ -z "${PROFILE}" ]]; then
-  if [[ -z "${ARM}" ]]; then
-    ARM="main"
-  fi
-  PROFILE="$(arm_to_profile "${ARM}")"
+  PROFILE="$(method_profile "${ARM}")"
 fi
 
 if [[ -n "${OUTPUT}" ]]; then

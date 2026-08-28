@@ -1,9 +1,11 @@
 # Python-200 跨模型 Main
 
-> **Status: current · Last verified: 2026-08-18**
-> 用途：组会 / 汇报直接投屏。
-> 条件：Full-Repository / No-Hint Main，120 步，每题一次。
-> 指标：evaluator `functional_gate`；`summary.passed` / `run.status` 只作运行诊断。
+> **Status: current · Last verified: 2026-08-28**  
+> 用途：组会 / 汇报直接投屏。  
+> **这是旧 Python-200（150 + External-50），不是论文新主表。**  
+> 新主套件见 [STATUS.md](STATUS.md) 与 [汇报_题集构成.md](汇报_题集构成.md)。  
+> 条件：Full-Repository / No-Hint Main，120 步，每题一次。  
+> 指标：evaluator `functional_gate`；`summary.passed` / `run.status` 只作运行诊断。  
 > **不是**当前 V1（Main+2M），也不是旧 Lite V1 checker/repair 协议。
 
 ## 主结果

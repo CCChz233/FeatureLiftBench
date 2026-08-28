@@ -9,6 +9,7 @@
 # Optional env:
 #   PYTHON=python3.12  VENV_DIR=.venv  SKIP_MINI=1  MINI_BIN=/path/to/mini
 #   INSTALL_OPENHANDS=1  # only needed for non-Docker local OpenHands runs
+#   SKIP_RUNTIME_AGENTS=1  # skip host dsh/codex install (same CLI level as OpenHands)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -76,6 +77,12 @@ if [[ "${SKIP_MINI:-0}" != "1" ]]; then
   python -m pip install mini-swe-agent
 fi
 
+if [[ "${SKIP_RUNTIME_AGENTS:-0}" != "1" ]]; then
+  echo "Installing pinned DeepSeek Harness and Codex CLIs..."
+  PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \
+    python -m featureliftbench.runtime_install all
+fi
+
 PY_MINOR="$("$PYTHON" -c 'import sys; print(sys.version_info.minor)')"
 if [[ "${INSTALL_OPENHANDS:-0}" == "1" && "$PY_MINOR" -ge 12 ]]; then
   echo "Installing openhands CLI via uv (Python 3.12+)..."
@@ -119,19 +126,30 @@ cat <<EOF
 
 Setup complete.
 
-Canonical compliant Python-150 plan (no API call):
+Canonical Python-200 plan (no API call):
 
-  ./harness/scripts/run_python150_paper.sh openhands_deepseek_v4_flash
+  ./harness/scripts/run_python200_paper.sh openhands_deepseek_v4_flash
 
-Build the OpenHands agent and evaluator images before execution:
+Same CLI level as OpenHands, after this bootstrap:
+
+  PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_tasks \
+    --agent deepseek-harness --agent-profile dsh_deepseek_v4_flash_main --eval-docker ...
+  PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_tasks \
+    --agent codex --agent-profile codex_gpt_main --eval-docker ...
+
+Build agent/eval images before Official Main Docker runs:
 
   FEATURELIFTBENCH_AGENT_PYTHON_BASE=python:3.12-slim \\
   FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \\
     docker/build_agent_image.sh featureliftbench-agent:latest
   docker/build_eval_image.sh featureliftbench-eval:latest
 
+To also put dsh/codex in the agent image:
+
+  FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1 docker/build_agent_image.sh
+
 Full server runbook:
 
-  docs/SERVER_RUNBOOK_V2_PYTHON150.md
+  docs/SERVER_RUNBOOK_PYTHON200.md
 
 EOF

@@ -28,6 +28,7 @@ DEFAULT_PACKETS = (
     _REPO / "artifacts/research_analysis/hidden_provenance/flash33_packets.json"
 )
 DEFAULT_TASKS = _REPO / "benchmark" / "python200_tasks"
+DEFAULT_SOURCE_REGISTRY = _REPO / "benchmark" / "sources" / "python200_registry.json"
 DEFAULT_OUTPUT = (
     _REPO / "artifacts/research_analysis/agentic_evidence/flash33_suite_v1"
 )
@@ -119,7 +120,10 @@ def _materialize_case(
     repo_dest = case_dir / "repo"
     try:
         provenance = materialize_task_source(
-            task_id, repo_dest, require_registered=True
+            task_id,
+            repo_dest,
+            require_registered=True,
+            registry_path=DEFAULT_SOURCE_REGISTRY,
         )
     except ValueError:
         provenance = None
@@ -134,6 +138,12 @@ def _materialize_case(
         if repo_dest.exists():
             shutil.rmtree(repo_dest)
         shutil.copytree(task_dir / "repo", repo_dest)
+    python_files = list(repo_dest.rglob("*.py"))
+    if not python_files:
+        raise RuntimeError(
+            f"{task_id}: materialized repo has no Python files; "
+            "check python200_registry.json and source archives"
+        )
     audit_packet = {
         "schema_version": "featureliftbench.agentic_evidence.canary_packet.v1",
         "task_id": task_id,

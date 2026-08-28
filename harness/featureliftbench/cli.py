@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 
 from .agent_adapters import SUPPORTED_AGENTS
+from .catalog import add_catalog_parser
+from .catalog import dispatch_catalog
 from .agent_docker import DEFAULT_AGENT_IMAGE
 from .docker_eval import DEFAULT_EVAL_IMAGE
 from .docker_eval import DEFAULT_GO_EVAL_IMAGE
@@ -574,6 +576,8 @@ def main(argv: list[str] | None = None) -> int:
         help="print resolved plan without running",
     )
 
+    add_catalog_parser(subparsers)
+
     args = parser.parse_args(argv)
 
     if args.command == "validate-task":
@@ -598,6 +602,8 @@ def main(argv: list[str] | None = None) -> int:
         return _cmd_resume(args)
     if args.command == "smoke":
         return _cmd_smoke(args)
+    if args.command == "catalog":
+        return dispatch_catalog(args)
 
     parser.error(f"unknown command: {args.command}")
     return 2

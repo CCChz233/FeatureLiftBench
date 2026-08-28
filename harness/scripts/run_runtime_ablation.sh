@@ -9,6 +9,8 @@ cd "$ROOT"
 TASK_LIST="$ROOT/harness/config/experiments/runtime_ablation_core12_v1.txt"
 AGENT_CONFIG="$ROOT/harness/config/agents.toml"
 SLICE_NAME="core12"
+RUNTIME_BIN="$ROOT/third_party/runtimes/bin"
+export PATH="$RUNTIME_BIN:$PATH"
 
 usage() {
   cat >&2 <<'EOF'
@@ -16,7 +18,7 @@ Usage:
   run_runtime_ablation.sh <adapter> <profile> [run-id] [options]
 
 Adapters:
-  deepseek-harness    pinned dsh --profile headless
+  deepseek-harness    pinned dsh --profile headless (same CLI level as OpenHands)
   codex               pinned codex exec (non-interactive)
 
 Options:
@@ -27,7 +29,7 @@ Options:
   --timeout SEC         Per-task wall timeout (default: 3600).
   --eval-image IMAGE    Eval image (default: featureliftbench-eval:latest).
   --agent-docker        Run the runtime inside FEATURELIFTBENCH_AGENT_DOCKER_IMAGE.
-                        The stock OpenHands agent image does not include dsh/codex.
+                        Rebuild that image with FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1.
 
 Examples:
   ./harness/scripts/run_runtime_ablation.sh deepseek-harness dsh_deepseek_v4_flash_main
@@ -70,7 +72,7 @@ resolve_python() {
 
 PYTHON="$(resolve_python)"
 if [[ ! -f "$AGENT_CONFIG" ]]; then
-  echo "Missing $AGENT_CONFIG; copy agents.example.toml and add the runtime profile." >&2
+  echo "Missing $AGENT_CONFIG; run ./setup.sh or copy agents.example.toml." >&2
   exit 2
 fi
 
@@ -113,6 +115,16 @@ done
 
 [[ "$WORKERS" =~ ^[1-9][0-9]*$ ]] || { echo "--workers must be positive" >&2; exit 2; }
 [[ "$TIMEOUT" =~ ^[1-9][0-9]*$ ]] || { echo "--timeout must be positive" >&2; exit 2; }
+
+RUNTIME_BIN_NAME="dsh"
+if [[ "$ADAPTER" == "codex" ]]; then
+  RUNTIME_BIN_NAME="codex"
+fi
+if [[ "$AGENT_DOCKER" -eq 0 && ! -x "$RUNTIME_BIN/$RUNTIME_BIN_NAME" && -z "$(command -v "$RUNTIME_BIN_NAME" || true)" ]]; then
+  echo "Installing pinned $ADAPTER CLI..."
+  PYTHONPATH="$ROOT/harness${PYTHONPATH:+:$PYTHONPATH}" \
+    "$PYTHON" -m featureliftbench.runtime_install "$ADAPTER"
+fi
 
 PROFILE_INFO="$(
   PROFILE_NAME="$PROFILE" AGENT_CONFIG="$AGENT_CONFIG" ADAPTER="$ADAPTER" "$PYTHON" - <<'PY'
@@ -200,7 +212,7 @@ echo "  eval:     $EVAL_IMAGE"
 if [[ "$AGENT_DOCKER" -eq 1 ]]; then
   echo "  agent:    docker ($AGENT_IMAGE)"
 else
-  echo "  agent:    host PATH (stock OpenHands image does not include this runtime)"
+  echo "  agent:    host CLI ($RUNTIME_BIN/$RUNTIME_BIN_NAME or PATH)"
 fi
 echo
 printf ' %q' "${COMMAND[@]}"

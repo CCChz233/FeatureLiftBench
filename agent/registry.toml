@@ -1,0 +1,60 @@
+schema = "featureliftbench.agent_registry.v1"
+description = """
+Public agent catalog. Adapter implementations stay in harness/featureliftbench/;
+this file is the stable id used by --agent. Official Main scores use OpenHands
+only. DeepSeek Harness and Codex are the same CLI level after ./setup.sh but
+must not be merged into the OpenHands paper table.
+"""
+
+[agents.openhands]
+cli_name = "openhands-agent"
+aliases = ["openhands", "openhands-agent", "openhandsagent"]
+status = "official"
+paper_table = true
+adapter = "featureliftbench.agent_adapters.OpenHandsAgentAdapter"
+docs = "docs/EVALUATION.md"
+description = "Official Main coding runtime (OpenHands)."
+
+[agents."deepseek-harness"]
+cli_name = "deepseek-harness"
+aliases = ["deepseek-harness", "dsh", "deepseek_harness"]
+status = "ablation"
+paper_table = false
+adapter = "featureliftbench.runtime_agents"
+pins = "harness/config/runtime_pins.json"
+docs = "docs/METHOD_AGENT_RUNTIME.md"
+description = "Pinned DeepSeek Harness runtime. Same evaluator and information boundary as OpenHands. Scores stay off the OpenHands paper table."
+
+[agents.codex]
+cli_name = "codex"
+aliases = ["codex", "openai-codex"]
+status = "ablation"
+paper_table = false
+adapter = "featureliftbench.runtime_agents"
+pins = "harness/config/runtime_pins.json"
+docs = "docs/METHOD_AGENT_RUNTIME.md"
+description = "Pinned OpenAI Codex CLI runtime. Same evaluator and information boundary as OpenHands. Scores stay off the OpenHands paper table."
+
+[agents."mini-swe-agent"]
+cli_name = "mini-swe-agent"
+aliases = ["mini-swe-agent", "mini", "mini_swe_agent"]
+status = "internal"
+paper_table = false
+adapter = "featureliftbench.agent_adapters"
+description = "Legacy mini-swe-agent adapter. Not Official Main."
+
+[agents."featurelift-agent"]
+cli_name = "featurelift-agent"
+aliases = ["featurelift-agent", "featurelift_agent"]
+status = "internal"
+paper_table = false
+adapter = "featureliftbench.featurelift_agent"
+description = "Internal FeatureLift agent. Not Official Main."
+
+[agents.command]
+cli_name = "command"
+aliases = ["command"]
+status = "internal"
+paper_table = false
+adapter = "featureliftbench.agent_adapters"
+description = "Raw command adapter for tests and custom binaries."

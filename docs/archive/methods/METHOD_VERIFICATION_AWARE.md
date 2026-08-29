@@ -1,6 +1,6 @@
 # Verification-aware context compression
 
-> **Status: stopped · Last verified: 2026-08-20**
+> **Status: archived · Screening stopped · Last verified: 2026-08-29**
 > Distill-24 未过停线。不要扩到 Python-200。本文件只保留筛选规范与负结果。
 
 ## 定义
@@ -30,7 +30,7 @@ Agent 仍可继续验证。论文构念是：
 | `openhands_deepseek_v4_flash_vllm_local_llm_summary` | `token` / `LLMSummarizingCondenser` | 本地 vLLM 基线 |
 | `openhands_deepseek_v4_flash_vllm_local_verification_aware` | verification-aware | 本地 vLLM 自测 ledger |
 
-机器可读冻结：[`harness/config/methods/verification_aware_compression.json`](../harness/config/methods/verification_aware_compression.json)。
+机器可读冻结：[`harness/config/methods/verification_aware_compression.json`](../../../harness/config/methods/verification_aware_compression.json)。
 
 ## 压缩规则（必须保持）
 
@@ -120,4 +120,4 @@ PYTHONPATH=harness python3 harness/scripts/compare_core12_context_efficiency.py 
 `…/verification_aware-20260819-195214` 只到 20 题，不是 Distill-24 结果。
 
 不要 Python-200，不要再调 ledger。下一正式臂是 RQ6 Public-feedback，见
-[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](../../METHOD_RQ6_PUBLIC_FEEDBACK.md)。

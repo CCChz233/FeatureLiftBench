@@ -1,9 +1,13 @@
 # V1：Main + 2M token cap
 
-> **Status: current · Last verified: 2026-08-18**
+> **Status: current · Last verified: 2026-08-29**
 > 本文件是当前 **V1** 方法的唯一规范。旧 `contract_closure_gate_lite_v1*`
 > 协议（checker / structure-stop / repair）已退役，只作历史对照。
 > 结果解释见 [FINDINGS.md](FINDINGS.md)；不要把 Core-12 写成 Python-200 通过率。
+>
+> 已完成的 Qwen **55/200** 落在 **superseded 150+External-50** 上。Python-200'
+> 上的 V1 **尚未跑**；不要把 55/200 写成新主表。新套件入口是
+> `./scripts/run_benchmark.sh --benchmark python200_hard --method v1`。
 
 ## 定义
 
@@ -19,7 +23,7 @@
 | Checker / structure-stop / repair | **关闭** |
 | Information condition | Full-Repository / No-Hint |
 | Runtime `ablation_arm` | `main`（协议未改，只加 cap） |
-| `run_python200_paper.sh` method label | `v1` |
+| CLI `--method` / `run_python200_paper.sh` label | `v1` |
 
 机器可读冻结：[`harness/config/methods/v1.json`](../harness/config/methods/v1.json)。
 
@@ -45,15 +49,29 @@ Core-12 报告：
 
 `openhands_deepseek_v4_flash_main_2m_cap` 是 V1 的别名，仅保留给 Core-12 路径。
 
-名字以 `_v1` 结尾，或含 `_v1_p<port>` 的 profile，必须满足上表信封；
-`run_python200_paper.sh` 会拒绝漂移。
+名字以 `_v1` 结尾，或含 `_v1_p<port>` 的 profile，必须满足上表信封。
+旧 `run_python200_paper.sh` 会拒绝该信封上的漂移。
 
-## 跑全量 Python-200
+## 在 Python-200' 上跑 V1
 
-Qwen3.6-35B V1-200 **已经跑完**，不要重复启动下面的 tmux 分片。下列命令仅供复现。
-DeepSeek API V1-200 按 [STATUS.md](STATUS.md) 当前不作为 blocker。
+论文主套件尚未出 V1 分。不要复用 Qwen 55/200。
 
-Plan-only：
+```bash
+./scripts/run_benchmark.sh \
+  --benchmark python200_hard \
+  --agent openhands \
+  --method v1 \
+  --output experiments/python/openhands/<model>/<run-id> \
+  --docker --workers 1 --timeout 3600
+```
+
+## 复现：旧 Python-200（150+External-50）V1
+
+Qwen3.6-35B V1-200 **已经跑完**（旧套件 55/200），不要重复启动当时的 tmux
+分片。`./logs/run_python200_v1_*.sh` 已不在树里。DeepSeek API V1-200 按
+[STATUS.md](STATUS.md) 当前不作为 blocker。
+
+Plan-only（旧 runner，含 150 freeze check）：
 
 ```bash
 ./harness/scripts/run_python200_paper.sh \
@@ -61,18 +79,18 @@ Plan-only：
   python200-v1-plan
 ```
 
-DeepSeek API 单进程：
+DeepSeek API 单进程复现：
 
 ```bash
-./logs/run_python200_v1_deepseek_flash.sh
+./harness/scripts/run_python200_paper.sh \
+  openhands_deepseek_v4_flash_v1 \
+  <run-id> \
+  --execute
 ```
 
-Qwen3.6-35B 四路并行（`:8030`–`:8033`，各 50 题；**已完成并合并**）。复现：
-
-```bash
-export FEATURELIFTBENCH_AGENT_DOCKER_NETWORK=host
-./logs/start_python200_v1_qwen35b_4shard_tmux.sh
-```
+Qwen3.6-35B 四路并行当时用本机 tmux（`:8030`–`:8033`，各 50 题；**已完成并合并**）。
+复现同一信封时用对应 `_v1_p803N` profile 分片，再跑下面的 merge；不要找已删除的
+`./logs/start_python200_v1_qwen35b_4shard_tmux.sh`。
 
 | tmux | 端口 | 分片 |
 | --- | --- | --- |
@@ -114,7 +132,7 @@ Qwen External-50 Main 已完成；不要与占用同一 API 端口的其它 Main
 
 | 范围 | Functional Pass | 说明 |
 | --- | ---: | --- |
-| Qwen3.6-35B Python-200 V1 | **55/200** | 正式 cost arm；约 329M tokens |
+| Qwen3.6-35B 旧 Python-200 V1 | **55/200** | 150+External-50；约 329M tokens；不是 200' |
 | Flash Core-12 V1 | 4/12 | 对照 Main 8/12；**不是** Python-200 |
 | Flash API V1-200 | 未跑 | 不作为 blocker；不补跑其它模型 V1-200 |
 

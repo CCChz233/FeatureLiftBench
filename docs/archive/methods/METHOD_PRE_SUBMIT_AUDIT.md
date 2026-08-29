@@ -1,6 +1,6 @@
 # Pre-submit explicit-contract audit
 
-> **Status: current · Last verified: 2026-08-18**
+> **Status: archived · Screening stopped · Last verified: 2026-08-29**
 > 本文件是 **B = explicit-contract forgetting** 的机制筛选规范。Prompt-only，
 > 不碰 Hidden，不加 checker / repair。Core-12 不是 Python-200 通过率。
 
@@ -21,7 +21,7 @@ TASK 末尾要求 agent 对照 **已经写在 TASK.md 里的** Required API 与 
 | Checker / Hidden / public tests | **关闭** |
 | Runtime `ablation_arm` | `pre_submit_contract_audit` |
 
-机器可读冻结：[`harness/config/methods/pre_submit_contract_audit.json`](../harness/config/methods/pre_submit_contract_audit.json)。
+机器可读冻结：[`harness/config/methods/pre_submit_contract_audit.json`](../../../harness/config/methods/pre_submit_contract_audit.json)。
 
 禁止：发明新 contract、猜测 Hidden、寻找 evaluator tests、`flb-contract-check`、
 repair 轮。

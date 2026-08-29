@@ -6,5 +6,6 @@ External-50 materialization and release are complete. This path remains as a com
 entry for existing design cards. The dated planning narrative is preserved at
 [archive/plans/PLAN_EXTERNAL50_EXPANSION.md](archive/plans/PLAN_EXTERNAL50_EXPANSION.md).
 
-Current operation uses [Python-200 Server Runbook](SERVER_RUNBOOK_PYTHON200.md) and current
-release facts are maintained in [STATUS.md](STATUS.md).
+Paper Main is Python-200' via [Python-200 Server Runbook](SERVER_RUNBOOK_PYTHON200.md)
+(`--benchmark python200_hard`). Current facts: [STATUS.md](STATUS.md). This file
+is not an execution entry.

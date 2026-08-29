@@ -1,6 +1,6 @@
 # FeatureLiftBench 评测与实验规范
 
-> **Status: current · Last verified: 2026-08-21**
+> **Status: current · Last verified: 2026-08-29**
 > 本文件是 Main 条件、正式实验臂、评分和结果留存要求的唯一当前规范。
 
 ## Official Main
@@ -17,7 +17,8 @@
 | Core metric 1 | Functional Pass Rate |
 | Core metric 2 | Reference-Relative Extraction Size (RRES) |
 
-Main 是 leaderboard 和论文主结果的唯一默认条件。Task contract 与可见性以
+Main 是 leaderboard 和论文主结果的唯一默认条件。当前论文套件是 Python-200'
+（`--benchmark python200_hard`）。Task contract 与可见性以
 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 为准，当前 suite identity 以
 [STATUS.md](STATUS.md) 为准。
 

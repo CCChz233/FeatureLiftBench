@@ -1,11 +1,16 @@
 # evidence/
 
-> **Documentation status: reference · Last verified: 2026-08-04**
+> **Documentation status: reference · Last verified: 2026-08-29**
 
-历史出题 gate 证据（oracle / naive / copy_all / Flash 校准），不是 v2
-Agent 主榜跑分。
+历史 **出题 gate** 证据（oracle / naive / copy_all 等），不是 Agent 主榜，也不是
+Hard-50 Flash 校准。
 
-与 `experiments/`（OpenHands leaderboard 与可选 runtime ablation）分离。
+| 目录 | 放什么 |
+| --- | --- |
+| `evidence/` | 出题期 gate（本目录） |
+| `experiments/python/` | OpenHands / runtime 模型 run |
+| `experiments/validation/` | Hard-50 校准、oracle 重跑、agentic-evidence 原料 |
+| `reports/` | 可审查的派生摘要 |
 
 ```text
 evidence/
@@ -22,5 +27,6 @@ python harness/scripts/generate_gate_report.py --all-batch1
 python harness/scripts/generate_go_gate_report.py <task_id>
 ```
 
-当前 v2 release 证据见 `reports/audits/v2_main_readiness.*`、
-`reports/audits/v2_oracle_revalidation/` 和 active benchmark freeze。
+当前 release 事实见 [`docs/STATUS.md`](../docs/STATUS.md)。Python-150 工程门见
+`reports/audits/v3_main_readiness.md`。不要往本目录写入新的 OpenHands 主榜或
+method pilot。

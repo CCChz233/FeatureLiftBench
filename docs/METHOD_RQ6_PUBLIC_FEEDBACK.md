@@ -1,9 +1,10 @@
 # RQ6 Public-feedback
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: current · Last verified: 2026-08-29**
 > 本文件是 **RQ6 Public-feedback** 信息消融的唯一规范。不是新 agent 方法，
 > 数字不进 Python-200 主表。解释见 [FINDINGS.md](FINDINGS.md)；论文稿见
 > [paper/04_results_rq6.md](paper/04_results_rq6.md)。
+> Flash-12 同日成对 **已冻结**。不要扩到 Python-200'。
 
 ## 定义
 
@@ -51,12 +52,18 @@ Flash-12：从 Flash Main-200（本地 0812 与 API 的交集）各取 6 道
 
 ## 怎么跑
 
-本地 vLLM 若未起来，脚本会改走 DeepSeek API；两者是同一 Flash，不是实验因子。
+Flash-12 **不要重跑**。若复现同一臂，用 catalog 方法而不是已删除的
+`./logs/run_rq6_public_feedback_deepseek_flash.sh`：
 
 ```bash
-# 同日两臂。第一臂 CLI exit 1 也会继续第二臂。
-ENDPOINT=api WORKERS=2 ./logs/run_rq6_public_feedback_deepseek_flash.sh both
+./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main \
+  --task-file harness/config/experiments/rq6_public_feedback_flash12_v1.txt
+./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method public_feedback \
+  --task-file harness/config/experiments/rq6_public_feedback_flash12_v1.txt
 ```
+
+历史切片落在旧 150+E50 题单上；不要把复现写成新的 Python-200' RQ6。
+`run_python200_paper.sh --execute` 仍会拒绝 `mount_public_tests` 全量 200。
 
 比较：
 

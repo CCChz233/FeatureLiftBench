@@ -1,6 +1,6 @@
 # Agent Runtime Ablation (DeepSeek Harness / Codex)
 
-> **Status: current · Last verified: 2026-08-28**
+> **Status: current · Last verified: 2026-08-29**
 > DeepSeek Harness 与 Codex 和 OpenHands 同级：clone 后跑 `./setup.sh` 即可调用。
 > 这不是 Official Main，也不是信息消融。**尚无正式分数**。
 
@@ -52,16 +52,25 @@ DeepSeek Harness 需要 Node.js `^22.19.0 || >=24`。没有 Node 时 Codex 仍�
 
 ## Run
 
-和 OpenHands 一样走 `run-agent`：
+换 runtime 只改 `--agent`，题根用论文主套件 `python200_hard`（不要默认走已
+superseded 的 `benchmark/python200_tasks`）：
 
 ```bash
-PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_tasks \
+./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main
+./scripts/run_benchmark.sh --benchmark python200_hard --agent deepseek-harness --method main
+./scripts/run_benchmark.sh --benchmark python200_hard --agent codex --method main
+```
+
+等价的底层 `run-agent`（显式题根）：
+
+```bash
+PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_hard_tasks \
   --agent openhands --agent-profile openhands_deepseek_v4_flash --eval-docker ...
 
-PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_tasks \
+PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_hard_tasks \
   --agent deepseek-harness --agent-profile dsh_deepseek_v4_flash_main --eval-docker ...
 
-PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_tasks \
+PYTHONPATH=harness python -B -m featureliftbench.cli run-agent benchmark/python200_hard_tasks \
   --agent codex --agent-profile codex_gpt_main --eval-docker ...
 ```
 

@@ -32,7 +32,8 @@ Hidden-4、DeepSeek Harness / Codex runtime 和 AutoSaddler-FLB 通过率不进�
    [paper/04_results_rq6.md](paper/04_results_rq6.md)。
 7. **Spec-adversarial 已 Kill。** Hidden-4 同日成对：Main **0/4** → SA **0/4**；
    Hidden 0→1 = **0/4**。过程上四题 checker 全绿，仍抬不动 Hidden。不要
-   Distill-24 / Python-200。见 [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md)。
+   Distill-24 / Python-200。见
+   [archive/methods/METHOD_SPEC_ADVERSARIAL.md](archive/methods/METHOD_SPEC_ADVERSARIAL.md)。
 8. **Best-so-far checkpoint 已 Kill。** Flash 本地 Main 51 道失败题补评全部独特树，
    Functional 0→1 = **0/51**。不是「过关树被最后一棵覆盖」。不要实现 checkpoint
    Agent。见 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。

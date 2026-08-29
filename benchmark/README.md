@@ -1,148 +1,157 @@
 # FeatureLiftBench Task Layout
 
-This directory holds all benchmark task packages, split workspaces, oracle artifacts, and shared source curation. **Do not add new tasks directly to `benchmark/tasks/`** without following the incremental lifecycle in [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md).
+> **Documentation status: current · Last verified: 2026-08-29**
 
-Machine-readable split definitions live in [`manifest.json`](manifest.json).
+This directory holds task packages, named suites, source registries, and freeze
+inputs. **Runnable suite names live in [`suites.toml`](suites.toml).** Do not
+add tasks directly to `benchmark/tasks/` or `benchmark/hard50/` without the
+lifecycle in [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md).
 
-The current Python-150 task packages are admitted to the frozen
-**Full-Repository / No-Hint v3 Main**. Agent workspaces are generated from the
-canonical source archives, not from the historical task-local slices. See
-[`docs/BENCHMARK_DESIGN_PRINCIPLES.md`](../docs/BENCHMARK_DESIGN_PRINCIPLES.md)
-and the current
-[`reports/audits/v3_main_readiness.md`](../reports/audits/v3_main_readiness.md).
+Paper identity and freeze hashes are maintained only in
+[`docs/STATUS.md`](../docs/STATUS.md). The paper main suite is **Python-200'**
+(frozen Python-150 + Hard-50), not 150 + External-50.
 
-## Top-Level Layout
+## Which root to use
+
+| `--benchmark` | Task root | Role |
+| --- | --- | --- |
+| `python200_hard` | `python200_hard_tasks/` | **Paper main.** 200 symlinks: 150 → `tasks/`, 50 → `hard50/`. Unreleased; full Flash table not run. |
+| `python150` | `tasks/` | Frozen Python-150 packages. Paper 150 scores must use the freeze artifact, not a dirty worktree. |
+| `hard50` | `hard50/` | Hard-50 packages only (no `reference_solution/`). Do **not** copy into `tasks/`. |
+| `python200_legacy` | `python200_tasks/` | **Superseded** 150 + External-50 view. Historical scores only. |
+| `sanity` | `sanity/` | Harness smoke. Never a leaderboard. |
+| `staging` / `batch3_pilot` | `staging/` / `batch3_pilot/` | Local candidate workspaces. Not paper splits. |
+
+```bash
+PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog list --kind suites
+./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main
+```
+
+`python200_hard_tasks/` and `python200_tasks/` are **generated views**, not a
+second edit surface. Change a task in its canonical split (`tasks/`, `hard50/`,
+or `external50/`), then rematerialize the view if needed.
+
+## Top-level layout
 
 ```text
 benchmark/
-  manifest.json          # split registry (roots, lifecycle, paper use)
-  README.md              # this file
-  tasks/                 # Python main candidate pool (current paper split)
-  curated/
-    tasks/               # Curated-7 extension, excluded from Main headline
-    references/          # Curated reference implementations
-    sources/             # Curated source trees
-  sanity/                # Python smoke tasks (not on main leaderboard)
-  go/
-    tasks/               # Go candidate / calibration tasks
-    sanity/              # Go smoke tasks
-  go_pilot/              # legacy Go pilot workspace
-  sources/               # External Main canonical source registry/archives
-  pilots/                # migration/calibration subset manifests
-  submissions/           # oracle / reference artifacts (not agent output)
-  vendor-wheels/         # vendored wheels for offline eval
+  suites.toml                 # named --benchmark ids (authority for runners)
+  manifest.json               # split registry (roots, lifecycle)
+  tasks/                      # frozen Python-150 packages
+  hard50/                     # Hard-50 packages (no oracle / reference_solution)
+  external50/                 # superseded easy/copy-heavy 50; not the new main table
+  python200_hard_tasks/       # symlink view: 150 + Hard-50
+  python200_tasks/            # symlink view: 150 + External-50 (superseded)
+  sources/                    # canonical registries and archives
+  vendor-wheels/              # offline eval wheels
+  selection/                  # suite JSON, Hard-50 ledger, freeze helpers
+  submissions/                # maintainer reference artifacts (not agent output)
+  sanity/                     # Python smoke
+  curated/                    # Curated-7 appendix; excluded from Main
+  go/  go_pilot/              # Go calibration; not paper-ready
+  pilots/                     # historical Pilot-16 manifests
+  staging/  batch3_pilot/     # local design/calibration (often gitignored)
+  hard50_pilot/               # Hard-50 construction workspace (high-risk local payload)
+  quarantine/  contract_v2/   # historical repair workspaces
 ```
 
-Local development workspaces such as `benchmark/staging/` and `benchmark/batch3_pilot/` are intentionally ignored in the public checkout. They may exist on a maintainer machine while designing or calibrating new tasks, but they are not part of the clone-and-run benchmark surface.
+Local staging and pilot trees may exist on a maintainer machine. They are not
+the clone-and-run paper surface.
 
-## Split Semantics
+## Split semantics
 
-### `benchmark/tasks/` — Python v3 External Main
+### `benchmark/python200_hard_tasks/` — paper Python-200'
 
-- Current Python External Main used for paper-scale runs: 150 frozen tasks.
-- Membership requires the passing v3 benchmark freeze; future task changes
-  invalidate that freeze and must rerun admission.
-- Treat every directory here as **main lifecycle** by split membership, even when legacy tasks omit a `status` field in `metadata.json`.
-- **New tasks must not be created here directly.** Promote from local staging or pilot workspaces only after all promotion gates pass.
+- 200 symlinks. Source registry:
+  [`sources/python200_hard_registry.json`](sources/python200_hard_registry.json).
+- Suite membership:
+  [`selection/python200_hard_suite.json`](selection/python200_hard_suite.json).
+- Materialize / check:
+  `python3.12 benchmark/selection/scripts/materialize_python200_hard_release.py --check`.
+- Do not treat this directory as a place to create or edit packages.
 
-### `benchmark/sanity/` — Python smoke (not main)
+### `benchmark/tasks/` — frozen Python-150
 
-- Small smoke set for harness and agent wiring checks.
-- **Never** included in main Pass@N leaderboard reporting.
+- 150 packages admitted to freeze
+  `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd`.
+- The worktree may drift relative to that freeze. Paper 150 numbers must come
+  from the freeze artifact, not an uncommitted dirty tree.
+- **New tasks must not be created here.** Promote from staging/pilot only after
+  gates pass. Hard-50 must not be copied here.
 
-### `benchmark/curated/tasks/` — Curated extension
+### `benchmark/hard50/` — Hard-50
 
-- Seven `vibe_app` tasks retained for extension/appendix analysis.
-- Disjoint from `benchmark/tasks/`, source registry and Main compactness
-  registry; never included in the External-150 headline.
+- 50 packages, disjoint repositories from Python-150 and External-50.
+- No `reference_solution/` on the release tree.
+- Selection ledger: `selection/hard50_expansion_20260827.json`.
 
-### `benchmark/go/tasks/` — Go candidate / calibration
+### `benchmark/external50/` and `benchmark/python200_tasks/` — superseded 150+E50
 
-- Go language split tasks (calibration, seed placeholders, redesign candidates).
-- **Not** paper-ready hard Go tasks today. See [`docs/reference/go/02_go_task_inventory.md`](../docs/reference/go/02_go_task_inventory.md).
+- External-50 remains as an easy / copy-heavy side split.
+- `python200_tasks/` is the old unified view. Do not report it as the new paper
+  main table. Historical 21.5%–72.5% numbers stay in STATUS as superseded.
 
-### `benchmark/go/sanity/` and `benchmark/go_pilot/`
+### `benchmark/sources/`
 
-- Go smoke and legacy pilot workspaces. Not main-split tasks.
+- Python-150: [`sources/registry.json`](sources/registry.json).
+- Python-200': [`sources/python200_hard_registry.json`](sources/python200_hard_registry.json).
+- Policy: [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md).
+- Agent workspaces are materialized from registered archives, not from a
+  task-local `repo/` slice.
 
-### `benchmark/sources/` — External Main canonical sources
+### `benchmark/sanity/`, `curated/`, `go/`
 
-- Canonical repository/snapshot inventory:
-  [`sources/registry.json`](sources/registry.json).
-- Normative source policy:
-  [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md).
-- Curated source trees live under `benchmark/curated/sources/`.
-- v3 task workspaces are materialized from verified registered archives; a
-  legacy task-local `repo/` is not itself canonical source evidence.
+- Sanity: smoke only; never Main Pass@N.
+- Curated-7: appendix / vibe_app extension; disjoint from Main.
+- Go: calibration; not a paper hard split.
 
-### `benchmark/pilots/` — migration/calibration manifests
+### `benchmark/submissions/`
 
-- The selected Full-Repository / No-Hint Pilot-16 is recorded in
-  [`pilots/full_repository_v2.json`](pilots/full_repository_v2.json).
-- Pilot-16 is retained as migration provenance. Its source materialization
-  gates are now subsumed by the completed Python-150 migration.
+- Maintainer reference submissions. Never mounted in the functional evaluator.
+- Agents write `submission/` under the run workspace, not here.
 
-### `benchmark/submissions/` — local reference compatibility artifacts
-
-- Reference submissions used by maintainer validation. They are never mounted
-  in a functional evaluator container.
-- **Not** where agents write output. Agents deliver to a run workspace under `submission/` (see task schema).
-
-## Per-Task Package (Python)
+## Per-task package (Python)
 
 ```text
-benchmark/<split>/<task_id>/
+benchmark/<canonical-split>/<task_id>/
   metadata.json
   requirements.lock
-  TASK.md                    # recommended human spec
-  repo/                      # historical task-local source/provenance
+  TASK.md
+  repo/                      # provenance marker; full source comes from the registry
   public_tests/
   hidden_tests/
   evaluation/
-  reference_solution/        # optional inline reference (pilots)
+  reference_solution/        # optional; absent on Hard-50 release
 ```
 
-Go tasks use `environment/go.mod` instead of `requirements.lock`. See [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md).
+Go tasks use `environment/go.mod` instead of `requirements.lock`. See
+[`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md).
 
-## Agent Output (evaluation runtime)
+## Agent output
 
-Agents produce an installable package at:
+Agents produce an installable package at `submission/featurelifted/`. Tests
+import `featurelifted`, not `submission`.
 
-```text
-submission/
-  featurelifted/             # Python canonical package name
-```
+## Adding tasks
 
-Tests import `featurelifted`, not `submission`.
-
-## Adding Tasks (summary)
-
-| Action | Allowed location |
-|---|---|
-| New Python task (always start here) | local `benchmark/staging/` or `benchmark/batch3_pilot/` |
-| Promote to main Python split | `tasks/` (copy/move only after gates) |
+| Action | Location |
+| --- | --- |
+| New Python candidate | `staging/` or `batch3_pilot/` |
+| Promote to frozen Python-150 | `tasks/` only after gates + new freeze |
+| Promote Hard-50 | `hard50/` only; never `tasks/` |
 | Python smoke | `sanity/` |
-| New Go task | `go/tasks/` (calibration) or design docs first |
-| Oracle / gold reference | `submissions/` (harness-maintained) |
-| Shared upstream template | `sources/` (curation only) |
-
-Run the read-only lifecycle checker after changes:
+| Go calibration | `go/tasks/` |
+| Oracle / gold reference | `submissions/` |
+| Canonical source | `sources/` |
 
 ```bash
 python3 scripts/check_task_lifecycle.py
 ```
 
-Reports are written to the ignored `reports/` directory.
+## Related docs
 
-For v3 Main, promotion additionally requires a canonical source registry entry,
-immutable source digest, complete tracked-tree audit, generated-workspace
-No-Hint leak check, Oracle/isolation/determinism revalidation, and a new
-benchmark freeze. A non-empty task-local `repo/` alone is insufficient.
-
-## Related Docs
-
-- [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md) — canonical task package fields
-- [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md) — lifecycle and promotion gates
-- [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md) — canonical source inclusion/digest rules
-- [`reports/audits/v3_main_readiness.md`](../reports/audits/v3_main_readiness.md) — current v3 release gate
-- [`docs/reference/python/02_python_repo_task_inventory.md`](../docs/reference/python/02_python_repo_task_inventory.md) — Python main inventory
+- [`docs/汇报_题集构成.md`](../docs/汇报_题集构成.md) — paper suite composition
+- [`docs/PLAN_HARD50_EXPANSION.md`](../docs/PLAN_HARD50_EXPANSION.md) — Hard-50 release
+- [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md)
+- [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md)
+- [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md)

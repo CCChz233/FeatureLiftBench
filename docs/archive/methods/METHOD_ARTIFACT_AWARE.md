@@ -1,6 +1,6 @@
 # Artifact-aware retention（信息角色 condenser）
 
-> **Status: current · Last verified: 2026-08-18**
+> **Status: archived · Screening stopped · Last verified: 2026-08-29**
 > 本文件是 **A = context efficiency** 的机制筛选规范。不改轨迹、不加 2M cap、
 > 不碰 Hidden。Core-12 不是 Python-200 通过率。
 
@@ -29,7 +29,7 @@ ephemeral，不是「永远保留 `featurelifted/`」。
 | `openhands_deepseek_v4_flash_recency_masking` | recency window=100 | 新旧对照 |
 | `openhands_deepseek_v4_flash_artifact_aware` | artifact-aware | 信息角色 |
 
-机器可读冻结：[`harness/config/methods/artifact_aware_retention.json`](../harness/config/methods/artifact_aware_retention.json)。
+机器可读冻结：[`harness/config/methods/artifact_aware_retention.json`](../../../harness/config/methods/artifact_aware_retention.json)。
 
 ## 压缩规则（必须保持）
 

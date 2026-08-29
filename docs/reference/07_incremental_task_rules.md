@@ -1,6 +1,6 @@
 # Incremental Task Rules
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-29**
 
 本文规定新任务进入 Python Main 的生命周期。出题宪法见
 [TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md)，package schema 见
@@ -9,7 +9,8 @@
 ## Principles
 
 1. 新任务先进入 `benchmark/staging/` 或 `benchmark/batch3_pilot/`，不直接写
-   `benchmark/tasks/`。
+   `benchmark/tasks/` 或 `benchmark/hard50/`。Hard-50 **不得** promotion 进
+   `benchmark/tasks/`。`benchmark/python200_hard_tasks/` 只是 symlink 视图。
 2. 来源必须先进入 canonical source registry；Main 不接受 target-aware
    source slice。
 3. `public_spec` 是唯一公开契约，`TASK.md` 由它生成。
@@ -52,10 +53,12 @@ metadata 可没有 `status=main`；新任务应显式记录。
 | --- | --- |
 | New Python task | local `benchmark/staging/<task_id>/` |
 | Larger pilot/calibration | local `benchmark/batch3_pilot/<task_id>/` |
+| Promote frozen Python-150 | `benchmark/tasks/` after gates + new freeze |
+| Promote Hard-50 | `benchmark/hard50/` only; never `tasks/` |
 | Python smoke | `benchmark/sanity/<task_id>/` |
 | Go calibration | `benchmark/go/tasks/<task_id>/` |
 | Oracle/reference | `benchmark/submissions/<task_id>/` |
-| Canonical source metadata | `benchmark/sources/registry.json` |
+| Canonical source metadata | `benchmark/sources/registry.json`（200' 另见 `python200_hard_registry.json`） |
 | Source archive cache | `benchmark/sources/archives/`（ignored） |
 
 ## Promotion gates

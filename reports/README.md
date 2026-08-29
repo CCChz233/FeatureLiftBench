@@ -1,10 +1,14 @@
 # FeatureLiftBench Reports
 
-> **Status: reference index · Last verified: 2026-08-21**
+> **Status: reference index · Last verified: 2026-08-29**
 > Current release numbers and blockers are maintained in [docs/STATUS.md](../docs/STATUS.md).
 
 `reports/` contains small, reviewable audits and derived analyses. Raw model runs belong under
 `experiments/`. Generated summaries never override per-task `run.json` and `eval/result.json`.
+
+Hard-50 Flash 校准原料在
+[`experiments/validation/hard50/`](../experiments/validation/hard50/)；
+agentic-evidence 小结在 [agentic_evidence/](agentic_evidence/README.md)。
 
 ## Current Release Audits
 
@@ -26,7 +30,7 @@ registries under `artifacts/` and `benchmark/`.
 
 | Path | Condition |
 | --- | --- |
-| [Current Python-200 cross-model Main](../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json) | 五组 Main Functional / 失败阶段 / RRES；150+Ext50 按题号合并；不是当前 V1 |
+| [Current Python-200 cross-model Main](../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json) | **Superseded** 150+Ext50 按题号合并；不是 Python-200' 主表 |
 | [Current Qwen V1 vs Main](../artifacts/research_analysis/current_results/qwen_v1_vs_main_20260818.json) | Qwen3.6-35B V1-200；E50 干净切片；不是 Lite 协议 |
 | [Current DeepSeek Main vs retired Lite V1 protocol](../artifacts/research_analysis/current_results/deepseek_main_vs_lite_v1_20260817.json) | DeepSeek 方法对比；不是当前 V1 |
 | [Current V1 method spec](../docs/METHOD_V1.md) | V1 = Main + 2M cap |

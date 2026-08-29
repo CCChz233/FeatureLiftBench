@@ -1,7 +1,8 @@
 # Plan: External-50 一天合同升格
 
-> **Documentation status: current · Created: 2026-08-26**  
-> **执行日：2026-08-27，必须当天做完**  
+> **Documentation status: reference · Created: 2026-08-26 · Last verified: 2026-08-29**  
+> **执行日：2026-08-27。合同升格已完成**（见文末进度）。不是当前跑分入口。  
+> 剩余 copy-all / 独立 freeze 仍按本文，且 **不并进 Python-150、不进 Python-200' 主表**。  
 > 扩题已结束：[archive/plans/PLAN_EXTERNAL50_EXPANSION.md](archive/plans/PLAN_EXTERNAL50_EXPANSION.md)  
 > 难度对齐的新 50 题不改本 split，见 [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。
 

@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-08-28**
+> **Status: current · Last verified: 2026-08-29**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Paper main suite（Python-200'）
@@ -210,9 +210,9 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 | 旧 Lite V1 Python-200 | Flash −6.5~9.0 pp | [FINDINGS.md](FINDINGS.md) |
 | Rescue+ v2.1 / v2.2 | 3/12、2/12 | [archive/snapshots/](archive/snapshots/README.md) |
 | TFL / TD / PDR / Exec-Contract | 相对 Main 零翻盘或更差 | [archive/methods/](archive/methods/README.md) |
-| Verification-aware Distill-24 | 同日 LLM summary 16/24 → VA 14/24；overflow 修补重跑未齐，停 | [METHOD_VERIFICATION_AWARE.md](METHOD_VERIFICATION_AWARE.md) |
+| Verification-aware Distill-24 | 同日 LLM summary 16/24 → VA 14/24；overflow 修补重跑未齐，停 | [archive/methods/METHOD_VERIFICATION_AWARE.md](archive/methods/METHOD_VERIFICATION_AWARE.md) |
 | RQ6 Public-feedback Flash-12 | 同日 Main 0/12 → PF **4/12**；public 6/6 救回；Hidden 多数不动 | [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
-| Spec-adversarial Hidden-4 | 同日 Main 0/4 → SA 0/4；Hidden 0→1 **0/4** → **Kill** | [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md) |
+| Spec-adversarial Hidden-4 | 同日 Main 0/4 → SA 0/4；Hidden 0→1 **0/4** → **Kill** | [archive/methods/METHOD_SPEC_ADVERSARIAL.md](archive/methods/METHOD_SPEC_ADVERSARIAL.md) |
 | Best-so-far checkpoint 离线 | Flash 失败 51 题全量独特树 Functional 0→1 = **0/51** → **Kill** | [TOKEN_UTILITY.md](TOKEN_UTILITY.md) |
 | DeepSeek Harness / Codex runtime | `./setup.sh` 安装 CLI，尚无 Core-12 分数 | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
 
@@ -235,7 +235,7 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 1. RQ6 Public-feedback Flash-12 同日成对已齐：Main 0/12 → PF 4/12。Entrypoint-Hint
    未跑。见 [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 2. Spec-adversarial Hidden-4 已 Kill（Hidden 0→1 = 0/4）。不要扩面。见
-   [METHOD_SPEC_ADVERSARIAL.md](METHOD_SPEC_ADVERSARIAL.md)。
+   [archive/methods/METHOD_SPEC_ADVERSARIAL.md](archive/methods/METHOD_SPEC_ADVERSARIAL.md)。
 3. Hidden provenance Flash-33 初标已落盘（AI 辅助，非 gold）。下一步按
    [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md) 做双 Agent
    consensus；冲突和无法证明的 obligation 保持 abstain 后再做敏感性分析。见
@@ -270,8 +270,8 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    Distill-24 或 Python-200**。相对 LLM summary（8/12，65.0M tokens）：recency
    与 artifact-aware 也是 8/12，但 token 升到 73.8M / 85.9M；pre-submit audit
    为 6/12。数字不进 Python-200 主表。见
-   [METHOD_ARTIFACT_AWARE.md](METHOD_ARTIFACT_AWARE.md) 与
-   [METHOD_PRE_SUBMIT_AUDIT.md](METHOD_PRE_SUBMIT_AUDIT.md)。
+   [archive/methods/METHOD_ARTIFACT_AWARE.md](archive/methods/METHOD_ARTIFACT_AWARE.md) 与
+   [archive/methods/METHOD_PRE_SUBMIT_AUDIT.md](archive/methods/METHOD_PRE_SUBMIT_AUDIT.md)。
 4. RQ6 n=12 已冻结，不要扩到 Python-200。Hidden provenance Flash-33 初标已落盘
    （AI 辅助，非 gold）：Explicit 11 / Recoverable 4 / Ambiguous 0 /
    Underdetermined 18。按 [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md)
@@ -285,9 +285,10 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    `last_write_frac` 当 utility。分析底稿 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
 7. 可选 runtime ablation（DeepSeek Harness / Codex）可在 Core-12 上与
    OpenHands+Flash 成对，见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
-8. External-50 升格（合同重写 / 反 copy / 独立 freeze）：按
-   [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
-   执行。2026-08-27 **一天做完合同升格**（50/50 validate、无模板句）；不改 Python-150、不重跑主表、不换仓。
+8. External-50：2026-08-27 **合同升格已完成**（50/50 validate、无模板句）。
+   copy-all / 独立 freeze 仍按
+   [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)，
+   不并进 Python-150，也不进新主表。
 9. Hard-50 已在上文 Paper main suite：release 齐、Flash 58%、200 主表未跑。
    不得把旧 E50 90%–94% 写进新主表。计划见
    [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。

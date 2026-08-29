@@ -1,6 +1,6 @@
 # Spec-grounded adversarial self-test
 
-> **Status: killed · Last verified: 2026-08-20**
+> **Status: archived · Result: killed · Last verified: 2026-08-29**
 > 本文件是 **Spec-grounded adversarial self-test** 的唯一规范。不是自反思，
 > 不是 Public-feedback，数字不进 Python-200 主表。**Hidden-4 筛选已 Kill。**
 
@@ -34,12 +34,12 @@ Hidden 与 `public_tests/` **永不**挂载。同一 128k / 120-step / No-Hint /
 不要叠 Entrypoint-Hint、Public-feedback、TFL、audit、CCG、verification-aware、
 artifact-aware 或 recency。`run_python200_paper.sh --execute` 会拒绝本臂。
 
-机器可读冻结：[`harness/config/methods/spec_adversarial_self_test.json`](../harness/config/methods/spec_adversarial_self_test.json)。
+机器可读冻结：[`harness/config/methods/spec_adversarial_self_test.json`](../../../harness/config/methods/spec_adversarial_self_test.json)。
 
 ## 切片
 
 Hidden-4：RQ6 上 Public-feedback 仍抬不动 Hidden 的四题。清单
-[`spec_adversarial_hidden4_v1.txt`](../harness/config/experiments/spec_adversarial_hidden4_v1.txt)。
+[`spec_adversarial_hidden4_v1.txt`](../../../harness/config/experiments/spec_adversarial_hidden4_v1.txt)。
 
 - `parse__format_parser_core__001`
 - `pygments__lexer_core__001`
@@ -80,7 +80,7 @@ PYTHONPATH=harness python3 harness/scripts/compare_spec_adversarial_hidden4.py \
 ## 证据（Hidden-4 已齐 · **Kill**）
 
 套件：`experiments/methods/spec_adversarial/hidden4-deepseek-v4-flash-20260820-091254/`。
-快照：[`spec_adversarial_hidden4_20260820.json`](../artifacts/research_analysis/current_results/spec_adversarial_hidden4_20260820.json)。
+快照：[`spec_adversarial_hidden4_20260820.json`](../../../artifacts/research_analysis/current_results/spec_adversarial_hidden4_20260820.json)。
 
 - 端点：DeepSeek API Flash；信封如上。挂载完整性：Main 4/4 未挂，treatment 4/4 未挂。
 - 同日 Main：**0/4** `functional_gate`（四题均为 public=1 / hidden=0）。

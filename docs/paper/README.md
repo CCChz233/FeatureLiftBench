@@ -17,7 +17,7 @@
 [汇报_题集构成.md](../汇报_题集构成.md)。
 
 旧 150 + External-50 的 21.5%–72.5% 是 superseded 对照，不是新主表。
-External-50 升格计划在
+External-50 升格计划（合同升格已完成；copy-all / freeze 仍见该文）在
 [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](../PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
 （独立 freeze；不并进 150，也不进新主表）。
 

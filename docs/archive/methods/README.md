@@ -8,6 +8,10 @@ directions. They are evidence and design history, not current benchmark protocol
 | Method | Document |
 | --- | --- |
 | Adaptive Budget V2 | [V2](METHOD_ADAPTIVE_BUDGET_V2.md) |
+| Artifact-aware retention | [Artifact-aware](METHOD_ARTIFACT_AWARE.md) |
+| Pre-submit explicit-contract audit | [Pre-submit audit](METHOD_PRE_SUBMIT_AUDIT.md) |
+| Spec-grounded adversarial self-test | [Spec-adversarial](METHOD_SPEC_ADVERSARIAL.md) |
+| Verification-aware compression | [Verification-aware](METHOD_VERIFICATION_AWARE.md) |
 | Counterexample-Guided Closure Contracts | [CGCC-lite](METHOD_CGCC_LITE.md) |
 | Execution-Guided Contract | [Exec Contract](METHOD_EXEC_CONTRACT.md) |
 | Fail-Closed Execution Contract | [FCEC](METHOD_FAIL_CLOSED_EXEC_CONTRACT.md) |

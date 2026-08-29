@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-> **Documentation status: current · Last verified: 2026-08-28**
+> **Documentation status: current · Last verified: 2026-08-29**
 
 FeatureLiftBench evaluates whether a coding agent can extract and reconstruct a
 coherent feature from a real upstream repository under a controlled information
@@ -19,8 +19,9 @@ are maintained only in [docs/STATUS.md](docs/STATUS.md).
 | Check readiness and current results | [Status](docs/STATUS.md) |
 | Current V1 method (Main + 2M cap) | [V1](docs/METHOD_V1.md) |
 | Optional DeepSeek Harness / Codex runtime | [Agent runtime](docs/METHOD_AGENT_RUNTIME.md) |
-| Run an experiment | [Run quick reference](RUN.md) · `./scripts/run_benchmark.sh` |
+| Run an experiment | [Run quick reference](RUN.md) · **only** `./scripts/run_benchmark.sh` |
 | Operate a server run | [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md) |
+| Reorganize or clean the repository | [Repository maintenance](docs/REPOSITORY_MAINTENANCE.md) |
 | Create or review a task | [Task design rules](docs/TASK_DESIGN_RULES.md) |
 | Navigate all documentation | [Documentation portal](docs/README.md) |
 
@@ -47,14 +48,18 @@ Experiments are **benchmark × agent × method**. List ids with
 
 | Path | Role |
 | --- | --- |
-| `benchmark/` | Task packages, source registries, freeze artifacts, and named suites (`suites.toml`) |
+| [`benchmark/`](benchmark/README.md) | Task packages and named suites. Paper root is `python200_hard_tasks/` (150 + Hard-50), not `python200_tasks/` |
 | `agent/` | Public catalog of coding runtimes (`--agent`). Adapters stay in `harness/` |
 | `method/` | Public catalog of protocols / information arms (`--method` / `--arm`) |
 | `harness/` | Evaluator, Docker capsule, agent adapters, and CLI. Not a third experiment axis |
+| [`scripts/`](scripts/README.md) | Maintainer entrypoints. Root `run_*.sh` other than the two forwarders are deprecated |
 | `docs/` | Current specifications, runbooks, paper material, and archived narratives |
 | `reports/` | Audits and derived analysis; not a substitute for raw task results |
-| `experiments/` | Local run outputs and transfer bundles; large artifacts are normally ignored by Git |
-| `artifacts/` | Machine-readable freezes and research-analysis state |
+| [`experiments/`](experiments/README.md) | Raw runs in seven canonical directories only |
+| `artifacts/` | Small freezes, selection, taxonomy snapshots — not full checkouts |
+| `evidence/` | Historical task-construction gates only |
+| `integrations/` | External method adapters (e.g. AutoSaddler) that do not fork the harness |
+| `archive/` | Local historical payload; not a run entrypoint |
 
 ```bash
 ./scripts/run_benchmark.sh \
@@ -66,6 +71,7 @@ Experiments are **benchmark × agent × method**. List ids with
 
 `--arm` is an alias of `--method`. Official paper numbers use OpenHands + `main`.
 DeepSeek Harness and Codex share this CLI but stay off the OpenHands table.
+Do not start experiments with root `run.sh` / `run_openhands.sh` / `run_easy.sh`.
 
 Task packages and source archives are **not** stored on GitHub. For a server
 run, copy `experiments/bundles/outgoing/FeatureLiftBench-benchmark-20260828.tar.gz`

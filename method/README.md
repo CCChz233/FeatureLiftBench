@@ -24,6 +24,7 @@ onto Python-200'.
 | `public_feedback` | RQ6 public-tests mount | no |
 | `short_prompt` | Information ablation | no |
 | `pruned_context` | Information ablation | no |
+| `autosaddler` | Prompt-only AutoSaddler pack (screening) | no |
 
 `--arm` is an alias of `--method`. Source of truth: [registry.toml](registry.toml).
 
@@ -40,3 +41,6 @@ PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog list --kind met
 4. Mark `paper_table = false` unless the method is Official Main.
 5. Run `catalog check`. Do not treat a new method as a paper contribution
    without a pre-registered comparison and a screening stop rule.
+
+AutoSaddler-FLB (`--method autosaddler`) is a prompt-pack optimizer with a
+separate train loop. See [METHOD_AUTOSADDLER.md](../docs/METHOD_AUTOSADDLER.md).

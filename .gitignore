@@ -17,6 +17,12 @@ benchmark/tasks/**/.pytest_cache/
 .repo_graph_cache/
 third_party/runtimes/
 
+# Microsoft AutoSaddler is pinned by commit and installed from GitHub, not vendored.
+AutoSaddler/
+
+# Integration virtualenvs
+integrations/**/.venv/
+
 .DS_Store
 
 .env

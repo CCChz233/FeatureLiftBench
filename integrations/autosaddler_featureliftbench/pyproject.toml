@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77.0.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autosaddler-featureliftbench"
+version = "0.1.0"
+description = "Prompt-only AutoSaddler V2 scenario adapter for FeatureLiftBench and OpenHands."
+requires-python = ">=3.12, <3.15"
+dependencies = [
+  "autosaddler @ git+https://github.com/microsoft/AutoSaddler.git@30e20ce",
+  "featureliftbench==0.1.0",
+]
+
+[project.entry-points."autosaddler.scenarios"]
+featureliftbench_openhands = "autosaddler_featureliftbench.plugin:PLUGIN"
+
+[project.scripts]
+autosaddler-flb = "autosaddler_featureliftbench.runner:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"

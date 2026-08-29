@@ -11,7 +11,7 @@
 > 写进新主表。
 
 本文只解释方法对比。Rescue+、V2、TFL、Core-12、RQ6 Flash-12、Spec-adversarial
-Hidden-4 和 DeepSeek Harness / Codex runtime 通过率不进入主表。
+Hidden-4、DeepSeek Harness / Codex runtime 和 AutoSaddler-FLB 通过率不进入主表。
 
 ## 结论先行
 

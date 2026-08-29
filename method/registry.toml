@@ -324,3 +324,24 @@ run_agent_flags = [
 
 [methods.p0.profiles]
 openhands = "openhands_deepseek_v4_flash_rsg_pilot_p0"
+
+[methods.autosaddler]
+aliases = ["autosaddler", "autosaddler-flb", "autosaddler_flb", "self-harness"]
+status = "screening"
+paper_table = false
+spec = "harness/config/methods/autosaddler.json"
+docs = "docs/METHOD_AUTOSADDLER.md"
+description = "Prompt-only AutoSaddler search over four OpenHands appendix components. Same Main information boundary. Screening only; do not merge into the OpenHands paper table."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.autosaddler.profiles]
+openhands = "openhands_deepseek_v4_flash_main"

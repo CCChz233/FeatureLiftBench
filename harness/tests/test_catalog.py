@@ -92,6 +92,16 @@ class CatalogTests(unittest.TestCase):
         self.assertIn("--agent-public-tests", flags)
         self.assertNotIn("--agent-source-hints", flags)
 
+    def test_autosaddler_is_screening_not_paper_table(self) -> None:
+        method = get_method(self.catalog, "self-harness")
+        self.assertEqual(method.id, "autosaddler")
+        self.assertFalse(method.paper_table)
+        self.assertEqual(method.status, "screening")
+        self.assertEqual(
+            method.profiles["openhands"],
+            "openhands_deepseek_v4_flash_main",
+        )
+
     def test_unknown_method_errors(self) -> None:
         with self.assertRaises(CatalogError):
             get_method(self.catalog, "not-a-method")

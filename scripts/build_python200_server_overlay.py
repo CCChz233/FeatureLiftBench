@@ -15,7 +15,6 @@ import hashlib
 import io
 import json
 import tarfile
-from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any, BinaryIO
 
@@ -187,7 +186,8 @@ def _manifest(
     }
     return {
         "schema_version": SCHEMA_VERSION,
-        "generated_at": datetime.now(UTC).replace(microsecond=0).isoformat(),
+        "generated_at": final_freeze.get("generated_at"),
+        "generation_policy": "deterministic_from_frozen_inputs",
         "candidate_id": candidate_id,
         "final_freeze_id": final_freeze.get("freeze_id"),
         "include_source_archives": include_source_archives,

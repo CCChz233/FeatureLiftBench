@@ -1,6 +1,6 @@
 # FeatureLiftBench 公开仓库整理与上传计划（2026-09-01）
 
-> **Status: proposed**  
+> **Status: completed · Executed: 2026-09-01**  
 > 目标：在保持 GitHub 仓库公开的前提下，安全上传当前工作，保证服务器能够复现实验，同时不把凭据、尚未发布的隐藏评测资产和可再生成的大文件混入 Git 历史。
 
 ## 1. 当前基线
@@ -19,6 +19,17 @@
 - 当前公开历史已经包含 Python-150 的部分 hidden tests；它们已经不能通过普通删除重新变为秘密。新增 Hard-50 隐藏评测仍可在首次推送前隔离。
 - 已确认 `.env` 与 `harness/config/agents.toml` 不应进入 Git。
 - 当前验证尚有一个待修复项：完整 harness 测试出现 10 个同源失败，原因是旧 Python-150 兼容 freeze 与新任务 spec hash 不一致。该问题修复并回归前不推送正式实验版本。
+
+### 执行结果
+
+- compatibility freeze 已更新为 `0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542`。
+- Python-200 candidate ID 保持 `769f2486c0abb9f0df6324f74b8313da6e1711febce1208c945a2511bd3a7c18`，final freeze ID 保持 `474862c22165ac9cc8ab895f1e265dd0bb43da81f52e77561b29fde44798a8d8`。
+- 完整 harness 回归：609 passed、9 skipped、0 failed。
+- 文档检查、catalog 检查和 217-task lifecycle 检查通过。
+- 公开差异共 1,008 个文件；新增 Git blob 约 9.8 MiB，最大单文件约 1.48 MiB。
+- 新增 Hard-50 hidden tests、oracle manifest、reference solution、Oracle submissions 和 wheels 均未进入公开提交。
+- 已拆为三个提交并推送到公开 `main`：`f822ff28`、`94b38050`、`5d7c220a`。
+- 已生成并验证服务器 overlay：4,514 个文件，约 184 MiB 压缩包；SHA256 为 `f62f6e35dada0f854cba32014770dac5726a2f062ca16db705bc90c4f5a508aa`，overlay 本身受 `.gitignore` 保护。
 
 ## 2. 目标仓库形态
 

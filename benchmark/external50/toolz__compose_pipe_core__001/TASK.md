@@ -24,10 +24,10 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: compose right-to-left callable pipelines. Required observable cases include compose and pipe.
-- The extracted feature must support this observable behavior: pipe left-to-right value pipelines. Required observable cases include pipe left to right.
-- The extracted feature must support this observable behavior: curry partial application. Required observable cases include curry partial; curry kwargs.
-- identity returns its argument unchanged.
+- `compose` accepts callables and returns a callable that applies them from right to left; `identity` returns its argument unchanged and can participate in a composition.
+- `pipe` accepts an initial value followed by callables and returns the result of applying those callables from left to right.
+- `curry` wraps a callable so that required positional arguments may be supplied across successive calls or together in one call.
+- A curried callable accepts keyword arguments, preserves defaulted parameters, and combines them with positional arguments supplied by a later call.
 - The package exposes compose/pipe/curry/identity with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: toolz.
 
@@ -43,10 +43,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: compose right-to-left callable pipelines. Required observable cases include compose and pipe.
-- **B002** — The extracted feature must support this observable behavior: pipe left-to-right value pipelines. Required observable cases include pipe left to right.
-- **B003** — The extracted feature must support this observable behavior: curry partial application. Required observable cases include curry partial; curry kwargs.
-- **B004** — identity returns its argument unchanged.
+- **B001** — `compose` accepts callables and returns a callable that applies them from right to left; `identity` returns its argument unchanged and can participate in a composition.
+- **B002** — `pipe` accepts an initial value followed by callables and returns the result of applying those callables from left to right.
+- **B003** — `curry` wraps a callable so that required positional arguments may be supplied across successive calls or together in one call.
+- **B004** — A curried callable accepts keyword arguments, preserves defaulted parameters, and combines them with positional arguments supplied by a later call.
 - **B005** — The package exposes compose/pipe/curry/identity with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: toolz.
 <!-- featureliftbench:behavior-clauses:end -->

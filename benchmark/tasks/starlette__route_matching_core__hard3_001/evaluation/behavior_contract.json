@@ -49,7 +49,7 @@
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
-      "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters."
+      "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path."
     },
     {
       "behavior_id": "B005",
@@ -103,7 +103,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "3496e41a7b52f021c673574d73c3616e9f2050711094167ce5ac930e0c1d8d79",
+  "spec_sha256": "36c18da37fbc2ba9d54f2165b25408f72c6e942725763fd6e083e63dde904b01",
   "task_id": "starlette__route_matching_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

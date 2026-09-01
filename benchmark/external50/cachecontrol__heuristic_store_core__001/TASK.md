@@ -18,22 +18,22 @@ from featurelifted import (
 
 ## Required API Details
 
-- `DictCache` class must be importable
-  - `DictCache.get` callable must exist
-  - `DictCache.set` callable must exist
-  - `DictCache.delete` callable must exist
+- `DictCache(init_dict=None)` class constructor
+  - `DictCache.get(self, key: str) -> bytes | None`
+  - `DictCache.set(self, key: str, value: bytes, expires=None) -> None`
+  - `DictCache.delete(self, key: str) -> None`
 - `BaseCache` class must be importable
-- `ExpiresAfter` class must be importable
-- `Serializer` class must be importable
-- `CacheController` class must be importable
+- `ExpiresAfter(**timedelta_kwargs)` class constructor
+- `Serializer()` class constructor
+- `CacheController(cache=None, cache_etags=True, serializer=None, status_codes=None)` class constructor
   - `CacheController.cache` attribute must exist on instances
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip.
-- The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version.
-- The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface.
-- No live HTTP is required; tests use in-memory DictCache only.
+- A `DictCache` is a `BaseCache`; after `set` stores bytes under a key, `get` returns those bytes, and after `delete` removes the key, `get` returns `None`.
+- Constructing `ExpiresAfter` with day and hour keyword arguments creates a heuristic whose `delta` represents that combined duration.
+- When `CacheController` is constructed with a `DictCache`, its public `cache` attribute refers to a usable cache instance.
+- Constructing `Serializer` requires no arguments and exposes a non-empty `serde_version` identifying its serialization format.
 - The package exposes DictCache/BaseCache/ExpiresAfter/Serializer/CacheController with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: cachecontrol.
 
@@ -50,10 +50,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip.
-- **B002** — The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version.
-- **B003** — The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface.
-- **B004** — No live HTTP is required; tests use in-memory DictCache only.
+- **B001** — A `DictCache` is a `BaseCache`; after `set` stores bytes under a key, `get` returns those bytes, and after `delete` removes the key, `get` returns `None`.
+- **B002** — Constructing `ExpiresAfter` with day and hour keyword arguments creates a heuristic whose `delta` represents that combined duration.
+- **B003** — When `CacheController` is constructed with a `DictCache`, its public `cache` attribute refers to a usable cache instance.
+- **B004** — Constructing `Serializer` requires no arguments and exposes a non-empty `serde_version` identifying its serialization format.
 - **B005** — The package exposes DictCache/BaseCache/ExpiresAfter/Serializer/CacheController with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: cachecontrol.
 <!-- featureliftbench:behavior-clauses:end -->

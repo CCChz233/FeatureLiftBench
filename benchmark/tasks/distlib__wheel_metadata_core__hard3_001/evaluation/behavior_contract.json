@@ -57,7 +57,7 @@
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
-      "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
+      "text": "When validate_record_hash(path, digest) receives a RECORD digest string, it returns True for a well-formed supported hash such as sha256 followed by 64 hex characters and returns False for malformed or unsupported digest strings; the path argument identifies the RECORD path and does not have to exist on disk."
     },
     {
       "behavior_id": "B004",
@@ -110,7 +110,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "c687f3c842bfaccedb89ac1b78992f6d63c6d56178b53eed30906bb6fa0daa7d",
+  "spec_sha256": "dbd1f2bdf68e5ad6ca79883f952aa56dd363766f0e8aa5d44ecc8e6a5a4159fd",
   "task_id": "distlib__wheel_metadata_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

@@ -17,19 +17,19 @@ from featurelifted import (
 
 ## Required API Details
 
-- `configure` callable must exist
-- `get_logger` callable must exist
-- `reset_defaults` callable must exist
+- `configure(*, processors, logger_factory, cache_logger_on_first_use=False)`
+- `get_logger(*args, **initial_values)`
+- `reset_defaults() -> None`
 - `processors.JSONRenderer` class must be importable
 - `processors.KeyValueRenderer` class must be importable
 - `processors.TimeStamper` class must be importable
-- `processors.add_log_level` callable must exist
+- `processors.add_log_level(logger, method_name, event_dict)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer.
-- The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context.
-- The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order.
+- configure installs a processor chain and logger factory; bound context and event fields reach JSONRenderer output, while TimeStamper(fmt='iso') and add_log_level add timestamp and level fields before rendering.
+- KeyValueRenderer emits event fields as key-value text; bound loggers support unbind to remove keys and new to replace the prior context before emitting an event.
+- Processors run exactly once in the order supplied to configure before the final rendered value is passed to the wrapped logger.
 - reset_defaults clears global configuration between tests.
 - The package exposes the required task API paths `featurelifted.configure`, `featurelifted.get_logger`, `featurelifted.reset_defaults`, and the frozen processors with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: structlog.
@@ -46,9 +46,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer.
-- **B002** — The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context.
-- **B003** — The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order.
+- **B001** — configure installs a processor chain and logger factory; bound context and event fields reach JSONRenderer output, while TimeStamper(fmt='iso') and add_log_level add timestamp and level fields before rendering.
+- **B002** — KeyValueRenderer emits event fields as key-value text; bound loggers support unbind to remove keys and new to replace the prior context before emitting an event.
+- **B003** — Processors run exactly once in the order supplied to configure before the final rendered value is passed to the wrapped logger.
 - **B004** — reset_defaults clears global configuration between tests.
 - **B005** — The package exposes the required task API paths `featurelifted.configure`, `featurelifted.get_logger`, `featurelifted.reset_defaults`, and the frozen processors with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: structlog.

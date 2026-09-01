@@ -24,12 +24,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse stylesheet into QualifiedRule/AtRule/ParseError nodes. Required observable cases include parse qualified rule; parse at rule; parse error node not raise.
-- The extracted feature must support this observable behavior: serialize nodes back to CSS. Required observable cases include roundtrip simple; serialize preserves at keyword.
-- The extracted feature must support this observable behavior: skip_whitespace option. Required observable cases include skip whitespace option.
-- QualifiedRule exposes a prelude used by selectors.
+- parse_stylesheet returns QualifiedRule nodes for qualified rules and AtRule nodes for at-rules; malformed CSS such as an unmatched `}` is represented by a ParseError node instead of raising an exception.
+- Serializing nodes returned by parse_stylesheet produces CSS containing the original rule content, and an `@import` rule retains its `@import` keyword after parse/serialize round-trip.
+- When parse_stylesheet is called with `skip_whitespace=True`, its top-level result contains no node whose type name ends with `WhitespaceToken`.
+- Parsing a selector rule such as `h1.title{}` returns a QualifiedRule whose `prelude` attribute is non-empty.
 - The package exposes the required task API paths `featurelifted.parse_stylesheet`, `featurelifted.serialize`, `featurelifted.ast.QualifiedRule`, `featurelifted.ast.AtRule`, `featurelifted.ast.ParseError` with the kinds and callable signatures listed in this contract.
-- the submitted package does not import forbidden upstream packages: tinycss2.
+- Scanning every Python file in the submitted package finds no `import tinycss2` or `from tinycss2 ...` statement.
 
 ## Constraints
 
@@ -43,10 +43,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse stylesheet into QualifiedRule/AtRule/ParseError nodes. Required observable cases include parse qualified rule; parse at rule; parse error node not raise.
-- **B002** — The extracted feature must support this observable behavior: serialize nodes back to CSS. Required observable cases include roundtrip simple; serialize preserves at keyword.
-- **B003** — The extracted feature must support this observable behavior: skip_whitespace option. Required observable cases include skip whitespace option.
-- **B004** — QualifiedRule exposes a prelude used by selectors.
+- **B001** — parse_stylesheet returns QualifiedRule nodes for qualified rules and AtRule nodes for at-rules; malformed CSS such as an unmatched `}` is represented by a ParseError node instead of raising an exception.
+- **B002** — Serializing nodes returned by parse_stylesheet produces CSS containing the original rule content, and an `@import` rule retains its `@import` keyword after parse/serialize round-trip.
+- **B003** — When parse_stylesheet is called with `skip_whitespace=True`, its top-level result contains no node whose type name ends with `WhitespaceToken`.
+- **B004** — Parsing a selector rule such as `h1.title{}` returns a QualifiedRule whose `prelude` attribute is non-empty.
 - **B005** — The package exposes the required task API paths `featurelifted.parse_stylesheet`, `featurelifted.serialize`, `featurelifted.ast.QualifiedRule`, `featurelifted.ast.AtRule`, `featurelifted.ast.ParseError` with the kinds and callable signatures listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: tinycss2.
+- **B006** — Scanning every Python file in the submitted package finds no `import tinycss2` or `from tinycss2 ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

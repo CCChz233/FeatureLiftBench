@@ -44,6 +44,10 @@ GENERIC_BEHAVIOR_MARKERS = (
     "declared target API remains importable and preserves upstream-observable semantics",
 )
 CALLABLE_KINDS = frozenset({"class", "function", "method", "callable"})
+API_CONTAINER_KINDS = frozenset({"class", "module", "object", "enum", "exception"})
+UNDECLARED_API_RE = re.compile(
+    r" uses undeclared API reference (featurelifted(?:\.[A-Za-z_][A-Za-z0-9_]*)+)$"
+)
 IGNORED_TEST_NAME_PARTS = (
     "required api surface",
     "no import surface",
@@ -204,8 +208,12 @@ print(json.dumps(result, sort_keys=True))
     callables: set[str] = set()
     functions: set[str] = set()
     runtime_bound: set[str] = set()
+    errors: dict[str, str] = {}
     for path, value in payload.items():
         if not isinstance(value, dict):
+            continue
+        if isinstance(value.get("error"), str):
+            errors[path] = str(value["error"])
             continue
         if value.get("is_exception") is True:
             exceptions.add(path)
@@ -230,6 +238,7 @@ print(json.dumps(result, sort_keys=True))
         "callables": sorted(callables),
         "functions": sorted(functions),
         "runtime_bound": sorted(runtime_bound),
+        "errors": errors,
     }, None
 
 
@@ -491,6 +500,82 @@ def _add_hidden_members(
     return added
 
 
+def _undeclared_test_api_refs(
+    task_dir: Path,
+    metadata: dict[str, Any],
+) -> list[str]:
+    """Return API paths rejected by the constitution's test-usage gate.
+
+    Reuse the fail-closed validator as the discovery source so explicit
+    ``test_api_usage.json`` manifests and AST fallback extraction stay aligned
+    with the actual Main admission gate.
+    """
+
+    refs: set[str] = set()
+    for error in validate_constitution(task_dir, metadata):
+        match = UNDECLARED_API_RE.search(error)
+        if match:
+            refs.add(match.group(1))
+    return sorted(refs, key=lambda value: (value.count("."), value))
+
+
+def _add_test_api_refs(
+    required_api: list[dict[str, Any]],
+    paths: list[str],
+    introspection: dict[str, Any],
+) -> tuple[list[str], list[str]]:
+    """Add validator-observed API refs using Oracle-backed kinds/signatures."""
+
+    entries = _entry_by_path(required_api)
+    exception_paths = set(introspection.get("exceptions", []))
+    class_paths = set(introspection.get("classes", []))
+    module_paths = set(introspection.get("modules", []))
+    callable_paths = set(introspection.get("callables", []))
+    function_paths = set(introspection.get("functions", []))
+    runtime_bound_paths = set(introspection.get("runtime_bound", []))
+    signatures = introspection.get("signatures", {})
+    errors = introspection.get("errors", {})
+    added: list[str] = []
+    unresolved: list[str] = []
+
+    for path in paths:
+        if path in entries:
+            continue
+        if path in errors:
+            unresolved.append(f"{path}: {errors[path]}")
+            continue
+
+        owner_path = path.rsplit(".", 1)[0]
+        owner = entries.get(owner_path)
+        if path in exception_paths:
+            kind = "exception"
+        elif path in module_paths:
+            kind = "module"
+        elif path in class_paths:
+            kind = "class"
+        elif path in function_paths:
+            kind = "method" if owner and owner.get("kind") in {"class", "exception"} else "function"
+        elif path in callable_paths:
+            kind = "callable"
+        else:
+            kind = "attribute"
+
+        entry: dict[str, Any] = {"path": path, "kind": kind}
+        signature = signatures.get(path)
+        if kind in CALLABLE_KINDS and isinstance(signature, str):
+            entry["signature"] = signature
+        if path in runtime_bound_paths:
+            entry["runtime_bound"] = True
+
+        if owner is not None and owner.get("kind") in API_CONTAINER_KINDS:
+            owner.setdefault("members", []).append(entry)
+        else:
+            required_api.append(entry)
+        entries[path] = entry
+        added.append(path)
+    return added, unresolved
+
+
 def _sync_api_coverage(
     evaluation_spec: dict[str, Any],
     required_api: list[dict[str, Any]],
@@ -618,20 +703,24 @@ def harden_task(task_dir: Path, *, write: bool) -> dict[str, Any]:
         elif not str(entry.get("signature", "")).strip():
             unresolved_callables.append(path)
 
-    required_api = [
-        item
-        for item in public_spec.get("required_api") or []
-        if isinstance(item, dict)
-    ]
-    member_usage = _hidden_member_usage(task_dir, required_api)
-    added_members = _add_hidden_members(required_api, member_usage)
+    required_api = public_spec.get("required_api") or []
+    if not isinstance(required_api, list):
+        return {
+            "task_id": task_dir.name,
+            "status": "failed",
+            "reason": "public_spec.required_api is not a list",
+            "errors": ["public_spec.required_api is not a list"],
+        }
+    hidden_member_usage = _hidden_member_usage(task_dir, required_api)
+    all_member_usage = _hidden_member_usage(task_dir, required_api, include_public=True)
+    added_members = _add_hidden_members(required_api, all_member_usage)
     if added_members:
         member_introspection, member_error = _oracle_signatures(
             task_dir,
             [
                 path
                 for path in added_members
-                if member_usage.get(path, {}).get("kind") == "method"
+                if all_member_usage.get(path, {}).get("kind") == "method"
             ],
         )
         if member_error and not introspection_error:
@@ -648,7 +737,41 @@ def harden_task(task_dir: Path, *, write: bool) -> dict[str, Any]:
                     entries[path]["runtime_bound"] = True
             elif entries[path].get("kind") == "method":
                 unresolved_callables.append(path)
-    _sync_api_coverage(evaluation_spec, required_api, member_usage)
+
+    undeclared_api_refs = _undeclared_test_api_refs(task_dir, original)
+    added_api_refs: list[str] = []
+    unresolved_api_refs: list[str] = []
+    remaining_refs = [
+        path for path in undeclared_api_refs if path not in _entry_by_path(required_api)
+    ]
+    if remaining_refs:
+        api_introspection, api_error = _oracle_signatures(task_dir, remaining_refs)
+        if api_error and not introspection_error:
+            introspection_error = api_error
+        if api_error:
+            unresolved_api_refs.extend(remaining_refs)
+        else:
+            added_api_refs, unresolved_api_refs = _add_test_api_refs(
+                required_api,
+                remaining_refs,
+                api_introspection,
+            )
+            for path in added_api_refs:
+                signature = api_introspection.get("signatures", {}).get(path)
+                if signature:
+                    signature_updates += 1
+    if unresolved_api_refs:
+        return {
+            "task_id": task_dir.name,
+            "status": "failed",
+            "reason": "Oracle could not resolve evaluator-used API paths",
+            "errors": unresolved_api_refs,
+            "introspection_error": introspection_error,
+            "unresolved_callables": unresolved_callables,
+        }
+    # Required API coverage is a Hidden-side gate. Public tests may discover
+    # missing surface entries, but they must never become the coverage proof.
+    _sync_api_coverage(evaluation_spec, required_api, hidden_member_usage)
 
     text_updates = _harden_behavior_texts(metadata)
     for behavior in public_spec.get("behaviors") or []:
@@ -722,6 +845,8 @@ def harden_task(task_dir: Path, *, write: bool) -> dict[str, Any]:
         "behavior_updates": len(text_updates),
         "member_updates": len(added_members),
         "added_members": added_members,
+        "api_ref_updates": len(added_api_refs),
+        "added_api_refs": added_api_refs,
         "surface_updated": surface_changed,
         "introspection_error": introspection_error,
         "unresolved_callables": unresolved_callables,

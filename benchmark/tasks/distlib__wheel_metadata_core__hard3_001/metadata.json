@@ -115,7 +115,7 @@
       },
       {
         "id": "B003",
-        "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
+        "text": "When validate_record_hash(path, digest) receives a RECORD digest string, it returns True for a well-formed supported hash such as sha256 followed by 64 hex characters and returns False for malformed or unsupported digest strings; the path argument identifies the RECORD path and does not have to exist on disk."
       },
       {
         "id": "B004",
@@ -161,7 +161,7 @@
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests."
+        "text": "When validate_record_hash(path, digest) receives a RECORD digest string, it returns True for a well-formed supported hash such as sha256 followed by 64 hex characters and returns False for malformed or unsupported digest strings; the path argument identifies the RECORD path and does not have to exist on disk."
       },
       {
         "behavior_id": "B004",
@@ -264,7 +264,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "1f0be576d7af13a36c45994e3a0cc5611c8eb599146e6d5c58f2fcc40504e466",
-  "generated_task_hash": "c687f3c842bfaccedb89ac1b78992f6d63c6d56178b53eed30906bb6fa0daa7d"
+  "task_revision": 5,
+  "spec_hash": "2d286625e5abf738d28b40f0f4b1fc38df57f7fd51e22848b307c9f3a33fc266",
+  "generated_task_hash": "dbd1f2bdf68e5ad6ca79883f952aa56dd363766f0e8aa5d44ecc8e6a5a4159fd"
 }

@@ -110,19 +110,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: parse stylesheet into QualifiedRule/AtRule/ParseError nodes. Required observable cases include parse qualified rule; parse at rule; parse error node not raise."
+        "text": "parse_stylesheet returns QualifiedRule nodes for qualified rules and AtRule nodes for at-rules; malformed CSS such as an unmatched `}` is represented by a ParseError node instead of raising an exception."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: serialize nodes back to CSS. Required observable cases include roundtrip simple; serialize preserves at keyword."
+        "text": "Serializing nodes returned by parse_stylesheet produces CSS containing the original rule content, and an `@import` rule retains its `@import` keyword after parse/serialize round-trip."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: skip_whitespace option. Required observable cases include skip whitespace option."
+        "text": "When parse_stylesheet is called with `skip_whitespace=True`, its top-level result contains no node whose type name ends with `WhitespaceToken`."
       },
       {
         "id": "B004",
-        "text": "QualifiedRule exposes a prelude used by selectors."
+        "text": "Parsing a selector rule such as `h1.title{}` returns a QualifiedRule whose `prelude` attribute is non-empty."
       },
       {
         "id": "B005",
@@ -130,7 +130,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: tinycss2."
+        "text": "Scanning every Python file in the submitted package finds no `import tinycss2` or `from tinycss2 ...` statement."
       }
     ],
     "exclusions": [
@@ -150,22 +150,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: parse stylesheet into QualifiedRule/AtRule/ParseError nodes. Required observable cases include parse qualified rule; parse at rule; parse error node not raise."
+        "text": "parse_stylesheet returns QualifiedRule nodes for qualified rules and AtRule nodes for at-rules; malformed CSS such as an unmatched `}` is represented by a ParseError node instead of raising an exception."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: serialize nodes back to CSS. Required observable cases include roundtrip simple; serialize preserves at keyword."
+        "text": "Serializing nodes returned by parse_stylesheet produces CSS containing the original rule content, and an `@import` rule retains its `@import` keyword after parse/serialize round-trip."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: skip_whitespace option. Required observable cases include skip whitespace option."
+        "text": "When parse_stylesheet is called with `skip_whitespace=True`, its top-level result contains no node whose type name ends with `WhitespaceToken`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "QualifiedRule exposes a prelude used by selectors."
+        "text": "Parsing a selector rule such as `h1.title{}` returns a QualifiedRule whose `prelude` attribute is non-empty."
       },
       {
         "behavior_id": "B005",
@@ -175,7 +175,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: tinycss2."
+        "text": "Scanning every Python file in the submitted package finds no `import tinycss2` or `from tinycss2 ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -196,7 +196,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_parse_at_rule",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -205,7 +205,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_skip_whitespace_option",
         "behavior_ids": [
-          "B001"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -219,7 +219,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_error_node_not_raise",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -285,7 +285,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "2b64eec746d747f58350c67d20abd300543b180497771bbf0108a1a7ba9b9fc3",
-  "generated_task_hash": "f22b5c38f66264621b11e52a5a9c6ab90f69f300a972df6d63a8fd025fc7a55f",
+  "spec_hash": "e4dab7de418b46fcbec28d5fc5cc87f9123201a989bd26b4224e26ea07f21f08",
+  "generated_task_hash": "43e76d49518e9665ffe442f778f08937942e95563039ca341ceec68e9a1eb173",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

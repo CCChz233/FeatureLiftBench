@@ -17,19 +17,19 @@ from featurelifted import (
 ## Required API Details
 
 - `TOTP` class must be importable
-- `TOTP.at` callable must exist
-- `TOTP.verify` callable must exist
+- `TOTP.at(for_time, counter_offset=0) -> str`
+- `TOTP.verify(otp, for_time=None, valid_window=0) -> bool`
 - `HOTP` class must be importable
-- `HOTP.at` callable must exist
-- `HOTP.verify` callable must exist
+- `HOTP.at(count) -> str`
+- `HOTP.verify(otp, counter) -> bool`
 - `random_base32(length=32)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: TOTP.at/verify for fixed timestamps. Required observable cases include totp at verify; totp verify rejects wrong.
-- The extracted feature must support this observable behavior: HOTP.at/verify for counters. Required observable cases include hotp at verify; hotp counter increments.
-- The extracted feature must support this observable behavior: random_base32 generates base32 secrets with minimum length guard. Required observable cases include random base32; random base32 length guard.
-- Tests use at(timestamp) rather than now() to avoid time dependence.
+- `TOTP.at` accepts a fixed timestamp and returns its one-time password, while `TOTP.verify` returns `True` for the matching code at that timestamp.
+- `HOTP.at` accepts an integer counter and returns its one-time password, `HOTP.verify` accepts that code and counter, and different counters produce different codes.
+- `random_base32` returns a secret containing only uppercase Base32 alphabet characters, uses a length of 32 by default, and raises `ValueError` when a requested length is below the supported minimum.
+- `TOTP.verify` returns `False` when given a non-matching code for a fixed timestamp.
 - The package exposes TOTP/HOTP/random_base32 with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: pyotp.
 
@@ -44,10 +44,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: TOTP.at/verify for fixed timestamps. Required observable cases include totp at verify; totp verify rejects wrong.
-- **B002** — The extracted feature must support this observable behavior: HOTP.at/verify for counters. Required observable cases include hotp at verify; hotp counter increments.
-- **B003** — The extracted feature must support this observable behavior: random_base32 generates base32 secrets with minimum length guard. Required observable cases include random base32; random base32 length guard.
-- **B004** — Tests use at(timestamp) rather than now() to avoid time dependence.
+- **B001** — `TOTP.at` accepts a fixed timestamp and returns its one-time password, while `TOTP.verify` returns `True` for the matching code at that timestamp.
+- **B002** — `HOTP.at` accepts an integer counter and returns its one-time password, `HOTP.verify` accepts that code and counter, and different counters produce different codes.
+- **B003** — `random_base32` returns a secret containing only uppercase Base32 alphabet characters, uses a length of 32 by default, and raises `ValueError` when a requested length is below the supported minimum.
+- **B004** — `TOTP.verify` returns `False` when given a non-matching code for a fixed timestamp.
 - **B005** — The package exposes TOTP/HOTP/random_base32 with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: pyotp.
 <!-- featureliftbench:behavior-clauses:end -->

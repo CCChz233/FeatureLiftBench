@@ -30,12 +30,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: split/unsplit with SplitResult fields scheme/authority/path/query/fragment. Required observable cases include urisplit fields; split relative ref.
-- The extracted feature must support this observable behavior: join absolute and relative refs. Required observable cases include urijoin relative; urijoin strict absolute ref.
-- The extracted feature must support this observable behavior: adapted urinorm path/scheme normalization. Required observable cases include urinorm path dots; urinorm scheme case.
-- The extracted feature must support this observable behavior: utf-8 percent encode/decode. Required observable cases include encode decode roundtrip.
+- urisplit returns a SplitResult exposing `scheme`, `authority`, `path`, `query`, and `fragment`; uriunsplit reconstructs the original absolute URI, while splitting a relative path leaves its scheme empty and preserves the path.
+- urijoin resolves `../b` against `https://example.com/a/` as `https://example.com/b`, and with `strict=True` an absolute reference replaces the base URI unchanged.
+- urinorm removes `.` and `..` path segments and lowercases an uppercase URI scheme, so normalized output for an HTTP URI contains the collapsed path and begins with `http://`.
+- uriencode percent-encodes non-ASCII UTF-8 text, producing text or ASCII bytes containing `%`, and uridecode accepts that result and restores the original Unicode string.
 - The package exposes the required task API paths `featurelifted.urisplit`, `featurelifted.uriunsplit`, `featurelifted.urijoin`, `featurelifted.urinorm`, `featurelifted.uriencode`, `featurelifted.uridecode`, `featurelifted.SplitResult` with the kinds and callable signatures listed in this contract.
-- the submitted package does not import forbidden upstream packages: uritools.
+- Scanning every Python file in the submitted package finds no `import uritools` or `from uritools ...` statement.
 
 ## Constraints
 
@@ -49,10 +49,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: split/unsplit with SplitResult fields scheme/authority/path/query/fragment. Required observable cases include urisplit fields; split relative ref.
-- **B002** — The extracted feature must support this observable behavior: join absolute and relative refs. Required observable cases include urijoin relative; urijoin strict absolute ref.
-- **B003** — The extracted feature must support this observable behavior: adapted urinorm path/scheme normalization. Required observable cases include urinorm path dots; urinorm scheme case.
-- **B004** — The extracted feature must support this observable behavior: utf-8 percent encode/decode. Required observable cases include encode decode roundtrip.
+- **B001** — urisplit returns a SplitResult exposing `scheme`, `authority`, `path`, `query`, and `fragment`; uriunsplit reconstructs the original absolute URI, while splitting a relative path leaves its scheme empty and preserves the path.
+- **B002** — urijoin resolves `../b` against `https://example.com/a/` as `https://example.com/b`, and with `strict=True` an absolute reference replaces the base URI unchanged.
+- **B003** — urinorm removes `.` and `..` path segments and lowercases an uppercase URI scheme, so normalized output for an HTTP URI contains the collapsed path and begins with `http://`.
+- **B004** — uriencode percent-encodes non-ASCII UTF-8 text, producing text or ASCII bytes containing `%`, and uridecode accepts that result and restores the original Unicode string.
 - **B005** — The package exposes the required task API paths `featurelifted.urisplit`, `featurelifted.uriunsplit`, `featurelifted.urijoin`, `featurelifted.urinorm`, `featurelifted.uriencode`, `featurelifted.uridecode`, `featurelifted.SplitResult` with the kinds and callable signatures listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: uritools.
+- **B006** — Scanning every Python file in the submitted package finds no `import uritools` or `from uritools ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

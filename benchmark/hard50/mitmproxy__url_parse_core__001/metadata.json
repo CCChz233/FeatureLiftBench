@@ -1,0 +1,261 @@
+{
+  "task_id": "mitmproxy__url_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "tooling"
+  ],
+  "source": {
+    "name": "mitmproxy",
+    "url": "https://github.com/mitmproxy/mitmproxy",
+    "commit": "2ac5b089d953585c66026a53f678270e094e48e5",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "URL parse",
+    "description": "Lift mitmproxy URL parse/unparse without the proxy, addons, or network stack.",
+    "source_entrypoints": [
+      "mitmproxy.net.http.url.parse"
+    ],
+    "included_behaviors": [
+      "https default port",
+      "explicit port",
+      "unparse roundtrip",
+      "missing host ValueError"
+    ],
+    "excluded_behaviors": [
+      "proxy listen",
+      "addons",
+      "flows",
+      "network"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "resource_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "parse lives in net.http.url; the rest of mitmproxy is unused decoy.",
+    "signals": [
+      "scheme host port path",
+      "IDNA host",
+      "default ports"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import parse, unparse",
+    "callable": "parse",
+    "signature": "parse(url: str | bytes) -> tuple[bytes, bytes, int, bytes]"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "mitmproxy"
+    ],
+    "forbidden_imports": [
+      "mitmproxy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "mitmproxy/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "URL parse",
+    "summary": "Build a standalone `featurelifted` package that parses URLs like mitmproxy `parse`/`unparse`, returning `(scheme, host, port, path)` bytes and reconstructing the URL, without running a proxy.",
+    "required_api": [
+      {
+        "path": "featurelifted.parse",
+        "kind": "function",
+        "signature": "(url: str | bytes) -> tuple[bytes, bytes, int, bytes]"
+      },
+      {
+        "path": "featurelifted.unparse",
+        "kind": "function",
+        "signature": "(scheme, host, port, path)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`parse(\"https://example.com/foo\")` returns `(b\"https\", b\"example.com\", 443, b\"/foo\")`; `parse(\"https://example.org/path\")` returns `(b\"https\", b\"example.org\", 443, b\"/path\")`."
+      },
+      {
+        "id": "B002",
+        "text": "`unparse(*parse(\"https://example.com/bar\"))` equals `b\"https://example.com/bar\"`."
+      },
+      {
+        "id": "B003",
+        "text": "`parse(\"http://127.0.0.1:8080/x\")` returns `(b\"http\", b\"127.0.0.1\", 8080, b\"/x\")`."
+      },
+      {
+        "id": "B004",
+        "text": "`parse(\"not-a-url\")` raises `ValueError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `parse` and `unparse`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `mitmproxy`."
+      }
+    ],
+    "exclusions": [
+      "proxy listen",
+      "addons",
+      "network",
+      "runtime import of mitmproxy"
+    ],
+    "forbidden": {
+      "imports": [
+        "mitmproxy"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`parse(\"https://example.com/foo\")` returns `(b\"https\", b\"example.com\", 443, b\"/foo\")`; `parse(\"https://example.org/path\")` returns `(b\"https\", b\"example.org\", 443, b\"/path\")`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`unparse(*parse(\"https://example.com/bar\"))` equals `b\"https://example.com/bar\"`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`parse(\"http://127.0.0.1:8080/x\")` returns `(b\"http\", b\"127.0.0.1\", 8080, b\"/x\")`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`parse(\"not-a-url\")` raises `ValueError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `parse` and `unparse`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `mitmproxy`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_https_default_port",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unparse_roundtrip",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_http_explicit_port",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_hostname_raises",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.unparse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-28",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Thin URL parse slice; proxy/addons unused."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_https_example",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_http_ipv4_port",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 421,
+    "oracle_bytes": 15999,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 40858,
+    "copy_all_bytes": 4487344
+  },
+  "spec_hash": "83e0cde134b0094c2dc1ba7df20d779faab43e39a89ec559fa2f54bc291d12e2",
+  "generated_task_hash": "16429e51b1d3ad5d4e2dda4a95a312c7fde956cebb478218f71139f1c7f52236"
+}

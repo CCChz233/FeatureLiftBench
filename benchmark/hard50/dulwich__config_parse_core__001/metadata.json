@@ -1,0 +1,296 @@
+{
+  "task_id": "dulwich__config_parse_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "configuration"
+  ],
+  "source": {
+    "name": "Dulwich",
+    "url": "https://github.com/jelmer/dulwich",
+    "commit": "2f039e67903559e279cb61250c6ea31bfa5f727c",
+    "license": "Apache-2.0 OR GPL-2.0-or-later"
+  },
+  "feature": {
+    "name": "Git config parse",
+    "description": "Lift Dulwich Git config file parsing without a repository, pack store, or network.",
+    "source_entrypoints": [
+      "dulwich.config.ConfigFile"
+    ],
+    "included_behaviors": [
+      "from_file core values",
+      "subsection keys",
+      "boolean values",
+      "missing key KeyError"
+    ],
+    "excluded_behaviors": [
+      "git protocol",
+      "pack files",
+      "working trees",
+      "network"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "ConfigFile is a view over gitconfig sections and includes; porcelain and pack code is unused decoy.",
+    "signals": [
+      "section tuples",
+      "filemode",
+      "include"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import ConfigFile",
+    "callable": "ConfigFile.from_file",
+    "signature": "ConfigFile.from_file(f, *, expand_includes=True)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "dulwich"
+    ],
+    "forbidden_imports": [
+      "dulwich"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "dulwich/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Git config parse",
+    "summary": "Build a standalone `featurelifted` package that parses Git config files like Dulwich `ConfigFile`, including subsections and booleans, without speaking the Git protocol.",
+    "required_api": [
+      {
+        "path": "featurelifted.ConfigFile",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.ConfigFile.from_file",
+            "kind": "method",
+            "signature": "(cls, f, *, expand_includes=True)"
+          },
+          {
+            "path": "featurelifted.ConfigFile.from_path",
+            "kind": "method",
+            "signature": "(cls, path, *, expand_includes=True)"
+          },
+          {
+            "path": "featurelifted.ConfigFile.get",
+            "kind": "method",
+            "signature": "(self, section, name)"
+          },
+          {
+            "path": "featurelifted.ConfigFile.get_boolean",
+            "kind": "method",
+            "signature": "(self, section, name)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`ConfigFile.from_file` on a buffer containing `[core]` / `filemode = true` yields `get((b\"core\",), b\"filemode\") == b\"true\"` when `expand_includes=False`."
+      },
+      {
+        "id": "B002",
+        "text": "A `[remote \"origin\"]` `url` setting is readable with `get((b\"remote\", b\"origin\"), b\"url\")`."
+      },
+      {
+        "id": "B003",
+        "text": "`get_boolean((b\"core\",), b\"filemode\")` is True for `filemode = true`."
+      },
+      {
+        "id": "B004",
+        "text": "`get` on a missing key raises `KeyError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `ConfigFile` with `from_file`, `from_path`, `get`, and `get_boolean`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `dulwich`."
+      }
+    ],
+    "exclusions": [
+      "git protocol",
+      "pack files",
+      "network",
+      "runtime import of dulwich"
+    ],
+    "forbidden": {
+      "imports": [
+        "dulwich"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`ConfigFile.from_file` on a buffer containing `[core]` / `filemode = true` yields `get((b\"core\",), b\"filemode\") == b\"true\"` when `expand_includes=False`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A `[remote \"origin\"]` `url` setting is readable with `get((b\"remote\", b\"origin\"), b\"url\")`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`get_boolean((b\"core\",), b\"filemode\")` is True for `filemode = true`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`get` on a missing key raises `KeyError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `ConfigFile` with `from_file`, `from_path`, `get`, and `get_boolean`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `dulwich`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_from_path_reads_core_and_remote",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_from_path_reads_core_and_remote",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_boolean_and_missing_key",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_boolean_and_missing_key",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ConfigFile",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigFile.from_file",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigFile.from_path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigFile.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigFile.get_boolean",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Thin ConfigFile slice; no Git protocol."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_core_filemode_from_file",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_subsection_remote_url",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 1911,
+    "oracle_bytes": 77056,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 73170,
+    "copy_all_bytes": 2983585
+  },
+  "spec_hash": "7455c07349e0e2cd98c2f88e2becf16e680edf81d10a437ac202482df9c0db81",
+  "generated_task_hash": "c9bc1ef3e5ef2c9a720779c957882f978004d83e0dd7042426e2f50e129fad80"
+}

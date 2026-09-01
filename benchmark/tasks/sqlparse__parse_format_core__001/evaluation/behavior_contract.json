@@ -80,7 +80,7 @@
       "behavior_id": "B006",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
-      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.tokens`, `featurelifted.exceptions`, `featurelifted.exceptions.SQLParseError` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.exceptions`, and 2 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
@@ -143,7 +143,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "ee0f72f04fdacccd186cab43ac7ffb937ec7ca08b2bf16dcbe7f025ff64a7c90",
+  "spec_sha256": "90ac2078bab944a2236f66712d454e7061334889664878b7edfa95d79d949fc2",
   "task_id": "sqlparse__parse_format_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

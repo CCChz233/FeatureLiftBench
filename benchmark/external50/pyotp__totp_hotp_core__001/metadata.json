@@ -86,11 +86,13 @@
       },
       {
         "path": "featurelifted.TOTP.at",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(for_time, counter_offset=0) -> str"
       },
       {
         "path": "featurelifted.TOTP.verify",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(otp, for_time=None, valid_window=0) -> bool"
       },
       {
         "path": "featurelifted.HOTP",
@@ -98,11 +100,13 @@
       },
       {
         "path": "featurelifted.HOTP.at",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(count) -> str"
       },
       {
         "path": "featurelifted.HOTP.verify",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(otp, counter) -> bool"
       },
       {
         "path": "featurelifted.random_base32",
@@ -114,19 +118,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: TOTP.at/verify for fixed timestamps. Required observable cases include totp at verify; totp verify rejects wrong."
+        "text": "`TOTP.at` accepts a fixed timestamp and returns its one-time password, while `TOTP.verify` returns `True` for the matching code at that timestamp."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: HOTP.at/verify for counters. Required observable cases include hotp at verify; hotp counter increments."
+        "text": "`HOTP.at` accepts an integer counter and returns its one-time password, `HOTP.verify` accepts that code and counter, and different counters produce different codes."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: random_base32 generates base32 secrets with minimum length guard. Required observable cases include random base32; random base32 length guard."
+        "text": "`random_base32` returns a secret containing only uppercase Base32 alphabet characters, uses a length of 32 by default, and raises `ValueError` when a requested length is below the supported minimum."
       },
       {
         "id": "B004",
-        "text": "Tests use at(timestamp) rather than now() to avoid time dependence."
+        "text": "`TOTP.verify` returns `False` when given a non-matching code for a fixed timestamp."
       },
       {
         "id": "B005",
@@ -153,22 +157,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: TOTP.at/verify for fixed timestamps. Required observable cases include totp at verify; totp verify rejects wrong."
+        "text": "`TOTP.at` accepts a fixed timestamp and returns its one-time password, while `TOTP.verify` returns `True` for the matching code at that timestamp."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: HOTP.at/verify for counters. Required observable cases include hotp at verify; hotp counter increments."
+        "text": "`HOTP.at` accepts an integer counter and returns its one-time password, `HOTP.verify` accepts that code and counter, and different counters produce different codes."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: random_base32 generates base32 secrets with minimum length guard. Required observable cases include random base32; random base32 length guard."
+        "text": "`random_base32` returns a secret containing only uppercase Base32 alphabet characters, uses a length of 32 by default, and raises `ValueError` when a requested length is below the supported minimum."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Tests use at(timestamp) rather than now() to avoid time dependence."
+        "text": "`TOTP.verify` returns `False` when given a non-matching code for a fixed timestamp."
       },
       {
         "behavior_id": "B005",
@@ -294,6 +298,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "03c83e46011a0102772f73eabc89757de6fb346899e0e960cdb1aef3e1379ebe",
-  "generated_task_hash": "3d5aff79e89d8eeb1b81dad26282d09e169aa0400408d02f08dd84c5e915adbd"
+  "spec_hash": "78f855081624f4c89d2ce138293460b059fcd9da18f8d309e7937dc1c8878936",
+  "generated_task_hash": "057f5ad8c1daf711cd75478319e556205ce3b03dca87b657d2ef2dcdb10c267e"
 }

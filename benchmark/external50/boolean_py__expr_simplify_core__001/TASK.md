@@ -18,23 +18,23 @@ from featurelifted import (
 ## Required API Details
 
 - `BooleanAlgebra` class must be importable
-  - `BooleanAlgebra.parse` callable must exist
+  - `BooleanAlgebra.parse(self, expr, simplify=False)`
   - `BooleanAlgebra.Symbol` attribute must exist on instances
   - `BooleanAlgebra.TRUE` attribute must exist on instances
   - `BooleanAlgebra.FALSE` attribute must exist on instances
-- `BooleanAlgebra.parse` callable must exist
+- `BooleanAlgebra.parse(self, expr, simplify=False)`
 - `ParseError` class must be importable
 - `Symbol` class must be importable
 - `Expression` class must be importable
-  - `Expression.simplify` callable must exist
-  - `Expression.subs` callable must exist
+  - `Expression.simplify(self)`
+  - `Expression.subs(self, substitutions, default=None, simplify=False)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse and simplify boolean expressions. Required observable cases include parse and simplify.
-- The extracted feature must support this observable behavior: expression.subs with simplify. Required observable cases include subs.
-- The extracted feature must support this observable behavior: simplified equality and ParseError on bad input. Required observable cases include equality; parse error.
-- NOT/TRUE/FALSE constants simplify as upstream.
+- Given a boolean expression containing symbols, conjunction, disjunction, and negation, `BooleanAlgebra.parse` builds an expression whose `simplify` method returns the equivalent canonical expression.
+- Given a parsed expression and a mapping from an algebra `Symbol` to `TRUE`, `Expression.subs` replaces that symbol, and with `simplify=True` returns the simplified substituted expression.
+- Simplifying expressions that differ only in commutative operand order produces equal results, while parsing an expression that ends with an operator raises `ParseError`.
+- When the parsed expression negates the `TRUE` constant, calling `simplify` returns the algebra's `FALSE` constant.
 - The package exposes BooleanAlgebra/parse/ParseError/Symbol with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: boolean.
 
@@ -49,10 +49,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse and simplify boolean expressions. Required observable cases include parse and simplify.
-- **B002** — The extracted feature must support this observable behavior: expression.subs with simplify. Required observable cases include subs.
-- **B003** — The extracted feature must support this observable behavior: simplified equality and ParseError on bad input. Required observable cases include equality; parse error.
-- **B004** — NOT/TRUE/FALSE constants simplify as upstream.
+- **B001** — Given a boolean expression containing symbols, conjunction, disjunction, and negation, `BooleanAlgebra.parse` builds an expression whose `simplify` method returns the equivalent canonical expression.
+- **B002** — Given a parsed expression and a mapping from an algebra `Symbol` to `TRUE`, `Expression.subs` replaces that symbol, and with `simplify=True` returns the simplified substituted expression.
+- **B003** — Simplifying expressions that differ only in commutative operand order produces equal results, while parsing an expression that ends with an operator raises `ParseError`.
+- **B004** — When the parsed expression negates the `TRUE` constant, calling `simplify` returns the algebra's `FALSE` constant.
 - **B005** — The package exposes BooleanAlgebra/parse/ParseError/Symbol with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: boolean.
 <!-- featureliftbench:behavior-clauses:end -->

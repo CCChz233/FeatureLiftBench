@@ -1,0 +1,332 @@
+{
+  "task_id": "dogpile_cache__region_backend_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot"
+  ],
+  "source": {
+    "name": "dogpile.cache",
+    "url": "https://github.com/sqlalchemy/dogpile.cache",
+    "commit": "185db4fb6cd844cddac17cc3dcbbd51a876891da",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Dogpile cache region and memory backend core",
+    "description": "Extract cache-region configuration, memory-backed get-or-create, missing-value, and invalidation behavior.",
+    "source_entrypoints": [
+      "dogpile.cache.make_region",
+      "dogpile.cache.CacheRegion",
+      "dogpile.cache.api.NO_VALUE"
+    ],
+    "included_behaviors": [
+      "construct and configure cache regions",
+      "use the in-process memory backend",
+      "cache get-or-create values once per key",
+      "return a sentinel for missing keys",
+      "invalidate existing values and regenerate them"
+    ],
+    "excluded_behaviors": [
+      "Redis, Memcached, Valkey, DBM, and file backends",
+      "distributed locks and cross-process invalidation",
+      "decorators and multi-key operations",
+      "backend plugins and proxy wrappers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "The region coordinates backend configuration, a distinct missing sentinel, creator call suppression, cached metadata, and invalidation-driven regeneration.",
+    "signals": [
+      "backend lifecycle",
+      "missing-value sentinel",
+      "creator suppression",
+      "region-wide invalidation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import CacheRegion, NO_VALUE, make_region",
+    "callable": "make_region",
+    "signature": "make_region(*args, **kwargs) -> CacheRegion"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "decorator",
+      "stevedore"
+    ],
+    "forbidden_dependencies": [
+      "dogpile.cache",
+      "dogpile-cache"
+    ],
+    "forbidden_imports": [
+      "dogpile"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "dogpile/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Dogpile cache region and memory backend core",
+    "summary": "Extract the stateful in-process cache-region core into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.make_region",
+        "kind": "function",
+        "signature": "(*args, **kwargs) -> CacheRegion"
+      },
+      {
+        "path": "featurelifted.CacheRegion",
+        "kind": "class",
+        "signature": "(name: str | None = None, function_key_generator=<default>, function_multi_key_generator=<default>, key_mangler=None, serializer=None, deserializer=None, async_creation_runner=None)",
+        "members": [
+          {
+            "path": "featurelifted.CacheRegion.configure",
+            "kind": "method",
+            "signature": "(self, backend: str, expiration_time: float | datetime.timedelta | None = None, arguments: dict | None = None, _config_argument_dict=None, _config_prefix=None, wrap=(), replace_existing_backend: bool = False, region_invalidator=None) -> CacheRegion"
+          },
+          {
+            "path": "featurelifted.CacheRegion.get",
+            "kind": "method",
+            "signature": "(self, key: str, expiration_time: float | None = None, ignore_expiration: bool = False)"
+          },
+          {
+            "path": "featurelifted.CacheRegion.get_or_create",
+            "kind": "method",
+            "signature": "(self, key: str, creator, expiration_time: float | None = None, should_cache_fn=None, creator_args=None)"
+          },
+          {
+            "path": "featurelifted.CacheRegion.invalidate",
+            "kind": "method",
+            "signature": "(self, hard: bool = True) -> None"
+          },
+          {
+            "path": "featurelifted.CacheRegion.is_configured",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.CacheRegion.name",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.NO_VALUE",
+        "kind": "constant"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`make_region` returns an unconfigured `CacheRegion`, forwards constructor arguments such as `name`, and `configure('dogpile.cache.memory')` configures the in-process memory backend, returns the same region, and makes `is_configured` true."
+      },
+      {
+        "id": "B002",
+        "text": "For a configured memory region, the first `get_or_create(key, creator)` call for a missing key calls the creator and caches its result; later calls for that key return the cached result without calling later creators, while different keys are independent."
+      },
+      {
+        "id": "B003",
+        "text": "`CacheRegion.get` returns the singleton `NO_VALUE` sentinel for a missing key, and `NO_VALUE` is false in boolean context while remaining distinct from a cached `None` value."
+      },
+      {
+        "id": "B004",
+        "text": "After a value has been cached, `CacheRegion.invalidate()` causes `get` to report `NO_VALUE` for that stale value and the next `get_or_create` for the same key to invoke its creator and cache the replacement."
+      },
+      {
+        "id": "B005",
+        "text": "Configuring an already configured region without `replace_existing_backend=True` raises an exception; passing that flag permits replacement with a fresh memory backend."
+      },
+      {
+        "id": "B006",
+        "text": "The package exposes `make_region`, `CacheRegion`, `NO_VALUE`, and the required `CacheRegion` members with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "Redis, Memcached, Valkey, DBM, file, and null backends",
+      "distributed locking and cross-process invalidation",
+      "decorator APIs, multi-key APIs, serializers, backend proxies, and plugin registration",
+      "the original dogpile package at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "dogpile"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`make_region` returns an unconfigured `CacheRegion`, forwards constructor arguments such as `name`, and `configure('dogpile.cache.memory')` configures the in-process memory backend, returns the same region, and makes `is_configured` true."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "For a configured memory region, the first `get_or_create(key, creator)` call for a missing key calls the creator and caches its result; later calls for that key return the cached result without calling later creators, while different keys are independent."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`CacheRegion.get` returns the singleton `NO_VALUE` sentinel for a missing key, and `NO_VALUE` is false in boolean context while remaining distinct from a cached `None` value."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "After a value has been cached, `CacheRegion.invalidate()` causes `get` to report `NO_VALUE` for that stale value and the next `get_or_create` for the same key to invoke its creator and cache the replacement."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "Configuring an already configured region without `replace_existing_backend=True` raises an exception; passing that flag permits replacement with a fresh memory backend."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `make_region`, `CacheRegion`, `NO_VALUE`, and the required `CacheRegion` members with the kinds and callable signatures listed in this contract."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_make_configure_and_get_or_create",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_missing_key_returns_no_value",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_creator_is_once_per_key_and_none_is_cached",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalidate_hides_and_regenerates",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_reconfigure_requires_replace_flag",
+        "behavior_ids": [
+          "B001",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.make_region",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.configure",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.get_or_create",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.invalidate",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.is_configured",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheRegion.name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.NO_VALUE",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, public-to-hidden behavior subset, memory-only backend scope, sentinel semantics, invalidation, and forbidden Dogpile runtime imports."
+    }
+  },
+  "spec_hash": "360cb980a63b4d63c9e76b83b1838979b1edc186f55c9e2c2fc16e300d276b62",
+  "generated_task_hash": "d02966578711bb368df245d7fd59e7f549918aa8b4b5153a7c1fe75c73f9e8f0",
+  "scoring_reference": {
+    "copy_all_bytes": 497436,
+    "copy_all_loc": 10473,
+    "oracle_bytes": 379689,
+    "oracle_loc": 5156,
+    "oracle_dependency_count": 2
+  }
+}

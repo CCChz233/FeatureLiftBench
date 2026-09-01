@@ -116,19 +116,27 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "from_string and from_stream identify known byte signatures using bundled magic metadata."
+        "text": "Given bytes or a binary stream whose leading bytes match bundled metadata, the detector recognizes the format: `from_string` and `from_stream` return its extension and `magic_string` returns matching records."
       },
       {
         "id": "B002",
-        "text": "MIME mode and from_extension return metadata associated with the selected signature or extension."
+        "text": "For a recognized signature or extension, MIME mode and `from_extension` return the associated MIME type."
       },
       {
         "id": "B003",
-        "text": "magic_string returns ranked match records and unknown or empty inputs raise documented errors."
+        "text": "`magic_string` returns a non-empty ranked list of match records for recognized bytes, with the best match first and its `extension` attribute identifying the format."
       },
       {
         "id": "B004",
-        "text": "The submitted package does not import puremagic or access external signature services."
+        "text": "Calling `magic_string` with empty input raises `PureError` or `ValueError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.from_string`, `featurelifted.from_stream`, `featurelifted.magic_string`, `featurelifted.from_extension`, and `featurelifted.PureError` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: puremagic."
       }
     ],
     "exclusions": [
@@ -151,22 +159,32 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "from_string and from_stream identify known byte signatures using bundled magic metadata."
+        "text": "Given bytes or a binary stream whose leading bytes match bundled metadata, the detector recognizes the format: `from_string` and `from_stream` return its extension and `magic_string` returns matching records."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "MIME mode and from_extension return metadata associated with the selected signature or extension."
+        "text": "For a recognized signature or extension, MIME mode and `from_extension` return the associated MIME type."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "magic_string returns ranked match records and unknown or empty inputs raise documented errors."
+        "text": "`magic_string` returns a non-empty ranked list of match records for recognized bytes, with the best match first and its `extension` attribute identifying the format."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "The submitted package does not import puremagic or access external signature services."
+        "text": "Calling `magic_string` with empty input raises `PureError` or `ValueError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes the required task API paths `featurelifted.from_string`, `featurelifted.from_stream`, `featurelifted.magic_string`, `featurelifted.from_extension`, and `featurelifted.PureError` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: puremagic."
       }
     ],
     "public_test_mappings": [
@@ -197,21 +215,22 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_ranked_matches_and_unknown_input",
         "behavior_ids": [
           "B001",
-          "B003"
+          "B003",
+          "B004"
         ],
         "mapping_method": "manual_semantic_review"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
         "behavior_ids": [
-          "B003"
+          "B005"
         ],
         "mapping_method": "manual_semantic_review"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
         "behavior_ids": [
-          "B004"
+          "B006"
         ],
         "mapping_method": "manual_semantic_review"
       }
@@ -256,6 +275,6 @@
       "notes": "Semantic contract review for balance slot resource-direct-02."
     }
   },
-  "spec_hash": "aea4cdbdddddfe7314c9701d56ae1a92950781bb6b32c6baaa2ef6ac332a27dd",
-  "generated_task_hash": "f7b4d9488e7e6631f4382bd76e57979a1f14c9f87a5f90eecc542f158698a22d"
+  "spec_hash": "4bd05d77ca17daf83f9cd6f11be901bcaa3e1cb4b26a7bc8cfc5ea8c8625458b",
+  "generated_task_hash": "66294769520bdca6265364443c37eec6656c8a6357b478858b4c2a526c893727"
 }

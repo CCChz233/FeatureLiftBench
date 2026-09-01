@@ -111,15 +111,15 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: parse_one/parse into Select expressions and raise ParseError on invalid SQL. Required observable cases include parse one select; parse error; parse multiple."
+        "text": "parse_one returns an exp.Select whose sql() reproduces a simple SELECT statement, parse returns one exp.Select per semicolon-separated statement, and malformed SQL such as `SELECT FROM` raises ParseError."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: transpile across sqlite/postgres/mysql. Required observable cases include transpile sqlite to postgres; transpile mysql to sqlite; mysql dialect backticks."
+        "text": "transpile converts SELECT statements between the sqlite, postgres, and mysql dialects and returns a non-empty list of SQL strings; mysql backtick-quoted identifiers can be parsed and rendered."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: Expression.sql with pretty formatting. Required observable cases include pretty sql."
+        "text": "Expression.sql(pretty=True) returns formatted SQL that retains the SELECT projection and FROM clause."
       },
       {
         "id": "B004",
@@ -151,17 +151,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: parse_one/parse into Select expressions and raise ParseError on invalid SQL. Required observable cases include parse one select; parse error; parse multiple."
+        "text": "parse_one returns an exp.Select whose sql() reproduces a simple SELECT statement, parse returns one exp.Select per semicolon-separated statement, and malformed SQL such as `SELECT FROM` raises ParseError."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: transpile across sqlite/postgres/mysql. Required observable cases include transpile sqlite to postgres; transpile mysql to sqlite; mysql dialect backticks."
+        "text": "transpile converts SELECT statements between the sqlite, postgres, and mysql dialects and returns a non-empty list of SQL strings; mysql backtick-quoted identifiers can be parsed and rendered."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Expression.sql with pretty formatting. Required observable cases include pretty sql."
+        "text": "Expression.sql(pretty=True) returns formatted SQL that retains the SELECT projection and FROM clause."
       },
       {
         "behavior_id": "B004",
@@ -197,7 +197,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_parse_error",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -213,7 +213,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_mysql_dialect_backticks",
         "behavior_ids": [
-          "B002"
+          "B002",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -227,6 +228,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_transpile_mysql_to_sqlite",
         "behavior_ids": [
+          "B002",
           "B004"
         ],
         "mapping_method": "ai_assisted"
@@ -292,6 +294,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "4518d2ce8e1c05a5d617cb0698eb805272a39a50e72cadf9015146a2f28039c8",
-  "generated_task_hash": "a07f8f259236bfeee8ff3aa770d95f5e051ae144259ed113075f038e282f8414"
+  "spec_hash": "47c2f66798ae35579b990383d94770e88e99c8a7bb8b01e5d32e20d1cf910cb8",
+  "generated_task_hash": "aab78361fd2e10e9b21196f650e999241eec3593416eb87ca1c5e48cc665a4b9"
 }

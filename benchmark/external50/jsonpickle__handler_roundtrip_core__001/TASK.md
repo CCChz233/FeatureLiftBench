@@ -17,17 +17,15 @@ from featurelifted import (
 
 ## Required API Details
 
-- `encode` callable must exist
-- `decode` callable must exist
-- `register` callable must exist
+- `encode(obj, unpicklable: bool = True, make_refs: bool = True) -> str`
+- `decode(string: str)`
+- `register(cls, handler, base: bool = False) -> None`
 - `handlers.BaseHandler` class must be importable
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: encode/decode roundtrip for dict payloads. Required observable cases include encode decode builtin.
-- The extracted feature must support this observable behavior: register BaseHandler restores custom classes. Required observable cases include custom handler roundtrip.
-- The extracted feature must support this observable behavior: unpicklable=False yields dict snapshots. Required observable cases include unpicklable false dict mode.
-- Handler registry is global; tests register handlers explicitly.
+- encode and decode round-trip JSON-compatible containers; after register associates a class with a BaseHandler subclass, the handler's flatten and restore methods round-trip instances of that class.
+- encode(obj, unpicklable=False) serializes an object's attributes as ordinary JSON data, so decode returns a dictionary snapshot rather than reconstructing the object.
 - The package exposes encode/decode/register/BaseHandler with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: jsonpickle.
 
@@ -42,10 +40,8 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: encode/decode roundtrip for dict payloads. Required observable cases include encode decode builtin.
-- **B002** — The extracted feature must support this observable behavior: register BaseHandler restores custom classes. Required observable cases include custom handler roundtrip.
-- **B003** — The extracted feature must support this observable behavior: unpicklable=False yields dict snapshots. Required observable cases include unpicklable false dict mode.
-- **B004** — Handler registry is global; tests register handlers explicitly.
-- **B005** — The package exposes encode/decode/register/BaseHandler with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: jsonpickle.
+- **B001** — encode and decode round-trip JSON-compatible containers; after register associates a class with a BaseHandler subclass, the handler's flatten and restore methods round-trip instances of that class.
+- **B002** — encode(obj, unpicklable=False) serializes an object's attributes as ordinary JSON data, so decode returns a dictionary snapshot rather than reconstructing the object.
+- **B003** — The package exposes encode/decode/register/BaseHandler with the kinds listed in this contract.
+- **B004** — the submitted package does not import forbidden upstream packages: jsonpickle.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -93,13 +93,13 @@
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
-      "text": "Exception symbols cannot appear as plain licenses."
+      "text": "When parse(..., strict=True) is used, exception symbols cannot appear as plain licenses and raise ExpressionParseError; default parse(..., strict=False) does not enforce that check."
     },
     {
       "behavior_id": "B007",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
-      "text": "Plain license symbols cannot be used as `WITH` exceptions."
+      "text": "When parse(..., strict=True) is used, plain license symbols cannot be used as WITH exceptions and raise ExpressionParseError; default parse(..., strict=False) does not raise for that misuse."
     },
     {
       "behavior_id": "B008",
@@ -180,7 +180,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "70faf0108499b4f7e240d441a7a4026fb10643b8928a23c806c76692c367e7a2",
+  "spec_sha256": "357545033c2dd7251ffa3199bde8f706d023ac3c73ba2d38c2423404a1c408ff",
   "task_id": "license_expression__policy_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

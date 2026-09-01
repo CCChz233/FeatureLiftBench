@@ -20,7 +20,13 @@ from featurelifted import (
 - `parse(sql: str, encoding: str | None = None) -> tuple[Statement, ...]`
 - `parsestream(stream: Union[str, IO[str]], encoding: str | None = None) -> collections.abc.Generator[Statement, None, None]`
 - `sql` module must be importable
+  - `sql.Comparison(tokens=None)` class constructor
+  - `sql.Identifier(tokens=None)` class constructor
+  - `sql.Statement(tokens=None)` class constructor
+  - `sql.Where(tokens=None)` class constructor
 - `tokens` module must be importable
+  - `tokens.Keyword` attribute must exist
+- `tokens.Keyword.DML` attribute must exist
 
 ## Required Behavior
 
@@ -29,7 +35,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: preserve parent/ancestor relationships and comparison navigation. Required observable cases include token navigation and ancestor relationships.
 - The extracted feature must support this observable behavior: extract identifiers, aliases, and CTE structure from parsed statements. Required observable cases include cte aliases and identifier helpers.
 - The extracted feature must support this observable behavior: Identifier.get_name/get_real_name/get_alias and token ancestor navigation within Where clauses. Required observable cases include token navigation and ancestor relationships.
-- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -56,6 +62,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: preserve parent/ancestor relationships and comparison navigation. Required observable cases include token navigation and ancestor relationships.
 - **B004** — The extracted feature must support this observable behavior: extract identifiers, aliases, and CTE structure from parsed statements. Required observable cases include cte aliases and identifier helpers.
 - **B005** — The extracted feature must support this observable behavior: Identifier.get_name/get_real_name/get_alias and token ancestor navigation within Where clauses. Required observable cases include token navigation and ancestor relationships.
-- **B006** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: sqlparse.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "medium",
   "status": "validated",
-  "task_revision": 2,
+  "task_revision": 3,
   "tags": [
     "external50",
     "pilot",
@@ -87,7 +87,8 @@
         "members": [
           {
             "path": "featurelifted.Word.parse_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(instring: str, parse_all: bool = False) -> ParseResults"
           }
         ]
       },
@@ -97,7 +98,8 @@
         "members": [
           {
             "path": "featurelifted.Literal.parse_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(instring: str, parse_all: bool = False) -> ParseResults"
           }
         ]
       },
@@ -123,7 +125,8 @@
         "members": [
           {
             "path": "featurelifted.OneOrMore.parse_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(instring: str, parse_all: bool = False) -> ParseResults"
           }
         ]
       },
@@ -133,7 +136,8 @@
         "members": [
           {
             "path": "featurelifted.Group.parse_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(instring: str, parse_all: bool = False) -> ParseResults"
           }
         ]
       },
@@ -151,11 +155,13 @@
         "members": [
           {
             "path": "featurelifted.ParseResults.as_list",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> list"
           },
           {
             "path": "featurelifted.ParseResults.as_dict",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> dict"
           }
         ]
       },
@@ -172,19 +178,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: compose Word/Literal/Optional/Group helpers and parse_string with named results. Required observable cases include word literal compose; optional group."
+        "text": "When Word and Literal expressions are combined with `+`, calling `parse_string` on matching text returns a ParseResults whose `as_list()` preserves token order and whose results names are available through `as_dict()`; wrapping expressions in Group nests their tokens as one list, and an absent Optional expression contributes no token."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: Keyword/Regex/ZeroOrMore/OneOrMore/Suppress composition. Required observable cases include keyword and regex; zero one or more; group structure."
+        "text": "When Keyword or Regex expressions match, named Regex text appears in ParseResults; ZeroOrMore accepts zero or more repetitions, OneOrMore parses repeated words, and Suppress accepts either an expression or a string such as `\",\"` and omits each matched separator from the returned tokens."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: ParseException on mismatch including parse_all leftovers. Required observable cases include parse exception; parse all flag."
+        "text": "Calling `parse_string` with input that does not match the expression raises ParseException with a nonnegative `loc`; when `parse_all=True`, otherwise-valid input with unmatched trailing text also raises ParseException."
       },
       {
         "id": "B004",
-        "text": "ParseResults supports as_list/as_dict accessors used in tests."
+        "text": "For a successful parse, ParseResults.as_list() returns the positional token structure and ParseResults.as_dict() returns the values assigned results names, including nested Group structure where applicable."
       },
       {
         "id": "B005",
@@ -192,7 +198,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: pyparsing."
+        "text": "Scanning every Python file in the submitted package finds no `import pyparsing` or `from pyparsing ...` statement."
       }
     ],
     "exclusions": [
@@ -213,22 +219,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: compose Word/Literal/Optional/Group helpers and parse_string with named results. Required observable cases include word literal compose; optional group."
+        "text": "When Word and Literal expressions are combined with `+`, calling `parse_string` on matching text returns a ParseResults whose `as_list()` preserves token order and whose results names are available through `as_dict()`; wrapping expressions in Group nests their tokens as one list, and an absent Optional expression contributes no token."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Keyword/Regex/ZeroOrMore/OneOrMore/Suppress composition. Required observable cases include keyword and regex; zero one or more; group structure."
+        "text": "When Keyword or Regex expressions match, named Regex text appears in ParseResults; ZeroOrMore accepts zero or more repetitions, OneOrMore parses repeated words, and Suppress accepts either an expression or a string such as `\",\"` and omits each matched separator from the returned tokens."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: ParseException on mismatch including parse_all leftovers. Required observable cases include parse exception; parse all flag."
+        "text": "Calling `parse_string` with input that does not match the expression raises ParseException with a nonnegative `loc`; when `parse_all=True`, otherwise-valid input with unmatched trailing text also raises ParseException."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "ParseResults supports as_list/as_dict accessors used in tests."
+        "text": "For a successful parse, ParseResults.as_list() returns the positional token structure and ParseResults.as_dict() returns the values assigned results names, including nested Group structure where applicable."
       },
       {
         "behavior_id": "B005",
@@ -238,7 +244,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: pyparsing."
+        "text": "Scanning every Python file in the submitted package finds no `import pyparsing` or `from pyparsing ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -252,7 +258,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_optional_group",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -268,7 +274,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_keyword_and_regex",
         "behavior_ids": [
-          "B001"
+          "B002",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -282,14 +289,15 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_structure",
         "behavior_ids": [
-          "B003"
+          "B001",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_all_flag",
         "behavior_ids": [
-          "B004"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -432,7 +440,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "05e9f022d1ea9cf53cf3c2d3167c6309037857f39e5d4064d2da45c5d8bde3e1",
-  "generated_task_hash": "8f695e66b5fc8902f530638f2be34b54dd4d0de6c76efe4542aff5f06f7b280e",
+  "spec_hash": "66c0019740d07aa5d3338a973ae364e1ac2ce38f4ae0d0e6a1f9dd3746373c70",
+  "generated_task_hash": "536c1cea111681094bc6454bd8d058c1c0b720e53313e1dfb5516604495701ea",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

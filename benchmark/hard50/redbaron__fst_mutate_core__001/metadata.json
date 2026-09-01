@@ -1,0 +1,253 @@
+{
+  "task_id": "redbaron__fst_mutate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "parser"
+  ],
+  "source": {
+    "name": "redbaron",
+    "url": "https://github.com/PyCQA/redbaron",
+    "commit": "9b4a1825d160269815ca7bc90f55fff8a5e76e29",
+    "license": "LGPLv3+"
+  },
+  "feature": {
+    "name": "FST parse and mutate",
+    "description": "Lift RedBaron parse/find/dumps so a function can be renamed while preserving formatting.",
+    "source_entrypoints": [
+      "redbaron.RedBaron"
+    ],
+    "included_behaviors": [
+      "parse",
+      "rename name node",
+      "dumps roundtrip"
+    ],
+    "excluded_behaviors": [
+      "baron internals dump formats unused",
+      "ipython/notebook helpers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "RedBaron wraps baron FST nodes so dumps must preserve formatting after mutation.",
+    "signals": [
+      "FST vs AST",
+      "dumps roundtrip"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import RedBaron",
+    "callable": "RedBaron",
+    "signature": "RedBaron(source_code)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "baron",
+      "rply",
+      "appdirs"
+    ],
+    "forbidden_dependencies": [
+      "redbaron"
+    ],
+    "forbidden_imports": [
+      "redbaron"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "redbaron/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "FST parse and mutate",
+    "summary": "Build a standalone `featurelifted` package providing RedBaron-style FST parse, `find`, rename, and `dumps` roundtrip for Python source.",
+    "required_api": [
+      {
+        "path": "featurelifted.RedBaron",
+        "kind": "class",
+        "signature": "(source_code)",
+        "members": [
+          {
+            "path": "featurelifted.RedBaron.__init__",
+            "kind": "method",
+            "signature": "(self, source_code)"
+          },
+          {
+            "path": "featurelifted.RedBaron.find",
+            "kind": "method",
+            "signature": "(self, identifier, *args, **kwargs)"
+          },
+          {
+            "path": "featurelifted.RedBaron.dumps",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Constructing `RedBaron(source)` and calling `dumps()` returns source that is identical to the original input, including indentation and trailing newline."
+      },
+      {
+        "id": "B002",
+        "text": "`find(\"def\", name=...)` locates that function; assigning a new `.name` and calling `dumps()` emits the renamed `def` line while leaving the function body formatting unchanged."
+      },
+      {
+        "id": "B003",
+        "text": "The package exposes `RedBaron` with construction, `find`, and `dumps` as listed in this contract."
+      },
+      {
+        "id": "B004",
+        "text": "The submitted package source does not import the forbidden upstream package `redbaron`."
+      }
+    ],
+    "exclusions": [
+      "baron internals dump formats unused",
+      "ipython/notebook helpers",
+      "runtime import of redbaron"
+    ],
+    "forbidden": {
+      "imports": [
+        "redbaron"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Constructing `RedBaron(source)` and calling `dumps()` returns source that is identical to the original input, including indentation and trailing newline."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`find(\"def\", name=...)` locates that function; assigning a new `.name` and calling `dumps()` emits the renamed `def` line while leaving the function body formatting unchanged."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `RedBaron` with construction, `find`, and `dumps` as listed in this contract."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `redbaron`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_dumps_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_rename_function_preserves_body",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_find_and_rename_keeps_indent",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_find_def_by_name",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.RedBaron",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RedBaron.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RedBaron.find",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RedBaron.dumps",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 334000,
+    "copy_all_loc": 6674,
+    "oracle_bytes": 321329,
+    "oracle_loc": 2634,
+    "oracle_dependency_count": 1
+  },
+  "spec_hash": "035bb5f016286569533d736f473ef3255ad079478d2fc0ba516d09ea5e3abebf",
+  "generated_task_hash": "716f64c8a66f96d4301a060ddae29a80f4ea01780f6a760305d39ca191ce90cd"
+}

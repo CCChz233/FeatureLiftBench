@@ -1,0 +1,289 @@
+{
+  "task_id": "rocketry__cond_schedule_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "scheduler"
+  ],
+  "source": {
+    "name": "rocketry",
+    "url": "https://github.com/Miksus/rocketry",
+    "commit": "8da223c743003166f5567a017b4ba3dfb34454ef",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Condition schedule without a long loop",
+    "description": "Lift Rocketry true/false conditions and Session.create_task/run for a single cycle.",
+    "source_entrypoints": [
+      "rocketry.session.Session",
+      "rocketry.conds.true",
+      "rocketry.conds.false"
+    ],
+    "included_behaviors": [
+      "true/false condition",
+      "register task",
+      "run once without sleep wall-clock"
+    ],
+    "excluded_behaviors": [
+      "production scheduler loops",
+      "remote"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "config_environment_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Condition combinators and Session task registration share scheduler config and log adapters.",
+    "signals": [
+      "true/false",
+      "create_task decorator",
+      "run obey_cond"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Session, true, false",
+    "callable": "Session",
+    "signature": "Session(config={'execution': 'main', 'cycle_sleep': 0})"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "pydantic",
+      "pydantic-core",
+      "python-dateutil",
+      "six",
+      "annotated-types",
+      "typing-extensions",
+      "typing-inspection"
+    ],
+    "forbidden_dependencies": [
+      "rocketry"
+    ],
+    "forbidden_imports": [
+      "rocketry"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "rocketry/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Condition schedule without a long loop",
+    "summary": "Build a standalone `featurelifted` package providing Rocketry-style `true`/`false` conditions and a `Session` that can register and run one in-process task without starting a long-running scheduler loop.",
+    "required_api": [
+      {
+        "path": "featurelifted.Session",
+        "kind": "class",
+        "signature": "(config=None)",
+        "members": [
+          {
+            "path": "featurelifted.Session.create_task",
+            "kind": "method",
+            "signature": "(self, **kwargs)"
+          },
+          {
+            "path": "featurelifted.Session.run",
+            "kind": "method",
+            "signature": "(self, *task_names: str, execution=None, obey_cond=False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.true",
+        "kind": "constant"
+      },
+      {
+        "path": "featurelifted.false",
+        "kind": "constant"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`true` is a condition that evaluates true and `false` evaluates false. Combining them with `&` is false and combining them with `|` is true."
+      },
+      {
+        "id": "B002",
+        "text": "A `Session` constructed with `execution='main'` and `cycle_sleep=0` can register a function via `create_task(start_cond=true, name=..., execution='main')` and `run(name, obey_cond=True, execution='main')` executes that function once without leaving a long-running scheduler loop."
+      },
+      {
+        "id": "B003",
+        "text": "When `start_cond` is `false` and `run(..., obey_cond=True)` is used, the registered function is not called."
+      },
+      {
+        "id": "B004",
+        "text": "A task whose `start_cond` is `true | false` does run under `obey_cond=True`. Tests construct their own `Session` rather than starting the import-time default scheduler."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Session`, `true`, and `false` with `create_task` and `run` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `rocketry`."
+      }
+    ],
+    "exclusions": [
+      "production scheduler loops",
+      "remote execution",
+      "process or thread execution backends",
+      "runtime import of rocketry"
+    ],
+    "forbidden": {
+      "imports": [
+        "rocketry"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`true` is a condition that evaluates true and `false` evaluates false. Combining them with `&` is false and combining them with `|` is true."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A `Session` constructed with `execution='main'` and `cycle_sleep=0` can register a function via `create_task(start_cond=true, name=..., execution='main')` and `run(name, obey_cond=True, execution='main')` executes that function once without leaving a long-running scheduler loop."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When `start_cond` is `false` and `run(..., obey_cond=True)` is used, the registered function is not called."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A task whose `start_cond` is `true | false` does run under `obey_cond=True`. Tests construct their own `Session` rather than starting the import-time default scheduler."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Session`, `true`, and `false` with `create_task` and `run` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `rocketry`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_true_false_and_or",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_run_obeys_true_condition",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_false_condition_skips_when_obeying",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_or_combination_runs",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Session",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.create_task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.true",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.false",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 755865,
+    "copy_all_loc": 17532,
+    "oracle_bytes": 765419,
+    "oracle_loc": 7406,
+    "oracle_dependency_count": 2
+  },
+  "spec_hash": "31735aae7b24db9c94634f7dbf5f75964a15888213a6a9ab8e90fdefec9ad187",
+  "generated_task_hash": "d16d97b7251a25e7bc98320ef1ba1dac65959b453274551ffc496848db8ea42a"
+}

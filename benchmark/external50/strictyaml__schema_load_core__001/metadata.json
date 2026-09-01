@@ -129,15 +129,15 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq."
+        "text": "load parses YAML through Map, Seq, Str, Int, and Bool validators and exposes converted Python primitives through document.data, including absent Optional keys without inserting a value."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error."
+        "text": "Nested Seq(Map(...)) schemas convert every nested item, while a scalar that does not satisfy its validator, such as `x` for Int(), raises YAMLValidationError."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern."
+        "text": "Optional keys may be omitted from Map schemas, and MapPattern(Str(), Int()) converts arbitrary string keys with integer values into a Python dictionary."
       },
       {
         "id": "B004",
@@ -168,17 +168,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq."
+        "text": "load parses YAML through Map, Seq, Str, Int, and Bool validators and exposes converted Python primitives through document.data, including absent Optional keys without inserting a value."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error."
+        "text": "Nested Seq(Map(...)) schemas convert every nested item, while a scalar that does not satisfy its validator, such as `x` for Int(), raises YAMLValidationError."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern."
+        "text": "Optional keys may be omitted from Map schemas, and MapPattern(Str(), Int()) converts arbitrary string keys with integer values into a Python dictionary."
       },
       {
         "behavior_id": "B004",
@@ -224,7 +224,7 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_optional_key_absent",
         "behavior_ids": [
           "B001",
-          "B004"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -238,7 +238,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_strict_error_hierarchy",
         "behavior_ids": [
-          "B003"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -327,7 +327,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "d63754496a7ec0ac38ec796f5c94a89d075b447dfdc2b6c0a2c02d961030fd57",
-  "generated_task_hash": "3f9f532dac7294525b3d01e8119c12396d3c29dcf0b7a0114915b8f7681486ff",
+  "spec_hash": "85a4b208ac22aab1b191274b643e2cf1da3ddcb4641d689094c9d17e42f60898",
+  "generated_task_hash": "ad42d3658ff871dc27da66ea940f7a2b0e4827bf656e5f5499e6a94b8fdeee68",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

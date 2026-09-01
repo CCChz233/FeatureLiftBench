@@ -1,0 +1,301 @@
+{
+  "task_id": "oauthlib__grant_dispatch_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted"
+  ],
+  "source": {
+    "name": "oauthlib",
+    "url": "https://github.com/oauthlib/oauthlib",
+    "commit": "40b0ab56da3682c2484a4b78bbff309f8025d950",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Authorization-code grant dispatch",
+    "description": "Lift WebApplicationServer authorization-code issue and token exchange without network I/O.",
+    "source_entrypoints": [
+      "oauthlib.oauth2.WebApplicationServer",
+      "oauthlib.oauth2.RequestValidator"
+    ],
+    "included_behaviors": [
+      "authorization code redirect",
+      "token exchange",
+      "unsupported grant rejection",
+      "code reuse rejection"
+    ],
+    "excluded_behaviors": [
+      "JWT/OIDC extras",
+      "live HTTP clients"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Grant dispatch coordinates validator callbacks, grant-type routing, and token response encoding.",
+    "signals": [
+      "authorization code",
+      "unsupported_grant_type",
+      "code invalidation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import WebApplicationServer, RequestValidator",
+    "callable": "WebApplicationServer",
+    "signature": "WebApplicationServer(request_validator, token_generator=None, token_expires_in=None, refresh_token_generator=None, **kwargs)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "oauthlib"
+    ],
+    "forbidden_imports": [
+      "oauthlib"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "oauthlib/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Authorization-code grant dispatch",
+    "summary": "Build a standalone `featurelifted` package providing OAuth2 authorization-code issue and token exchange through `WebApplicationServer`.",
+    "required_api": [
+      {
+        "path": "featurelifted.WebApplicationServer",
+        "kind": "class",
+        "signature": "(request_validator, token_generator=None, token_expires_in=None, refresh_token_generator=None, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.WebApplicationServer.__init__",
+            "kind": "method",
+            "signature": "(self, request_validator, token_generator=None, token_expires_in=None, refresh_token_generator=None, **kwargs)"
+          },
+          {
+            "path": "featurelifted.WebApplicationServer.create_authorization_response",
+            "kind": "method",
+            "signature": "(self, uri, http_method='GET', body=None, headers=None, scopes=None, credentials=None)"
+          },
+          {
+            "path": "featurelifted.WebApplicationServer.create_token_response",
+            "kind": "method",
+            "signature": "(self, uri, http_method='POST', body=None, headers=None, credentials=None, grant_type_for_scope=None, claims=None)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.RequestValidator",
+        "kind": "class",
+        "signature": "()"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Given a validator that accepts client `cid` and redirect `https://example.com/cb`, `create_authorization_response` for `response_type=code` returns HTTP 302 with a `code` query parameter on `Location`."
+      },
+      {
+        "id": "B002",
+        "text": "Exchanging that authorization code with `grant_type=authorization_code` via `create_token_response` returns HTTP 200 and a body containing `access_token`."
+      },
+      {
+        "id": "B003",
+        "text": "A token request whose `grant_type` is not `authorization_code` is rejected with HTTP 400 and `unsupported_grant_type` in the body."
+      },
+      {
+        "id": "B004",
+        "text": "A token request with an unknown or already-exchanged authorization code is rejected with HTTP 400."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `WebApplicationServer` and `RequestValidator` with authorization and token response methods listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `oauthlib`."
+      }
+    ],
+    "exclusions": [
+      "JWT/OIDC extras",
+      "live HTTP clients",
+      "runtime import of oauthlib"
+    ],
+    "forbidden": {
+      "imports": [
+        "oauthlib"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Given a validator that accepts client `cid` and redirect `https://example.com/cb`, `create_authorization_response` for `response_type=code` returns HTTP 302 with a `code` query parameter on `Location`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Exchanging that authorization code with `grant_type=authorization_code` via `create_token_response` returns HTTP 200 and a body containing `access_token`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A token request whose `grant_type` is not `authorization_code` is rejected with HTTP 400 and `unsupported_grant_type` in the body."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A token request with an unknown or already-exchanged authorization code is rejected with HTTP 400."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `WebApplicationServer` and `RequestValidator` with authorization and token response methods listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `oauthlib`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_authorization_code_grant_returns_code",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_token_exchange_returns_access_token",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unsupported_grant_type_is_rejected",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_token_body_is_json_with_bearer_type",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_client_credentials_grant_is_unsupported",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_code_is_rejected",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_code_cannot_be_reused_after_exchange",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.WebApplicationServer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.WebApplicationServer.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.WebApplicationServer.create_authorization_response",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.WebApplicationServer.create_token_response",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RequestValidator",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "5fb153174116ac62e7449428879784d811c3c3abc260ea9e776ba8802cd6634d",
+  "generated_task_hash": "93f8519dbd937f2d1128e099ce847330c9dd50ea82047eb09daa2be19967c4ba",
+  "scoring_reference": {
+    "copy_all_bytes": 966595,
+    "copy_all_loc": 16817,
+    "oracle_bytes": 912496,
+    "oracle_loc": 9187,
+    "oracle_dependency_count": 0
+  }
+}

@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`Version.parse` accepts version strings that include prerelease and build metadata, exposes the corresponding attributes, and round-trips through `str()`."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`Version` instances are ordered with comparison operators and `compare`, so a lower version is less than a higher version."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Constructing `Version` with only a major value defaults minor and patch to 0; `bump_major`, `bump_minor`, `bump_patch`, and `replace` return new `Version` instances with updated parts."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "Invalid version strings raise ValueError."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Invalid version strings raise `ValueError`."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: semver."
     }
   ],
@@ -37,19 +43,22 @@
       "nodeid": "public_tests/test_public_api.py::test_parse_basic",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_compare_and_order",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_bump_and_replace",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -57,38 +66,44 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_prerelease_and_build_parse",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_version_raises",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_constructor_defaults",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_ordering_operators",
       "public_clause_ids": [
-        "B004"
-      ]
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "646b6f761c2550ee09a135325d73495798a24e7f834780d0ab7c5a33396ed42f"
+  "spec_sha256": "6596380dd2cdfe325e89ca1b38cc940d8291d1fce4b00d74da2ff3c18875ce32"
 }

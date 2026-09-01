@@ -18,6 +18,7 @@ def test_required_api_surface():
     assert isinstance(Headers, type)
     assert hasattr(Headers, 'get_all')
     assert isinstance(Request, type)
+    assert hasattr(Request, 'parse')
     assert isinstance(Response, type)
     assert callable(accept_key)
     assert callable(generate_key)

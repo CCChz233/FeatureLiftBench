@@ -20,7 +20,7 @@ from featurelifted import (
 
 - version_from_scm normalizes SCM-style tags into a valid base version and incorporates distance, dirty state, and node information.
 - When distance from the tag is positive, version_from_scm appends the corresponding development-distance suffix.
-- When node or dirty information is present, version_from_scm appends a normalized local version segment.
+- When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty.
 - The package exposes the required task API paths `featurelifted.version_from_scm` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -42,7 +42,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — version_from_scm normalizes SCM-style tags into a valid base version and incorporates distance, dirty state, and node information.
 - **B002** — When distance from the tag is positive, version_from_scm appends the corresponding development-distance suffix.
-- **B003** — When node or dirty information is present, version_from_scm appends a normalized local version segment.
+- **B003** — When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty.
 - **B004** — The package exposes the required task API paths `featurelifted.version_from_scm` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: setuptools_scm.
 <!-- featureliftbench:behavior-clauses:end -->

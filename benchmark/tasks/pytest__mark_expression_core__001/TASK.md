@@ -18,6 +18,7 @@ from featurelifted import (
 
 - `Expression(code: 'types.CodeType') -> 'None'` class constructor
   - `Expression.compile(input: 'str') -> 'Expression'`
+  - `Expression.evaluate(self, matcher: 'MatcherCall') -> 'bool'`
 - `ParseError` must be importable and raisable
 - `expression` module must be importable
   - `expression.Scanner(input: 'str') -> 'None'` class constructor
@@ -31,7 +32,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: evaluate expressions against a matcher callback. Required observable cases include and or logic; kwargs matcher; expression module scanner.
 - The extracted feature must support this observable behavior: support identifier kwargs syntax for parameterized markers. Required observable cases include kwargs matcher.
 - The extracted feature must support this observable behavior: empty expression evaluates to False. Required observable cases include empty expression is false; and or logic; expression module scanner.
-- The package exposes the required task API paths `featurelifted.Expression`, `featurelifted.Expression.compile`, `featurelifted.ParseError`, `featurelifted.expression`, `featurelifted.expression.Scanner`, `featurelifted.expression.Scanner.current`, `featurelifted.expression.TokenType`, `featurelifted.expression.TokenType.IDENT` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Expression`, `featurelifted.Expression.compile`, `featurelifted.Expression.evaluate`, `featurelifted.ParseError`, `featurelifted.expression`, `featurelifted.expression.Scanner`, `featurelifted.expression.Scanner.current`, `featurelifted.expression.TokenType`, `featurelifted.expression.TokenType.IDENT` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -54,6 +55,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: evaluate expressions against a matcher callback. Required observable cases include and or logic; kwargs matcher; expression module scanner.
 - **B003** — The extracted feature must support this observable behavior: support identifier kwargs syntax for parameterized markers. Required observable cases include kwargs matcher.
 - **B004** — The extracted feature must support this observable behavior: empty expression evaluates to False. Required observable cases include empty expression is false; and or logic; expression module scanner.
-- **B005** — The package exposes the required task API paths `featurelifted.Expression`, `featurelifted.Expression.compile`, `featurelifted.ParseError`, `featurelifted.expression`, `featurelifted.expression.Scanner`, `featurelifted.expression.Scanner.current`, `featurelifted.expression.TokenType`, `featurelifted.expression.TokenType.IDENT` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Expression`, `featurelifted.Expression.compile`, `featurelifted.Expression.evaluate`, `featurelifted.ParseError`, `featurelifted.expression`, `featurelifted.expression.Scanner`, `featurelifted.expression.Scanner.current`, `featurelifted.expression.TokenType`, `featurelifted.expression.TokenType.IDENT` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: pytest, _pytest.
 <!-- featureliftbench:behavior-clauses:end -->

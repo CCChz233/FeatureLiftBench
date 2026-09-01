@@ -100,6 +100,11 @@
           {
             "path": "featurelifted.Success.value",
             "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Success.bind",
+            "kind": "method",
+            "signature": "(self, function: 'Callable[[T], Result[U, E]]') -> 'Result[U, E]'"
           }
         ]
       },
@@ -111,6 +116,16 @@
           {
             "path": "featurelifted.Failure.failure",
             "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Failure.map",
+            "kind": "method",
+            "signature": "(self, function: 'Callable[[T], U]') -> 'Result[U, E]'"
+          },
+          {
+            "path": "featurelifted.Failure.bind",
+            "kind": "method",
+            "signature": "(self, function: 'Callable[[T], Result[U, E]]') -> 'Result[U, E]'"
           }
         ]
       },
@@ -136,7 +151,7 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.Result`, `featurelifted.Success`, `featurelifted.Success.map`, `featurelifted.Success.value`, `featurelifted.Failure`, `featurelifted.Failure.failure`, `featurelifted.safe` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Result`, `featurelifted.Success`, `featurelifted.Success.map`, `featurelifted.Success.value`, `featurelifted.Success.bind`, `featurelifted.Failure`, `featurelifted.Failure.failure`, `featurelifted.Failure.map`, `featurelifted.Failure.bind`, `featurelifted.safe` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -183,7 +198,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Result`, `featurelifted.Success`, `featurelifted.Success.map`, `featurelifted.Success.value`, `featurelifted.Failure`, `featurelifted.Failure.failure`, `featurelifted.safe` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Result`, `featurelifted.Success`, `featurelifted.Success.map`, `featurelifted.Success.value`, `featurelifted.Success.bind`, `featurelifted.Failure`, `featurelifted.Failure.failure`, `featurelifted.Failure.map`, `featurelifted.Failure.bind`, `featurelifted.safe` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -250,6 +265,12 @@
         ]
       },
       {
+        "path": "featurelifted.Success.bind",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.Failure",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -260,6 +281,18 @@
         "covered_by_tests": [
           "hidden_tests/test_hidden_contract.py::test_failure_short_circuits",
           "hidden_tests/test_hidden_contract.py::test_safe_decorator_maps_exceptions"
+        ]
+      },
+      {
+        "path": "featurelifted.Failure.map",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_failure_short_circuits"
+        ]
+      },
+      {
+        "path": "featurelifted.Failure.bind",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
       },
       {
@@ -280,11 +313,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 4,
-  "spec_hash": "fdbe4455f651c9721048fbfa472ebdae54ffc4df9502eba8ce59ae08131605a9",
-  "generated_task_hash": "34424b1f4a4c657412a0fc42e5f6ab873ff5fefb8908b150aa4994029ac17314"
+  "task_revision": 5,
+  "spec_hash": "3f56e84797796c1da5521e40071386bf473003667ffc9dd94f0c925973ac9d14",
+  "generated_task_hash": "195c1702d63a87d23272d2b969cd8865049e208ce8ef4f5508ae60d3e85df1f2"
 }

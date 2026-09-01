@@ -21,7 +21,10 @@ from materialize_hard50_pilot_oracles import (  # noqa: E402
 PIN = Path("/tmp/flb_hard50_swap_pins")
 SWAPPED = PILOT / "_swapped_out"
 LEDGER = ROOT / "benchmark/selection/hard50_expansion_20260827.json"
-SUBMISSIONS = ROOT / "experiments/hard50_copyheavy_swaps_20260827/submissions"
+SUBMISSIONS = (
+    ROOT
+    / "experiments/validation/hard50/hard50_copyheavy_swaps_20260827/submissions"
+)
 NAIVE = '''\
 """Intentionally incomplete naive extraction."""
 

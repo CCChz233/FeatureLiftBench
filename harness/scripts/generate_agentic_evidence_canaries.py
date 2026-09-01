@@ -16,7 +16,7 @@ from featureliftbench.agentic_evidence.canaries import validate_canary_suite
 
 
 DEFAULT_OUTPUT = (
-    _REPO / "artifacts/research_analysis/agentic_evidence/canaries_v1"
+    _REPO / "experiments/validation/agentic_evidence/canaries_v1"
 )
 
 

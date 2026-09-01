@@ -1,0 +1,308 @@
+{
+  "task_id": "httpretty__uri_stub_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "tooling"
+  ],
+  "source": {
+    "name": "HTTPretty",
+    "url": "https://github.com/gabrielfalcao/HTTPretty",
+    "commit": "f9f012711597634d40066d144a36888b3addcc46",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "In-process URI stubs",
+    "description": "Lift httpretty enable/register_uri/last_request so urllib GETs are stubbed in-process.",
+    "source_entrypoints": [
+      "httpretty.enable",
+      "httpretty.register_uri"
+    ],
+    "included_behaviors": [
+      "GET stub body",
+      "query",
+      "reset"
+    ],
+    "excluded_behaviors": [
+      "real sockets",
+      "http2"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "resource_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "HTTPretty patches sockets so registered URIs are answered in-process.",
+    "signals": [
+      "socket patch",
+      "last_request"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import enable, register_uri, last_request, disable, GET, reset",
+    "callable": "register_uri",
+    "signature": "register_uri(method, uri, body=..., status=200, ...)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "httpretty"
+    ],
+    "forbidden_imports": [
+      "httpretty"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "httpretty/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "In-process URI stubs",
+    "summary": "Build a standalone `featurelifted` package providing HTTPretty-style `enable`, `register_uri`, and `last_request` so HTTP clients are stubbed in-process without outbound network access.",
+    "required_api": [
+      {
+        "path": "featurelifted.enable",
+        "kind": "function",
+        "signature": "(allow_net_connect=True, verbose=False)"
+      },
+      {
+        "path": "featurelifted.disable",
+        "kind": "function",
+        "signature": "()"
+      },
+      {
+        "path": "featurelifted.reset",
+        "kind": "function",
+        "signature": "()"
+      },
+      {
+        "path": "featurelifted.register_uri",
+        "kind": "function",
+        "signature": "(method, uri, body=..., adding_headers=None, forcing_headers=None, status=200, ...)"
+      },
+      {
+        "path": "featurelifted.last_request",
+        "kind": "function",
+        "signature": "()"
+      },
+      {
+        "path": "featurelifted.GET",
+        "kind": "constant"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `enable(allow_net_connect=False)` and `register_uri(GET, url, body=...)`, `urllib.request.urlopen(url)` returns that body with HTTP status 200."
+      },
+      {
+        "id": "B002",
+        "text": "`last_request()` after a stubbed GET exposes the intercepted request `path`, `method`, and `host` for that URI."
+      },
+      {
+        "id": "B003",
+        "text": "A stubbed GET whose URI includes `?q=...` records `last_request().querystring` as a mapping from that query key to a one-element list of the value."
+      },
+      {
+        "id": "B004",
+        "text": "Calling `reset()` while still enabled unregisters previously registered URIs so a later `urlopen` for that URI raises instead of returning the old stub body."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `enable`, `disable`, `reset`, `register_uri`, `last_request`, and `GET` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `httpretty`."
+      }
+    ],
+    "exclusions": [
+      "real sockets",
+      "http2",
+      "outbound HTTP",
+      "runtime import of httpretty"
+    ],
+    "forbidden": {
+      "imports": [
+        "httpretty"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `enable(allow_net_connect=False)` and `register_uri(GET, url, body=...)`, `urllib.request.urlopen(url)` returns that body with HTTP status 200."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`last_request()` after a stubbed GET exposes the intercepted request `path`, `method`, and `host` for that URI."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A stubbed GET whose URI includes `?q=...` records `last_request().querystring` as a mapping from that query key to a one-element list of the value."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Calling `reset()` while still enabled unregisters previously registered URIs so a later `urlopen` for that URI raises instead of returning the old stub body."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `enable`, `disable`, `reset`, `register_uri`, `last_request`, and `GET` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `httpretty`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_get_stub_body",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_last_request_path",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_querystring_recorded",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_stub_returns_registered_body",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_last_request_method_and_host",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_querystring_is_parsed",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_reset_clears_registered_uris",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.enable",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.disable",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.reset",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.register_uri",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.last_request",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GET",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 243142,
+    "copy_all_loc": 4576,
+    "oracle_bytes": 181805,
+    "oracle_loc": 2016,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "2ef7f2d9c06af8503212db8f52f5488ad3eeca500bc0c255c8fd6cf533d6d4f8",
+  "generated_task_hash": "9cccf8c69e6060bae9481c4e823107bb1b4f841b7a042f84a43cf1d170d28a3a"
+}

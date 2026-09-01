@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: encode/decode roundtrip for dict payloads. Required observable cases include encode decode builtin."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "encode and decode round-trip JSON-compatible containers; after register associates a class with a BaseHandler subclass, the handler's flatten and restore methods round-trip instances of that class."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: register BaseHandler restores custom classes. Required observable cases include custom handler roundtrip."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "encode(obj, unpicklable=False) serializes an object's attributes as ordinary JSON data, so decode returns a dictionary snapshot rather than reconstructing the object."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: unpicklable=False yields dict snapshots. Required observable cases include unpicklable false dict mode."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "The package exposes encode/decode/register/BaseHandler with the kinds listed in this contract."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "Handler registry is global; tests register handlers explicitly."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "the submitted package does not import forbidden upstream packages: jsonpickle."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes encode/decode/register/BaseHandler with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: jsonpickle."
     }
   ],
@@ -37,37 +43,40 @@
       "nodeid": "public_tests/test_public_api.py::test_encode_decode_builtin",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_custom_handler_roundtrip",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
-        "B006"
-      ]
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_unpicklable_false_dict_mode",
       "public_clause_ids": [
-        "B002",
         "B001",
-        "B003",
-        "B004"
-      ]
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
-        "B005"
-      ]
+        "B003"
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "c1d3948d42eeb57830bf1f5887e9bbcc53961c58dc280769937cdc10749c039e"
+  "spec_sha256": "7c077a3ae0da48fadec2c9b10f6893b61113e214d224c70a1cecf9233e32dd0e"
 }

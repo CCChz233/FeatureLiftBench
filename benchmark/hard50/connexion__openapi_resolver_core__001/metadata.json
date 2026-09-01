@@ -1,0 +1,387 @@
+{
+  "task_id": "connexion__openapi_resolver_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "registry"
+  ],
+  "source": {
+    "name": "connexion",
+    "url": "https://github.com/spec-first/connexion",
+    "commit": "a23d44e0e0421fd83f5ba132269bcfd04b855a16",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "OpenAPI operationId resolver",
+    "description": "Lift Connexion operationId and REST-semantic view resolution without live HTTP.",
+    "source_entrypoints": [
+      "connexion.resolver.Resolver",
+      "connexion.resolver.RestyResolver"
+    ],
+    "included_behaviors": [
+      "operationId function resolution",
+      "REST-semantic operation ids",
+      "explicit operationId precedence",
+      "ResolverError on missing views"
+    ],
+    "excluded_behaviors": [
+      "live HTTP servers",
+      "urllib.Request / remote spec fetch",
+      "Flask/Starlette app hosting"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Resolver turns OpenAPI operation objects into Python callables using import paths and REST path semantics.",
+    "signals": [
+      "operationId",
+      "RestyResolver",
+      "ResolverError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Resolver, RestyResolver, Resolution, ResolverError",
+    "callable": "Resolver",
+    "signature": "Resolver(function_resolver=get_function_from_name)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "inflection",
+      "starlette",
+      "PyYAML",
+      "jsonschema",
+      "jsonschema-specifications",
+      "referencing",
+      "rpds-py",
+      "attrs",
+      "anyio",
+      "idna",
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "connexion"
+    ],
+    "forbidden_imports": [
+      "connexion"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "connexion/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "OpenAPI operationId resolver",
+    "summary": "Build a standalone `featurelifted` package that resolves OpenAPI operations to Python view functions from in-memory spec dictionaries, without live HTTP.",
+    "required_api": [
+      {
+        "path": "featurelifted.Resolver",
+        "kind": "class",
+        "signature": "(function_resolver: Callable = get_function_from_name)",
+        "members": [
+          {
+            "path": "featurelifted.Resolver.__init__",
+            "kind": "method",
+            "signature": "(self, function_resolver: Callable = get_function_from_name)"
+          },
+          {
+            "path": "featurelifted.Resolver.resolve",
+            "kind": "method",
+            "signature": "(self, operation)"
+          },
+          {
+            "path": "featurelifted.Resolver.resolve_operation_id",
+            "kind": "method",
+            "signature": "(self, operation)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.RestyResolver",
+        "kind": "class",
+        "signature": "(default_module_name: str, *, collection_endpoint_name: str = 'search')",
+        "members": [
+          {
+            "path": "featurelifted.RestyResolver.__init__",
+            "kind": "method",
+            "signature": "(self, default_module_name: str, *, collection_endpoint_name: str = 'search')"
+          },
+          {
+            "path": "featurelifted.RestyResolver.resolve_operation_id",
+            "kind": "method",
+            "signature": "(self, operation)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Resolution",
+        "kind": "class",
+        "signature": "(function, operation_id)",
+        "members": [
+          {
+            "path": "featurelifted.Resolution.__init__",
+            "kind": "method",
+            "signature": "(self, function, operation_id)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.ResolverError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "When `Resolver.resolve` is given an operation whose `operation_id` is a dotted import path taken from an in-memory OpenAPI path item, it returns a `Resolution` whose `function` is that imported callable and whose `operation_id` matches the spec."
+      },
+      {
+        "id": "B002",
+        "text": "When `RestyResolver.resolve_operation_id` is given an operation with no `operation_id`, a collection GET such as `/pets` resolves to `{module}.pets.search`, while an item path whose last component is a template variable uses the HTTP method name instead of `search`."
+      },
+      {
+        "id": "B003",
+        "text": "When `RestyResolver.resolve_operation_id` is given an operation that already has an `operation_id`, that explicit id is returned instead of a REST-semantic id derived from the path."
+      },
+      {
+        "id": "B004",
+        "text": "When `Resolver.resolve` is given an `operation_id` that cannot be imported as a Python object, it raises `ResolverError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Resolver`, `RestyResolver`, `Resolution`, and `ResolverError` with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `connexion`."
+      }
+    ],
+    "exclusions": [
+      "live HTTP servers",
+      "urllib.Request / remote spec fetch",
+      "Flask/Starlette app hosting",
+      "runtime import of connexion"
+    ],
+    "forbidden": {
+      "imports": [
+        "connexion"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "When `Resolver.resolve` is given an operation whose `operation_id` is a dotted import path taken from an in-memory OpenAPI path item, it returns a `Resolution` whose `function` is that imported callable and whose `operation_id` matches the spec."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When `RestyResolver.resolve_operation_id` is given an operation with no `operation_id`, a collection GET such as `/pets` resolves to `{module}.pets.search`, while an item path whose last component is a template variable uses the HTTP method name instead of `search`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When `RestyResolver.resolve_operation_id` is given an operation that already has an `operation_id`, that explicit id is returned instead of a REST-semantic id derived from the path."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "When `Resolver.resolve` is given an `operation_id` that cannot be imported as a Python object, it raises `ResolverError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Resolver`, `RestyResolver`, `Resolution`, and `ResolverError` with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `connexion`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_resolver_maps_operation_id_from_spec_dict",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_resty_resolver_uses_path_semantics_when_operation_id_missing",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_resty_resolver_keeps_explicit_operation_id",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_custom_function_resolver",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_operation_id_raises_resolver_error",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resty_item_endpoint_uses_http_method",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_router_controller_prefixes_operation_id",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resty_keeps_explicit_operation_id",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolver_does_not_use_network",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Resolver",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver.resolve",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolver.resolve_operation_id",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RestyResolver",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RestyResolver.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RestyResolver.resolve_operation_id",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolution",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Resolution.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ResolverError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "02d7ac1415f2eebc080714ac1f5ac43f14184d60527f1ca0930c028f213568fa",
+  "generated_task_hash": "d53a1a87c5d736946a0ec3ed1a939a6774420466556548e6e3992bfa0abe0e21",
+  "scoring_reference": {
+    "copy_all_bytes": 872241,
+    "copy_all_loc": 14127,
+    "oracle_bytes": 459638,
+    "oracle_loc": 7298,
+    "oracle_dependency_count": 4
+  }
+}

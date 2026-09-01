@@ -10,6 +10,7 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(Expression, type)
     assert hasattr(Expression, 'compile')
+    assert hasattr(Expression, 'evaluate')
     assert issubclass(ParseError, BaseException)
     assert expression is not None
     assert isinstance(getattr(expression, 'Scanner'), type)

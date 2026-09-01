@@ -4,32 +4,38 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "Given a YAML cassette containing a recorded GET response, entering use_cassette(path, record_mode=\"none\") intercepts urllib.request.urlopen for the recorded URI and returns the cassette body without network access."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Constructing VCR(record_mode=\"none\", match_on=[\"method\", \"uri\"]) preserves `record_mode` as `\"none\"`, and its use_cassette(path) context manager replays a request whose method and URI match the recording."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "A cassette configured to match on method and URI replays the matching interaction, and the Cassette object returned by the context manager has `play_count >= 1` after playback."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "record_mode='none' never records new interactions in tests."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "With record_mode set to `none`, an interaction already present in the cassette can be replayed and counted without making a live HTTP request."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
-      "text": "The package exposes use_cassette and VCR with the kinds listed in this contract."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes callable use_cassette and VCR.use_cassette APIs, a VCR class with `record_mode`, and a Cassette class with `play_count`, with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "text": "the submitted package does not import forbidden upstream packages: vcr."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "Scanning every Python file in the submitted package finds no `import vcr` or `from vcr ...` statement."
     }
   ],
   "public_test_mappings": [
@@ -37,13 +43,15 @@
       "nodeid": "public_tests/test_public_api.py::test_use_cassette_replay",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_vcr_factory",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -51,28 +59,35 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_match_on_method_uri",
       "public_clause_ids": [
         "B001",
+        "B002",
         "B003",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_cassette_path_record_mode_none",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B001",
+        "B003",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "f48989f7d1f223900955b1fdf0959334c43f01f0dc3093c620f5dfb90b278470"
+  "spec_sha256": "8ccdaa1e24cdc76722af39528feb4863250363b906081c240e2c7d8179dc72c5"
 }

@@ -15,6 +15,7 @@ def test_required_api_surface():
     assert URL is not None
     assert isinstance(QueryParams, type)
     assert hasattr(QueryParams, 'multi_items')
+    assert hasattr(QueryParams, 'merge')
     assert isinstance(Headers, type)
     assert Headers is not None
     assert isinstance(Cookies, type)

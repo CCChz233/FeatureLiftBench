@@ -1,0 +1,289 @@
+{
+  "task_id": "webob__request_response_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "tooling"
+  ],
+  "source": {
+    "name": "WebOb",
+    "url": "https://github.com/Pylons/webob",
+    "commit": "c0d70f985ff6f04dcc59822ca5216cfd0ada666c",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "WSGI Request and Response",
+    "description": "Lift WebOb Request/Response wrapping of a WSGI environ and in-memory JSON responses without a live HTTP client.",
+    "source_entrypoints": [
+      "webob.Request",
+      "webob.Request.blank",
+      "webob.Response"
+    ],
+    "included_behaviors": [
+      "blank GET/POST",
+      "case-insensitive headers",
+      "json_body"
+    ],
+    "excluded_behaviors": [
+      "webob.client SendRequest",
+      "live sockets",
+      "Pyramid"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Request is a view over a WSGI environ; headers, GET, POST, and JSON body are coupled through that mapping.",
+    "signals": [
+      "environ keys",
+      "header case",
+      "POST/GET MultiDict"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Request, Response",
+    "callable": "Request.blank",
+    "signature": "Request.blank(path, environ=None, base_url=None, headers=None, POST=None, **kw)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "WebOb",
+      "webob"
+    ],
+    "forbidden_imports": [
+      "webob"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "webob/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "WSGI Request and Response",
+    "summary": "Build a standalone `featurelifted` package providing WebOb-style `Request` and `Response` over an in-memory WSGI environ, including `Request.blank`, case-insensitive headers, form POST, and JSON response bodies. Do not open network sockets or use an HTTP client.",
+    "required_api": [
+      {
+        "path": "featurelifted.Request",
+        "kind": "class",
+        "signature": "(environ, charset=None, unicode_errors=None, decode_param_names=None, **kw)",
+        "members": [
+          {
+            "path": "featurelifted.Request.blank",
+            "kind": "method",
+            "signature": "(cls, path, environ=None, base_url=None, headers=None, POST=None, **kw)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Response",
+        "kind": "class",
+        "signature": "(body=None, status=None, headerlist=None, app_iter=None, content_type=None, conditional_response=None, charset=..., **kw)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `Request.blank(\"/search?q=lift\")`, `method` is GET, `path_info` is `/search`, and `GET[\"q\"]` is `lift`."
+      },
+      {
+        "id": "B002",
+        "text": "Headers passed to `Request.blank` are readable case-insensitively (`headers[\"X-Trace\"]` and `headers[\"x-trace\"]` return the same value) and appear as `HTTP_X_TRACE` on `environ`."
+      },
+      {
+        "id": "B003",
+        "text": "`Request.blank(\"/\", POST={\"name\": \"ada\"})` yields method POST and `POST[\"name\"] == \"ada\"`; the body contains the urlencoded field."
+      },
+      {
+        "id": "B004",
+        "text": "`Response(json={\"ok\": True})` has status 200, content type `application/json`, `json_body == {\"ok\": True}`, and compact UTF-8 body. A `status=404` JSON response reports `status_code == 404`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Request`, classmethod `Request.blank`, and `Response` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `webob`."
+      }
+    ],
+    "exclusions": [
+      "webob.client SendRequest",
+      "live sockets",
+      "Pyramid",
+      "runtime import of webob"
+    ],
+    "forbidden": {
+      "imports": [
+        "webob"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `Request.blank(\"/search?q=lift\")`, `method` is GET, `path_info` is `/search`, and `GET[\"q\"]` is `lift`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Headers passed to `Request.blank` are readable case-insensitively (`headers[\"X-Trace\"]` and `headers[\"x-trace\"]` return the same value) and appear as `HTTP_X_TRACE` on `environ`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`Request.blank(\"/\", POST={\"name\": \"ada\"})` yields method POST and `POST[\"name\"] == \"ada\"`; the body contains the urlencoded field."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`Response(json={\"ok\": True})` has status 200, content type `application/json`, `json_body == {\"ok\": True}`, and compact UTF-8 body. A `status=404` JSON response reports `status_code == 404`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Request`, classmethod `Request.blank`, and `Response` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `webob`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_blank_get_path_and_query",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_headers_are_case_insensitive",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_blank_post_form_fields",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_json_response_body_and_status",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_query_multidict_keeps_repeated_keys",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_header_also_lands_in_environ",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_post_form_is_urlencoded",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_json_response_uses_compact_body_and_custom_status",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Request",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Request.blank",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Response",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "In-memory Request.blank/Response only; webob.client not exercised."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 1841036,
+    "copy_all_loc": 22142,
+    "oracle_bytes": 920518,
+    "oracle_loc": 11071,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "7b9bd893eda2fb0972ffcbf04a4873f8732bc60db5e51f5c60e00b48d813a05b",
+  "generated_task_hash": "8a7acf50e47a347bec0932e516b8ba3bcd73d8265da017efcbce42239877352e"
+}

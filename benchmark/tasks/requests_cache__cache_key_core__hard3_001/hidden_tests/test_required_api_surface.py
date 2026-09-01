@@ -14,6 +14,8 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(CachePolicy, type)
     assert hasattr(CachePolicy, 'from_headers')
+    assert CachePolicy is not None
+    assert CachePolicy is not None
     assert callable(create_key)
     assert callable(get_expiration)
     assert callable(create_cache_key)

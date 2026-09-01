@@ -36,9 +36,9 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq.
-- The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error.
-- The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern.
+- load parses YAML through Map, Seq, Str, Int, and Bool validators and exposes converted Python primitives through document.data, including absent Optional keys without inserting a value.
+- Nested Seq(Map(...)) schemas convert every nested item, while a scalar that does not satisfy its validator, such as `x` for Int(), raises YAMLValidationError.
+- Optional keys may be omitted from Map schemas, and MapPattern(Str(), Int()) converts arbitrary string keys with integer values into a Python dictionary.
 - YAMLValidationError is a StrictYAMLError subclass.
 - The package exposes load and declared validators/errors with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: strictyaml.
@@ -54,9 +54,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: load Map/Seq/Bool schemas to .data primitives. Required observable cases include load map seq.
-- **B002** — The extracted feature must support this observable behavior: YAMLValidationError on type mismatch. Required observable cases include validation error.
-- **B003** — The extracted feature must support this observable behavior: Optional keys and MapPattern. Required observable cases include optional key absent; map pattern.
+- **B001** — load parses YAML through Map, Seq, Str, Int, and Bool validators and exposes converted Python primitives through document.data, including absent Optional keys without inserting a value.
+- **B002** — Nested Seq(Map(...)) schemas convert every nested item, while a scalar that does not satisfy its validator, such as `x` for Int(), raises YAMLValidationError.
+- **B003** — Optional keys may be omitted from Map schemas, and MapPattern(Str(), Int()) converts arbitrary string keys with integer values into a Python dictionary.
 - **B004** — YAMLValidationError is a StrictYAMLError subclass.
 - **B005** — The package exposes load and declared validators/errors with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: strictyaml.

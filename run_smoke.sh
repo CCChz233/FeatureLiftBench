@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+echo "DEPRECATED: this WSL-specific smoke wrapper is historical; use featureliftbench smoke or ./scripts/run_benchmark.sh --benchmark sanity." >&2
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

@@ -124,19 +124,23 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "retry retries only configured exceptions and returns the first successful result."
+        "text": "A callable decorated with `retry(on=..., attempts=...)` retries configured exception types up to the attempt limit and returns the first successful result, while an unconfigured exception is raised after one call."
       },
       {
         "id": "B002",
-        "text": "retry_context exposes one-based Attempt.num values and stops at the configured attempt limit."
+        "text": "`retry_context` yields attempts with one-based `Attempt.num` values, suppresses configured exceptions so iteration can continue, and stops yielding after an attempt succeeds or the configured limit is reached."
       },
       {
         "id": "B003",
-        "text": "set_active and set_testing change retry execution policy without changing the wrapped callable API."
+        "text": "After `set_active(False)`, a decorated callable executes once and propagates its exception without retrying; `set_active(True)` restores retry behavior."
       },
       {
-        "id": "B004",
-        "text": "The submitted package uses only the locked tenacity dependency and does not import stamina."
+        "id": "B005",
+        "text": "The package exposes the required task API paths `featurelifted.retry`, `featurelifted.retry_context`, `featurelifted.Attempt`, `featurelifted.set_active`, and `featurelifted.set_testing` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "the submitted package does not import forbidden upstream packages: stamina."
       }
     ],
     "exclusions": [
@@ -158,22 +162,27 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "retry retries only configured exceptions and returns the first successful result."
+        "text": "A callable decorated with `retry(on=..., attempts=...)` retries configured exception types up to the attempt limit and returns the first successful result, while an unconfigured exception is raised after one call."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "retry_context exposes one-based Attempt.num values and stops at the configured attempt limit."
+        "text": "`retry_context` yields attempts with one-based `Attempt.num` values, suppresses configured exceptions so iteration can continue, and stops yielding after an attempt succeeds or the configured limit is reached."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "set_active and set_testing change retry execution policy without changing the wrapped callable API."
+        "text": "After `set_active(False)`, a decorated callable executes once and propagates its exception without retrying; `set_active(True)` restores retry behavior."
       },
       {
-        "behavior_id": "B004",
+        "behavior_id": "B005",
         "clause_kind": "included_behavior",
-        "text": "The submitted package uses only the locked tenacity dependency and does not import stamina."
+        "text": "The package exposes the required task API paths `featurelifted.retry`, `featurelifted.retry_context`, `featurelifted.Attempt`, `featurelifted.set_active`, and `featurelifted.set_testing` with the kinds and callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "the submitted package does not import forbidden upstream packages: stamina."
       }
     ],
     "public_test_mappings": [
@@ -217,14 +226,14 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_required_api_surface",
         "behavior_ids": [
-          "B003"
+          "B005"
         ],
         "mapping_method": "manual_semantic_review"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
         "behavior_ids": [
-          "B004"
+          "B006"
         ],
         "mapping_method": "manual_semantic_review"
       }
@@ -281,7 +290,7 @@
       "notes": "Semantic contract review for balance slot cache-direct-third-party-02."
     }
   },
-  "spec_hash": "0763208c91501858f9a87894482acf5d58cbba02ce866f2f74537a7b1b2f5d21",
-  "generated_task_hash": "c375617206cb6e7d1550586a64ae88961b97755ba9597d5f49c6a877a2987805",
+  "spec_hash": "9163f1614fccea9cc3abe2df5f1de9d11d071e409cad2430fd01913340182b9a",
+  "generated_task_hash": "d4848084a6a82ce0d59769c769cd5242bb02df7a66d6108f7ab3873ff09037a9",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

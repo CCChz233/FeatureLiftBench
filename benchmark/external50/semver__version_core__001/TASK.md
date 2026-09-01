@@ -29,10 +29,10 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse.
-- The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators.
-- The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults.
-- Invalid version strings raise ValueError.
+- `Version.parse` accepts version strings that include prerelease and build metadata, exposes the corresponding attributes, and round-trips through `str()`.
+- `Version` instances are ordered with comparison operators and `compare`, so a lower version is less than a higher version.
+- Constructing `Version` with only a major value defaults minor and patch to 0; `bump_major`, `bump_minor`, `bump_patch`, and `replace` return new `Version` instances with updated parts.
+- Invalid version strings raise `ValueError`.
 - The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract.
 - the submitted package does not import forbidden upstream packages: semver.
 
@@ -49,10 +49,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse semver strings into Version. Required observable cases include parse basic; prerelease and build parse.
-- **B002** — The extracted feature must support this observable behavior: compare and order Version instances. Required observable cases include compare and order; ordering operators.
-- **B003** — The extracted feature must support this observable behavior: bump major/minor/patch and replace parts. Required observable cases include bump and replace; constructor defaults.
-- **B004** — Invalid version strings raise ValueError.
+- **B001** — `Version.parse` accepts version strings that include prerelease and build metadata, exposes the corresponding attributes, and round-trips through `str()`.
+- **B002** — `Version` instances are ordered with comparison operators and `compare`, so a lower version is less than a higher version.
+- **B003** — Constructing `Version` with only a major value defaults minor and patch to 0; `bump_major`, `bump_minor`, `bump_patch`, and `replace` return new `Version` instances with updated parts.
+- **B004** — Invalid version strings raise `ValueError`.
 - **B005** — The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Version.parse`, `featurelifted.Version.compare`, `featurelifted.Version.bump_major`, `featurelifted.Version.bump_minor`, `featurelifted.Version.bump_patch`, `featurelifted.Version.replace` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: semver.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -2,6 +2,8 @@
 # batch-1 (50 hard): DeepSeek V4 Flash with agent-docker + eval-docker
 set -euo pipefail
 
+echo "DEPRECATED: this fixed Batch-1 runner is historical; use ./scripts/run_benchmark.sh with an explicit task file." >&2
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

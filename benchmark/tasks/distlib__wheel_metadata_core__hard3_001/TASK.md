@@ -26,7 +26,7 @@ from featurelifted import (
 
 - `parse_record` parses CSV RECORD rows into `(path, digest, size)` tuples.
 - `normalize_record_path` applies posix normalization and strips `./` prefixes.
-- When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests.
+- When validate_record_hash(path, digest) receives a RECORD digest string, it returns True for a well-formed supported hash such as sha256 followed by 64 hex characters and returns False for malformed or unsupported digest strings; the path argument identifies the RECORD path and does not have to exist on disk.
 - The package exposes the required task API paths `featurelifted.to_posix`, `featurelifted.normalize_record_path`, `featurelifted.parse_record`, `featurelifted.validate_record_hash` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -48,7 +48,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `parse_record` parses CSV RECORD rows into `(path, digest, size)` tuples.
 - **B002** — `normalize_record_path` applies posix normalization and strips `./` prefixes.
-- **B003** — When validate_record_hash receives file bytes and a RECORD digest, it accepts matching supported hashes and rejects malformed or mismatched digests.
+- **B003** — When validate_record_hash(path, digest) receives a RECORD digest string, it returns True for a well-formed supported hash such as sha256 followed by 64 hex characters and returns False for malformed or unsupported digest strings; the path argument identifies the RECORD path and does not have to exist on disk.
 - **B004** — The package exposes the required task API paths `featurelifted.to_posix`, `featurelifted.normalize_record_path`, `featurelifted.parse_record`, `featurelifted.validate_record_hash` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: distlib.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -17,9 +17,11 @@ def test_required_api_surface():
     assert hasattr(Env, 'prefixed')
     assert hasattr(Env, 'seal')
     assert hasattr(Env, 'str')
+    assert hasattr(Env, 'timedelta')
     assert issubclass(EnvError, BaseException)
     assert issubclass(EnvValidationError, BaseException)
     assert issubclass(EnvSealedError, BaseException)
     assert issubclass(ParserConflictError, BaseException)
     assert issubclass(ValidationError, BaseException)
     assert validate is not None
+    assert isinstance(getattr(validate, 'Range'), type)

@@ -26,7 +26,7 @@ from featurelifted import (
 
 - `parse_spec` parses version constraints and path globs from interpreter specs.
 - `match_version` evaluates constraint operators including `~=`.
-- `discover_paths` filters candidate paths by spec.
+- discover_paths filters candidate paths by spec, including reading an implementation-prefixed version such as python3.11 from the path string when the spec is python>=3.11.
 - The package exposes the required task API paths `featurelifted.parse_spec`, `featurelifted.match_version`, `featurelifted.discover_paths`, `featurelifted.InvalidInterpreterSpec` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -48,7 +48,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `parse_spec` parses version constraints and path globs from interpreter specs.
 - **B002** — `match_version` evaluates constraint operators including `~=`.
-- **B003** — `discover_paths` filters candidate paths by spec.
+- **B003** — discover_paths filters candidate paths by spec, including reading an implementation-prefixed version such as python3.11 from the path string when the spec is python>=3.11.
 - **B004** — The package exposes the required task API paths `featurelifted.parse_spec`, `featurelifted.match_version`, `featurelifted.discover_paths`, `featurelifted.InvalidInterpreterSpec` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: virtualenv.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -17,8 +17,8 @@ from featurelifted import (
 ## Required API Details
 
 - `TLDExtract` class must be importable
-  - `TLDExtract.__call__` callable must exist
-- `extract` callable must exist
+  - `TLDExtract.__call__(self, url: str)`
+- `extract(url: str)`
 - `ExtractResult` class must be importable
   - `ExtractResult.subdomain` attribute must exist on instances
   - `ExtractResult.domain` attribute must exist on instances
@@ -26,9 +26,9 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: offline TLDExtract splits URLs. Required observable cases include tldextract offline.
-- The extracted feature must support this observable behavior: extract convenience helper. Required observable cases include extract convenience.
-- The extracted feature must support this observable behavior: registered domain and bare hosts. Required observable cases include registered domain; no subdomain.
+- TLDExtract(suffix_list_urls=()) splits a URL into subdomain, domain, and public suffix fields, including multi-label suffixes such as co.uk.
+- Extracting a bare host such as example.com returns an empty subdomain, domain `example`, and suffix `com`; the module-level extract(url) convenience function returns the same ExtractResult shape.
+- For https://foo.bar.co.uk, joining ExtractResult.domain and ExtractResult.suffix yields the registered domain bar.co.uk.
 - suffix_list_urls=() disables network suffix fetch.
 - The package exposes TLDExtract/extract/ExtractResult with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: tldextract.
@@ -44,9 +44,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: offline TLDExtract splits URLs. Required observable cases include tldextract offline.
-- **B002** — The extracted feature must support this observable behavior: extract convenience helper. Required observable cases include extract convenience.
-- **B003** — The extracted feature must support this observable behavior: registered domain and bare hosts. Required observable cases include registered domain; no subdomain.
+- **B001** — TLDExtract(suffix_list_urls=()) splits a URL into subdomain, domain, and public suffix fields, including multi-label suffixes such as co.uk.
+- **B002** — Extracting a bare host such as example.com returns an empty subdomain, domain `example`, and suffix `com`; the module-level extract(url) convenience function returns the same ExtractResult shape.
+- **B003** — For https://foo.bar.co.uk, joining ExtractResult.domain and ExtractResult.suffix yields the registered domain bar.co.uk.
 - **B004** — suffix_list_urls=() disables network suffix fetch.
 - **B005** — The package exposes TLDExtract/extract/ExtractResult with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: tldextract.

@@ -16,26 +16,26 @@ from featurelifted import (
 ## Required API Details
 
 - `CronSlices` class must be importable
-  - `CronSlices.is_valid` callable must exist
-  - `CronSlices.setall` callable must exist
-  - `CronSlices.render` callable must exist
+  - `CronSlices.is_valid(value: str) -> bool`
+  - `CronSlices.setall(*values: str) -> None`
+  - `CronSlices.render() -> str`
   - `CronSlices.special` attribute must exist on instances
-- `CronSlices.is_valid` callable must exist
+- `CronSlices.is_valid(value: str) -> bool`
 - `CronItem` class must be importable
-  - `CronItem.render` callable must exist
-  - `CronItem.is_valid` callable must exist
-  - `CronItem.is_enabled` callable must exist
-- `CronItem.render` callable must exist
-- `CronItem.is_valid` callable must exist
+  - `CronItem.render() -> str`
+  - `CronItem.is_valid() -> bool`
+  - `CronItem.is_enabled() -> bool`
+- `CronItem.render() -> str`
+- `CronItem.is_valid() -> bool`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: CronSlices parse/render/is_valid. Required observable cases include cron slices valid; slices setall.
-- The extracted feature must support this observable behavior: CronItem constructor render/is_valid. Required observable cases include cron item from line; cron item invalid line.
-- The extracted feature must support this observable behavior: special @reboot slices. Required observable cases include special reboot.
-- No OS crontab file access is required.
+- CronSlices.is_valid returns true for a five-field expression such as `* * * * *` and false for malformed text; constructing CronSlices from a valid expression and calling render() returns its cron fields.
+- Constructing CronItem from a valid five-field schedule followed by a command produces an item whose is_valid() and is_enabled() return true and whose render() output contains the command; these three methods are callable on CronItem.
+- Constructing CronSlices with `@reboot` preserves that special schedule so either render() contains `@reboot` or the `special` attribute equals `@reboot`.
+- After constructing empty CronSlices and calling setall("0", "12", "*", "*", "1"), render() contains the configured minute and hour values without requiring OS crontab access.
 - The package exposes CronSlices/CronItem with the kinds listed in this contract.
-- the submitted package does not import forbidden upstream packages: crontab.
+- Scanning every Python file in the submitted package finds no `import crontab` or `from crontab ...` statement.
 
 ## Constraints
 
@@ -48,10 +48,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: CronSlices parse/render/is_valid. Required observable cases include cron slices valid; slices setall.
-- **B002** — The extracted feature must support this observable behavior: CronItem constructor render/is_valid. Required observable cases include cron item from line; cron item invalid line.
-- **B003** — The extracted feature must support this observable behavior: special @reboot slices. Required observable cases include special reboot.
-- **B004** — No OS crontab file access is required.
+- **B001** — CronSlices.is_valid returns true for a five-field expression such as `* * * * *` and false for malformed text; constructing CronSlices from a valid expression and calling render() returns its cron fields.
+- **B002** — Constructing CronItem from a valid five-field schedule followed by a command produces an item whose is_valid() and is_enabled() return true and whose render() output contains the command; these three methods are callable on CronItem.
+- **B003** — Constructing CronSlices with `@reboot` preserves that special schedule so either render() contains `@reboot` or the `special` attribute equals `@reboot`.
+- **B004** — After constructing empty CronSlices and calling setall("0", "12", "*", "*", "1"), render() contains the configured minute and hour values without requiring OS crontab access.
 - **B005** — The package exposes CronSlices/CronItem with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: crontab.
+- **B006** — Scanning every Python file in the submitted package finds no `import crontab` or `from crontab ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

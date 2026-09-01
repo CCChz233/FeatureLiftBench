@@ -87,7 +87,8 @@
     "required_api": [
       {
         "path": "featurelifted.use_cassette",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(path: str, record_mode: str = 'none', match_on: list[str] | None = None, **kwargs)"
       },
       {
         "path": "featurelifted.VCR",
@@ -95,7 +96,8 @@
         "members": [
           {
             "path": "featurelifted.VCR.use_cassette",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(path: str, **kwargs)"
           },
           {
             "path": "featurelifted.VCR.record_mode",
@@ -105,7 +107,8 @@
       },
       {
         "path": "featurelifted.VCR.use_cassette",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(path: str, **kwargs)"
       },
       {
         "path": "featurelifted.Cassette",
@@ -122,27 +125,27 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay."
+        "text": "Given a YAML cassette containing a recorded GET response, entering use_cassette(path, record_mode=\"none\") intercepts urllib.request.urlopen for the recorded URI and returns the cassette body without network access."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory."
+        "text": "Constructing VCR(record_mode=\"none\", match_on=[\"method\", \"uri\"]) preserves `record_mode` as `\"none\"`, and its use_cassette(path) context manager replays a request whose method and URI match the recording."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none."
+        "text": "A cassette configured to match on method and URI replays the matching interaction, and the Cassette object returned by the context manager has `play_count >= 1` after playback."
       },
       {
         "id": "B004",
-        "text": "record_mode='none' never records new interactions in tests."
+        "text": "With record_mode set to `none`, an interaction already present in the cassette can be replayed and counted without making a live HTTP request."
       },
       {
         "id": "B005",
-        "text": "The package exposes use_cassette and VCR with the kinds listed in this contract."
+        "text": "The package exposes callable use_cassette and VCR.use_cassette APIs, a VCR class with `record_mode`, and a Cassette class with `play_count`, with the kinds listed in this contract."
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: vcr."
+        "text": "Scanning every Python file in the submitted package finds no `import vcr` or `from vcr ...` statement."
       }
     ],
     "exclusions": [
@@ -161,32 +164,32 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay."
+        "text": "Given a YAML cassette containing a recorded GET response, entering use_cassette(path, record_mode=\"none\") intercepts urllib.request.urlopen for the recorded URI and returns the cassette body without network access."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory."
+        "text": "Constructing VCR(record_mode=\"none\", match_on=[\"method\", \"uri\"]) preserves `record_mode` as `\"none\"`, and its use_cassette(path) context manager replays a request whose method and URI match the recording."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none."
+        "text": "A cassette configured to match on method and URI replays the matching interaction, and the Cassette object returned by the context manager has `play_count >= 1` after playback."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "record_mode='none' never records new interactions in tests."
+        "text": "With record_mode set to `none`, an interaction already present in the cassette can be replayed and counted without making a live HTTP request."
       },
       {
         "behavior_id": "B005",
         "clause_kind": "included_behavior",
-        "text": "The package exposes use_cassette and VCR with the kinds listed in this contract."
+        "text": "The package exposes callable use_cassette and VCR.use_cassette APIs, a VCR class with `record_mode`, and a Cassette class with `play_count`, with the kinds listed in this contract."
       },
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: vcr."
+        "text": "Scanning every Python file in the submitted package finds no `import vcr` or `from vcr ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -210,6 +213,7 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_match_on_method_uri",
         "behavior_ids": [
           "B001",
+          "B002",
           "B003",
           "B004"
         ],
@@ -218,7 +222,9 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_cassette_path_record_mode_none",
         "behavior_ids": [
-          "B002"
+          "B001",
+          "B003",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -283,8 +289,8 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "dc3d182542cbc30563627e7102f2402f6a52b27a5ae8a2ed8faeb93f70e3e163",
-  "generated_task_hash": "f48989f7d1f223900955b1fdf0959334c43f01f0dc3093c620f5dfb90b278470",
+  "spec_hash": "c6b3dd27cde9ed99402732c830896212aba003759eafc122a93eae4e3bff035b",
+  "generated_task_hash": "8ccdaa1e24cdc76722af39528feb4863250363b906081c240e2c7d8179dc72c5",
   "contract_repair_id": "external50-contract-members-20260801-v1",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

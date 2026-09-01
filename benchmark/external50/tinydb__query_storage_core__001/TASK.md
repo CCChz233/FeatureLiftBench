@@ -28,19 +28,19 @@ from featurelifted import (
   - `TinyDB.truncate(self) -> None`
   - `TinyDB.close(self) -> None`
 - `Query` class must be importable
-  - `Query.__getattr__` callable must exist
-  - `Query.__getitem__` callable must exist
-  - `Query.exists` callable must exist
-  - `Query.matches` callable must exist
-  - `Query.test` callable must exist
+  - `Query.__getattr__(self, name)`
+  - `Query.__getitem__(self, item)`
+  - `Query.exists(self)`
+  - `Query.matches(self, regex, flags=0)`
+  - `Query.test(self, func, *args)`
 - `JSONStorage` class must be importable
 - `MemoryStorage` class must be importable
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: CRUD insert/search/update/remove/truncate. Required observable cases include insert and all; search equality; update and remove.
-- The extracted feature must support this observable behavior: Query operators == exists matches test and logical and/or. Required observable cases include exists matches test ops; logical and or.
-- The extracted feature must support this observable behavior: JSONStorage and MemoryStorage backends. Required observable cases include json storage roundtrip.
+- TinyDB insert and insert_multiple persist dictionary documents, all returns them, update changes matching documents, get retrieves a match, remove deletes matches, and truncate empties the default table.
+- Query field paths support equality, exists(), matches(), and test() predicates, and predicate expressions compose with & and | to filter TinyDB.search results.
+- MemoryStorage retains documents for an in-memory database lifetime, while JSONStorage persists inserted documents across close and reopen at the same filesystem path.
 - Default table behavior matches upstream TinyDB for the frozen CRUD paths.
 - The package exposes the required task API paths `featurelifted.TinyDB`, `featurelifted.Query`, `featurelifted.JSONStorage`, `featurelifted.MemoryStorage` and TinyDB CRUD methods with the kinds and callable signatures listed in this contract.
 - the submitted package does not import forbidden upstream packages: tinydb.
@@ -58,9 +58,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: CRUD insert/search/update/remove/truncate. Required observable cases include insert and all; search equality; update and remove.
-- **B002** — The extracted feature must support this observable behavior: Query operators == exists matches test and logical and/or. Required observable cases include exists matches test ops; logical and or.
-- **B003** — The extracted feature must support this observable behavior: JSONStorage and MemoryStorage backends. Required observable cases include json storage roundtrip.
+- **B001** — TinyDB insert and insert_multiple persist dictionary documents, all returns them, update changes matching documents, get retrieves a match, remove deletes matches, and truncate empties the default table.
+- **B002** — Query field paths support equality, exists(), matches(), and test() predicates, and predicate expressions compose with & and | to filter TinyDB.search results.
+- **B003** — MemoryStorage retains documents for an in-memory database lifetime, while JSONStorage persists inserted documents across close and reopen at the same filesystem path.
 - **B004** — Default table behavior matches upstream TinyDB for the frozen CRUD paths.
 - **B005** — The package exposes the required task API paths `featurelifted.TinyDB`, `featurelifted.Query`, `featurelifted.JSONStorage`, `featurelifted.MemoryStorage` and TinyDB CRUD methods with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: tinydb.

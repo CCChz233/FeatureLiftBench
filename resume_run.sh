@@ -7,6 +7,7 @@
 #
 # See RUN.md §4 and docs/WINDOWS.md §4.3.
 set -euo pipefail
+echo "DEPRECATED: resume_run.sh resumes the legacy run.sh path; use ./scripts/run_benchmark.sh --resume DIR." >&2
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

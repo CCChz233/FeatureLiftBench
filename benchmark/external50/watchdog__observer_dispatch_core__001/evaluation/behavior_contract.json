@@ -4,32 +4,38 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: Observer schedule/start/stop delivers create events to FileSystemEventHandler. Required observable cases include observer create event."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "After a FileSystemEventHandler is scheduled on a directory and Observer is started, creating a file causes the handler's on_created callback to receive an event whose `src_path` identifies that file; stop() followed by join(timeout=...) shuts the observer down."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: modify/delete callbacks fire for temp-dir file changes. Required observable cases include modify and delete."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "While an Observer watches a temporary directory, creating, rewriting, and deleting a file dispatches filesystem events through FileSystemEventHandler.on_any_event, so the handler records at least one event from the change sequence."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: FileCreatedEvent/FileModifiedEvent/FileDeletedEvent types exist. Required observable cases include event types exist."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "FileCreatedEvent, FileModifiedEvent, and FileDeletedEvent are importable class objects that can identify the corresponding filesystem event categories."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "Observer is the polling implementation for deterministic offline tests."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Observer accepts a polling timeout, watches local filesystem state without network access, and detects changes made after start() within the bounded test wait."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes Observer/FileSystemEventHandler/FileCreatedEvent/FileModifiedEvent/FileDeletedEvent with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "text": "the submitted package does not import forbidden upstream packages: watchdog."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "Scanning every Python file in the submitted package finds no `import watchdog` or `from watchdog ...` statement."
     }
   ],
   "public_test_mappings": [
@@ -37,7 +43,8 @@
       "nodeid": "public_tests/test_public_api.py::test_observer_create_event",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -45,28 +52,32 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_modify_and_delete",
       "public_clause_ids": [
         "B001",
-        "B003",
+        "B002",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_event_types_exist",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "c2ebe394f0b716844e753dbdf8a969c8dc2340f4b9ad096a5cb1e671f3d18a63"
+  "spec_sha256": "fcccec9103ec509c2faf8644bf0a7d46c3b52d0796548872e3d619f4b41504af"
 }

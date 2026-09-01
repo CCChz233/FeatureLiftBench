@@ -1,0 +1,308 @@
+{
+  "task_id": "beaker__session_cache_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "session"
+  ],
+  "source": {
+    "name": "Beaker",
+    "url": "https://github.com/bbangert/beaker",
+    "commit": "14368d97c2dafa16260bcc79df97a513b553a841",
+    "license": "BSD"
+  },
+  "feature": {
+    "name": "Memory session and cache",
+    "description": "Lift Beaker memory sessions and CacheManager namespaces without memcached.",
+    "source_entrypoints": [
+      "beaker.session.Session",
+      "beaker.cache.CacheManager",
+      "beaker.container.MemoryNamespaceManager"
+    ],
+    "included_behaviors": [
+      "set/get session keys",
+      "persist memory",
+      "cache get_or_create"
+    ],
+    "excluded_behaviors": [
+      "database/memcached namespaces",
+      "cookie crypto beyond declared"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "resource_coupling",
+      "framework_coupling"
+    ],
+    "primary": "resource_coupling",
+    "description": "Session and cache fronts dispatch to pluggable namespace managers; memory is the in-process backend.",
+    "signals": [
+      "session id",
+      "namespace cache",
+      "decorator memoize"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Session, CacheManager, MemoryNamespaceManager",
+    "callable": "Session",
+    "signature": "Session(request, use_cookies=False, type='memory')"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "Beaker",
+      "beaker"
+    ],
+    "forbidden_imports": [
+      "beaker"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "beaker/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Memory session and cache",
+    "summary": "Build a standalone `featurelifted` package providing Beaker-style in-memory sessions and cache namespaces, including decorator get-or-create, without memcached.",
+    "required_api": [
+      {
+        "path": "featurelifted.Session",
+        "kind": "class",
+        "signature": "(request, id=None, use_cookies=True, type=None, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.Session.save",
+            "kind": "method",
+            "signature": "(self, accessed_only=False)"
+          },
+          {
+            "path": "featurelifted.Session.load",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.CacheManager",
+        "kind": "class",
+        "signature": "(**kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.CacheManager.get_cache",
+            "kind": "method",
+            "signature": "(self, name, **kwargs)"
+          },
+          {
+            "path": "featurelifted.CacheManager.cache",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.MemoryNamespaceManager",
+        "kind": "class",
+        "signature": "(namespace, **kwargs)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A memory `Session` created with `use_cookies=False` stores values like a mapping; after `save()`, a second `Session` constructed with the same `id` can read those values."
+      },
+      {
+        "id": "B002",
+        "text": "`CacheManager(type='memory').get_cache(name)` supports `put` then `get` for the same key in that named namespace."
+      },
+      {
+        "id": "B003",
+        "text": "`CacheManager.cache` used as a decorator memoizes a function so a second call with the same arguments does not re-run the wrapped body."
+      },
+      {
+        "id": "B004",
+        "text": "Sessions with different ids do not share keys. The memory backend does not contact memcached."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Session`, `CacheManager`, and `MemoryNamespaceManager` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `beaker`."
+      }
+    ],
+    "exclusions": [
+      "memcached namespaces",
+      "SQLAlchemy or database namespaces",
+      "cookie cryptography beyond the memory session path",
+      "runtime import of beaker"
+    ],
+    "forbidden": {
+      "imports": [
+        "beaker"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A memory `Session` created with `use_cookies=False` stores values like a mapping; after `save()`, a second `Session` constructed with the same `id` can read those values."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`CacheManager(type='memory').get_cache(name)` supports `put` then `get` for the same key in that named namespace."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`CacheManager.cache` used as a decorator memoizes a function so a second call with the same arguments does not re-run the wrapped body."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Sessions with different ids do not share keys. The memory backend does not contact memcached."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Session`, `CacheManager`, and `MemoryNamespaceManager` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `beaker`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_memory_session_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_memory_cache_put_get",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cache_decorator_get_or_create",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_sessions_are_isolated_by_id",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Session",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.save",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.load",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheManager",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheManager.get_cache",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CacheManager.cache",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MemoryNamespaceManager",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 303611,
+    "copy_all_loc": 6263,
+    "oracle_bytes": 358036,
+    "oracle_loc": 3418,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "d251bb1abc82c3c6df8a97ce84458377088094bcdd5fd16a83f3cb0c5aa828d6",
+  "generated_task_hash": "3a32c5f467166f27cee584cf7252217ee24b14066acc1e798150244bb60e14e5"
+}

@@ -22,14 +22,17 @@ from featurelifted import (
 - `parsestream(stream: Union[str, IO[str]], encoding: str | None = None) -> collections.abc.Generator[Statement, None, None]`
 - `split(sql: str, encoding: str | None = None, strip_semicolon: bool = False) -> list[str]`
 - `sql` module must be importable
+  - `sql.Statement(tokens=None)` class constructor
 - `tokens` module must be importable
+  - `tokens.Keyword` attribute must exist
+- `tokens.Keyword.DML` attribute must exist
 
 ## Required Behavior
 
 - The extracted feature must support this observable behavior: parse SQL text into Statement token trees. Required observable cases include parse returns statement tokens; parse multiple statements.
 - The extracted feature must support this observable behavior: split multi-statement SQL scripts while respecting strings, comments, and nesting. Required observable cases include split respects quoted semicolons; split handles comments and embedded semicolons.
 - The extracted feature must support this observable behavior: preserve statement-splitting behavior for semicolons inside quotes and comments. Required observable cases include split handles comments and embedded semicolons.
-- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.sql`, `featurelifted.sql.Statement`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -54,6 +57,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — The extracted feature must support this observable behavior: parse SQL text into Statement token trees. Required observable cases include parse returns statement tokens; parse multiple statements.
 - **B002** — The extracted feature must support this observable behavior: split multi-statement SQL scripts while respecting strings, comments, and nesting. Required observable cases include split respects quoted semicolons; split handles comments and embedded semicolons.
 - **B003** — The extracted feature must support this observable behavior: preserve statement-splitting behavior for semicolons inside quotes and comments. Required observable cases include split handles comments and embedded semicolons.
-- **B004** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.sql`, `featurelifted.sql.Statement`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: sqlparse.
 <!-- featureliftbench:behavior-clauses:end -->

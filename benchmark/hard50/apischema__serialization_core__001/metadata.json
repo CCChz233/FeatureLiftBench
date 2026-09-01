@@ -1,0 +1,280 @@
+{
+  "task_id": "apischema__serialization_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "serialization"
+  ],
+  "source": {
+    "name": "apischema",
+    "url": "https://github.com/wyfo/apischema",
+    "commit": "a35301341c71d354b2553ae3dabc5262be521756",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Typed serialize/deserialize",
+    "description": "Lift apischema deserialize/serialize with dataclass roundtrip, validators, and deserializer conversions.",
+    "source_entrypoints": [
+      "apischema.deserialization.deserialize",
+      "apischema.serialization.serialize"
+    ],
+    "included_behaviors": [
+      "dataclass roundtrip",
+      "validation error",
+      "conversion"
+    ],
+    "excluded_behaviors": [
+      "GraphQL extra"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Conversion and validator registries are implicit global state around typed (de)serialization.",
+    "signals": [
+      "deserializer registry",
+      "validator methods"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import deserialize, serialize, validator, ValidationError",
+    "callable": "deserialize",
+    "signature": "deserialize(type, data, *, additional_properties=None, aliaser=None, coerce=None, conversion=None, default_conversion=None, fall_back_on_default=None, no_copy=None, pass_through=None, schema=None, validators=())"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "apischema"
+    ],
+    "forbidden_imports": [
+      "apischema"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "apischema/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Typed serialize/deserialize",
+    "summary": "Build a standalone `featurelifted` package providing apischema-style dataclass (de)serialization, validators, and conversions.",
+    "required_api": [
+      {
+        "path": "featurelifted.deserialize",
+        "kind": "function",
+        "signature": "(type, data, *, additional_properties=None, aliaser=None, coerce=None, conversion=None, default_conversion=None, fall_back_on_default=None, no_copy=None, pass_through=None, schema=None, validators=())"
+      },
+      {
+        "path": "featurelifted.serialize",
+        "kind": "function",
+        "signature": "(type=..., obj=..., *, additional_properties=None, aliaser=None, check_type=None, conversion=None, default_conversion=None, exclude_defaults=None, exclude_none=None, exclude_unset=None, fall_back_on_any=None, no_copy=None, pass_through=None)"
+      },
+      {
+        "path": "featurelifted.validator",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.deserializer",
+        "kind": "function"
+      },
+      {
+        "path": "featurelifted.ValidationError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`deserialize` constructs a dataclass from a mapping, filling declared defaults for omitted optional fields, and `serialize` returns a mapping of the dataclass fields."
+      },
+      {
+        "id": "B002",
+        "text": "A method decorated with `validator` that yields an error message causes `deserialize` to raise `ValidationError` for invalid instances."
+      },
+      {
+        "id": "B003",
+        "text": "A class registered with `deserializer` is constructed from matching input; values rejected by that constructor raise an error."
+      },
+      {
+        "id": "B004",
+        "text": "`deserialize` of a dataclass raises `ValidationError` when a required field is missing from the input mapping."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `deserialize`, `serialize`, `validator`, `deserializer`, and `ValidationError` with the callable paths listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `apischema`."
+      }
+    ],
+    "exclusions": [
+      "GraphQL extra",
+      "runtime import of apischema"
+    ],
+    "forbidden": {
+      "imports": [
+        "apischema"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_dataclass_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_validator_rejects_negative_age",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_deserializer_conversion",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_roundtrip_and_missing_field",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_validator_and_conversion_errors",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.deserialize",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.serialize",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validator",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.deserializer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ValidationError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`deserialize` constructs a dataclass from a mapping, filling declared defaults for omitted optional fields, and `serialize` returns a mapping of the dataclass fields."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A method decorated with `validator` that yields an error message causes `deserialize` to raise `ValidationError` for invalid instances."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A class registered with `deserializer` is constructed from matching input; values rejected by that constructor raise an error."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`deserialize` of a dataclass raises `ValidationError` when a required field is missing from the input mapping."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `deserialize`, `serialize`, `validator`, `deserializer`, and `ValidationError` with the callable paths listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `apischema`."
+      }
+    ]
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 357857,
+    "copy_all_loc": 9353,
+    "oracle_bytes": 359363,
+    "oracle_loc": 9354,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "88ed2ce6f0229c1b7c1ad7c70c4a15c0ee04fd16c110d206ebb4228e96aae7cf",
+  "generated_task_hash": "aeb526af0c7a63de881feea9c62861575e7a655d58d1b43f9e8bd1c22eb0bef0"
+}

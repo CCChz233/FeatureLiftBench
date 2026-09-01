@@ -1,0 +1,306 @@
+{
+  "task_id": "routes__mapper_match_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted"
+  ],
+  "source": {
+    "name": "Routes",
+    "url": "https://github.com/bbangert/routes",
+    "commit": "7e82bd895a120cbf73f271c32ac289d51124303f",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Mapper match and generate",
+    "description": "Lift Routes Mapper connect/match/generate without a live web server.",
+    "source_entrypoints": [
+      "routes.Mapper.connect",
+      "routes.Mapper.match",
+      "routes.Mapper.generate"
+    ],
+    "included_behaviors": [
+      "literal match",
+      "template capture",
+      "miss is None",
+      "generate"
+    ],
+    "excluded_behaviors": [
+      "WSGI middleware serving",
+      "HTTP servers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Connected routes compile into match regexes and reverse generation tables.",
+    "signals": [
+      "controller_scan",
+      "match dict",
+      "generate path"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Mapper",
+    "callable": "Mapper",
+    "signature": "Mapper(controller_scan=None, directory=None, always_scan=False, register=True, explicit=True)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "six"
+    ],
+    "forbidden_dependencies": [
+      "Routes",
+      "routes"
+    ],
+    "forbidden_imports": [
+      "routes"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "routes/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Mapper match and generate",
+    "summary": "Build a standalone `featurelifted` package providing Routes-style `Mapper` connect, match, and generate.",
+    "required_api": [
+      {
+        "path": "featurelifted.Mapper",
+        "kind": "class",
+        "signature": "(controller_scan=None, directory=None, always_scan=False, register=True, explicit=True)",
+        "members": [
+          {
+            "path": "featurelifted.Mapper.__init__",
+            "kind": "method",
+            "signature": "(self, controller_scan=None, directory=None, always_scan=False, register=True, explicit=True)"
+          },
+          {
+            "path": "featurelifted.Mapper.connect",
+            "kind": "method",
+            "signature": "(self, *args, **kargs)"
+          },
+          {
+            "path": "featurelifted.Mapper.match",
+            "kind": "method",
+            "signature": "(self, url=None, environ=None)"
+          },
+          {
+            "path": "featurelifted.Mapper.generate",
+            "kind": "method",
+            "signature": "(self, *args, **kargs)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `connect` registers a literal path with controller and action, `match` of that path returns a dict containing those values."
+      },
+      {
+        "id": "B002",
+        "text": "A connected template such as `/user/{id}` captures the path segment into the match dict."
+      },
+      {
+        "id": "B003",
+        "text": "A URL that matches no connected route causes `match` to return `None`."
+      },
+      {
+        "id": "B004",
+        "text": "`generate` with the connected controller/action (and template variables) rebuilds the original path."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Mapper` with construction, `connect`, `match`, and `generate` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `routes`."
+      }
+    ],
+    "exclusions": [
+      "WSGI middleware serving",
+      "HTTP servers",
+      "runtime import of routes"
+    ],
+    "forbidden": {
+      "imports": [
+        "routes"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `connect` registers a literal path with controller and action, `match` of that path returns a dict containing those values."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A connected template such as `/user/{id}` captures the path segment into the match dict."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A URL that matches no connected route causes `match` to return `None`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`generate` with the connected controller/action (and template variables) rebuilds the original path."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Mapper` with construction, `connect`, `match`, and `generate` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `routes`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_literal_path_matches_controller",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_template_path_captures_id",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_path_returns_none",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_generate_rebuilds_connected_urls",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_two_templates_do_not_collide",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_generate_roundtrip_matches",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_partial_prefix_does_not_match",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Mapper",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Mapper.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Mapper.connect",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Mapper.match",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Mapper.generate",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "41f13a846b895ef49130ef4e2a8b630e250e752562092eefda4e283796e76af8",
+  "generated_task_hash": "e68d47062c6f68091bffb725d8dfe0ba829e74848c086a676993f8be57a6b0fe",
+  "scoring_reference": {
+    "copy_all_bytes": 345674,
+    "copy_all_loc": 5642,
+    "oracle_bytes": 219753,
+    "oracle_loc": 2266,
+    "oracle_dependency_count": 1
+  }
+}

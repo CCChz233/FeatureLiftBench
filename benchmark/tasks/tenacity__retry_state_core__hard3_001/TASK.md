@@ -49,7 +49,7 @@ from featurelifted import (
 - Retry predicates composed with | or & apply retry-any or retry-all semantics in operand order.
 - stop_after_attempt, stop_after_delay, and stop_before_delay stop according to attempt count and elapsed or upcoming delay boundaries.
 - wait_fixed, wait_none, wait_chain, wait_combine, and wait_exponential compute deterministic upcoming sleep durations; an empty wait_chain raises ValueError.
-- before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state.
+- before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state. At before_sleep, attempt_number is the attempt that just finished and has not yet been incremented for the next attempt.
 - The package exposes the required task API paths `featurelifted.Retrying`, `featurelifted.RetryError`, `featurelifted.retry_if_exception_type`, `featurelifted.retry_if_result`, `featurelifted.stop_after_attempt`, `featurelifted.wait_fixed`, `featurelifted.wait_chain`, `featurelifted.wait_exponential`, `featurelifted.RetryCallState`, `featurelifted.stop_after_delay`, `featurelifted.stop_before_delay`, `featurelifted.wait_combine`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -80,7 +80,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B005** — Retry predicates composed with | or & apply retry-any or retry-all semantics in operand order.
 - **B006** — stop_after_attempt, stop_after_delay, and stop_before_delay stop according to attempt count and elapsed or upcoming delay boundaries.
 - **B007** — wait_fixed, wait_none, wait_chain, wait_combine, and wait_exponential compute deterministic upcoming sleep durations; an empty wait_chain raises ValueError.
-- **B008** — before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state.
+- **B008** — before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state. At before_sleep, attempt_number is the attempt that just finished and has not yet been incremented for the next attempt.
 - **B009** — The package exposes the required task API paths `featurelifted.Retrying`, `featurelifted.RetryError`, `featurelifted.retry_if_exception_type`, `featurelifted.retry_if_result`, `featurelifted.stop_after_attempt`, `featurelifted.wait_fixed`, `featurelifted.wait_chain`, `featurelifted.wait_exponential`, `featurelifted.RetryCallState`, `featurelifted.stop_after_delay`, `featurelifted.stop_before_delay`, `featurelifted.wait_combine`, and 1 listed members with the kinds and callable signatures listed in this contract.
 - **B010** — the submitted package does not import forbidden upstream packages: tenacity.
 <!-- featureliftbench:behavior-clauses:end -->

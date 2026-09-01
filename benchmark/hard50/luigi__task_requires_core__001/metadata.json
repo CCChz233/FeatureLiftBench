@@ -1,0 +1,380 @@
+{
+  "task_id": "luigi__task_requires_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "luigi",
+    "task-graph"
+  ],
+  "source": {
+    "name": "luigi",
+    "url": "https://github.com/spotify/luigi",
+    "commit": "715f65c4a56a908ef0a1df4df6fc33b8420e2e6c",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Local requires graph execution",
+    "description": "Extract local Task dependency execution with LocalTarget completion semantics.",
+    "source_entrypoints": [
+      "luigi.Task",
+      "luigi.LocalTarget",
+      "luigi.build"
+    ],
+    "included_behaviors": [
+      "recursive dependency execution through requires",
+      "diamond dependency de-duplication",
+      "output-based complete checks",
+      "local file target reads and writes",
+      "local in-process builds without a central scheduler"
+    ],
+    "excluded_behaviors": [
+      "parameters and command-line parsing",
+      "remote or central scheduler communication",
+      "multiple workers and process execution",
+      "dynamic dependencies yielded from run"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "resource_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Dependency graph traversal, shared-node de-duplication, completion checks, and target writes interact during local execution.",
+    "signals": [
+      "nested requires containers",
+      "diamond dependency",
+      "filesystem-backed completion"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Task, LocalTarget, build",
+    "callable": "build",
+    "signature": "build(tasks, local_scheduler=True, workers=1, **kwargs) -> bool"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "python-dateutil",
+      "tenacity",
+      "tornado",
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "luigi"
+    ],
+    "forbidden_imports": [
+      "luigi"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "luigi/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Local requires graph execution",
+    "summary": "Build a standalone local task runner that follows dependency graphs and uses filesystem targets to decide completion.",
+    "required_api": [
+      {
+        "path": "featurelifted.Task",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.Task.requires",
+            "kind": "method",
+            "signature": "(self)"
+          },
+          {
+            "path": "featurelifted.Task.output",
+            "kind": "method",
+            "signature": "(self)"
+          },
+          {
+            "path": "featurelifted.Task.run",
+            "kind": "method",
+            "signature": "(self) -> None"
+          },
+          {
+            "path": "featurelifted.Task.complete",
+            "kind": "method",
+            "signature": "(self) -> bool"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.LocalTarget",
+        "kind": "class",
+        "signature": "(path: str)",
+        "members": [
+          {
+            "path": "featurelifted.LocalTarget.open",
+            "kind": "method",
+            "signature": "(self, mode: str = 'r')"
+          },
+          {
+            "path": "featurelifted.LocalTarget.exists",
+            "kind": "method",
+            "signature": "(self) -> bool"
+          },
+          {
+            "path": "featurelifted.LocalTarget.path",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.build",
+        "kind": "function",
+        "signature": "(tasks, local_scheduler: bool = True, workers: int = 1, **kwargs) -> bool"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Calling `build` with a task follows `requires` recursively through a single task or nested list, tuple, set, and dictionary containers, and each incomplete dependency runs before the task that requires it."
+      },
+      {
+        "id": "B002",
+        "text": "When two branches of a dependency graph require the same task object, a successful local build executes that shared task no more than once before completing both branches and their join."
+      },
+      {
+        "id": "B003",
+        "text": "`Task.complete()` returns whether every target from `output()` exists; a task with no outputs is incomplete, and already-complete tasks are skipped by `build`."
+      },
+      {
+        "id": "B004",
+        "text": "`LocalTarget(path)` exposes that path, reports file existence, creates missing parent directories when opened for writing, and supports text reads and writes through context managers."
+      },
+      {
+        "id": "B005",
+        "text": "A call to `build(..., local_scheduler=True, workers=1)` executes entirely in the current process without making HTTP requests or requiring a central scheduler and returns `True` after all requested tasks complete."
+      },
+      {
+        "id": "B006",
+        "text": "The `Task` lifecycle methods, `LocalTarget` methods and path attribute, and `build` function are exported with the callable shapes stated in the required API."
+      },
+      {
+        "id": "B007",
+        "text": "Runtime source inspection of the submitted Python files finds no import of the upstream `luigi` package."
+      }
+    ],
+    "exclusions": [
+      "parameters and command-line parsing",
+      "remote or central scheduler communication",
+      "multiple workers and process execution",
+      "dynamic dependencies yielded from run",
+      "runtime access to the source repository"
+    ],
+    "forbidden": {
+      "imports": [
+        "luigi"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Calling `build` with a task follows `requires` recursively through a single task or nested list, tuple, set, and dictionary containers, and each incomplete dependency runs before the task that requires it."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When two branches of a dependency graph require the same task object, a successful local build executes that shared task no more than once before completing both branches and their join."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`Task.complete()` returns whether every target from `output()` exists; a task with no outputs is incomplete, and already-complete tasks are skipped by `build`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`LocalTarget(path)` exposes that path, reports file existence, creates missing parent directories when opened for writing, and supports text reads and writes through context managers."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "A call to `build(..., local_scheduler=True, workers=1)` executes entirely in the current process without making HTTP requests or requiring a central scheduler and returns `True` after all requested tasks complete."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The `Task` lifecycle methods, `LocalTarget` methods and path attribute, and `build` function are exported with the callable shapes stated in the required API."
+      },
+      {
+        "behavior_id": "B007",
+        "clause_kind": "included_behavior",
+        "text": "Runtime source inspection of the submitted Python files finds no import of the upstream `luigi` package."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_local_target_complete_and_build",
+        "behavior_ids": [
+          "B003",
+          "B004",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_dependency_runs_first",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_requires_containers",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_diamond_requires_runs_shared_task_once",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_complete_checks_all_outputs_and_build_skips",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_local_target_creates_parent_and_round_trips_text",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_local_build_does_not_use_http",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B007"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Task.requires",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Task.output",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Task.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Task.complete",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LocalTarget",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LocalTarget.open",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LocalTarget.exists",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LocalTarget.path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.build",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked API closure, local graph execution and completion behavior, tempfile-backed tests, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "969dfe27698ead73c7682657dce172cc42aaedfb11dc5168225c15ab25ff7b5b",
+  "generated_task_hash": "d7f422f6e6af3d4da18431a9bec3cff71c997a601241237bfccfe92fa2e7cd30",
+  "scoring_reference": {
+    "copy_all_bytes": 4253938,
+    "copy_all_loc": 45359,
+    "oracle_bytes": 3548714,
+    "oracle_loc": 21515,
+    "oracle_dependency_count": 4
+  }
+}

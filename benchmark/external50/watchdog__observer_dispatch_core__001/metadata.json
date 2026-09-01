@@ -86,19 +86,23 @@
         "members": [
           {
             "path": "featurelifted.Observer.schedule",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(event_handler: FileSystemEventHandler, path: str, recursive: bool = False)"
           },
           {
             "path": "featurelifted.Observer.start",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> None"
           },
           {
             "path": "featurelifted.Observer.stop",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> None"
           },
           {
             "path": "featurelifted.Observer.join",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(timeout: float | None = None) -> None"
           }
         ]
       },
@@ -123,19 +127,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: Observer schedule/start/stop delivers create events to FileSystemEventHandler. Required observable cases include observer create event."
+        "text": "After a FileSystemEventHandler is scheduled on a directory and Observer is started, creating a file causes the handler's on_created callback to receive an event whose `src_path` identifies that file; stop() followed by join(timeout=...) shuts the observer down."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: modify/delete callbacks fire for temp-dir file changes. Required observable cases include modify and delete."
+        "text": "While an Observer watches a temporary directory, creating, rewriting, and deleting a file dispatches filesystem events through FileSystemEventHandler.on_any_event, so the handler records at least one event from the change sequence."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: FileCreatedEvent/FileModifiedEvent/FileDeletedEvent types exist. Required observable cases include event types exist."
+        "text": "FileCreatedEvent, FileModifiedEvent, and FileDeletedEvent are importable class objects that can identify the corresponding filesystem event categories."
       },
       {
         "id": "B004",
-        "text": "Observer is the polling implementation for deterministic offline tests."
+        "text": "Observer accepts a polling timeout, watches local filesystem state without network access, and detects changes made after start() within the bounded test wait."
       },
       {
         "id": "B005",
@@ -143,7 +147,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: watchdog."
+        "text": "Scanning every Python file in the submitted package finds no `import watchdog` or `from watchdog ...` statement."
       }
     ],
     "exclusions": [
@@ -163,22 +167,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Observer schedule/start/stop delivers create events to FileSystemEventHandler. Required observable cases include observer create event."
+        "text": "After a FileSystemEventHandler is scheduled on a directory and Observer is started, creating a file causes the handler's on_created callback to receive an event whose `src_path` identifies that file; stop() followed by join(timeout=...) shuts the observer down."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: modify/delete callbacks fire for temp-dir file changes. Required observable cases include modify and delete."
+        "text": "While an Observer watches a temporary directory, creating, rewriting, and deleting a file dispatches filesystem events through FileSystemEventHandler.on_any_event, so the handler records at least one event from the change sequence."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: FileCreatedEvent/FileModifiedEvent/FileDeletedEvent types exist. Required observable cases include event types exist."
+        "text": "FileCreatedEvent, FileModifiedEvent, and FileDeletedEvent are importable class objects that can identify the corresponding filesystem event categories."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Observer is the polling implementation for deterministic offline tests."
+        "text": "Observer accepts a polling timeout, watches local filesystem state without network access, and detects changes made after start() within the bounded test wait."
       },
       {
         "behavior_id": "B005",
@@ -188,7 +192,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: watchdog."
+        "text": "Scanning every Python file in the submitted package finds no `import watchdog` or `from watchdog ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -205,7 +209,7 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_modify_and_delete",
         "behavior_ids": [
           "B001",
-          "B003",
+          "B002",
           "B004"
         ],
         "mapping_method": "ai_assisted"
@@ -213,7 +217,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_event_types_exist",
         "behavior_ids": [
-          "B002"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -296,7 +300,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "c3fe1a2ac1166f2cf372060e9d3f5d9bfa9dda509e7e8e88e9ff21d97d555d81",
-  "generated_task_hash": "c2ebe394f0b716844e753dbdf8a969c8dc2340f4b9ad096a5cb1e671f3d18a63",
+  "spec_hash": "cf5b2db0ed5e4af71ac5945380ac1b9d8bc5b82c0fc666e56c369b6fb6ef9636",
+  "generated_task_hash": "fcccec9103ec509c2faf8644bf0a7d46c3b52d0796548872e3d619f4b41504af",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

@@ -12,6 +12,23 @@ _PRIVATE_TEXT = re.compile(
     re.IGNORECASE,
 )
 _ABSOLUTE_PATH = re.compile(r"/(?:Users|home|private|tmp|var)/[^\s\"']+")
+_BULKY_KEYS = frozenset(
+    {
+        "critic_result",
+        "file_text",
+        "full_output_save_dir",
+        "llm_response_id",
+        "new_content",
+        "old_content",
+        "reasoning_content",
+        "responses_reasoning_item",
+        "thinking_blocks",
+        "tool_call",
+    }
+)
+_LONG_STRING_KEYS = frozenset({"summary", "thought"})
+_MAX_STRING_CHARS = 500
+_MAX_LONG_STRING_CHARS = 800
 
 
 def bounded_trace_excerpt(events_path: Path, *, max_events: int, max_chars: int) -> dict[str, Any]:
@@ -26,7 +43,7 @@ def bounded_trace_excerpt(events_path: Path, *, max_events: int, max_chars: int)
             value: Any = json.loads(line)
         except json.JSONDecodeError:
             value = {"raw": line}
-        sanitized = _sanitize(value)
+        sanitized = _compact(_sanitize(value))
         text = json.dumps(sanitized, ensure_ascii=False, sort_keys=True)
         remaining = max_chars - used
         if remaining <= 0:
@@ -59,4 +76,23 @@ def _sanitize(value: Any, *, key: str = "") -> Any:
     if value is None or isinstance(value, (bool, int, float)):
         return value
     return str(value)
+
+
+def _compact(value: Any, *, key: str = "") -> Any:
+    if isinstance(value, Mapping):
+        compacted: dict[str, Any] = {}
+        for item_key, item in value.items():
+            name = str(item_key)
+            if name in _BULKY_KEYS:
+                continue
+            compacted[name] = _compact(item, key=name)
+        return compacted
+    if isinstance(value, list):
+        return [_compact(item, key=key) for item in value]
+    if isinstance(value, str):
+        limit = _MAX_LONG_STRING_CHARS if key in _LONG_STRING_KEYS else _MAX_STRING_CHARS
+        if len(value) > limit:
+            return value[:limit] + "...[truncated]"
+        return value
+    return value
 

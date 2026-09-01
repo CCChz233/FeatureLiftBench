@@ -22,9 +22,9 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections.
-- The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union.
-- The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss.
+- check_type returns the original value when lists and dictionaries satisfy their parameterized element, key, and value types, including dict[str, list[int]].
+- check_type accepts None for Optional[int] and values matching any Union member, but raises TypeCheckError when a non-member value such as a string is checked against Optional[int].
+- CollectionCheckStrategy.FIRST_ITEM may accept a heterogeneous collection after checking only its first item, whereas ALL_ITEMS checks every item and raises TypeCheckError on a later mismatch.
 - dict[str, list[int]] nesting is checked.
 - The package exposes check_type/TypeCheckError/CollectionCheckStrategy with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: typeguard.
@@ -41,9 +41,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections.
-- **B002** — The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union.
-- **B003** — The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss.
+- **B001** — check_type returns the original value when lists and dictionaries satisfy their parameterized element, key, and value types, including dict[str, list[int]].
+- **B002** — check_type accepts None for Optional[int] and values matching any Union member, but raises TypeCheckError when a non-member value such as a string is checked against Optional[int].
+- **B003** — CollectionCheckStrategy.FIRST_ITEM may accept a heterogeneous collection after checking only its first item, whereas ALL_ITEMS checks every item and raises TypeCheckError on a later mismatch.
 - **B004** — dict[str, list[int]] nesting is checked.
 - **B005** — The package exposes check_type/TypeCheckError/CollectionCheckStrategy with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: typeguard.

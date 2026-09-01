@@ -5,6 +5,7 @@ from featurelifted import (
     FSOpenerRegistry,
     ParseError,
     UnsupportedProtocolError,
+    InvalidPathError,
     normalize_fs_path,
 )
 
@@ -16,4 +17,5 @@ def test_required_api_surface():
     assert hasattr(FSOpenerRegistry, 'register')
     assert issubclass(ParseError, BaseException)
     assert issubclass(UnsupportedProtocolError, BaseException)
+    assert issubclass(InvalidPathError, BaseException)
     assert callable(normalize_fs_path)

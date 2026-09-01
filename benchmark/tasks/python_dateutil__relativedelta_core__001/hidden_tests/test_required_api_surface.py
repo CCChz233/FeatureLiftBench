@@ -21,3 +21,4 @@ def test_required_api_surface():
     assert FR is not None
     assert SA is not None
     assert SU is not None
+    assert getattr(MO, 'weekday') is not None

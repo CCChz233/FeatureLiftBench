@@ -95,6 +95,21 @@
             "path": "featurelifted.MarkerRegistry.names",
             "kind": "method",
             "signature": "(self) -> 'list[str]'"
+          },
+          {
+            "path": "featurelifted.MarkerRegistry.add_line",
+            "kind": "method",
+            "signature": "(self, line: 'str') -> 'None'"
+          },
+          {
+            "path": "featurelifted.MarkerRegistry.description",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'str'"
+          },
+          {
+            "path": "featurelifted.MarkerRegistry.from_lines",
+            "kind": "method",
+            "signature": "(lines: 'list[str]') -> \"'MarkerRegistry'\""
           }
         ],
         "signature": "(lines: 'list[str]' = <factory>) -> None"
@@ -134,7 +149,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.MarkerRegistry.add_line`, `featurelifted.MarkerRegistry.description`, `featurelifted.MarkerRegistry.from_lines`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -191,7 +206,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.MarkerRegistry.add_line`, `featurelifted.MarkerRegistry.description`, `featurelifted.MarkerRegistry.from_lines`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -269,6 +284,24 @@
         ]
       },
       {
+        "path": "featurelifted.MarkerRegistry.add_line",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MarkerRegistry.description",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MarkerRegistry.from_lines",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.parse_linelist",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -292,11 +325,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "8ae50e23a66d91002fd6f3fc4029593ca4d504137c2ec071805e693d8c023a18",
-  "generated_task_hash": "204a2ed5c47d5dcc8641d832bfdcc9f92d4949b69367c00fcb9eb47999a6c64c"
+  "task_revision": 3,
+  "spec_hash": "b39d58ffab1f931b8e8b2eb368184d324a0a6ea1442f6a874cea9ce1fc09fe0e",
+  "generated_task_hash": "8cc90e6f080f39b7f8d83acc104a58042708dae0fe5802f99bc689fd0bb89faa"
 }

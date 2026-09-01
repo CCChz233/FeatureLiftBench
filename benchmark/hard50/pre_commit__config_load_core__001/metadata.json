@@ -1,0 +1,291 @@
+{
+  "task_id": "pre_commit__config_load_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "configuration"
+  ],
+  "source": {
+    "name": "pre-commit",
+    "url": "https://github.com/pre-commit/pre-commit",
+    "commit": "a9bba55a3f74068b53f4bd4d831d7e05e34eae6c",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "YAML config load and normalize",
+    "description": "Lift pre-commit config schema load/normalization without git clone or language install.",
+    "source_entrypoints": [
+      "pre_commit.clientlib.load_config"
+    ],
+    "included_behaviors": [
+      "local hook parse",
+      "schema defaults",
+      "InvalidConfigError",
+      "language normalize"
+    ],
+    "excluded_behaviors": [
+      "git clone of repos",
+      "language environment install",
+      "hook execution"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "cfgv schema plus language migration jointly normalize hook dicts from YAML.",
+    "signals": [
+      "load_config",
+      "language_version",
+      "unsupported"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import load_config, InvalidConfigError",
+    "callable": "load_config",
+    "signature": "load_config(filename: str) -> dict"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "cfgv",
+      "identify",
+      "nodeenv",
+      "pyyaml",
+      "virtualenv",
+      "distlib",
+      "filelock",
+      "platformdirs",
+      "python-discovery"
+    ],
+    "forbidden_dependencies": [
+      "pre-commit",
+      "pre_commit"
+    ],
+    "forbidden_imports": [
+      "pre_commit"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pre_commit/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "YAML config load and normalize",
+    "summary": "Build a standalone `featurelifted` package that loads and normalizes a pre-commit YAML config file without cloning repositories or installing languages.",
+    "required_api": [
+      {
+        "path": "featurelifted.load_config",
+        "kind": "function",
+        "signature": "(filename: str) -> dict"
+      },
+      {
+        "path": "featurelifted.InvalidConfigError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Loading a local-repo YAML config returns a dict whose first hook keeps the declared `id`, `language`, and `entry`, and fills `language_version` with `'default'` and `pass_filenames` with True when those keys are omitted."
+      },
+      {
+        "id": "B002",
+        "text": "Loading a config whose only content is `repos: []` yields `minimum_pre_commit_version` equal to `'0'`."
+      },
+      {
+        "id": "B003",
+        "text": "Loading YAML that does not match the config schema, including a local hook whose `entry` is not a string, raises `InvalidConfigError`."
+      },
+      {
+        "id": "B004",
+        "text": "A local hook whose language is `system` is normalized so that the loaded hook `language` is `unsupported`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `load_config` and `InvalidConfigError` with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `pre_commit`."
+      }
+    ],
+    "exclusions": [
+      "git clone of repos",
+      "language environment install",
+      "hook execution",
+      "runtime import of pre_commit"
+    ],
+    "forbidden": {
+      "imports": [
+        "pre_commit"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Loading a local-repo YAML config returns a dict whose first hook keeps the declared `id`, `language`, and `entry`, and fills `language_version` with `'default'` and `pass_filenames` with True when those keys are omitted."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Loading a config whose only content is `repos: []` yields `minimum_pre_commit_version` equal to `'0'`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Loading YAML that does not match the config schema, including a local hook whose `entry` is not a string, raises `InvalidConfigError`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A local hook whose language is `system` is normalized so that the loaded hook `language` is `unsupported`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `load_config` and `InvalidConfigError` with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `pre_commit`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_load_local_hook_config",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_default_minimum_pre_commit_version",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_invalid_schema_raises",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_local_hook_requires_string_entry",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_load_local_hook_with_defaults",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_empty_repos_default_version",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_system_language_is_normalized",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_required_hook_fields_raise",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_yaml_raises",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.load_config",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidConfigError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "91d3b6ed61a64d9ca78554fd20f9331c3f3e750d12ff7dc76c1aaef39aefed71",
+  "generated_task_hash": "14361a2cc4b5cebe4de642c18f275df2562f097883ca708e9f4523be808e1684",
+  "scoring_reference": {
+    "copy_all_bytes": 830255,
+    "copy_all_loc": 14381,
+    "oracle_bytes": 551335,
+    "oracle_loc": 5594,
+    "oracle_dependency_count": 5
+  }
+}

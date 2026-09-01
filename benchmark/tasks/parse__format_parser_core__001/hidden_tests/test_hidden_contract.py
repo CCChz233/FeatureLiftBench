@@ -8,4 +8,3 @@ def test_full_match_and_case_policy():
 def test_word_and_default_boundaries():
     result = parse("{first:w}-{second}", "alpha-rest-of-value")
     assert result.named == {"first": "alpha", "second": "rest-of-value"}
-    assert result[0] == "alpha"

@@ -53,7 +53,13 @@ def baseline_ids() -> list[str]:
 
 def copy_release_task(source: Path, destination: Path) -> None:
     def ignore(_directory: str, names: list[str]) -> set[str]:
-        return {name for name in names if name in EXCLUDED_NAMES or name.endswith(".pyc")}
+        return {
+            name
+            for name in names
+            if name in EXCLUDED_NAMES
+            or name.startswith("_runtime_")
+            or name.endswith(".pyc")
+        }
 
     shutil.copytree(source, destination, ignore=ignore)
     repo_marker = destination / "repo/.source-archive-backed"

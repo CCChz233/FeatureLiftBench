@@ -9,6 +9,7 @@ The submitted implementation must not import the upstream package or read from `
 ```python
 from featurelifted import (
     FSOpenerRegistry,
+    InvalidPathError,
     normalize_fs_path,
     parse_fs_url,
     ParseError,
@@ -24,14 +25,15 @@ from featurelifted import (
   - `FSOpenerRegistry.register(self, protocol: 'str', factory: 'Callable[[dict[str, str]], Any] | None' = None)`
 - `ParseError` must be importable and raisable
 - `UnsupportedProtocolError` must be importable and raisable
+- `InvalidPathError` must be importable and raisable
 - `normalize_fs_path(path: 'str | None') -> 'str | None'`
 
 ## Required Behavior
 
 - `parse_fs_url` parses `scheme://resource!path` URLs and query parameters.
 - `FSOpenerRegistry` registers opener factories and opens URLs.
-- Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`.
-- The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract.
+- Invalid URLs raise ParseError; unknown schemes raise UnsupportedProtocolError; normalize_fs_path raises InvalidPathError when the path contains control characters.
+- The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.InvalidPathError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -52,7 +54,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `parse_fs_url` parses `scheme://resource!path` URLs and query parameters.
 - **B002** — `FSOpenerRegistry` registers opener factories and opens URLs.
-- **B003** — Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`.
-- **B004** — The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract.
+- **B003** — Invalid URLs raise ParseError; unknown schemes raise UnsupportedProtocolError; normalize_fs_path raises InvalidPathError when the path contains control characters.
+- **B004** — The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.InvalidPathError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: fs.
 <!-- featureliftbench:behavior-clauses:end -->

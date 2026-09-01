@@ -127,7 +127,7 @@
       },
       {
         "id": "B002",
-        "text": "When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state."
+        "text": "When ExtensionConfigStore is constructed with a config directory, it auto-loads jupyter_server_config.json plus JSON fragments under jupyter_server_config.d/, later .d fragments override earlier values for the same extension, and enable/disable writes and reloads the corresponding per-extension JSON state."
       },
       {
         "id": "B003",
@@ -171,7 +171,7 @@
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state."
+        "text": "When ExtensionConfigStore is constructed with a config directory, it auto-loads jupyter_server_config.json plus JSON fragments under jupyter_server_config.d/, later .d fragments override earlier values for the same extension, and enable/disable writes and reloads the corresponding per-extension JSON state."
       },
       {
         "behavior_id": "B003",
@@ -290,7 +290,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "968163167bbbbe44a670e1b7b93890e785b885ddaa7db100b6dd60688b837c7b",
-  "generated_task_hash": "196e32517670209c03abf29be92fbc9986be0e0a90cd79b4c740ceb945a9c802"
+  "task_revision": 5,
+  "spec_hash": "b8745a4edaf50dc9a47ab05c23aee8536065feba42940282edb0ac3e05250eed",
+  "generated_task_hash": "e204b3246888b3048d06334f18c781f277d2a5b33035e8aea42620ead42d0c77"
 }

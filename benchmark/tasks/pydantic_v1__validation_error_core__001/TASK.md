@@ -26,6 +26,7 @@ from featurelifted import (
 - `validator(*fields: str, pre: bool = False, each_item: bool = False, always: bool = False, check_fields: bool = True, whole: Optional[bool] = None, allow_reuse: bool = False) -> Callable[[Callable[..., Any]], ForwardRef('AnyClassMethod')]`
 - `root_validator(_func: Optional[Callable[..., Any]] = None, *, pre: bool = False, allow_reuse: bool = False, skip_on_failure: bool = False) -> Union[ForwardRef('AnyClassMethod'), Callable[[Callable[..., Any]], ForwardRef('AnyClassMethod')]]`
 - `Extra(*values)` class constructor
+  - `Extra.forbid` attribute must exist on instances
 
 ## Required Behavior
 
@@ -34,7 +35,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: root_validator whole-model checks. Required observable cases include root validator rejects invalid combo.
 - The extracted feature must support this observable behavior: Config.extra forbid for unknown keys. Required observable cases include extra forbid rejects unknown keys.
 - The extracted feature must support this observable behavior: ValidationError.errors() with loc/type/msg for nested models. Required observable cases include missing required field raises; nested validation error loc paths; multiple errors collected.
-- The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra`, `featurelifted.Extra.forbid` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -58,6 +59,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: root_validator whole-model checks. Required observable cases include root validator rejects invalid combo.
 - **B004** — The extracted feature must support this observable behavior: Config.extra forbid for unknown keys. Required observable cases include extra forbid rejects unknown keys.
 - **B005** — The extracted feature must support this observable behavior: ValidationError.errors() with loc/type/msg for nested models. Required observable cases include missing required field raises; nested validation error loc paths; multiple errors collected.
-- **B006** — The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra`, `featurelifted.Extra.forbid` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: pydantic.
 <!-- featureliftbench:behavior-clauses:end -->

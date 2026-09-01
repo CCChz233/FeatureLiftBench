@@ -1,0 +1,292 @@
+{
+  "task_id": "falcon__responder_routing_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct"
+  ],
+  "source": {
+    "name": "falcon",
+    "url": "https://github.com/falconry/falcon",
+    "commit": "ea2b14d34bdb0dc7c92c5cced84c8be021e3cb86",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "WSGI responder routing",
+    "description": "Lift App.add_route dispatch over a fake WSGI environ without listen/bind.",
+    "source_entrypoints": [
+      "falcon.App.add_route",
+      "falcon.App.__call__"
+    ],
+    "included_behaviors": [
+      "route match",
+      "template params",
+      "404",
+      "405"
+    ],
+    "excluded_behaviors": [
+      "ASGI lifespan servers",
+      "WebSocket",
+      "real listen/bind"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Routing table, responders, and WSGI status mapping share App state.",
+    "signals": [
+      "add_route",
+      "PATH_INFO",
+      "method not allowed"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import App",
+    "callable": "App",
+    "signature": "App(media_type='application/json', request_type=None, response_type=None, middleware=None, router=None, independent_middleware=True, cors_enable=False, sink_before_static_route=True)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "falcon"
+    ],
+    "forbidden_imports": [
+      "falcon"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "falcon/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "WSGI responder routing",
+    "summary": "Build a standalone `featurelifted` package providing Falcon-style `App.add_route` dispatch for WSGI environ dicts without binding a socket.",
+    "required_api": [
+      {
+        "path": "featurelifted.App",
+        "kind": "class",
+        "signature": "(media_type='application/json', request_type=None, response_type=None, middleware=None, router=None, independent_middleware=True, cors_enable=False, sink_before_static_route=True)",
+        "members": [
+          {
+            "path": "featurelifted.App.__init__",
+            "kind": "method",
+            "signature": "(self, media_type='application/json', request_type=None, response_type=None, middleware=None, router=None, independent_middleware=True, cors_enable=False, sink_before_static_route=True) -> None"
+          },
+          {
+            "path": "featurelifted.App.add_route",
+            "kind": "method",
+            "signature": "(self, uri_template: str, resource: object, **kwargs) -> None"
+          },
+          {
+            "path": "featurelifted.App.__call__",
+            "kind": "method",
+            "signature": "(self, env, start_response)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `add_route` registers a resource with `on_get`, a WSGI GET to that path returns HTTP 200 and the responder body."
+      },
+      {
+        "id": "B002",
+        "text": "A template such as `/items/{item_id}` captures the path segment and passes it to the responder."
+      },
+      {
+        "id": "B003",
+        "text": "A request whose path matches no registered route is answered with HTTP 404."
+      },
+      {
+        "id": "B004",
+        "text": "A request whose path matches a route that has no responder for that HTTP method is answered with HTTP 405."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `App` with construction, `add_route`, and WSGI `__call__` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `falcon`."
+      }
+    ],
+    "exclusions": [
+      "ASGI lifespan servers",
+      "WebSocket",
+      "real listen/bind",
+      "runtime import of falcon"
+    ],
+    "forbidden": {
+      "imports": [
+        "falcon"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `add_route` registers a resource with `on_get`, a WSGI GET to that path returns HTTP 200 and the responder body."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A template such as `/items/{item_id}` captures the path segment and passes it to the responder."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A request whose path matches no registered route is answered with HTTP 404."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A request whose path matches a route that has no responder for that HTTP method is answered with HTTP 405."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `App` with construction, `add_route`, and WSGI `__call__` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `falcon`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_registered_route_dispatches_get",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_template_captures_path_parameter",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_disallowed_method_is_not_allowed",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_two_routes_are_independent",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_nested_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_post_on_get_only_route_is_not_allowed",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.App",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App.add_route",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "56564949fd3dcd3ebb2b20bda688ac40b5a01dd52cd0063d52b722127396a2c9",
+  "generated_task_hash": "fb8b5b22a94058d5ee4762d91a9ad61e253d54a02d75a18324b08d449ffd549b",
+  "scoring_reference": {
+    "copy_all_bytes": 3718951,
+    "copy_all_loc": 44562,
+    "oracle_bytes": 1708041,
+    "oracle_loc": 18788,
+    "oracle_dependency_count": 0
+  }
+}

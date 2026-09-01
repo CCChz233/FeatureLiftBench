@@ -68,7 +68,13 @@ def build_evaluation_capsule(task_dir: str | Path, destination: str | Path) -> d
         shutil.copytree(
             source,
             destination_tests,
-            ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache", "*.pyc", "*.pyo"),
+            ignore=shutil.ignore_patterns(
+                "__pycache__",
+                ".pytest_cache",
+                "_runtime_*",
+                "*.pyc",
+                "*.pyo",
+            ),
         )
 
     forbidden = task / "evaluation" / "forbidden_imports.txt"

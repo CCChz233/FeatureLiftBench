@@ -1,0 +1,363 @@
+{
+  "task_id": "oslo_config__opt_group_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "lift",
+    "composite",
+    "configuration"
+  ],
+  "source": {
+    "name": "oslo.config",
+    "url": "https://github.com/openstack/oslo.config",
+    "commit": "37b787699a6c2138fb2a38e3699c26a8adf892d0",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Option groups and layered configuration",
+    "description": "Lift ConfigOpts registration and grouped file/CLI/default resolution.",
+    "source_entrypoints": [
+      "oslo_config.cfg.ConfigOpts",
+      "oslo_config.cfg.Opt",
+      "oslo_config.cfg.OptGroup"
+    ],
+    "included_behaviors": [
+      "register options",
+      "option groups",
+      "INI file overlay",
+      "CLI override",
+      "defaults"
+    ],
+    "excluded_behaviors": [
+      "remote configuration source plugins",
+      "sample configuration generation",
+      "OpenStack service integration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Registry state coordinates option types, groups, INI parsing, CLI parsing, and source priority.",
+    "signals": [
+      "registration order",
+      "group registry",
+      "file and CLI precedence"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import ConfigOpts, Opt, OptGroup",
+    "callable": "ConfigOpts",
+    "signature": "ConfigOpts()"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "netaddr",
+      "rfc3986",
+      "stevedore",
+      "oslo.i18n",
+      "PyYAML",
+      "debtcollector",
+      "pbr",
+      "wrapt"
+    ],
+    "forbidden_dependencies": [
+      "oslo.config"
+    ],
+    "forbidden_imports": [
+      "oslo_config"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "oslo_config/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Option groups and layered configuration",
+    "summary": "Build a standalone `featurelifted` package providing option registration, groups, defaults, INI file loading, and CLI precedence.",
+    "required_api": [
+      {
+        "path": "featurelifted.ConfigOpts",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.ConfigOpts.__call__",
+            "kind": "method",
+            "signature": "(self, args=None, project=None, prog=None, version=None, usage=None, default_config_files=None, default_config_dirs=None, validate_default_values=False, description=None, epilog=None, use_env=True) -> None"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.register_opt",
+            "kind": "method",
+            "signature": "(self, opt: Opt, group: str | OptGroup | None = None, cli: bool = False) -> bool"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.register_group",
+            "kind": "method",
+            "signature": "(self, group: OptGroup) -> None"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.__getattr__",
+            "kind": "method",
+            "signature": "(self, name: str) -> Any"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Opt",
+        "kind": "class",
+        "signature": "(name: str, type=None, dest=None, short=None, default=None, positional=False, metavar=None, help=None, secret=False, required=None, deprecated_name=None, deprecated_group=None, deprecated_opts=None, sample_default=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, mutable=False, advanced=False)",
+        "members": [
+          {
+            "path": "featurelifted.Opt.__init__",
+            "kind": "method",
+            "signature": "(self, name: str, type=None, dest=None, short=None, default=None, positional=False, metavar=None, help=None, secret=False, required=None, deprecated_name=None, deprecated_group=None, deprecated_opts=None, sample_default=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, mutable=False, advanced=False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.OptGroup",
+        "kind": "class",
+        "signature": "(name: str, title: str | None = None, help: str | None = None, dynamic_group_owner: str = \"\", driver_option: str = \"\")",
+        "members": [
+          {
+            "path": "featurelifted.OptGroup.__init__",
+            "kind": "method",
+            "signature": "(self, name: str, title: str | None = None, help: str | None = None, dynamic_group_owner: str = \"\", driver_option: str = \"\")"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Registering an `Opt` with `ConfigOpts.register_opt` makes its declared default available as an attribute before and after parsing with an empty argument list."
+      },
+      {
+        "id": "B002",
+        "text": "Registering an `OptGroup` and a grouped `Opt` makes the value available through `config.<group>.<option>`, while default-group options remain available directly on the `ConfigOpts` object."
+      },
+      {
+        "id": "B003",
+        "text": "When a registered option is present in an INI configuration file supplied with `--config-file`, parsing loads the file value, including values in named option-group sections."
+      },
+      {
+        "id": "B004",
+        "text": "When an option is registered with `cli=True`, a command-line value overrides both its declared default and a value from a supplied configuration file; options not overridden on the command line retain their file or default values."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes all required `ConfigOpts`, `Opt`, `OptGroup`, registration, parsing, and attribute-access paths with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package does not import the forbidden upstream package `oslo_config`."
+      }
+    ],
+    "exclusions": [
+      "remote configuration source plugins",
+      "sample configuration generation",
+      "OpenStack service integration",
+      "runtime import of oslo_config"
+    ],
+    "forbidden": {
+      "imports": [
+        "oslo_config"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Registering an `Opt` with `ConfigOpts.register_opt` makes its declared default available as an attribute before and after parsing with an empty argument list."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Registering an `OptGroup` and a grouped `Opt` makes the value available through `config.<group>.<option>`, while default-group options remain available directly on the `ConfigOpts` object."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When a registered option is present in an INI configuration file supplied with `--config-file`, parsing loads the file value, including values in named option-group sections."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "When an option is registered with `cli=True`, a command-line value overrides both its declared default and a value from a supplied configuration file; options not overridden on the command line retain their file or default values."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes all required `ConfigOpts`, `Opt`, `OptGroup`, registration, parsing, and attribute-access paths with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import the forbidden upstream package `oslo_config`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_registered_default",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_grouped_option",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_file_overlay",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_cli_overrides_file",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ConfigOpts",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.register_opt",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.register_group",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.__getattr__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Opt",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Opt.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OptGroup",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OptGroup.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "bcf6a850da1b32c1b54ed1dc94541dd4e27c9ea9bf3eda219daeac8ab1fcc385",
+  "generated_task_hash": "6ea39635ce832aa70eea3082fc2a0939d0d11cd7b041c21b4b766c331fec4161",
+  "scoring_reference": {
+    "copy_all_bytes": 637603,
+    "copy_all_loc": 13304,
+    "oracle_bytes": 534814,
+    "oracle_loc": 6436,
+    "oracle_dependency_count": 8
+  }
+}

@@ -108,6 +108,16 @@ def test_deepseek_provider_inlines_only_audited_session_assets(tmp_path: Path) -
     assert str(tmp_path) not in json.dumps(payload)
 
 
+def test_deepseek_provider_parses_json_with_trailing_extra_data() -> None:
+    parsed = _extract_json_object(
+        '{"schema_version":"autosaddler-featureliftbench-diagnosis/v1","diagnosis":"x",'
+        '"expected_effect":"y","updates":{"self_verification":"Check public behaviors."}}\n'
+        '{"note":"trailing extra object"}\n'
+    )
+    assert parsed["diagnosis"] == "x"
+    assert parsed["updates"]["self_verification"] == "Check public behaviors."
+
+
 def test_deepseek_provider_parses_json_fences_and_usage() -> None:
     parsed = _extract_json_object('```json\n{"updates":{"self_verification":"Check all public behaviors."}}\n```')
     assert parsed["updates"] == {"self_verification": "Check all public behaviors."}
@@ -126,3 +136,71 @@ def test_deepseek_provider_parses_json_fences_and_usage() -> None:
     assert usage.total_tokens == 120
     assert usage.provider_reported_total_tokens == 120
     assert usage.provider_correlation_id == "response-1"
+
+
+def test_deepseek_provider_reads_reasoning_content_when_message_content_empty() -> None:
+    content, usage = _parse_provider_response(
+        {
+            "id": "response-2",
+            "model": "deepseek-v4-flash",
+            "choices": [
+                {
+                    "message": {
+                        "content": "",
+                        "reasoning_content": '{"schema_version":"autosaddler-featureliftbench-diagnosis/v1","diagnosis":"x","expected_effect":"y","updates":{"self_verification":"Check public behaviors."}}',
+                    }
+                }
+            ],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 20, "total_tokens": 30},
+        },
+        model="deepseek/deepseek-v4-flash",
+        duration_seconds=0.2,
+        configured_settings={"max_tokens": 8192},
+    )
+    parsed = _extract_json_object(content)
+    assert parsed["updates"]["self_verification"] == "Check public behaviors."
+    assert usage.total_tokens == 30
+
+
+def test_deepseek_provider_reads_content_parts_list() -> None:
+    content, _usage = _parse_provider_response(
+        {
+            "choices": [
+                {
+                    "message": {
+                        "content": [{"type": "text", "text": '{"parent_ids":["candidate-1"]}'}],
+                    }
+                }
+            ],
+            "usage": {"prompt_tokens": 1, "completion_tokens": 1, "total_tokens": 2},
+        },
+        model="deepseek/deepseek-v4-flash",
+        duration_seconds=0.1,
+        configured_settings={},
+    )
+    assert _extract_json_object(content)["parent_ids"] == ["candidate-1"]
+
+
+def test_trace_excerpt_drops_bulky_fields_and_bounds_size(tmp_path: Path) -> None:
+    source = tmp_path / "events.jsonl"
+    source.write_text(
+        json.dumps(
+            {
+                "kind": "ActionEvent",
+                "summary": "file_editor",
+                "reasoning_content": "x" * 5000,
+                "new_content": "y" * 5000,
+                "old_content": "z" * 5000,
+                "thought": [{"text": "Keep this thought."}],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    excerpt = bounded_trace_excerpt(source, max_events=5, max_chars=4000)
+    encoded = json.dumps(excerpt)
+    assert "Keep this thought." in encoded
+    assert "file_editor" in encoded
+    assert "reasoning_content" not in encoded
+    assert "new_content" not in encoded
+    assert len(encoded) < 2000

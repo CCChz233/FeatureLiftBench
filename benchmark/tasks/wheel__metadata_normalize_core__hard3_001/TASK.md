@@ -29,7 +29,7 @@ from featurelifted import (
 ## Required Behavior
 
 - safe_name and safe_extra normalize project names and extras into their canonical metadata-safe forms.
-- parse_wheel_filename returns normalized distribution, version, build, and tag components and raises WheelError for invalid filenames.
+- parse_wheel_filename returns a 3-tuple of normalized distribution name, version, and build tag, and raises WheelError for invalid filenames.
 - split_sections separates metadata headers from named body sections without losing section content or order.
 - The package exposes the required task API paths `featurelifted.safe_name`, `featurelifted.safe_extra`, `featurelifted.split_sections`, `featurelifted.parse_wheel_filename`, `featurelifted.urlsafe_b64encode`, `featurelifted.WheelError` with the kinds and callable signatures listed in this contract.
 
@@ -50,7 +50,7 @@ Benchmark evaluator tests remain private. Each evaluator test maps to the public
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
 - **B001** — safe_name and safe_extra normalize project names and extras into their canonical metadata-safe forms.
-- **B002** — parse_wheel_filename returns normalized distribution, version, build, and tag components and raises WheelError for invalid filenames.
+- **B002** — parse_wheel_filename returns a 3-tuple of normalized distribution name, version, and build tag, and raises WheelError for invalid filenames.
 - **B003** — split_sections separates metadata headers from named body sections without losing section content or order.
 - **B004** — The package exposes the required task API paths `featurelifted.safe_name`, `featurelifted.safe_extra`, `featurelifted.split_sections`, `featurelifted.parse_wheel_filename`, `featurelifted.urlsafe_b64encode`, `featurelifted.WheelError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: wheel.

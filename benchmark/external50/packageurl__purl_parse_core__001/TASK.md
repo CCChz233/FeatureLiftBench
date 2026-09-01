@@ -14,22 +14,18 @@ from featurelifted import (
 
 ## Required API Details
 
-- `PackageURL` class must be importable
-  - `PackageURL.from_string` callable must exist
-  - `PackageURL.to_string` callable must exist
+- `PackageURL(type: str, name: str, namespace: str | None = None, version: str | None = None, qualifiers=None, subpath: str | None = None)` class constructor
+  - `PackageURL.from_string(purl: str) -> PackageURL`
+  - `PackageURL.to_string() -> str`
   - `PackageURL.type` attribute must exist on instances
   - `PackageURL.name` attribute must exist on instances
   - `PackageURL.namespace` attribute must exist on instances
   - `PackageURL.version` attribute must exist on instances
-- `PackageURL.from_string` callable must exist
-- `PackageURL.to_string` callable must exist
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor.
-- The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize.
-- The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl.
-- Qualifiers are serialized in stable order.
+- PackageURL.from_string parses type, namespace, name, and version fields; constructing the same fields directly and calling to_string produces canonical `pkg:` text, with qualifiers retained in stable order.
+- PackageURL.from_string raises ValueError when the input is not a valid `pkg:` URL.
 - The package exposes PackageURL.from_string/to_string with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: packageurl.
 
@@ -44,10 +40,8 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor.
-- **B002** — The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize.
-- **B003** — The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl.
-- **B004** — Qualifiers are serialized in stable order.
-- **B005** — The package exposes PackageURL.from_string/to_string with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: packageurl.
+- **B001** — PackageURL.from_string parses type, namespace, name, and version fields; constructing the same fields directly and calling to_string produces canonical `pkg:` text, with qualifiers retained in stable order.
+- **B002** — PackageURL.from_string raises ValueError when the input is not a valid `pkg:` URL.
+- **B003** — The package exposes PackageURL.from_string/to_string with the kinds listed in this contract.
+- **B004** — the submitted package does not import forbidden upstream packages: packageurl.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -12,8 +12,11 @@ def test_required_api_surface():
     assert isinstance(EntryPoint, type)
     assert EntryPoint is not None
     assert EntryPoint is not None
+    assert EntryPoint is not None
+    assert EntryPoint is not None
     assert isinstance(EntryPoints, type)
     assert hasattr(EntryPoints, 'select')
     assert isinstance(PathDistribution, type)
     assert PathDistribution is not None
     assert isinstance(Sectioned, type)
+    assert hasattr(Sectioned, 'section_pairs')

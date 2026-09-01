@@ -15,14 +15,14 @@ from featurelifted import (
 ## Required API Details
 
 - `ConfigUpdater` class must be importable
-- `ConfigUpdater.read_string` callable must exist
+- `ConfigUpdater.read_string(string: str, source: str = '<string>') -> None`
 - `ConfigUpdater.write(fp: TextIO, validate: bool = True)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: read_string and section/option get/set. Required observable cases include read modify write stringio; section option access.
-- The extracted feature must support this observable behavior: write to StringIO preserves comments and spacing. Required observable cases include add option; multiple sections roundtrip.
-- Tests use ConfigUpdater.write(StringIO) rather than to_string().
+- After read_string parses INI text, sections and options are accessible by mapping lookup, option values are mutable, and write serializes the updated document while retaining comments.
+- Assigning an option value, including a previously absent option, produces a normalized `key = value` line when the document is written.
+- ConfigUpdater.write accepts a text stream such as StringIO and writes the complete serialized INI document to it.
 - Mutable INI document supports multiple sections.
 - The package exposes ConfigUpdater with read_string/write with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: configupdater.
@@ -38,9 +38,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: read_string and section/option get/set. Required observable cases include read modify write stringio; section option access.
-- **B002** — The extracted feature must support this observable behavior: write to StringIO preserves comments and spacing. Required observable cases include add option; multiple sections roundtrip.
-- **B003** — Tests use ConfigUpdater.write(StringIO) rather than to_string().
+- **B001** — After read_string parses INI text, sections and options are accessible by mapping lookup, option values are mutable, and write serializes the updated document while retaining comments.
+- **B002** — Assigning an option value, including a previously absent option, produces a normalized `key = value` line when the document is written.
+- **B003** — ConfigUpdater.write accepts a text stream such as StringIO and writes the complete serialized INI document to it.
 - **B004** — Mutable INI document supports multiple sections.
 - **B005** — The package exposes ConfigUpdater with read_string/write with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: configupdater.

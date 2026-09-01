@@ -123,7 +123,7 @@
       "behavior_id": "B012",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B012",
-      "text": "The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.CachePolicy.expiration_seconds`, `featurelifted.CachePolicy.should_store`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B013",
@@ -186,7 +186,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "6fd5e0bf51d754238551447a62bef1be433dfb854c29400678ae6dafecf4e729",
+  "spec_sha256": "e9c8e7fabad5b518bdf1fd723c2f99073f365c59bfe398fdebb7c4c7ad93d94d",
   "task_id": "requests_cache__cache_key_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

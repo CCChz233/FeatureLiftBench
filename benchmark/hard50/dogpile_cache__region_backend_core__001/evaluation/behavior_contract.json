@@ -1,0 +1,91 @@
+{
+  "task_id": "dogpile_cache__region_backend_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`make_region` returns an unconfigured `CacheRegion`, forwards constructor arguments such as `name`, and `configure('dogpile.cache.memory')` configures the in-process memory backend, returns the same region, and makes `is_configured` true."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "For a configured memory region, the first `get_or_create(key, creator)` call for a missing key calls the creator and caches its result; later calls for that key return the cached result without calling later creators, while different keys are independent."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "`CacheRegion.get` returns the singleton `NO_VALUE` sentinel for a missing key, and `NO_VALUE` is false in boolean context while remaining distinct from a cached `None` value."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "After a value has been cached, `CacheRegion.invalidate()` causes `get` to report `NO_VALUE` for that stale value and the next `get_or_create` for the same key to invoke its creator and cache the replacement."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "Configuring an already configured region without `replace_existing_backend=True` raises an exception; passing that flag permits replacement with a fresh memory backend."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The package exposes `make_region`, `CacheRegion`, `NO_VALUE`, and the required `CacheRegion` members with the kinds and callable signatures listed in this contract."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_make_configure_and_get_or_create",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_missing_key_returns_no_value",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_creator_is_once_per_key_and_none_is_cached",
+      "public_clause_ids": [
+        "B002",
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalidate_hides_and_regenerates",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_reconfigure_requires_replace_flag",
+      "public_clause_ids": [
+        "B001",
+        "B005"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "generated_required_api_surface"
+    }
+  ],
+  "spec_sha256": "d02966578711bb368df245d7fd59e7f549918aa8b4b5153a7c1fe75c73f9e8f0"
+}

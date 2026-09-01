@@ -1,0 +1,292 @@
+{
+  "task_id": "stdnum__isbn_validate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "validate"
+  ],
+  "source": {
+    "name": "python-stdnum",
+    "url": "https://github.com/arthurdejong/python-stdnum",
+    "commit": "006192e59be8ed6e08fd680256868a6c31eb2ba9",
+    "license": "LGPL-2.1-or-later"
+  },
+  "feature": {
+    "name": "ISBN validate",
+    "description": "Lift python-stdnum ISBN validate/compact/type conversion without country number modules.",
+    "source_entrypoints": [
+      "stdnum.isbn.validate"
+    ],
+    "included_behaviors": [
+      "ISBN-13 validate",
+      "compact",
+      "checksum error",
+      "ISBN-10 type and to_isbn13"
+    ],
+    "excluded_behaviors": [
+      "country modules",
+      "IBAN",
+      "network"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "resource_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "ISBN lives in isbn/ean; hundreds of country modules are copy-all decoy.",
+    "signals": [
+      "checksum",
+      "ISBN10",
+      "ISBN13"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted.isbn import validate, compact, isbn_type, to_isbn13",
+    "callable": "validate",
+    "signature": "validate(number: str, convert: bool = False) -> str"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "stdnum"
+    ],
+    "forbidden_imports": [
+      "stdnum"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "stdnum/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "ISBN validate",
+    "summary": "Build a standalone `featurelifted` package that validates and converts ISBN numbers like python-stdnum `isbn`, including compact form and checksum errors, without the remaining country-code modules.",
+    "required_api": [
+      {
+        "path": "featurelifted.isbn.validate",
+        "kind": "function",
+        "signature": "(number: str, convert: bool = False) -> str"
+      },
+      {
+        "path": "featurelifted.isbn.compact",
+        "kind": "function",
+        "signature": "(number: str, convert: bool = False) -> str"
+      },
+      {
+        "path": "featurelifted.isbn.isbn_type",
+        "kind": "function",
+        "signature": "(number: str) -> str | None"
+      },
+      {
+        "path": "featurelifted.isbn.to_isbn13",
+        "kind": "function",
+        "signature": "(number: str) -> str"
+      },
+      {
+        "path": "featurelifted.exceptions.InvalidChecksum",
+        "kind": "class",
+        "signature": ""
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`validate(\"978-9024538270\")` returns `\"9789024538270\"`; `validate(\"978-0-471-11709-4\")` returns `\"9780471117094\"`."
+      },
+      {
+        "id": "B002",
+        "text": "`compact(\"1-85798-218-5\")` returns `\"1857982185\"`; `compact(\"978-9024538270\")` returns `\"9789024538270\"`."
+      },
+      {
+        "id": "B003",
+        "text": "`validate(\"978-9024538271\")` raises `InvalidChecksum`."
+      },
+      {
+        "id": "B004",
+        "text": "`isbn_type(\"1-85798-218-5\")` is `\"ISBN10\"`, `isbn_type(\"978-0-471-11709-4\")` is `\"ISBN13\"`, and `to_isbn13(\"1-85798-218-5\")` equals `\"978-1-85798-218-3\"`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `isbn.validate`, `isbn.compact`, `isbn.isbn_type`, `isbn.to_isbn13`, and `InvalidChecksum`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `stdnum`."
+      }
+    ],
+    "exclusions": [
+      "country modules",
+      "IBAN",
+      "runtime import of stdnum"
+    ],
+    "forbidden": {
+      "imports": [
+        "stdnum"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`validate(\"978-9024538270\")` returns `\"9789024538270\"`; `validate(\"978-0-471-11709-4\")` returns `\"9780471117094\"`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`compact(\"1-85798-218-5\")` returns `\"1857982185\"`; `compact(\"978-9024538270\")` returns `\"9789024538270\"`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`validate(\"978-9024538271\")` raises `InvalidChecksum`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`isbn_type(\"1-85798-218-5\")` is `\"ISBN10\"`, `isbn_type(\"978-0-471-11709-4\")` is `\"ISBN13\"`, and `to_isbn13(\"1-85798-218-5\")` equals `\"978-1-85798-218-3\"`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `isbn.validate`, `isbn.compact`, `isbn.isbn_type`, `isbn.to_isbn13`, and `InvalidChecksum`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `stdnum`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_validate_isbn13_compact_digits",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_compact_strips_separators",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_checksum_raises",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_isbn_type_and_to_isbn13",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.isbn.validate",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.isbn.compact",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.isbn.isbn_type",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.isbn.to_isbn13",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.exceptions.InvalidChecksum",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-28",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "ISBN slice; country modules unused."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_validate_isbn13",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_compact_isbn10",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 619,
+    "oracle_bytes": 28397,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 23408,
+    "copy_all_bytes": 3301377
+  },
+  "spec_hash": "3148cdbcb05e23585e0f6df085a13b8e6c341284d80573dc09dfcb24da836bec",
+  "generated_task_hash": "bc38aed5f45100d4e14dd092ac27fffc31bc71e27219638204bc25e559157755"
+}

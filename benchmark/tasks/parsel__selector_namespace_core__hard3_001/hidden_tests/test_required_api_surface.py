@@ -14,6 +14,8 @@ def test_required_api_surface():
     assert hasattr(Selector, 'xpath')
     assert hasattr(Selector, 'register_namespace')
     assert hasattr(Selector, 'remove_namespace')
+    assert hasattr(Selector, 'get')
+    assert hasattr(Selector, 'getall')
     assert isinstance(FakeElement, type)
     assert callable(extract_text)
     assert issubclass(SelectorSyntaxError, BaseException)

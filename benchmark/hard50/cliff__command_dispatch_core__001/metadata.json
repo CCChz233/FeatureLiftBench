@@ -1,0 +1,390 @@
+{
+  "task_id": "cliff__command_dispatch_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "hard",
+    "registry-plugin-dispatch",
+    "contract-member-reviewed"
+  ],
+  "source": {
+    "name": "cliff",
+    "url": "https://github.com/openstack/cliff",
+    "commit": "89efc71e3660e0f5b5fc56fa455890950c205401",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Command registration, argv parsing, and dispatch",
+    "description": "Extract a deterministic in-process slice of Cliff command registration and application dispatch into a standalone `featurelifted` package.",
+    "source_entrypoints": [
+      "cliff.command.Command",
+      "cliff.commandmanager.CommandManager",
+      "cliff.app.App"
+    ],
+    "included_behaviors": [
+      "in-process named command registration and longest-name lookup",
+      "global and command-specific argparse processing",
+      "Command.run delegation to take_action and application exit-status handling"
+    ],
+    "excluded_behaviors": [
+      "entry-point and stevedore discovery",
+      "interactive cmd2 mode, shell completion, help plugins, and formatter plugins",
+      "logging configuration, fuzzy suggestions, and terminal paging behavior"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Command discovery, longest-name matching, two-stage argv parsing, command construction, and exit handling span manager, command, and application responsibilities.",
+    "signals": [
+      "in-process named command registration and longest-name lookup",
+      "global and command-specific argparse processing",
+      "Command.run delegation to take_action and application exit-status handling"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import App, Command, CommandManager",
+    "callable": "App.run",
+    "signature": "App.run(self, argv: list[str]) -> int"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "autopage",
+      "cmd2",
+      "PrettyTable",
+      "stevedore",
+      "PyYAML"
+    ],
+    "forbidden_dependencies": [
+      "cliff"
+    ],
+    "forbidden_imports": [
+      "cliff"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cliff/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Command registration, argv parsing, and dispatch",
+    "summary": "Extract a deterministic in-process slice of Cliff command registration and application dispatch into a standalone `featurelifted` package.",
+    "required_api": [
+      {
+        "path": "featurelifted.Command",
+        "kind": "class",
+        "signature": "(app: App, app_args: argparse.Namespace | None, cmd_name: str | None = None)",
+        "members": [
+          {
+            "path": "featurelifted.Command.get_parser",
+            "kind": "method",
+            "signature": "(self, prog_name: str) -> argparse.ArgumentParser"
+          },
+          {
+            "path": "featurelifted.Command.take_action",
+            "kind": "method",
+            "signature": "(self, parsed_args: argparse.Namespace)"
+          },
+          {
+            "path": "featurelifted.Command.run",
+            "kind": "method",
+            "signature": "(self, parsed_args: argparse.Namespace) -> int"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.CommandManager",
+        "kind": "class",
+        "signature": "(namespace: str | None = None, convert_underscores: bool = True, *, ignored_modules: Iterable[str] | None = None)",
+        "members": [
+          {
+            "path": "featurelifted.CommandManager.add_command",
+            "kind": "method",
+            "signature": "(self, name: str, command_class: type[Command]) -> None"
+          },
+          {
+            "path": "featurelifted.CommandManager.find_command",
+            "kind": "method",
+            "signature": "(self, argv: list[str]) -> tuple[type[Command], str, list[str]]"
+          },
+          {
+            "path": "featurelifted.CommandManager.get_command_names",
+            "kind": "method",
+            "signature": "(self, group: str | None = None) -> list[str]"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.App",
+        "kind": "class",
+        "signature": "(description: str | None, version: str | None, command_manager: CommandManager, stdin=None, stdout=None, stderr=None, interactive_app_factory=None, deferred_help: bool = False)",
+        "members": [
+          {
+            "path": "featurelifted.App.run",
+            "kind": "method",
+            "signature": "(self, argv: list[str]) -> int"
+          },
+          {
+            "path": "featurelifted.App.run_subcommand",
+            "kind": "method",
+            "signature": "(self, argv: list[str]) -> int"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After command classes are registered by name, `find_command` chooses the longest matching multi-word command, leaves subsequent option and operand tokens untouched, and raises `ValueError` when no command matches."
+      },
+      {
+        "id": "B002",
+        "text": "`add_command` stores and matches the command name as given. `find_command` looks up that stored name; `convert_underscores=False` still requires the literal registered name. Underscore-to-space rewriting of plugin entry-point names is out of scope."
+      },
+      {
+        "id": "B003",
+        "text": "A `Command` subclass can extend its `argparse` parser in `get_parser`; `App.run` parses global arguments separately, parses the remaining command arguments with that parser, and invokes `take_action` with the resulting namespace."
+      },
+      {
+        "id": "B004",
+        "text": "`Command.run` returns the value from `take_action`, except that a false or `None` result becomes exit status 0."
+      },
+      {
+        "id": "B005",
+        "text": "`App.run` returns exit status 2 for an unknown command and exit status 1 when command execution raises an ordinary exception. The `--debug` flag does not change those exit statuses for unknown commands."
+      },
+      {
+        "id": "B006",
+        "text": "The command instance receives the invoking `App`, parsed global application arguments (including `verbose_level`, which `-v`/`--verbose` raises from the default of 1 to 2), and the matched command name, so `take_action` can observe both application state and command operands."
+      }
+    ],
+    "exclusions": [
+      "entry-point and stevedore discovery",
+      "interactive cmd2 mode, shell completion, help plugins, and formatter plugins",
+      "logging configuration, fuzzy suggestions, and terminal paging behavior",
+      "runtime import of `cliff`"
+    ],
+    "forbidden": {
+      "imports": [
+        "cliff"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After command classes are registered by name, `find_command` chooses the longest matching multi-word command, leaves subsequent option and operand tokens untouched, and raises `ValueError` when no command matches."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`add_command` stores and matches the command name as given. `find_command` looks up that stored name; `convert_underscores=False` still requires the literal registered name. Underscore-to-space rewriting of plugin entry-point names is out of scope."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A `Command` subclass can extend its `argparse` parser in `get_parser`; `App.run` parses global arguments separately, parses the remaining command arguments with that parser, and invokes `take_action` with the resulting namespace."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`Command.run` returns the value from `take_action`, except that a false or `None` result becomes exit status 0."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "`App.run` returns exit status 2 for an unknown command and exit status 1 when command execution raises an ordinary exception. The `--debug` flag does not change those exit statuses for unknown commands."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The command instance receives the invoking `App`, parsed global application arguments (including `verbose_level`, which `-v`/`--verbose` raises from the default of 1 to 2), and the matched command name, so `take_action` can observe both application state and command operands."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_registered_name_is_matched_literally",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_find_longest_named_command",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_app_parses_and_dispatches_take_action",
+        "behavior_ids": [
+          "B003",
+          "B006"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_command_false_result_becomes_success",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_find_command_stops_before_options_and_unknown_raises",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_underscore_conversion_modes",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_command_receives_app_globals_and_name",
+        "behavior_ids": [
+          "B003",
+          "B006"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_and_failure_exit_statuses",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_debug_unknown_command_exit_status",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "manual_semantic_mapping"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B001",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "manual_api_surface_review"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Command",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Command.get_parser",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Command.take_action",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Command.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CommandManager",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CommandManager.add_command",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CommandManager.find_command",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CommandManager.get_command_names",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.App.run_subcommand",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_pilot_materialization",
+      "reviewer_type": "manual_task_level_review",
+      "checklist_passed": true,
+      "notes": "Required methods include explicit signatures; test mappings identify concrete semantic clauses."
+    }
+  },
+  "spec_hash": "4b1e5875627f32487adc754bee0b83b12c18ab08568e6e296199ee6eaf67979a",
+  "generated_task_hash": "293084a5a79f140c1fed38e0079c68e9732d9a4773afdc136bfcc409c2bb6314",
+  "scoring_reference": {
+    "copy_all_bytes": 277633,
+    "copy_all_loc": 5666,
+    "oracle_bytes": 191260,
+    "oracle_loc": 2602,
+    "oracle_dependency_count": 5
+  }
+}

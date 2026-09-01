@@ -1,0 +1,290 @@
+{
+  "task_id": "goodconf__typed_env_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "configuration"
+  ],
+  "source": {
+    "name": "goodconf",
+    "url": "https://github.com/lincolnloop/goodconf",
+    "commit": "6fd9a4561ba69aad95fac87836652debed3e33a6",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Typed env and file settings",
+    "description": "Lift GoodConf typed settings loaded from environment variables and JSON files.",
+    "source_entrypoints": [
+      "goodconf.GoodConf",
+      "goodconf.Field"
+    ],
+    "included_behaviors": [
+      "env names",
+      "file overlay",
+      "validation error"
+    ],
+    "excluded_behaviors": [
+      "Django integration extras beyond declared"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Pydantic-settings source order and Field metadata cooperate to resolve env aliases and file overlay.",
+    "signals": [
+      "uppercase env names",
+      "file after env",
+      "typed validation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import GoodConf, Field",
+    "callable": "GoodConf",
+    "signature": "GoodConf(load=False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "pydantic",
+      "pydantic-core",
+      "pydantic-settings",
+      "python-dotenv",
+      "annotated-types",
+      "typing-extensions",
+      "typing-inspection"
+    ],
+    "forbidden_dependencies": [
+      "goodconf"
+    ],
+    "forbidden_imports": [
+      "goodconf"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "goodconf/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Typed env and file settings",
+    "summary": "Build a standalone `featurelifted` package providing a typed settings model loaded from environment variables and JSON files.",
+    "required_api": [
+      {
+        "path": "featurelifted.GoodConf",
+        "kind": "class",
+        "signature": "(load: bool = False, config_file: str | None = None, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.GoodConf.load",
+            "kind": "method",
+            "signature": "(self, filename: str | None = None) -> None"
+          },
+          {
+            "path": "featurelifted.GoodConf.generate_json",
+            "kind": "method",
+            "signature": "(cls, **override) -> str"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Field",
+        "kind": "function",
+        "signature": "(default=..., *, initial=None, **kwargs)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A `GoodConf` subclass with typed `Field`s loads values from environment variables whose names match the field names in uppercase, for example `HOST` for a `host` field."
+      },
+      {
+        "id": "B002",
+        "text": "`load(path)` overlays values from a JSON object file onto the settings model so file keys populate the matching fields when those names are not already set by the environment."
+      },
+      {
+        "id": "B003",
+        "text": "When both a JSON file and an environment variable define the same field, the environment value is used after `load`."
+      },
+      {
+        "id": "B004",
+        "text": "Loading a value that cannot be coerced to the annotated field type raises an exception. `generate_json` returns a JSON object string containing the model's initial field values."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `GoodConf` and `Field` with `load` and `generate_json` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `goodconf`."
+      }
+    ],
+    "exclusions": [
+      "Django integration extras",
+      "YAML dump helpers that need extra YAML libraries",
+      "runtime import of goodconf"
+    ],
+    "forbidden": {
+      "imports": [
+        "goodconf"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A `GoodConf` subclass with typed `Field`s loads values from environment variables whose names match the field names in uppercase, for example `HOST` for a `host` field."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`load(path)` overlays values from a JSON object file onto the settings model so file keys populate the matching fields when those names are not already set by the environment."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When both a JSON file and an environment variable define the same field, the environment value is used after `load`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Loading a value that cannot be coerced to the annotated field type raises an exception. `generate_json` returns a JSON object string containing the model's initial field values."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `GoodConf` and `Field` with `load` and `generate_json` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `goodconf`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_env_uppercase_field_names",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_json_file_overlay",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_generate_json_contains_initial_fields",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_env_overrides_file",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_env_type_raises",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_defaults_when_unconfigured",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.GoodConf",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GoodConf.load",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GoodConf.generate_json",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Field",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 236579,
+    "copy_all_loc": 752,
+    "oracle_bytes": 32794,
+    "oracle_loc": 337,
+    "oracle_dependency_count": 3
+  },
+  "spec_hash": "ff51fdafcec7cf2faf6c499b10b0df282a874015af24f7ff43f2dfc53e9eb588",
+  "generated_task_hash": "3f6a380d564a6ad64b4a3490485203a73defcc7b2d017f07ee125b63e38fbbcb"
+}

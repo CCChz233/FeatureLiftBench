@@ -1,0 +1,371 @@
+{
+  "task_id": "oslo_policy__enforcer_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite"
+  ],
+  "source": {
+    "name": "oslo.policy",
+    "url": "https://github.com/openstack/oslo.policy",
+    "commit": "69890e47048014944c80aae27f82941a598fb573",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "Policy enforcer",
+    "description": "Lift Enforcer register_default/enforce with ConfigOpts, without remote HTTP checks.",
+    "source_entrypoints": [
+      "oslo_policy.policy.Enforcer",
+      "oslo_policy.policy.RuleDefault"
+    ],
+    "included_behaviors": [
+      "register default rules",
+      "role checks",
+      "anyone rule",
+      "raise PolicyNotAuthorized",
+      "policy file overlay"
+    ],
+    "excluded_behaviors": [
+      "http:/https: external checks",
+      "OpenStack service policy farms"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "framework_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Enforcer loads rules from ConfigOpts files and registered defaults before evaluating credentials.",
+    "signals": [
+      "register_default",
+      "policy.yaml overlay",
+      "role:admin"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import ConfigOpts, Enforcer, RuleDefault, PolicyNotAuthorized",
+    "callable": "Enforcer",
+    "signature": "Enforcer(conf, policy_file=None, rules=None, default_rule=None, use_conf=True, overwrite=True, fallback_to_json_file=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "oslo.config",
+      "oslo.context",
+      "oslo.i18n",
+      "oslo.serialization",
+      "oslo.utils",
+      "PyYAML",
+      "stevedore",
+      "debtcollector",
+      "netaddr",
+      "rfc3986",
+      "wrapt",
+      "iso8601",
+      "typing_extensions",
+      "idna",
+      "pbr",
+      "msgpack",
+      "packaging",
+      "pyparsing",
+      "tzdata",
+      "psutil"
+    ],
+    "forbidden_dependencies": [
+      "oslo.policy"
+    ],
+    "forbidden_imports": [
+      "oslo_policy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "oslo_policy/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Policy enforcer",
+    "summary": "Build a standalone `featurelifted` package providing oslo.policy-style rule registration and enforcement against credentials.",
+    "required_api": [
+      {
+        "path": "featurelifted.ConfigOpts",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.ConfigOpts.__call__",
+            "kind": "method",
+            "signature": "(self, args=None, project=None, prog=None, version=None, usage=None, default_config_files=None, default_config_dirs=None, validate_default_values=False, description=None, epilog=None, use_env=True)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Enforcer",
+        "kind": "class",
+        "signature": "(conf, policy_file=None, rules=None, default_rule=None, use_conf=True, overwrite=True, fallback_to_json_file=None)",
+        "members": [
+          {
+            "path": "featurelifted.Enforcer.__init__",
+            "kind": "method",
+            "signature": "(self, conf, policy_file=None, rules=None, default_rule=None, use_conf=True, overwrite=True, fallback_to_json_file=None) -> None"
+          },
+          {
+            "path": "featurelifted.Enforcer.register_default",
+            "kind": "method",
+            "signature": "(self, default: RuleDefault) -> None"
+          },
+          {
+            "path": "featurelifted.Enforcer.enforce",
+            "kind": "method",
+            "signature": "(self, rule, target, creds, do_raise=False, exc=None, *args, **kwargs) -> bool"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.RuleDefault",
+        "kind": "class",
+        "signature": "(name: str, check_str: str, description: str | None = None, deprecated_rule=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, scope_types=None)",
+        "members": [
+          {
+            "path": "featurelifted.RuleDefault.__init__",
+            "kind": "method",
+            "signature": "(self, name: str, check_str: str, description: str | None = None, deprecated_rule=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, scope_types=None) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.PolicyNotAuthorized",
+        "kind": "exception",
+        "signature": "PolicyNotAuthorized"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `ConfigOpts` is initialized with `args=[]` and `register_default` installs `role:admin`, `enforce` returns True for credentials whose `roles` include `admin` and False otherwise."
+      },
+      {
+        "id": "B002",
+        "text": "A registered rule of `@` authorizes empty credentials."
+      },
+      {
+        "id": "B003",
+        "text": "When `do_raise=True` and the check fails, `enforce` raises `PolicyNotAuthorized` whose message includes the rule name."
+      },
+      {
+        "id": "B004",
+        "text": "A `policy.yaml` beside a `--config-file` overrides a stricter registered default for the same rule name."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `ConfigOpts`, `Enforcer`, `RuleDefault`, and `PolicyNotAuthorized` with the signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `oslo_policy`."
+      }
+    ],
+    "exclusions": [
+      "http:/https: external checks",
+      "OpenStack service policy farms",
+      "runtime import of oslo_policy"
+    ],
+    "forbidden": {
+      "imports": [
+        "oslo_policy"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `ConfigOpts` is initialized with `args=[]` and `register_default` installs `role:admin`, `enforce` returns True for credentials whose `roles` include `admin` and False otherwise."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A registered rule of `@` authorizes empty credentials."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When `do_raise=True` and the check fails, `enforce` raises `PolicyNotAuthorized` whose message includes the rule name."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A `policy.yaml` beside a `--config-file` overrides a stricter registered default for the same rule name."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `ConfigOpts`, `Enforcer`, `RuleDefault`, and `PolicyNotAuthorized` with the signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `oslo_policy`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_admin_role_is_authorized",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_missing_role_is_denied",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_anyone_rule_allows_empty_credentials",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_denied_rule_can_raise",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_file_rule_overrides_registered_default",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_registered_default_applies_when_file_missing",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_raise_includes_rule_name",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ConfigOpts",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Enforcer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Enforcer.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Enforcer.register_default",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Enforcer.enforce",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RuleDefault",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.RuleDefault.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PolicyNotAuthorized",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "06d7f39115607028eec6e42b5e5eed9a1dd4ce9f6638e650094eef6bb5253087",
+  "generated_task_hash": "96aa28bc20d5b3d7796f15db5b04dbcef188e8ea6b623d6122e9d580ab25697e",
+  "scoring_reference": {
+    "copy_all_bytes": 496747,
+    "copy_all_loc": 7556,
+    "oracle_bytes": 245144,
+    "oracle_loc": 2983,
+    "oracle_dependency_count": 14
+  }
+}

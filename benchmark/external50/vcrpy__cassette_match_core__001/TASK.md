@@ -16,22 +16,22 @@ from featurelifted import (
 
 ## Required API Details
 
-- `use_cassette` callable must exist
+- `use_cassette(path: str, record_mode: str = 'none', match_on: list[str] | None = None, **kwargs)`
 - `VCR` class must be importable
-  - `VCR.use_cassette` callable must exist
+  - `VCR.use_cassette(path: str, **kwargs)`
   - `VCR.record_mode` attribute must exist on instances
-- `VCR.use_cassette` callable must exist
+- `VCR.use_cassette(path: str, **kwargs)`
 - `Cassette` class must be importable
   - `Cassette.play_count` attribute must exist on instances
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay.
-- The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory.
-- The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none.
-- record_mode='none' never records new interactions in tests.
-- The package exposes use_cassette and VCR with the kinds listed in this contract.
-- the submitted package does not import forbidden upstream packages: vcr.
+- Given a YAML cassette containing a recorded GET response, entering use_cassette(path, record_mode="none") intercepts urllib.request.urlopen for the recorded URI and returns the cassette body without network access.
+- Constructing VCR(record_mode="none", match_on=["method", "uri"]) preserves `record_mode` as `"none"`, and its use_cassette(path) context manager replays a request whose method and URI match the recording.
+- A cassette configured to match on method and URI replays the matching interaction, and the Cassette object returned by the context manager has `play_count >= 1` after playback.
+- With record_mode set to `none`, an interaction already present in the cassette can be replayed and counted without making a live HTTP request.
+- The package exposes callable use_cassette and VCR.use_cassette APIs, a VCR class with `record_mode`, and a Cassette class with `play_count`, with the kinds listed in this contract.
+- Scanning every Python file in the submitted package finds no `import vcr` or `from vcr ...` statement.
 
 ## Constraints
 
@@ -44,10 +44,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: replay cassette via use_cassette with urllib. Required observable cases include use cassette replay.
-- **B002** — The extracted feature must support this observable behavior: VCR factory with record_mode and match_on. Required observable cases include vcr factory.
-- **B003** — The extracted feature must support this observable behavior: match_on method/uri and play_count. Required observable cases include match on method uri; cassette path record mode none.
-- **B004** — record_mode='none' never records new interactions in tests.
-- **B005** — The package exposes use_cassette and VCR with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: vcr.
+- **B001** — Given a YAML cassette containing a recorded GET response, entering use_cassette(path, record_mode="none") intercepts urllib.request.urlopen for the recorded URI and returns the cassette body without network access.
+- **B002** — Constructing VCR(record_mode="none", match_on=["method", "uri"]) preserves `record_mode` as `"none"`, and its use_cassette(path) context manager replays a request whose method and URI match the recording.
+- **B003** — A cassette configured to match on method and URI replays the matching interaction, and the Cassette object returned by the context manager has `play_count >= 1` after playback.
+- **B004** — With record_mode set to `none`, an interaction already present in the cassette can be replayed and counted without making a live HTTP request.
+- **B005** — The package exposes callable use_cassette and VCR.use_cassette APIs, a VCR class with `record_mode`, and a Cassette class with `play_count`, with the kinds listed in this contract.
+- **B006** — Scanning every Python file in the submitted package finds no `import vcr` or `from vcr ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

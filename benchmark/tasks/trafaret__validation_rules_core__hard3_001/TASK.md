@@ -29,6 +29,7 @@ from featurelifted import (
 - `Or(*options: 'Trafaret')` class constructor
   - `Or.check(self, value)`
 - `And(*parts: 'Trafaret')` class constructor
+  - `And.check(self, value)`
 - `Forward()` class constructor
   - `Forward.set_type(self, target: 'Trafaret') -> 'None'`
   - `Forward.check(self, value)`
@@ -37,9 +38,9 @@ from featurelifted import (
 ## Required Behavior
 
 - `Dict`, `Key`, `Or`, `And`, and `Forward` compose validation rules.
-- `DataError` carries a path tuple for nested validation failures.
+- DataError carries a path tuple for nested validation failures. Dict shorthand keys are required, so Dict({"name": String()}).check({}) raises DataError whose path is ("name",).
 - `Forward.set_type` enables recursive schemas.
-- The package exposes the required task API paths `featurelifted.Int`, `featurelifted.String`, `featurelifted.Dict`, `featurelifted.Dict.check`, `featurelifted.Key`, `featurelifted.Or`, `featurelifted.Or.check`, `featurelifted.And`, `featurelifted.Forward`, `featurelifted.Forward.set_type`, `featurelifted.Forward.check`, `featurelifted.DataError` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Int`, `featurelifted.String`, `featurelifted.Dict`, `featurelifted.Dict.check`, `featurelifted.Key`, `featurelifted.Or`, `featurelifted.Or.check`, `featurelifted.And`, `featurelifted.And.check`, `featurelifted.Forward`, `featurelifted.Forward.set_type`, `featurelifted.Forward.check`, `featurelifted.DataError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -59,8 +60,8 @@ Benchmark evaluator tests remain private. Each evaluator test maps to the public
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
 - **B001** — `Dict`, `Key`, `Or`, `And`, and `Forward` compose validation rules.
-- **B002** — `DataError` carries a path tuple for nested validation failures.
+- **B002** — DataError carries a path tuple for nested validation failures. Dict shorthand keys are required, so Dict({"name": String()}).check({}) raises DataError whose path is ("name",).
 - **B003** — `Forward.set_type` enables recursive schemas.
-- **B004** — The package exposes the required task API paths `featurelifted.Int`, `featurelifted.String`, `featurelifted.Dict`, `featurelifted.Dict.check`, `featurelifted.Key`, `featurelifted.Or`, `featurelifted.Or.check`, `featurelifted.And`, `featurelifted.Forward`, `featurelifted.Forward.set_type`, `featurelifted.Forward.check`, `featurelifted.DataError` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.Int`, `featurelifted.String`, `featurelifted.Dict`, `featurelifted.Dict.check`, `featurelifted.Key`, `featurelifted.Or`, `featurelifted.Or.check`, `featurelifted.And`, `featurelifted.And.check`, `featurelifted.Forward`, `featurelifted.Forward.set_type`, `featurelifted.Forward.check`, `featurelifted.DataError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: trafaret.
 <!-- featureliftbench:behavior-clauses:end -->

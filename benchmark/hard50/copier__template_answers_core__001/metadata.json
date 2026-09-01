@@ -1,0 +1,391 @@
+{
+  "task_id": "copier__template_answers_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "configuration"
+  ],
+  "source": {
+    "name": "copier",
+    "url": "https://github.com/copier-org/copier",
+    "commit": "5f71fad40920cd03f0fe6bf2292daa43cf089fff",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Answers and question schema",
+    "description": "Lift Copier question defaults, answers-file load, and choice parsing without running cookiecutter over the network.",
+    "source_entrypoints": [
+      "copier.user_data.Question",
+      "copier.user_data.AnswersMap",
+      "copier.user_data.load_answersfile_data"
+    ],
+    "included_behaviors": [
+      "question default",
+      "answers file load",
+      "invalid choice",
+      "missing answers file"
+    ],
+    "excluded_behaviors": [
+      "run_copy over network",
+      "git clone of template",
+      "interactive prompt UI"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Question objects combine AnswersMap priority, Jinja sandbox rendering, and typed choice validation.",
+    "signals": [
+      "get_default",
+      "parse_answer",
+      "load_answersfile_data"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import AnswersMap, Question, SandboxedEnvironment, load_answersfile_data, InvalidTypeError",
+    "callable": "Question",
+    "signature": "Question(var_name, answers, context, jinja_env, **fields)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 150,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "Jinja2",
+      "jinja2-ansible-filters",
+      "pydantic",
+      "pydantic-core",
+      "PyYAML",
+      "Pygments",
+      "questionary",
+      "prompt-toolkit",
+      "plumbum",
+      "pathspec",
+      "funcy",
+      "dunamai",
+      "colorama",
+      "platformdirs",
+      "packaging",
+      "MarkupSafe",
+      "annotated-types",
+      "typing-extensions",
+      "typing-inspection",
+      "wcwidth"
+    ],
+    "forbidden_dependencies": [
+      "copier"
+    ],
+    "forbidden_imports": [
+      "copier"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "copier/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Answers and question schema",
+    "summary": "Build a standalone `featurelifted` package that evaluates Copier question defaults, loads answers YAML, and validates choices without copying a template over the network.",
+    "required_api": [
+      {
+        "path": "featurelifted.AnswersMap",
+        "kind": "class",
+        "signature": "(user=<factory>, init=<factory>, metadata=<factory>, last=<factory>, user_defaults=<factory>, external=<factory>)",
+        "members": [
+          {
+            "path": "featurelifted.AnswersMap.__init__",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Question",
+        "kind": "class",
+        "signature": "(var_name: str, answers: AnswersMap, context: Mapping, jinja_env: SandboxedEnvironment, type: str = '', default=MISSING, choices=<factory>, **fields)",
+        "members": [
+          {
+            "path": "featurelifted.Question.__init__",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          },
+          {
+            "path": "featurelifted.Question.get_default",
+            "kind": "method",
+            "signature": "(self) -> Any"
+          },
+          {
+            "path": "featurelifted.Question.parse_answer",
+            "kind": "method",
+            "signature": "(self, answer: Any) -> Any"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.SandboxedEnvironment",
+        "kind": "class",
+        "signature": "(*args, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.SandboxedEnvironment.__init__",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.load_answersfile_data",
+        "kind": "function",
+        "signature": "(dst_path, answers_file='.copier-answers.yml', *, warn_on_missing=False) -> dict"
+      },
+      {
+        "path": "featurelifted.InvalidTypeError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A `Question` with `type='str'` and `default='alice'` returns `'alice'` from `get_default()` when the answers map has no override; an `AnswersMap(init={...})` override is returned instead of the declared default."
+      },
+      {
+        "id": "B002",
+        "text": "When `{dst}/.copier-answers.yml` contains YAML mappings, `load_answersfile_data(dst)` returns those keys; a missing file returns `{}`; a custom `answers_file` name is read when provided."
+      },
+      {
+        "id": "B003",
+        "text": "Calling `parse_answer` with a value not in `choices` raises `ValueError` whose message contains `Invalid choice`; a typed `int` question rejects a non-integer string."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes `AnswersMap`, `Question`, `SandboxedEnvironment`, `load_answersfile_data`, and `InvalidTypeError` with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes all required answers/question API paths with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `copier`."
+      }
+    ],
+    "exclusions": [
+      "run_copy over network",
+      "git clone of template",
+      "interactive prompt UI",
+      "runtime import of copier"
+    ],
+    "forbidden": {
+      "imports": [
+        "copier"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A `Question` with `type='str'` and `default='alice'` returns `'alice'` from `get_default()` when the answers map has no override; an `AnswersMap(init={...})` override is returned instead of the declared default."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When `{dst}/.copier-answers.yml` contains YAML mappings, `load_answersfile_data(dst)` returns those keys; a missing file returns `{}`; a custom `answers_file` name is read when provided."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Calling `parse_answer` with a value not in `choices` raises `ValueError` whose message contains `Invalid choice`; a typed `int` question rejects a non-integer string."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `AnswersMap`, `Question`, `SandboxedEnvironment`, `load_answersfile_data`, and `InvalidTypeError` with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes all required answers/question API paths with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `copier`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_question_default",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_load_answersfile_data",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_invalid_choice_raises",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_missing_answers_file_returns_empty",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_custom_answers_filename",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_choice_raises_value_error",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_int_question_rejects_non_int",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_str_default_from_answers_map",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004",
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.AnswersMap",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AnswersMap.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Question",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Question.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Question.get_default",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Question.parse_answer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.SandboxedEnvironment",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.SandboxedEnvironment.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.load_answersfile_data",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidTypeError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "5c9c87f67b0e1b7601a5ac9412b13d80effd7b77dfe3ad17c4493cd9c5487fa1",
+  "generated_task_hash": "3801815fb877e8b6f99bd2fc51b9a8108b376f74ce32db652b2a4ac23de5cc1a",
+  "scoring_reference": {
+    "copy_all_bytes": 1543050,
+    "copy_all_loc": 18635,
+    "oracle_bytes": 420221,
+    "oracle_loc": 4559,
+    "oracle_dependency_count": 14
+  }
+}

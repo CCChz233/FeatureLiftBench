@@ -1,0 +1,381 @@
+{
+  "task_id": "taskiq__broker_task_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot"
+  ],
+  "source": {
+    "name": "taskiq",
+    "url": "https://github.com/taskiq-python/taskiq",
+    "commit": "ced1909574128687c6dd0d09976c6eb0131ab085",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "In-memory broker task execution",
+    "description": "Extract taskiq in-memory task registration, dispatch, and result handling into featurelifted.",
+    "source_entrypoints": [
+      "taskiq.InMemoryBroker"
+    ],
+    "included_behaviors": [
+      "register synchronous and asynchronous tasks",
+      "dispatch registered tasks with kiq",
+      "observe readiness and retrieve results",
+      "wait for scheduled tasks"
+    ],
+    "excluded_behaviors": [
+      "Redis, NATS, and other external brokers",
+      "worker processes and network transports",
+      "schedulers, middleware, dependency injection, and lifecycle event hooks"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Task decoration, registry lookup, asynchronous dispatch, and result state span broker and task abstractions.",
+    "signals": [
+      "decorator registry",
+      "async result lifecycle"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import InMemoryBroker",
+    "callable": "InMemoryBroker.task",
+    "signature": "InMemoryBroker.task(task_func=None, *, task_name=None, **labels)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "aiohappyeyeballs",
+      "aiohttp",
+      "aiosignal",
+      "annotated-types",
+      "anyio",
+      "attrs",
+      "frozenlist",
+      "idna",
+      "multidict",
+      "packaging",
+      "propcache",
+      "pycron",
+      "pydantic",
+      "pydantic-core",
+      "sniffio",
+      "taskiq-dependencies",
+      "typing-extensions",
+      "typing-inspection",
+      "yarl"
+    ],
+    "forbidden_dependencies": [
+      "taskiq"
+    ],
+    "forbidden_imports": [
+      "taskiq"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "taskiq/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "In-memory broker task execution",
+    "summary": "Extract a standalone in-memory task broker with task registration, `kiq` dispatch, and result retrieval into `featurelifted`.",
+    "required_api": [
+      {
+        "path": "featurelifted.InMemoryBroker",
+        "kind": "class",
+        "signature": "(sync_tasks_pool_size: int = 4, max_stored_results: int = 100, cast_types: bool = True, max_async_tasks: int = 30, max_async_tasks_jitter: int = 0, propagate_exceptions: bool = True, await_inplace: bool = False)",
+        "members": [
+          {
+            "path": "featurelifted.InMemoryBroker.task",
+            "kind": "method",
+            "signature": "(self, task_func=None, *, task_name: str | None = None, **labels)"
+          },
+          {
+            "path": "featurelifted.InMemoryBroker.find_task",
+            "kind": "method",
+            "signature": "(self, task_name: str)"
+          },
+          {
+            "path": "featurelifted.InMemoryBroker.wait_all",
+            "kind": "method",
+            "signature": "(self) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.DecoratedTask",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.DecoratedTask.kiq",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs) -> TaskHandle"
+          },
+          {
+            "path": "featurelifted.DecoratedTask.task_name",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.TaskHandle",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.TaskHandle.wait_result",
+            "kind": "method",
+            "signature": "(self) -> TaskResult"
+          },
+          {
+            "path": "featurelifted.TaskHandle.is_ready",
+            "kind": "method",
+            "signature": "(self) -> bool"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.TaskResult",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.TaskResult.return_value",
+            "kind": "attribute"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "When an async or synchronous callable is decorated with `broker.task`, it is registered under a task name and the returned decorated task remains directly callable."
+      },
+      {
+        "id": "B002",
+        "text": "Calling `await decorated_task.kiq(*args, **kwargs)` on a registered task schedules local in-memory execution and returns a task handle without requiring an external broker or service."
+      },
+      {
+        "id": "B003",
+        "text": "Calling `await handle.wait_result()` waits for completion and returns a result object whose `return_value` is the callable result; `await handle.is_ready()` is false before completion when execution is pending and true afterward."
+      },
+      {
+        "id": "B004",
+        "text": "Calling `await broker.wait_all()` waits for all currently scheduled in-memory tasks to finish, including both async and synchronous registered callables."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `InMemoryBroker` and the task, handle, and result members listed in the required API contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package does not import the forbidden upstream package `taskiq` at runtime."
+      }
+    ],
+    "exclusions": [
+      "Redis, NATS, and other external brokers",
+      "worker processes and network transports",
+      "schedulers, middleware, dependency injection, and lifecycle event hooks",
+      "original taskiq import at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "taskiq"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "When an async or synchronous callable is decorated with `broker.task`, it is registered under a task name and the returned decorated task remains directly callable."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Calling `await decorated_task.kiq(*args, **kwargs)` on a registered task schedules local in-memory execution and returns a task handle without requiring an external broker or service."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Calling `await handle.wait_result()` waits for completion and returns a result object whose `return_value` is the callable result; `await handle.is_ready()` is false before completion when execution is pending and true afterward."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Calling `await broker.wait_all()` waits for all currently scheduled in-memory tasks to finish, including both async and synchronous registered callables."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `InMemoryBroker` and the task, handle, and result members listed in the required API contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package does not import the forbidden upstream package `taskiq` at runtime."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_register_and_run_async_task",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_task_name_lookup",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_sync_task_and_wait_all",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_pending_readiness_then_result",
+        "behavior_ids": [
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.InMemoryBroker",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DecoratedTask",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TaskHandle",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TaskResult",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InMemoryBroker.task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InMemoryBroker.find_task",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InMemoryBroker.wait_all",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DecoratedTask.kiq",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DecoratedTask.task_name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TaskHandle.wait_result",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TaskHandle.is_ready",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TaskResult.return_value",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_pilot_materialization",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Contract closes decorator registration, local dispatch, readiness, result retrieval, and wait-all behavior."
+    }
+  },
+  "spec_hash": "2b3e75a62b835e6549649019413880a1a63c5738c81170a2c7f2381e5dc6683f",
+  "generated_task_hash": "823293e1ca062f5e9a91875cf98a05180f1e48025a719805fadddbef73aa3f58",
+  "scoring_reference": {
+    "copy_all_bytes": 599235,
+    "copy_all_loc": 13290,
+    "oracle_bytes": 491278,
+    "oracle_loc": 6560,
+    "oracle_dependency_count": 19
+  }
+}

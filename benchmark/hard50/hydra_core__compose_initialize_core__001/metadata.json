@@ -1,0 +1,317 @@
+{
+  "task_id": "hydra_core__compose_initialize_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot"
+  ],
+  "source": {
+    "name": "hydra-core",
+    "url": "https://github.com/facebookresearch/hydra",
+    "commit": "02ba9be659d07e9cdcf4c6d48bc8e7bd02df4ca3",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Hydra compose and initialize core",
+    "description": "Extract local YAML configuration initialization, composition, overrides, and global lifecycle behavior.",
+    "source_entrypoints": [
+      "hydra.initialize",
+      "hydra.compose",
+      "hydra.core.global_hydra.GlobalHydra"
+    ],
+    "included_behaviors": [
+      "initialize local relative configuration search paths",
+      "compose YAML defaults and configuration groups",
+      "apply dotted value and group-selection overrides",
+      "inspect and clear global initialization state"
+    ],
+    "excluded_behaviors": [
+      "remote launchers and sweepers",
+      "job execution and working-directory management",
+      "plugin discovery and remote configuration sources",
+      "structured ConfigStore registration"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling",
+      "resource_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Composition spans caller-relative initialization, YAML defaults/groups, override parsing, OmegaConf values, and process-global lifecycle state.",
+    "signals": [
+      "context-managed global state",
+      "defaults-list group selection",
+      "dotted override mutation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import GlobalHydra, compose, initialize",
+    "callable": "compose",
+    "signature": "compose(config_name=None, overrides=None, return_hydra_config=False) -> DictConfig"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "omegaconf",
+      "PyYAML",
+      "packaging",
+      "antlr4-python3-runtime"
+    ],
+    "forbidden_dependencies": [
+      "hydra-core"
+    ],
+    "forbidden_imports": [
+      "hydra"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "hydra/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Hydra compose and initialize core",
+    "summary": "Extract deterministic local YAML initialization and composition into a standalone `featurelifted` package while preserving the required global lifecycle.",
+    "required_api": [
+      {
+        "path": "featurelifted.initialize",
+        "kind": "class",
+        "signature": "(config_path: str | None = None, job_name: str | None = None, caller_stack_depth: int = 1, version_base: str | None = <unspecified>)",
+        "members": [
+          {
+            "path": "featurelifted.initialize.__enter__",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs) -> None"
+          },
+          {
+            "path": "featurelifted.initialize.__exit__",
+            "kind": "method",
+            "signature": "(self, exc_type, exc_val, exc_tb) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.compose",
+        "kind": "function",
+        "signature": "(config_name: str | None = None, overrides: list[str] | None = None, return_hydra_config: bool = False) -> omegaconf.DictConfig"
+      },
+      {
+        "path": "featurelifted.GlobalHydra",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.GlobalHydra.instance",
+            "kind": "method",
+            "signature": "(*args, **kwargs) -> GlobalHydra"
+          },
+          {
+            "path": "featurelifted.GlobalHydra.is_initialized",
+            "kind": "method",
+            "signature": "(self) -> bool"
+          },
+          {
+            "path": "featurelifted.GlobalHydra.clear",
+            "kind": "method",
+            "signature": "(self) -> None"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Calling `initialize` with a relative configuration directory marks `GlobalHydra.instance()` initialized; using it as a context manager permits `compose` calls inside the context and restores the prior global initialization state on exit. An absolute `config_path` is rejected."
+      },
+      {
+        "id": "B002",
+        "text": "Given a caller-relative directory containing YAML files, `compose(config_name)` loads the named `.yaml` configuration as an `omegaconf.DictConfig`; a YAML `defaults` list selects configuration-group files and merges their values into the declared package while `_self_` preserves primary-config values."
+      },
+      {
+        "id": "B003",
+        "text": "When composing a YAML configuration, override strings can select a different group with `group=choice`, replace existing nested scalar values with dotted keys such as `service.port=9000`, and add missing dotted values with a leading `+`; YAML scalar types are preserved."
+      },
+      {
+        "id": "B004",
+        "text": "`GlobalHydra.instance()` is a process-global singleton; `is_initialized()` reports lifecycle state, `clear()` resets it, composing before initialization fails, and initialization can succeed again after clearing."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `initialize`, `compose`, and `GlobalHydra` with the required members, kinds, and callable signatures listed in this contract."
+      }
+    ],
+    "exclusions": [
+      "remote launchers, remote configuration sources, and sweepers",
+      "job execution, multirun, logging setup, and working-directory changes",
+      "plugin discovery and structured ConfigStore registration",
+      "the original hydra package at runtime"
+    ],
+    "forbidden": {
+      "imports": [
+        "hydra"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Calling `initialize` with a relative configuration directory marks `GlobalHydra.instance()` initialized; using it as a context manager permits `compose` calls inside the context and restores the prior global initialization state on exit. An absolute `config_path` is rejected."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Given a caller-relative directory containing YAML files, `compose(config_name)` loads the named `.yaml` configuration as an `omegaconf.DictConfig`; a YAML `defaults` list selects configuration-group files and merges their values into the declared package while `_self_` preserves primary-config values."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When composing a YAML configuration, override strings can select a different group with `group=choice`, replace existing nested scalar values with dotted keys such as `service.port=9000`, and add missing dotted values with a leading `+`; YAML scalar types are preserved."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`GlobalHydra.instance()` is a process-global singleton; `is_initialized()` reports lifecycle state, `clear()` resets it, composing before initialization fails, and initialization can succeed again after clearing."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `initialize`, `compose`, and `GlobalHydra` with the required members, kinds, and callable signatures listed in this contract."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_initialize_compose_and_context_cleanup",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_dotted_override",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_yaml_group_selection_and_typed_dotted_overrides",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_global_clear_reinitialize_and_uninitialized_compose",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_absolute_config_path_rejected",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "generated_required_api_surface"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.initialize",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.initialize.__enter__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.initialize.__exit__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.compose",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GlobalHydra",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GlobalHydra.instance",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GlobalHydra.is_initialized",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.GlobalHydra.clear",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, public-to-hidden behavior subset, local-only configuration scope, and forbidden Hydra runtime imports."
+    }
+  },
+  "spec_hash": "c339151dab0ed627d401fdc152e711b023da45216464beec20e7b10bc7daa125",
+  "generated_task_hash": "8d31fff6d67b3b7d4a243cd81e8e06fd0102c653bb89c5a849c2ca0b592c6b8d",
+  "scoring_reference": {
+    "copy_all_bytes": 1184570,
+    "copy_all_loc": 24294,
+    "oracle_bytes": 1139611,
+    "oracle_loc": 11896,
+    "oracle_dependency_count": 4
+  }
+}

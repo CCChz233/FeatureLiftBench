@@ -81,14 +81,17 @@
       {
         "path": "featurelifted.PackageURL",
         "kind": "class",
+        "signature": "(type: str, name: str, namespace: str | None = None, version: str | None = None, qualifiers=None, subpath: str | None = None)",
         "members": [
           {
             "path": "featurelifted.PackageURL.from_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(purl: str) -> PackageURL"
           },
           {
             "path": "featurelifted.PackageURL.to_string",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> str"
           },
           {
             "path": "featurelifted.PackageURL.type",
@@ -107,40 +110,24 @@
             "kind": "attribute"
           }
         ]
-      },
-      {
-        "path": "featurelifted.PackageURL.from_string",
-        "kind": "method"
-      },
-      {
-        "path": "featurelifted.PackageURL.to_string",
-        "kind": "method"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor."
+        "text": "PackageURL.from_string parses type, namespace, name, and version fields; constructing the same fields directly and calling to_string produces canonical `pkg:` text, with qualifiers retained in stable order."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize."
+        "text": "PackageURL.from_string raises ValueError when the input is not a valid `pkg:` URL."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl."
-      },
-      {
-        "id": "B004",
-        "text": "Qualifiers are serialized in stable order."
-      },
-      {
-        "id": "B005",
         "text": "The package exposes PackageURL.from_string/to_string with the kinds listed in this contract."
       },
       {
-        "id": "B006",
+        "id": "B004",
         "text": "the submitted package does not import forbidden upstream packages: packageurl."
       }
     ],
@@ -160,22 +147,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: from_string exposes type/namespace/name/version. Required observable cases include from string fields; constructor."
+        "text": "PackageURL.from_string parses type, namespace, name, and version fields; constructing the same fields directly and calling to_string produces canonical `pkg:` text, with qualifiers retained in stable order."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: to_string roundtrips canonical purls. Required observable cases include to string roundtrip; qualifiers normalize."
+        "text": "PackageURL.from_string raises ValueError when the input is not a valid `pkg:` URL."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: invalid purls raise ValueError. Required observable cases include invalid purl."
+        "text": "The package exposes PackageURL.from_string/to_string with the kinds listed in this contract."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Qualifiers are serialized in stable order."
+        "text": "the submitted package does not import forbidden upstream packages: packageurl."
       },
       {
         "behavior_id": "B005",
@@ -199,14 +186,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_to_string_roundtrip",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_constructor",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -215,30 +202,28 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
         "behavior_ids": [
-          "B006"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_qualifiers_normalize",
         "behavior_ids": [
-          "B002",
-          "B001",
-          "B004"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_purl",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
         "behavior_ids": [
-          "B005"
+          "B003"
         ],
         "mapping_method": "generated_required_api_surface"
       }
@@ -295,7 +280,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "3759701fead1a3019f6c0e4340e5594db070f5716615ad5ce0a3eecceb5a6fab",
-  "generated_task_hash": "1117a88de9315915223a5249477faceee280927b2308d1a86b1c26e8347776f4",
+  "spec_hash": "1aa6ef668d67fe5636939d9b1f6000a417fd40ca6ad0d41c83451ca8db466228",
+  "generated_task_hash": "427b945df442ef12a2e1e63666f36874c14f4629388657dae05579bccac419bb",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

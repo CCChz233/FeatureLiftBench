@@ -19,6 +19,8 @@ from featurelifted import (
 
 - `Registry(resources=HashTrieMap({}), anchors: 'HashTrieMap[tuple[URI, str], AnchorType[D]]' = HashTrieMap({}), uncrawled: 'HashTrieSet[URI]' = HashTrieSet({}), retrieve: 'Retrieve[D]' = <function _fail_to_retrieve>) -> None` class constructor
   - `Registry.resolver(self, base_uri: 'URI' = '') -> 'Resolver[D]'`
+  - `Registry.with_resource(self, uri: 'URI', resource: 'Resource[D]')`
+  - `Registry.with_resources(self, pairs: 'Iterable[tuple[URI, Resource[D]]]') -> 'Registry[D]'`
 - `Resource(contents: 'D', specification: 'Specification[D]') -> None` class constructor
   - `Resource.from_contents(contents: 'D', default_specification: 'Specification[D]' = None) -> 'Resource[D]'`
 - `exceptions` module must be importable
@@ -34,7 +36,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: $ref pointer and external URI chaining. Required observable cases include external ref resolution; fragment ref into defs; unresolvable external ref.
 - The extracted feature must support this observable behavior: $anchor and JSON Schema dialect specifications. Required observable cases include anchor lookup; unknown dialect and missing anchor.
 - The extracted feature must support this observable behavior: typed unresolvable and unknown dialect errors. Required observable cases include unknown dialect and missing anchor.
-- The package exposes the required task API paths `featurelifted.Registry`, `featurelifted.Registry.resolver`, `featurelifted.Resource`, `featurelifted.Resource.from_contents`, `featurelifted.exceptions`, `featurelifted.exceptions.NoSuchAnchor`, `featurelifted.exceptions.Unresolvable`, `featurelifted.jsonschema`, `featurelifted.jsonschema.DRAFT202012`, `featurelifted.jsonschema.UnknownDialect` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Registry`, `featurelifted.Registry.resolver`, `featurelifted.Registry.with_resource`, `featurelifted.Registry.with_resources`, `featurelifted.Resource`, `featurelifted.Resource.from_contents`, `featurelifted.exceptions`, `featurelifted.exceptions.NoSuchAnchor`, `featurelifted.exceptions.Unresolvable`, `featurelifted.jsonschema`, `featurelifted.jsonschema.DRAFT202012`, `featurelifted.jsonschema.UnknownDialect` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -56,6 +58,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: $ref pointer and external URI chaining. Required observable cases include external ref resolution; fragment ref into defs; unresolvable external ref.
 - **B003** — The extracted feature must support this observable behavior: $anchor and JSON Schema dialect specifications. Required observable cases include anchor lookup; unknown dialect and missing anchor.
 - **B004** — The extracted feature must support this observable behavior: typed unresolvable and unknown dialect errors. Required observable cases include unknown dialect and missing anchor.
-- **B005** — The package exposes the required task API paths `featurelifted.Registry`, `featurelifted.Registry.resolver`, `featurelifted.Resource`, `featurelifted.Resource.from_contents`, `featurelifted.exceptions`, `featurelifted.exceptions.NoSuchAnchor`, `featurelifted.exceptions.Unresolvable`, `featurelifted.jsonschema`, `featurelifted.jsonschema.DRAFT202012`, `featurelifted.jsonschema.UnknownDialect` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Registry`, `featurelifted.Registry.resolver`, `featurelifted.Registry.with_resource`, `featurelifted.Registry.with_resources`, `featurelifted.Resource`, `featurelifted.Resource.from_contents`, `featurelifted.exceptions`, `featurelifted.exceptions.NoSuchAnchor`, `featurelifted.exceptions.Unresolvable`, `featurelifted.jsonschema`, `featurelifted.jsonschema.DRAFT202012`, `featurelifted.jsonschema.UnknownDialect` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: referencing.
 <!-- featureliftbench:behavior-clauses:end -->

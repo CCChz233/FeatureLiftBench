@@ -109,6 +109,11 @@
             "path": "featurelifted.QueryParams.multi_items",
             "kind": "method",
             "signature": "(self) -> 'list[tuple[str, str]]'"
+          },
+          {
+            "path": "featurelifted.QueryParams.merge",
+            "kind": "method",
+            "signature": "(self, params: 'QueryParamTypes | None' = None) -> 'QueryParams'"
           }
         ]
       },
@@ -185,7 +190,7 @@
       },
       {
         "id": "B007",
-        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.QueryParams.merge`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, and 1 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -254,7 +259,7 @@
       {
         "behavior_id": "B007",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.QueryParams.merge`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, and 1 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B008",
@@ -390,6 +395,12 @@
         ]
       },
       {
+        "path": "featurelifted.QueryParams.merge",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_query_params_duplicate_and_empty_value"
+        ]
+      },
+      {
         "path": "featurelifted.Headers",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -460,11 +471,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "55f45b33f55ccb66992a311ae7c16f34572312af6075aa740e1ace34034c9f75",
-  "generated_task_hash": "998a593cd19ffda7d2f3a73ef962dfe9fa342d3960b6574b2a3adad88241868f"
+  "task_revision": 3,
+  "spec_hash": "ca4df817a0518375e979ce38f7bc95b4be8f86b353890dc4391bf6f1aa15a4ef",
+  "generated_task_hash": "d97667ad36669814cd770bc89cf8e568c9f11ca676020dde8eea605091c409f5"
 }

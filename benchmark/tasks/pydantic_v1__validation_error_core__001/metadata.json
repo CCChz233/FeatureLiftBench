@@ -123,7 +123,13 @@
       {
         "path": "featurelifted.Extra",
         "kind": "class",
-        "signature": "(*values)"
+        "signature": "(*values)",
+        "members": [
+          {
+            "path": "featurelifted.Extra.forbid",
+            "kind": "attribute"
+          }
+        ]
       }
     ],
     "optional_api": [],
@@ -150,7 +156,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra`, `featurelifted.Extra.forbid` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -210,7 +216,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.BaseModel`, `featurelifted.BaseModel.parse_obj`, `featurelifted.Field`, `featurelifted.ValidationError`, `featurelifted.validator`, `featurelifted.root_validator`, `featurelifted.Extra`, `featurelifted.Extra.forbid` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -343,6 +349,13 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.Extra.forbid",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_extra_forbid_rejects_unknown_keys",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -360,7 +373,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 3,
-  "spec_hash": "eb8ed1c3db4b209a2a7e56243ad9eebf6445ee3975fe2fdb4d0f21d4e2350e5d",
-  "generated_task_hash": "5632809f11d1cbb0e12e4c9866036dc1820a5b1e30c677d3d66e6d26e8c1edce"
+  "task_revision": 4,
+  "spec_hash": "a109fe71fae1220db654a06b0b048fd71ba9f7f1729f717856f5b7ae4f8634c7",
+  "generated_task_hash": "b3e97494471768edb46c87805781900435c76f21f438f119b09dc67e206ea8cd"
 }

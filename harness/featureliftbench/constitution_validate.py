@@ -8,7 +8,12 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .task_render import render_public_task
+from .task_render import (
+    COMPLETE_FEATURE_RESPONSIBILITY_HEADING,
+    COMPLETE_FEATURE_RESPONSIBILITY_MARKER,
+    render_agent_workspace_task,
+    render_public_task,
+)
 from .task_spec import (
     SPEC_STATUS_COMPLIANT,
     SPEC_STATUS_LEGACY,
@@ -71,6 +76,7 @@ def validate_constitution(
     errors.extend(validate_public_spec_shape(public_spec))
     errors.extend(validate_evaluation_spec_shape(evaluation_spec))
     errors.extend(_validate_generated_task(task_dir, metadata, public_spec, task_markdown=task_markdown))
+    errors.extend(_validate_workspace_task_premise(metadata))
     errors.extend(_validate_spec_hashes(metadata, public_spec))
     errors.extend(_validate_behavior_coverage(public_spec, evaluation_spec))
     errors.extend(_validate_api_coverage(public_spec, evaluation_spec))
@@ -125,6 +131,16 @@ def _validate_generated_task(
     if public_spec and isinstance(metadata.get("spec_hash"), str):
         if metadata["spec_hash"] != compute_spec_hash(public_spec):
             errors.append("metadata.spec_hash does not match canonical public_spec hash")
+    return errors
+
+
+def _validate_workspace_task_premise(metadata: dict[str, Any]) -> list[str]:
+    workspace_task = render_agent_workspace_task(metadata)
+    errors: list[str] = []
+    if COMPLETE_FEATURE_RESPONSIBILITY_MARKER not in workspace_task:
+        errors.append("Agent workspace TASK is missing complete-feature responsibility marker")
+    if COMPLETE_FEATURE_RESPONSIBILITY_HEADING not in workspace_task:
+        errors.append("Agent workspace TASK is missing Complete Feature Responsibility")
     return errors
 
 

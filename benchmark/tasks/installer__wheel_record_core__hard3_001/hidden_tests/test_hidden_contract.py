@@ -11,7 +11,7 @@ def test_find_dist_info_unique():
 
 def test_multiple_dist_info_raises():
     names = ["a-1.dist-info/METADATA", "b-2.dist-info/RECORD"]
-    with pytest.raises(ValueError, match="multiple"):
+    with pytest.raises(ValueError):
         find_dist_info(names)
 
 

@@ -16,16 +16,16 @@ from featurelifted import (
 
 ## Required API Details
 
-- `parse(date_string: str, date_formats=None, languages=None, locales=None, region=None, settings=None)`
-- `Settings(**options)` class constructor
+- `parse(date_string: str, date_formats=None, languages=None, locales=None, region=None, settings=None, detect_languages_function=None)`
+- `Settings(settings=None)` class constructor
 - `detect_languages(text: str, languages: list[str] | None = None) -> list[str]`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages.
-- The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past.
-- The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr.
-- Parsing remains offline using bundled locale/date data without network access.
+- Given ISO-formatted or English month-name input, `parse` returns the corresponding midnight `datetime`; when Spanish or French is explicitly selected, localized month-name input returns the corresponding date.
+- When `Settings` supplies supported options, `parse` honors day-month-year ordering and a preference for past dates, and returns a timezone-aware value when UTC awareness and conversion are requested.
+- Given localized Spanish or French date text and an en/es/fr candidate list, `detect_languages` returns a list of language shortcodes containing the matching language.
+- Constructing `Settings` with a supported setting assigned a value of an invalid type raises `TypeError` before parsing.
 - The package exposes the required task API paths `featurelifted.parse`, `featurelifted.Settings`, `featurelifted.detect_languages` with the kinds and callable signatures listed in this contract.
 - the submitted package does not import forbidden upstream packages: dateparser.
 
@@ -43,10 +43,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages.
-- **B002** — The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past.
-- **B003** — The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr.
-- **B004** — Parsing remains offline using bundled locale/date data without network access.
+- **B001** — Given ISO-formatted or English month-name input, `parse` returns the corresponding midnight `datetime`; when Spanish or French is explicitly selected, localized month-name input returns the corresponding date.
+- **B002** — When `Settings` supplies supported options, `parse` honors day-month-year ordering and a preference for past dates, and returns a timezone-aware value when UTC awareness and conversion are requested.
+- **B003** — Given localized Spanish or French date text and an en/es/fr candidate list, `detect_languages` returns a list of language shortcodes containing the matching language.
+- **B004** — Constructing `Settings` with a supported setting assigned a value of an invalid type raises `TypeError` before parsing.
 - **B005** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.Settings`, `featurelifted.detect_languages` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: dateparser.
 <!-- featureliftbench:behavior-clauses:end -->

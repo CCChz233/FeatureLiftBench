@@ -4,32 +4,38 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "Given a logging.LogRecord and a format string naming `message` and `levelname`, JsonFormatter.format returns JSON text whose decoded object contains the rendered message and level name."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Formatter configuration controls output fields: names selected by `fmt` are emitted, `rename_fields` moves a record field to the requested key and removes its old key, and `static_fields` adds the configured constant values."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When `fmt` is `%(message)s %(name)s`, formatting a record named `worker` with message `boom` yields decoded JSON containing `{\"message\": \"boom\", \"name\": \"worker\"}`."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "Output is a single JSON object line per record."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Each call to JsonFormatter.format returns text that `json.loads` accepts as one JSON object for that record."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes JsonFormatter with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "text": "the submitted package does not import forbidden upstream packages: pythonjsonlogger."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "Scanning every Python file in the submitted package finds no `import pythonjsonlogger` or `from pythonjsonlogger ...` statement."
     }
   ],
   "public_test_mappings": [
@@ -37,13 +43,15 @@
       "nodeid": "public_tests/test_public_api.py::test_basic_json_line",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_rename_and_static_fields",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -54,20 +62,23 @@
         "B002",
         "B003",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "f07e434338f2fd7cfb5c3d338f1839ad29d456e26086cf5ae7b0b1c35b89f17f"
+  "spec_sha256": "369e8209e3c544ad591a3d97c26acb80c1918188477eac995244857bec0e72f5"
 }

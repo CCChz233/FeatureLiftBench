@@ -121,19 +121,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: split/unsplit with SplitResult fields scheme/authority/path/query/fragment. Required observable cases include urisplit fields; split relative ref."
+        "text": "urisplit returns a SplitResult exposing `scheme`, `authority`, `path`, `query`, and `fragment`; uriunsplit reconstructs the original absolute URI, while splitting a relative path leaves its scheme empty and preserves the path."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: join absolute and relative refs. Required observable cases include urijoin relative; urijoin strict absolute ref."
+        "text": "urijoin resolves `../b` against `https://example.com/a/` as `https://example.com/b`, and with `strict=True` an absolute reference replaces the base URI unchanged."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: adapted urinorm path/scheme normalization. Required observable cases include urinorm path dots; urinorm scheme case."
+        "text": "urinorm removes `.` and `..` path segments and lowercases an uppercase URI scheme, so normalized output for an HTTP URI contains the collapsed path and begins with `http://`."
       },
       {
         "id": "B004",
-        "text": "The extracted feature must support this observable behavior: utf-8 percent encode/decode. Required observable cases include encode decode roundtrip."
+        "text": "uriencode percent-encodes non-ASCII UTF-8 text, producing text or ASCII bytes containing `%`, and uridecode accepts that result and restores the original Unicode string."
       },
       {
         "id": "B005",
@@ -141,7 +141,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: uritools."
+        "text": "Scanning every Python file in the submitted package finds no `import uritools` or `from uritools ...` statement."
       }
     ],
     "exclusions": [
@@ -161,22 +161,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: split/unsplit with SplitResult fields scheme/authority/path/query/fragment. Required observable cases include urisplit fields; split relative ref."
+        "text": "urisplit returns a SplitResult exposing `scheme`, `authority`, `path`, `query`, and `fragment`; uriunsplit reconstructs the original absolute URI, while splitting a relative path leaves its scheme empty and preserves the path."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: join absolute and relative refs. Required observable cases include urijoin relative; urijoin strict absolute ref."
+        "text": "urijoin resolves `../b` against `https://example.com/a/` as `https://example.com/b`, and with `strict=True` an absolute reference replaces the base URI unchanged."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: adapted urinorm path/scheme normalization. Required observable cases include urinorm path dots; urinorm scheme case."
+        "text": "urinorm removes `.` and `..` path segments and lowercases an uppercase URI scheme, so normalized output for an HTTP URI contains the collapsed path and begins with `http://`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: utf-8 percent encode/decode. Required observable cases include encode decode roundtrip."
+        "text": "uriencode percent-encodes non-ASCII UTF-8 text, producing text or ASCII bytes containing `%`, and uridecode accepts that result and restores the original Unicode string."
       },
       {
         "behavior_id": "B005",
@@ -186,7 +186,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: uritools."
+        "text": "Scanning every Python file in the submitted package finds no `import uritools` or `from uritools ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -216,7 +216,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_encode_decode_roundtrip",
         "behavior_ids": [
-          "B001"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -237,7 +237,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_split_relative_ref",
         "behavior_ids": [
-          "B004"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -308,6 +308,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "4b6213ba78a6dc5a9c08bf222c2257aacd21ea687b9f75948f44f984e1d23a37",
-  "generated_task_hash": "3ab454923b03438d3611af5b2a49d26e70474fcf7dda3a2b8f5af7429fc9ff37"
+  "spec_hash": "325e47bcccca0273ed1702643b4e3af57e01a2aea635bb3fafd1edda78f5395c",
+  "generated_task_hash": "d6d7cfeabb29ff80af350afd400b493c6c94766e9bfcadfabf72967cb49a39aa"
 }

@@ -28,10 +28,8 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse and mutate path/query. Required observable cases include parse and mutate path; query args.
-- The extracted feature must support this observable behavior: scheme/host/port/fragment mutation. Required observable cases include set scheme host; fragment and port.
-- The extracted feature must support this observable behavior: remove query keys. Required observable cases include remove query key.
-- furl.url returns the serialized URL string.
+- furl parses a URL into mutable path segments, query arguments, scheme, host, port, and fragment; mutating any of those components is reflected in the serialized url string.
+- Query arguments support mapping assignment and deletion: assigned keys appear in url and deleted keys no longer appear.
 - The package exposes furl with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: furl.
 
@@ -46,10 +44,8 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse and mutate path/query. Required observable cases include parse and mutate path; query args.
-- **B002** — The extracted feature must support this observable behavior: scheme/host/port/fragment mutation. Required observable cases include set scheme host; fragment and port.
-- **B003** — The extracted feature must support this observable behavior: remove query keys. Required observable cases include remove query key.
-- **B004** — furl.url returns the serialized URL string.
-- **B005** — The package exposes furl with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: furl.
+- **B001** — furl parses a URL into mutable path segments, query arguments, scheme, host, port, and fragment; mutating any of those components is reflected in the serialized url string.
+- **B002** — Query arguments support mapping assignment and deletion: assigned keys appear in url and deleted keys no longer appear.
+- **B003** — The package exposes furl with the kinds listed in this contract.
+- **B004** — the submitted package does not import forbidden upstream packages: furl.
 <!-- featureliftbench:behavior-clauses:end -->

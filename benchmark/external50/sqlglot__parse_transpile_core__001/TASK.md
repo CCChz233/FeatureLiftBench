@@ -27,9 +27,9 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: parse_one/parse into Select expressions and raise ParseError on invalid SQL. Required observable cases include parse one select; parse error; parse multiple.
-- The extracted feature must support this observable behavior: transpile across sqlite/postgres/mysql. Required observable cases include transpile sqlite to postgres; transpile mysql to sqlite; mysql dialect backticks.
-- The extracted feature must support this observable behavior: Expression.sql with pretty formatting. Required observable cases include pretty sql.
+- parse_one returns an exp.Select whose sql() reproduces a simple SELECT statement, parse returns one exp.Select per semicolon-separated statement, and malformed SQL such as `SELECT FROM` raises ParseError.
+- transpile converts SELECT statements between the sqlite, postgres, and mysql dialects and returns a non-empty list of SQL strings; mysql backtick-quoted identifiers can be parsed and rendered.
+- Expression.sql(pretty=True) returns formatted SQL that retains the SELECT projection and FROM clause.
 - Frozen dialects for required tests are sqlite, postgres, and mysql only.
 - The package exposes the required task API paths `featurelifted.parse_one`, `featurelifted.parse`, `featurelifted.transpile`, `featurelifted.exp.Select`, `featurelifted.exp.Column`, `featurelifted.errors.ParseError` with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: sqlglot.
@@ -46,9 +46,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: parse_one/parse into Select expressions and raise ParseError on invalid SQL. Required observable cases include parse one select; parse error; parse multiple.
-- **B002** — The extracted feature must support this observable behavior: transpile across sqlite/postgres/mysql. Required observable cases include transpile sqlite to postgres; transpile mysql to sqlite; mysql dialect backticks.
-- **B003** — The extracted feature must support this observable behavior: Expression.sql with pretty formatting. Required observable cases include pretty sql.
+- **B001** — parse_one returns an exp.Select whose sql() reproduces a simple SELECT statement, parse returns one exp.Select per semicolon-separated statement, and malformed SQL such as `SELECT FROM` raises ParseError.
+- **B002** — transpile converts SELECT statements between the sqlite, postgres, and mysql dialects and returns a non-empty list of SQL strings; mysql backtick-quoted identifiers can be parsed and rendered.
+- **B003** — Expression.sql(pretty=True) returns formatted SQL that retains the SELECT projection and FROM clause.
 - **B004** — Frozen dialects for required tests are sqlite, postgres, and mysql only.
 - **B005** — The package exposes the required task API paths `featurelifted.parse_one`, `featurelifted.parse`, `featurelifted.transpile`, `featurelifted.exp.Select`, `featurelifted.exp.Column`, `featurelifted.errors.ParseError` with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: sqlglot.

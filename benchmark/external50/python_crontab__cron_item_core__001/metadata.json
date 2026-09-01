@@ -86,15 +86,18 @@
         "members": [
           {
             "path": "featurelifted.CronSlices.is_valid",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(value: str) -> bool"
           },
           {
             "path": "featurelifted.CronSlices.setall",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(*values: str) -> None"
           },
           {
             "path": "featurelifted.CronSlices.render",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> str"
           },
           {
             "path": "featurelifted.CronSlices.special",
@@ -104,7 +107,8 @@
       },
       {
         "path": "featurelifted.CronSlices.is_valid",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(value: str) -> bool"
       },
       {
         "path": "featurelifted.CronItem",
@@ -112,44 +116,49 @@
         "members": [
           {
             "path": "featurelifted.CronItem.render",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> str"
           },
           {
             "path": "featurelifted.CronItem.is_valid",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> bool"
           },
           {
             "path": "featurelifted.CronItem.is_enabled",
-            "kind": "method"
+            "kind": "method",
+            "signature": "() -> bool"
           }
         ]
       },
       {
         "path": "featurelifted.CronItem.render",
-        "kind": "method"
+        "kind": "method",
+        "signature": "() -> str"
       },
       {
         "path": "featurelifted.CronItem.is_valid",
-        "kind": "method"
+        "kind": "method",
+        "signature": "() -> bool"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: CronSlices parse/render/is_valid. Required observable cases include cron slices valid; slices setall."
+        "text": "CronSlices.is_valid returns true for a five-field expression such as `* * * * *` and false for malformed text; constructing CronSlices from a valid expression and calling render() returns its cron fields."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: CronItem constructor render/is_valid. Required observable cases include cron item from line; cron item invalid line."
+        "text": "Constructing CronItem from a valid five-field schedule followed by a command produces an item whose is_valid() and is_enabled() return true and whose render() output contains the command; these three methods are callable on CronItem."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: special @reboot slices. Required observable cases include special reboot."
+        "text": "Constructing CronSlices with `@reboot` preserves that special schedule so either render() contains `@reboot` or the `special` attribute equals `@reboot`."
       },
       {
         "id": "B004",
-        "text": "No OS crontab file access is required."
+        "text": "After constructing empty CronSlices and calling setall(\"0\", \"12\", \"*\", \"*\", \"1\"), render() contains the configured minute and hour values without requiring OS crontab access."
       },
       {
         "id": "B005",
@@ -157,7 +166,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: crontab."
+        "text": "Scanning every Python file in the submitted package finds no `import crontab` or `from crontab ...` statement."
       }
     ],
     "exclusions": [
@@ -176,22 +185,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: CronSlices parse/render/is_valid. Required observable cases include cron slices valid; slices setall."
+        "text": "CronSlices.is_valid returns true for a five-field expression such as `* * * * *` and false for malformed text; constructing CronSlices from a valid expression and calling render() returns its cron fields."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: CronItem constructor render/is_valid. Required observable cases include cron item from line; cron item invalid line."
+        "text": "Constructing CronItem from a valid five-field schedule followed by a command produces an item whose is_valid() and is_enabled() return true and whose render() output contains the command; these three methods are callable on CronItem."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: special @reboot slices. Required observable cases include special reboot."
+        "text": "Constructing CronSlices with `@reboot` preserves that special schedule so either render() contains `@reboot` or the `special` attribute equals `@reboot`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "No OS crontab file access is required."
+        "text": "After constructing empty CronSlices and calling setall(\"0\", \"12\", \"*\", \"*\", \"1\"), render() contains the configured minute and hour values without requiring OS crontab access."
       },
       {
         "behavior_id": "B005",
@@ -201,7 +210,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: crontab."
+        "text": "Scanning every Python file in the submitted package finds no `import crontab` or `from crontab ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -222,7 +231,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_cron_item_invalid_line",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -238,7 +247,6 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_slices_setall",
         "behavior_ids": [
-          "B002",
           "B001",
           "B004"
         ],
@@ -254,6 +262,7 @@
       {
         "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
         "behavior_ids": [
+          "B002",
           "B005"
         ],
         "mapping_method": "generated_required_api_surface"
@@ -323,7 +332,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "3e1e7972803c1fc486ef9e1a9a437476b338987461667302978a6b5c53fc6dd0",
-  "generated_task_hash": "02e9fcc565eefc111097cd7bcb0591bf6ccde7f9f4dbd8ffc5e42f5503872218",
+  "spec_hash": "e5c2b6e021db825abcd80d746c591a5c646fbaa7775d7139c6772a97e459835c",
+  "generated_task_hash": "bd595b7308f6f6f26bfc42cca614e15528cf85d5f575a0f706faf55542f4f1a3",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

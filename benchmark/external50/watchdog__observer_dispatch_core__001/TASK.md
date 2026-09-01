@@ -19,10 +19,10 @@ from featurelifted import (
 ## Required API Details
 
 - `Observer` class must be importable
-  - `Observer.schedule` callable must exist
-  - `Observer.start` callable must exist
-  - `Observer.stop` callable must exist
-  - `Observer.join` callable must exist
+  - `Observer.schedule(event_handler: FileSystemEventHandler, path: str, recursive: bool = False)`
+  - `Observer.start() -> None`
+  - `Observer.stop() -> None`
+  - `Observer.join(timeout: float | None = None) -> None`
 - `FileSystemEventHandler` class must be importable
 - `FileCreatedEvent` class must be importable
 - `FileModifiedEvent` class must be importable
@@ -30,12 +30,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: Observer schedule/start/stop delivers create events to FileSystemEventHandler. Required observable cases include observer create event.
-- The extracted feature must support this observable behavior: modify/delete callbacks fire for temp-dir file changes. Required observable cases include modify and delete.
-- The extracted feature must support this observable behavior: FileCreatedEvent/FileModifiedEvent/FileDeletedEvent types exist. Required observable cases include event types exist.
-- Observer is the polling implementation for deterministic offline tests.
+- After a FileSystemEventHandler is scheduled on a directory and Observer is started, creating a file causes the handler's on_created callback to receive an event whose `src_path` identifies that file; stop() followed by join(timeout=...) shuts the observer down.
+- While an Observer watches a temporary directory, creating, rewriting, and deleting a file dispatches filesystem events through FileSystemEventHandler.on_any_event, so the handler records at least one event from the change sequence.
+- FileCreatedEvent, FileModifiedEvent, and FileDeletedEvent are importable class objects that can identify the corresponding filesystem event categories.
+- Observer accepts a polling timeout, watches local filesystem state without network access, and detects changes made after start() within the bounded test wait.
 - The package exposes Observer/FileSystemEventHandler/FileCreatedEvent/FileModifiedEvent/FileDeletedEvent with the kinds listed in this contract.
-- the submitted package does not import forbidden upstream packages: watchdog.
+- Scanning every Python file in the submitted package finds no `import watchdog` or `from watchdog ...` statement.
 
 ## Constraints
 
@@ -49,10 +49,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: Observer schedule/start/stop delivers create events to FileSystemEventHandler. Required observable cases include observer create event.
-- **B002** — The extracted feature must support this observable behavior: modify/delete callbacks fire for temp-dir file changes. Required observable cases include modify and delete.
-- **B003** — The extracted feature must support this observable behavior: FileCreatedEvent/FileModifiedEvent/FileDeletedEvent types exist. Required observable cases include event types exist.
-- **B004** — Observer is the polling implementation for deterministic offline tests.
+- **B001** — After a FileSystemEventHandler is scheduled on a directory and Observer is started, creating a file causes the handler's on_created callback to receive an event whose `src_path` identifies that file; stop() followed by join(timeout=...) shuts the observer down.
+- **B002** — While an Observer watches a temporary directory, creating, rewriting, and deleting a file dispatches filesystem events through FileSystemEventHandler.on_any_event, so the handler records at least one event from the change sequence.
+- **B003** — FileCreatedEvent, FileModifiedEvent, and FileDeletedEvent are importable class objects that can identify the corresponding filesystem event categories.
+- **B004** — Observer accepts a polling timeout, watches local filesystem state without network access, and detects changes made after start() within the bounded test wait.
 - **B005** — The package exposes Observer/FileSystemEventHandler/FileCreatedEvent/FileModifiedEvent/FileDeletedEvent with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: watchdog.
+- **B006** — Scanning every Python file in the submitted package finds no `import watchdog` or `from watchdog ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

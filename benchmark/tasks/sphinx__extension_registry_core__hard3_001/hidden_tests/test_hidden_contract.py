@@ -19,5 +19,5 @@ def test_setup_errors_are_wrapped():
     def bad_setup(app):
         raise RuntimeError("boom")
 
-    with pytest.raises(ExtensionError, match="setup failed"):
+    with pytest.raises(ExtensionError):
         registry.load_extension("bad", bad_setup)

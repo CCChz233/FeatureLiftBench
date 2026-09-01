@@ -20,25 +20,25 @@ from featurelifted import (
 
 ## Required API Details
 
-- `Node` class must be importable
+- `Node(name, parent=None, children=None, **kwargs)` class constructor
   - `Node.name` attribute must exist on instances
   - `Node.parent` attribute must exist on instances
   - `Node.children` attribute must exist on instances
-- `Resolver` class must be importable
-  - `Resolver.get` callable must exist
-- `RenderTree` class must be importable
-  - `RenderTree.__iter__` callable must exist
-- `PreOrderIter` callable must exist
-- `findall` callable must exist
+- `Resolver(pathattr='name')` class constructor
+  - `Resolver.get(self, node, path: str)`
+- `RenderTree(node, style=None, childiter=list, maxlevel=None)` class constructor
+  - `RenderTree.__iter__(self)`
+- `PreOrderIter(node, filter_=None, stop=None, maxlevel=None)` class constructor
+- `findall(node, filter_=None, stop=None, maxlevel=None, mincount=None, maxcount=None)`
 - `ChildResolverError` class must be importable
 - `ResolverError` class must be importable
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder.
-- The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get.
-- The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall.
-- parent assignment mutates children relationships.
+- When nodes are linked through the `parent` constructor argument, iterating `PreOrderIter` from the root returns the root followed by its descendants in preorder.
+- Given a tree and a `Resolver` configured for `name`, `get` resolves both root-qualified paths and child-relative paths to the existing node; requesting a missing child raises `ChildResolverError`, which is a `ResolverError`.
+- For a tree, iterating `RenderTree` yields rows exposing `pre`, `fill`, and `node`, while `findall` returns a tuple of matching nodes in traversal order and returns an empty tuple when no node matches.
+- When an existing node's `parent` attribute is assigned, that node appears in the new parent's `children` tuple and subsequent preorder traversal includes it beneath that parent.
 - The package exposes Node/Resolver/RenderTree/PreOrderIter/findall/ChildResolverError/ResolverError with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: anytree.
 
@@ -54,10 +54,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder.
-- **B002** — The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get.
-- **B003** — The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall.
-- **B004** — parent assignment mutates children relationships.
+- **B001** — When nodes are linked through the `parent` constructor argument, iterating `PreOrderIter` from the root returns the root followed by its descendants in preorder.
+- **B002** — Given a tree and a `Resolver` configured for `name`, `get` resolves both root-qualified paths and child-relative paths to the existing node; requesting a missing child raises `ChildResolverError`, which is a `ResolverError`.
+- **B003** — For a tree, iterating `RenderTree` yields rows exposing `pre`, `fill`, and `node`, while `findall` returns a tuple of matching nodes in traversal order and returns an empty tuple when no node matches.
+- **B004** — When an existing node's `parent` attribute is assigned, that node appears in the new parent's `children` tuple and subsequent preorder traversal includes it beneath that parent.
 - **B005** — The package exposes Node/Resolver/RenderTree/PreOrderIter/findall/ChildResolverError/ResolverError with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: anytree.
 <!-- featureliftbench:behavior-clauses:end -->

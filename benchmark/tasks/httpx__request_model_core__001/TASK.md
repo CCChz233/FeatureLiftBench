@@ -23,6 +23,7 @@ from featurelifted import (
 - `URL` constant must exist
 - `QueryParams(*args: 'QueryParamTypes | None', **kwargs: 'typing.Any') -> 'None'` class constructor
   - `QueryParams.multi_items(self) -> 'list[tuple[str, str]]'`
+  - `QueryParams.merge(self, params: 'QueryParamTypes | None' = None) -> 'QueryParams'`
 - `Headers(headers: 'HeaderTypes | None' = None, encoding: 'str | None' = None) -> 'None'` class constructor
   - `Headers.raw` attribute must exist on instances
 - `Cookies(cookies: 'CookieTypes | None' = None) -> 'None'` class constructor
@@ -41,7 +42,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: merge default and per-request headers, query params, and cookies. Required observable cases include query params from mapping; cookies simple header; build request merges defaults; headers cookie merge and request object; build request merges client defaults; query params duplicate and empty value.
 - The extracted feature must support this observable behavior: build Request objects with content, data, and json body helpers. Required observable cases include build request merges defaults; request content data json headers.
 - The extracted feature must support this observable behavior: raise compatible errors for invalid URL and request input. Required observable cases include url idna and percent encoding; invalid url raises.
-- The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.QueryParams.merge`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -67,6 +68,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B004** — The extracted feature must support this observable behavior: merge default and per-request headers, query params, and cookies. Required observable cases include query params from mapping; cookies simple header; build request merges defaults; headers cookie merge and request object; build request merges client defaults; query params duplicate and empty value.
 - **B005** — The extracted feature must support this observable behavior: build Request objects with content, data, and json body helpers. Required observable cases include build request merges defaults; request content data json headers.
 - **B006** — The extracted feature must support this observable behavior: raise compatible errors for invalid URL and request input. Required observable cases include url idna and percent encoding; invalid url raises.
-- **B007** — The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, `featurelifted.InvalidURL` with the kinds and callable signatures listed in this contract.
+- **B007** — The package exposes the required task API paths `featurelifted.URL`, `featurelifted.QueryParams`, `featurelifted.QueryParams.multi_items`, `featurelifted.QueryParams.merge`, `featurelifted.Headers`, `featurelifted.Headers.raw`, `featurelifted.Cookies`, `featurelifted.Request`, `featurelifted.Request.content`, `featurelifted.Request.headers`, `featurelifted.Request.url`, `featurelifted.build_request`, and 1 listed members with the kinds and callable signatures listed in this contract.
 - **B008** — the submitted package does not import forbidden upstream packages: httpx.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: parse_one/parse into Select expressions and raise ParseError on invalid SQL. Required observable cases include parse one select; parse error; parse multiple."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "parse_one returns an exp.Select whose sql() reproduces a simple SELECT statement, parse returns one exp.Select per semicolon-separated statement, and malformed SQL such as `SELECT FROM` raises ParseError."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: transpile across sqlite/postgres/mysql. Required observable cases include transpile sqlite to postgres; transpile mysql to sqlite; mysql dialect backticks."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "transpile converts SELECT statements between the sqlite, postgres, and mysql dialects and returns a non-empty list of SQL strings; mysql backtick-quoted identifiers can be parsed and rendered."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: Expression.sql with pretty formatting. Required observable cases include pretty sql."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Expression.sql(pretty=True) returns formatted SQL that retains the SELECT projection and FROM clause."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
       "text": "Frozen dialects for required tests are sqlite, postgres, and mysql only."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes the required task API paths `featurelifted.parse_one`, `featurelifted.parse`, `featurelifted.transpile`, `featurelifted.exp.Select`, `featurelifted.exp.Column`, `featurelifted.errors.ParseError` with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: sqlglot."
     }
   ],
@@ -37,19 +43,22 @@
       "nodeid": "public_tests/test_public_api.py::test_parse_one_select",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_transpile_sqlite_to_postgres",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_parse_error",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -57,38 +66,46 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_multiple",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_mysql_dialect_backticks",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B002",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_pretty_sql",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_transpile_mysql_to_sqlite",
       "public_clause_ids": [
+        "B002",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "a07f8f259236bfeee8ff3aa770d95f5e051ae144259ed113075f038e282f8414"
+  "spec_sha256": "aab78361fd2e10e9b21196f650e999241eec3593416eb87ca1c5e48cc665a4b9"
 }

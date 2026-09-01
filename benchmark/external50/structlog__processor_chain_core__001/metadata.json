@@ -81,15 +81,18 @@
     "required_api": [
       {
         "path": "featurelifted.configure",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(*, processors, logger_factory, cache_logger_on_first_use=False)"
       },
       {
         "path": "featurelifted.get_logger",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(*args, **initial_values)"
       },
       {
         "path": "featurelifted.reset_defaults",
-        "kind": "function"
+        "kind": "function",
+        "signature": "() -> None"
       },
       {
         "path": "featurelifted.processors.JSONRenderer",
@@ -105,22 +108,23 @@
       },
       {
         "path": "featurelifted.processors.add_log_level",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(logger, method_name, event_dict)"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer."
+        "text": "configure installs a processor chain and logger factory; bound context and event fields reach JSONRenderer output, while TimeStamper(fmt='iso') and add_log_level add timestamp and level fields before rendering."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context."
+        "text": "KeyValueRenderer emits event fields as key-value text; bound loggers support unbind to remove keys and new to replace the prior context before emitting an event."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order."
+        "text": "Processors run exactly once in the order supplied to configure before the final rendered value is passed to the wrapped logger."
       },
       {
         "id": "B004",
@@ -152,17 +156,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: configure processor chain with JSONRenderer and bind context. Required observable cases include bind and json renderer; key value renderer."
+        "text": "configure installs a processor chain and logger factory; bound context and event fields reach JSONRenderer output, while TimeStamper(fmt='iso') and add_log_level add timestamp and level fields before rendering."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: TimeStamper/add_log_level and unbind/new context. Required observable cases include timestamp and unbind; new context."
+        "text": "KeyValueRenderer emits event fields as key-value text; bound loggers support unbind to remove keys and new to replace the prior context before emitting an event."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: processors run in configure order. Required observable cases include processor order."
+        "text": "Processors run exactly once in the order supplied to configure before the final rendered value is passed to the wrapped logger."
       },
       {
         "behavior_id": "B004",
@@ -208,6 +212,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_new_context",
         "behavior_ids": [
+          "B001",
           "B002"
         ],
         "mapping_method": "ai_assisted"
@@ -286,6 +291,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "b7926fd553c8a913453ec857034dba608b34ef158b69447de4bc88c77e199537",
-  "generated_task_hash": "ee331a48faf42cbdfbaa33b40a0dc7670c57bb22646b783ca95c60cb88f07fc2"
+  "spec_hash": "32fd4ef3807db1e40c499fc32edc1107abe7ee92e95002252738b367965bf8b7",
+  "generated_task_hash": "29a4a64635148fb7b18edda9542823d5ffa94b41243d5e6ba14ab7bfecaf1a60"
 }

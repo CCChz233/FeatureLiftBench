@@ -22,7 +22,14 @@ from featurelifted import (
 - `Lexer(text, filename=None, input_encoding=None, preprocessor=None)` class constructor
   - `Lexer.parse(self)`
 - `parsetree` module must be importable
+  - `parsetree.ControlLine(keyword, isend, text, **kwargs)` class constructor
+  - `parsetree.DefTag(keyword, attributes, **kwargs)` class constructor
+  - `parsetree.Expression(text, escapes, **kwargs)` class constructor
+  - `parsetree.TemplateNode(filename)` class constructor
+  - `parsetree.Text(content, **kwargs)` class constructor
 - `PythonCode(code, **exception_kwargs)` class constructor
+  - `PythonCode.declared_identifiers` attribute must exist on instances
+  - `PythonCode.undeclared_identifiers` attribute must exist on instances
 - `PythonFragment(code, **exception_kwargs)` class constructor
   - `PythonFragment.declared_identifiers` attribute must exist on instances
   - `PythonFragment.undeclared_identifiers` attribute must exist on instances
@@ -35,7 +42,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: parse ${...} expressions and % control lines. Required observable cases include parse text and expression; parse control line; def tag parses; expression filter escapes; elif partial control identifiers; invalid partial control raises compile.
 - The extracted feature must support this observable behavior: analyze Python fragments for declared and undeclared identifiers. Required observable cases include python code undeclared; python fragment for loop; elif partial control identifiers.
 - The extracted feature must support this observable behavior: report SyntaxException and CompileException with line positions. Required observable cases include unclosed tag raises syntax.
-- The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.parsetree.ControlLine`, `featurelifted.parsetree.DefTag`, `featurelifted.parsetree.Expression`, `featurelifted.parsetree.TemplateNode`, `featurelifted.parsetree.Text`, `featurelifted.PythonCode`, `featurelifted.PythonCode.declared_identifiers`, `featurelifted.PythonCode.undeclared_identifiers`, `featurelifted.PythonFragment`, and 4 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -58,6 +65,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: parse ${...} expressions and % control lines. Required observable cases include parse text and expression; parse control line; def tag parses; expression filter escapes; elif partial control identifiers; invalid partial control raises compile.
 - **B003** — The extracted feature must support this observable behavior: analyze Python fragments for declared and undeclared identifiers. Required observable cases include python code undeclared; python fragment for loop; elif partial control identifiers.
 - **B004** — The extracted feature must support this observable behavior: report SyntaxException and CompileException with line positions. Required observable cases include unclosed tag raises syntax.
-- **B005** — The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.parsetree.ControlLine`, `featurelifted.parsetree.DefTag`, `featurelifted.parsetree.Expression`, `featurelifted.parsetree.TemplateNode`, `featurelifted.parsetree.Text`, `featurelifted.PythonCode`, `featurelifted.PythonCode.declared_identifiers`, `featurelifted.PythonCode.undeclared_identifiers`, `featurelifted.PythonFragment`, and 4 listed members with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: mako.
 <!-- featureliftbench:behavior-clauses:end -->

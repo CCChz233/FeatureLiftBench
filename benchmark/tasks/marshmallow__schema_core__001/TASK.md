@@ -22,6 +22,10 @@ from featurelifted import (
 - `Schema(*, only: 'types.StrSequenceOrSet | None' = None, exclude: 'types.StrSequenceOrSet' = (), many: 'bool | None' = None, load_only: 'types.StrSequenceOrSet' = (), dump_only: 'types.StrSequenceOrSet' = (), partial: 'bool | types.StrSequenceOrSet | None' = None, unknown: 'types.UnknownOption | None' = None)` class constructor
   - `Schema.load(self, data: 'Mapping[str, typing.Any] | Sequence[Mapping[str, typing.Any]]', *, many: 'bool | None' = None, partial: 'bool | types.StrSequenceOrSet | None' = None, unknown: 'types.UnknownOption | None' = None)`
 - `fields` module must be importable
+  - `fields.Int(*, strict: 'bool' = False, as_string: 'bool' = False, **kwargs: 'Unpack[_BaseFieldKwargs]')` class constructor
+  - `fields.List(cls_or_instance: 'Field[_InternalT] | type[Field[_InternalT]]', **kwargs: 'Unpack[_BaseFieldKwargs]')` class constructor
+  - `fields.Nested(nested: 'Schema | SchemaMeta | str | dict[str, Field] | typing.Callable[[], Schema | SchemaMeta | str | dict[str, Field]]', *, only: 'types.StrSequenceOrSet | None' = None, exclude: 'types.StrSequenceOrSet' = (), many: 'bool | None' = None, unknown: 'types.UnknownOption | None' = None, **kwargs: 'Unpack[_BaseFieldKwargs]')` class constructor
+  - `fields.Str(*, load_default: 'typing.Any' = <marshmallow.missing>, dump_default: 'typing.Any' = <marshmallow.missing>, data_key: 'str | None' = None, attribute: 'str | None' = None, validate: 'types.Validator | typing.Iterable[types.Validator] | None' = None, pre_load: 'types.PreLoadCallable | typing.Iterable[types.PreLoadCallable] | None' = None, post_load: 'types.PostLoadCallable | typing.Iterable[types.PostLoadCallable] | None' = None, required: 'bool' = False, allow_none: 'bool | None' = None, load_only: 'bool' = False, dump_only: 'bool' = False, error_messages: 'types.ErrorMessages | None' = None, metadata: 'typing.Mapping[str, typing.Any] | None' = None) -> 'None'` class constructor
 - `ValidationError` must be importable and raisable
 - `EXCLUDE` constant must exist
 - `RAISE` constant must exist
@@ -35,7 +39,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: load dict payloads with validation and nested schemas. Required observable cases include load dump nested schema; unknown exclude post load and nested errors.
 - The extracted feature must support this observable behavior: dump objects to dicts with field selection. Required observable cases include unknown exclude post load and nested errors.
 - The extracted feature must support this observable behavior: handle unknown=EXCLUDE and partial load validation errors. Required observable cases include unknown exclude post load and nested errors; many dump partial and raise unknown.
-- The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, `featurelifted.decorators.validates_schema` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.fields.Int`, `featurelifted.fields.List`, `featurelifted.fields.Nested`, `featurelifted.fields.Str`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -57,6 +61,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: load dict payloads with validation and nested schemas. Required observable cases include load dump nested schema; unknown exclude post load and nested errors.
 - **B003** — The extracted feature must support this observable behavior: dump objects to dicts with field selection. Required observable cases include unknown exclude post load and nested errors.
 - **B004** — The extracted feature must support this observable behavior: handle unknown=EXCLUDE and partial load validation errors. Required observable cases include unknown exclude post load and nested errors; many dump partial and raise unknown.
-- **B005** — The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, `featurelifted.decorators.validates_schema` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.load`, `featurelifted.fields`, `featurelifted.fields.Int`, `featurelifted.fields.List`, `featurelifted.fields.Nested`, `featurelifted.fields.Str`, `featurelifted.ValidationError`, `featurelifted.EXCLUDE`, `featurelifted.RAISE`, `featurelifted.decorators`, `featurelifted.decorators.post_load`, and 1 listed members with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: marshmallow.
 <!-- featureliftbench:behavior-clauses:end -->

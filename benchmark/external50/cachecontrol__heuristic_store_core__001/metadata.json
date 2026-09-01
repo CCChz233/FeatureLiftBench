@@ -93,18 +93,22 @@
       {
         "path": "featurelifted.DictCache",
         "kind": "class",
+        "signature": "(init_dict=None)",
         "members": [
           {
             "path": "featurelifted.DictCache.get",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, key: str) -> bytes | None"
           },
           {
             "path": "featurelifted.DictCache.set",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, key: str, value: bytes, expires=None) -> None"
           },
           {
             "path": "featurelifted.DictCache.delete",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, key: str) -> None"
           }
         ]
       },
@@ -114,15 +118,18 @@
       },
       {
         "path": "featurelifted.ExpiresAfter",
-        "kind": "class"
+        "kind": "class",
+        "signature": "(**timedelta_kwargs)"
       },
       {
         "path": "featurelifted.Serializer",
-        "kind": "class"
+        "kind": "class",
+        "signature": "()"
       },
       {
         "path": "featurelifted.CacheController",
         "kind": "class",
+        "signature": "(cache=None, cache_etags=True, serializer=None, status_codes=None)",
         "members": [
           {
             "path": "featurelifted.CacheController.cache",
@@ -135,19 +142,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip."
+        "text": "A `DictCache` is a `BaseCache`; after `set` stores bytes under a key, `get` returns those bytes, and after `delete` removes the key, `get` returns `None`."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version."
+        "text": "Constructing `ExpiresAfter` with day and hour keyword arguments creates a heuristic whose `delta` represents that combined duration."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface."
+        "text": "When `CacheController` is constructed with a `DictCache`, its public `cache` attribute refers to a usable cache instance."
       },
       {
         "id": "B004",
-        "text": "No live HTTP is required; tests use in-memory DictCache only."
+        "text": "Constructing `Serializer` requires no arguments and exposes a non-empty `serde_version` identifying its serialization format."
       },
       {
         "id": "B005",
@@ -176,22 +183,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: DictCache get/set/delete. Required observable cases include dict cache roundtrip."
+        "text": "A `DictCache` is a `BaseCache`; after `set` stores bytes under a key, `get` returns those bytes, and after `delete` removes the key, `get` returns `None`."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: ExpiresAfter and Serializer construction. Required observable cases include expires after construct; serializer construct; expires after days hours; serializer serde version."
+        "text": "Constructing `ExpiresAfter` with day and hour keyword arguments creates a heuristic whose `delta` represents that combined duration."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: CacheController wraps a cache and DictCache subclasses BaseCache. Required observable cases include cache controller construct; base cache interface."
+        "text": "When `CacheController` is constructed with a `DictCache`, its public `cache` attribute refers to a usable cache instance."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "No live HTTP is required; tests use in-memory DictCache only."
+        "text": "Constructing `Serializer` requires no arguments and exposes a non-empty `serde_version` identifying its serialization format."
       },
       {
         "behavior_id": "B005",
@@ -222,7 +229,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_serializer_construct",
         "behavior_ids": [
-          "B003"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -238,14 +245,14 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_cache_controller_construct",
         "behavior_ids": [
-          "B002"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_expires_after_days_hours",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -335,8 +342,8 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "cba788b1ee98afd8e5489f846b3a92c69831bd0a3901c137169dc131326432c1",
-  "generated_task_hash": "2c59bc171bc58bbe8c346aa60e4ffca83b84cfa1f766690ffc670c237b54b6a0",
+  "spec_hash": "5fa6cfd9d3c9f9f36baa456b79f9dac1586062f5e73a5485c264cdb918947be6",
+  "generated_task_hash": "98215a82441fecd085f9924d54e6040823e09468f890627e78d43055686d349c",
   "contract_repair_id": "external50-contract-members-20260801-v1",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

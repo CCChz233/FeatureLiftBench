@@ -97,11 +97,13 @@
       },
       {
         "path": "featurelifted.PMap.set",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, key, value) -> PMap"
       },
       {
         "path": "featurelifted.PMap.get",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, key, default=None)"
       },
       {
         "path": "featurelifted.PVector",
@@ -109,34 +111,37 @@
       },
       {
         "path": "featurelifted.PVector.append",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, value) -> PVector"
       },
       {
         "path": "featurelifted.PVector.extend",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, iterable) -> PVector"
       },
       {
         "path": "featurelifted.PVector.set",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, index, value) -> PVector"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability."
+        "text": "`pmap` accepts an initial mapping, and `PMap.set(key, value)` returns a distinct map in which existing entries remain readable and the new entry is available through indexing or `get`, without adding that entry to the original map."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types."
+        "text": "`PVector.set(index, value)` returns a distinct vector with that position replaced while the original vector retains its previous sequence."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend."
+        "text": "`PVector.extend(iterable)` returns a vector containing the original sequence followed by the iterable's values."
       },
       {
         "id": "B004",
-        "text": "Original pmap/pvector instances remain unchanged after updates."
+        "text": "`PVector.append(value)` and the other vector update methods return distinct vectors and leave their input vectors unchanged."
       },
       {
         "id": "B005",
@@ -163,22 +168,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability."
+        "text": "`pmap` accepts an initial mapping, and `PMap.set(key, value)` returns a distinct map in which existing entries remain readable and the new entry is available through indexing or `get`, without adding that entry to the original map."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types."
+        "text": "`PVector.set(index, value)` returns a distinct vector with that position replaced while the original vector retains its previous sequence."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend."
+        "text": "`PVector.extend(iterable)` returns a vector containing the original sequence followed by the iterable's values."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Original pmap/pvector instances remain unchanged after updates."
+        "text": "`PVector.append(value)` and the other vector update methods return distinct vectors and leave their input vectors unchanged."
       },
       {
         "behavior_id": "B005",
@@ -202,14 +207,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_pvector_append",
         "behavior_ids": [
-          "B002"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_factory_types",
         "behavior_ids": [
-          "B003"
+          "B005"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -226,14 +231,16 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_set",
         "behavior_ids": [
-          "B002"
+          "B002",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_extend",
         "behavior_ids": [
-          "B003"
+          "B003",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -316,6 +323,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "20fd2bba7fb1017db9bc16531d6e43bdaa566479be282055f862bea4247e14f4",
-  "generated_task_hash": "6f320d7a401529e624a7b8ee33b96b90388eaecb71029ca92863a44f26e4749a"
+  "spec_hash": "92342567bb93f6adb47a71cd7f71cb290cf345ece848390c44152756e1946c7d",
+  "generated_task_hash": "3d503974926e856c7352cf7bb1919ef697391f97baacffd80724a60abc43dda3"
 }

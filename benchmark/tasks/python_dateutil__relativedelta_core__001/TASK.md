@@ -29,6 +29,7 @@ from featurelifted import (
 - `FR` constant must exist
 - `SA` constant must exist
 - `SU` constant must exist
+- `MO.weekday` attribute must exist
 
 ## Required Behavior
 
@@ -38,7 +39,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: normalized() for fractional day/hour cascading. Required observable cases include add days and hours; absolute day replacement; normalized fractional days.
 - The extracted feature must support this observable behavior: relativedelta(dt1, dt2) difference mode. Required observable cases include relativedelta diff months; subtract relativedelta.
 - The extracted feature must support this observable behavior: yearday/nlyearday and leapdays adjustments. Required observable cases include yearday sets month day; leapdays post february.
-- The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU`, `featurelifted.MO.weekday` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -63,6 +64,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B004** — The extracted feature must support this observable behavior: normalized() for fractional day/hour cascading. Required observable cases include add days and hours; absolute day replacement; normalized fractional days.
 - **B005** — The extracted feature must support this observable behavior: relativedelta(dt1, dt2) difference mode. Required observable cases include relativedelta diff months; subtract relativedelta.
 - **B006** — The extracted feature must support this observable behavior: yearday/nlyearday and leapdays adjustments. Required observable cases include yearday sets month day; leapdays post february.
-- **B007** — The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU` with the kinds and callable signatures listed in this contract.
+- **B007** — The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU`, `featurelifted.MO.weekday` with the kinds and callable signatures listed in this contract.
 - **B008** — the submitted package does not import forbidden upstream packages: dateutil.
 <!-- featureliftbench:behavior-clauses:end -->

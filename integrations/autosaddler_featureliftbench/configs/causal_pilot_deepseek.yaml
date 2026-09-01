@@ -1,7 +1,8 @@
 schema_version: autosaddler/v2
 
-# Minimal causal H0/H1 pilot: one known train failure and one repo-disjoint
-# development failure, capped at four real OpenHands rollouts.
+# Minimal causal H0/H1 pilot: one known Flash functional train failure and one
+# repo-disjoint Flash functional development failure. Skip install-only failures.
+# Capped at four real OpenHands rollouts.
 scenario:
   type: featureliftbench_openhands
   settings:
@@ -17,8 +18,8 @@ scenario:
     max_infrastructure_retries: 0
     max_component_chars: 800
     max_total_chars: 2500
-    max_evidence_events: 30
-    max_evidence_chars: 30000
+    max_evidence_events: 12
+    max_evidence_chars: 8000
     runner_mode: openhands
     baseline:
       repository_inspection: __AUTOSADDLER_FLB_INACTIVE__
@@ -41,11 +42,11 @@ optimization:
   budget:
     max_rollouts: 4
     max_iterations: 1
-  diagnosis_patch_timeout_seconds: 120
+  diagnosis_patch_timeout_seconds: 180
   selection_timeout_seconds: 120
   reflection_timeout_seconds: 120
-  session_retries: 0
-  session_retry_backoff_seconds: 0
+  session_retries: 1
+  session_retry_backoff_seconds: 10
 
 provider:
   type: deepseek_inline
@@ -54,7 +55,7 @@ provider:
     model: deepseek/deepseek-v4-flash
     api_key_env: FEATURELIFTBENCH_API_KEY
     api_base_env: FEATURELIFTBENCH_API_BASE
-    max_tokens: 1800
+    max_tokens: 8192
     temperature: 0
 
 storage:

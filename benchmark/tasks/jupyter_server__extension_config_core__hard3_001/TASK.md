@@ -28,7 +28,7 @@ from featurelifted import (
 ## Required Behavior
 
 - When extension config fragments are merged, recursive_update combines nested mappings while later fragments override earlier scalar values.
-- When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state.
+- When ExtensionConfigStore is constructed with a config directory, it auto-loads jupyter_server_config.json plus JSON fragments under jupyter_server_config.d/, later .d fragments override earlier values for the same extension, and enable/disable writes and reloads the corresponding per-extension JSON state.
 - When entry-point extensions are filtered, explicitly disabled names are omitted and enabled or unspecified names remain discoverable.
 - The package exposes the required task API paths `featurelifted.ExtensionConfigStore`, `featurelifted.ExtensionConfigStore.disable`, `featurelifted.ExtensionConfigStore.enabled`, `featurelifted.ExtensionConfigStore.get_extensions`, `featurelifted.merge_extension_configs`, `featurelifted.filter_enabled_extensions`, `featurelifted.recursive_update` with the kinds and callable signatures listed in this contract.
 
@@ -50,7 +50,7 @@ Benchmark evaluator tests remain private. Each evaluator test maps to the public
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
 - **B001** — When extension config fragments are merged, recursive_update combines nested mappings while later fragments override earlier scalar values.
-- **B002** — When ExtensionConfigStore enables or disables an extension, it writes and reloads the corresponding per-extension JSON state.
+- **B002** — When ExtensionConfigStore is constructed with a config directory, it auto-loads jupyter_server_config.json plus JSON fragments under jupyter_server_config.d/, later .d fragments override earlier values for the same extension, and enable/disable writes and reloads the corresponding per-extension JSON state.
 - **B003** — When entry-point extensions are filtered, explicitly disabled names are omitted and enabled or unspecified names remain discoverable.
 - **B004** — The package exposes the required task API paths `featurelifted.ExtensionConfigStore`, `featurelifted.ExtensionConfigStore.disable`, `featurelifted.ExtensionConfigStore.enabled`, `featurelifted.ExtensionConfigStore.get_extensions`, `featurelifted.merge_extension_configs`, `featurelifted.filter_enabled_extensions`, `featurelifted.recursive_update` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: jupyter_server.

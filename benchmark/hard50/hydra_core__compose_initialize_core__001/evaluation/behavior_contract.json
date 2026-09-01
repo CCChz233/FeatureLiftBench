@@ -1,0 +1,86 @@
+{
+  "task_id": "hydra_core__compose_initialize_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "Calling `initialize` with a relative configuration directory marks `GlobalHydra.instance()` initialized; using it as a context manager permits `compose` calls inside the context and restores the prior global initialization state on exit. An absolute `config_path` is rejected."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Given a caller-relative directory containing YAML files, `compose(config_name)` loads the named `.yaml` configuration as an `omegaconf.DictConfig`; a YAML `defaults` list selects configuration-group files and merges their values into the declared package while `_self_` preserves primary-config values."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When composing a YAML configuration, override strings can select a different group with `group=choice`, replace existing nested scalar values with dotted keys such as `service.port=9000`, and add missing dotted values with a leading `+`; YAML scalar types are preserved."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "`GlobalHydra.instance()` is a process-global singleton; `is_initialized()` reports lifecycle state, `clear()` resets it, composing before initialization fails, and initialization can succeed again after clearing."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes `initialize`, `compose`, and `GlobalHydra` with the required members, kinds, and callable signatures listed in this contract."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_initialize_compose_and_context_cleanup",
+      "public_clause_ids": [
+        "B001",
+        "B002",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_dotted_override",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_yaml_group_selection_and_typed_dotted_overrides",
+      "public_clause_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_global_clear_reinitialize_and_uninitialized_compose",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_absolute_config_path_rejected",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "generated_required_api_surface"
+    }
+  ],
+  "spec_sha256": "8d31fff6d67b3b7d4a243cd81e8e06fd0102c653bb89c5a849c2ca0b592c6b8d"
+}

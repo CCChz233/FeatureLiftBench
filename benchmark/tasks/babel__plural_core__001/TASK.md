@@ -19,13 +19,14 @@ from featurelifted import (
   - `PluralRule.parse(rules)`
 - `Locale(language, territory=None, script=None, variant=None)` class constructor
   - `Locale.parse(identifier, sep='_', resolve_likely_subtags=True)`
+  - `Locale.plural_form` attribute must exist on instances
 
 ## Required Behavior
 
 - The extracted feature must support this observable behavior: evaluate PluralRule expressions for numeric operands. Required observable cases include plural rule string and float operands.
 - The extracted feature must support this observable behavior: resolve Locale plural categories for en, ru, fr, ja, and pl. Required observable cases include locale plural categories multilingual.
 - The extracted feature must support this observable behavior: load plural rules from packaged locale-data .dat resources. Required observable cases include plural rule and english locale; plural rule expression edges; plural rule string and float operands.
-- The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse`, `featurelifted.Locale.plural_form` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -46,6 +47,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — The extracted feature must support this observable behavior: evaluate PluralRule expressions for numeric operands. Required observable cases include plural rule string and float operands.
 - **B002** — The extracted feature must support this observable behavior: resolve Locale plural categories for en, ru, fr, ja, and pl. Required observable cases include locale plural categories multilingual.
 - **B003** — The extracted feature must support this observable behavior: load plural rules from packaged locale-data .dat resources. Required observable cases include plural rule and english locale; plural rule expression edges; plural rule string and float operands.
-- **B004** — The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse`, `featurelifted.Locale.plural_form` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: babel.
 <!-- featureliftbench:behavior-clauses:end -->

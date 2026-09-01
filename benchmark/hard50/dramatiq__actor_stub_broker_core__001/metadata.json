@@ -1,0 +1,319 @@
+{
+  "task_id": "dramatiq__actor_stub_broker_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "queue"
+  ],
+  "source": {
+    "name": "dramatiq",
+    "url": "https://github.com/Bogdanp/dramatiq",
+    "commit": "848b35f2f960457ff54a72f9edb3af0de754f72f",
+    "license": "LGPL-3.0"
+  },
+  "feature": {
+    "name": "Actor send on StubBroker",
+    "description": "Lift Dramatiq actors, StubBroker enqueue, and middleware hooks without RabbitMQ or Redis.",
+    "source_entrypoints": [
+      "dramatiq.actor",
+      "dramatiq.brokers.stub.StubBroker",
+      "dramatiq.middleware.Middleware"
+    ],
+    "included_behaviors": [
+      "send message",
+      "middleware before/after",
+      "retries off"
+    ],
+    "excluded_behaviors": [
+      "RabbitMQ/Redis brokers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "implicit_dependency_coupling",
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Actors resolve a process-wide broker and run a middleware chain on enqueue.",
+    "signals": [
+      "set_broker",
+      "before_enqueue",
+      "max_retries option"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import actor, StubBroker, Middleware, get_broker, set_broker",
+    "callable": "actor",
+    "signature": "actor(fn=None, *, max_retries=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "dramatiq"
+    ],
+    "forbidden_imports": [
+      "dramatiq"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "dramatiq/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Actor send on StubBroker",
+    "summary": "Build a standalone `featurelifted` package providing Dramatiq-style actors that enqueue on an in-process `StubBroker` with middleware hooks.",
+    "required_api": [
+      {
+        "path": "featurelifted.actor",
+        "kind": "function",
+        "signature": "(fn=None, *, max_retries=None, **kwargs)"
+      },
+      {
+        "path": "featurelifted.StubBroker",
+        "kind": "class",
+        "signature": "(middleware=None)",
+        "members": [
+          {
+            "path": "featurelifted.StubBroker.add_middleware",
+            "kind": "method",
+            "signature": "(self, middleware) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Middleware",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.Middleware.before_enqueue",
+            "kind": "method",
+            "signature": "(self, broker, message, delay) -> None"
+          },
+          {
+            "path": "featurelifted.Middleware.after_enqueue",
+            "kind": "method",
+            "signature": "(self, broker, message, delay) -> None"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.set_broker",
+        "kind": "function",
+        "signature": "(broker) -> None"
+      },
+      {
+        "path": "featurelifted.get_broker",
+        "kind": "function",
+        "signature": "() -> Broker"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `set_broker` with a `StubBroker`, an `@actor` function's `send` enqueues a message on that in-process broker without contacting RabbitMQ or Redis."
+      },
+      {
+        "id": "B002",
+        "text": "Middleware registered with `StubBroker.add_middleware` runs `before_enqueue` then `after_enqueue` around `send`, receiving the actor name of the enqueued message."
+      },
+      {
+        "id": "B003",
+        "text": "`get_broker()` returns the broker previously installed with `set_broker`. An actor declared with `max_retries=0` stores that option on the actor."
+      },
+      {
+        "id": "B004",
+        "text": "The in-process stub path does not start a worker loop or open a network connection; enqueue is enough to observe send and middleware."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `actor`, `StubBroker`, `Middleware`, `set_broker`, and `get_broker` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `dramatiq`."
+      }
+    ],
+    "exclusions": [
+      "RabbitMQ broker",
+      "Redis broker",
+      "worker process loops",
+      "runtime import of dramatiq"
+    ],
+    "forbidden": {
+      "imports": [
+        "dramatiq"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `set_broker` with a `StubBroker`, an `@actor` function's `send` enqueues a message on that in-process broker without contacting RabbitMQ or Redis."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Middleware registered with `StubBroker.add_middleware` runs `before_enqueue` then `after_enqueue` around `send`, receiving the actor name of the enqueued message."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`get_broker()` returns the broker previously installed with `set_broker`. An actor declared with `max_retries=0` stores that option on the actor."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The in-process stub path does not start a worker loop or open a network connection; enqueue is enough to observe send and middleware."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `actor`, `StubBroker`, `Middleware`, `set_broker`, and `get_broker` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `dramatiq`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_send_enqueues_on_stub_broker",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_middleware_before_and_after_enqueue",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_get_broker_returns_installed_stub",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_max_retries_zero_is_stored",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.actor",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StubBroker",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.StubBroker.add_middleware",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Middleware",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Middleware.before_enqueue",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Middleware.after_enqueue",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.set_broker",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.get_broker",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 1720870,
+    "copy_all_loc": 9527,
+    "oracle_bytes": 503167,
+    "oracle_loc": 5354,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "0237ea0b5a07ae9047025d40bffe3369ea4c2d049bc4ed384bc31775cb07f213",
+  "generated_task_hash": "aeb8e96ee8ba4a5031af07e951b64014e6e9901d3d381fc7b0af979b48e3aa6a"
+}

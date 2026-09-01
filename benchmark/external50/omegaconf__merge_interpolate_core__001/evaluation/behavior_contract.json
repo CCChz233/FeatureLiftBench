@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "OmegaConf.create builds attribute-accessible configuration trees; OmegaConf.merge combines mappings, OmegaConf.to_container(..., resolve=True) replaces ${key} interpolations with their values, and OmegaConf.select resolves dotted paths while returning its default for a missing path."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`OmegaConf.is_missing` and `OmegaConf.is_config` classify missing and config nodes; after `OmegaConf.resolve(cfg)`, interpolated values are readable by attribute access on the resolved tree."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Resolving a missing interpolation with OmegaConf.to_container(..., resolve=True) raises InterpolationResolutionError, and assigning an unknown key after OmegaConf.set_struct(cfg, True) raises a key-related exception such as ConfigKeyError."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
       "text": "ListConfig merge replaces list values as upstream default merge semantics used in tests."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: omegaconf."
     }
   ],
@@ -37,58 +43,68 @@
       "nodeid": "public_tests/test_public_api.py::test_create_merge_resolve",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_select",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_is_helpers",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolve_inplace",
       "public_clause_ids": [
-        "B001"
-      ]
+        "B001",
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_interpolation_error",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_struct_mode_key_error",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_list_config_merge",
       "public_clause_ids": [
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "deecc33cf2a711601f0e80381798c192b0df9bb809f8cec826b42083419b4d12"
+  "spec_sha256": "3746c763863c653a99ac25894d0c2bbfbe79cdf08fbb8b8b6f92f5f28d52943f"
 }

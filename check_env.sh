@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+echo "DEPRECATED: check_env.sh is a WSL-specific legacy check; use harness/scripts/preflight.py or catalog check." >&2
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

@@ -15,18 +15,18 @@ from featurelifted import (
 
 ## Required API Details
 
-- `MemoryHuey` class must be importable
-  - `MemoryHuey.task` callable must exist
-  - `MemoryHuey.pending_count` callable must exist
-  - `MemoryHuey.flush` callable must exist
-- `crontab` callable must exist
+- `MemoryHuey(name='huey', results=True, store_none=False, utc=True, immediate=False, serializer=None, compression=False, use_zlib=False)` class constructor
+  - `MemoryHuey.task(self, retries=0, retry_delay=0, retry_backoff=0, priority=None, context=False, name=None, expires=None, timeout=None, **kwargs)`
+  - `MemoryHuey.pending_count(self) -> int`
+  - `MemoryHuey.flush(self) -> None`
+- `crontab(minute='*', hour='*', day='*', month='*', day_of_week='*', strict=False)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: enqueue tasks and read results via result.get after execute. Required observable cases include task enqueue and result.
-- The extracted feature must support this observable behavior: crontab schedule helper. Required observable cases include crontab helper.
-- The extracted feature must support this observable behavior: multiple tasks and flush clears queue. Required observable cases include multiple tasks; flush clears queue.
-- MemoryHuey is the only broker backend required.
+- When a function decorated by `MemoryHuey.task()` is called, one task is enqueued; after `dequeue` and `execute`, the returned result handle's nonblocking `get` returns the function result.
+- A `crontab` schedule built with a step expression is callable and returns true only for matching datetimes; independently enqueued task calls retain their own arguments and results.
+- After one or more decorated task calls are queued, calling `flush` removes all pending work so `pending_count` returns zero.
+- Before a queued task is flushed or dequeued, `pending_count` reports at least one pending item.
 - The package exposes MemoryHuey and crontab with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: huey.
 
@@ -42,10 +42,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: enqueue tasks and read results via result.get after execute. Required observable cases include task enqueue and result.
-- **B002** — The extracted feature must support this observable behavior: crontab schedule helper. Required observable cases include crontab helper.
-- **B003** — The extracted feature must support this observable behavior: multiple tasks and flush clears queue. Required observable cases include multiple tasks; flush clears queue.
-- **B004** — MemoryHuey is the only broker backend required.
+- **B001** — When a function decorated by `MemoryHuey.task()` is called, one task is enqueued; after `dequeue` and `execute`, the returned result handle's nonblocking `get` returns the function result.
+- **B002** — A `crontab` schedule built with a step expression is callable and returns true only for matching datetimes; independently enqueued task calls retain their own arguments and results.
+- **B003** — After one or more decorated task calls are queued, calling `flush` removes all pending work so `pending_count` returns zero.
+- **B004** — Before a queued task is flushed or dequeued, `pending_count` reports at least one pending item.
 - **B005** — The package exposes MemoryHuey and crontab with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: huey.
 <!-- featureliftbench:behavior-clauses:end -->

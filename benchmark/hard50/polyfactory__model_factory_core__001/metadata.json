@@ -1,0 +1,316 @@
+{
+  "task_id": "polyfactory__model_factory_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "lift",
+    "adapted",
+    "validation"
+  ],
+  "source": {
+    "name": "polyfactory",
+    "url": "https://github.com/litestar-org/polyfactory",
+    "commit": "e420486b11b9f82b7816d86a8f53c20ce29df86f",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Dataclass model factories",
+    "description": "Lift DataclassFactory construction, overrides, Use fields, and batch generation without SQLAlchemy or Pydantic plugins.",
+    "source_entrypoints": [
+      "polyfactory.factories.dataclass_factory.DataclassFactory",
+      "polyfactory.fields.Use"
+    ],
+    "included_behaviors": [
+      "typed dataclass build",
+      "overrides",
+      "Use callables",
+      "batch",
+      "unknown factory field errors"
+    ],
+    "excluded_behaviors": [
+      "SQLAlchemy factory plugin",
+      "Pydantic ModelFactory",
+      "async persistence"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Factory metaclass inspects dataclass fields and nested types through a shared BaseFactory registry.",
+    "signals": [
+      "generic model inference",
+      "Use descriptors",
+      "nested factories"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import DataclassFactory, Use, ConfigurationException",
+    "callable": "DataclassFactory",
+    "signature": "DataclassFactory[T]"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "faker",
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "polyfactory"
+    ],
+    "forbidden_imports": [
+      "polyfactory"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "polyfactory/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Dataclass model factories",
+    "summary": "Build a standalone `featurelifted` package providing dataclass factories with overrides, `Use` fields, and batch construction.",
+    "required_api": [
+      {
+        "path": "featurelifted.DataclassFactory",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.DataclassFactory.build",
+            "kind": "method",
+            "signature": "(cls, **kwargs) -> T"
+          },
+          {
+            "path": "featurelifted.DataclassFactory.batch",
+            "kind": "method",
+            "signature": "(cls, size: int, **kwargs) -> list[T]"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Use",
+        "kind": "class",
+        "signature": "(fn, *args, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.Use.__init__",
+            "kind": "method",
+            "signature": "(self, fn, *args, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationException",
+        "kind": "class",
+        "signature": ""
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A `DataclassFactory` subclass for a dataclass model builds instances of that model, filling undeclared fields with generated values of the annotated types, including nested dataclass fields."
+      },
+      {
+        "id": "B002",
+        "text": "`build(**overrides)` uses the provided keyword values instead of generated ones for those fields."
+      },
+      {
+        "id": "B003",
+        "text": "A factory class attribute assigned `Use(callable)` supplies that callable's return value for the matching model field."
+      },
+      {
+        "id": "B004",
+        "text": "`batch(n, **overrides)` returns `n` instances; a `Use`/`Require`/`Ignore` factory field whose name is not a model field raises `ConfigurationException` when the factory class is created."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `DataclassFactory`, `Use`, and `ConfigurationException` with the callable paths listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `polyfactory`."
+      }
+    ],
+    "exclusions": [
+      "SQLAlchemy factory plugin",
+      "Pydantic ModelFactory",
+      "async persistence",
+      "runtime import of polyfactory"
+    ],
+    "forbidden": {
+      "imports": [
+        "polyfactory"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A `DataclassFactory` subclass for a dataclass model builds instances of that model, filling undeclared fields with generated values of the annotated types, including nested dataclass fields."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`build(**overrides)` uses the provided keyword values instead of generated ones for those fields."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A factory class attribute assigned `Use(callable)` supplies that callable's return value for the matching model field."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`batch(n, **overrides)` returns `n` instances; a `Use`/`Require`/`Ignore` factory field whose name is not a model field raises `ConfigurationException` when the factory class is created."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `DataclassFactory`, `Use`, and `ConfigurationException` with the callable paths listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `polyfactory`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_build_generates_typed_dataclass",
+        "behavior_ids": [
+          "B001",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_build_overrides",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_use_field_and_batch",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_dataclass_and_override_do_not_clobber_siblings",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_factory_field_raises_configuration_exception",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_batch_size_and_use_callable",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.DataclassFactory",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DataclassFactory.build",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DataclassFactory.batch",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Use",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Use.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationException",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "c79f1d76854a2abea24c253346f80f5294919afa2b732c9ed98083542b7bd2c7",
+  "generated_task_hash": "0a0a97826f96b94782750d97d25cba33be62079ab62f606ad6d3dda963ca8f3f",
+  "scoring_reference": {
+    "copy_all_bytes": 420817,
+    "copy_all_loc": 8838,
+    "oracle_bytes": 197668,
+    "oracle_loc": 4419,
+    "oracle_dependency_count": 2
+  }
+}

@@ -119,7 +119,7 @@
       },
       {
         "id": "B002",
-        "text": "parse_wheel_filename returns normalized distribution, version, build, and tag components and raises WheelError for invalid filenames."
+        "text": "parse_wheel_filename returns a 3-tuple of normalized distribution name, version, and build tag, and raises WheelError for invalid filenames."
       },
       {
         "id": "B003",
@@ -163,7 +163,7 @@
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "parse_wheel_filename returns normalized distribution, version, build, and tag components and raises WheelError for invalid filenames."
+        "text": "parse_wheel_filename returns a 3-tuple of normalized distribution name, version, and build tag, and raises WheelError for invalid filenames."
       },
       {
         "behavior_id": "B003",
@@ -267,7 +267,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "50adc854ee71337a51579c30d4a00a9e84814372ed1b8165d0a08c1fdc0ff3e9",
-  "generated_task_hash": "6cd95bbe3e1a5226422482f09fcc55949686cc7a38bf718c802ae1657baeb4b8"
+  "task_revision": 5,
+  "spec_hash": "d3e2a65116ad11bd14f99357e339e9f5108dd665fed545ac98f389b3a0caa578",
+  "generated_task_hash": "96f45e0f1fa515182b3066ba2edb0a862c10bd01fd1b08dfcd7c290267840b8d"
 }

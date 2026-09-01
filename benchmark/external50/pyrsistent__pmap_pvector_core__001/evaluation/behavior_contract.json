@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "`pmap` accepts an initial mapping, and `PMap.set(key, value)` returns a distinct map in which existing entries remain readable and the new entry is available through indexing or `get`, without adding that entry to the original map."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`PVector.set(index, value)` returns a distinct vector with that position replaced while the original vector retains its previous sequence."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "`PVector.extend(iterable)` returns a vector containing the original sequence followed by the iterable's values."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "Original pmap/pvector instances remain unchanged after updates."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "`PVector.append(value)` and the other vector update methods return distinct vectors and leave their input vectors unchanged."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes pmap/pvector/PMap/PVector with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: pyrsistent."
     }
   ],
@@ -37,19 +43,22 @@
       "nodeid": "public_tests/test_public_api.py::test_pmap_set_get",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_pvector_append",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_factory_types",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B005"
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -58,32 +67,39 @@
       "public_clause_ids": [
         "B001",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_set",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B002",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_pvector_extend",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B003",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "6f320d7a401529e624a7b8ee33b96b90388eaecb71029ca92863a44f26e4749a"
+  "spec_sha256": "3d503974926e856c7352cf7bb1919ef697391f97baacffd80724a60abc43dda3"
 }

@@ -99,7 +99,7 @@
       },
       {
         "id": "B003",
-        "text": "When node or dirty information is present, version_from_scm appends a normalized local version segment."
+        "text": "When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty."
       },
       {
         "id": "B004",
@@ -144,7 +144,7 @@
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "When node or dirty information is present, version_from_scm appends a normalized local version segment."
+        "text": "When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty."
       },
       {
         "behavior_id": "B004",
@@ -220,7 +220,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "868ee7f265c7bdb9902432932b1fe1989d2e8d81872c7d048c48f38329fa1328",
-  "generated_task_hash": "ebf469ea8f26e3718e6ce150066982f24ee2362349359c53ccd4f8090bea2088"
+  "task_revision": 5,
+  "spec_hash": "5fcf31222449563caf31d98a1d2d54d5c4a98432deb104f68d5ced2ab01543a0",
+  "generated_task_hash": "41aa3204746af99494a7d4cb1ad25edcae158744363e8602c5eaee90f9700f64"
 }

@@ -105,7 +105,65 @@
       },
       {
         "path": "featurelifted.token",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.token.Comment",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Keyword",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Literal",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Name",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Number",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Operator",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.String",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.token.Text",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.token.Comment.Single",
+        "kind": "attribute"
+      },
+      {
+        "path": "featurelifted.token.Literal.String",
+        "kind": "attribute"
+      },
+      {
+        "path": "featurelifted.token.Name.Function",
+        "kind": "attribute"
+      },
+      {
+        "path": "featurelifted.token.Number.Integer",
+        "kind": "attribute"
+      },
+      {
+        "path": "featurelifted.token.String.Double",
+        "kind": "attribute"
+      },
+      {
+        "path": "featurelifted.token.Literal.String.Single",
+        "kind": "attribute"
       }
     ],
     "optional_api": [],
@@ -132,7 +190,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.lex`, `featurelifted.get_lexer_by_name`, `featurelifted.PythonLexer`, `featurelifted.token` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.lex`, `featurelifted.get_lexer_by_name`, `featurelifted.PythonLexer`, `featurelifted.token`, `featurelifted.token.Comment`, `featurelifted.token.Keyword`, `featurelifted.token.Literal`, `featurelifted.token.Name`, `featurelifted.token.Number`, `featurelifted.token.Operator`, `featurelifted.token.String`, `featurelifted.token.Text`, and 6 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -191,7 +249,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.lex`, `featurelifted.get_lexer_by_name`, `featurelifted.PythonLexer`, `featurelifted.token` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.lex`, `featurelifted.get_lexer_by_name`, `featurelifted.PythonLexer`, `featurelifted.token`, `featurelifted.token.Comment`, `featurelifted.token.Keyword`, `featurelifted.token.Literal`, `featurelifted.token.Name`, `featurelifted.token.Number`, `featurelifted.token.Operator`, `featurelifted.token.String`, `featurelifted.token.Text`, and 6 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -273,6 +331,90 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.token.Comment",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Keyword",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Literal",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Number",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Operator",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.String",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Text",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Comment.Single",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Literal.String",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Name.Function",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Number.Integer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.String.Double",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.token.Literal.String.Single",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -286,11 +428,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "9059d49dc3f120cc07c5c6b7156dfb61c1a1260c56f3b7cc160575cba537cb7f",
-  "generated_task_hash": "6b0e9e6653a1ac9b23e087215be6487b53d11fb9e0ceb6d2e8e55ba3bad605fe"
+  "task_revision": 3,
+  "spec_hash": "c8eaee5e6bd3682f63e169420475763ee5d19d34fb311422c5a9664065bb45da",
+  "generated_task_hash": "c4fdaccadc5570f33e6ea3799947030607185b23abde5da89388ae5f57b36744"
 }

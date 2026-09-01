@@ -15,22 +15,22 @@ from featurelifted import (
 
 ## Required API Details
 
-- `OmegaConf.create` callable must exist
-- `OmegaConf.merge` callable must exist
-- `OmegaConf.to_container` callable must exist
-- `OmegaConf.select` callable must exist
-- `OmegaConf.resolve` callable must exist
-- `OmegaConf.is_missing` callable must exist
-- `OmegaConf.is_config` callable must exist
-- `OmegaConf.set_struct` callable must exist
+- `OmegaConf.create(obj=None)`
+- `OmegaConf.merge(*configs)`
+- `OmegaConf.to_container(cfg, *, resolve=False)`
+- `OmegaConf.select(cfg, key, default=None)`
+- `OmegaConf.resolve(cfg) -> None`
+- `OmegaConf.is_missing(cfg, key) -> bool`
+- `OmegaConf.is_config(obj) -> bool`
+- `OmegaConf.set_struct(cfg, flag: bool) -> None`
 - `errors.InterpolationResolutionError` must be importable and raisable
 - `errors.ConfigKeyError` must be importable and raisable
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select.
-- The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace.
-- The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error.
+- OmegaConf.create builds attribute-accessible configuration trees; OmegaConf.merge combines mappings, OmegaConf.to_container(..., resolve=True) replaces ${key} interpolations with their values, and OmegaConf.select resolves dotted paths while returning its default for a missing path.
+- `OmegaConf.is_missing` and `OmegaConf.is_config` classify missing and config nodes; after `OmegaConf.resolve(cfg)`, interpolated values are readable by attribute access on the resolved tree.
+- Resolving a missing interpolation with OmegaConf.to_container(..., resolve=True) raises InterpolationResolutionError, and assigning an unknown key after OmegaConf.set_struct(cfg, True) raises a key-related exception such as ConfigKeyError.
 - ListConfig merge replaces list values as upstream default merge semantics used in tests.
 - The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: omegaconf.
@@ -47,9 +47,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select.
-- **B002** — The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace.
-- **B003** — The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error.
+- **B001** — OmegaConf.create builds attribute-accessible configuration trees; OmegaConf.merge combines mappings, OmegaConf.to_container(..., resolve=True) replaces ${key} interpolations with their values, and OmegaConf.select resolves dotted paths while returning its default for a missing path.
+- **B002** — `OmegaConf.is_missing` and `OmegaConf.is_config` classify missing and config nodes; after `OmegaConf.resolve(cfg)`, interpolated values are readable by attribute access on the resolved tree.
+- **B003** — Resolving a missing interpolation with OmegaConf.to_container(..., resolve=True) raises InterpolationResolutionError, and assigning an unknown key after OmegaConf.set_struct(cfg, True) raises a key-related exception such as ConfigKeyError.
 - **B004** — ListConfig merge replaces list values as upstream default merge semantics used in tests.
 - **B005** — The package exposes the required OmegaConf methods and InterpolationResolutionError/ConfigKeyError with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: omegaconf.

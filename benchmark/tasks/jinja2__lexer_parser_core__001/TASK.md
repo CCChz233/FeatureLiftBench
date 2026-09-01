@@ -19,12 +19,19 @@ from featurelifted import (
 
 - `Environment(block_start_string: 'str' = '{%', block_end_string: 'str' = '%}', variable_start_string: 'str' = '{{', variable_end_string: 'str' = '}}', comment_start_string: 'str' = '{#', comment_end_string: 'str' = '#}', line_statement_prefix: 't.Optional[str]' = None, line_comment_prefix: 't.Optional[str]' = None, trim_blocks: 'bool' = False, lstrip_blocks: 'bool' = False, newline_sequence: '"te.Literal[\'\\\\n\', \'\\\\r\\\\n\', \'\\\\r\']"' = '\n', keep_trailing_newline: 'bool' = False) -> 'None'` class constructor
   - `Environment.parse(self, source: 'str', name: 't.Optional[str]' = None, filename: 't.Optional[str]' = None) -> 'nodes.Template'`
+  - `Environment.lex(self, source: 'str', name: 't.Optional[str]' = None, filename: 't.Optional[str]' = None) -> 't.Iterator[t.Tuple[int, str, str]]'`
 - `nodes` module must be importable
+  - `nodes.For(*fields: Any, **attributes: Any) -> None` class constructor
+  - `nodes.If(*fields: Any, **attributes: Any) -> None` class constructor
+  - `nodes.Name(*fields: Any, **attributes: Any) -> None` class constructor
+  - `nodes.Output(*fields: Any, **attributes: Any) -> None` class constructor
+  - `nodes.Template(*fields: Any, **attributes: Any) -> None` class constructor
 - `lexer` module must be importable
   - `lexer.Lexer(environment: 'Environment') -> None` class constructor
     - `lexer.Lexer.tokenize(self, source: str, name: Optional[str] = None, filename: Optional[str] = None, state: Optional[str] = None) -> TokenStream`
 - `parser` module must be importable
   - `parser.Parser(environment: 'Environment', source: str, name: Optional[str] = None, filename: Optional[str] = None, state: Optional[str] = None) -> None` class constructor
+    - `parser.Parser.parse(self) -> Template`
 
 ## Required Behavior
 
@@ -32,7 +39,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: parse templates into AST node trees. Required observable cases include parse variable output; parse for loop structure; parser module required for if elif.
 - The extracted feature must support this observable behavior: support block, variable, comment, and statement delimiters. Required observable cases include lexer module required for raw blocks.
 - The extracted feature must support this observable behavior: preserve syntax error reporting with line numbers. Required observable cases include parser module required for if elif.
-- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.parse`, `featurelifted.nodes`, `featurelifted.lexer`, `featurelifted.lexer.Lexer`, `featurelifted.lexer.Lexer.tokenize`, `featurelifted.parser`, `featurelifted.parser.Parser` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.parse`, `featurelifted.Environment.lex`, `featurelifted.nodes`, `featurelifted.nodes.For`, `featurelifted.nodes.If`, `featurelifted.nodes.Name`, `featurelifted.nodes.Output`, `featurelifted.nodes.Template`, `featurelifted.lexer`, `featurelifted.lexer.Lexer`, `featurelifted.lexer.Lexer.tokenize`, and 3 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -55,6 +62,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: parse templates into AST node trees. Required observable cases include parse variable output; parse for loop structure; parser module required for if elif.
 - **B003** — The extracted feature must support this observable behavior: support block, variable, comment, and statement delimiters. Required observable cases include lexer module required for raw blocks.
 - **B004** — The extracted feature must support this observable behavior: preserve syntax error reporting with line numbers. Required observable cases include parser module required for if elif.
-- **B005** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.parse`, `featurelifted.nodes`, `featurelifted.lexer`, `featurelifted.lexer.Lexer`, `featurelifted.lexer.Lexer.tokenize`, `featurelifted.parser`, `featurelifted.parser.Parser` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.parse`, `featurelifted.Environment.lex`, `featurelifted.nodes`, `featurelifted.nodes.For`, `featurelifted.nodes.If`, `featurelifted.nodes.Name`, `featurelifted.nodes.Output`, `featurelifted.nodes.Template`, `featurelifted.lexer`, `featurelifted.lexer.Lexer`, `featurelifted.lexer.Lexer.tokenize`, and 3 listed members with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: jinja2, jinja.
 <!-- featureliftbench:behavior-clauses:end -->

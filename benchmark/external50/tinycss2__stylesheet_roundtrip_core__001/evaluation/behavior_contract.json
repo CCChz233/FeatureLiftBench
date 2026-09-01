@@ -4,32 +4,38 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: parse stylesheet into QualifiedRule/AtRule/ParseError nodes. Required observable cases include parse qualified rule; parse at rule; parse error node not raise."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "parse_stylesheet returns QualifiedRule nodes for qualified rules and AtRule nodes for at-rules; malformed CSS such as an unmatched `}` is represented by a ParseError node instead of raising an exception."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: serialize nodes back to CSS. Required observable cases include roundtrip simple; serialize preserves at keyword."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Serializing nodes returned by parse_stylesheet produces CSS containing the original rule content, and an `@import` rule retains its `@import` keyword after parse/serialize round-trip."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: skip_whitespace option. Required observable cases include skip whitespace option."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When parse_stylesheet is called with `skip_whitespace=True`, its top-level result contains no node whose type name ends with `WhitespaceToken`."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "QualifiedRule exposes a prelude used by selectors."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Parsing a selector rule such as `h1.title{}` returns a QualifiedRule whose `prelude` attribute is non-empty."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes the required task API paths `featurelifted.parse_stylesheet`, `featurelifted.serialize`, `featurelifted.ast.QualifiedRule`, `featurelifted.ast.AtRule`, `featurelifted.ast.ParseError` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
-      "text": "the submitted package does not import forbidden upstream packages: tinycss2."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "Scanning every Python file in the submitted package finds no `import tinycss2` or `from tinycss2 ...` statement."
     }
   ],
   "public_test_mappings": [
@@ -37,58 +43,67 @@
       "nodeid": "public_tests/test_public_api.py::test_parse_qualified_rule",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_roundtrip_simple",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_parse_at_rule",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_skip_whitespace_option",
       "public_clause_ids": [
-        "B001"
-      ]
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_serialize_preserves_at_keyword",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_error_node_not_raise",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_qualified_prelude",
       "public_clause_ids": [
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "f22b5c38f66264621b11e52a5a9c6ab90f69f300a972df6d63a8fd025fc7a55f"
+  "spec_sha256": "43e76d49518e9665ffe442f778f08937942e95563039ca341ceec68e9a1eb173"
 }

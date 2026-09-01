@@ -21,6 +21,8 @@ from featurelifted import (
 
 - `PhoneNumberFormat()` class constructor
   - `PhoneNumberFormat.E164` attribute must exist on instances
+  - `PhoneNumberFormat.INTERNATIONAL` attribute must exist on instances
+  - `PhoneNumberFormat.NATIONAL` attribute must exist on instances
 - `NumberParseException` must be importable and raisable
 - `format_number(numobj, num_format)`
 - `is_valid_number(numobj)`
@@ -33,7 +35,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: parse E.164 and national numbers for US and GB. Required observable cases include parse e164 and format; parse national us; gb national equals e164 parse; is valid and e164 us.
 - The extracted feature must support this observable behavior: format NATIONAL, INTERNATIONAL, and E164. Required observable cases include parse e164 and format; is valid and e164 us.
 - The extracted feature must support this observable behavior: validate numbers against region metadata. Required observable cases include invalid region raises.
-- The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.PhoneNumberFormat.INTERNATIONAL`, `featurelifted.PhoneNumberFormat.NATIONAL`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -54,6 +56,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — The extracted feature must support this observable behavior: parse E.164 and national numbers for US and GB. Required observable cases include parse e164 and format; parse national us; gb national equals e164 parse; is valid and e164 us.
 - **B002** — The extracted feature must support this observable behavior: format NATIONAL, INTERNATIONAL, and E164. Required observable cases include parse e164 and format; is valid and e164 us.
 - **B003** — The extracted feature must support this observable behavior: validate numbers against region metadata. Required observable cases include invalid region raises.
-- **B004** — The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.PhoneNumberFormat.INTERNATIONAL`, `featurelifted.PhoneNumberFormat.NATIONAL`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: phonenumbers.
 <!-- featureliftbench:behavior-clauses:end -->

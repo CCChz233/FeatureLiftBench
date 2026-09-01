@@ -25,7 +25,7 @@ from featurelifted import (
 ## Required Behavior
 
 - `parse_project_dependencies` builds `DependencyGroup` objects from PEP 621 project metadata.
-- `resolve_group` resolves a group's dependencies including transitive `include-group` references.
+- resolve_group resolves a group's dependencies including transitive include-group references. parse_project_dependencies reads dependency-groups as mappings whose dependencies field is a list of requirement strings and whose include-group field is a list of group names.
 - Circular includes raise `ValueError`.
 - The package exposes the required task API paths `featurelifted.parse_project_dependencies`, `featurelifted.resolve_group`, `featurelifted.DependencyGroup`, `featurelifted.DependencySpec` with the kinds and callable signatures listed in this contract.
 
@@ -47,7 +47,7 @@ Benchmark evaluator tests remain private. Each evaluator test maps to the public
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
 - **B001** — `parse_project_dependencies` builds `DependencyGroup` objects from PEP 621 project metadata.
-- **B002** — `resolve_group` resolves a group's dependencies including transitive `include-group` references.
+- **B002** — resolve_group resolves a group's dependencies including transitive include-group references. parse_project_dependencies reads dependency-groups as mappings whose dependencies field is a list of requirement strings and whose include-group field is a list of group names.
 - **B003** — Circular includes raise `ValueError`.
 - **B004** — The package exposes the required task API paths `featurelifted.parse_project_dependencies`, `featurelifted.resolve_group`, `featurelifted.DependencyGroup`, `featurelifted.DependencySpec` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: poetry, poetry_core.

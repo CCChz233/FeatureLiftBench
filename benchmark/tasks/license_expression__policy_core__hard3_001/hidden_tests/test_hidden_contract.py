@@ -27,14 +27,14 @@ def test_plain_symbol_cannot_be_used_as_with_exception():
     licensing = make_licensing()
 
     with pytest.raises(ExpressionParseError, match="plain license symbol"):
-        licensing.parse("MIT WITH Apache-2.0", validate=True)
+        licensing.parse("MIT WITH Apache-2.0", validate=True, strict=True)
 
 
 def test_exception_symbol_cannot_be_used_as_plain_license():
     licensing = make_licensing()
 
     with pytest.raises(ExpressionParseError, match="exception symbol"):
-        licensing.parse("Classpath OR MIT", validate=True)
+        licensing.parse("Classpath OR MIT", validate=True, strict=True)
 
 
 def test_validate_reports_unknown_symbol_without_normalized_expression():

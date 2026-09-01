@@ -61,7 +61,7 @@
       "behavior_id": "B006",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
-      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
@@ -117,7 +117,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "07a2ec1e9044c339cbc52fb94971c71f90c982f52829f8f423347db369f56f68",
+  "spec_sha256": "cd38b07b0ec8de08b4425afbfd3ac2d95ef0ec13565d211e53f0fc5274ef0546",
   "task_id": "sqlparse__token_tree_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

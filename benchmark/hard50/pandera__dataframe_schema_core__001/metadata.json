@@ -1,0 +1,342 @@
+{
+  "task_id": "pandera__dataframe_schema_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "validation"
+  ],
+  "source": {
+    "name": "pandera",
+    "url": "https://github.com/unionai-oss/pandera",
+    "commit": "9777c23b4bbc146c115a479b7551d0671c76ebcd",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Pandas DataFrameSchema validation",
+    "description": "Lift pandas DataFrameSchema column dtype checks, coerce, and SchemaError reporting without Spark/Dask/Polars backends.",
+    "source_entrypoints": [
+      "pandera.api.pandas.container.DataFrameSchema",
+      "pandera.api.pandas.components.Column"
+    ],
+    "included_behaviors": [
+      "dtype checks",
+      "coerce",
+      "Check.ge",
+      "SchemaError on bad or missing column"
+    ],
+    "excluded_behaviors": [
+      "Spark/Dask/Polars/Ibis backends",
+      "cloud IO",
+      "CLI infer/generate"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "third_party_dependency_coupling",
+    "description": "DataFrameSchema validation dispatches through pandas engines, Check registry, and error formatters.",
+    "signals": [
+      "column coerce",
+      "builtin checks",
+      "SchemaError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import DataFrameSchema, Column, Check",
+    "callable": "DataFrameSchema",
+    "signature": "DataFrameSchema(columns=None, checks=None, parsers=None, index=None, dtype=None, coerce=False, strict=False, name=None, ordered=False, unique=None, report_duplicates='all', unique_column_names=False, add_missing_columns=False, title=None, description=None, metadata=None, drop_invalid_rows=False)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "pandas",
+      "numpy",
+      "python-dateutil",
+      "pytz",
+      "tzdata",
+      "six",
+      "packaging",
+      "typing-extensions",
+      "pydantic",
+      "pydantic-core",
+      "annotated-types",
+      "typing-inspection",
+      "typeguard",
+      "typing-inspect",
+      "mypy-extensions"
+    ],
+    "forbidden_dependencies": [
+      "pandera"
+    ],
+    "forbidden_imports": [
+      "pandera"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pandera/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Pandas DataFrameSchema validation",
+    "summary": "Build a standalone `featurelifted` package providing pandas `DataFrameSchema` validation with column dtypes, coerce, and `Check.ge`.",
+    "required_api": [
+      {
+        "path": "featurelifted.DataFrameSchema",
+        "kind": "class",
+        "signature": "(columns=None, checks=None, parsers=None, index=None, dtype=None, coerce=False, strict=False, name=None, ordered=False, unique=None, report_duplicates='all', unique_column_names=False, add_missing_columns=False, title=None, description=None, metadata=None, drop_invalid_rows=False)",
+        "members": [
+          {
+            "path": "featurelifted.DataFrameSchema.__init__",
+            "kind": "method",
+            "signature": "(self, columns=None, checks=None, parsers=None, index=None, dtype=None, coerce=False, strict=False, name=None, ordered=False, unique=None, report_duplicates='all', unique_column_names=False, add_missing_columns=False, title=None, description=None, metadata=None, drop_invalid_rows=False)"
+          },
+          {
+            "path": "featurelifted.DataFrameSchema.validate",
+            "kind": "method",
+            "signature": "(self, check_obj, head=None, tail=None, sample=None, random_state=None, lazy=False, inplace=False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Column",
+        "kind": "class",
+        "signature": "(dtype=None, checks=None, parsers=None, nullable=False, unique=False, report_duplicates='all', coerce=False, required=True, name=None, regex=False, title=None, description=None, default=None, metadata=None, drop_invalid_rows=False)",
+        "members": [
+          {
+            "path": "featurelifted.Column.__init__",
+            "kind": "method",
+            "signature": "(self, dtype=None, checks=None, parsers=None, nullable=False, unique=False, report_duplicates='all', coerce=False, required=True, name=None, regex=False, title=None, description=None, default=None, metadata=None, drop_invalid_rows=False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Check",
+        "kind": "class",
+        "members": [
+          {
+            "path": "featurelifted.Check.ge",
+            "kind": "method",
+            "signature": "(cls, min_value, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.errors.SchemaError",
+        "kind": "exception"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A `DataFrameSchema` whose columns declare dtypes validates a pandas DataFrame whose values already match those dtypes and returns a DataFrame with the same column names."
+      },
+      {
+        "id": "B002",
+        "text": "When a `Column` is constructed with `coerce=True` and a numeric dtype, `validate` converts compatible string values in that column to the declared dtype."
+      },
+      {
+        "id": "B003",
+        "text": "A column check created with `Check.ge(min_value)` rejects rows whose values are below `min_value` by raising `featurelifted.errors.SchemaError`."
+      },
+      {
+        "id": "B004",
+        "text": "Validating a DataFrame that omits a required schema column raises `featurelifted.errors.SchemaError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `DataFrameSchema`, `Column`, `Check`, `Check.ge`, `DataFrameSchema.validate`, and `errors.SchemaError` with the callable paths listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `pandera`."
+      }
+    ],
+    "exclusions": [
+      "Spark/Dask/Polars/Ibis backends",
+      "cloud IO",
+      "CLI infer/generate",
+      "runtime import of pandera"
+    ],
+    "forbidden": {
+      "imports": [
+        "pandera"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_validate_matching_dtypes",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_coerce_string_to_int",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_check_ge_rejects_low_values",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_dtype_and_coerce_together",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_ge_check_and_missing_column_raise_schema_error",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.DataFrameSchema",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DataFrameSchema.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.DataFrameSchema.validate",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Column",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Column.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Check",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Check.ge",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.errors.SchemaError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A `DataFrameSchema` whose columns declare dtypes validates a pandas DataFrame whose values already match those dtypes and returns a DataFrame with the same column names."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When a `Column` is constructed with `coerce=True` and a numeric dtype, `validate` converts compatible string values in that column to the declared dtype."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A column check created with `Check.ge(min_value)` rejects rows whose values are below `min_value` by raising `featurelifted.errors.SchemaError`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Validating a DataFrame that omits a required schema column raises `featurelifted.errors.SchemaError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `DataFrameSchema`, `Column`, `Check`, `Check.ge`, `DataFrameSchema.validate`, and `errors.SchemaError` with the callable paths listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `pandera`."
+      }
+    ]
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 1873796,
+    "copy_all_loc": 46007,
+    "oracle_bytes": 1884706,
+    "oracle_loc": 46118,
+    "oracle_dependency_count": 15
+  },
+  "spec_hash": "4466bfbadf51383a0a61b4375f68a310e6400977a3858b0c92c093b95da96463",
+  "generated_task_hash": "bee99f5d22708133abc5754af1e769737518fb8eff164c8e0a29d8cff08a695e"
+}

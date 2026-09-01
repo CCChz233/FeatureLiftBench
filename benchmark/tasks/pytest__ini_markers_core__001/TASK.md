@@ -19,6 +19,9 @@ from featurelifted import (
 - `MarkerRegistry(lines: 'list[str]' = <factory>) -> None` class constructor
   - `MarkerRegistry.from_ini(value: 'str | list[str]') -> "'MarkerRegistry'"`
   - `MarkerRegistry.names(self) -> 'list[str]'`
+  - `MarkerRegistry.add_line(self, line: 'str') -> 'None'`
+  - `MarkerRegistry.description(self, name: 'str') -> 'str'`
+  - `MarkerRegistry.from_lines(lines: 'list[str]') -> "'MarkerRegistry'"`
 - `parse_linelist(value: 'str | list[str]') -> 'list[str]'`
 - `split_marker_line(line: 'str') -> 'tuple[str, str]'`
 
@@ -29,7 +32,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: split marker lines into name and description (strip name; preserve description whitespace). Required observable cases include linelist strips blank lines; split marker line whitespace.
 - The extracted feature must support this observable behavior: strip whitespace from linelist entries. Required observable cases include linelist strips blank lines.
 - The extracted feature must support this observable behavior: MarkerRegistry preserves marker declaration order from ini lines. Required observable cases include append marker line; split marker line whitespace.
-- The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.MarkerRegistry.add_line`, `featurelifted.MarkerRegistry.description`, `featurelifted.MarkerRegistry.from_lines`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -53,6 +56,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: split marker lines into name and description (strip name; preserve description whitespace). Required observable cases include linelist strips blank lines; split marker line whitespace.
 - **B004** — The extracted feature must support this observable behavior: strip whitespace from linelist entries. Required observable cases include linelist strips blank lines.
 - **B005** — The extracted feature must support this observable behavior: MarkerRegistry preserves marker declaration order from ini lines. Required observable cases include append marker line; split marker line whitespace.
-- **B006** — The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.MarkerRegistry.add_line`, `featurelifted.MarkerRegistry.description`, `featurelifted.MarkerRegistry.from_lines`, `featurelifted.parse_linelist`, `featurelifted.split_marker_line` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: pytest, _pytest.
 <!-- featureliftbench:behavior-clauses:end -->

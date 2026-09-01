@@ -7,3 +7,5 @@ def test_required_api_surface() -> None:
     assert jwt is not None
     assert OctKey is not None
     assert ExpiredTokenError is not None
+    assert jwt.JWTClaimsRegistry is not None
+    assert hasattr(jwt.JWTClaimsRegistry, "validate")

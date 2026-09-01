@@ -1,0 +1,313 @@
+{
+  "task_id": "paste__dispatch_map_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "lift",
+    "adapted",
+    "registry"
+  ],
+  "source": {
+    "name": "Paste",
+    "url": "https://github.com/cdent/paste",
+    "commit": "28e461548498138b8814b243be432a04a7895dba",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "URLMap prefix dispatch",
+    "description": "Lift Paste URLMap prefix and host dispatch without running Paste's HTTP server.",
+    "source_entrypoints": [
+      "paste.urlmap.URLMap"
+    ],
+    "included_behaviors": [
+      "prefix dispatch",
+      "longest prefix",
+      "PATH_INFO/SCRIPT_NAME rewrite",
+      "host-specific mounts",
+      "404 miss"
+    ],
+    "excluded_behaviors": [
+      "HTTP server sockets",
+      "Paste Deploy config factories",
+      "HTTPS/proxy applications"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "config_environment_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "URLMap is a WSGI composite that rewrites SCRIPT_NAME/PATH_INFO and consults HTTP_HOST.",
+    "signals": [
+      "longest prefix sort",
+      "host tuples",
+      "404 app"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import URLMap",
+    "callable": "URLMap",
+    "signature": "URLMap(not_found_app=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "Paste",
+      "paste"
+    ],
+    "forbidden_imports": [
+      "paste"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "paste/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "URLMap prefix dispatch",
+    "summary": "Build a standalone `featurelifted` package providing Paste-style `URLMap` prefix dispatch for WSGI applications.",
+    "required_api": [
+      {
+        "path": "featurelifted.URLMap",
+        "kind": "class",
+        "signature": "(not_found_app=None)",
+        "members": [
+          {
+            "path": "featurelifted.URLMap.__init__",
+            "kind": "method",
+            "signature": "(self, not_found_app=None)"
+          },
+          {
+            "path": "featurelifted.URLMap.__setitem__",
+            "kind": "method",
+            "signature": "(self, url, app) -> None"
+          },
+          {
+            "path": "featurelifted.URLMap.__getitem__",
+            "kind": "method",
+            "signature": "(self, url)"
+          },
+          {
+            "path": "featurelifted.URLMap.__call__",
+            "kind": "method",
+            "signature": "(self, environ, start_response)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Assigning a WSGI application to `URLMap[prefix]` dispatches requests whose `PATH_INFO` equals that prefix: the application is called, `SCRIPT_NAME` gains the prefix, and `PATH_INFO` becomes empty."
+      },
+      {
+        "id": "B002",
+        "text": "When both a shorter prefix and a longer prefix are mounted, the longest matching prefix is selected; a path that continues past the shorter prefix but does not match the longer one still uses the shorter prefix and forwards the remainder in `PATH_INFO`."
+      },
+      {
+        "id": "B003",
+        "text": "A request whose `PATH_INFO` matches no mounted prefix is answered with an HTTP 404 status."
+      },
+      {
+        "id": "B004",
+        "text": "A mount key of the form `http://host/path` only matches that HTTP host; the same path on another host is not found, while host-less prefixes still match any host."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `URLMap` with construction, `__setitem__`, `__getitem__`, and WSGI `__call__` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `paste`."
+      }
+    ],
+    "exclusions": [
+      "HTTP server sockets",
+      "Paste Deploy config factories",
+      "HTTPS/proxy applications",
+      "runtime import of paste"
+    ],
+    "forbidden": {
+      "imports": [
+        "paste"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Assigning a WSGI application to `URLMap[prefix]` dispatches requests whose `PATH_INFO` equals that prefix: the application is called, `SCRIPT_NAME` gains the prefix, and `PATH_INFO` becomes empty."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When both a shorter prefix and a longer prefix are mounted, the longest matching prefix is selected; a path that continues past the shorter prefix but does not match the longer one still uses the shorter prefix and forwards the remainder in `PATH_INFO`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A request whose `PATH_INFO` matches no mounted prefix is answered with an HTTP 404 status."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "A mount key of the form `http://host/path` only matches that HTTP host; the same path on another host is not found, while host-less prefixes still match any host."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `URLMap` with construction, `__setitem__`, `__getitem__`, and WSGI `__call__` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `paste`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_prefix_dispatch_strips_matched_path",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_longest_prefix_wins",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_remaining_path_is_forwarded",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_longer_prefix_does_not_steal_shorter_unrelated_path",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_domain_specific_mount",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_getitem_roundtrip",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.URLMap",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URLMap.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URLMap.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URLMap.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URLMap.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "c5353733cc8c37dee9d17a0da842e47ceb4529ead6eb74fb74a4e90bd073a6a0",
+  "generated_task_hash": "f634198f19f262ef27ef08ee82f628f27333e171463b03e318dac2a440816b2e",
+  "scoring_reference": {
+    "copy_all_bytes": 2582206,
+    "copy_all_loc": 45388,
+    "oracle_bytes": 1401644,
+    "oracle_loc": 22694,
+    "oracle_dependency_count": 0
+  }
+}

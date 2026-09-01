@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: read_string and section/option get/set. Required observable cases include read modify write stringio; section option access."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "After read_string parses INI text, sections and options are accessible by mapping lookup, option values are mutable, and write serializes the updated document while retaining comments."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: write to StringIO preserves comments and spacing. Required observable cases include add option; multiple sections roundtrip."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Assigning an option value, including a previously absent option, produces a normalized `key = value` line when the document is written."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "Tests use ConfigUpdater.write(StringIO) rather than to_string()."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "ConfigUpdater.write accepts a text stream such as StringIO and writes the complete serialized INI document to it."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
       "text": "Mutable INI document supports multiple sections."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes ConfigUpdater with read_string/write with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: configupdater."
     }
   ],
@@ -36,20 +42,25 @@
     {
       "nodeid": "public_tests/test_public_api.py::test_read_modify_write_stringio",
       "public_clause_ids": [
-        "B001"
-      ]
+        "B001",
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_section_option_access",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_add_option",
       "public_clause_ids": [
+        "B002",
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -57,23 +68,26 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_sections_roundtrip",
       "public_clause_ids": [
-        "B002",
         "B001",
+        "B002",
         "B003",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "9fa593fa85706327bc5fe475baa9fabeefd4913a1998aede71934632596ccb4f"
+  "spec_sha256": "c9c1b743609b4fcb7498f0778d0e3c54740393433007468026842635bde725f6"
 }

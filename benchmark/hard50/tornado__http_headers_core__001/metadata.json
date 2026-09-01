@@ -1,0 +1,296 @@
+{
+  "task_id": "tornado__http_headers_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "parser"
+  ],
+  "source": {
+    "name": "Tornado",
+    "url": "https://github.com/tornadoweb/tornado",
+    "commit": "0096f2897c98facdcd9716009ee934a7381af5ef",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "HTTP header parse",
+    "description": "Lift Tornado HTTPHeaders parsing without IOLoop, web, or HTTP clients.",
+    "source_entrypoints": [
+      "tornado.httputil.HTTPHeaders"
+    ],
+    "included_behaviors": [
+      "parse header block",
+      "multi Set-Cookie",
+      "HTTP header case",
+      "malformed HTTPInputError"
+    ],
+    "excluded_behaviors": [
+      "IOLoop",
+      "HTTPServer",
+      "AsyncHTTPClient",
+      "network"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "HTTPHeaders is a parser view; IOLoop/web/httpclient are unused decoy.",
+    "signals": [
+      "Http-Header-Case",
+      "get_list",
+      "HTTPInputError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import HTTPHeaders, HTTPInputError",
+    "callable": "HTTPHeaders.parse",
+    "signature": "HTTPHeaders.parse(headers: str) -> HTTPHeaders"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "tornado"
+    ],
+    "forbidden_imports": [
+      "tornado"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "tornado/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "HTTP header parse",
+    "summary": "Build a standalone `featurelifted` package that parses HTTP header blocks like Tornado `HTTPHeaders`, including duplicate `Set-Cookie` values and malformed-line errors, without running an IOLoop or HTTP server.",
+    "required_api": [
+      {
+        "path": "featurelifted.HTTPHeaders",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.HTTPHeaders.parse",
+            "kind": "method",
+            "signature": "(cls, headers: str)"
+          },
+          {
+            "path": "featurelifted.HTTPHeaders.add",
+            "kind": "method",
+            "signature": "(self, name: str, value: str)"
+          },
+          {
+            "path": "featurelifted.HTTPHeaders.get_list",
+            "kind": "method",
+            "signature": "(self, name: str)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.HTTPInputError",
+        "kind": "class",
+        "signature": ""
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`HTTPHeaders.parse` of a CRLF-separated block such as `Content-Type: text/html` / `Content-Length: 42` or `Accept: text/plain` / `Host: example.com` stores those header values."
+      },
+      {
+        "id": "B002",
+        "text": "Two `add(\"Set-Cookie\", ...)` calls make `get_list(\"set-cookie\")` return both values, and the combined mapping value is comma-joined."
+      },
+      {
+        "id": "B003",
+        "text": "Parsed header names are HTTP-cased (`content-type` becomes `Content-Type`) and lookup is case-insensitive."
+      },
+      {
+        "id": "B004",
+        "text": "`HTTPHeaders.parse` on a line with no colon raises `HTTPInputError`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `HTTPHeaders` with `parse`, `add`, and `get_list`, plus `HTTPInputError`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `tornado`."
+      }
+    ],
+    "exclusions": [
+      "IOLoop",
+      "HTTPServer",
+      "network",
+      "runtime import of tornado"
+    ],
+    "forbidden": {
+      "imports": [
+        "tornado"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`HTTPHeaders.parse` of a CRLF-separated block such as `Content-Type: text/html` / `Content-Length: 42` or `Accept: text/plain` / `Host: example.com` stores those header values."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Two `add(\"Set-Cookie\", ...)` calls make `get_list(\"set-cookie\")` return both values, and the combined mapping value is comma-joined."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Parsed header names are HTTP-cased (`content-type` becomes `Content-Type`) and lookup is case-insensitive."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`HTTPHeaders.parse` on a line with no colon raises `HTTPInputError`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `HTTPHeaders` with `parse`, `add`, and `get_list`, plus `HTTPInputError`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `tornado`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_two_headers",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_duplicate_set_cookie",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_header_names_are_http_cased",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_malformed_header_line_raises",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.HTTPHeaders",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.HTTPHeaders.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.HTTPHeaders.add",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.HTTPHeaders.get_list",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.HTTPInputError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-28",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Thin HTTPHeaders slice; IOLoop/web unused."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_content_type_and_length",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_set_cookie_get_list",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 1823,
+    "oracle_bytes": 80781,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 36936,
+    "copy_all_bytes": 1630017
+  },
+  "spec_hash": "184d09ebc8c8619568c3516128e26e552cd73e0581b1c24ae0d1ea8e4b62c274",
+  "generated_task_hash": "63ef3e6424d3a50dcdaf2fe111404d3f01aa56859b25845c2423f7bb94ad556a"
+}

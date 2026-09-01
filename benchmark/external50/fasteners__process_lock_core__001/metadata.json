@@ -88,26 +88,27 @@
       },
       {
         "path": "featurelifted.InterProcessLock.release",
-        "kind": "method"
+        "kind": "method",
+        "signature": "() -> None"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: InterProcessLock acquire/release. Required observable cases include acquire release; reacquire after release."
+        "text": "`InterProcessLock` accepts a filesystem path, acquires an available lock either through `acquire()` or as a context manager, and releases the lock through `release()` or context exit."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: context manager acquires and releases. Required observable cases include context manager."
+        "text": "After an acquired `InterProcessLock` is released, the same lock object can acquire that path again and returns `True`."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: non-blocking acquire succeeds on a free lock. Required observable cases include nonblocking acquire free lock."
+        "text": "`InterProcessLock.acquire(blocking=False)` returns `True` when the requested lock is currently free."
       },
       {
         "id": "B004",
-        "text": "Lock files are created under the provided path in temp directories during tests."
+        "text": "`InterProcessLock` operates on a caller-provided local path without requiring the lock file to exist before acquisition."
       },
       {
         "id": "B005",
@@ -134,22 +135,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: InterProcessLock acquire/release. Required observable cases include acquire release; reacquire after release."
+        "text": "`InterProcessLock` accepts a filesystem path, acquires an available lock either through `acquire()` or as a context manager, and releases the lock through `release()` or context exit."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: context manager acquires and releases. Required observable cases include context manager."
+        "text": "After an acquired `InterProcessLock` is released, the same lock object can acquire that path again and returns `True`."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: non-blocking acquire succeeds on a free lock. Required observable cases include nonblocking acquire free lock."
+        "text": "`InterProcessLock.acquire(blocking=False)` returns `True` when the requested lock is currently free."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Lock files are created under the provided path in temp directories during tests."
+        "text": "`InterProcessLock` operates on a caller-provided local path without requiring the lock file to exist before acquisition."
       },
       {
         "behavior_id": "B005",
@@ -183,7 +184,7 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_reacquire_after_release",
         "behavior_ids": [
           "B001",
-          "B003",
+          "B002",
           "B004"
         ],
         "mapping_method": "ai_assisted"
@@ -191,7 +192,9 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_nonblocking_acquire_free_lock",
         "behavior_ids": [
-          "B002"
+          "B001",
+          "B003",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -238,6 +241,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "72d879235835c55471c8c04d0c6309494fc64f98b018a3ff829b29a91b34dc25",
-  "generated_task_hash": "a50c213d042ab1942f1bf517a24cc75f000be0ebb130825d938ca39868f006cf"
+  "spec_hash": "d7168e13388bafd4338ef4b5ead2bacc78008e2c7a2decfa4b45c07954cd9319",
+  "generated_task_hash": "eb45aa3e9668a1bc12347578a75d8cd3974642d251e20fcb1f5b57137121bdac"
 }

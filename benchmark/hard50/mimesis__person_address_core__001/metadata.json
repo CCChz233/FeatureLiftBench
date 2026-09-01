@@ -1,0 +1,319 @@
+{
+  "task_id": "mimesis__person_address_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "tooling"
+  ],
+  "source": {
+    "name": "Mimesis",
+    "url": "https://github.com/lk-geimfari/mimesis",
+    "commit": "b285fd17ada4c916338c08fc105b8b72bda0630a",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Person and address fake data",
+    "description": "Lift Mimesis Person and Address providers for English locale data without the remaining locale/provider tree.",
+    "source_entrypoints": [
+      "mimesis.Person",
+      "mimesis.Address"
+    ],
+    "included_behaviors": [
+      "seeded name",
+      "city",
+      "invalid locale",
+      "full_name"
+    ],
+    "excluded_behaviors": [
+      "Generic all-providers",
+      "binary file providers",
+      "schema builder"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "resource_coupling"
+    ],
+    "primary": "data_model_coupling",
+    "description": "Person/Address load JSON datasets by locale; other locales and providers are copy-all decoy.",
+    "signals": [
+      "Locale",
+      "datasets JSON",
+      "seed"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Person, Address, Locale, LocaleError",
+    "callable": "Person",
+    "signature": "Person(locale=Locale(\"en\"), seed=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "mimesis"
+    ],
+    "forbidden_imports": [
+      "mimesis"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "mimesis/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Person and address fake data",
+    "summary": "Build a standalone `featurelifted` package providing Mimesis-style `Person` and `Address` generators for the English locale, including seeded names and invalid-locale errors.",
+    "required_api": [
+      {
+        "path": "featurelifted.Person",
+        "kind": "class",
+        "signature": "(locale=..., seed=...)",
+        "members": [
+          {
+            "path": "featurelifted.Person.name",
+            "kind": "method",
+            "signature": "(self, gender=None)"
+          },
+          {
+            "path": "featurelifted.Person.full_name",
+            "kind": "method",
+            "signature": "(self, gender=None, reverse=False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Address",
+        "kind": "class",
+        "signature": "(locale=..., seed=...)",
+        "members": [
+          {
+            "path": "featurelifted.Address.city",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Locale",
+        "kind": "class",
+        "signature": ""
+      },
+      {
+        "path": "featurelifted.LocaleError",
+        "kind": "class",
+        "signature": ""
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`Person(locale=Locale(\"en\"), seed=7).name()` returns a non-empty string, and a second instance constructed with the same arguments returns the same name."
+      },
+      {
+        "id": "B002",
+        "text": "`Address(locale=Locale(\"en\"), seed=7).city()` returns a non-empty string."
+      },
+      {
+        "id": "B003",
+        "text": "`Person(locale=\"not-a-locale\")` raises `LocaleError`."
+      },
+      {
+        "id": "B004",
+        "text": "`full_name()` returns a string with at least two whitespace-separated parts for a seeded English person."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Person`, `Address`, `Locale`, and `LocaleError`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `mimesis`."
+      }
+    ],
+    "exclusions": [
+      "Generic provider bundle",
+      "binary files",
+      "runtime import of mimesis"
+    ],
+    "forbidden": {
+      "imports": [
+        "mimesis"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`Person(locale=Locale(\"en\"), seed=7).name()` returns a non-empty string, and a second instance constructed with the same arguments returns the same name."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`Address(locale=Locale(\"en\"), seed=7).city()` returns a non-empty string."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`Person(locale=\"not-a-locale\")` raises `LocaleError`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`full_name()` returns a string with at least two whitespace-separated parts for a seeded English person."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Person`, `Address`, `Locale`, and `LocaleError`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `mimesis`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_full_name_contains_first_and_last",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_address_city_is_seed_stable",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_invalid_locale_raises",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_full_name_contains_first_and_last",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Person",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Person.name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Person.full_name",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Address",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Address.city",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Locale",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LocaleError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Person/Address + en datasets; other locales remain in repo."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_person_name_is_nonempty_string",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_address_city_is_nonempty_string",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 1430,
+    "oracle_bytes": 291392,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 50783,
+    "copy_all_bytes": 12296963
+  },
+  "spec_hash": "7cb4dd8bc60d84a75a7d77beb6ec7ded3b2ee8a43195c774d5e542797c33c348",
+  "generated_task_hash": "1026fa9e1e88a3545caa18b21278aadb4bf70f5687095d9bfcd51fce06187f94"
+}

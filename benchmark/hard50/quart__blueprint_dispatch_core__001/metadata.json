@@ -1,0 +1,356 @@
+{
+  "task_id": "quart__blueprint_dispatch_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "registry"
+  ],
+  "source": {
+    "name": "Quart",
+    "url": "https://github.com/pallets/quart",
+    "commit": "47dcc0119287c5ef912472a8744b09363d1599d8",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Blueprint routing",
+    "description": "Lift Quart app and blueprint route dispatch via the in-process test client.",
+    "source_entrypoints": [
+      "quart.Quart",
+      "quart.Blueprint"
+    ],
+    "included_behaviors": [
+      "app route dispatch",
+      "blueprint url_prefix",
+      "404 miss",
+      "independent blueprints"
+    ],
+    "excluded_behaviors": [
+      "hypercorn.serve / bind sockets",
+      "production ASGI server",
+      "websocket serving"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Quart routing shares Flask sansio blueprint registration and an ASGI test client.",
+    "signals": [
+      "route",
+      "register_blueprint",
+      "test_client"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Quart, Blueprint",
+    "callable": "Quart",
+    "signature": "Quart(import_name)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 150,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "aiofiles",
+      "Flask",
+      "Hypercorn",
+      "blinker",
+      "click",
+      "Jinja2",
+      "itsdangerous",
+      "Werkzeug",
+      "MarkupSafe",
+      "h11",
+      "h2",
+      "hpack",
+      "hyperframe",
+      "priority",
+      "wsproto"
+    ],
+    "forbidden_dependencies": [
+      "Quart",
+      "quart"
+    ],
+    "forbidden_imports": [
+      "quart"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "quart/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Blueprint routing",
+    "summary": "Build a standalone `featurelifted` package providing Quart-style app and blueprint HTTP routing through an in-process test client, without binding sockets.",
+    "required_api": [
+      {
+        "path": "featurelifted.Quart",
+        "kind": "class",
+        "signature": "(import_name: str, static_url_path: str | None = None, static_folder: str | None = 'static', static_host: str | None = None, host_matching: bool = False, subdomain_matching: bool = False, template_folder: str | os.PathLike[str] | None = 'templates', instance_path: str | None = None, instance_relative_config: bool = False, root_path: str | None = None)",
+        "members": [
+          {
+            "path": "featurelifted.Quart.__init__",
+            "kind": "method",
+            "signature": "(self, import_name: str, static_url_path: str | None = None, static_folder: str | None = 'static', static_host: str | None = None, host_matching: bool = False, subdomain_matching: bool = False, template_folder: str | os.PathLike[str] | None = 'templates', instance_path: str | None = None, instance_relative_config: bool = False, root_path: str | None = None) -> None"
+          },
+          {
+            "path": "featurelifted.Quart.route",
+            "kind": "method",
+            "signature": "(self, rule: str, **options: Any)"
+          },
+          {
+            "path": "featurelifted.Quart.register_blueprint",
+            "kind": "method",
+            "signature": "(self, blueprint: Blueprint, **options: Any) -> None"
+          },
+          {
+            "path": "featurelifted.Quart.test_client",
+            "kind": "method",
+            "signature": "(self, use_cookies: bool = True, **kwargs: Any)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Blueprint",
+        "kind": "class",
+        "signature": "(name: str, import_name: str, *args, **kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.Blueprint.__init__",
+            "kind": "method",
+            "signature": "(self, *args: Any, **kwargs: Any) -> None"
+          },
+          {
+            "path": "featurelifted.Blueprint.route",
+            "kind": "method",
+            "signature": "(self, rule: str, **options: Any)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `@app.route(path)` registers an async view, `app.test_client().get(path)` returns status 200 and the view body."
+      },
+      {
+        "id": "B002",
+        "text": "After a `Blueprint` is registered with `url_prefix`, a GET to `{url_prefix}{rule}` returns status 200 and the blueprint view body."
+      },
+      {
+        "id": "B003",
+        "text": "A GET to a path that matches no registered rule returns status 404."
+      },
+      {
+        "id": "B004",
+        "text": "Two blueprints registered with different prefixes dispatch independently: each prefix serves its own rule, and a rule from one blueprint is not found under the other prefix."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Quart` and `Blueprint` with construction, `route`, `register_blueprint`, and `test_client` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `quart`."
+      }
+    ],
+    "exclusions": [
+      "hypercorn.serve / bind sockets",
+      "production ASGI server",
+      "websocket serving",
+      "runtime import of quart"
+    ],
+    "forbidden": {
+      "imports": [
+        "quart"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `@app.route(path)` registers an async view, `app.test_client().get(path)` returns status 200 and the view body."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "After a `Blueprint` is registered with `url_prefix`, a GET to `{url_prefix}{rule}` returns status 200 and the blueprint view body."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A GET to a path that matches no registered rule returns status 404."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Two blueprints registered with different prefixes dispatch independently: each prefix serves its own rule, and a rule from one blueprint is not found under the other prefix."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Quart` and `Blueprint` with construction, `route`, `register_blueprint`, and `test_client` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `quart`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_app_route_dispatch",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_blueprint_prefix_dispatch",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_root_route",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_two_blueprints_are_independent",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_dispatch_does_not_use_network",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Quart",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Quart.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Quart.route",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Quart.register_blueprint",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Quart.test_client",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Blueprint",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Blueprint.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Blueprint.route",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "6491ec301db7d2c4820f9708404a26c1d9a901c3d7ec21168879e4503091c983",
+  "generated_task_hash": "1da567f6589d07d4bdada2266e4159061603b7f0838438de0625d1281195b6b5",
+  "scoring_reference": {
+    "copy_all_bytes": 1074918,
+    "copy_all_loc": 9920,
+    "oracle_bytes": 646220,
+    "oracle_loc": 6792,
+    "oracle_dependency_count": 9
+  }
+}

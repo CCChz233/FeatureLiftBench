@@ -15,22 +15,22 @@ from featurelifted import (
 
 ## Required API Details
 
-- `Calendar` class must be importable
-  - `Calendar.from_ical` callable must exist
-  - `Calendar.to_ical` callable must exist
-  - `Calendar.add_component` callable must exist
+- `Calendar()` class constructor
+  - `Calendar.from_ical(st: str | bytes, multiple=False)`
+  - `Calendar.to_ical(self, sorted=True) -> bytes`
+  - `Calendar.add_component(self, component) -> None`
   - `Calendar.subcomponents` attribute must exist on instances
-- `Calendar.from_ical` callable must exist
-- `Calendar.to_ical` callable must exist
-- `Event` class must be importable
-  - `Event.add` callable must exist
+- `Calendar.from_ical(st: str | bytes, multiple=False)`
+- `Calendar.to_ical(self, sorted=True) -> bytes`
+- `Event()` class constructor
+  - `Event.add(self, name, value, parameters=None, encode=True)`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: build Calendar/Event and roundtrip ICS. Required observable cases include build and roundtrip.
-- The extracted feature must support this observable behavior: parse existing ICS strings. Required observable cases include parse existing ics.
-- The extracted feature must support this observable behavior: dtend and multiple events. Required observable cases include event dtend; multiple events.
-- to_ical returns bytes suitable for from_ical.
+- When an `Event` with a summary and start value is added to a `Calendar`, serializing and parsing the calendar preserves the event and its summary.
+- `Calendar.from_ical` accepts existing iCalendar text as well as serialized bytes, exposes calendar properties by key, and preserves event subcomponent order.
+- When events include an end value or multiple summaries, a serialize/parse roundtrip retains the end property and all events in insertion order.
+- Calling `Calendar.to_ical` returns bytes that can be passed directly to `Calendar.from_ical` to reconstruct the calendar.
 - The package exposes Calendar/Event/from_ical/to_ical with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: icalendar.
 
@@ -45,10 +45,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: build Calendar/Event and roundtrip ICS. Required observable cases include build and roundtrip.
-- **B002** — The extracted feature must support this observable behavior: parse existing ICS strings. Required observable cases include parse existing ics.
-- **B003** — The extracted feature must support this observable behavior: dtend and multiple events. Required observable cases include event dtend; multiple events.
-- **B004** — to_ical returns bytes suitable for from_ical.
+- **B001** — When an `Event` with a summary and start value is added to a `Calendar`, serializing and parsing the calendar preserves the event and its summary.
+- **B002** — `Calendar.from_ical` accepts existing iCalendar text as well as serialized bytes, exposes calendar properties by key, and preserves event subcomponent order.
+- **B003** — When events include an end value or multiple summaries, a serialize/parse roundtrip retains the end property and all events in insertion order.
+- **B004** — Calling `Calendar.to_ical` returns bytes that can be passed directly to `Calendar.from_ical` to reconstruct the calendar.
 - **B005** — The package exposes Calendar/Event/from_ical/to_ical with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: icalendar.
 <!-- featureliftbench:behavior-clauses:end -->

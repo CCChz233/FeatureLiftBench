@@ -23,7 +23,7 @@ from featurelifted import (
 ## Required Behavior
 
 - `ProtocolRegistry` resolves protocol names and aliases.
-- `url_to_fs` parses chained URLs and merges query/storage options.
+- url_to_fs parses chained URLs and merges query/storage options, including decoding a storage_options=key=value query item into a top-level option such as options["anon"] == "true" for ?storage_options=anon=true.
 - Unknown protocols raise `UnknownProtocolError`.
 - The package exposes the required task API paths `featurelifted.ProtocolRegistry`, `featurelifted.url_to_fs`, `featurelifted.UnknownProtocolError` with the kinds and callable signatures listed in this contract.
 
@@ -45,7 +45,7 @@ Benchmark evaluator tests remain private. Each evaluator test maps to the public
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
 - **B001** — `ProtocolRegistry` resolves protocol names and aliases.
-- **B002** — `url_to_fs` parses chained URLs and merges query/storage options.
+- **B002** — url_to_fs parses chained URLs and merges query/storage options, including decoding a storage_options=key=value query item into a top-level option such as options["anon"] == "true" for ?storage_options=anon=true.
 - **B003** — Unknown protocols raise `UnknownProtocolError`.
 - **B004** — The package exposes the required task API paths `featurelifted.ProtocolRegistry`, `featurelifted.url_to_fs`, `featurelifted.UnknownProtocolError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: fsspec.

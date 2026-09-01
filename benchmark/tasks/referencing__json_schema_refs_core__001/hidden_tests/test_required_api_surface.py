@@ -11,6 +11,8 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(Registry, type)
     assert hasattr(Registry, 'resolver')
+    assert hasattr(Registry, 'with_resource')
+    assert hasattr(Registry, 'with_resources')
     assert isinstance(Resource, type)
     assert hasattr(Resource, 'from_contents')
     assert exceptions is not None

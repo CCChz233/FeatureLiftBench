@@ -104,7 +104,54 @@
       },
       {
         "path": "featurelifted.validators",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.validators.and_",
+            "kind": "function",
+            "signature": "(*validators)"
+          },
+          {
+            "path": "featurelifted.validators.deep_iterable",
+            "kind": "function",
+            "signature": "(member_validator, iterable_validator=None)"
+          },
+          {
+            "path": "featurelifted.validators.deep_mapping",
+            "kind": "function",
+            "signature": "(key_validator, value_validator, mapping_validator=None)"
+          },
+          {
+            "path": "featurelifted.validators.ge",
+            "kind": "function",
+            "signature": "(val)"
+          },
+          {
+            "path": "featurelifted.validators.instance_of",
+            "kind": "function",
+            "signature": "(type)"
+          },
+          {
+            "path": "featurelifted.validators.matches_re",
+            "kind": "function",
+            "signature": "(regex, flags=0, func=None)"
+          },
+          {
+            "path": "featurelifted.validators.min_len",
+            "kind": "function",
+            "signature": "(length)"
+          },
+          {
+            "path": "featurelifted.validators.optional",
+            "kind": "function",
+            "signature": "(validator)"
+          },
+          {
+            "path": "featurelifted.validators.set_disabled",
+            "kind": "function",
+            "signature": "(disabled)"
+          }
+        ]
       }
     ],
     "optional_api": [],
@@ -131,7 +178,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators`, `featurelifted.validators.and_`, `featurelifted.validators.deep_iterable`, `featurelifted.validators.deep_mapping`, `featurelifted.validators.ge`, `featurelifted.validators.instance_of`, `featurelifted.validators.matches_re`, `featurelifted.validators.min_len`, `featurelifted.validators.optional`, and 1 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -189,7 +236,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators`, `featurelifted.validators.and_`, `featurelifted.validators.deep_iterable`, `featurelifted.validators.deep_mapping`, `featurelifted.validators.ge`, `featurelifted.validators.instance_of`, `featurelifted.validators.matches_re`, `featurelifted.validators.min_len`, `featurelifted.validators.optional`, and 1 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -278,6 +325,60 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.validators.and_",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.deep_iterable",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.deep_mapping",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.ge",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.instance_of",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.matches_re",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.min_len",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.optional",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.validators.set_disabled",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -291,11 +392,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "6bc6abc532f770c524910eb7457502c2bb06b79c1ab9ba1df81fa73edcb7e53d",
-  "generated_task_hash": "71d2207ee8ab2d3e91f1ea6c44061466a8832cad19e4eec58d2b316174af0292"
+  "task_revision": 3,
+  "spec_hash": "4746b55c9560c3bdf5197469a74634cbd33223e2cda3f1582772af77ba63091f",
+  "generated_task_hash": "b898e543abaa166d433f5649fd5fbd28862d4e797db4ffe283b3cb5233c2026b"
 }

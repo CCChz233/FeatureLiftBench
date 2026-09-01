@@ -86,7 +86,8 @@
         "members": [
           {
             "path": "featurelifted.BooleanAlgebra.parse",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, expr, simplify=False)"
           },
           {
             "path": "featurelifted.BooleanAlgebra.Symbol",
@@ -104,7 +105,8 @@
       },
       {
         "path": "featurelifted.BooleanAlgebra.parse",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(self, expr, simplify=False)"
       },
       {
         "path": "featurelifted.ParseError",
@@ -120,11 +122,13 @@
         "members": [
           {
             "path": "featurelifted.Expression.simplify",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self)"
           },
           {
             "path": "featurelifted.Expression.subs",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, substitutions, default=None, simplify=False)"
           }
         ]
       }
@@ -133,19 +137,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: parse and simplify boolean expressions. Required observable cases include parse and simplify."
+        "text": "Given a boolean expression containing symbols, conjunction, disjunction, and negation, `BooleanAlgebra.parse` builds an expression whose `simplify` method returns the equivalent canonical expression."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: expression.subs with simplify. Required observable cases include subs."
+        "text": "Given a parsed expression and a mapping from an algebra `Symbol` to `TRUE`, `Expression.subs` replaces that symbol, and with `simplify=True` returns the simplified substituted expression."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: simplified equality and ParseError on bad input. Required observable cases include equality; parse error."
+        "text": "Simplifying expressions that differ only in commutative operand order produces equal results, while parsing an expression that ends with an operator raises `ParseError`."
       },
       {
         "id": "B004",
-        "text": "NOT/TRUE/FALSE constants simplify as upstream."
+        "text": "When the parsed expression negates the `TRUE` constant, calling `simplify` returns the algebra's `FALSE` constant."
       },
       {
         "id": "B005",
@@ -172,22 +176,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: parse and simplify boolean expressions. Required observable cases include parse and simplify."
+        "text": "Given a boolean expression containing symbols, conjunction, disjunction, and negation, `BooleanAlgebra.parse` builds an expression whose `simplify` method returns the equivalent canonical expression."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: expression.subs with simplify. Required observable cases include subs."
+        "text": "Given a parsed expression and a mapping from an algebra `Symbol` to `TRUE`, `Expression.subs` replaces that symbol, and with `simplify=True` returns the simplified substituted expression."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: simplified equality and ParseError on bad input. Required observable cases include equality; parse error."
+        "text": "Simplifying expressions that differ only in commutative operand order produces equal results, while parsing an expression that ends with an operator raises `ParseError`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "NOT/TRUE/FALSE constants simplify as upstream."
+        "text": "When the parsed expression negates the `TRUE` constant, calling `simplify` returns the algebra's `FALSE` constant."
       },
       {
         "behavior_id": "B005",
@@ -227,22 +231,22 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_parse_error",
         "behavior_ids": [
-          "B001",
-          "B004"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_not_and_constants",
         "behavior_ids": [
-          "B002"
+          "B001",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_symbol_roundtrip",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -331,7 +335,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "4647008c9a66c38bb446e8c97b3c8589b6ea25f1a7243d0b0e9a6961f97f3d53",
-  "generated_task_hash": "ea734c5c301543aa650eae688feba76dca08c148c34a8a48e694cefdf9b2744a",
+  "spec_hash": "4e4a184fa3fc38b68a5145e77e495475a3306b8cc42b5df3d9df7f15cf18a1ff",
+  "generated_task_hash": "37e9e6f0d4e1bb6d9ba7a9fe419c11878e66266fa7647cc190a0a348675df940",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

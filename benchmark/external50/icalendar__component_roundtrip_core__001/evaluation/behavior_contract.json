@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: build Calendar/Event and roundtrip ICS. Required observable cases include build and roundtrip."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When an `Event` with a summary and start value is added to a `Calendar`, serializing and parsing the calendar preserves the event and its summary."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: parse existing ICS strings. Required observable cases include parse existing ics."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "`Calendar.from_ical` accepts existing iCalendar text as well as serialized bytes, exposes calendar properties by key, and preserves event subcomponent order."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: dtend and multiple events. Required observable cases include event dtend; multiple events."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When events include an end value or multiple summaries, a serialize/parse roundtrip retains the end property and all events in insertion order."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "to_ical returns bytes suitable for from_ical."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Calling `Calendar.to_ical` returns bytes that can be passed directly to `Calendar.from_ical` to reconstruct the calendar."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes Calendar/Event/from_ical/to_ical with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: icalendar."
     }
   ],
@@ -37,13 +43,15 @@
       "nodeid": "public_tests/test_public_api.py::test_build_and_roundtrip",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_parse_existing_ics",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -53,26 +61,33 @@
         "B001",
         "B003",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_events",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B001",
+        "B002",
+        "B003",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "30e5563de0c9a3ac7eb7070dca74e1c8fb7812a6b67c8260ded81e02b9d516ba"
+  "spec_sha256": "d254b6a669c95fd4f132f7f500c8ce1d920f5a3d5fae9681230f0d50ccdd8ae8"
 }

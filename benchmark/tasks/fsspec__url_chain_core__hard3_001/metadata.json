@@ -104,7 +104,7 @@
       },
       {
         "id": "B002",
-        "text": "`url_to_fs` parses chained URLs and merges query/storage options."
+        "text": "url_to_fs parses chained URLs and merges query/storage options, including decoding a storage_options=key=value query item into a top-level option such as options[\"anon\"] == \"true\" for ?storage_options=anon=true."
       },
       {
         "id": "B003",
@@ -148,7 +148,7 @@
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "`url_to_fs` parses chained URLs and merges query/storage options."
+        "text": "url_to_fs parses chained URLs and merges query/storage options, including decoding a storage_options=key=value query item into a top-level option such as options[\"anon\"] == \"true\" for ?storage_options=anon=true."
       },
       {
         "behavior_id": "B003",
@@ -240,7 +240,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "b63d19123798ed9956049757b2cc19ce9f28612cd05447c202c5aa8b83338e88",
-  "generated_task_hash": "9c8cdf7a8316d06fcae4689f7d31d2232c639d40d0883e01509a216d0097bdcc"
+  "task_revision": 5,
+  "spec_hash": "a9f31f9efeab10bbb1857505c2c994a7188f173c8c498b29fbee43c0d8c4481d",
+  "generated_task_hash": "ad49d18d0b3ec328a66b2a97d52d023e9fff8aeb465130a045e58a737624bced"
 }

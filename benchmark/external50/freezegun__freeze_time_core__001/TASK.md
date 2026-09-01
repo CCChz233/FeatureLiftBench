@@ -17,24 +17,22 @@ from featurelifted import (
 
 ## Required API Details
 
-- `freeze_time(time_to_freeze=None, tick: bool = False, ...)`
+- `freeze_time(time_to_freeze=None, tz_offset=0, ignore=None, tick: bool = False, as_arg: bool = False, as_kwarg: str = '', auto_tick_seconds: float = 0, real_asyncio: bool = False)`
 - `FrozenDateTimeFactory` class must be importable
-  - `FrozenDateTimeFactory.tick` callable must exist
-  - `FrozenDateTimeFactory.move_to` callable must exist
+  - `FrozenDateTimeFactory.tick(delta: timedelta | float = timedelta(seconds=1)) -> None`
+  - `FrozenDateTimeFactory.move_to(target_datetime) -> None`
 - `TickingDateTimeFactory` class must be importable
-  - `TickingDateTimeFactory.tick` callable must exist
-  - `TickingDateTimeFactory.move_to` callable must exist
+  - `TickingDateTimeFactory.tick(delta: timedelta = timedelta(seconds=1)) -> None`
+  - `TickingDateTimeFactory.move_to(target_datetime) -> None`
 - `StepTickTimeFactory` class must be importable
-  - `StepTickTimeFactory.tick` callable must exist
-  - `StepTickTimeFactory.move_to` callable must exist
+  - `StepTickTimeFactory.tick(delta: timedelta | float = timedelta(seconds=1)) -> None`
+  - `StepTickTimeFactory.move_to(target_datetime) -> None`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: freeze_time context manager and decorator. Required observable cases include freeze context manager; freeze decorator; unfrozen after context.
-- The extracted feature must support this observable behavior: tick and move_to advance frozen time. Required observable cases include tick moves time; move to.
-- Real clock resumes after the freeze context exits.
-- python-dateutil is the only allowed third-party dependency.
-- The package exposes freeze_time with the kinds listed in this contract.
+- freeze_time accepts date/time text as a context manager or decorator, makes datetime.now() report the requested time, and restores the real clock after the scope exits.
+- The factory returned by an active freeze exposes tick(delta=...) and move_to(target_datetime); these operations advance or replace the time subsequently observed through datetime.now().
+- The package exposes freeze_time and the three factory classes, including each factory's tick and move_to methods, with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: freezegun.
 
 ## Constraints
@@ -48,10 +46,8 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: freeze_time context manager and decorator. Required observable cases include freeze context manager; freeze decorator; unfrozen after context.
-- **B002** — The extracted feature must support this observable behavior: tick and move_to advance frozen time. Required observable cases include tick moves time; move to.
-- **B003** — Real clock resumes after the freeze context exits.
-- **B004** — python-dateutil is the only allowed third-party dependency.
-- **B005** — The package exposes freeze_time with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: freezegun.
+- **B001** — freeze_time accepts date/time text as a context manager or decorator, makes datetime.now() report the requested time, and restores the real clock after the scope exits.
+- **B002** — The factory returned by an active freeze exposes tick(delta=...) and move_to(target_datetime); these operations advance or replace the time subsequently observed through datetime.now().
+- **B003** — The package exposes freeze_time and the three factory classes, including each factory's tick and move_to methods, with the kinds listed in this contract.
+- **B004** — the submitted package does not import forbidden upstream packages: freezegun.
 <!-- featureliftbench:behavior-clauses:end -->

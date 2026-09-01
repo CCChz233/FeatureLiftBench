@@ -6,7 +6,7 @@
   "method_label": "autosaddler",
   "cli_flag": null,
   "environment_flag": "FEATURELIFTBENCH_OPENHANDS_PROMPT_APPEND_FILE=<frozen-prompt-pack>",
-  "description": "Prompt-only AutoSaddler V2 search over four OpenHands appendix components. Information boundary, agent runtime, and evaluator stay Official Main. Optimizer never sees Hidden tests, assertions, or reference solutions. Screening only until a frozen pack is evaluated on a pre-registered held-out split. Do not merge scores into the OpenHands paper table.",
+  "description": "Feasibility trial: does AutoSaddler help FeatureLiftBench under OpenHands? Prompt-only search over four appendix components. Same Main information boundary and evaluator. First trial is a two-task causal pilot, not a paper-suite run. Do not merge trial numbers into the OpenHands paper table.",
   "agent_profiles": [
     "openhands_deepseek_v4_flash_main"
   ],
@@ -34,6 +34,16 @@
     "package": "integrations/autosaddler_featureliftbench",
     "pin": "integrations/autosaddler_featureliftbench/AUTOSADDLER_PIN.json",
     "optimize_entrypoint": "python -m autosaddler_featureliftbench.runner",
-    "evaluate_entrypoint": "./scripts/run_benchmark.sh --method autosaddler"
+    "evaluate_entrypoint": "./scripts/run_benchmark.sh --method autosaddler --tasks-root benchmark/hard50_pilot --tasks zope_interface__adapter_registry_core__001"
+  },
+  "trial": {
+    "purpose": "Does AutoSaddler help FeatureLiftBench + OpenHands?",
+    "slice": "causal_pilot",
+    "task_root": "benchmark/hard50_pilot",
+    "train": ["taskiq__broker_task_core__001"],
+    "development": ["zope_interface__adapter_registry_core__001"],
+    "max_openhands_rollouts": 4,
+    "config": "integrations/autosaddler_featureliftbench/configs/causal_pilot_deepseek.yaml",
+    "readout": "Paired Dev H0 vs H1 functional_gate. Trial only; not a paper-table arm."
   }
 }

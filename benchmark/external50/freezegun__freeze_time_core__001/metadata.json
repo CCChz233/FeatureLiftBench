@@ -84,7 +84,7 @@
       {
         "path": "featurelifted.freeze_time",
         "kind": "function",
-        "signature": "(time_to_freeze=None, tick: bool = False, ...)"
+        "signature": "(time_to_freeze=None, tz_offset=0, ignore=None, tick: bool = False, as_arg: bool = False, as_kwarg: str = '', auto_tick_seconds: float = 0, real_asyncio: bool = False)"
       },
       {
         "path": "featurelifted.FrozenDateTimeFactory",
@@ -92,11 +92,13 @@
         "members": [
           {
             "path": "featurelifted.FrozenDateTimeFactory.tick",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(delta: timedelta | float = timedelta(seconds=1)) -> None"
           },
           {
             "path": "featurelifted.FrozenDateTimeFactory.move_to",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(target_datetime) -> None"
           }
         ]
       },
@@ -106,11 +108,13 @@
         "members": [
           {
             "path": "featurelifted.TickingDateTimeFactory.tick",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(delta: timedelta = timedelta(seconds=1)) -> None"
           },
           {
             "path": "featurelifted.TickingDateTimeFactory.move_to",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(target_datetime) -> None"
           }
         ]
       },
@@ -120,11 +124,13 @@
         "members": [
           {
             "path": "featurelifted.StepTickTimeFactory.tick",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(delta: timedelta | float = timedelta(seconds=1)) -> None"
           },
           {
             "path": "featurelifted.StepTickTimeFactory.move_to",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(target_datetime) -> None"
           }
         ]
       }
@@ -133,26 +139,18 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: freeze_time context manager and decorator. Required observable cases include freeze context manager; freeze decorator; unfrozen after context."
+        "text": "freeze_time accepts date/time text as a context manager or decorator, makes datetime.now() report the requested time, and restores the real clock after the scope exits."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: tick and move_to advance frozen time. Required observable cases include tick moves time; move to."
+        "text": "The factory returned by an active freeze exposes tick(delta=...) and move_to(target_datetime); these operations advance or replace the time subsequently observed through datetime.now()."
       },
       {
         "id": "B003",
-        "text": "Real clock resumes after the freeze context exits."
+        "text": "The package exposes freeze_time and the three factory classes, including each factory's tick and move_to methods, with the kinds listed in this contract."
       },
       {
         "id": "B004",
-        "text": "python-dateutil is the only allowed third-party dependency."
-      },
-      {
-        "id": "B005",
-        "text": "The package exposes freeze_time with the kinds listed in this contract."
-      },
-      {
-        "id": "B006",
         "text": "the submitted package does not import forbidden upstream packages: freezegun."
       }
     ],
@@ -172,22 +170,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: freeze_time context manager and decorator. Required observable cases include freeze context manager; freeze decorator; unfrozen after context."
+        "text": "freeze_time accepts date/time text as a context manager or decorator, makes datetime.now() report the requested time, and restores the real clock after the scope exits."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: tick and move_to advance frozen time. Required observable cases include tick moves time; move to."
+        "text": "The factory returned by an active freeze exposes tick(delta=...) and move_to(target_datetime); these operations advance or replace the time subsequently observed through datetime.now()."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "Real clock resumes after the freeze context exits."
+        "text": "The package exposes freeze_time and the three factory classes, including each factory's tick and move_to methods, with the kinds listed in this contract."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "python-dateutil is the only allowed third-party dependency."
+        "text": "the submitted package does not import forbidden upstream packages: freezegun."
       },
       {
         "behavior_id": "B005",
@@ -211,14 +209,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_freeze_decorator",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_unfrozen_after_context",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -227,30 +225,29 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
         "behavior_ids": [
-          "B006"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_tick_moves_time",
         "behavior_ids": [
-          "B002",
           "B001",
-          "B004"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_move_to",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
         "behavior_ids": [
-          "B005"
+          "B003"
         ],
         "mapping_method": "generated_required_api_surface"
       }
@@ -325,8 +322,8 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "12da57612c1bc4593ace68c492c2c180be8c969486b5b644d94cad9231c0cdc1",
-  "generated_task_hash": "727ef7059fc2a322787437847963979f1ddf76fbe47c32449c31379da9e33293",
+  "spec_hash": "8dadbbea8043de656e0029871871291b18f11f0307913bcdad497114b8b18687",
+  "generated_task_hash": "890663523db4859864e4c87da51585d6fe5b100c688cf6dba9013f989e0c4f32",
   "contract_repair_id": "external50-contract-members-20260801-v1",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

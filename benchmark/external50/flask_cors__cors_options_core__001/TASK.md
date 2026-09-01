@@ -20,10 +20,8 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: CORS(app) reflects Origin on GET responses. Required observable cases include cors app headers.
-- The extracted feature must support this observable behavior: cross_origin decorator sets per-route ACAO. Required observable cases include cross origin decorator.
-- The extracted feature must support this observable behavior: OPTIONS preflight exposes allowed methods. Required observable cases include options preflight.
-- Tests use Flask test client only; Flask is an allowed dependency.
+- CORS(app, ...) installs Flask response handling that permits configured origins on ordinary requests and emits Access-Control-Allow-Methods for valid OPTIONS preflight requests.
+- cross_origin(**options) returns a route decorator; when configured with an allowed origin, the decorated response carries that origin in Access-Control-Allow-Origin.
 - The package exposes CORS and cross_origin with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: flask_cors.
 
@@ -38,10 +36,8 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: CORS(app) reflects Origin on GET responses. Required observable cases include cors app headers.
-- **B002** — The extracted feature must support this observable behavior: cross_origin decorator sets per-route ACAO. Required observable cases include cross origin decorator.
-- **B003** — The extracted feature must support this observable behavior: OPTIONS preflight exposes allowed methods. Required observable cases include options preflight.
-- **B004** — Tests use Flask test client only; Flask is an allowed dependency.
-- **B005** — The package exposes CORS and cross_origin with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: flask_cors.
+- **B001** — CORS(app, ...) installs Flask response handling that permits configured origins on ordinary requests and emits Access-Control-Allow-Methods for valid OPTIONS preflight requests.
+- **B002** — cross_origin(**options) returns a route decorator; when configured with an allowed origin, the decorated response carries that origin in Access-Control-Allow-Origin.
+- **B003** — The package exposes CORS and cross_origin with the kinds listed in this contract.
+- **B004** — the submitted package does not import forbidden upstream packages: flask_cors.
 <!-- featureliftbench:behavior-clauses:end -->

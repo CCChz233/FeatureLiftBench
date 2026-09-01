@@ -109,7 +109,14 @@
       {
         "path": "featurelifted.Request",
         "kind": "class",
-        "signature": "(path: 'str', headers: 'Headers', _exception: 'Exception | None' = None) -> None"
+        "signature": "(path: 'str', headers: 'Headers', _exception: 'Exception | None' = None) -> None",
+        "members": [
+          {
+            "path": "featurelifted.Request.parse",
+            "kind": "method",
+            "signature": "(read_line: 'Callable[[int], Generator[None, None, bytes | bytearray]]') -> 'Generator[None, None, Request]'"
+          }
+        ]
       },
       {
         "path": "featurelifted.Response",
@@ -267,7 +274,7 @@
       },
       {
         "id": "B008",
-        "text": "The package exposes the required task API paths `featurelifted.Headers`, `featurelifted.Headers.get_all`, `featurelifted.Request`, `featurelifted.Response`, `featurelifted.accept_key`, `featurelifted.generate_key`, `featurelifted.validate_handshake_request`, `featurelifted.exceptions`, `featurelifted.exceptions.InvalidHeader`, `featurelifted.exceptions.InvalidHeaderFormat`, `featurelifted.exceptions.InvalidHeaderValue`, `featurelifted.exceptions.InvalidOrigin`, and 16 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Headers`, `featurelifted.Headers.get_all`, `featurelifted.Request`, `featurelifted.Request.parse`, `featurelifted.Response`, `featurelifted.accept_key`, `featurelifted.generate_key`, `featurelifted.validate_handshake_request`, `featurelifted.exceptions`, `featurelifted.exceptions.InvalidHeader`, `featurelifted.exceptions.InvalidHeaderFormat`, `featurelifted.exceptions.InvalidHeaderValue`, and 17 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -341,7 +348,7 @@
       {
         "behavior_id": "B008",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Headers`, `featurelifted.Headers.get_all`, `featurelifted.Request`, `featurelifted.Response`, `featurelifted.accept_key`, `featurelifted.generate_key`, `featurelifted.validate_handshake_request`, `featurelifted.exceptions`, `featurelifted.exceptions.InvalidHeader`, `featurelifted.exceptions.InvalidHeaderFormat`, `featurelifted.exceptions.InvalidHeaderValue`, `featurelifted.exceptions.InvalidOrigin`, and 16 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Headers`, `featurelifted.Headers.get_all`, `featurelifted.Request`, `featurelifted.Request.parse`, `featurelifted.Response`, `featurelifted.accept_key`, `featurelifted.generate_key`, `featurelifted.validate_handshake_request`, `featurelifted.exceptions`, `featurelifted.exceptions.InvalidHeader`, `featurelifted.exceptions.InvalidHeaderFormat`, `featurelifted.exceptions.InvalidHeaderValue`, and 17 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B009",
@@ -542,6 +549,12 @@
         ]
       },
       {
+        "path": "featurelifted.Request.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.Response",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -703,11 +716,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 3,
-  "spec_hash": "edf208bcea7693a9cd33dc2b9a12a16840e3e870b75e7798a2533ee13ec4ab17",
-  "generated_task_hash": "61ba7c9d6f3a41770e8a7cdb8ae1f6fc864c37a77ed29ca62c0df5b553d9dda7"
+  "task_revision": 4,
+  "spec_hash": "c402872d52d05ae6ce6248a5ad595c9d67d886c14f4fd98beee66ce923c9ea85",
+  "generated_task_hash": "5f9ab16184d355d5901b4715b239613be67f8ff09fda0c85fadf8a7dfbebd0c7"
 }

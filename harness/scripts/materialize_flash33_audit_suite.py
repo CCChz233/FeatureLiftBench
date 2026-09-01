@@ -30,7 +30,7 @@ DEFAULT_PACKETS = (
 DEFAULT_TASKS = _REPO / "benchmark" / "python200_tasks"
 DEFAULT_SOURCE_REGISTRY = _REPO / "benchmark" / "sources" / "python200_registry.json"
 DEFAULT_OUTPUT = (
-    _REPO / "artifacts/research_analysis/agentic_evidence/flash33_suite_v1"
+    _REPO / "experiments/validation/agentic_evidence/flash33_suite_v1"
 )
 
 INSTRUCTION = (

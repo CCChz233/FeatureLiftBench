@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 
 from featurelifted import CachePolicy, create_key, get_expiration, normalize_body, normalize_headers, normalize_params
@@ -21,7 +22,7 @@ def test_json_body_sorting_and_redaction_affect_cache_key():
     )
 
     assert first == second
-    assert normalize_body('{"b":2,"a":1}', headers=headers) == b'{"a":1,"b":2}'
+    assert json.loads(normalize_body('{"b":2,"a":1}', headers=headers)) == {"a": 1, "b": 2}
 
 
 def test_form_body_and_key_only_params_are_normalized():

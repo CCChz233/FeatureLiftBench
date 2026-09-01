@@ -107,7 +107,7 @@
       "behavior_id": "B007",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B007",
-      "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.Exclude`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.undefined`, `featurelifted.undefined.UndefinedParameterError` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.LetterCase.CAMEL`, `featurelifted.Exclude`, `featurelifted.Exclude.ALWAYS`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.global_config.decoders`, `featurelifted.global_config.encoders`, and 2 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B008",
@@ -177,7 +177,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "49886aec58426a5619b4576cb48e55e2d01bec94b8b5a12e258907105b96ae97",
+  "spec_sha256": "33cab4a8221de6a0c8fff9255662904ccfe10e8045944ab5a99acbe7f0f1a13f",
   "task_id": "dataclasses_json__serde_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

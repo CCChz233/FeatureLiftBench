@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+echo "DEPRECATED: start_run.sh launches the legacy run.sh path; use ./scripts/run_benchmark.sh from your process supervisor." >&2
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

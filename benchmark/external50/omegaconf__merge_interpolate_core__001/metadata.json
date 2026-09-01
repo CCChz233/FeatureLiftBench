@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "medium",
   "status": "validated",
-  "task_revision": 2,
+  "task_revision": 3,
   "tags": [
     "external50",
     "pilot",
@@ -84,35 +84,43 @@
     "required_api": [
       {
         "path": "featurelifted.OmegaConf.create",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(obj=None)"
       },
       {
         "path": "featurelifted.OmegaConf.merge",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(*configs)"
       },
       {
         "path": "featurelifted.OmegaConf.to_container",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(cfg, *, resolve=False)"
       },
       {
         "path": "featurelifted.OmegaConf.select",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(cfg, key, default=None)"
       },
       {
         "path": "featurelifted.OmegaConf.resolve",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(cfg) -> None"
       },
       {
         "path": "featurelifted.OmegaConf.is_missing",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(cfg, key) -> bool"
       },
       {
         "path": "featurelifted.OmegaConf.is_config",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(obj) -> bool"
       },
       {
         "path": "featurelifted.OmegaConf.set_struct",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(cfg, flag: bool) -> None"
       },
       {
         "path": "featurelifted.errors.InterpolationResolutionError",
@@ -127,15 +135,15 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+        "text": "OmegaConf.create builds attribute-accessible configuration trees; OmegaConf.merge combines mappings, OmegaConf.to_container(..., resolve=True) replaces ${key} interpolations with their values, and OmegaConf.select resolves dotted paths while returning its default for a missing path."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+        "text": "`OmegaConf.is_missing` and `OmegaConf.is_config` classify missing and config nodes; after `OmegaConf.resolve(cfg)`, interpolated values are readable by attribute access on the resolved tree."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+        "text": "Resolving a missing interpolation with OmegaConf.to_container(..., resolve=True) raises InterpolationResolutionError, and assigning an unknown key after OmegaConf.set_struct(cfg, True) raises a key-related exception such as ConfigKeyError."
       },
       {
         "id": "B004",
@@ -167,17 +175,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: create/merge/to_container with interpolation resolve and select. Required observable cases include create merge resolve; select."
+        "text": "OmegaConf.create builds attribute-accessible configuration trees; OmegaConf.merge combines mappings, OmegaConf.to_container(..., resolve=True) replaces ${key} interpolations with their values, and OmegaConf.select resolves dotted paths while returning its default for a missing path."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: is_missing/is_config helpers and resolve inplace. Required observable cases include is helpers; resolve inplace."
+        "text": "`OmegaConf.is_missing` and `OmegaConf.is_config` classify missing and config nodes; after `OmegaConf.resolve(cfg)`, interpolated values are readable by attribute access on the resolved tree."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: InterpolationResolutionError and struct-mode key errors. Required observable cases include interpolation error; struct mode key error."
+        "text": "Resolving a missing interpolation with OmegaConf.to_container(..., resolve=True) raises InterpolationResolutionError, and assigning an unknown key after OmegaConf.set_struct(cfg, True) raises a key-related exception such as ConfigKeyError."
       },
       {
         "behavior_id": "B004",
@@ -206,14 +214,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_select",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_is_helpers",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -222,14 +230,15 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolve_inplace",
         "behavior_ids": [
-          "B001"
+          "B001",
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_interpolation_error",
         "behavior_ids": [
-          "B002"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -332,7 +341,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "6e95bf3665a774cc8340aaf746bc00e811e4fe8a2ac53726de2b3a5d1e9f9e2a",
-  "generated_task_hash": "deecc33cf2a711601f0e80381798c192b0df9bb809f8cec826b42083419b4d12",
+  "spec_hash": "1b8bb0074aba435e7158570679ac06a65f56cf37349e0df9fb668857181694ba",
+  "generated_task_hash": "3746c763863c653a99ac25894d0c2bbfbe79cdf08fbb8b8b6f92f5f28d52943f",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

@@ -91,7 +91,7 @@
       "behavior_id": "B005",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
-      "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.parsetree.ControlLine`, `featurelifted.parsetree.DefTag`, `featurelifted.parsetree.Expression`, `featurelifted.parsetree.TemplateNode`, `featurelifted.parsetree.Text`, `featurelifted.PythonCode`, `featurelifted.PythonCode.declared_identifiers`, `featurelifted.PythonCode.undeclared_identifiers`, `featurelifted.PythonFragment`, and 4 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
@@ -162,7 +162,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "dd563c623fa7e461905789e58f393e46decd097cbb20d248568b8d7838b3f290",
+  "spec_sha256": "69bd7a3d97c618f76b4e47724265526e17441c3315ea2e93d57689cde1b48b76",
   "task_id": "mako__lexer_expression_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

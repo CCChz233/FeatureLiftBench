@@ -21,6 +21,7 @@ def test_required_api_surface():
     assert isinstance(Or, type)
     assert hasattr(Or, 'check')
     assert isinstance(And, type)
+    assert hasattr(And, 'check')
     assert isinstance(Forward, type)
     assert hasattr(Forward, 'set_type')
     assert hasattr(Forward, 'check')

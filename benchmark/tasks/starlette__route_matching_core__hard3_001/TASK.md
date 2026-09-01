@@ -33,7 +33,7 @@ from featurelifted import (
 - compile_path builds a matching regex and parameter convertors, and Route distinguishes full, partial, and non-matches for the request path.
 - compile_path resolves registered convertors for typed path parameters and rejects unknown convertor names.
 - `Mount` matches child routes under a path prefix.
-- When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters.
+- When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path.
 - The package exposes the required task API paths `featurelifted.compile_path`, `featurelifted.Route`, `featurelifted.Route.matches`, `featurelifted.Mount`, `featurelifted.Router`, `featurelifted.Router.match`, `featurelifted.Router.url_path_for`, `featurelifted.Match`, `featurelifted.Match.NONE` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -56,7 +56,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — compile_path builds a matching regex and parameter convertors, and Route distinguishes full, partial, and non-matches for the request path.
 - **B002** — compile_path resolves registered convertors for typed path parameters and rejects unknown convertor names.
 - **B003** — `Mount` matches child routes under a path prefix.
-- **B004** — When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters.
+- **B004** — When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path.
 - **B005** — The package exposes the required task API paths `featurelifted.compile_path`, `featurelifted.Route`, `featurelifted.Route.matches`, `featurelifted.Mount`, `featurelifted.Router`, `featurelifted.Router.match`, `featurelifted.Router.url_path_for`, `featurelifted.Match`, `featurelifted.Match.NONE` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: starlette.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -105,6 +105,16 @@
             "path": "featurelifted.Selector.remove_namespace",
             "kind": "method",
             "signature": "(prefix: 'str') -> 'None'"
+          },
+          {
+            "path": "featurelifted.Selector.get",
+            "kind": "method",
+            "signature": "(self, default: 'str | None' = None) -> 'str | None'"
+          },
+          {
+            "path": "featurelifted.Selector.getall",
+            "kind": "method",
+            "signature": "(self) -> 'list[str]'"
           }
         ]
       },
@@ -139,7 +149,7 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.Selector.get`, `featurelifted.Selector.getall`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -185,7 +195,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.Selector.get`, `featurelifted.Selector.getall`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -243,13 +253,13 @@
       {
         "path": "featurelifted.Selector.css",
         "covered_by_tests": [
-          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+          "hidden_tests/test_hidden_contract.py::test_empty_css_selector_raises"
         ]
       },
       {
         "path": "featurelifted.Selector.xpath",
         "covered_by_tests": [
-          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+          "hidden_tests/test_hidden_contract.py::test_xpath_with_namespace"
         ]
       },
       {
@@ -262,6 +272,18 @@
         "path": "featurelifted.Selector.remove_namespace",
         "covered_by_tests": [
           "hidden_tests/test_hidden_contract.py::test_xpath_with_namespace"
+        ]
+      },
+      {
+        "path": "featurelifted.Selector.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Selector.getall",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
       },
       {
@@ -294,11 +316,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 4,
-  "spec_hash": "f3d82e478aeafbd1000732c8c2f89b228603374fb68e96b9b757136ae62824ea",
-  "generated_task_hash": "7cc65ec877b42f19e3ab040fe89ccc5f7d447f3e61367a11247194e9309248fe"
+  "task_revision": 5,
+  "spec_hash": "dcf29607f2992b44c96e65a3b6ef0a1343228379b210085024be022c14e1a94d",
+  "generated_task_hash": "33c9269e92606655ba7c6a1c97335d57731165df135c964b082aa01ec33c1c5a"
 }

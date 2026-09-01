@@ -22,6 +22,8 @@ from featurelifted import (
 
 - `CachePolicy(should_store: 'bool', expiration_seconds: 'int | None', reason: 'str' = '') -> None` class constructor
   - `CachePolicy.from_headers(headers: 'dict[str, Any] | None', default: 'int | None' = None, now: 'datetime | None' = None) -> "'CachePolicy'"`
+  - `CachePolicy.expiration_seconds` attribute must exist on instances
+  - `CachePolicy.should_store` attribute must exist on instances
 - `create_key(method: 'str', url: 'str', params=None, headers: 'dict[str, Any] | None' = None, body: 'Any' = None, ignored_parameters=None, match_headers: 'bool | list[str] | tuple[str, ...]' = False, verify: 'bool' = True, serializer: 'Any' = None, content_root_key: 'str | None' = None) -> 'str'`
 - `get_expiration(headers: 'dict[str, Any] | None', default: 'int | None' = None, now: 'datetime | None' = None) -> 'int | None'`
 - `create_cache_key(request: 'Any', **kwargs: 'Any') -> 'str'`
@@ -42,7 +44,7 @@ from featurelifted import (
 - get_expiration returns max-age seconds, Expires relative to now, no-store suppression, or the declared default when no directive applies.
 - `Cache-Control: max-age=N` sets expiration to `N` seconds.
 - Use `default` expiration when no cache header applies.
-- The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.CachePolicy.expiration_seconds`, `featurelifted.CachePolicy.should_store`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -76,6 +78,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B009** — get_expiration returns max-age seconds, Expires relative to now, no-store suppression, or the declared default when no directive applies.
 - **B010** — `Cache-Control: max-age=N` sets expiration to `N` seconds.
 - **B011** — Use `default` expiration when no cache header applies.
-- **B012** — The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract.
+- **B012** — The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.CachePolicy.expiration_seconds`, `featurelifted.CachePolicy.should_store`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelifted.create_cache_key`, `featurelifted.normalize_body`, `featurelifted.normalize_headers`, `featurelifted.normalize_params` with the kinds and callable signatures listed in this contract.
 - **B013** — the submitted package does not import forbidden upstream packages: requests_cache, requests, url_normalize.
 <!-- featureliftbench:behavior-clauses:end -->

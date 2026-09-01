@@ -1,0 +1,343 @@
+{
+  "task_id": "graphene__schema_execute_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "pilot",
+    "lift",
+    "composite",
+    "workflow"
+  ],
+  "source": {
+    "name": "graphene",
+    "url": "https://github.com/graphql-python/graphene",
+    "commit": "82903263080b3b7f22c2ad84319584d7a3b1a1f6",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Graphene schema execution",
+    "description": "Lift Graphene ObjectType/Schema query execution, including arguments, nested fields, and default camelCase field names.",
+    "source_entrypoints": [
+      "graphene.types.schema.Schema",
+      "graphene.types.objecttype.ObjectType"
+    ],
+    "included_behaviors": [
+      "schema.execute",
+      "field arguments with defaults",
+      "nested ObjectType fields",
+      "auto_camelcase",
+      "invalid field errors"
+    ],
+    "excluded_behaviors": [
+      "Django integration",
+      "Relay connections and mutations",
+      "async execute"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "framework_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Graphene type registry maps ObjectType fields onto graphql-core execution.",
+    "signals": [
+      "type map",
+      "camelCase transform",
+      "resolver binding"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import ObjectType, Schema, String, Int, Field",
+    "callable": "Schema",
+    "signature": "Schema(query=None, mutation=None, subscription=None, types=None, directives=None, auto_camelcase=True)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "graphql-core",
+      "graphql-relay",
+      "python-dateutil",
+      "six",
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "graphene"
+    ],
+    "forbidden_imports": [
+      "graphene"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "graphene/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Graphene schema execution",
+    "summary": "Build a standalone `featurelifted` package providing Graphene-style `ObjectType` definitions and `Schema.execute` for queries.",
+    "required_api": [
+      {
+        "path": "featurelifted.ObjectType",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Schema",
+        "kind": "class",
+        "signature": "(query=None, mutation=None, subscription=None, types=None, directives=None, auto_camelcase=True)",
+        "members": [
+          {
+            "path": "featurelifted.Schema.__init__",
+            "kind": "method",
+            "signature": "(self, query=None, mutation=None, subscription=None, types=None, directives=None, auto_camelcase=True)"
+          },
+          {
+            "path": "featurelifted.Schema.execute",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.String",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Int",
+        "kind": "class"
+      },
+      {
+        "path": "featurelifted.Field",
+        "kind": "class",
+        "signature": "(type_, args=None, resolver=None, source=None, deprecation_reason=None, name=None, description=None, required=False, default_value=None, **extra_args)",
+        "members": [
+          {
+            "path": "featurelifted.Field.__init__",
+            "kind": "method",
+            "signature": "(self, type_, args=None, resolver=None, source=None, deprecation_reason=None, name=None, description=None, required=False, default_value=None, **extra_args)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "A `Schema` constructed with a query `ObjectType` executes a GraphQL operation string; a field resolver that takes an argument declared as `String(name=String(default_value=...))` uses that default when the argument is omitted and the provided value when it is present."
+      },
+      {
+        "id": "B002",
+        "text": "A query field declared with `Field(NestedType)` returns nested selected scalars from an `ObjectType` instance returned by the resolver."
+      },
+      {
+        "id": "B003",
+        "text": "By default `Schema(auto_camelcase=True)` exposes a snake_case Python field such as `hello_world` as the GraphQL field `helloWorld`; querying the snake_case name fails with errors and `data is None`."
+      },
+      {
+        "id": "B004",
+        "text": "Executing a query for a field that is not on the query type yields `data is None` and a non-empty `errors` collection."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `ObjectType`, `Schema`, `Schema.execute`, `String`, `Int`, and `Field` with the callable paths listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `graphene`."
+      }
+    ],
+    "exclusions": [
+      "Django integration",
+      "Relay connections and mutations",
+      "async execute",
+      "runtime import of graphene"
+    ],
+    "forbidden": {
+      "imports": [
+        "graphene"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "A `Schema` constructed with a query `ObjectType` executes a GraphQL operation string; a field resolver that takes an argument declared as `String(name=String(default_value=...))` uses that default when the argument is omitted and the provided value when it is present."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A query field declared with `Field(NestedType)` returns nested selected scalars from an `ObjectType` instance returned by the resolver."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "By default `Schema(auto_camelcase=True)` exposes a snake_case Python field such as `hello_world` as the GraphQL field `helloWorld`; querying the snake_case name fails with errors and `data is None`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Executing a query for a field that is not on the query type yields `data is None` and a non-empty `errors` collection."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `ObjectType`, `Schema`, `Schema.execute`, `String`, `Int`, and `Field` with the callable paths listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `graphene`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_default_argument_resolver",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_explicit_argument",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_nested_object_field",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_field_reports_errors",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_default_argument_is_overridable_and_nested_fields_resolve",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_auto_camelcase_exposes_snake_fields_as_camel_case",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_field_leaves_data_none",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ObjectType",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Schema",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Schema.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Schema.execute",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.String",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Int",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Field",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Field.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "3ea0199c4f24f2a3fe3056f26c7541bf214ed5726625033286f9188776fe5a7c",
+  "generated_task_hash": "11d1a914542bfc00410309416e058c01ba082e4cc5c7676b64461f923de5ecfc",
+  "scoring_reference": {
+    "copy_all_bytes": 294535,
+    "copy_all_loc": 6526,
+    "oracle_bytes": 130342,
+    "oracle_loc": 3263,
+    "oracle_dependency_count": 5
+  }
+}

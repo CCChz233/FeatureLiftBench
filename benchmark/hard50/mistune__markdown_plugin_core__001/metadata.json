@@ -1,0 +1,252 @@
+{
+  "task_id": "mistune__markdown_plugin_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "parser"
+  ],
+  "source": {
+    "name": "mistune",
+    "url": "https://github.com/lepture/mistune",
+    "commit": "a1b50bc12e066e5707ff797f821829bfcdab03b5",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Markdown plugins and HTML renderer",
+    "description": "Lift mistune create_markdown with HTMLRenderer and the strikethrough plugin.",
+    "source_entrypoints": [
+      "mistune.create_markdown",
+      "mistune.renderers.html.HTMLRenderer"
+    ],
+    "included_behaviors": [
+      "emphasis/code",
+      "plugin hook",
+      "render html subset"
+    ],
+    "excluded_behaviors": [
+      "full CLI",
+      "every plugin in tree"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Plugin tokens register renderer methods on the markdown parser pipeline.",
+    "signals": [
+      "plugin import",
+      "HTMLRenderer"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import create_markdown, HTMLRenderer",
+    "callable": "create_markdown",
+    "signature": "create_markdown(escape=None, hard_wrap=False, renderer='html', plugins=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "mistune"
+    ],
+    "forbidden_imports": [
+      "mistune"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "mistune/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Markdown plugins and HTML renderer",
+    "summary": "Build a standalone `featurelifted` package providing mistune-style `create_markdown` with HTML rendering and plugins.",
+    "required_api": [
+      {
+        "path": "featurelifted.create_markdown",
+        "kind": "function",
+        "signature": "(escape=None, hard_wrap=False, renderer='html', plugins=None) -> Markdown"
+      },
+      {
+        "path": "featurelifted.HTMLRenderer",
+        "kind": "class"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`create_markdown()` returns a callable that renders emphasis (`**bold**`) as `<strong>` HTML."
+      },
+      {
+        "id": "B002",
+        "text": "The default HTML renderer turns inline code spans such as `` `code` `` into `<code>` HTML."
+      },
+      {
+        "id": "B003",
+        "text": "`create_markdown(plugins=['strikethrough'])` renders `~~text~~` using `<del>` HTML, which the plugin-less default renderer does not."
+      },
+      {
+        "id": "B004",
+        "text": "`HTMLRenderer` is a constructible renderer class usable as the default HTML backend of `create_markdown`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `create_markdown` and `HTMLRenderer` with the callable paths listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `mistune`."
+      }
+    ],
+    "exclusions": [
+      "full CLI",
+      "every plugin in tree",
+      "runtime import of mistune"
+    ],
+    "forbidden": {
+      "imports": [
+        "mistune"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_emphasis_and_code",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_strikethrough_plugin",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_html_renderer_constructible",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_emphasis_code_and_plugin",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_html_renderer_is_default_backend",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.create_markdown",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.HTMLRenderer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    },
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`create_markdown()` returns a callable that renders emphasis (`**bold**`) as `<strong>` HTML."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "The default HTML renderer turns inline code spans such as `` `code` `` into `<code>` HTML."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`create_markdown(plugins=['strikethrough'])` renders `~~text~~` using `<del>` HTML, which the plugin-less default renderer does not."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`HTMLRenderer` is a constructible renderer class usable as the default HTML backend of `create_markdown`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `create_markdown` and `HTMLRenderer` with the callable paths listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `mistune`."
+      }
+    ]
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 198925,
+    "copy_all_loc": 5112,
+    "oracle_bytes": 199186,
+    "oracle_loc": 5115,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "172d9f5f232dd7a35e962cf3ddacfe6c748a9ae1fce24558f126719e98848156",
+  "generated_task_hash": "c3df0b5b4e6107da158fc233a0da65c913b495539240f3d1d1bad5d4745c2d8b"
+}

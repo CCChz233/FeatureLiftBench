@@ -18,3 +18,4 @@ def test_required_api_surface():
     assert callable(validator)
     assert callable(root_validator)
     assert isinstance(Extra, type)
+    assert Extra.forbid is not None

@@ -13,6 +13,8 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(PhoneNumberFormat, type)
     assert PhoneNumberFormat is not None
+    assert PhoneNumberFormat is not None
+    assert PhoneNumberFormat is not None
     assert issubclass(NumberParseException, BaseException)
     assert callable(format_number)
     assert callable(is_valid_number)

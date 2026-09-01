@@ -1,0 +1,110 @@
+{
+  "task_id": "oslo_config__opt_group_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "Registering an `Opt` with `ConfigOpts.register_opt` makes its declared default available as an attribute before and after parsing with an empty argument list."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Registering an `OptGroup` and a grouped `Opt` makes the value available through `config.<group>.<option>`, while default-group options remain available directly on the `ConfigOpts` object."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "When a registered option is present in an INI configuration file supplied with `--config-file`, parsing loads the file value, including values in named option-group sections."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "When an option is registered with `cli=True`, a command-line value overrides both its declared default and a value from a supplied configuration file; options not overridden on the command line retain their file or default values."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes all required `ConfigOpts`, `Opt`, `OptGroup`, registration, parsing, and attribute-access paths with the callable signatures listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The submitted package does not import the forbidden upstream package `oslo_config`."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_registered_default",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_grouped_option",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_file_overlay",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_cli_overrides_file",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "spec_sha256": "6ea39635ce832aa70eea3082fc2a0939d0d11cd7b041c21b4b766c331fec4161"
+}

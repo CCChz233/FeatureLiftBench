@@ -49,7 +49,7 @@
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
-      "text": "`None` discriminators never conflict."
+      "text": "None discriminators never conflict, and commit() returns the list of callable results in registration order rather than the queued action records."
     },
     {
       "behavior_id": "B004",
@@ -109,7 +109,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "32cd502128f57901d1e7000bdf8975ce0c4079960bbe3e897d444233924a7079",
+  "spec_sha256": "2a90d2030da6e5b8eb594a9b69fdafb504ca36f3471d7487a0dde8161ea13678",
   "task_id": "pyramid__configurator_action_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

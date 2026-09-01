@@ -106,12 +106,26 @@
       {
         "path": "featurelifted.LetterCase",
         "kind": "class",
-        "signature": "(new_class_name, /, names, *, module=None, qualname=None, type=None, start=1, boundary=None)"
+        "signature": "(new_class_name, /, names, *, module=None, qualname=None, type=None, start=1, boundary=None)",
+        "members": [
+          {
+            "path": "featurelifted.LetterCase.CAMEL",
+            "kind": "method",
+            "signature": "(string)"
+          }
+        ]
       },
       {
         "path": "featurelifted.Exclude",
         "kind": "class",
-        "signature": "()"
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.Exclude.ALWAYS",
+            "kind": "method",
+            "signature": "(_)"
+          }
+        ]
       },
       {
         "path": "featurelifted.Undefined",
@@ -136,7 +150,17 @@
       },
       {
         "path": "featurelifted.global_config",
-        "kind": "object"
+        "kind": "object",
+        "members": [
+          {
+            "path": "featurelifted.global_config.decoders",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.global_config.encoders",
+            "kind": "attribute"
+          }
+        ]
       },
       {
         "path": "featurelifted.undefined",
@@ -177,7 +201,7 @@
       },
       {
         "id": "B007",
-        "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.Exclude`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.undefined`, `featurelifted.undefined.UndefinedParameterError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.LetterCase.CAMEL`, `featurelifted.Exclude`, `featurelifted.Exclude.ALWAYS`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.global_config.decoders`, `featurelifted.global_config.encoders`, and 2 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -246,7 +270,7 @@
       {
         "behavior_id": "B007",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.Exclude`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.undefined`, `featurelifted.undefined.UndefinedParameterError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.DataClassJsonMixin`, `featurelifted.LetterCase`, `featurelifted.LetterCase.CAMEL`, `featurelifted.Exclude`, `featurelifted.Exclude.ALWAYS`, `featurelifted.Undefined`, `featurelifted.Undefined.RAISE`, `featurelifted.dataclass_json`, `featurelifted.config`, `featurelifted.global_config`, `featurelifted.global_config.decoders`, `featurelifted.global_config.encoders`, and 2 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B008",
@@ -365,7 +389,19 @@
         ]
       },
       {
+        "path": "featurelifted.LetterCase.CAMEL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.Exclude",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Exclude.ALWAYS",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
@@ -401,6 +437,18 @@
         ]
       },
       {
+        "path": "featurelifted.global_config.decoders",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.global_config.encoders",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.undefined",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -424,11 +472,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 3,
-  "spec_hash": "7ba1a115f459bc9d3df5ae953b76ec71d0f728f50d400e385d1da7b8f63c3627",
-  "generated_task_hash": "49886aec58426a5619b4576cb48e55e2d01bec94b8b5a12e258907105b96ae97"
+  "task_revision": 4,
+  "spec_hash": "597644652a051e64b363cde7c8d5dc44e24283fd67ea0a96eef43f24d6736a67",
+  "generated_task_hash": "33cab4a8221de6a0c8fff9255662904ccfe10e8045944ab5a99acbe7f0f1a13f"
 }

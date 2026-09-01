@@ -18,10 +18,10 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: fix_text repairs latin-1 mojibake and em-dash sequences. Required observable cases include fix latin1 mojibake; fix em dash mojibake.
-- The extracted feature must support this observable behavior: fix_text leaves plain ascii unchanged. Required observable cases include fix identity ascii; fix preserves newlines.
-- The extracted feature must support this observable behavior: fix_text handles empty and partially broken utf-8. Required observable cases include fix empty; fix double encoded utf8.
-- wcwidth is the only allowed third-party dependency for formatting helpers.
+- `fix_text` accepts Unicode strings containing common encoding mojibake, including Latin-1 and punctuation corruption, and returns the repaired text.
+- `fix_text` leaves already-correct plain ASCII text unchanged, including embedded newline characters.
+- `fix_text` accepts an empty string and returns an empty string.
+- `fix_text` accepts partially damaged or multiply encoded Unicode text and returns text that repairs or otherwise changes the damaged representation.
 - The package exposes fix_text with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: ftfy.
 
@@ -36,10 +36,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: fix_text repairs latin-1 mojibake and em-dash sequences. Required observable cases include fix latin1 mojibake; fix em dash mojibake.
-- **B002** — The extracted feature must support this observable behavior: fix_text leaves plain ascii unchanged. Required observable cases include fix identity ascii; fix preserves newlines.
-- **B003** — The extracted feature must support this observable behavior: fix_text handles empty and partially broken utf-8. Required observable cases include fix empty; fix double encoded utf8.
-- **B004** — wcwidth is the only allowed third-party dependency for formatting helpers.
+- **B001** — `fix_text` accepts Unicode strings containing common encoding mojibake, including Latin-1 and punctuation corruption, and returns the repaired text.
+- **B002** — `fix_text` leaves already-correct plain ASCII text unchanged, including embedded newline characters.
+- **B003** — `fix_text` accepts an empty string and returns an empty string.
+- **B004** — `fix_text` accepts partially damaged or multiply encoded Unicode text and returns text that repairs or otherwise changes the damaged representation.
 - **B005** — The package exposes fix_text with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: ftfy.
 <!-- featureliftbench:behavior-clauses:end -->

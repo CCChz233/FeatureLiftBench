@@ -16,4 +16,5 @@ def test_required_api_surface():
     assert isinstance(Or, type)
     assert hasattr(Or, 'validate')
     assert isinstance(And, type)
+    assert hasattr(And, 'validate')
     assert issubclass(SchemaError, BaseException)

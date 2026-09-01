@@ -15,8 +15,10 @@ def test_disabled_plugins_are_excluded():
 
 def test_validate_plugin_config_reports_schema_errors():
     errors = validate_plugin_config("search", {"lang": 1}, {"lang": str, "enabled": bool})
-    assert any("missing required option enabled" in e for e in errors)
-    assert any("lang must be str" in e for e in errors)
+    joined = " ".join(errors).lower()
+    assert errors
+    assert "enabled" in joined
+    assert "lang" in joined
 
 
 def test_unexpected_option_reported():

@@ -108,12 +108,49 @@
       },
       {
         "path": "featurelifted.parsetree",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.parsetree.ControlLine",
+            "kind": "class",
+            "signature": "(keyword, isend, text, **kwargs)"
+          },
+          {
+            "path": "featurelifted.parsetree.DefTag",
+            "kind": "class",
+            "signature": "(keyword, attributes, **kwargs)"
+          },
+          {
+            "path": "featurelifted.parsetree.Expression",
+            "kind": "class",
+            "signature": "(text, escapes, **kwargs)"
+          },
+          {
+            "path": "featurelifted.parsetree.TemplateNode",
+            "kind": "class",
+            "signature": "(filename)"
+          },
+          {
+            "path": "featurelifted.parsetree.Text",
+            "kind": "class",
+            "signature": "(content, **kwargs)"
+          }
+        ]
       },
       {
         "path": "featurelifted.PythonCode",
         "kind": "class",
-        "signature": "(code, **exception_kwargs)"
+        "signature": "(code, **exception_kwargs)",
+        "members": [
+          {
+            "path": "featurelifted.PythonCode.declared_identifiers",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PythonCode.undeclared_identifiers",
+            "kind": "attribute"
+          }
+        ]
       },
       {
         "path": "featurelifted.PythonFragment",
@@ -159,7 +196,7 @@
       },
       {
         "id": "B005",
-        "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.parsetree.ControlLine`, `featurelifted.parsetree.DefTag`, `featurelifted.parsetree.Expression`, `featurelifted.parsetree.TemplateNode`, `featurelifted.parsetree.Text`, `featurelifted.PythonCode`, `featurelifted.PythonCode.declared_identifiers`, `featurelifted.PythonCode.undeclared_identifiers`, `featurelifted.PythonFragment`, and 4 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -214,7 +251,7 @@
       {
         "behavior_id": "B005",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.PythonCode`, `featurelifted.PythonFragment`, `featurelifted.PythonFragment.declared_identifiers`, `featurelifted.PythonFragment.undeclared_identifiers`, `featurelifted.SyntaxException`, `featurelifted.CompileException` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Lexer`, `featurelifted.Lexer.parse`, `featurelifted.parsetree`, `featurelifted.parsetree.ControlLine`, `featurelifted.parsetree.DefTag`, `featurelifted.parsetree.Expression`, `featurelifted.parsetree.TemplateNode`, `featurelifted.parsetree.Text`, `featurelifted.PythonCode`, `featurelifted.PythonCode.declared_identifiers`, `featurelifted.PythonCode.undeclared_identifiers`, `featurelifted.PythonFragment`, and 4 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B006",
@@ -326,7 +363,9 @@
       {
         "path": "featurelifted.Lexer.parse",
         "covered_by_tests": [
-          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+          "hidden_tests/test_hidden_behavior.py::test_expression_filter_escapes",
+          "hidden_tests/test_hidden_behavior.py::test_percent_escape_in_template",
+          "hidden_tests/test_hidden_behavior.py::test_unclosed_tag_raises_syntax"
         ]
       },
       {
@@ -336,7 +375,49 @@
         ]
       },
       {
+        "path": "featurelifted.parsetree.ControlLine",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parsetree.DefTag",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parsetree.Expression",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parsetree.TemplateNode",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parsetree.Text",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.PythonCode",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PythonCode.declared_identifiers",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PythonCode.undeclared_identifiers",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
@@ -384,11 +465,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "d348c61290f0dc8fe5d26b4a02f41df5ff64f44cba2da5b14fa338a953eb36f9",
-  "generated_task_hash": "dd563c623fa7e461905789e58f393e46decd097cbb20d248568b8d7838b3f290"
+  "task_revision": 3,
+  "spec_hash": "8edee980c3ec1eb19bc05a08d3a82415046f59bed29dfa7761125581ff2d69da",
+  "generated_task_hash": "69bd7a3d97c618f76b4e47724265526e17441c3315ea2e93d57689cde1b48b76"
 }

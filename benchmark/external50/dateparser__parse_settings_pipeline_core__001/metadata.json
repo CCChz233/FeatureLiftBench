@@ -92,12 +92,12 @@
       {
         "path": "featurelifted.parse",
         "kind": "function",
-        "signature": "(date_string: str, date_formats=None, languages=None, locales=None, region=None, settings=None)"
+        "signature": "(date_string: str, date_formats=None, languages=None, locales=None, region=None, settings=None, detect_languages_function=None)"
       },
       {
         "path": "featurelifted.Settings",
         "kind": "class",
-        "signature": "(**options)"
+        "signature": "(settings=None)"
       },
       {
         "path": "featurelifted.detect_languages",
@@ -109,19 +109,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages."
+        "text": "Given ISO-formatted or English month-name input, `parse` returns the corresponding midnight `datetime`; when Spanish or French is explicitly selected, localized month-name input returns the corresponding date."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past."
+        "text": "When `Settings` supplies supported options, `parse` honors day-month-year ordering and a preference for past dates, and returns a timezone-aware value when UTC awareness and conversion are requested."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr."
+        "text": "Given localized Spanish or French date text and an en/es/fr candidate list, `detect_languages` returns a list of language shortcodes containing the matching language."
       },
       {
         "id": "B004",
-        "text": "Parsing remains offline using bundled locale/date data without network access."
+        "text": "Constructing `Settings` with a supported setting assigned a value of an invalid type raises `TypeError` before parsing."
       },
       {
         "id": "B005",
@@ -151,22 +151,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: parse ISO/English/Spanish/French dates. Required observable cases include parse iso and english; parse with languages."
+        "text": "Given ISO-formatted or English month-name input, `parse` returns the corresponding midnight `datetime`; when Spanish or French is explicitly selected, localized month-name input returns the corresponding date."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: settings timezone-aware and DATE_ORDER from the allowlist (PREFER_DATES_FROM, RETURN_AS_TIMEZONE_AWARE, TIMEZONE, TO_TIMEZONE, DATE_ORDER, STRICT_PARSING, REQUIRE_PARTS). Required observable cases include settings timezone aware; date order dmy; prefer dates from past."
+        "text": "When `Settings` supplies supported options, `parse` honors day-month-year ordering and a preference for past dates, and returns a timezone-aware value when UTC awareness and conversion are requested."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: detect_languages returns list[str] shortcodes for the en/es/fr subset. Required observable cases include detect languages es fr."
+        "text": "Given localized Spanish or French date text and an en/es/fr candidate list, `detect_languages` returns a list of language shortcodes containing the matching language."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Parsing remains offline using bundled locale/date data without network access."
+        "text": "Constructing `Settings` with a supported setting assigned a value of an invalid type raises `TypeError` before parsing."
       },
       {
         "behavior_id": "B005",
@@ -190,14 +190,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_parse_with_languages",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_settings_timezone_aware",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -206,13 +206,14 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_detect_languages_es_fr",
         "behavior_ids": [
-          "B001"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_prefer_dates_from_past",
         "behavior_ids": [
+          "B001",
           "B002"
         ],
         "mapping_method": "ai_assisted"
@@ -220,7 +221,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_date_order_dmy",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -274,7 +275,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "e3d6f015b5b143a317831c0369bdd12272835cc733b19691f497a43f5d392383",
-  "generated_task_hash": "dd75bc1cba18f25d058c49a037cd09f73fd5cd3a249c543926d80c69ac8826ad",
+  "spec_hash": "9ff02c7bef4418619072624d535a813eaad39761594eafd8c3448fe8884f48b2",
+  "generated_task_hash": "e4feb1af9c279bd15cfe534bd7629bae25e188857c639780f36794cca894451b",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

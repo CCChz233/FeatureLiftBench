@@ -121,6 +121,11 @@
             "path": "featurelifted.Env.str",
             "kind": "method",
             "signature": "(self: 'Env', name: 'str', default: 'typing.Any' = Ellipsis, subcast: 'Subcast[_T] | None' = None, *, validate: 'typing.Callable[[typing.Any], typing.Any] | typing.Iterable[typing.Callable[[typing.Any], typing.Any]] | None' = None, **kwargs) -> '_T | None'"
+          },
+          {
+            "path": "featurelifted.Env.timedelta",
+            "kind": "method",
+            "signature": "(self: 'Env', name: 'str', default: 'typing.Any' = Ellipsis, subcast: 'Subcast[_T] | None' = None, *, validate: 'typing.Callable[[typing.Any], typing.Any] | typing.Iterable[typing.Callable[[typing.Any], typing.Any]] | None' = None, **kwargs) -> '_T | None'"
           }
         ]
       },
@@ -146,7 +151,14 @@
       },
       {
         "path": "featurelifted.validate",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.validate.Range",
+            "kind": "class",
+            "signature": "(min: 'typing.Any' = None, max: 'typing.Any' = None, *, min_inclusive: 'bool' = True, max_inclusive: 'bool' = True, error: 'str | None' = None)"
+          }
+        ]
       }
     ],
     "optional_api": [],
@@ -181,7 +193,7 @@
       },
       {
         "id": "B008",
-        "text": "The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.Env.timedelta`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate`, and 1 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -255,7 +267,7 @@
       {
         "behavior_id": "B008",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.Env.timedelta`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate`, and 1 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B009",
@@ -401,6 +413,12 @@
         ]
       },
       {
+        "path": "featurelifted.Env.timedelta",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_timedelta_gep2257_duration"
+        ]
+      },
+      {
         "path": "featurelifted.EnvError",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -435,6 +453,12 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.validate.Range",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -448,11 +472,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 4,
-  "spec_hash": "c162675e01d761908b07041d79b0b03ee2a237bcb294bf87ea6debc7e526b393",
-  "generated_task_hash": "f02706e51ef044ea3976f047e50935bf3b4264b0eea0ea0ab5e9cd23a47bf5f7"
+  "task_revision": 5,
+  "spec_hash": "0b85d500bb353de5019dfcd6e2dc36e7eb355c77a8c47af4c315a3286d5d5540",
+  "generated_task_hash": "ffb9b8fca06b1f85d5908cd94ee45f7485c5c691a0e43c44abedcbe46af85167"
 }

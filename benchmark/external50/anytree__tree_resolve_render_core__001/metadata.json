@@ -85,6 +85,7 @@
       {
         "path": "featurelifted.Node",
         "kind": "class",
+        "signature": "(name, parent=None, children=None, **kwargs)",
         "members": [
           {
             "path": "featurelifted.Node.name",
@@ -103,30 +104,36 @@
       {
         "path": "featurelifted.Resolver",
         "kind": "class",
+        "signature": "(pathattr='name')",
         "members": [
           {
             "path": "featurelifted.Resolver.get",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, node, path: str)"
           }
         ]
       },
       {
         "path": "featurelifted.RenderTree",
         "kind": "class",
+        "signature": "(node, style=None, childiter=list, maxlevel=None)",
         "members": [
           {
             "path": "featurelifted.RenderTree.__iter__",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self)"
           }
         ]
       },
       {
         "path": "featurelifted.PreOrderIter",
-        "kind": "function"
+        "kind": "class",
+        "signature": "(node, filter_=None, stop=None, maxlevel=None)"
       },
       {
         "path": "featurelifted.findall",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(node, filter_=None, stop=None, maxlevel=None, mincount=None, maxcount=None)"
       },
       {
         "path": "featurelifted.ChildResolverError",
@@ -141,19 +148,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder."
+        "text": "When nodes are linked through the `parent` constructor argument, iterating `PreOrderIter` from the root returns the root followed by its descendants in preorder."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get."
+        "text": "Given a tree and a `Resolver` configured for `name`, `get` resolves both root-qualified paths and child-relative paths to the existing node; requesting a missing child raises `ChildResolverError`, which is a `ResolverError`."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall."
+        "text": "For a tree, iterating `RenderTree` yields rows exposing `pre`, `fill`, and `node`, while `findall` returns a tuple of matching nodes in traversal order and returns an empty tuple when no node matches."
       },
       {
         "id": "B004",
-        "text": "parent assignment mutates children relationships."
+        "text": "When an existing node's `parent` attribute is assigned, that node appears in the new parent's `children` tuple and subsequent preorder traversal includes it beneath that parent."
       },
       {
         "id": "B005",
@@ -181,22 +188,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder."
+        "text": "When nodes are linked through the `parent` constructor argument, iterating `PreOrderIter` from the root returns the root followed by its descendants in preorder."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get."
+        "text": "Given a tree and a `Resolver` configured for `name`, `get` resolves both root-qualified paths and child-relative paths to the existing node; requesting a missing child raises `ChildResolverError`, which is a `ResolverError`."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall."
+        "text": "For a tree, iterating `RenderTree` yields rows exposing `pre`, `fill`, and `node`, while `findall` returns a tuple of matching nodes in traversal order and returns an empty tuple when no node matches."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "parent assignment mutates children relationships."
+        "text": "When an existing node's `parent` attribute is assigned, that node appears in the new parent's `children` tuple and subsequent preorder traversal includes it beneath that parent."
       },
       {
         "behavior_id": "B005",
@@ -236,7 +243,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_parent_children_mutation",
         "behavior_ids": [
-          "B001"
+          "B001",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -257,7 +265,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_findall_empty",
         "behavior_ids": [
-          "B004"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -365,7 +373,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "2ccbbb159773f88685b076678eb6d9d54d17185d39fcc2c24fc80bf2aac56920",
-  "generated_task_hash": "3cf6689249a6a0c2f64eeb8d2d11ab3e1495123079b97da3be326405a36f41d9",
+  "spec_hash": "85d971f665168595429f502166b2e04f066bc43fd5e39c1be949cce7d8d966cd",
+  "generated_task_hash": "491809910ef5c2eb7d3edbfe19178a7ef13a0f1d8c1ac65a5ede630bdcb98806",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

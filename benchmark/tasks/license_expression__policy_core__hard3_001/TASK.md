@@ -34,8 +34,8 @@ from featurelifted import (
 - Parentheses override precedence.
 - `WITH` binds a license symbol to an exception symbol.
 - Aliases normalize to canonical `LicenseSymbol.key` values.
-- Exception symbols cannot appear as plain licenses.
-- Plain license symbols cannot be used as `WITH` exceptions.
+- When parse(..., strict=True) is used, exception symbols cannot appear as plain licenses and raise ExpressionParseError; default parse(..., strict=False) does not enforce that check.
+- When parse(..., strict=True) is used, plain license symbols cannot be used as WITH exceptions and raise ExpressionParseError; default parse(..., strict=False) does not raise for that misuse.
 - `validate()` returns `ExpressionInfo` with errors and invalid symbols instead of raising for unknown symbols.
 - `evaluate_policy()` returns a dictionary with `status`, `normalized`, `symbols`, `denied`, `unknown`, and `errors`.
 - The package exposes the required task API paths `featurelifted.LicenseSymbol`, `featurelifted.LicenseSymbol.key`, `featurelifted.Licensing`, `featurelifted.Licensing.parse`, `featurelifted.Licensing.validate`, `featurelifted.Licensing.license_symbols`, `featurelifted.Licensing.evaluate_policy`, `featurelifted.ExpressionInfo`, `featurelifted.ExpressionParseError` with the kinds and callable signatures listed in this contract.
@@ -66,8 +66,8 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — Parentheses override precedence.
 - **B004** — `WITH` binds a license symbol to an exception symbol.
 - **B005** — Aliases normalize to canonical `LicenseSymbol.key` values.
-- **B006** — Exception symbols cannot appear as plain licenses.
-- **B007** — Plain license symbols cannot be used as `WITH` exceptions.
+- **B006** — When parse(..., strict=True) is used, exception symbols cannot appear as plain licenses and raise ExpressionParseError; default parse(..., strict=False) does not enforce that check.
+- **B007** — When parse(..., strict=True) is used, plain license symbols cannot be used as WITH exceptions and raise ExpressionParseError; default parse(..., strict=False) does not raise for that misuse.
 - **B008** — `validate()` returns `ExpressionInfo` with errors and invalid symbols instead of raising for unknown symbols.
 - **B009** — `evaluate_policy()` returns a dictionary with `status`, `normalized`, `symbols`, `denied`, `unknown`, and `errors`.
 - **B010** — The package exposes the required task API paths `featurelifted.LicenseSymbol`, `featurelifted.LicenseSymbol.key`, `featurelifted.Licensing`, `featurelifted.Licensing.parse`, `featurelifted.Licensing.validate`, `featurelifted.Licensing.license_symbols`, `featurelifted.Licensing.evaluate_policy`, `featurelifted.ExpressionInfo`, `featurelifted.ExpressionParseError` with the kinds and callable signatures listed in this contract.

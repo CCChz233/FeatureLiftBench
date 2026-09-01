@@ -1,5 +1,7 @@
 # AutoSaddler-FLB
 
+> **Status: screening integration · Last verified: 2026-08-29**
+
 External prompt-only integration between AutoSaddler V2 and FeatureLiftBench's existing OpenHands runner.
 It does not modify AutoSaddler, OpenHands, benchmark tasks, or the FeatureLift evaluator.
 
@@ -54,14 +56,17 @@ All paid outputs remain under `experiments/methods/autosaddler_flb/`.
 `configs/causal_pilot_deepseek.yaml` keeps AutoSaddler and OpenHands core frozen while registering an
 integration-owned OpenAI-compatible DeepSeek optimizer. The provider receives only the prompt pack's
 audited workspace assets and returns schema-validated JSON; it has no evaluator or benchmark filesystem
-access. The pilot uses one train failure and one repo-disjoint development failure with an absolute cap of
-four task-agent rollouts: development H0, train H0, train H1, and development H1 after train acceptance.
+access. The pilot uses one Flash functional train failure and one repo-disjoint Flash
+functional development failure with an absolute cap of four task-agent rollouts:
+development H0, train H0, train H1, and development H1 after train acceptance.
+Install-only failures (missing wheels in the eval image) are not valid train
+signals for this loop.
 
 ```bash
 set -a
 source ../../.env
 set +a
-PATH="/Users/chz/.local/share/uv/tools/openhands/bin:$PATH" \
+PATH="$HOME/.local/share/uv/tools/openhands/bin:$PATH" \
   .venv/bin/python -m autosaddler_featureliftbench.runner \
   --config configs/causal_pilot_deepseek.yaml \
   --run-id <new-run-id>

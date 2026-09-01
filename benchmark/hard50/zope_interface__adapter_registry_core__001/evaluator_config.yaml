@@ -1,0 +1,10 @@
+status: materialized_candidate
+language: python
+network: false
+public_tests: public_tests/
+hidden_tests: hidden_tests/
+forbidden_imports:
+  - zope.interface
+forbidden_paths:
+  - repo/
+  - zope/

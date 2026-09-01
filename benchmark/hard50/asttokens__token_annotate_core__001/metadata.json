@@ -1,0 +1,265 @@
+{
+  "task_id": "asttokens__token_annotate_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "parser"
+  ],
+  "source": {
+    "name": "asttokens",
+    "url": "https://github.com/gristlabs/asttokens",
+    "commit": "f97a6e1403d9f0e93940a11b507524550a5c3896",
+    "license": "Apache-2.0"
+  },
+  "feature": {
+    "name": "AST token annotation",
+    "description": "Lift asttokens ASTTokens so parsed nodes expose exact source snippets and tokens.",
+    "source_entrypoints": [
+      "asttokens.ASTTokens"
+    ],
+    "included_behaviors": [
+      "annotate tree",
+      "get_text for node",
+      "get_token at position"
+    ],
+    "excluded_behaviors": [
+      "executing/stack_data traceback UX",
+      "comment token inclusion"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "ASTTokens aligns tokenize output with ast.parse node offsets.",
+    "signals": [
+      "token offsets",
+      "node text slices"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import ASTTokens",
+    "callable": "ASTTokens",
+    "signature": "ASTTokens(source_text, parse=False, tree=None, filename='<unknown>', tokens=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "asttokens"
+    ],
+    "forbidden_imports": [
+      "asttokens"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "asttokens/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "AST token annotation",
+    "summary": "Build a standalone `featurelifted` package providing asttokens-style `ASTTokens` annotation of parsed Python AST nodes with source text and tokens.",
+    "required_api": [
+      {
+        "path": "featurelifted.ASTTokens",
+        "kind": "class",
+        "signature": "(source_text, parse=False, tree=None, filename='<unknown>', tokens=None)",
+        "members": [
+          {
+            "path": "featurelifted.ASTTokens.__init__",
+            "kind": "method",
+            "signature": "(self, source_text, parse=False, tree=None, filename='<unknown>', tokens=None)"
+          },
+          {
+            "path": "featurelifted.ASTTokens.get_text",
+            "kind": "method",
+            "signature": "(self, node, padded=True) -> str"
+          },
+          {
+            "path": "featurelifted.ASTTokens.get_token",
+            "kind": "method",
+            "signature": "(self, lineno, col_offset)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Constructing `ASTTokens(source, parse=True)` annotates the parsed tree so `get_text` of a binary-operation node returns the exact source snippet for that operation, such as `1 + 2`."
+      },
+      {
+        "id": "B002",
+        "text": "For an assignment statement in the parsed tree, `get_text` returns the full assignment source text, such as `x = 1 + 2`, without requiring a trailing comment to be present."
+      },
+      {
+        "id": "B003",
+        "text": "`get_token(lineno, col_offset)` returns the token whose `.string` equals the source characters at that line and column, such as the name `x` at column 0 of `x = 1 + 2`."
+      },
+      {
+        "id": "B004",
+        "text": "The package exposes `ASTTokens` with construction, `get_text`, and `get_token` as listed in this contract."
+      },
+      {
+        "id": "B005",
+        "text": "The submitted package source does not import the forbidden upstream package `asttokens`."
+      }
+    ],
+    "exclusions": [
+      "executing/stack_data traceback UX",
+      "comment token inclusion",
+      "runtime import of asttokens"
+    ],
+    "forbidden": {
+      "imports": [
+        "asttokens"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Constructing `ASTTokens(source, parse=True)` annotates the parsed tree so `get_text` of a binary-operation node returns the exact source snippet for that operation, such as `1 + 2`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "For an assignment statement in the parsed tree, `get_text` returns the full assignment source text, such as `x = 1 + 2`, without requiring a trailing comment to be present."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`get_token(lineno, col_offset)` returns the token whose `.string` equals the source characters at that line and column, such as the name `x` at column 0 of `x = 1 + 2`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `ASTTokens` with construction, `get_text`, and `get_token` as listed in this contract."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `asttokens`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_get_text_of_binop",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_get_text_of_assignment",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_get_token_at_name",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_binop_and_assignment_source_snippets",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_get_token_at_number_literal",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.ASTTokens",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ASTTokens.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ASTTokens.get_text",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ASTTokens.get_token",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 319783,
+    "copy_all_loc": 5149,
+    "oracle_bytes": 132440,
+    "oracle_loc": 1285,
+    "oracle_dependency_count": 0
+  },
+  "spec_hash": "3a9997b3141c867840fe5ad883d6e2ec5fb34558de9effc8552b970697251d90",
+  "generated_task_hash": "a629ffe91791173f5d2bb86db3f52430bfc125a176b96c4d21acd975f5c3ac02"
+}

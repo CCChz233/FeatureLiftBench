@@ -113,6 +113,10 @@
         "kind": "exception"
       },
       {
+        "path": "featurelifted.InvalidPathError",
+        "kind": "exception"
+      },
+      {
         "path": "featurelifted.normalize_fs_path",
         "kind": "function",
         "signature": "(path: 'str | None') -> 'str | None'"
@@ -130,11 +134,11 @@
       },
       {
         "id": "B003",
-        "text": "Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`."
+        "text": "Invalid URLs raise ParseError; unknown schemes raise UnsupportedProtocolError; normalize_fs_path raises InvalidPathError when the path contains control characters."
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.InvalidPathError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -176,12 +180,12 @@
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "Invalid URLs raise `ParseError`; unknown schemes raise `UnsupportedProtocolError`."
+        "text": "Invalid URLs raise ParseError; unknown schemes raise UnsupportedProtocolError; normalize_fs_path raises InvalidPathError when the path contains control characters."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.parse_fs_url`, `featurelifted.FSOpenerRegistry`, `featurelifted.FSOpenerRegistry.open`, `featurelifted.FSOpenerRegistry.register`, `featurelifted.ParseError`, `featurelifted.UnsupportedProtocolError`, `featurelifted.InvalidPathError`, `featurelifted.normalize_fs_path` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -268,6 +272,13 @@
         ]
       },
       {
+        "path": "featurelifted.InvalidPathError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+          "hidden_tests/test_hidden_contract.py::test_invalid_path_control_characters"
+        ]
+      },
+      {
         "path": "featurelifted.normalize_fs_path",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -289,7 +300,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "0c550c16571f1e17211b38bb2c2cc8d24469de5a8a6e5f3ca9934521eea1756a",
-  "generated_task_hash": "14bf7d785c788aecd790bdeb1bc9168c47c08f9d8dac4020f048ff6beb0f3802"
+  "task_revision": 5,
+  "spec_hash": "e31d149cdcab10037c7184890b0e0e42ded6c3ae457bdbe7099fe140c593853c",
+  "generated_task_hash": "c9d982cf81797e620258a40cc24b5bb362343359c52b24575122bd5faaa00b1c"
 }

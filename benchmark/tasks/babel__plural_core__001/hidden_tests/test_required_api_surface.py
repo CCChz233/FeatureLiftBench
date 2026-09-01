@@ -11,3 +11,4 @@ def test_required_api_surface():
     assert hasattr(PluralRule, 'parse')
     assert isinstance(Locale, type)
     assert hasattr(Locale, 'parse')
+    assert Locale is not None

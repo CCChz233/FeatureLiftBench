@@ -1,0 +1,332 @@
+{
+  "task_id": "pika__channel_spec_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "direct",
+    "parser"
+  ],
+  "source": {
+    "name": "pika",
+    "url": "https://github.com/pika/pika",
+    "commit": "2126d43a76c14fb8d365d96bd1bdcef13dad75b5",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "AMQP frame codec",
+    "description": "Lift Pika AMQP frame encode/decode without connection adapters or a broker.",
+    "source_entrypoints": [
+      "pika.frame.decode_frame",
+      "pika.spec.Basic.Ack"
+    ],
+    "included_behaviors": [
+      "heartbeat roundtrip",
+      "Basic.Ack roundtrip",
+      "protocol header",
+      "incomplete buffer"
+    ],
+    "excluded_behaviors": [
+      "BlockingConnection",
+      "live broker",
+      "adapters"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "parser_state_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Frame codec is independent of adapters; copying connection code is the wrong closure.",
+    "signals": [
+      "FRAME_END",
+      "Basic.Ack",
+      "ProtocolHeader"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted.frame import decode_frame, Heartbeat, Method",
+    "callable": "decode_frame",
+    "signature": "decode_frame(data_in, offset=0) -> tuple[int, Frame | ProtocolHeader | None]"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [],
+    "forbidden_dependencies": [
+      "pika"
+    ],
+    "forbidden_imports": [
+      "pika"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "pika/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "AMQP frame codec",
+    "summary": "Build a standalone `featurelifted` package that encodes and decodes AMQP frames like Pika `frame`/`spec`, including heartbeats and `Basic.Ack`, without connecting to a broker.",
+    "required_api": [
+      {
+        "path": "featurelifted.frame.decode_frame",
+        "kind": "function",
+        "signature": "(data_in, offset=0)"
+      },
+      {
+        "path": "featurelifted.frame.Heartbeat",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.frame.Heartbeat.marshal",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.frame.Method",
+        "kind": "class",
+        "signature": "(channel_number, method)",
+        "members": [
+          {
+            "path": "featurelifted.frame.Method.marshal",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.frame.ProtocolHeader",
+        "kind": "class",
+        "signature": "(major=None, minor=None, revision=None)",
+        "members": [
+          {
+            "path": "featurelifted.frame.ProtocolHeader.marshal",
+            "kind": "method",
+            "signature": "(self)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.spec.Basic.Ack",
+        "kind": "class",
+        "signature": "(delivery_tag=0, multiple=False)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`Heartbeat().marshal()` round-trips through `decode_frame` to a `Heartbeat` instance and consumes the full payload."
+      },
+      {
+        "id": "B002",
+        "text": "`Method(channel, Basic.Ack(delivery_tag, multiple)).marshal()` round-trips through `decode_frame` preserving channel number, delivery tag, and multiple flag."
+      },
+      {
+        "id": "B003",
+        "text": "`ProtocolHeader().marshal()` starts with `b\"AMQP\"` and `decode_frame` returns a `ProtocolHeader`."
+      },
+      {
+        "id": "B004",
+        "text": "`decode_frame(b\"\")` returns `(0, None)`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `decode_frame`, `Heartbeat`, `Method`, `ProtocolHeader`, and `Basic.Ack`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `pika`."
+      }
+    ],
+    "exclusions": [
+      "BlockingConnection",
+      "live broker",
+      "runtime import of pika"
+    ],
+    "forbidden": {
+      "imports": [
+        "pika"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`Heartbeat().marshal()` round-trips through `decode_frame` to a `Heartbeat` instance and consumes the full payload."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`Method(channel, Basic.Ack(delivery_tag, multiple)).marshal()` round-trips through `decode_frame` preserving channel number, delivery tag, and multiple flag."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`ProtocolHeader().marshal()` starts with `b\"AMQP\"` and `decode_frame` returns a `ProtocolHeader`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`decode_frame(b\"\")` returns `(0, None)`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `decode_frame`, `Heartbeat`, `Method`, `ProtocolHeader`, and `Basic.Ack`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `pika`."
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_heartbeat_bytes_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_ack_multiple_on_channel",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_protocol_header_starts_with_amqp",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_incomplete_buffer_returns_zero",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.frame.decode_frame",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.Heartbeat",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.Heartbeat.marshal",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.Method",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.Method.marshal",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.ProtocolHeader",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.frame.ProtocolHeader.marshal",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.spec.Basic.Ack",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-28",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Thin AMQP frame/spec slice; adapters unused."
+    },
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_heartbeat_roundtrip",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_basic_ack_roundtrip",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ]
+  },
+  "scoring_reference": {
+    "oracle_loc": 3086,
+    "oracle_bytes": 130070,
+    "oracle_dependency_count": 0,
+    "copy_all_loc": 17912,
+    "copy_all_bytes": 856400
+  },
+  "spec_hash": "2db05ee2c9677848fb51909fb5c37e6c3881adfcefb135dff7007dd5911aa760",
+  "generated_task_hash": "187990ec0dca985c76ee7a54efcdc4d7450389a1548a2a1d206ead223ac7b51e"
+}

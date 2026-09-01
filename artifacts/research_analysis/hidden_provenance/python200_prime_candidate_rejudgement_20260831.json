@@ -1,0 +1,129 @@
+{
+  "schema_version": "featureliftbench.hidden_provenance_candidate_rejudgement.v1",
+  "generated_at": "2026-08-31",
+  "suite": "python200_hard",
+  "source_labels": "artifacts/research_analysis/hidden_provenance/flash33_labels.json",
+  "status": "candidate_remediation_complete",
+  "gold": false,
+  "independent_human_review": false,
+  "reviewer_type": "ai_assisted_maintainer_rejudgement",
+  "interpretation": "The original labels remain provenance for their historical task revisions. This ledger records how the current Python-200-prime candidate resolves the 18 preliminary underdetermined findings; it does not retroactively relabel historical runs.",
+  "summary": {
+    "original_underdetermined": 18,
+    "in_current_python200_prime": 17,
+    "resolved_by_public_contract": 11,
+    "resolved_by_assertion_narrowing": 6,
+    "out_of_scope_external50": 1,
+    "unresolved_in_current_candidate": 0
+  },
+  "records": [
+    {
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003"]
+    },
+    {
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_contract.py::test_multiple_dist_info_raises"]
+    },
+    {
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B002"]
+    },
+    {
+      "task_id": "parse__format_parser_core__001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_contract.py::test_word_and_default_boundaries"]
+    },
+    {
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B002"]
+    },
+    {
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003", "metadata.json#/public_spec/required_api/featurelifted.And.validate"]
+    },
+    {
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003"]
+    },
+    {
+      "task_id": "sphinx__extension_registry_core__hard3_001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_contract.py::test_setup_errors_are_wrapped"]
+    },
+    {
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003"]
+    },
+    {
+      "task_id": "pydantic_v1__validation_error_core__001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_behavior.py::test_no_pydantic_import_surface"]
+    },
+    {
+      "task_id": "trafaret__validation_rules_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B002", "metadata.json#/public_spec/required_api/featurelifted.And.check"]
+    },
+    {
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003"]
+    },
+    {
+      "task_id": "fs__url_opener_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003", "metadata.json#/public_spec/required_api/featurelifted.InvalidPathError"]
+    },
+    {
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B002"]
+    },
+    {
+      "task_id": "joserfc__jwt_claims_core__001",
+      "resolution": "out_of_scope",
+      "current_verdict": "not_in_python200_prime",
+      "evidence": ["benchmark/selection/python200_hard_suite.json"]
+    },
+    {
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_contract.py::test_validate_plugin_config_reports_schema_errors"]
+    },
+    {
+      "task_id": "pyramid__configurator_action_core__hard3_001",
+      "resolution": "public_contract",
+      "current_verdict": "explicit",
+      "evidence": ["metadata.json#/public_spec/behaviors/B003"]
+    },
+    {
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "resolution": "assertion_narrowing",
+      "current_verdict": "resolved",
+      "evidence": ["hidden_tests/test_hidden_contract.py::test_json_body_sorting_and_redaction_affect_cache_key"]
+    }
+  ]
+}

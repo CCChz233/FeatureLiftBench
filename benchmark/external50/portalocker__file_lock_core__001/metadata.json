@@ -115,19 +115,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: Lock context manager and lock/unlock on file handles. Required observable cases include lock context manager; lock unlock functions."
+        "text": "`Lock` accepts a local file path and yields a writable file handle from its context manager; `lock` and `unlock` acquire and release an advisory lock on an open file handle."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: LOCK_EX and related constants are exposed. Required observable cases include lock constants."
+        "text": "`LOCK_EX`, `LOCK_SH`, and `LOCK_NB` are exposed as non-`None` lock flag constants."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: Lock accepts timeout and LockException exists. Required observable cases include lock timeout; lock exception type."
+        "text": "`Lock` accepts a numeric `timeout` argument and can acquire an available local file through the context-manager protocol."
       },
       {
         "id": "B004",
-        "text": "Tests use local temp files only; no network resources."
+        "text": "`LockException` is an exception type that subclasses `Exception`."
       },
       {
         "id": "B005",
@@ -154,22 +154,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Lock context manager and lock/unlock on file handles. Required observable cases include lock context manager; lock unlock functions."
+        "text": "`Lock` accepts a local file path and yields a writable file handle from its context manager; `lock` and `unlock` acquire and release an advisory lock on an open file handle."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: LOCK_EX and related constants are exposed. Required observable cases include lock constants."
+        "text": "`LOCK_EX`, `LOCK_SH`, and `LOCK_NB` are exposed as non-`None` lock flag constants."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Lock accepts timeout and LockException exists. Required observable cases include lock timeout; lock exception type."
+        "text": "`Lock` accepts a numeric `timeout` argument and can acquire an available local file through the context-manager protocol."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Tests use local temp files only; no network resources."
+        "text": "`LockException` is an exception type that subclasses `Exception`."
       },
       {
         "behavior_id": "B005",
@@ -193,7 +193,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_lock_unlock_functions",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -202,21 +202,21 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_lock_constants",
         "behavior_ids": [
-          "B001",
-          "B004"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_lock_exception_type",
         "behavior_ids": [
-          "B002"
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_lock_timeout",
         "behavior_ids": [
+          "B001",
           "B003"
         ],
         "mapping_method": "ai_assisted"
@@ -288,6 +288,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "68bc0bbdcc378c6ed26874871bbe6e828de4153236d318ea8cea0a209caa3acc",
-  "generated_task_hash": "ec9cf8bc992627a49d0e12be28f89f9489b88928a4e5ada75a6f96a5bc846abe"
+  "spec_hash": "c54a8dfbe10118151271a8ad0028155bc59e2dd23dc8f5c15389827dd6483389",
+  "generated_task_hash": "988339456e922674a60e0a334d17dfa28d32824ceae7ad84f2d217dc34243628"
 }

@@ -7,6 +7,23 @@ from typing import Any
 BEHAVIOR_MARKER_START = "<!-- featureliftbench:behavior-clauses:start -->"
 BEHAVIOR_MARKER_END = "<!-- featureliftbench:behavior-clauses:end -->"
 
+COMPLETE_FEATURE_RESPONSIBILITY_VERSION = "featureliftbench.complete_feature_responsibility.v1"
+COMPLETE_FEATURE_RESPONSIBILITY_MARKER = (
+    f"<!-- {COMPLETE_FEATURE_RESPONSIBILITY_VERSION} -->"
+)
+COMPLETE_FEATURE_RESPONSIBILITY_HEADING = "## Complete Feature Responsibility"
+COMPLETE_FEATURE_RESPONSIBILITY_TEXT = """Treat the requested feature as a complete task-scoped module, not as a list of isolated examples. You are responsible for inspecting the full upstream repository—including its source, tests, documentation, examples, configuration, and resources—to discover the implementation locations, observable contract, edge and error semantics, state behavior, and transitive code and data closure needed to preserve the feature.
+
+The Target API, Required Behavior, Constraints, and Exclusions below define the exhaustive scope boundary. Every obligation inside that boundary is mandatory, while unrelated upstream functionality is out of scope. Examples illustrate required semantics; they are not a small case list to fit. A submission is incomplete if it implements only the main path or passes self-written smoke tests while omitting any in-scope behavior, boundary condition, exception distinction, state transition, required member or resource, dependency, or isolation obligation."""
+
+
+def _complete_feature_responsibility_section() -> str:
+    return (
+        f"{COMPLETE_FEATURE_RESPONSIBILITY_MARKER}\n"
+        f"{COMPLETE_FEATURE_RESPONSIBILITY_HEADING}\n\n"
+        f"{COMPLETE_FEATURE_RESPONSIBILITY_TEXT}\n\n"
+    )
+
 
 def _format_api_import_block(required_api: list[dict[str, Any]]) -> str:
     symbols: list[str] = []
@@ -77,6 +94,7 @@ def render_public_task(
     *,
     include_behavior_clauses: bool = True,
     include_public_hidden_note: bool = True,
+    include_complete_feature_responsibility: bool = False,
 ) -> str:
     public_spec = metadata.get("public_spec")
     if not isinstance(public_spec, dict):
@@ -109,14 +127,20 @@ def render_public_task(
         f"# FeatureLift Task: {title}\n\n",
         summary,
         "\n\n",
-        "The submitted implementation must not import the upstream package or read from "
-        "`repo/` at runtime, must not use the network, and must not depend on external services. "
-        "Use only the standard library unless the task lockfile allows otherwise.\n\n",
-        "## Target API\n\n",
-        "```python\n",
-        _format_api_import_block(required_api),
-        "\n```\n\n",
     ]
+    if include_complete_feature_responsibility:
+        parts.append(_complete_feature_responsibility_section())
+    parts.extend(
+        [
+            "The submitted implementation must not import the upstream package or read from "
+            "`repo/` at runtime, must not use the network, and must not depend on external services. "
+            "Use only the standard library unless the task lockfile allows otherwise.\n\n",
+            "## Target API\n\n",
+            "```python\n",
+            _format_api_import_block(required_api),
+            "\n```\n\n",
+        ]
+    )
 
     api_details = _format_required_api_details(required_api)
     if api_details:
@@ -181,7 +205,10 @@ def render_agent_workspace_task(
 ) -> str:
     """Render the TASK.md content placed in an agent workspace for compliant tasks."""
 
-    text = render_public_task(metadata)
+    text = render_public_task(
+        metadata,
+        include_complete_feature_responsibility=True,
+    )
     if source_entrypoints:
         text += (
             "\n## Source Entrypoints — Entrypoint-Hint Ablation\n\n"

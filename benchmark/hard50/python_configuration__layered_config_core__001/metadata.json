@@ -1,0 +1,337 @@
+{
+  "task_id": "python_configuration__layered_config_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "configuration"
+  ],
+  "source": {
+    "name": "python-configuration",
+    "url": "https://github.com/tr11/python-configuration",
+    "commit": "f9da97f5e6a387753052d9f3850d7d41f4a75e10",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Layered dict/env/path configuration",
+    "description": "Lift layered configuration from dictionaries, environment variables, and filesystem paths with attribute access.",
+    "source_entrypoints": [
+      "config.Configuration",
+      "config.config_from_dict",
+      "config.config_from_env",
+      "config.config_from_path"
+    ],
+    "included_behaviors": [
+      "merge layers",
+      "attribute get",
+      "missing key",
+      "env prefix",
+      "path files"
+    ],
+    "excluded_behaviors": [
+      "cloud secret backends"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "config_environment_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "config_environment_coupling",
+    "description": "Flattened dotted keys, first-wins layer sets, and env/path loaders share one Configuration model.",
+    "signals": [
+      "first-layer precedence",
+      "prefix stripping",
+      "path walk keys"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Configuration, ConfigurationSet, config_from_dict, config_from_env, config_from_path",
+    "callable": "config_from_dict",
+    "signature": "config_from_dict(data)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "PyYAML"
+    ],
+    "forbidden_dependencies": [
+      "python-configuration"
+    ],
+    "forbidden_imports": [
+      "config"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "config/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Layered dict/env/path configuration",
+    "summary": "Build a standalone `featurelifted` package providing layered configuration from dictionaries, environment variables, and filesystem paths, with both item and attribute access.",
+    "required_api": [
+      {
+        "path": "featurelifted.Configuration",
+        "kind": "class",
+        "signature": "(config_: Mapping[str, Any], lowercase_keys: bool = False)",
+        "members": [
+          {
+            "path": "featurelifted.Configuration.__init__",
+            "kind": "method",
+            "signature": "(self, config_: Mapping[str, Any], lowercase_keys: bool = False)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet",
+        "kind": "class",
+        "signature": "(*configs: Configuration)",
+        "members": [
+          {
+            "path": "featurelifted.ConfigurationSet.__init__",
+            "kind": "method",
+            "signature": "(self, *configs: Configuration)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.config_from_dict",
+        "kind": "function",
+        "signature": "(data: Mapping, *, lowercase_keys: bool = False) -> Configuration"
+      },
+      {
+        "path": "featurelifted.config_from_env",
+        "kind": "function",
+        "signature": "(prefix: str, separator: str = '__', *, strip_prefix: bool = True) -> Configuration"
+      },
+      {
+        "path": "featurelifted.config_from_path",
+        "kind": "function",
+        "signature": "(path: str, remove_level: int = 1) -> Configuration"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "Building a configuration from a nested dictionary exposes both item access and attribute access for the same keys, including one dotted nesting level such as a `db.host` value reachable as `cfg.db.host` and `cfg['db']['host']`."
+      },
+      {
+        "id": "B002",
+        "text": "A `ConfigurationSet` built from two configurations prefers the first layer for overlapping keys and still returns keys that exist only in a later layer."
+      },
+      {
+        "id": "B003",
+        "text": "`config_from_env(prefix)` includes environment variables whose names start with `prefix` plus the default `__` separator, strips that prefix, and turns remaining `__` segments into dotted keys."
+      },
+      {
+        "id": "B004",
+        "text": "`config_from_path` reads files under a directory and exposes each file's text content as a configuration value whose key is derived from the relative path."
+      },
+      {
+        "id": "B005",
+        "text": "Reading a key that is absent from every layer raises `KeyError`. The package exposes `Configuration`, `ConfigurationSet`, `config_from_dict`, `config_from_env`, and `config_from_path`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `config`."
+      }
+    ],
+    "exclusions": [
+      "cloud secret backends",
+      "AWS/Azure/GCP/Vault contrib loaders",
+      "runtime import of config"
+    ],
+    "forbidden": {
+      "imports": [
+        "config"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "Building a configuration from a nested dictionary exposes both item access and attribute access for the same keys, including one dotted nesting level such as a `db.host` value reachable as `cfg.db.host` and `cfg['db']['host']`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A `ConfigurationSet` built from two configurations prefers the first layer for overlapping keys and still returns keys that exist only in a later layer."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "`config_from_env(prefix)` includes environment variables whose names start with `prefix` plus the default `__` separator, strips that prefix, and turns remaining `__` segments into dotted keys."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`config_from_path` reads files under a directory and exposes each file's text content as a configuration value whose key is derived from the relative path."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "Reading a key that is absent from every layer raises `KeyError`. The package exposes `Configuration`, `ConfigurationSet`, `config_from_dict`, `config_from_env`, and `config_from_path`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `config`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_nested_dict_item_and_attribute_access",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_first_layer_wins_on_overlap",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_env_prefix_and_separator",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_path_directory_file_contents",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Configuration",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Configuration.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.config_from_dict",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.config_from_env",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.config_from_path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 223245,
+    "copy_all_loc": 5342,
+    "oracle_bytes": 160889,
+    "oracle_loc": 2116,
+    "oracle_dependency_count": 1
+  },
+  "spec_hash": "7e6b29c7b797f64e429b7b3a98d1733fa7dde552b138686ac59e94d153d01f62",
+  "generated_task_hash": "99fe5462b5e7fbdaea47e3162df05825419235ac867678204d8e37b7337b13df"
+}

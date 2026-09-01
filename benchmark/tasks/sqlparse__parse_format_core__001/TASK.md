@@ -25,9 +25,15 @@ from featurelifted import (
 - `split(sql: str, encoding: str | None = None, strip_semicolon: bool = False) -> list[str]`
 - `format(sql: str, encoding: str | None = None, **options: Any) -> str`
 - `sql` module must be importable
+  - `sql.Comparison(tokens=None)` class constructor
+  - `sql.Identifier(tokens=None)` class constructor
+  - `sql.Statement(tokens=None)` class constructor
+  - `sql.Where(tokens=None)` class constructor
 - `tokens` module must be importable
+  - `tokens.Keyword` attribute must exist
 - `exceptions` module must be importable
   - `exceptions.SQLParseError` must be importable and raisable
+- `tokens.Keyword.DML` attribute must exist
 
 ## Required Behavior
 
@@ -36,7 +42,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: support common token tree traversal and identifier helpers. Required observable cases include format supports common options; cte aliases and identifier helpers.
 - The extracted feature must support this observable behavior: format common SQL with keyword case, identifier case, comment stripping, reindentation, indentation width, and operator spacing. Required observable cases include format supports common options; formatter comment stripping and spacing; formatter rejects invalid options.
 - The extracted feature must support this observable behavior: preserve original behavior for comments, whitespace, string literals, aliases, functions, nested expressions, CTEs, CASE expressions, and common DDL/DML. Required observable cases include cte aliases and identifier helpers.
-- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.tokens`, `featurelifted.exceptions`, `featurelifted.exceptions.SQLParseError` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.exceptions`, and 2 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -61,6 +67,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: support common token tree traversal and identifier helpers. Required observable cases include format supports common options; cte aliases and identifier helpers.
 - **B004** — The extracted feature must support this observable behavior: format common SQL with keyword case, identifier case, comment stripping, reindentation, indentation width, and operator spacing. Required observable cases include format supports common options; formatter comment stripping and spacing; formatter rejects invalid options.
 - **B005** — The extracted feature must support this observable behavior: preserve original behavior for comments, whitespace, string literals, aliases, functions, nested expressions, CTEs, CASE expressions, and common DDL/DML. Required observable cases include cte aliases and identifier helpers.
-- **B006** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.tokens`, `featurelifted.exceptions`, `featurelifted.exceptions.SQLParseError` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.split`, `featurelifted.format`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.exceptions`, and 2 listed members with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: sqlparse.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -150,7 +150,7 @@
       },
       {
         "id": "B004",
-        "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters."
+        "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path."
       },
       {
         "id": "B005",
@@ -201,7 +201,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters."
+        "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path."
       },
       {
         "behavior_id": "B005",
@@ -321,7 +321,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "69bc5cc8ee9dcb149eaf73054d01f95b478064f999eea81119a4b5ed48b9faa0",
-  "generated_task_hash": "3496e41a7b52f021c673574d73c3616e9f2050711094167ce5ac930e0c1d8d79"
+  "task_revision": 5,
+  "spec_hash": "4f6361d61c555c565c4995a89c403985bc7822c94c2ded4563dcd0a8864e7a5a",
+  "generated_task_hash": "36c18da37fbc2ba9d54f2165b25408f72c6e942725763fd6e083e63dde904b01"
 }

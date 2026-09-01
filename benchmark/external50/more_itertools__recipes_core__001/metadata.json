@@ -111,19 +111,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: chunked splits iterables and first returns the first element. Required observable cases include chunked and first."
+        "text": "`chunked` accepts an iterable and positive chunk size and yields successive list chunks, including a shorter final chunk; `first` returns the first item from an iterable."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: unique_everseen deduplicates preserving order. Required observable cases include unique everseen; unique everseen key."
+        "text": "`unique_everseen` yields only the first occurrence of each item while preserving input order, and an optional `key` callable controls how duplicates are identified."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: consume advances iterators and windowed yields sliding tuples. Required observable cases include consume and windowed; windowed fillvalue; consume all."
+        "text": "`consume` advances an iterator by a requested count or exhausts it when no count is given; `windowed` yields sliding tuples and pads a short input with `fillvalue`."
       },
       {
         "id": "B004",
-        "text": "chunked strict=True raises ValueError when the iterable length is not divisible by n."
+        "text": "`chunked(..., strict=True)` raises `ValueError` when the input length is not evenly divisible by the requested chunk size."
       },
       {
         "id": "B005",
@@ -150,22 +150,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: chunked splits iterables and first returns the first element. Required observable cases include chunked and first."
+        "text": "`chunked` accepts an iterable and positive chunk size and yields successive list chunks, including a shorter final chunk; `first` returns the first item from an iterable."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: unique_everseen deduplicates preserving order. Required observable cases include unique everseen; unique everseen key."
+        "text": "`unique_everseen` yields only the first occurrence of each item while preserving input order, and an optional `key` callable controls how duplicates are identified."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: consume advances iterators and windowed yields sliding tuples. Required observable cases include consume and windowed; windowed fillvalue; consume all."
+        "text": "`consume` advances an iterator by a requested count or exhausts it when no count is given; `windowed` yields sliding tuples and pads a short input with `fillvalue`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "chunked strict=True raises ValueError when the iterable length is not divisible by n."
+        "text": "`chunked(..., strict=True)` raises `ValueError` when the input length is not evenly divisible by the requested chunk size."
       },
       {
         "behavior_id": "B005",
@@ -205,7 +205,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_chunked_strict",
         "behavior_ids": [
-          "B001"
+          "B001",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -226,7 +227,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_consume_all",
         "behavior_ids": [
-          "B004"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -285,6 +286,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "6c2fc432c074295ec82936d0d748ac288bad4bcb17df1220e3da933692c56849",
-  "generated_task_hash": "24c2133cb7c4fc5c7e1723cce4d819429220161a99fa0d22ca15ef521f645df8"
+  "spec_hash": "5979e3d9558159bc0ab686879c6c5b227ad1b0c1d3cf553d375758c616bbbd15",
+  "generated_task_hash": "9019edeca557d43682ee9e56cc477892246bbf5ffd4a8062897868094be5c9ca"
 }

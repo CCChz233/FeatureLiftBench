@@ -1,0 +1,110 @@
+{
+  "task_id": "limits__strategy_storage_core__001",
+  "public_clauses": [
+    {
+      "behavior_id": "B001",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "After `parse` builds a limit item, `FixedWindowRateLimiter.hit` against `MemoryStorage` returns True until the parsed amount is exhausted in that window, then False."
+    },
+    {
+      "behavior_id": "B002",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "After a window is exhausted, `get_window_stats` reports `remaining == 0` for the same identifiers."
+    },
+    {
+      "behavior_id": "B003",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "Hits for distinct identifier strings are counted independently against the same limiter and limit item."
+    },
+    {
+      "behavior_id": "B004",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "`MemoryStorage.incr` increases a key by the given amount and `get` returns 0 for a missing key and the stored count afterwards."
+    },
+    {
+      "behavior_id": "B005",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
+      "text": "The package exposes `MemoryStorage`, `FixedWindowRateLimiter`, `parse`, `hit`, `get_window_stats`, `incr`, and `get` with the signatures listed in this contract."
+    },
+    {
+      "behavior_id": "B006",
+      "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
+      "text": "The submitted package source does not import the forbidden upstream package `limits`."
+    }
+  ],
+  "public_test_mappings": [
+    {
+      "nodeid": "public_tests/test_public_api.py::test_fixed_window_allows_until_limit",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_window_stats_report_zero_remaining_after_exhaustion",
+      "public_clause_ids": [
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_distinct_identifiers_have_independent_windows",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "public_tests/test_public_api.py::test_parse_accepts_minute_limit_string",
+      "public_clause_ids": [
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "hidden_test_mappings": [
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_cost_consumes_multiple_hits",
+      "public_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_memory_storage_incr_and_get",
+      "public_clause_ids": [
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_two_limiters_do_not_share_memory",
+      "public_clause_ids": [
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+      "public_clause_ids": [
+        "B006"
+      ],
+      "mapping_method": "ai_assisted"
+    },
+    {
+      "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+      "public_clause_ids": [
+        "B005"
+      ],
+      "mapping_method": "ai_assisted"
+    }
+  ],
+  "spec_sha256": "6d4f776fdc24c539f5ec13e40ecef7f10b06bcacaa40c671e66f3748c3f34cf6"
+}

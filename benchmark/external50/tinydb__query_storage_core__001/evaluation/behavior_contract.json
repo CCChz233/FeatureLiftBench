@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: CRUD insert/search/update/remove/truncate. Required observable cases include insert and all; search equality; update and remove."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "TinyDB insert and insert_multiple persist dictionary documents, all returns them, update changes matching documents, get retrieves a match, remove deletes matches, and truncate empties the default table."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: Query operators == exists matches test and logical and/or. Required observable cases include exists matches test ops; logical and or."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Query field paths support equality, exists(), matches(), and test() predicates, and predicate expressions compose with & and | to filter TinyDB.search results."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: JSONStorage and MemoryStorage backends. Required observable cases include json storage roundtrip."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "MemoryStorage retains documents for an in-memory database lifetime, while JSONStorage persists inserted documents across close and reopen at the same filesystem path."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
       "text": "Default table behavior matches upstream TinyDB for the frozen CRUD paths."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes the required task API paths `featurelifted.TinyDB`, `featurelifted.Query`, `featurelifted.JSONStorage`, `featurelifted.MemoryStorage` and TinyDB CRUD methods with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: tinydb."
     }
   ],
@@ -37,53 +43,62 @@
       "nodeid": "public_tests/test_public_api.py::test_insert_and_all",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_search_equality",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_update_and_remove",
       "public_clause_ids": [
-        "B003"
-      ]
+        "B001"
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_exists_matches_test_ops",
       "public_clause_ids": [
-        "B001",
+        "B002",
         "B004"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_logical_and_or",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_json_storage_roundtrip",
       "public_clause_ids": [
+        "B001",
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "1a2be72c4934e080f05cf5cfa2e729ec534481462ad4cc3e8bebd95d5744413a"
+  "spec_sha256": "1c2ae374549ca1c37efb9d1ccdf85c6399a90f7a95bd96746a0260017e370384"
 }

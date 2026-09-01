@@ -90,6 +90,26 @@
             "path": "featurelifted.URIBuilder.from_uri",
             "kind": "method",
             "signature": "(reference)"
+          },
+          {
+            "path": "featurelifted.URIBuilder.add_scheme",
+            "kind": "method",
+            "signature": "(self, scheme)"
+          },
+          {
+            "path": "featurelifted.URIBuilder.add_host",
+            "kind": "method",
+            "signature": "(self, host)"
+          },
+          {
+            "path": "featurelifted.URIBuilder.add_path",
+            "kind": "method",
+            "signature": "(self, path)"
+          },
+          {
+            "path": "featurelifted.URIBuilder.finalize",
+            "kind": "method",
+            "signature": "(self)"
           }
         ]
       },
@@ -134,7 +154,7 @@
       },
       {
         "id": "B005",
-        "text": "The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIBuilder.add_scheme`, `featurelifted.URIBuilder.add_host`, `featurelifted.URIBuilder.add_path`, `featurelifted.URIBuilder.finalize`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -185,7 +205,7 @@
       {
         "behavior_id": "B005",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIBuilder.add_scheme`, `featurelifted.URIBuilder.add_host`, `featurelifted.URIBuilder.add_path`, `featurelifted.URIBuilder.finalize`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B006",
@@ -285,6 +305,30 @@
         ]
       },
       {
+        "path": "featurelifted.URIBuilder.add_scheme",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URIBuilder.add_host",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URIBuilder.add_path",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.URIBuilder.finalize",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.URIReference",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -320,11 +364,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "39b22737672b3f00e1bbda2904b366dc9358c75a17aebebc9f346e0729cbd44a",
-  "generated_task_hash": "0b98b47cce5b1ec8b36e4529da2cddd19b47598fc5efc406fc09255401901097"
+  "task_revision": 3,
+  "spec_hash": "51766962ff221f1595eacd23c8130d7258618ae11bb0b53a3ef622d3e1463acc",
+  "generated_task_hash": "f758d9e9e718de29e6451e6c14d1e085fe98156f8834dde0048dc4df0731b8d1"
 }

@@ -2,6 +2,8 @@
 # FeatureLiftAgent sanity suite: 3 smoke tasks under benchmark/sanity/.
 set -euo pipefail
 
+echo "DEPRECATED: this internal FeatureLift-Agent wrapper is historical; use ./scripts/run_benchmark.sh --agent featurelift-agent." >&2
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT"
 

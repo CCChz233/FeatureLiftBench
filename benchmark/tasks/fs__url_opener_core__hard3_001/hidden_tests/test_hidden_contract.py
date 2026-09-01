@@ -1,7 +1,13 @@
 
 import pytest
 
-from featurelifted import FSOpenerRegistry, ParseError, UnsupportedProtocolError, normalize_fs_path
+from featurelifted import (
+    FSOpenerRegistry,
+    InvalidPathError,
+    ParseError,
+    UnsupportedProtocolError,
+    normalize_fs_path,
+)
 
 
 def test_default_protocol_injection():
@@ -22,5 +28,5 @@ def test_unknown_protocol_raises():
 
 
 def test_invalid_path_control_characters():
-    with pytest.raises(__import__("featurelifted").InvalidPathError):
+    with pytest.raises(InvalidPathError):
         normalize_fs_path("bad\x01path")

@@ -79,11 +79,13 @@
     "required_api": [
       {
         "path": "featurelifted.JsonFormatter",
-        "kind": "class"
+        "kind": "class",
+        "signature": "(fmt: str | None = None, *, rename_fields: dict[str, str] | None = None, static_fields: dict[str, object] | None = None, **kwargs)"
       },
       {
         "path": "featurelifted.JsonFormatter.format",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(record: logging.LogRecord) -> str"
       }
     ],
     "optional_api": [
@@ -95,19 +97,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line."
+        "text": "Given a logging.LogRecord and a format string naming `message` and `levelname`, JsonFormatter.format returns JSON text whose decoded object contains the rendered message and level name."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields."
+        "text": "Formatter configuration controls output fields: names selected by `fmt` are emitted, `rename_fields` moves a record field to the requested key and removes its old key, and `static_fields` adds the configured constant values."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule."
+        "text": "When `fmt` is `%(message)s %(name)s`, formatting a record named `worker` with message `boom` yields decoded JSON containing `{\"message\": \"boom\", \"name\": \"worker\"}`."
       },
       {
         "id": "B004",
-        "text": "Output is a single JSON object line per record."
+        "text": "Each call to JsonFormatter.format returns text that `json.loads` accepts as one JSON object for that record."
       },
       {
         "id": "B005",
@@ -115,7 +117,7 @@
       },
       {
         "id": "B006",
-        "text": "the submitted package does not import forbidden upstream packages: pythonjsonlogger."
+        "text": "Scanning every Python file in the submitted package finds no `import pythonjsonlogger` or `from pythonjsonlogger ...` statement."
       }
     ],
     "exclusions": [
@@ -134,22 +136,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line."
+        "text": "Given a logging.LogRecord and a format string naming `message` and `levelname`, JsonFormatter.format returns JSON text whose decoded object contains the rendered message and level name."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields."
+        "text": "Formatter configuration controls output fields: names selected by `fmt` are emitted, `rename_fields` moves a record field to the requested key and removes its old key, and `static_fields` adds the configured constant values."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule."
+        "text": "When `fmt` is `%(message)s %(name)s`, formatting a record named `worker` with message `boom` yields decoded JSON containing `{\"message\": \"boom\", \"name\": \"worker\"}`."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "Output is a single JSON object line per record."
+        "text": "Each call to JsonFormatter.format returns text that `json.loads` accepts as one JSON object for that record."
       },
       {
         "behavior_id": "B005",
@@ -159,7 +161,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "included_behavior",
-        "text": "the submitted package does not import forbidden upstream packages: pythonjsonlogger."
+        "text": "Scanning every Python file in the submitted package finds no `import pythonjsonlogger` or `from pythonjsonlogger ...` statement."
       }
     ],
     "public_test_mappings": [
@@ -226,6 +228,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "7ffa85f176c55cd6428733c229779d1a13f65d528ca31e933e12ea63568b8a75",
-  "generated_task_hash": "f07e434338f2fd7cfb5c3d338f1839ad29d456e26086cf5ae7b0b1c35b89f17f"
+  "spec_hash": "839772b746f518735a69e4eac849d85a03a13347fa274641f91cc1117c6d2422",
+  "generated_task_hash": "369e8209e3c544ad591a3d97c26acb80c1918188477eac995244857bec0e72f5"
 }

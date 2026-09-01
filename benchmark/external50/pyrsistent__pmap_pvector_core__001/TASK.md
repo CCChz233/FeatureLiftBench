@@ -20,19 +20,19 @@ from featurelifted import (
 - `pmap(initial=None) -> PMap`
 - `pvector(initial=()) -> PVector`
 - `PMap` class must be importable
-- `PMap.set` callable must exist
-- `PMap.get` callable must exist
+- `PMap.set(self, key, value) -> PMap`
+- `PMap.get(self, key, default=None)`
 - `PVector` class must be importable
-- `PVector.append` callable must exist
-- `PVector.extend` callable must exist
-- `PVector.set` callable must exist
+- `PVector.append(self, value) -> PVector`
+- `PVector.extend(self, iterable) -> PVector`
+- `PVector.set(self, index, value) -> PVector`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability.
-- The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types.
-- The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend.
-- Original pmap/pvector instances remain unchanged after updates.
+- `pmap` accepts an initial mapping, and `PMap.set(key, value)` returns a distinct map in which existing entries remain readable and the new entry is available through indexing or `get`, without adding that entry to the original map.
+- `PVector.set(index, value)` returns a distinct vector with that position replaced while the original vector retains its previous sequence.
+- `PVector.extend(iterable)` returns a vector containing the original sequence followed by the iterable's values.
+- `PVector.append(value)` and the other vector update methods return distinct vectors and leave their input vectors unchanged.
 - The package exposes pmap/pvector/PMap/PVector with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: pyrsistent.
 
@@ -47,10 +47,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: pmap/PMap.set/get returns new maps without mutating originals. Required observable cases include pmap set get; pmap immutability.
-- **B002** — The extracted feature must support this observable behavior: pvector/PVector.append returns new vectors. Required observable cases include pvector append; factory types.
-- **B003** — The extracted feature must support this observable behavior: PVector.set/extend produce new vectors. Required observable cases include pvector set; pvector extend.
-- **B004** — Original pmap/pvector instances remain unchanged after updates.
+- **B001** — `pmap` accepts an initial mapping, and `PMap.set(key, value)` returns a distinct map in which existing entries remain readable and the new entry is available through indexing or `get`, without adding that entry to the original map.
+- **B002** — `PVector.set(index, value)` returns a distinct vector with that position replaced while the original vector retains its previous sequence.
+- **B003** — `PVector.extend(iterable)` returns a vector containing the original sequence followed by the iterable's values.
+- **B004** — `PVector.append(value)` and the other vector update methods return distinct vectors and leave their input vectors unchanged.
 - **B005** — The package exposes pmap/pvector/PMap/PVector with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: pyrsistent.
 <!-- featureliftbench:behavior-clauses:end -->

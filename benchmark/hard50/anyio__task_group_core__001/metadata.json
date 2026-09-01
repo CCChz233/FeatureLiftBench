@@ -1,0 +1,291 @@
+{
+  "task_id": "anyio__task_group_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "async"
+  ],
+  "source": {
+    "name": "anyio",
+    "url": "https://github.com/agronholm/anyio",
+    "commit": "ae250440c90020b030ba4e83cccc37e9a84512c5",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "TaskGroup create_task and cancel",
+    "description": "Lift backend-agnostic TaskGroup spawning, cancellation, and fail_after timeouts without network IO.",
+    "source_entrypoints": [
+      "anyio.create_task_group",
+      "anyio.fail_after",
+      "anyio.run"
+    ],
+    "included_behaviors": [
+      "task group success",
+      "cancel",
+      "timeout"
+    ],
+    "excluded_behaviors": [
+      "trio+asyncio dual production servers"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "TaskGroup cancel scopes are implemented through a sniffio-selected backend factory.",
+    "signals": [
+      "create_task coroutine",
+      "cancel exception class",
+      "fail_after"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import create_task_group, run, fail_after",
+    "callable": "create_task_group",
+    "signature": "create_task_group()"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "idna",
+      "sniffio",
+      "typing-extensions"
+    ],
+    "forbidden_dependencies": [
+      "anyio"
+    ],
+    "forbidden_imports": [
+      "anyio"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "anyio/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "TaskGroup create_task and cancel",
+    "summary": "Build a standalone `featurelifted` package providing AnyIO-style task groups, cancellation, and timeout scopes driven by `run`, without network IO.",
+    "required_api": [
+      {
+        "path": "featurelifted.create_task_group",
+        "kind": "function",
+        "signature": "() -> TaskGroup"
+      },
+      {
+        "path": "featurelifted.run",
+        "kind": "function",
+        "signature": "(func, *args) -> Any"
+      },
+      {
+        "path": "featurelifted.fail_after",
+        "kind": "function",
+        "signature": "(delay: float)"
+      },
+      {
+        "path": "featurelifted.sleep",
+        "kind": "function",
+        "signature": "(delay: float) -> None"
+      },
+      {
+        "path": "featurelifted.get_cancelled_exc_class",
+        "kind": "function",
+        "signature": "() -> type[BaseException]"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`run` executes an async entrypoint. Tasks started with `TaskGroup.create_task(coro)` inside `async with create_task_group()` all complete before the context exits, and their side effects are visible afterwards."
+      },
+      {
+        "id": "B002",
+        "text": "Calling `cancel()` on an open task group cancels pending tasks so they observe the exception class returned by `get_cancelled_exc_class()`."
+      },
+      {
+        "id": "B003",
+        "text": "A `fail_after(seconds)` block whose body awaits `sleep` longer than that deadline raises `TimeoutError` when driven by `run`."
+      },
+      {
+        "id": "B004",
+        "text": "Task-group execution does not perform network name resolution or open sockets; cancellation and timeouts are local to the running event loop."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `create_task_group`, `run`, `fail_after`, `sleep`, and `get_cancelled_exc_class` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `anyio`."
+      }
+    ],
+    "exclusions": [
+      "trio plus asyncio production servers",
+      "real TCP/UNIX network clients",
+      "runtime import of anyio"
+    ],
+    "forbidden": {
+      "imports": [
+        "anyio"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`run` executes an async entrypoint. Tasks started with `TaskGroup.create_task(coro)` inside `async with create_task_group()` all complete before the context exits, and their side effects are visible afterwards."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "Calling `cancel()` on an open task group cancels pending tasks so they observe the exception class returned by `get_cancelled_exc_class()`."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A `fail_after(seconds)` block whose body awaits `sleep` longer than that deadline raises `TimeoutError` when driven by `run`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Task-group execution does not perform network name resolution or open sockets; cancellation and timeouts are local to the running event loop."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `create_task_group`, `run`, `fail_after`, `sleep`, and `get_cancelled_exc_class` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `anyio`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_task_group_runs_spawned_coroutines",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_fail_after_timeout",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_fail_after_timeout_is_timeout_error",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cancel_observes_cancelled_exception",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_task_group_waits_for_all_children",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.create_task_group",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.run",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.fail_after",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.sleep",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.get_cancelled_exc_class",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 1041916,
+    "copy_all_loc": 24693,
+    "oracle_bytes": 930766,
+    "oracle_loc": 12835,
+    "oracle_dependency_count": 3
+  },
+  "spec_hash": "6b6cd73fc8142be09738b405402e1005f6a3167272b7f8fdf1f08cdb939cce41",
+  "generated_task_hash": "c5ca9f4869776fec229e0abf6ba0b43772e00d77cabb50ac67cf96cac5738a4a"
+}

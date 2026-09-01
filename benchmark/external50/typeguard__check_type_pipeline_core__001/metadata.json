@@ -101,15 +101,15 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections."
+        "text": "check_type returns the original value when lists and dictionaries satisfy their parameterized element, key, and value types, including dict[str, list[int]]."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union."
+        "text": "check_type accepts None for Optional[int] and values matching any Union member, but raises TypeCheckError when a non-member value such as a string is checked against Optional[int]."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss."
+        "text": "CollectionCheckStrategy.FIRST_ITEM may accept a heterogeneous collection after checking only its first item, whereas ALL_ITEMS checks every item and raises TypeCheckError on a later mismatch."
       },
       {
         "id": "B004",
@@ -141,17 +141,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: check_type for nested list/dict. Required observable cases include nested collections."
+        "text": "check_type returns the original value when lists and dictionaries satisfy their parameterized element, key, and value types, including dict[str, list[int]]."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: Optional/Union handling. Required observable cases include optional union."
+        "text": "check_type accepts None for Optional[int] and values matching any Union member, but raises TypeCheckError when a non-member value such as a string is checked against Optional[int]."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: TypeCheckError on mismatch and CollectionCheckStrategy differences. Required observable cases include type check error; first item strategy can miss."
+        "text": "CollectionCheckStrategy.FIRST_ITEM may accept a heterogeneous collection after checking only its first item, whereas ALL_ITEMS checks every item and raises TypeCheckError on a later mismatch."
       },
       {
         "behavior_id": "B004",
@@ -194,6 +194,7 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_collection_strategy",
         "behavior_ids": [
+          "B003",
           "B004"
         ],
         "mapping_method": "ai_assisted"
@@ -211,14 +212,14 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_first_item_strategy_can_miss",
         "behavior_ids": [
-          "B002"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_optional_reject",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -265,7 +266,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "5f384bbb8543be804f410cc0452eb6c39993832ca138f8be2f95d82b61dd7f6f",
-  "generated_task_hash": "fcaf9febe37a755b0eb19c5c340a131a8cffd2b98cc47e5f66cb56b2f23a67bd",
+  "spec_hash": "dd578d9c5ca4a2482442aefc4233a3de081d3fec40a803ac6577f00363c70995",
+  "generated_task_hash": "c78527c5087a8113a32f2212be89cadca318e5f2ccb7898f7f1573bbdd9a6f9a",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

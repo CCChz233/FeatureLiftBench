@@ -99,6 +99,10 @@
             "path": "featurelifted.Locale.parse",
             "kind": "method",
             "signature": "(identifier, sep='_', resolve_likely_subtags=True)"
+          },
+          {
+            "path": "featurelifted.Locale.plural_form",
+            "kind": "attribute"
           }
         ],
         "signature": "(language, territory=None, script=None, variant=None)"
@@ -120,7 +124,7 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse`, `featurelifted.Locale.plural_form` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -166,7 +170,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.PluralRule`, `featurelifted.PluralRule.parse`, `featurelifted.Locale`, `featurelifted.Locale.parse`, `featurelifted.Locale.plural_form` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -238,6 +242,12 @@
         "covered_by_tests": [
           "hidden_tests/test_hidden_behavior.py::test_locale_plural_categories_multilingual"
         ]
+      },
+      {
+        "path": "featurelifted.Locale.plural_form",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -251,11 +261,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "0e0c085adcd28583af850bef39347b1af8ef825e0826b00675e6fa6892cc35a5",
-  "generated_task_hash": "399a2e9c0e65929420af42406feebc5c19d5557d25b9c2a6f379967520ca0dde"
+  "task_revision": 3,
+  "spec_hash": "a3940acb58823521b5c447fe6c7a082537ca3af100bf5c0d6c0e319530a8e6a7",
+  "generated_task_hash": "ed43dd339400567e14b3b77118f9c1418b1e232d4b75fe6500e99db7c61eeb56"
 }

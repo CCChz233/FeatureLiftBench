@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: build parent/child trees and PreOrderIter. Required observable cases include build and preorder."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When nodes are linked through the `parent` constructor argument, iterating `PreOrderIter` from the root returns the root followed by its descendants in preorder."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: Resolver path get and ChildResolverError. Required observable cases include resolver get."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "Given a tree and a `Resolver` configured for `name`, `get` resolves both root-qualified paths and child-relative paths to the existing node; requesting a missing child raises `ChildResolverError`, which is a `ResolverError`."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: RenderTree yields Row(pre, fill, node) and findall filters. Required observable cases include render and findall."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "For a tree, iterating `RenderTree` yields rows exposing `pre`, `fill`, and `node`, while `findall` returns a tuple of matching nodes in traversal order and returns an empty tuple when no node matches."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "parent assignment mutates children relationships."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "When an existing node's `parent` attribute is assigned, that node appears in the new parent's `children` tuple and subsequent preorder traversal includes it beneath that parent."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes Node/Resolver/RenderTree/PreOrderIter/findall/ChildResolverError/ResolverError with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: anytree."
     }
   ],
@@ -37,64 +43,75 @@
       "nodeid": "public_tests/test_public_api.py::test_build_and_preorder",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_resolver_get",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_render_and_findall",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_parent_children_mutation",
       "public_clause_ids": [
-        "B001"
-      ]
+        "B001",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolver_relative_path",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_render_row_fields",
       "public_clause_ids": [
         "B003"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_findall_empty",
       "public_clause_ids": [
-        "B004"
-      ]
+        "B003"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_resolver_error_base",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "3cf6689249a6a0c2f64eeb8d2d11ab3e1495123079b97da3be326405a36f41d9"
+  "spec_sha256": "491809910ef5c2eb7d3edbfe19178a7ef13a0f1d8c1ac65a5ede630bdcb98806"
 }

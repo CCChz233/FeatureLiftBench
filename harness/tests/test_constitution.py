@@ -11,7 +11,12 @@ from featureliftbench.constitution_validate import (
     _validate_test_api_usage,
     validate_constitution,
 )
-from featureliftbench.task_render import render_public_task
+from featureliftbench.task_render import (
+    COMPLETE_FEATURE_RESPONSIBILITY_HEADING,
+    COMPLETE_FEATURE_RESPONSIBILITY_MARKER,
+    render_agent_workspace_task,
+    render_public_task,
+)
 from featureliftbench.task_spec import compute_generated_task_hash, compute_spec_hash
 from featureliftbench.task_spec_migrate import (
     _extract_featurelifted_imports,
@@ -78,6 +83,21 @@ class ConstitutionPilotTests(unittest.TestCase):
         rendered = render_public_task(metadata)
         self.assertEqual(metadata["spec_hash"], compute_spec_hash(metadata["public_spec"]))
         self.assertEqual(metadata["generated_task_hash"], compute_generated_task_hash(rendered))
+
+    def test_every_compliant_workspace_receives_complete_feature_responsibility(self) -> None:
+        task_dir = self.repo_root / "benchmark" / "tasks" / PILOT_TASKS[0]
+        metadata = json.loads((task_dir / "metadata.json").read_text(encoding="utf-8"))
+
+        stored_task = render_public_task(metadata)
+        workspace_task = render_agent_workspace_task(metadata)
+
+        self.assertNotIn(COMPLETE_FEATURE_RESPONSIBILITY_HEADING, stored_task)
+        self.assertIn(COMPLETE_FEATURE_RESPONSIBILITY_MARKER, workspace_task)
+        self.assertIn(COMPLETE_FEATURE_RESPONSIBILITY_HEADING, workspace_task)
+        self.assertIn("complete task-scoped module", workspace_task)
+        self.assertIn("inspecting the full upstream repository", workspace_task)
+        self.assertIn("exhaustive scope boundary", workspace_task)
+        self.assertIn("Every obligation inside that boundary is mandatory", workspace_task)
 
     def test_migrate_dry_run_idempotent_on_compliant_task(self) -> None:
         task_dir = self.repo_root / "benchmark" / "tasks" / PILOT_TASKS[1]

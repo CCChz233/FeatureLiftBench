@@ -22,6 +22,7 @@ from featurelifted import (
   - `Environment.iter_extensions(self) -> Iterator[ForwardRef('Extension')]`
 - `Extension(environment: Environment) -> None` class constructor
 - `nodes` module must be importable
+  - `nodes.CallBlock(*fields: Any, **attributes: Any) -> None` class constructor
 - `ext` module must be importable
   - `ext.do(environment: Environment) -> None`
   - `ext.loopcontrols(environment: Environment) -> None`
@@ -32,7 +33,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: register extension tags and preprocessors with Environment. Required observable cases include preprocess extension rewrites delimiters; custom extension tag renders.
 - The extracted feature must support this observable behavior: iterate extensions in priority order. Required observable cases include extension ordering by priority.
 - The extracted feature must support this observable behavior: render templates using bundled loopcontrols and do extensions. Required observable cases include loopcontrols extension breaks loop; do extension executes side effect; preprocess extension rewrites delimiters; custom extension tag renders.
-- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.from_string`, `featurelifted.Environment.iter_extensions`, `featurelifted.Extension`, `featurelifted.nodes`, `featurelifted.ext`, `featurelifted.ext.do`, `featurelifted.ext.loopcontrols` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.from_string`, `featurelifted.Environment.iter_extensions`, `featurelifted.Extension`, `featurelifted.nodes`, `featurelifted.nodes.CallBlock`, `featurelifted.ext`, `featurelifted.ext.do`, `featurelifted.ext.loopcontrols` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -55,6 +56,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: register extension tags and preprocessors with Environment. Required observable cases include preprocess extension rewrites delimiters; custom extension tag renders.
 - **B003** — The extracted feature must support this observable behavior: iterate extensions in priority order. Required observable cases include extension ordering by priority.
 - **B004** — The extracted feature must support this observable behavior: render templates using bundled loopcontrols and do extensions. Required observable cases include loopcontrols extension breaks loop; do extension executes side effect; preprocess extension rewrites delimiters; custom extension tag renders.
-- **B005** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.from_string`, `featurelifted.Environment.iter_extensions`, `featurelifted.Extension`, `featurelifted.nodes`, `featurelifted.ext`, `featurelifted.ext.do`, `featurelifted.ext.loopcontrols` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.from_string`, `featurelifted.Environment.iter_extensions`, `featurelifted.Extension`, `featurelifted.nodes`, `featurelifted.nodes.CallBlock`, `featurelifted.ext`, `featurelifted.ext.do`, `featurelifted.ext.loopcontrols` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: jinja2, jinja.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -30,9 +30,9 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: PatchSet parses unified diffs into PatchedFile/Hunk. Required observable cases include parse patchset.
-- The extracted feature must support this observable behavior: hunk lines expose added/removed/context types. Required observable cases include hunk lines; context lines.
-- The extracted feature must support this observable behavior: UnidiffParseError on short hunks and multi-file patches. Required observable cases include parse error short hunk; multiple files.
+- PatchSet parses unified-diff text into an ordered collection of PatchedFile objects whose path omits the a/ or b/ prefix and whose entries are Hunk objects; patches containing multiple files produce one PatchedFile per file.
+- Iterating a Hunk yields line objects whose line_type equals LINE_TYPE_ADDED, LINE_TYPE_REMOVED, or LINE_TYPE_CONTEXT according to the unified-diff prefix and whose value retains the line content.
+- PatchSet accepts consecutive file sections in one diff, but raises UnidiffParseError when a hunk body does not satisfy the source and target lengths declared by its header.
 - PatchedFile exposes added/removed counts.
 - The package exposes PatchSet/PatchedFile/Hunk/UnidiffParseError/LINE_TYPE_* with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: unidiff.
@@ -49,9 +49,9 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: PatchSet parses unified diffs into PatchedFile/Hunk. Required observable cases include parse patchset.
-- **B002** — The extracted feature must support this observable behavior: hunk lines expose added/removed/context types. Required observable cases include hunk lines; context lines.
-- **B003** — The extracted feature must support this observable behavior: UnidiffParseError on short hunks and multi-file patches. Required observable cases include parse error short hunk; multiple files.
+- **B001** — PatchSet parses unified-diff text into an ordered collection of PatchedFile objects whose path omits the a/ or b/ prefix and whose entries are Hunk objects; patches containing multiple files produce one PatchedFile per file.
+- **B002** — Iterating a Hunk yields line objects whose line_type equals LINE_TYPE_ADDED, LINE_TYPE_REMOVED, or LINE_TYPE_CONTEXT according to the unified-diff prefix and whose value retains the line content.
+- **B003** — PatchSet accepts consecutive file sections in one diff, but raises UnidiffParseError when a hunk body does not satisfy the source and target lengths declared by its header.
 - **B004** — PatchedFile exposes added/removed counts.
 - **B005** — The package exposes PatchSet/PatchedFile/Hunk/UnidiffParseError/LINE_TYPE_* with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: unidiff.

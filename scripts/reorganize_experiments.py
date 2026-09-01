@@ -170,6 +170,18 @@ def _moves() -> list[Move]:
                 "bundle_keep",
             ),
             Move(
+                "experiments/python200-hard-main-20260829.tar.gz",
+                "experiments/bundles/incoming/frozen-results/"
+                "python200-hard-main-20260829.tar.gz",
+                "bundle_keep",
+            ),
+            Move(
+                "experiments/python200-hard-main-20260829.tar.gz.sha256",
+                "experiments/bundles/incoming/frozen-results/"
+                "python200-hard-main-20260829.tar.gz.sha256",
+                "bundle_keep",
+            ),
+            Move(
                 "experiments/flb-useful-focus-expts-20260730-144258.tar.gz",
                 "experiments/bundles/archive/methods/"
                 "flb-useful-focus-expts-20260730-144258.tar.gz",

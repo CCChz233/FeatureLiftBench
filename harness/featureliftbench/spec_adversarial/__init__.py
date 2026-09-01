@@ -1,7 +1,7 @@
 """Spec-grounded adversarial self-test: executable public-spec checklist.
 
 Not self-reflection, not Public-feedback, not TFL freeze-before-implement.
-See docs/METHOD_SPEC_ADVERSARIAL.md.
+See docs/archive/methods/METHOD_SPEC_ADVERSARIAL.md.
 """
 
 from __future__ import annotations

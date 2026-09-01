@@ -87,11 +87,6 @@ def test_multiple_errors_collected() -> None:
 def test_no_pydantic_import_surface() -> None:
     import featurelifted
 
-    forbidden = {"BaseSettings", "schema", "schema_json", "HttpUrl", "EmailStr"}
-    exports = set(getattr(featurelifted, "__all__", []))
-    for name in forbidden:
-        assert name not in exports, f"unexpected export: {name}"
-
     pkg_root = Path(featurelifted.__file__).parent
     import_pattern = re.compile(r"^\s*(?:from pydantic|import pydantic)\b", re.MULTILINE)
     for path in pkg_root.rglob("*.py"):

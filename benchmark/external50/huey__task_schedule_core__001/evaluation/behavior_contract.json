@@ -4,31 +4,37 @@
     {
       "behavior_id": "B001",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: enqueue tasks and read results via result.get after execute. Required observable cases include task enqueue and result."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B001",
+      "text": "When a function decorated by `MemoryHuey.task()` is called, one task is enqueued; after `dequeue` and `execute`, the returned result handle's nonblocking `get` returns the function result."
     },
     {
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: crontab schedule helper. Required observable cases include crontab helper."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
+      "text": "A `crontab` schedule built with a step expression is callable and returns true only for matching datetimes; independently enqueued task calls retain their own arguments and results."
     },
     {
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
-      "text": "The extracted feature must support this observable behavior: multiple tasks and flush clears queue. Required observable cases include multiple tasks; flush clears queue."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
+      "text": "After one or more decorated task calls are queued, calling `flush` removes all pending work so `pending_count` returns zero."
     },
     {
       "behavior_id": "B004",
       "clause_kind": "included_behavior",
-      "text": "MemoryHuey is the only broker backend required."
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B004",
+      "text": "Before a queued task is flushed or dequeued, `pending_count` reports at least one pending item."
     },
     {
       "behavior_id": "B005",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B005",
       "text": "The package exposes MemoryHuey and crontab with the kinds listed in this contract."
     },
     {
       "behavior_id": "B006",
       "clause_kind": "included_behavior",
+      "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
       "text": "the submitted package does not import forbidden upstream packages: huey."
     }
   ],
@@ -37,13 +43,15 @@
       "nodeid": "public_tests/test_public_api.py::test_task_enqueue_and_result",
       "public_clause_ids": [
         "B001"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "public_tests/test_public_api.py::test_crontab_helper",
       "public_clause_ids": [
         "B002"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     }
   ],
   "hidden_test_mappings": [
@@ -51,28 +59,32 @@
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_tasks",
       "public_clause_ids": [
         "B001",
-        "B003",
-        "B004"
-      ]
+        "B002"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_flush_clears_queue",
       "public_clause_ids": [
-        "B002"
-      ]
+        "B003",
+        "B004"
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
       "public_clause_ids": [
         "B006"
-      ]
+      ],
+      "mapping_method": "ai_assisted"
     },
     {
       "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
       "public_clause_ids": [
         "B005"
-      ]
+      ],
+      "mapping_method": "generated_required_api_surface"
     }
   ],
-  "spec_sha256": "75e3568dc976c5e2b65c8b8f2f726eec320ae2dbaf12190aeae97a369edf21cd"
+  "spec_sha256": "7466257106910e69b587d3c339e6a7a5e5550686570e5761328ec18b0b131611"
 }

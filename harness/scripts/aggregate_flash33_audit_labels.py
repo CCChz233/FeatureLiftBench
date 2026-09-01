@@ -29,7 +29,7 @@ DEFAULT_AGREEMENT = (
 )
 DEFAULT_MANIFEST = (
     _REPO
-    / "artifacts/research_analysis/agentic_evidence/flash33_suite_v1"
+    / "experiments/validation/agentic_evidence/flash33_suite_v1"
     / "suite_manifest.json"
 )
 

@@ -1,0 +1,387 @@
+{
+  "task_id": "cherrypy__dispatch_tool_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "registry"
+  ],
+  "source": {
+    "name": "CherryPy",
+    "url": "https://github.com/cherrypy/cherrypy",
+    "commit": "1f75bc9eed8e0e385f64f368bd69f58d96fb8c2b",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "Dispatch table and Tools",
+    "description": "Lift CherryPy object-tree URL dispatch and Tool decorator config without binding sockets.",
+    "source_entrypoints": [
+      "cherrypy._cptree.Application",
+      "cherrypy._cpdispatch.Dispatcher",
+      "cherrypy._cptools.Tool",
+      "cherrypy.expose"
+    ],
+    "included_behaviors": [
+      "exposed handler dispatch",
+      "404 miss",
+      "Tool decorator config",
+      "nested object tree"
+    ],
+    "excluded_behaviors": [
+      "engine.listen / bind sockets",
+      "quickstart server loop",
+      "production WSGI server"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "implicit_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Application WSGI dispatch walks an exposed object tree and Tool decorators write handler config.",
+    "signals": [
+      "expose",
+      "Dispatcher",
+      "Tool",
+      "_cp_config"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import Application, Dispatcher, expose, Tool",
+    "callable": "Application",
+    "signature": "Application(root, script_name='', config=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 120,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "cheroot",
+      "portend",
+      "filelock",
+      "jaraco.collections",
+      "jaraco.context",
+      "jaraco.functools",
+      "jaraco.text",
+      "backports.tarfile",
+      "more-itertools",
+      "tempora",
+      "python-dateutil",
+      "six"
+    ],
+    "forbidden_dependencies": [
+      "CherryPy",
+      "cherrypy"
+    ],
+    "forbidden_imports": [
+      "cherrypy"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "cherrypy/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Dispatch table and Tools",
+    "summary": "Build a standalone `featurelifted` package providing CherryPy-style object-tree URL dispatch and Tool decorator configuration without binding sockets.",
+    "required_api": [
+      {
+        "path": "featurelifted.Application",
+        "kind": "class",
+        "signature": "(root, script_name='', config=None)",
+        "members": [
+          {
+            "path": "featurelifted.Application.__init__",
+            "kind": "method",
+            "signature": "(self, root, script_name='', config=None)"
+          },
+          {
+            "path": "featurelifted.Application.__call__",
+            "kind": "method",
+            "signature": "(self, environ, start_response)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.Dispatcher",
+        "kind": "class",
+        "signature": "(dispatch_method_name=None, translate=punctuation_to_underscores)",
+        "members": [
+          {
+            "path": "featurelifted.Dispatcher.__init__",
+            "kind": "method",
+            "signature": "(self, dispatch_method_name=None, translate=punctuation_to_underscores)"
+          },
+          {
+            "path": "featurelifted.Dispatcher.find_handler",
+            "kind": "method",
+            "signature": "(self, path)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.expose",
+        "kind": "function",
+        "signature": "(func=None, alias=None)"
+      },
+      {
+        "path": "featurelifted.Tool",
+        "kind": "class",
+        "signature": "(point, callable, name=None, priority=50)",
+        "members": [
+          {
+            "path": "featurelifted.Tool.__init__",
+            "kind": "method",
+            "signature": "(self, point, callable, name=None, priority=50)"
+          },
+          {
+            "path": "featurelifted.Tool.__call__",
+            "kind": "method",
+            "signature": "(self, *args, **kwargs)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After page handlers are marked with `@expose`, calling a WSGI `Application` rooted at that object with a matching `PATH_INFO` and `HTTP_HOST` returns HTTP 200 and the handler body."
+      },
+      {
+        "id": "B002",
+        "text": "A request whose `PATH_INFO` matches no exposed handler is answered with an HTTP 404 status."
+      },
+      {
+        "id": "B003",
+        "text": "Decorating a function with `Tool('before_handler', hook, name='flag')()` sets `function._cp_config['tools.flag.on']` to True."
+      },
+      {
+        "id": "B004",
+        "text": "An exposed nested object attribute is dispatched when `PATH_INFO` names that nested path, returning the nested handler body with HTTP 200."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `Application`, `Dispatcher`, `expose`, and `Tool` with the callable signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `cherrypy`."
+      }
+    ],
+    "exclusions": [
+      "engine.listen / bind sockets",
+      "quickstart server loop",
+      "production WSGI server",
+      "runtime import of cherrypy"
+    ],
+    "forbidden": {
+      "imports": [
+        "cherrypy"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After page handlers are marked with `@expose`, calling a WSGI `Application` rooted at that object with a matching `PATH_INFO` and `HTTP_HOST` returns HTTP 200 and the handler body."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A request whose `PATH_INFO` matches no exposed handler is answered with an HTTP 404 status."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Decorating a function with `Tool('before_handler', hook, name='flag')()` sets `function._cp_config['tools.flag.on']` to True."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "An exposed nested object attribute is dispatched when `PATH_INFO` names that nested path, returning the nested handler body with HTTP 200."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `Application`, `Dispatcher`, `expose`, and `Tool` with the callable signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `cherrypy`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_index_dispatch",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_named_handler_dispatch",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_expose_marks_handler",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_nested_exposed_handler",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_tool_decorator_sets_config",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_path_is_not_found",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_dispatcher_is_callable",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.Application",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Application.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Application.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Dispatcher",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Dispatcher.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Dispatcher.find_handler",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.expose",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Tool",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Tool.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Tool.__call__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "d17f6d64e13c7c07b9afd6794feb9be6bfac1bce618ee748a3f9681d4b937bdc",
+  "generated_task_hash": "9807a4963bc8d9eb28142d0dd5a8e6163f02ddb2106f6fc7ec6c956c3eb7e401",
+  "scoring_reference": {
+    "copy_all_bytes": 1190798,
+    "copy_all_loc": 23236,
+    "oracle_bytes": 1166728,
+    "oracle_loc": 13336,
+    "oracle_dependency_count": 5
+  }
+}

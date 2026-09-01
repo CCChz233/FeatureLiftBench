@@ -18,6 +18,7 @@ def test_required_api_surface():
     assert isinstance(Version, type)
     assert isinstance(Specifier, type)
     assert isinstance(SpecifierSet, type)
+    assert hasattr(SpecifierSet, 'filter')
     assert isinstance(Requirement, type)
     assert Requirement is not None
     assert Requirement is not None

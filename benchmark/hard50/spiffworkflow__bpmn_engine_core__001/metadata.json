@@ -1,0 +1,298 @@
+{
+  "task_id": "spiffworkflow__bpmn_engine_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite",
+    "workflow"
+  ],
+  "source": {
+    "name": "SpiffWorkflow",
+    "url": "https://github.com/sartography/SpiffWorkflow",
+    "commit": "d4d6915ca2aeb4cececacfce779dacc82ad06e30",
+    "license": "LGPL-3.0"
+  },
+  "feature": {
+    "name": "In-memory BPMN engine",
+    "description": "Lift a small BPMN parser and workflow runner for start/script/user/end tasks.",
+    "source_entrypoints": [
+      "SpiffWorkflow.bpmn.workflow.BpmnWorkflow",
+      "SpiffWorkflow.bpmn.parser.BpmnParser.BpmnParser"
+    ],
+    "included_behaviors": [
+      "start event",
+      "script/manual task subset",
+      "completed state"
+    ],
+    "excluded_behaviors": [
+      "BPMN editor UI",
+      "DMN full suite"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "data_model_coupling",
+      "parser_state_coupling"
+    ],
+    "primary": "parser_state_coupling",
+    "description": "Parser specs and workflow instances share task state and script data.",
+    "signals": [
+      "add_bpmn_str",
+      "do_engine_steps",
+      "user task wait"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import BpmnWorkflow, BpmnParser",
+    "callable": "BpmnParser",
+    "signature": "BpmnParser()"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "lxml"
+    ],
+    "forbidden_dependencies": [
+      "SpiffWorkflow"
+    ],
+    "forbidden_imports": [
+      "SpiffWorkflow"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "SpiffWorkflow/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "In-memory BPMN engine",
+    "summary": "Build a standalone `featurelifted` package that parses a tiny in-memory BPMN document and runs start, script, and user-task processes to a completed or waiting state.",
+    "required_api": [
+      {
+        "path": "featurelifted.BpmnParser",
+        "kind": "class",
+        "signature": "()",
+        "members": [
+          {
+            "path": "featurelifted.BpmnParser.add_bpmn_str",
+            "kind": "method",
+            "signature": "(self, bpmn_str, filename=None)"
+          },
+          {
+            "path": "featurelifted.BpmnParser.get_spec",
+            "kind": "method",
+            "signature": "(self, process_id, required=True)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnWorkflow",
+        "kind": "class",
+        "signature": "(spec)",
+        "members": [
+          {
+            "path": "featurelifted.BpmnWorkflow.do_engine_steps",
+            "kind": "method",
+            "signature": "(self, will_complete_task=None, did_complete_task=None)"
+          },
+          {
+            "path": "featurelifted.BpmnWorkflow.is_completed",
+            "kind": "method",
+            "signature": "(self) -> bool"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`BpmnParser.add_bpmn_str` accepts an in-memory BPMN document and `get_spec(process_id)` returns the process with that id so it can be wrapped in `BpmnWorkflow`."
+      },
+      {
+        "id": "B002",
+        "text": "A process that is only a start event, a script task assigning `result = 1 + 2`, and an end event reaches a completed state after `do_engine_steps()`, and the workflow data contains `result` equal to 3."
+      },
+      {
+        "id": "B003",
+        "text": "A process whose next work is a user task is not completed after `do_engine_steps()` because that waiting task is not an automatic engine step."
+      },
+      {
+        "id": "B004",
+        "text": "The engine runs entirely in memory from the XML string; tests do not read `repo/` or contact a network service."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `BpmnParser` and `BpmnWorkflow` with `add_bpmn_str`, `get_spec`, `do_engine_steps`, and `is_completed`."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `SpiffWorkflow`."
+      }
+    ],
+    "exclusions": [
+      "BPMN editor UI",
+      "full DMN decision tables",
+      "runtime import of SpiffWorkflow"
+    ],
+    "forbidden": {
+      "imports": [
+        "SpiffWorkflow"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`BpmnParser.add_bpmn_str` accepts an in-memory BPMN document and `get_spec(process_id)` returns the process with that id so it can be wrapped in `BpmnWorkflow`."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "A process that is only a start event, a script task assigning `result = 1 + 2`, and an end event reaches a completed state after `do_engine_steps()`, and the workflow data contains `result` equal to 3."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "A process whose next work is a user task is not completed after `do_engine_steps()` because that waiting task is not an automatic engine step."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "The engine runs entirely in memory from the XML string; tests do not read `repo/` or contact a network service."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `BpmnParser` and `BpmnWorkflow` with `add_bpmn_str`, `get_spec`, `do_engine_steps`, and `is_completed`."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `SpiffWorkflow`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_script_process_completes",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_script_writes_result_data",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_user_task_is_not_auto_completed",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_get_spec_returns_named_process",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.BpmnParser",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnParser.add_bpmn_str",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnParser.get_spec",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnWorkflow",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnWorkflow.do_engine_steps",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.BpmnWorkflow.is_completed",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 11579714,
+    "copy_all_loc": 19384,
+    "oracle_bytes": 1315123,
+    "oracle_loc": 11618,
+    "oracle_dependency_count": 1
+  },
+  "spec_hash": "c10d8b15bddfaccd6b0cace9b78d6a122f174b782623bf4038dbdb1ce41d945f",
+  "generated_task_hash": "16efd33fbbf9eac467ee66b9d4bcc4e57744776dddff8a6a20b98b0953fff1d5"
+}

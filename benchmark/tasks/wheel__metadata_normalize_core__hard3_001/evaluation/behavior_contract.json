@@ -35,7 +35,7 @@
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
-      "text": "parse_wheel_filename returns normalized distribution, version, build, and tag components and raises WheelError for invalid filenames."
+      "text": "parse_wheel_filename returns a 3-tuple of normalized distribution name, version, and build tag, and raises WheelError for invalid filenames."
     },
     {
       "behavior_id": "B003",
@@ -94,7 +94,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "6cd95bbe3e1a5226422482f09fcc55949686cc7a38bf718c802ae1657baeb4b8",
+  "spec_sha256": "96f45e0f1fa515182b3066ba2edb0a862c10bd01fd1b08dfcd7c290267840b8d",
   "task_id": "wheel__metadata_normalize_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

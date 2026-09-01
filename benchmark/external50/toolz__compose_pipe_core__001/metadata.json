@@ -106,19 +106,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: compose right-to-left callable pipelines. Required observable cases include compose and pipe."
+        "text": "`compose` accepts callables and returns a callable that applies them from right to left; `identity` returns its argument unchanged and can participate in a composition."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: pipe left-to-right value pipelines. Required observable cases include pipe left to right."
+        "text": "`pipe` accepts an initial value followed by callables and returns the result of applying those callables from left to right."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: curry partial application. Required observable cases include curry partial; curry kwargs."
+        "text": "`curry` wraps a callable so that required positional arguments may be supplied across successive calls or together in one call."
       },
       {
         "id": "B004",
-        "text": "identity returns its argument unchanged."
+        "text": "A curried callable accepts keyword arguments, preserves defaulted parameters, and combines them with positional arguments supplied by a later call."
       },
       {
         "id": "B005",
@@ -146,22 +146,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: compose right-to-left callable pipelines. Required observable cases include compose and pipe."
+        "text": "`compose` accepts callables and returns a callable that applies them from right to left; `identity` returns its argument unchanged and can participate in a composition."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: pipe left-to-right value pipelines. Required observable cases include pipe left to right."
+        "text": "`pipe` accepts an initial value followed by callables and returns the result of applying those callables from left to right."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: curry partial application. Required observable cases include curry partial; curry kwargs."
+        "text": "`curry` wraps a callable so that required positional arguments may be supplied across successive calls or together in one call."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "identity returns its argument unchanged."
+        "text": "A curried callable accepts keyword arguments, preserves defaulted parameters, and combines them with positional arguments supplied by a later call."
       },
       {
         "behavior_id": "B005",
@@ -178,21 +178,22 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_compose_and_pipe",
         "behavior_ids": [
-          "B001"
+          "B001",
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_curry_partial",
         "behavior_ids": [
-          "B002"
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_identity",
         "behavior_ids": [
-          "B003"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -201,8 +202,7 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_compose_right_to_left",
         "behavior_ids": [
-          "B001",
-          "B004"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -216,7 +216,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_curry_kwargs",
         "behavior_ids": [
-          "B003"
+          "B003",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -269,6 +270,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "a63954c84d67ba3f67d55a0bbf569ed169582dd8532e2f9f6df68c3d6d1fabdf",
-  "generated_task_hash": "e05b3d5ec5460e4caab10d0577e7704e244e3dd4b7381c4226e1ebcb6baf6cd1"
+  "spec_hash": "ee7058e0bb5004489f194ae391c3345269b552f7b0787b116073dd04a3f24d4a",
+  "generated_task_hash": "5a1c7d742d44d44b3d7bfe736647c377abc9019322f4877a9b108a47343060f9"
 }

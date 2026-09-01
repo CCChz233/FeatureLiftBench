@@ -1,0 +1,336 @@
+{
+  "task_id": "authlib__oauth2_server_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted",
+    "oauth"
+  ],
+  "source": {
+    "name": "authlib",
+    "url": "https://github.com/lepture/authlib",
+    "commit": "772bc72fe8440e6c5dd0a6615fb42d7466f85546",
+    "license": "BSD-3-Clause"
+  },
+  "feature": {
+    "name": "OAuth2 authorization-code grants",
+    "description": "Lift AuthorizationServer authorization-code issuance and token exchange without live HTTP.",
+    "source_entrypoints": [
+      "authlib.oauth2.rfc6749.AuthorizationServer",
+      "authlib.oauth2.rfc6749.grants.AuthorizationCodeGrant"
+    ],
+    "included_behaviors": [
+      "create_authorization_response",
+      "create_token_response",
+      "invalid client"
+    ],
+    "excluded_behaviors": [
+      "Flask/Django full apps",
+      "JWK cloud KMS"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "data_model_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Grant registry, client mixin checks, and token generation share one authorization server.",
+    "signals": [
+      "authorization code",
+      "client_secret_post",
+      "invalid_client"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import AuthorizationServer, AuthorizationCodeGrant, ClientMixin",
+    "callable": "AuthorizationServer",
+    "signature": "AuthorizationServer(scopes_supported=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "cryptography",
+      "cffi",
+      "pycparser"
+    ],
+    "forbidden_dependencies": [
+      "Authlib",
+      "authlib"
+    ],
+    "forbidden_imports": [
+      "authlib"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "authlib/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "OAuth2 authorization-code grants",
+    "summary": "Build a standalone `featurelifted` package providing an in-memory OAuth2 authorization-code server: authorize, exchange a code for a token, and reject unknown clients, without live HTTP.",
+    "required_api": [
+      {
+        "path": "featurelifted.AuthorizationServer",
+        "kind": "class",
+        "signature": "(scopes_supported=None)",
+        "members": [
+          {
+            "path": "featurelifted.AuthorizationServer.register_grant",
+            "kind": "method",
+            "signature": "(self, grant_cls, extensions=None)"
+          },
+          {
+            "path": "featurelifted.AuthorizationServer.create_authorization_response",
+            "kind": "method",
+            "signature": "(self, request=None, grant_user=None)"
+          },
+          {
+            "path": "featurelifted.AuthorizationServer.create_token_response",
+            "kind": "method",
+            "signature": "(self, request=None)"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.AuthorizationCodeGrant",
+        "kind": "class",
+        "signature": "(request, server)"
+      },
+      {
+        "path": "featurelifted.ClientMixin",
+        "kind": "class",
+        "signature": "()"
+      },
+      {
+        "path": "featurelifted.InvalidClientError",
+        "kind": "exception",
+        "signature": ""
+      },
+      {
+        "path": "featurelifted.OAuth2Request",
+        "kind": "class",
+        "signature": "(method, uri, body=None, headers=None)",
+        "members": [
+          {
+            "path": "featurelifted.OAuth2Request.__init__",
+            "kind": "method",
+            "signature": "(self, method, uri, body=None, headers=None)"
+          }
+        ]
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "`create_authorization_response` for a registered client's `response_type=code` request returns HTTP 302 whose Location keeps `state` and includes an authorization `code` query parameter."
+      },
+      {
+        "id": "B002",
+        "text": "`create_token_response` for that code with `grant_type=authorization_code` and `client_secret_post` credentials returns HTTP 200 with an `access_token`, and the server `save_token` hook records the issued token."
+      },
+      {
+        "id": "B003",
+        "text": "An authorization request whose `client_id` is unknown yields HTTP 400 whose body reports `error` equal to `invalid_client`."
+      },
+      {
+        "id": "B004",
+        "text": "All grant traffic uses in-memory request tuples and `https://` URIs; the tests never open a listening HTTP server."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `AuthorizationServer`, `AuthorizationCodeGrant`, `ClientMixin`, `InvalidClientError`, and `OAuth2Request` as listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `authlib`."
+      }
+    ],
+    "exclusions": [
+      "Flask or Django application integrations",
+      "JWK cloud KMS",
+      "listening HTTP servers",
+      "runtime import of authlib"
+    ],
+    "forbidden": {
+      "imports": [
+        "authlib"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "`create_authorization_response` for a registered client's `response_type=code` request returns HTTP 302 whose Location keeps `state` and includes an authorization `code` query parameter."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "`create_token_response` for that code with `grant_type=authorization_code` and `client_secret_post` credentials returns HTTP 200 with an `access_token`, and the server `save_token` hook records the issued token."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "An authorization request whose `client_id` is unknown yields HTTP 400 whose body reports `error` equal to `invalid_client`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "All grant traffic uses in-memory request tuples and `https://` URIs; the tests never open a listening HTTP server."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `AuthorizationServer`, `AuthorizationCodeGrant`, `ClientMixin`, `InvalidClientError`, and `OAuth2Request` as listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `authlib`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_authorization_code_redirect",
+        "behavior_ids": [
+          "B001",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_token_response_issues_access_token",
+        "behavior_ids": [
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_unknown_client_is_invalid",
+        "behavior_ids": [
+          "B003",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_save_token_records_issued_token",
+        "behavior_ids": [
+          "B001",
+          "B002",
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.AuthorizationServer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AuthorizationServer.register_grant",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AuthorizationServer.create_authorization_response",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AuthorizationServer.create_token_response",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.AuthorizationCodeGrant",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ClientMixin",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.InvalidClientError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OAuth2Request",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.OAuth2Request.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "scoring_reference": {
+    "copy_all_bytes": 1548206,
+    "copy_all_loc": 35518,
+    "oracle_bytes": 982016,
+    "oracle_loc": 16908,
+    "oracle_dependency_count": 1
+  },
+  "spec_hash": "f608f14bd08e7c16465413764f11bfbafcb0dc7b5133f855b796881a3767e2a7",
+  "generated_task_hash": "ddbce0d3dacfdba88b00187d91a2fa7b63a1528299725a31b9d78744dd8f076d"
+}

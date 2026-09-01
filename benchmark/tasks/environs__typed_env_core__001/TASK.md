@@ -25,12 +25,14 @@ from featurelifted import (
   - `Env.prefixed(self, prefix: '_StrType') -> 'typing.Iterator[Env]'`
   - `Env.seal(self) -> 'None'`
   - `Env.str(self: 'Env', name: 'str', default: 'typing.Any' = Ellipsis, subcast: 'Subcast[_T] | None' = None, *, validate: 'typing.Callable[[typing.Any], typing.Any] | typing.Iterable[typing.Callable[[typing.Any], typing.Any]] | None' = None, **kwargs) -> '_T | None'`
+  - `Env.timedelta(self: 'Env', name: 'str', default: 'typing.Any' = Ellipsis, subcast: 'Subcast[_T] | None' = None, *, validate: 'typing.Callable[[typing.Any], typing.Any] | typing.Iterable[typing.Callable[[typing.Any], typing.Any]] | None' = None, **kwargs) -> '_T | None'`
 - `EnvError` must be importable and raisable
 - `EnvValidationError` must be importable and raisable
 - `EnvSealedError` must be importable and raisable
 - `ParserConflictError` must be importable and raisable
 - `ValidationError` must be importable and raisable
 - `validate` module must be importable
+  - `validate.Range(min: 'typing.Any' = None, max: 'typing.Any' = None, *, min_inclusive: 'bool' = True, max_inclusive: 'bool' = True, error: 'str | None' = None)` class constructor
 
 ## Required Behavior
 
@@ -41,7 +43,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: constructor and context-manager prefix for env key names. Required observable cases include prefixed context manager.
 - The extracted feature must support this observable behavior: deferred validation via eager=False and seal() error aggregation. Required observable cases include deferred seal aggregates errors.
 - The extracted feature must support this observable behavior: custom timedelta duration strings via fields.TimeDelta. Required observable cases include timedelta gep2257 duration.
-- The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.Env.timedelta`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -67,6 +69,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B005** — The extracted feature must support this observable behavior: constructor and context-manager prefix for env key names. Required observable cases include prefixed context manager.
 - **B006** — The extracted feature must support this observable behavior: deferred validation via eager=False and seal() error aggregation. Required observable cases include deferred seal aggregates errors.
 - **B007** — The extracted feature must support this observable behavior: custom timedelta duration strings via fields.TimeDelta. Required observable cases include timedelta gep2257 duration.
-- **B008** — The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate` with the kinds and callable signatures listed in this contract.
+- **B008** — The package exposes the required task API paths `featurelifted.Env`, `featurelifted.Env.int`, `featurelifted.Env.prefixed`, `featurelifted.Env.seal`, `featurelifted.Env.str`, `featurelifted.Env.timedelta`, `featurelifted.EnvError`, `featurelifted.EnvValidationError`, `featurelifted.EnvSealedError`, `featurelifted.ParserConflictError`, `featurelifted.ValidationError`, `featurelifted.validate`, and 1 listed members with the kinds and callable signatures listed in this contract.
 - **B009** — the submitted package does not import forbidden upstream packages: environs.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -1,0 +1,356 @@
+{
+  "task_id": "limits__strategy_storage_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "adapted"
+  ],
+  "source": {
+    "name": "limits",
+    "url": "https://github.com/alisaifee/limits",
+    "commit": "cb0ff4294d1b713b7892f975443d04cd21d98dfa",
+    "license": "MIT"
+  },
+  "feature": {
+    "name": "Fixed-window memory rate limiter",
+    "description": "Lift parse + FixedWindowRateLimiter against MemoryStorage without Redis.",
+    "source_entrypoints": [
+      "limits.strategies.FixedWindowRateLimiter",
+      "limits.storage.memory.MemoryStorage",
+      "limits.util.parse"
+    ],
+    "included_behaviors": [
+      "parse limit strings",
+      "fixed window hits",
+      "window stats",
+      "independent identifiers",
+      "memory incr/get"
+    ],
+    "excluded_behaviors": [
+      "Redis storage",
+      "Memcached storage",
+      "MongoDB storage"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "resource_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Strategy objects share window state with a storage backend keyed by parsed limit items.",
+    "signals": [
+      "parse",
+      "cost",
+      "identifier isolation"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import FixedWindowRateLimiter, MemoryStorage, parse",
+    "callable": "FixedWindowRateLimiter",
+    "signature": "FixedWindowRateLimiter(storage)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "deprecated",
+      "packaging",
+      "typing_extensions",
+      "wrapt"
+    ],
+    "forbidden_dependencies": [
+      "limits"
+    ],
+    "forbidden_imports": [
+      "limits"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "limits/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Fixed-window memory rate limiter",
+    "summary": "Build a standalone `featurelifted` package providing in-memory fixed-window rate limiting from parsed limit strings.",
+    "required_api": [
+      {
+        "path": "featurelifted.MemoryStorage",
+        "kind": "class",
+        "signature": "(uri: str | None = None, wrap_exceptions: bool = False, **_)",
+        "members": [
+          {
+            "path": "featurelifted.MemoryStorage.__init__",
+            "kind": "method",
+            "signature": "(self, uri: str | None = None, wrap_exceptions: bool = False, **_)"
+          },
+          {
+            "path": "featurelifted.MemoryStorage.incr",
+            "kind": "method",
+            "signature": "(self, key: str, expiry: float, amount: int = 1) -> int"
+          },
+          {
+            "path": "featurelifted.MemoryStorage.get",
+            "kind": "method",
+            "signature": "(self, key: str) -> int"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.FixedWindowRateLimiter",
+        "kind": "class",
+        "signature": "(storage)",
+        "members": [
+          {
+            "path": "featurelifted.FixedWindowRateLimiter.__init__",
+            "kind": "method",
+            "signature": "(self, storage)"
+          },
+          {
+            "path": "featurelifted.FixedWindowRateLimiter.hit",
+            "kind": "method",
+            "signature": "(self, item, *identifiers: str, cost: int = 1) -> bool"
+          },
+          {
+            "path": "featurelifted.FixedWindowRateLimiter.get_window_stats",
+            "kind": "method",
+            "signature": "(self, item, *identifiers: str) -> WindowStats"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.parse",
+        "kind": "function",
+        "signature": "(limit_string: str)"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `parse` builds a limit item, `FixedWindowRateLimiter.hit` against `MemoryStorage` returns True until the parsed amount is exhausted in that window, then False."
+      },
+      {
+        "id": "B002",
+        "text": "After a window is exhausted, `get_window_stats` reports `remaining == 0` for the same identifiers."
+      },
+      {
+        "id": "B003",
+        "text": "Hits for distinct identifier strings are counted independently against the same limiter and limit item."
+      },
+      {
+        "id": "B004",
+        "text": "`MemoryStorage.incr` increases a key by the given amount and `get` returns 0 for a missing key and the stored count afterwards."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `MemoryStorage`, `FixedWindowRateLimiter`, `parse`, `hit`, `get_window_stats`, `incr`, and `get` with the signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `limits`."
+      }
+    ],
+    "exclusions": [
+      "Redis storage",
+      "Memcached storage",
+      "MongoDB storage",
+      "runtime import of limits"
+    ],
+    "forbidden": {
+      "imports": [
+        "limits"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `parse` builds a limit item, `FixedWindowRateLimiter.hit` against `MemoryStorage` returns True until the parsed amount is exhausted in that window, then False."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "After a window is exhausted, `get_window_stats` reports `remaining == 0` for the same identifiers."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "Hits for distinct identifier strings are counted independently against the same limiter and limit item."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "`MemoryStorage.incr` increases a key by the given amount and `get` returns 0 for a missing key and the stored count afterwards."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `MemoryStorage`, `FixedWindowRateLimiter`, `parse`, `hit`, `get_window_stats`, `incr`, and `get` with the signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `limits`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_fixed_window_allows_until_limit",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_window_stats_report_zero_remaining_after_exhaustion",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_distinct_identifiers_have_independent_windows",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_parse_accepts_minute_limit_string",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_cost_consumes_multiple_hits",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_memory_storage_incr_and_get",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_two_limiters_do_not_share_memory",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.MemoryStorage",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MemoryStorage.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MemoryStorage.incr",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.MemoryStorage.get",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FixedWindowRateLimiter",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FixedWindowRateLimiter.__init__",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FixedWindowRateLimiter.hit",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.FixedWindowRateLimiter.get_window_stats",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.parse",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "ddfc10eac758d3522403d95f07615cebaacdd9e81a91b919e941a831eace92a2",
+  "generated_task_hash": "6d4f776fdc24c539f5ec13e40ecef7f10b06bcacaa40c671e66f3748c3f34cf6",
+  "scoring_reference": {
+    "copy_all_bytes": 916570,
+    "copy_all_loc": 7772,
+    "oracle_bytes": 453618,
+    "oracle_loc": 4837,
+    "oracle_dependency_count": 4
+  }
+}

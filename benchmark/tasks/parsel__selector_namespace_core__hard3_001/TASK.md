@@ -22,6 +22,8 @@ from featurelifted import (
   - `Selector.xpath(self, query: 'str') -> "'Selector'"`
   - `Selector.register_namespace(prefix: 'str', uri: 'str') -> 'None'`
   - `Selector.remove_namespace(prefix: 'str') -> 'None'`
+  - `Selector.get(self, default: 'str | None' = None) -> 'str | None'`
+  - `Selector.getall(self) -> 'list[str]'`
 - `FakeElement(tag: 'str', text: 'str' = '', tail: 'str' = '', attrib: 'dict[str, str]' = <factory>, children: "list['FakeElement']" = <factory>) -> None` class constructor
 - `extract_text(nodes: 'list[FakeElement]', default: 'str' = '') -> 'str'`
 - `SelectorSyntaxError` must be importable and raisable
@@ -31,7 +33,7 @@ from featurelifted import (
 - `Selector.css` and `Selector.xpath` select nodes from a lightweight element tree.
 - `Selector.register_namespace` enables prefixed XPath tag matching.
 - `extract_text` joins nested text with sensible defaults.
-- The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.Selector.get`, `featurelifted.Selector.getall`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -53,6 +55,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — `Selector.css` and `Selector.xpath` select nodes from a lightweight element tree.
 - **B002** — `Selector.register_namespace` enables prefixed XPath tag matching.
 - **B003** — `extract_text` joins nested text with sensible defaults.
-- **B004** — The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.Selector.get`, `featurelifted.Selector.getall`, `featurelifted.FakeElement`, `featurelifted.extract_text`, `featurelifted.SelectorSyntaxError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: parsel.
 <!-- featureliftbench:behavior-clauses:end -->

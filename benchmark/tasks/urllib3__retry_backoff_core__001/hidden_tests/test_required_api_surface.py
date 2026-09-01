@@ -19,9 +19,12 @@ def test_required_api_surface():
     assert hasattr(Retry, 'is_retry')
     assert hasattr(Retry, 'parse_retry_after')
     assert Retry is not None
+    assert hasattr(Retry, 'from_int')
+    assert Retry is not None
     assert isinstance(RequestHistory, type)
     assert issubclass(ConnectTimeoutError, BaseException)
     assert issubclass(ReadTimeoutError, BaseException)
     assert issubclass(MaxRetryError, BaseException)
     assert issubclass(ResponseError, BaseException)
+    assert getattr(ResponseError, 'SPECIFIC_ERROR') is not None
     assert issubclass(InvalidHeader, BaseException)

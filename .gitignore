@@ -47,6 +47,12 @@ experiments/methods/td_cognition_pilot/logs/
 !experiments/validation/
 experiments/validation/*
 !experiments/validation/README.md
+!experiments/validation/agentic_evidence/
+experiments/validation/agentic_evidence/*
+!experiments/validation/agentic_evidence/README.md
+!experiments/validation/hard50/
+experiments/validation/hard50/*
+!experiments/validation/hard50/README.md
 !experiments/registry/
 !experiments/registry/**
 !experiments/bundles/
@@ -93,12 +99,22 @@ reports/*
 !reports/README.md
 !reports/contract_closure_200/
 !reports/contract_closure_200/**
+!reports/agentic_evidence/
+reports/agentic_evidence/*
+!reports/agentic_evidence/README.md
+!reports/agentic_evidence/*.md
 !reports/contract_closure_v2_p0/
 !reports/contract_closure_v2_p0/**
 reports/contract_closure_v2_p0/evaluator/*/logs/
 !reports/paper_analysis/
 reports/paper_analysis/*
 !reports/paper_analysis/README.md
+!reports/paper_analysis/python200_hard_main_20260829/
+!reports/paper_analysis/python200_hard_main_20260829/**
+!reports/paper_analysis/python150_exploratory_20260830/
+!reports/paper_analysis/python150_exploratory_20260830/**
+reports/paper_analysis/python150_exploratory_20260830/__pycache__/
+reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite
 !reports/token_efficiency_20260720/
 !reports/token_efficiency_20260720/**
 !reports/failure_attribution_20260720/
@@ -136,13 +152,26 @@ reports/audits/v3_oracle_revalidation/*
 !reports/audits/task_lifecycle_report.md
 !reports/audits/python200_balance_design.json
 !reports/audits/python200_balance_design.md
+!reports/audits/python200_prime_freeze_report.md
+!reports/audits/repository_public_upload_plan_20260901.md
+!reports/audits/python200_prime_oracle_revalidation/
+reports/audits/python200_prime_oracle_revalidation/*
+!reports/audits/python200_prime_oracle_revalidation/summary.json
 scripts/*
+!scripts/README.md
 !scripts/check_docs.py
 !scripts/check_task_lifecycle.py
+!scripts/reorganize_experiments.py
 !scripts/audit_new_protocol_readiness.py
 !scripts/build_spec_freeze.py
 !scripts/build_source_registry.py
 !scripts/materialize_full_sources.py
+!scripts/build_python200_prime_candidate_freeze.py
+!scripts/build_python200_prime_compactness_registry.py
+!scripts/build_python200_prime_final_freeze.py
+!scripts/build_python200_prime_v3_compat_freeze.py
+!scripts/build_python200_server_overlay.py
+!scripts/revalidate_python200_prime_oracles.py
 !scripts/audit_v2_main_readiness.py
 !scripts/revalidate_v2_oracles.py
 !scripts/build_v2_benchmark_freeze.py
@@ -176,11 +205,26 @@ benchmark/staging/
 benchmark/batch3_pilot/
 benchmark/contract_v2/generated_tasks/
 benchmark/contract_v2/generated_references/
+# Hard-50 staging keeps complete upstream checkouts and frozen reference
+# solutions locally.  The public repository carries task contracts and hashes;
+# evaluator-only assets are delivered through a checksummed server overlay.
+benchmark/hard50_pilot/_swapped_out/
+benchmark/hard50_pilot/*/repo/
+benchmark/hard50_pilot/*/*
+
+# Python-200 holdout assets must not enter the public Git history before the
+# frozen experiments complete.  They remain on disk and in the server overlay.
+benchmark/hard50/*/hidden_tests/
+benchmark/hard50/*/evaluation/oracle_manifest.json
 benchmark/submissions/*
 !benchmark/submissions/.gitkeep
 !benchmark/submissions/go_dummy__adder_core__001/
 !benchmark/submissions/go_dummy__adder_core__001/oracle/
 !benchmark/submissions/go_dummy__adder_core__001/oracle/**
+
+# Existing tracked wheels remain available for compatibility.  New wheels are
+# delivered through the checksummed server overlay instead of growing Git.
+benchmark/vendor-wheels/*.whl
 
 # Experiment dump bundles. Nested agent workspaces often contain
 # uninitialized .git (no HEAD); git then treats them as submodules and
@@ -200,6 +244,9 @@ benchmark/*.tar.gz
 
 # Replay trees used to gold-label token utility; regenerated locally.
 artifacts/research_analysis/token_utility_phase1_work/
+# Keep only the canonical candidate/freeze records in Git; intermediate
+# content-addressed candidates remain local audit scratch.
+artifacts/research_analysis/python200_prime/candidates/*.json
 benchmark/tasks/**/repo/.git/
 
 # Reproducible canonical source archives are rebuilt from registry revisions.

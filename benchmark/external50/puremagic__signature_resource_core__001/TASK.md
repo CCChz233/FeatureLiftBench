@@ -26,10 +26,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- from_string and from_stream identify known byte signatures using bundled magic metadata.
-- MIME mode and from_extension return metadata associated with the selected signature or extension.
-- magic_string returns ranked match records and unknown or empty inputs raise documented errors.
-- The submitted package does not import puremagic or access external signature services.
+- Given bytes or a binary stream whose leading bytes match bundled metadata, the detector recognizes the format: `from_string` and `from_stream` return its extension and `magic_string` returns matching records.
+- For a recognized signature or extension, MIME mode and `from_extension` return the associated MIME type.
+- `magic_string` returns a non-empty ranked list of match records for recognized bytes, with the best match first and its `extension` attribute identifying the format.
+- Calling `magic_string` with empty input raises `PureError` or `ValueError`.
+- The package exposes the required task API paths `featurelifted.from_string`, `featurelifted.from_stream`, `featurelifted.magic_string`, `featurelifted.from_extension`, and `featurelifted.PureError` with the kinds and callable signatures listed in this contract.
+- the submitted package does not import forbidden upstream packages: puremagic.
 
 ## Constraints
 
@@ -49,8 +51,10 @@ Public tests cover common use. Hidden tests cover documented edge, configuration
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — from_string and from_stream identify known byte signatures using bundled magic metadata.
-- **B002** — MIME mode and from_extension return metadata associated with the selected signature or extension.
-- **B003** — magic_string returns ranked match records and unknown or empty inputs raise documented errors.
-- **B004** — The submitted package does not import puremagic or access external signature services.
+- **B001** — Given bytes or a binary stream whose leading bytes match bundled metadata, the detector recognizes the format: `from_string` and `from_stream` return its extension and `magic_string` returns matching records.
+- **B002** — For a recognized signature or extension, MIME mode and `from_extension` return the associated MIME type.
+- **B003** — `magic_string` returns a non-empty ranked list of match records for recognized bytes, with the best match first and its `extension` attribute identifying the format.
+- **B004** — Calling `magic_string` with empty input raises `PureError` or `ValueError`.
+- **B005** — The package exposes the required task API paths `featurelifted.from_string`, `featurelifted.from_stream`, `featurelifted.magic_string`, `featurelifted.from_extension`, and `featurelifted.PureError` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: puremagic.
 <!-- featureliftbench:behavior-clauses:end -->

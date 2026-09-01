@@ -14,17 +14,17 @@ from featurelifted import (
 
 ## Required API Details
 
-- `JsonFormatter` class must be importable
-- `JsonFormatter.format` callable must exist
+- `JsonFormatter(fmt: str | None = None, *, rename_fields: dict[str, str] | None = None, static_fields: dict[str, object] | None = None, **kwargs)` class constructor
+- `JsonFormatter.format(record: logging.LogRecord) -> str`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line.
-- The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields.
-- The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule.
-- Output is a single JSON object line per record.
+- Given a logging.LogRecord and a format string naming `message` and `levelname`, JsonFormatter.format returns JSON text whose decoded object contains the rendered message and level name.
+- Formatter configuration controls output fields: names selected by `fmt` are emitted, `rename_fields` moves a record field to the requested key and removes its old key, and `static_fields` adds the configured constant values.
+- When `fmt` is `%(message)s %(name)s`, formatting a record named `worker` with message `boom` yields decoded JSON containing `{"message": "boom", "name": "worker"}`.
+- Each call to JsonFormatter.format returns text that `json.loads` accepts as one JSON object for that record.
 - The package exposes JsonFormatter with the kinds listed in this contract.
-- the submitted package does not import forbidden upstream packages: pythonjsonlogger.
+- Scanning every Python file in the submitted package finds no `import pythonjsonlogger` or `from pythonjsonlogger ...` statement.
 
 ## Constraints
 
@@ -37,10 +37,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: format LogRecord to JSON. Required observable cases include basic json line.
-- **B002** — The extracted feature must support this observable behavior: rename_fields and static_fields. Required observable cases include rename and static fields.
-- **B003** — The extracted feature must support this observable behavior: custom fmt and json submodule import. Required observable cases include custom fmt fields; from json submodule.
-- **B004** — Output is a single JSON object line per record.
+- **B001** — Given a logging.LogRecord and a format string naming `message` and `levelname`, JsonFormatter.format returns JSON text whose decoded object contains the rendered message and level name.
+- **B002** — Formatter configuration controls output fields: names selected by `fmt` are emitted, `rename_fields` moves a record field to the requested key and removes its old key, and `static_fields` adds the configured constant values.
+- **B003** — When `fmt` is `%(message)s %(name)s`, formatting a record named `worker` with message `boom` yields decoded JSON containing `{"message": "boom", "name": "worker"}`.
+- **B004** — Each call to JsonFormatter.format returns text that `json.loads` accepts as one JSON object for that record.
 - **B005** — The package exposes JsonFormatter with the kinds listed in this contract.
-- **B006** — the submitted package does not import forbidden upstream packages: pythonjsonlogger.
+- **B006** — Scanning every Python file in the submitted package finds no `import pythonjsonlogger` or `from pythonjsonlogger ...` statement.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -16,14 +16,14 @@ from featurelifted import (
 
 - `InterProcessLock` class must be importable
 - `InterProcessLock.acquire(blocking: bool = True) -> bool`
-- `InterProcessLock.release` callable must exist
+- `InterProcessLock.release() -> None`
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: InterProcessLock acquire/release. Required observable cases include acquire release; reacquire after release.
-- The extracted feature must support this observable behavior: context manager acquires and releases. Required observable cases include context manager.
-- The extracted feature must support this observable behavior: non-blocking acquire succeeds on a free lock. Required observable cases include nonblocking acquire free lock.
-- Lock files are created under the provided path in temp directories during tests.
+- `InterProcessLock` accepts a filesystem path, acquires an available lock either through `acquire()` or as a context manager, and releases the lock through `release()` or context exit.
+- After an acquired `InterProcessLock` is released, the same lock object can acquire that path again and returns `True`.
+- `InterProcessLock.acquire(blocking=False)` returns `True` when the requested lock is currently free.
+- `InterProcessLock` operates on a caller-provided local path without requiring the lock file to exist before acquisition.
 - The package exposes InterProcessLock with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: fasteners.
 
@@ -38,10 +38,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: InterProcessLock acquire/release. Required observable cases include acquire release; reacquire after release.
-- **B002** — The extracted feature must support this observable behavior: context manager acquires and releases. Required observable cases include context manager.
-- **B003** — The extracted feature must support this observable behavior: non-blocking acquire succeeds on a free lock. Required observable cases include nonblocking acquire free lock.
-- **B004** — Lock files are created under the provided path in temp directories during tests.
+- **B001** — `InterProcessLock` accepts a filesystem path, acquires an available lock either through `acquire()` or as a context manager, and releases the lock through `release()` or context exit.
+- **B002** — After an acquired `InterProcessLock` is released, the same lock object can acquire that path again and returns `True`.
+- **B003** — `InterProcessLock.acquire(blocking=False)` returns `True` when the requested lock is currently free.
+- **B004** — `InterProcessLock` operates on a caller-provided local path without requiring the lock file to exist before acquisition.
 - **B005** — The package exposes InterProcessLock with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: fasteners.
 <!-- featureliftbench:behavior-clauses:end -->

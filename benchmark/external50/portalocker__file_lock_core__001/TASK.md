@@ -30,10 +30,10 @@ from featurelifted import (
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: Lock context manager and lock/unlock on file handles. Required observable cases include lock context manager; lock unlock functions.
-- The extracted feature must support this observable behavior: LOCK_EX and related constants are exposed. Required observable cases include lock constants.
-- The extracted feature must support this observable behavior: Lock accepts timeout and LockException exists. Required observable cases include lock timeout; lock exception type.
-- Tests use local temp files only; no network resources.
+- `Lock` accepts a local file path and yields a writable file handle from its context manager; `lock` and `unlock` acquire and release an advisory lock on an open file handle.
+- `LOCK_EX`, `LOCK_SH`, and `LOCK_NB` are exposed as non-`None` lock flag constants.
+- `Lock` accepts a numeric `timeout` argument and can acquire an available local file through the context-manager protocol.
+- `LockException` is an exception type that subclasses `Exception`.
 - The package exposes Lock/lock/unlock/LOCK_EX/LockException with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: portalocker.
 
@@ -48,10 +48,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: Lock context manager and lock/unlock on file handles. Required observable cases include lock context manager; lock unlock functions.
-- **B002** — The extracted feature must support this observable behavior: LOCK_EX and related constants are exposed. Required observable cases include lock constants.
-- **B003** — The extracted feature must support this observable behavior: Lock accepts timeout and LockException exists. Required observable cases include lock timeout; lock exception type.
-- **B004** — Tests use local temp files only; no network resources.
+- **B001** — `Lock` accepts a local file path and yields a writable file handle from its context manager; `lock` and `unlock` acquire and release an advisory lock on an open file handle.
+- **B002** — `LOCK_EX`, `LOCK_SH`, and `LOCK_NB` are exposed as non-`None` lock flag constants.
+- **B003** — `Lock` accepts a numeric `timeout` argument and can acquire an available local file through the context-manager protocol.
+- **B004** — `LockException` is an exception type that subclasses `Exception`.
 - **B005** — The package exposes Lock/lock/unlock/LOCK_EX/LockException with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: portalocker.
 <!-- featureliftbench:behavior-clauses:end -->

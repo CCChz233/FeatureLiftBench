@@ -103,11 +103,43 @@
       },
       {
         "path": "featurelifted.sql",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.sql.Comparison",
+            "kind": "class",
+            "signature": "(tokens=None)"
+          },
+          {
+            "path": "featurelifted.sql.Identifier",
+            "kind": "class",
+            "signature": "(tokens=None)"
+          },
+          {
+            "path": "featurelifted.sql.Statement",
+            "kind": "class",
+            "signature": "(tokens=None)"
+          },
+          {
+            "path": "featurelifted.sql.Where",
+            "kind": "class",
+            "signature": "(tokens=None)"
+          }
+        ]
       },
       {
         "path": "featurelifted.tokens",
-        "kind": "module"
+        "kind": "module",
+        "members": [
+          {
+            "path": "featurelifted.tokens.Keyword",
+            "kind": "attribute"
+          }
+        ]
+      },
+      {
+        "path": "featurelifted.tokens.Keyword.DML",
+        "kind": "attribute"
       }
     ],
     "optional_api": [],
@@ -134,7 +166,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -198,7 +230,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.tokens` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.parse`, `featurelifted.parsestream`, `featurelifted.sql`, `featurelifted.sql.Comparison`, `featurelifted.sql.Identifier`, `featurelifted.sql.Statement`, `featurelifted.sql.Where`, `featurelifted.tokens`, `featurelifted.tokens.Keyword`, `featurelifted.tokens.Keyword.DML` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -269,7 +301,43 @@
         ]
       },
       {
+        "path": "featurelifted.sql.Comparison",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.sql.Identifier",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.sql.Statement",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.sql.Where",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.tokens",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.tokens.Keyword",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.tokens.Keyword.DML",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
@@ -286,11 +354,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "dafe65fc83681269f395835e50558b0c4a930366b82f98b219ad2acb8ea21740",
-  "generated_task_hash": "07a2ec1e9044c339cbc52fb94971c71f90c982f52829f8f423347db369f56f68"
+  "task_revision": 3,
+  "spec_hash": "0dc159e5239ef87e6e98efb4d66ab4a52efc0491ae2ed4d03194938955106c84",
+  "generated_task_hash": "cd38b07b0ec8de08b4425afbfd3ac2d95ef0ec13565d211e53f0fc5274ef0546"
 }

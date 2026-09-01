@@ -24,7 +24,7 @@ from featurelifted import (
 
 - `@field_validator` registers before/after validators on model classes.
 - Before validators transform incoming values; after validators run on initialized attributes.
-- `ValidationError` carries structured field errors.
+- ValidationError carries structured field errors as an errors list of dicts, and errors[0]["field"] names the failing field.
 - The package exposes the required task API paths `featurelifted.field_validator`, `featurelifted.BaseModel`, `featurelifted.ValidationError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
@@ -46,7 +46,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `@field_validator` registers before/after validators on model classes.
 - **B002** — Before validators transform incoming values; after validators run on initialized attributes.
-- **B003** — `ValidationError` carries structured field errors.
+- **B003** — ValidationError carries structured field errors as an errors list of dicts, and errors[0]["field"] names the failing field.
 - **B004** — The package exposes the required task API paths `featurelifted.field_validator`, `featurelifted.BaseModel`, `featurelifted.ValidationError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: pydantic.
 <!-- featureliftbench:behavior-clauses:end -->

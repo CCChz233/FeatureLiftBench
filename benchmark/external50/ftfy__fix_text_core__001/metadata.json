@@ -90,19 +90,19 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: fix_text repairs latin-1 mojibake and em-dash sequences. Required observable cases include fix latin1 mojibake; fix em dash mojibake."
+        "text": "`fix_text` accepts Unicode strings containing common encoding mojibake, including Latin-1 and punctuation corruption, and returns the repaired text."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: fix_text leaves plain ascii unchanged. Required observable cases include fix identity ascii; fix preserves newlines."
+        "text": "`fix_text` leaves already-correct plain ASCII text unchanged, including embedded newline characters."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: fix_text handles empty and partially broken utf-8. Required observable cases include fix empty; fix double encoded utf8."
+        "text": "`fix_text` accepts an empty string and returns an empty string."
       },
       {
         "id": "B004",
-        "text": "wcwidth is the only allowed third-party dependency for formatting helpers."
+        "text": "`fix_text` accepts partially damaged or multiply encoded Unicode text and returns text that repairs or otherwise changes the damaged representation."
       },
       {
         "id": "B005",
@@ -129,22 +129,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: fix_text repairs latin-1 mojibake and em-dash sequences. Required observable cases include fix latin1 mojibake; fix em dash mojibake."
+        "text": "`fix_text` accepts Unicode strings containing common encoding mojibake, including Latin-1 and punctuation corruption, and returns the repaired text."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: fix_text leaves plain ascii unchanged. Required observable cases include fix identity ascii; fix preserves newlines."
+        "text": "`fix_text` leaves already-correct plain ASCII text unchanged, including embedded newline characters."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: fix_text handles empty and partially broken utf-8. Required observable cases include fix empty; fix double encoded utf8."
+        "text": "`fix_text` accepts an empty string and returns an empty string."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "wcwidth is the only allowed third-party dependency for formatting helpers."
+        "text": "`fix_text` accepts partially damaged or multiply encoded Unicode text and returns text that repairs or otherwise changes the damaged representation."
       },
       {
         "behavior_id": "B005",
@@ -168,14 +168,14 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_fix_em_dash_mojibake",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_fix_identity_ascii",
         "behavior_ids": [
-          "B003"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       }
@@ -234,7 +234,7 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "a115d90fb55aeda9fd1898dd8d3b111912234a4c233ae37da77c3b27a468d79b",
-  "generated_task_hash": "3e44e1693728cbcc1db3e01652e0f8198653d61e563b276946b8d7b171d98b1f",
+  "spec_hash": "c43589eae8190881ada512563a5bb0908a9d25fa40d60e796c590dbe73d1c54c",
+  "generated_task_hash": "6c9c0736141564d1da72f028f8df34c277826d98abbafc593d3db8de4ca7fbf9",
   "dependency_closure_id": "python200-offline-dependency-closure-20260801-v1"
 }

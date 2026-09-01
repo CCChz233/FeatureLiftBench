@@ -44,7 +44,9 @@ class FeatureLiftPromptPack:
             schema = self._diagnosis_schema()
             task_prompt = (
                 "Read .autosaddler/training_evidence.json and propose one generic prompt-harness patch. "
-                "Return structured output only. Updates may use only the allowed component keys."
+                "Return structured output only: one JSON object with schema_version, diagnosis, "
+                "expected_effect, and a non-empty updates object. Updates may use only the allowed "
+                "component keys. Do not wrap the JSON in Markdown."
             )
             mutation_label = "prompt_steering"
         elif kind == "evolve":

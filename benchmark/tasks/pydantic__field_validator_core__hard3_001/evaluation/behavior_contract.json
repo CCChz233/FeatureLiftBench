@@ -42,7 +42,7 @@
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
-      "text": "`ValidationError` carries structured field errors."
+      "text": "ValidationError carries structured field errors as an errors list of dicts, and errors[0][\"field\"] names the failing field."
     },
     {
       "behavior_id": "B004",
@@ -96,7 +96,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "3e85276b009a37e27a76e2172fe076d76d536808d0b49abed79840a1ae0d8da0",
+  "spec_sha256": "fcfcd34ae03f4a5359bbe16ffa68e9894beaf11a28e7e23a89c69d8d300a78a0",
   "task_id": "pydantic__field_validator_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

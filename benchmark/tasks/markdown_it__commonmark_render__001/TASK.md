@@ -16,6 +16,9 @@ from featurelifted import (
 
 - `MarkdownIt(config: 'str | Mapping' = 'commonmark', options_update: 'Mapping | None' = None, *, renderer_cls: 'Callable[[MarkdownIt], RendererProtocol]' = <class 'RendererHTML'>)` class constructor
   - `MarkdownIt.render(self, src: 'str', env: 'MutableMapping | None' = None) -> 'Any'`
+  - `MarkdownIt.disable(self, names: 'str | Iterable[str]', ignoreInvalid: 'bool' = False) -> 'MarkdownIt'`
+  - `MarkdownIt.enable(self, names: 'str | Iterable[str]', ignoreInvalid: 'bool' = False) -> 'MarkdownIt'`
+  - `MarkdownIt.parse(self, src: 'str', env: 'MutableMapping | None' = None) -> 'list[Token]'`
 
 ## Required Behavior
 
@@ -23,7 +26,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: escape raw text correctly in rendered HTML. Required observable cases include commonmark basic html rendering; strikethrough and reference links.
 - The extracted feature must support this observable behavior: parse Markdown into Token objects with nesting, tags, attrs, content, and markup. Required observable cases include parse returns useful tokens; strikethrough and reference links.
 - The extracted feature must support this observable behavior: support the commonmark preset and enable/disable rules. Required observable cases include fence rule disable and link attributes.
-- The package exposes the required task API paths `featurelifted.MarkdownIt`, `featurelifted.MarkdownIt.render` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.MarkdownIt`, `featurelifted.MarkdownIt.render`, `featurelifted.MarkdownIt.disable`, `featurelifted.MarkdownIt.enable`, `featurelifted.MarkdownIt.parse` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -45,6 +48,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: escape raw text correctly in rendered HTML. Required observable cases include commonmark basic html rendering; strikethrough and reference links.
 - **B003** — The extracted feature must support this observable behavior: parse Markdown into Token objects with nesting, tags, attrs, content, and markup. Required observable cases include parse returns useful tokens; strikethrough and reference links.
 - **B004** — The extracted feature must support this observable behavior: support the commonmark preset and enable/disable rules. Required observable cases include fence rule disable and link attributes.
-- **B005** — The package exposes the required task API paths `featurelifted.MarkdownIt`, `featurelifted.MarkdownIt.render` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.MarkdownIt`, `featurelifted.MarkdownIt.render`, `featurelifted.MarkdownIt.disable`, `featurelifted.MarkdownIt.enable`, `featurelifted.MarkdownIt.parse` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: markdown_it.
 <!-- featureliftbench:behavior-clauses:end -->

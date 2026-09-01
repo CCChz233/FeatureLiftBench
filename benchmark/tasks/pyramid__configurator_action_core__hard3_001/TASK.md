@@ -25,7 +25,7 @@ from featurelifted import (
 
 - `register` queues actions with discriminators and order values.
 - `commit` executes actions in order; duplicate discriminators raise `ConfigurationConflictError`.
-- `None` discriminators never conflict.
+- None discriminators never conflict, and commit() returns the list of callable results in registration order rather than the queued action records.
 - `introspect(category=...)` filters committed actions.
 - The package exposes the required task API paths `featurelifted.ActionRegistry`, `featurelifted.ActionRegistry.commit`, `featurelifted.ActionRegistry.introspect`, `featurelifted.ActionRegistry.register`, `featurelifted.ConfigurationConflictError` with the kinds and callable signatures listed in this contract.
 
@@ -48,7 +48,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `register` queues actions with discriminators and order values.
 - **B002** — `commit` executes actions in order; duplicate discriminators raise `ConfigurationConflictError`.
-- **B003** — `None` discriminators never conflict.
+- **B003** — None discriminators never conflict, and commit() returns the list of callable results in registration order rather than the queued action records.
 - **B004** — `introspect(category=...)` filters committed actions.
 - **B005** — The package exposes the required task API paths `featurelifted.ActionRegistry`, `featurelifted.ActionRegistry.commit`, `featurelifted.ActionRegistry.introspect`, `featurelifted.ActionRegistry.register`, `featurelifted.ConfigurationConflictError` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: pyramid.

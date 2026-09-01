@@ -2,6 +2,8 @@
 # Full main-board run: mini-swe-agent + --yolo.
 set -euo pipefail
 
+echo "DEPRECATED: run.sh is a legacy mini-swe-agent entrypoint; use ./scripts/run_benchmark.sh with an explicit benchmark, agent, and method." >&2
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=scripts/lib/flb_env.sh
 source "${ROOT}/scripts/lib/flb_env.sh"

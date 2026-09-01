@@ -24,7 +24,7 @@ onto Python-200'.
 | `public_feedback` | RQ6 public-tests mount | no |
 | `short_prompt` | Information ablation | no |
 | `pruned_context` | Information ablation | no |
-| `autosaddler` | Prompt-only AutoSaddler pack (screening) | no |
+| `autosaddler` | AutoSaddler trial on FeatureLift + OpenHands | no |
 
 `--arm` is an alias of `--method`. Source of truth: [registry.toml](registry.toml).
 

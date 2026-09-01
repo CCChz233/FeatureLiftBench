@@ -48,7 +48,7 @@
       "behavior_id": "B003",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B003",
-      "text": "When node or dirty information is present, version_from_scm appends a normalized local version segment."
+      "text": "When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty."
     },
     {
       "behavior_id": "B004",
@@ -101,7 +101,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "ebf469ea8f26e3718e6ce150066982f24ee2362349359c53ccd4f8090bea2088",
+  "spec_sha256": "41aa3204746af99494a7d4cb1ad25edcae158744363e8602c5eaee90f9700f64",
   "task_id": "setuptools_scm__version_normalize_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

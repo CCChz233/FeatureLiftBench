@@ -84,43 +84,48 @@
       {
         "path": "featurelifted.MemoryHuey",
         "kind": "class",
+        "signature": "(name='huey', results=True, store_none=False, utc=True, immediate=False, serializer=None, compression=False, use_zlib=False)",
         "members": [
           {
             "path": "featurelifted.MemoryHuey.task",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self, retries=0, retry_delay=0, retry_backoff=0, priority=None, context=False, name=None, expires=None, timeout=None, **kwargs)"
           },
           {
             "path": "featurelifted.MemoryHuey.pending_count",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self) -> int"
           },
           {
             "path": "featurelifted.MemoryHuey.flush",
-            "kind": "method"
+            "kind": "method",
+            "signature": "(self) -> None"
           }
         ]
       },
       {
         "path": "featurelifted.crontab",
-        "kind": "function"
+        "kind": "function",
+        "signature": "(minute='*', hour='*', day='*', month='*', day_of_week='*', strict=False)"
       }
     ],
     "optional_api": [],
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: enqueue tasks and read results via result.get after execute. Required observable cases include task enqueue and result."
+        "text": "When a function decorated by `MemoryHuey.task()` is called, one task is enqueued; after `dequeue` and `execute`, the returned result handle's nonblocking `get` returns the function result."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: crontab schedule helper. Required observable cases include crontab helper."
+        "text": "A `crontab` schedule built with a step expression is callable and returns true only for matching datetimes; independently enqueued task calls retain their own arguments and results."
       },
       {
         "id": "B003",
-        "text": "The extracted feature must support this observable behavior: multiple tasks and flush clears queue. Required observable cases include multiple tasks; flush clears queue."
+        "text": "After one or more decorated task calls are queued, calling `flush` removes all pending work so `pending_count` returns zero."
       },
       {
         "id": "B004",
-        "text": "MemoryHuey is the only broker backend required."
+        "text": "Before a queued task is flushed or dequeued, `pending_count` reports at least one pending item."
       },
       {
         "id": "B005",
@@ -148,22 +153,22 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: enqueue tasks and read results via result.get after execute. Required observable cases include task enqueue and result."
+        "text": "When a function decorated by `MemoryHuey.task()` is called, one task is enqueued; after `dequeue` and `execute`, the returned result handle's nonblocking `get` returns the function result."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: crontab schedule helper. Required observable cases include crontab helper."
+        "text": "A `crontab` schedule built with a step expression is callable and returns true only for matching datetimes; independently enqueued task calls retain their own arguments and results."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: multiple tasks and flush clears queue. Required observable cases include multiple tasks; flush clears queue."
+        "text": "After one or more decorated task calls are queued, calling `flush` removes all pending work so `pending_count` returns zero."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "included_behavior",
-        "text": "MemoryHuey is the only broker backend required."
+        "text": "Before a queued task is flushed or dequeued, `pending_count` reports at least one pending item."
       },
       {
         "behavior_id": "B005",
@@ -197,15 +202,15 @@
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_tasks",
         "behavior_ids": [
           "B001",
-          "B003",
-          "B004"
+          "B002"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_flush_clears_queue",
         "behavior_ids": [
-          "B002"
+          "B003",
+          "B004"
         ],
         "mapping_method": "ai_assisted"
       },
@@ -264,7 +269,7 @@
       "notes": "Explicit class/member contract closure; return-object false positives excluded."
     }
   },
-  "spec_hash": "67a312e6a12fc852f3a4674dc90289c429f21f500666fca76ba4d5c1bf6e1cc8",
-  "generated_task_hash": "75e3568dc976c5e2b65c8b8f2f726eec320ae2dbaf12190aeae97a369edf21cd",
+  "spec_hash": "7408916875afd0f4f319af85f801a43c00d0772af0b87f105ce55a0fc699b407",
+  "generated_task_hash": "7466257106910e69b587d3c339e6a7a5e5550686570e5761328ec18b0b131611",
   "contract_repair_id": "external50-contract-members-20260801-v1"
 }

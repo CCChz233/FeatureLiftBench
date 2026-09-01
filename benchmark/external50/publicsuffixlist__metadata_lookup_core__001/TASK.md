@@ -22,10 +22,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- PublicSuffixList with no source loads the bundled public_suffix_list.dat resource offline.
-- publicsuffix and privatesuffix apply exact, wildcard, and exception rules to normalized domain names.
-- only_icann and unknown-suffix options alter classification according to their constructor settings.
-- The submitted package does not import publicsuffixlist or perform network refreshes.
+- Constructing `PublicSuffixList()` without a source loads bundled suffix metadata offline and resolves domains using that data.
+- For a domain covered by the loaded rules, `publicsuffix` returns its public suffix, `privatesuffix` returns the registrable private suffix, and `is_public` and `is_private` classify those respective forms.
+- When constructed from custom rule text, `publicsuffix` applies wildcard rules and their exception rules to the supplied domain.
+- With `accept_unknown=False`, `publicsuffix` returns `None` for a domain whose suffix is absent from the loaded rules.
+- The package exposes the required task API paths `featurelifted.PublicSuffixList`, `featurelifted.PublicSuffixList.publicsuffix`, `featurelifted.PublicSuffixList.privatesuffix`, `featurelifted.PublicSuffixList.is_public`, and `featurelifted.PublicSuffixList.is_private` with the kinds and callable signatures listed in this contract.
+- the submitted package does not import forbidden upstream packages: publicsuffixlist.
 
 ## Constraints
 
@@ -44,8 +46,10 @@ Public tests cover common use. Hidden tests cover documented edge, configuration
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — PublicSuffixList with no source loads the bundled public_suffix_list.dat resource offline.
-- **B002** — publicsuffix and privatesuffix apply exact, wildcard, and exception rules to normalized domain names.
-- **B003** — only_icann and unknown-suffix options alter classification according to their constructor settings.
-- **B004** — The submitted package does not import publicsuffixlist or perform network refreshes.
+- **B001** — Constructing `PublicSuffixList()` without a source loads bundled suffix metadata offline and resolves domains using that data.
+- **B002** — For a domain covered by the loaded rules, `publicsuffix` returns its public suffix, `privatesuffix` returns the registrable private suffix, and `is_public` and `is_private` classify those respective forms.
+- **B003** — When constructed from custom rule text, `publicsuffix` applies wildcard rules and their exception rules to the supplied domain.
+- **B004** — With `accept_unknown=False`, `publicsuffix` returns `None` for a domain whose suffix is absent from the loaded rules.
+- **B005** — The package exposes the required task API paths `featurelifted.PublicSuffixList`, `featurelifted.PublicSuffixList.publicsuffix`, `featurelifted.PublicSuffixList.privatesuffix`, `featurelifted.PublicSuffixList.is_public`, and `featurelifted.PublicSuffixList.is_private` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: publicsuffixlist.
 <!-- featureliftbench:behavior-clauses:end -->

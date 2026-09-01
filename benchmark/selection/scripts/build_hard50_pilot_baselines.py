@@ -8,7 +8,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 PILOT = ROOT / "benchmark" / "hard50_pilot"
-OUT = ROOT / "experiments" / "hard50_pilot_gates_20260827" / "submissions"
+OUT = (
+    ROOT
+    / "experiments"
+    / "validation"
+    / "hard50"
+    / "hard50_pilot_gates_20260827"
+    / "submissions"
+)
 
 NAIVE = '''\
 """Intentionally incomplete naive extraction."""

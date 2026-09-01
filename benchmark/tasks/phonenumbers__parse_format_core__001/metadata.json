@@ -88,6 +88,14 @@
           {
             "path": "featurelifted.PhoneNumberFormat.E164",
             "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PhoneNumberFormat.INTERNATIONAL",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.PhoneNumberFormat.NATIONAL",
+            "kind": "attribute"
           }
         ]
       },
@@ -137,7 +145,7 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.PhoneNumberFormat.INTERNATIONAL`, `featurelifted.PhoneNumberFormat.NATIONAL`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -184,7 +192,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.PhoneNumberFormat`, `featurelifted.PhoneNumberFormat.E164`, `featurelifted.PhoneNumberFormat.INTERNATIONAL`, `featurelifted.PhoneNumberFormat.NATIONAL`, `featurelifted.NumberParseException`, `featurelifted.format_number`, `featurelifted.is_valid_number`, `featurelifted.parse`, `featurelifted.phonenumberutil`, `featurelifted.phonenumberutil.NumberParseException` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -254,6 +262,18 @@
         ]
       },
       {
+        "path": "featurelifted.PhoneNumberFormat.INTERNATIONAL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.PhoneNumberFormat.NATIONAL",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.NumberParseException",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -301,11 +321,10 @@
     "hidden_failure_rejudgement": "Legacy hidden API and behavior obligations used by the evaluator are now declared in public_spec; no hidden-only contract is intentionally retained.",
     "experiment_contract_hardening": {
       "method": "existing_contract_and_test_mapping_review",
-      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle",
-      "independent_human_review": false
+      "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 2,
-  "spec_hash": "9151b2fed087fde11a4d7ed107b77182935b0d7cc9d6f5f2ea3b647a1177ec3a",
-  "generated_task_hash": "166a4ef1c3dbdd6993fa6efd860161fdc914b9d15b54c76291c2733f98b06550"
+  "task_revision": 3,
+  "spec_hash": "6eab819941c78d29316cb1f52f9f70469ab9d498a3fc4aa64c6790f63bf82fa6",
+  "generated_task_hash": "96592f41e52e84474a799cd9c8e19d2b261b4b4bb4a879edec40680f4e95d6a5"
 }

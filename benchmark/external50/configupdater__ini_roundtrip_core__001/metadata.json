@@ -83,7 +83,8 @@
       },
       {
         "path": "featurelifted.ConfigUpdater.read_string",
-        "kind": "method"
+        "kind": "method",
+        "signature": "(string: str, source: str = '<string>') -> None"
       },
       {
         "path": "featurelifted.ConfigUpdater.write",
@@ -95,15 +96,15 @@
     "behaviors": [
       {
         "id": "B001",
-        "text": "The extracted feature must support this observable behavior: read_string and section/option get/set. Required observable cases include read modify write stringio; section option access."
+        "text": "After read_string parses INI text, sections and options are accessible by mapping lookup, option values are mutable, and write serializes the updated document while retaining comments."
       },
       {
         "id": "B002",
-        "text": "The extracted feature must support this observable behavior: write to StringIO preserves comments and spacing. Required observable cases include add option; multiple sections roundtrip."
+        "text": "Assigning an option value, including a previously absent option, produces a normalized `key = value` line when the document is written."
       },
       {
         "id": "B003",
-        "text": "Tests use ConfigUpdater.write(StringIO) rather than to_string()."
+        "text": "ConfigUpdater.write accepts a text stream such as StringIO and writes the complete serialized INI document to it."
       },
       {
         "id": "B004",
@@ -134,17 +135,17 @@
       {
         "behavior_id": "B001",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: read_string and section/option get/set. Required observable cases include read modify write stringio; section option access."
+        "text": "After read_string parses INI text, sections and options are accessible by mapping lookup, option values are mutable, and write serializes the updated document while retaining comments."
       },
       {
         "behavior_id": "B002",
         "clause_kind": "included_behavior",
-        "text": "The extracted feature must support this observable behavior: write to StringIO preserves comments and spacing. Required observable cases include add option; multiple sections roundtrip."
+        "text": "Assigning an option value, including a previously absent option, produces a normalized `key = value` line when the document is written."
       },
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "Tests use ConfigUpdater.write(StringIO) rather than to_string()."
+        "text": "ConfigUpdater.write accepts a text stream such as StringIO and writes the complete serialized INI document to it."
       },
       {
         "behavior_id": "B004",
@@ -166,20 +167,22 @@
       {
         "nodeid": "public_tests/test_public_api.py::test_read_modify_write_stringio",
         "behavior_ids": [
-          "B001"
+          "B001",
+          "B003"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_section_option_access",
         "behavior_ids": [
-          "B002"
+          "B001"
         ],
         "mapping_method": "ai_assisted"
       },
       {
         "nodeid": "public_tests/test_public_api.py::test_add_option",
         "behavior_ids": [
+          "B002",
           "B003"
         ],
         "mapping_method": "ai_assisted"
@@ -196,8 +199,8 @@
       {
         "nodeid": "hidden_tests/test_hidden_behavior.py::test_multiple_sections_roundtrip",
         "behavior_ids": [
-          "B002",
           "B001",
+          "B002",
           "B003",
           "B004"
         ],
@@ -239,6 +242,6 @@
       "notes": "Pilot materialization with frozen design-card scope."
     }
   },
-  "spec_hash": "eeeb1b07e6c79b240d385f862881064b5cc19e7747cad200174d720c26dc33db",
-  "generated_task_hash": "9fa593fa85706327bc5fe475baa9fabeefd4913a1998aede71934632596ccb4f"
+  "spec_hash": "8ea2e78e8d3035357d1a2f0e169d62c9c09d7b5f67115d07cbf057f7753cfefc",
+  "generated_task_hash": "c9c1b743609b4fcb7498f0778d0e3c54740393433007468026842635bde725f6"
 }

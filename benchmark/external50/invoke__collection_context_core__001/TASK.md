@@ -18,21 +18,21 @@ from featurelifted import (
 
 ## Required API Details
 
-- `task` callable must exist
-- `Collection` class must be importable
-  - `Collection.add_task` callable must exist
-  - `Collection.add_collection` callable must exist
-- `Context` class must be importable
-- `MockContext` class must be importable
-  - `MockContext.run` callable must exist
+- `task(*args, **kwargs)`
+- `Collection(*args, **kwargs)` class constructor
+  - `Collection.add_task(self, task, name=None, aliases=None, default=None) -> None`
+  - `Collection.add_collection(self, coll, name=None, default=None) -> None`
+- `Context(config=None, overrides=None, defaults=None, remainder='')` class constructor
+- `MockContext(**kwargs)` class constructor
+  - `MockContext.run(*args, **kwargs)`
 - `UnexpectedExit` class must be importable
 
 ## Required Behavior
 
-- The extracted feature must support this observable behavior: Collection task invocation with Context. Required observable cases include collection task call.
-- The extracted feature must support this observable behavior: MockContext stubs run without shell. Required observable cases include mock context run.
-- The extracted feature must support this observable behavior: nested collections and UnexpectedExit. Required observable cases include nested collection; task exception type.
-- Tasks are accessed via Collection.__getitem__ by name.
+- When a `task`-decorated function is added to a `Collection`, retrieving it by name and calling it with a `Context` forwards positional and keyword arguments and returns the function result.
+- Tasks accept context-compatible objects as their first argument; with `MockContext(run=True)`, a task may call `run` without launching a shell and the mock records that call.
+- When a named child collection contains a task, the parent resolves and invokes that task through its dotted name, and an `UnexpectedExit` raised by a task propagates with that exception type.
+- Using `Collection.__getitem__` with a direct task name or a dotted child-collection task name returns the corresponding callable task.
 - The package exposes task/Collection/Context/MockContext/UnexpectedExit with the kinds listed in this contract.
 - the submitted package does not import forbidden upstream packages: invoke.
 
@@ -47,10 +47,10 @@ from featurelifted import (
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — The extracted feature must support this observable behavior: Collection task invocation with Context. Required observable cases include collection task call.
-- **B002** — The extracted feature must support this observable behavior: MockContext stubs run without shell. Required observable cases include mock context run.
-- **B003** — The extracted feature must support this observable behavior: nested collections and UnexpectedExit. Required observable cases include nested collection; task exception type.
-- **B004** — Tasks are accessed via Collection.__getitem__ by name.
+- **B001** — When a `task`-decorated function is added to a `Collection`, retrieving it by name and calling it with a `Context` forwards positional and keyword arguments and returns the function result.
+- **B002** — Tasks accept context-compatible objects as their first argument; with `MockContext(run=True)`, a task may call `run` without launching a shell and the mock records that call.
+- **B003** — When a named child collection contains a task, the parent resolves and invokes that task through its dotted name, and an `UnexpectedExit` raised by a task propagates with that exception type.
+- **B004** — Using `Collection.__getitem__` with a direct task name or a dotted child-collection task name returns the corresponding callable task.
 - **B005** — The package exposes task/Collection/Context/MockContext/UnexpectedExit with the kinds listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: invoke.
 <!-- featureliftbench:behavior-clauses:end -->

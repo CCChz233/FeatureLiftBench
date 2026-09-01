@@ -121,7 +121,7 @@
       "behavior_id": "B008",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B008",
-      "text": "The package exposes the required task API paths `featurelifted.Retry`, `featurelifted.Retry.get_backoff_time`, `featurelifted.Retry.history`, `featurelifted.Retry.increment`, `featurelifted.Retry.is_retry`, `featurelifted.Retry.parse_retry_after`, `featurelifted.Retry.remove_headers_on_redirect`, `featurelifted.RequestHistory`, `featurelifted.ConnectTimeoutError`, `featurelifted.ReadTimeoutError`, `featurelifted.MaxRetryError`, `featurelifted.ResponseError`, and 1 listed members with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.Retry`, `featurelifted.Retry.get_backoff_time`, `featurelifted.Retry.history`, `featurelifted.Retry.increment`, `featurelifted.Retry.is_retry`, `featurelifted.Retry.parse_retry_after`, `featurelifted.Retry.remove_headers_on_redirect`, `featurelifted.Retry.from_int`, `featurelifted.Retry.total`, `featurelifted.RequestHistory`, `featurelifted.ConnectTimeoutError`, `featurelifted.ReadTimeoutError`, and 4 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B009",
@@ -191,7 +191,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "e214fe1204f8122a2772ec3bec4a4e3407f50f04bb549296338607893bfd55c3",
+  "spec_sha256": "9f869b77378d4084bf52bba1fb49e1b74566435c615cae2799217620a1c51619",
   "task_id": "urllib3__retry_backoff_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

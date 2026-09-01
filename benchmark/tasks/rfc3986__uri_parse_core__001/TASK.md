@@ -20,6 +20,10 @@ from featurelifted import (
 
 - `URIBuilder(scheme=None, userinfo=None, host=None, port=None, path=None, query=None, fragment=None)` class constructor
   - `URIBuilder.from_uri(reference)`
+  - `URIBuilder.add_scheme(self, scheme)`
+  - `URIBuilder.add_host(self, host)`
+  - `URIBuilder.add_path(self, path)`
+  - `URIBuilder.finalize(self)`
 - `URIReference(scheme, authority, path, query, fragment, encoding='utf-8')` class constructor
 - `is_valid_uri(uri, encoding='utf-8', **kwargs)`
 - `normalize_uri(uri, encoding='utf-8')`
@@ -31,7 +35,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: normalize scheme/host/path. Required observable cases include authority userinfo host port; normalize uri path dots; uri reference ipv6 host; normalize preserves fragment.
 - The extracted feature must support this observable behavior: URIBuilder compose and finalize. Required observable cases include uri builder finalize; uri reference ipv6 host.
 - The extracted feature must support this observable behavior: is_valid_uri convenience check. Required observable cases include is valid uri https; builder from uri roundtrip; uri reference ipv6 host.
-- The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIBuilder.add_scheme`, `featurelifted.URIBuilder.add_host`, `featurelifted.URIBuilder.add_path`, `featurelifted.URIBuilder.finalize`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -53,6 +57,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: normalize scheme/host/path. Required observable cases include authority userinfo host port; normalize uri path dots; uri reference ipv6 host; normalize preserves fragment.
 - **B003** — The extracted feature must support this observable behavior: URIBuilder compose and finalize. Required observable cases include uri builder finalize; uri reference ipv6 host.
 - **B004** — The extracted feature must support this observable behavior: is_valid_uri convenience check. Required observable cases include is valid uri https; builder from uri roundtrip; uri reference ipv6 host.
-- **B005** — The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.URIBuilder`, `featurelifted.URIBuilder.from_uri`, `featurelifted.URIBuilder.add_scheme`, `featurelifted.URIBuilder.add_host`, `featurelifted.URIBuilder.add_path`, `featurelifted.URIBuilder.finalize`, `featurelifted.URIReference`, `featurelifted.is_valid_uri`, `featurelifted.normalize_uri`, `featurelifted.uri_reference` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: rfc3986.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -36,7 +36,7 @@
       "behavior_id": "B002",
       "clause_kind": "included_behavior",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B002",
-      "text": "`resolve_group` resolves a group's dependencies including transitive `include-group` references."
+      "text": "resolve_group resolves a group's dependencies including transitive include-group references. parse_project_dependencies reads dependency-groups as mappings whose dependencies field is a list of requirement strings and whose include-group field is a list of group names."
     },
     {
       "behavior_id": "B003",
@@ -96,7 +96,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "eaca96384cbef3699351c41ec7d66e6af2b88199c0d67b0f6a8304da955e943f",
+  "spec_sha256": "5f02d6ba6d79376b001acfc4769d92eec7a087fa29a9669c056390c18b0f900a",
   "task_id": "poetry_core__dependency_groups_core__hard3_001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

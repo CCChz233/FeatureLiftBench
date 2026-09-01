@@ -6,6 +6,8 @@ from collections.abc import Mapping
 from autosaddler.v2.core.domain import ArtifactRef, Evaluation, sha256_digest
 from autosaddler.v2.storage.local import LocalRunStore
 
+_MAX_PUBLIC_TASK_EXCERPT_CHARS = 2500
+
 
 class FeatureLiftEvidenceBuilder:
     """Build a compact training-only packet without evaluator-private details."""
@@ -31,7 +33,7 @@ class FeatureLiftEvidenceBuilder:
                     "steps": metadata.get("steps"),
                     "total_tokens": metadata.get("total_tokens"),
                     "usage_unverified": metadata.get("usage_unverified"),
-                    "public_task_excerpt": metadata.get("public_task_excerpt"),
+                    "public_task_excerpt": _bounded_excerpt(metadata.get("public_task_excerpt")),
                     "trace_excerpt": trace,
                 }
             )
@@ -58,4 +60,12 @@ class FeatureLiftEvidenceBuilder:
         if not isinstance(value, dict):
             raise TypeError(f"FeatureLift evidence artifact must be an object: {artifact.uri}")
         return value
+
+
+def _bounded_excerpt(value: object) -> object:
+    if not isinstance(value, str):
+        return value
+    if len(value) <= _MAX_PUBLIC_TASK_EXCERPT_CHARS:
+        return value
+    return value[:_MAX_PUBLIC_TASK_EXCERPT_CHARS] + "\n...[truncated]..."
 

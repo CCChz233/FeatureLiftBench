@@ -211,6 +211,9 @@ class AblationWorkspaceTests(unittest.TestCase):
                 prompt = render_agent_workspace_task(metadata)
                 redacted = redact_task_metadata(metadata)
                 serialized = str(redacted)
+                self.assertIn("## Complete Feature Responsibility", prompt)
+                self.assertIn("complete task-scoped module", prompt)
+                self.assertIn("inspecting the full upstream repository", prompt)
                 self.assertNotIn("source_entrypoints", serialized)
                 self.assertNotIn("source_hints", serialized)
                 entrypoints = set(

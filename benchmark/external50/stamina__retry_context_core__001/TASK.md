@@ -28,10 +28,11 @@ from featurelifted import (
 
 ## Required Behavior
 
-- retry retries only configured exceptions and returns the first successful result.
-- retry_context exposes one-based Attempt.num values and stops at the configured attempt limit.
-- set_active and set_testing change retry execution policy without changing the wrapped callable API.
-- The submitted package uses only the locked tenacity dependency and does not import stamina.
+- A callable decorated with `retry(on=..., attempts=...)` retries configured exception types up to the attempt limit and returns the first successful result, while an unconfigured exception is raised after one call.
+- `retry_context` yields attempts with one-based `Attempt.num` values, suppresses configured exceptions so iteration can continue, and stops yielding after an attempt succeeds or the configured limit is reached.
+- After `set_active(False)`, a decorated callable executes once and propagates its exception without retrying; `set_active(True)` restores retry behavior.
+- The package exposes the required task API paths `featurelifted.retry`, `featurelifted.retry_context`, `featurelifted.Attempt`, `featurelifted.set_active`, and `featurelifted.set_testing` with the kinds and callable signatures listed in this contract.
+- the submitted package does not import forbidden upstream packages: stamina.
 
 ## Constraints
 
@@ -50,8 +51,9 @@ Public tests cover common use. Hidden tests cover documented edge, configuration
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — retry retries only configured exceptions and returns the first successful result.
-- **B002** — retry_context exposes one-based Attempt.num values and stops at the configured attempt limit.
-- **B003** — set_active and set_testing change retry execution policy without changing the wrapped callable API.
-- **B004** — The submitted package uses only the locked tenacity dependency and does not import stamina.
+- **B001** — A callable decorated with `retry(on=..., attempts=...)` retries configured exception types up to the attempt limit and returns the first successful result, while an unconfigured exception is raised after one call.
+- **B002** — `retry_context` yields attempts with one-based `Attempt.num` values, suppresses configured exceptions so iteration can continue, and stops yielding after an attempt succeeds or the configured limit is reached.
+- **B003** — After `set_active(False)`, a decorated callable executes once and propagates its exception without retrying; `set_active(True)` restores retry behavior.
+- **B005** — The package exposes the required task API paths `featurelifted.retry`, `featurelifted.retry_context`, `featurelifted.Attempt`, `featurelifted.set_active`, and `featurelifted.set_testing` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: stamina.
 <!-- featureliftbench:behavior-clauses:end -->

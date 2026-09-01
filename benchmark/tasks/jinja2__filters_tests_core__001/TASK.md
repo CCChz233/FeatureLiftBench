@@ -22,7 +22,9 @@ from featurelifted import (
   - `Environment.call_test(self, name: str, value: Any, args: Optional[Sequence[Any]] = None, kwargs: Optional[Mapping[str, Any]] = None, context: Optional[Context] = None, eval_ctx: Optional[EvalContext] = None) -> Any`
   - `Environment.from_string(self, source: Union[str, Template], globals: Optional[MutableMapping[str, Any]] = None, template_class: Optional[Type[ForwardRef('Template')]] = None) -> 'Template'`
 - `filters` module must be importable
+  - `filters.FILTERS` attribute must exist
 - `tests` module must be importable
+  - `tests.TESTS` attribute must exist
 - `runtime` module must be importable
   - `runtime.Undefined(hint: Optional[str] = None, obj: Any = missing, name: Optional[str] = None, exc: Type[TemplateRuntimeError] = <class 'UndefinedError'>) -> None` class constructor
 
@@ -34,7 +36,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: support common tests: defined, undefined, even, odd, number, string. Required observable cases include tests module required for even.
 - The extracted feature must support this observable behavior: default filter honors boolean true to treat falsey values as missing. Required observable cases include default filter with boolean.
 - The extracted feature must support this observable behavior: runtime Undefined and filters/tests registries must be available for call_filter/call_test. Required observable cases include call filter directly; tests module required for even.
-- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.tests`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.filters.FILTERS`, `featurelifted.tests`, `featurelifted.tests.TESTS`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -59,6 +61,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B004** — The extracted feature must support this observable behavior: support common tests: defined, undefined, even, odd, number, string. Required observable cases include tests module required for even.
 - **B005** — The extracted feature must support this observable behavior: default filter honors boolean true to treat falsey values as missing. Required observable cases include default filter with boolean.
 - **B006** — The extracted feature must support this observable behavior: runtime Undefined and filters/tests registries must be available for call_filter/call_test. Required observable cases include call filter directly; tests module required for even.
-- **B007** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.tests`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract.
+- **B007** — The package exposes the required task API paths `featurelifted.Environment`, `featurelifted.Environment.call_filter`, `featurelifted.Environment.call_test`, `featurelifted.Environment.from_string`, `featurelifted.filters`, `featurelifted.filters.FILTERS`, `featurelifted.tests`, `featurelifted.tests.TESTS`, `featurelifted.runtime`, `featurelifted.runtime.Undefined` with the kinds and callable signatures listed in this contract.
 - **B008** — the submitted package does not import forbidden upstream packages: jinja2, jinja.
 <!-- featureliftbench:behavior-clauses:end -->

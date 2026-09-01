@@ -24,10 +24,12 @@ from featurelifted import (
 
 ## Required Behavior
 
-- Cache stores, retrieves, and deletes values while honoring constructor and configure defaults.
-- TTL expiration uses the injected timer deterministically and supports per-entry overrides.
-- LRUCache evicts the least recently accessed entry when maxsize is exceeded.
-- The submitted package does not import cacheout or read the upstream repository at runtime.
+- `Cache.set` stores a key/value pair, `get` returns the stored value while it is live, and `delete` returns 1 for a removed key after which `get` returns the configured default.
+- Given an injected callable timer and a positive default TTL, a cached entry remains available before its deadline and is unavailable when the timer reaches the deadline.
+- Calling `Cache.configure(ttl=...)` changes the default TTL used by entries stored afterward.
+- When inserting beyond `LRUCache.maxsize`, the least recently accessed entry is evicted, and a successful `get` refreshes an entry's recency.
+- The package exposes the required task API paths `featurelifted.Cache`, `featurelifted.Cache.set`, `featurelifted.Cache.get`, `featurelifted.Cache.delete`, `featurelifted.Cache.configure`, and `featurelifted.LRUCache` with the kinds and callable signatures listed in this contract.
+- the submitted package does not import forbidden upstream packages: cacheout.
 
 ## Constraints
 
@@ -46,8 +48,10 @@ Public tests cover common use. Hidden tests cover documented edge, configuration
 
 The stable clause IDs below define the public behavior contract. Hidden tests may exercise these clauses but do not introduce additional requirements.
 
-- **B001** — Cache stores, retrieves, and deletes values while honoring constructor and configure defaults.
-- **B002** — TTL expiration uses the injected timer deterministically and supports per-entry overrides.
-- **B003** — LRUCache evicts the least recently accessed entry when maxsize is exceeded.
-- **B004** — The submitted package does not import cacheout or read the upstream repository at runtime.
+- **B001** — `Cache.set` stores a key/value pair, `get` returns the stored value while it is live, and `delete` returns 1 for a removed key after which `get` returns the configured default.
+- **B002** — Given an injected callable timer and a positive default TTL, a cached entry remains available before its deadline and is unavailable when the timer reaches the deadline.
+- **B003** — Calling `Cache.configure(ttl=...)` changes the default TTL used by entries stored afterward.
+- **B004** — When inserting beyond `LRUCache.maxsize`, the least recently accessed entry is evicted, and a successful `get` refreshes an entry's recency.
+- **B005** — The package exposes the required task API paths `featurelifted.Cache`, `featurelifted.Cache.set`, `featurelifted.Cache.get`, `featurelifted.Cache.delete`, `featurelifted.Cache.configure`, and `featurelifted.LRUCache` with the kinds and callable signatures listed in this contract.
+- **B006** — the submitted package does not import forbidden upstream packages: cacheout.
 <!-- featureliftbench:behavior-clauses:end -->

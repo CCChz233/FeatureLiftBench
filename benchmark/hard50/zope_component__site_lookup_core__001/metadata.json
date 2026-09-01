@@ -1,0 +1,326 @@
+{
+  "task_id": "zope_component__site_lookup_core__001",
+  "language": "python",
+  "difficulty": "hard",
+  "status": "materialized_candidate",
+  "task_revision": 1,
+  "tags": [
+    "hard50",
+    "remaining",
+    "lift",
+    "composite"
+  ],
+  "source": {
+    "name": "zope.component",
+    "url": "https://github.com/zopefoundation/zope.component",
+    "commit": "bb12836f35b40f427fc313a0bc033816c30d890d",
+    "license": "ZPL-2.1"
+  },
+  "feature": {
+    "name": "Site manager utility lookup",
+    "description": "Lift global site-manager provide/get/query utility lookup on interface identities.",
+    "source_entrypoints": [
+      "zope.component.getUtility",
+      "zope.component.queryUtility",
+      "zope.component.provideUtility"
+    ],
+    "included_behaviors": [
+      "register utilities",
+      "lookup by interface",
+      "named utilities",
+      "missing utility behavior"
+    ],
+    "excluded_behaviors": [
+      "persistent local sites",
+      "ZODB"
+    ]
+  },
+  "entanglement": {
+    "level": "high",
+    "types": [
+      "framework_coupling",
+      "third_party_dependency_coupling"
+    ],
+    "primary": "framework_coupling",
+    "description": "Utility lookup is keyed by zope.interface identities and a global site manager.",
+    "signals": [
+      "interface identity",
+      "named vs unnamed",
+      "ComponentLookupError"
+    ]
+  },
+  "output": {
+    "package": "featurelifted",
+    "import": "from featurelifted import getUtility, queryUtility, provideUtility, implementer, Interface, ComponentLookupError",
+    "callable": "getUtility",
+    "signature": "getUtility(interface, name='', context=None)"
+  },
+  "environment": {
+    "python": "3.12",
+    "network": false,
+    "timeout_seconds": 90,
+    "dependency_lock": "requirements.lock",
+    "allowed_dependencies": [
+      "zope.interface",
+      "zope.event",
+      "zope.hookable"
+    ],
+    "forbidden_dependencies": [
+      "zope.component"
+    ],
+    "forbidden_imports": [
+      "zope.component"
+    ],
+    "forbidden_paths": [
+      "repo/",
+      "zope.component/"
+    ]
+  },
+  "tests": {
+    "public": "public_tests/",
+    "hidden": "hidden_tests/",
+    "command": "pytest"
+  },
+  "spec_status": "compliant",
+  "public_spec": {
+    "title": "Site manager utility lookup",
+    "summary": "Build a standalone `featurelifted` package providing site-manager utility registration and lookup by interface and optional name.",
+    "required_api": [
+      {
+        "path": "featurelifted.getUtility",
+        "kind": "function",
+        "signature": "(interface, name='', context=None)"
+      },
+      {
+        "path": "featurelifted.queryUtility",
+        "kind": "function",
+        "signature": "(interface, name='', default=None, context=None)"
+      },
+      {
+        "path": "featurelifted.provideUtility",
+        "kind": "function",
+        "signature": "(component, provides=None, name='')"
+      },
+      {
+        "path": "featurelifted.getGlobalSiteManager",
+        "kind": "function",
+        "signature": "()"
+      },
+      {
+        "path": "featurelifted.implementer",
+        "kind": "function",
+        "signature": "(*interfaces)"
+      },
+      {
+        "path": "featurelifted.Interface",
+        "kind": "class",
+        "signature": "Interface"
+      },
+      {
+        "path": "featurelifted.ComponentLookupError",
+        "kind": "exception",
+        "signature": "ComponentLookupError"
+      }
+    ],
+    "optional_api": [],
+    "behaviors": [
+      {
+        "id": "B001",
+        "text": "After `provideUtility` registers an object for an interface, `getUtility` for that interface returns the same object."
+      },
+      {
+        "id": "B002",
+        "text": "When no utility is registered for an interface, `queryUtility` returns the supplied default, or `None` when no default is given."
+      },
+      {
+        "id": "B003",
+        "text": "When no utility is registered for an interface, `getUtility` raises `ComponentLookupError`."
+      },
+      {
+        "id": "B004",
+        "text": "Utilities registered under different names for the same interface are returned independently by `getUtility(..., name=...)`."
+      },
+      {
+        "id": "B005",
+        "text": "The package exposes `getUtility`, `queryUtility`, `provideUtility`, `getGlobalSiteManager`, `implementer`, `Interface`, and `ComponentLookupError` with the signatures listed in this contract."
+      },
+      {
+        "id": "B006",
+        "text": "The submitted package source does not import the forbidden upstream package `zope.component`."
+      }
+    ],
+    "exclusions": [
+      "persistent local sites",
+      "ZODB",
+      "runtime import of zope.component"
+    ],
+    "forbidden": {
+      "imports": [
+        "zope.component"
+      ],
+      "paths": []
+    }
+  },
+  "evaluation_spec": {
+    "public_clauses": [
+      {
+        "behavior_id": "B001",
+        "clause_kind": "included_behavior",
+        "text": "After `provideUtility` registers an object for an interface, `getUtility` for that interface returns the same object."
+      },
+      {
+        "behavior_id": "B002",
+        "clause_kind": "included_behavior",
+        "text": "When no utility is registered for an interface, `queryUtility` returns the supplied default, or `None` when no default is given."
+      },
+      {
+        "behavior_id": "B003",
+        "clause_kind": "included_behavior",
+        "text": "When no utility is registered for an interface, `getUtility` raises `ComponentLookupError`."
+      },
+      {
+        "behavior_id": "B004",
+        "clause_kind": "included_behavior",
+        "text": "Utilities registered under different names for the same interface are returned independently by `getUtility(..., name=...)`."
+      },
+      {
+        "behavior_id": "B005",
+        "clause_kind": "included_behavior",
+        "text": "The package exposes `getUtility`, `queryUtility`, `provideUtility`, `getGlobalSiteManager`, `implementer`, `Interface`, and `ComponentLookupError` with the signatures listed in this contract."
+      },
+      {
+        "behavior_id": "B006",
+        "clause_kind": "included_behavior",
+        "text": "The submitted package source does not import the forbidden upstream package `zope.component`."
+      }
+    ],
+    "public_test_mappings": [
+      {
+        "nodeid": "public_tests/test_public_api.py::test_provide_then_get_utility",
+        "behavior_ids": [
+          "B001"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_query_utility_returns_default_when_missing",
+        "behavior_ids": [
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_get_utility_raises_when_unregistered",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "public_tests/test_public_api.py::test_named_utility_lookup",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "hidden_test_mappings": [
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_query_and_get_agree_for_registered_utility",
+        "behavior_ids": [
+          "B001",
+          "B002"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_named_and_unnamed_utilities_are_independent",
+        "behavior_ids": [
+          "B004"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_missing_interface_raises_lookup_error",
+        "behavior_ids": [
+          "B003"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+        "behavior_ids": [
+          "B006"
+        ],
+        "mapping_method": "ai_assisted"
+      },
+      {
+        "nodeid": "hidden_tests/test_required_api_surface.py::test_required_api_surface",
+        "behavior_ids": [
+          "B005"
+        ],
+        "mapping_method": "ai_assisted"
+      }
+    ],
+    "required_api_coverage": [
+      {
+        "path": "featurelifted.getUtility",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.queryUtility",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.provideUtility",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.getGlobalSiteManager",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.implementer",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Interface",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ComponentLookupError",
+        "covered_by_tests": [
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      }
+    ],
+    "manual_review": {
+      "reviewed_at": "2026-08-27",
+      "reviewer": "hard50_materialization_agent",
+      "reviewer_type": "ai_assisted_task_level_review",
+      "checklist_passed": true,
+      "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
+    }
+  },
+  "spec_hash": "e44b4c4e92109c0fa6e2e67a35a3358370b85a5446d8a168d1f09bb115448a69",
+  "generated_task_hash": "f97a976a728626fff4865049caa9675b7679bbbf230fabd920d137cfe2e09641",
+  "scoring_reference": {
+    "copy_all_bytes": 298359,
+    "copy_all_loc": 5777,
+    "oracle_bytes": 124805,
+    "oracle_loc": 1822,
+    "oracle_dependency_count": 3
+  }
+}

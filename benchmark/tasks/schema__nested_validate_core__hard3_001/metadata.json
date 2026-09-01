@@ -112,7 +112,14 @@
       {
         "path": "featurelifted.And",
         "kind": "class",
-        "signature": "(*validators: 'Any') -> 'None'"
+        "signature": "(*validators: 'Any') -> 'None'",
+        "members": [
+          {
+            "path": "featurelifted.And.validate",
+            "kind": "method",
+            "signature": "(self, data: 'Any') -> 'Any'"
+          }
+        ]
       },
       {
         "path": "featurelifted.SchemaError",
@@ -131,11 +138,11 @@
       },
       {
         "id": "B003",
-        "text": "Or accepts the first validating alternative, while And applies each validator in sequence and reports SchemaError when composition fails."
+        "text": "Or accepts the first validating alternative, while And applies each validator in sequence. A callable And step transforms the value, so And(str, lambda s: s.upper()).validate(\"hi\") returns \"HI\", and SchemaError is reported when composition fails."
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.And.validate`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -175,12 +182,12 @@
       {
         "behavior_id": "B003",
         "clause_kind": "included_behavior",
-        "text": "Or accepts the first validating alternative, while And applies each validator in sequence and reports SchemaError when composition fails."
+        "text": "Or accepts the first validating alternative, while And applies each validator in sequence. A callable And step transforms the value, so And(str, lambda s: s.upper()).validate(\"hi\") returns \"HI\", and SchemaError is reported when composition fails."
       },
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.And.validate`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -266,6 +273,13 @@
         ]
       },
       {
+        "path": "featurelifted.And.validate",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_or_and_composition",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
         "path": "featurelifted.SchemaError",
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
@@ -287,7 +301,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "dba8bc6946b2c33ed086eff2368a8547a0c4d83f5d168596afb051abf08f48b7",
-  "generated_task_hash": "9bce1ede152a7c81876529d41cc03b8afc76f161e8ab9b44fa836b216e01d936"
+  "task_revision": 6,
+  "spec_hash": "48b55048c6a02789a0bf4ac90731b2518ef809b5892453e241cb7bc91957cc9e",
+  "generated_task_hash": "ffa2f816ab957c3f67fcec6e553c5479a3700f3684557c0ebddc7acd690affef"
 }

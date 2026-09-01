@@ -21,6 +21,15 @@ from featurelifted import (
 - `field(*, default=NOTHING, validator=None, repr=True, hash=None, init=True, metadata=None, type=None, converter=None, factory=None, kw_only=False, eq=None, order=None, on_setattr=None, alias=None)`
 - `validate(inst)`
 - `validators` module must be importable
+  - `validators.and_(*validators)`
+  - `validators.deep_iterable(member_validator, iterable_validator=None)`
+  - `validators.deep_mapping(key_validator, value_validator, mapping_validator=None)`
+  - `validators.ge(val)`
+  - `validators.instance_of(type)`
+  - `validators.matches_re(regex, flags=0, func=None)`
+  - `validators.min_len(length)`
+  - `validators.optional(validator)`
+  - `validators.set_disabled(disabled)`
 
 ## Required Behavior
 
@@ -29,7 +38,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: compose validators with and_, not_, and optional. Required observable cases include set disabled skips validation.
 - The extracted feature must support this observable behavior: validate deep_iterable and deep_mapping structures. Required observable cases include matches re and deep iterable; deep mapping validates keys and values; optional allows none and validates present values.
 - The extracted feature must support this observable behavior: globally disable validators with set_disabled and validate(). Required observable cases include optional allows none and validates present values; set disabled skips validation.
-- The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators`, `featurelifted.validators.and_`, `featurelifted.validators.deep_iterable`, `featurelifted.validators.deep_mapping`, `featurelifted.validators.ge`, `featurelifted.validators.instance_of`, `featurelifted.validators.matches_re`, `featurelifted.validators.min_len`, `featurelifted.validators.optional`, and 1 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -52,6 +61,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: compose validators with and_, not_, and optional. Required observable cases include set disabled skips validation.
 - **B004** — The extracted feature must support this observable behavior: validate deep_iterable and deep_mapping structures. Required observable cases include matches re and deep iterable; deep mapping validates keys and values; optional allows none and validates present values.
 - **B005** — The extracted feature must support this observable behavior: globally disable validators with set_disabled and validate(). Required observable cases include optional allows none and validates present values; set disabled skips validation.
-- **B006** — The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.define`, `featurelifted.field`, `featurelifted.validate`, `featurelifted.validators`, `featurelifted.validators.and_`, `featurelifted.validators.deep_iterable`, `featurelifted.validators.deep_mapping`, `featurelifted.validators.ge`, `featurelifted.validators.instance_of`, `featurelifted.validators.matches_re`, `featurelifted.validators.min_len`, `featurelifted.validators.optional`, and 1 listed members with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: attrs, attr.
 <!-- featureliftbench:behavior-clauses:end -->

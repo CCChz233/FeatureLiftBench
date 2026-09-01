@@ -24,14 +24,15 @@ from featurelifted import (
 - `Or(*validators: 'Any') -> 'None'` class constructor
   - `Or.validate(self, data: 'Any') -> 'Any'`
 - `And(*validators: 'Any') -> 'None'` class constructor
+  - `And.validate(self, data: 'Any') -> 'Any'`
 - `SchemaError` must be importable and raisable
 
 ## Required Behavior
 
 - `Schema` validates nested dicts with type and literal rules.
 - `Optional` supplies defaults for missing keys.
-- Or accepts the first validating alternative, while And applies each validator in sequence and reports SchemaError when composition fails.
-- The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
+- Or accepts the first validating alternative, while And applies each validator in sequence. A callable And step transforms the value, so And(str, lambda s: s.upper()).validate("hi") returns "HI", and SchemaError is reported when composition fails.
+- The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.And.validate`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -51,7 +52,7 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 
 - **B001** — `Schema` validates nested dicts with type and literal rules.
 - **B002** — `Optional` supplies defaults for missing keys.
-- **B003** — Or accepts the first validating alternative, while And applies each validator in sequence and reports SchemaError when composition fails.
-- **B004** — The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
+- **B003** — Or accepts the first validating alternative, while And applies each validator in sequence. A callable And step transforms the value, so And(str, lambda s: s.upper()).validate("hi") returns "HI", and SchemaError is reported when composition fails.
+- **B004** — The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.And.validate`, `featurelifted.SchemaError` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: schema.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -1,0 +1,152 @@
+{
+  "schema_version": "featureliftbench.context_audit.v1",
+  "violation_tasks": 59,
+  "violation_passes": 37,
+  "max_allowed_prompt_tokens": [
+    122880
+  ],
+  "overage_tokens": {
+    "min": 206,
+    "median": 11028,
+    "max": 16563,
+    "bands": {
+      "1–4k": 3,
+      "4–8k": 10,
+      ">8k": 44,
+      "≤1k": 2
+    }
+  },
+  "groups": [
+    {
+      "dimension": "suite_split",
+      "group": "hard50",
+      "tasks": 22,
+      "passes": 11,
+      "pass_rate": 0.5,
+      "median_overage_tokens": 11035,
+      "max_overage_tokens": 16525
+    },
+    {
+      "dimension": "suite_split",
+      "group": "python150",
+      "tasks": 37,
+      "passes": 26,
+      "pass_rate": 0.7027027027027027,
+      "median_overage_tokens": 10362,
+      "max_overage_tokens": 16563
+    },
+    {
+      "dimension": "lift_type",
+      "group": "Adapted",
+      "tasks": 32,
+      "passes": 22,
+      "pass_rate": 0.6875,
+      "median_overage_tokens": 11064,
+      "max_overage_tokens": 16563
+    },
+    {
+      "dimension": "lift_type",
+      "group": "Composite",
+      "tasks": 12,
+      "passes": 3,
+      "pass_rate": 0.25,
+      "median_overage_tokens": 11752,
+      "max_overage_tokens": 16371
+    },
+    {
+      "dimension": "lift_type",
+      "group": "Direct",
+      "tasks": 15,
+      "passes": 12,
+      "pass_rate": 0.8,
+      "median_overage_tokens": 9931,
+      "max_overage_tokens": 16035
+    },
+    {
+      "dimension": "audit_failure_class",
+      "group": "dependency_install_infrastructure",
+      "tasks": 8,
+      "passes": 0,
+      "pass_rate": 0.0,
+      "median_overage_tokens": 11064,
+      "max_overage_tokens": 16371
+    },
+    {
+      "dimension": "audit_failure_class",
+      "group": "hidden_only_behavior",
+      "tasks": 3,
+      "passes": 0,
+      "pass_rate": 0.0,
+      "median_overage_tokens": 8992,
+      "max_overage_tokens": 11800
+    },
+    {
+      "dimension": "audit_failure_class",
+      "group": "pass",
+      "tasks": 37,
+      "passes": 37,
+      "pass_rate": 1.0,
+      "median_overage_tokens": 9931,
+      "max_overage_tokens": 16563
+    },
+    {
+      "dimension": "audit_failure_class",
+      "group": "public_behavior",
+      "tasks": 11,
+      "passes": 0,
+      "pass_rate": 0.0,
+      "median_overage_tokens": 11752,
+      "max_overage_tokens": 16525
+    },
+    {
+      "dimension": "overage_band",
+      "group": "1–4k",
+      "tasks": 3,
+      "passes": 2,
+      "pass_rate": 0.6666666666666666,
+      "median_overage_tokens": 2539,
+      "max_overage_tokens": 4011
+    },
+    {
+      "dimension": "overage_band",
+      "group": "4–8k",
+      "tasks": 10,
+      "passes": 7,
+      "pass_rate": 0.7,
+      "median_overage_tokens": 7093,
+      "max_overage_tokens": 8063
+    },
+    {
+      "dimension": "overage_band",
+      "group": ">8k",
+      "tasks": 44,
+      "passes": 26,
+      "pass_rate": 0.5909090909090909,
+      "median_overage_tokens": 11800,
+      "max_overage_tokens": 16563
+    },
+    {
+      "dimension": "overage_band",
+      "group": "≤1k",
+      "tasks": 2,
+      "passes": 2,
+      "pass_rate": 1.0,
+      "median_overage_tokens": 880,
+      "max_overage_tokens": 880
+    }
+  ],
+  "strict_replacement_sensitivity": {
+    "fixed_tasks": 116,
+    "fixed_passes": 95,
+    "unresolved_union": 84,
+    "possible_final_pass_count_range": [
+      95,
+      179
+    ],
+    "possible_final_rate_range": [
+      0.475,
+      0.895
+    ],
+    "note": "Logical bounds only; not an estimate of strict-run performance."
+  }
+}

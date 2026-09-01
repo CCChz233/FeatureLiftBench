@@ -1,0 +1,40 @@
+{
+  "schema_version": "featureliftbench.failure_audit.v1",
+  "nominal_nonpasses": 68,
+  "infrastructure_nonpasses": 33,
+  "model_or_output_nonpasses": 35,
+  "class_counts": {
+    "agent_no_submission": 2,
+    "dependency_install_infrastructure": 16,
+    "freeze_preflight_blocked": 17,
+    "hidden_only_behavior": 8,
+    "public_behavior": 25
+  },
+  "class_counts_by_split": {
+    "hard50": {
+      "agent_no_submission": 1,
+      "dependency_install_infrastructure": 16,
+      "hidden_only_behavior": 1,
+      "public_behavior": 3
+    },
+    "python150": {
+      "agent_no_submission": 1,
+      "freeze_preflight_blocked": 17,
+      "hidden_only_behavior": 7,
+      "public_behavior": 22
+    }
+  },
+  "dependency_requirements": {
+    "MarkupSafe==3.0.3": 1,
+    "aiohttp==3.12.15": 1,
+    "cffi==2.1.1": 1,
+    "charset-normalizer==3.5.1": 1,
+    "lxml==6.1.2": 1,
+    "pandas==2.2.3": 1,
+    "pydantic-core==2.33.2": 3,
+    "rpds-py==2026.6.3": 2,
+    "tornado==6.5.2": 1,
+    "wrapt==1.17.3": 3,
+    "zope.interface==7.2": 1
+  }
+}

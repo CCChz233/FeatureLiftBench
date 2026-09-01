@@ -1,0 +1,1215 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Frozen Python-150 Benchmark Results: Exploratory Analysis",
+    "description": "Four-model capability, failure-depth, task-difficulty, efficiency, and compactness analysis.",
+    "generatedAt": "2026-08-30",
+    "sources": [
+      {
+        "id": "python150-results",
+        "label": "Frozen Python-150 task-level results",
+        "path": "reports/paper_analysis/python150_with_deepseek150_20260805/metrics_task_results.csv",
+        "query": {
+          "description": "Reproducible Python aggregation over 600 model-task result rows.",
+          "engine": "python/pandas",
+          "language": "python",
+          "sql": "SELECT * FROM results ORDER BY model_label, task_id",
+          "executed_at": "2026-08-30",
+          "tables_used": [
+            "metrics_task_results.csv"
+          ],
+          "filters": [
+            "Frozen Python-150 only",
+            "Four OpenHands model configurations",
+            "Functional Pass@1 from evaluator gates"
+          ],
+          "metric_definitions": [
+            "Functional Pass@1 = build AND public AND hidden AND isolation gates.",
+            "Wilson 95% intervals use the assigned 150-task denominator per model.",
+            "Compactness summaries include only functionally passing submissions."
+          ]
+        }
+      },
+      {
+        "id": "python150-taxonomy",
+        "label": "Frozen Python-150 lift taxonomy",
+        "path": "reports/lift_taxonomy/COVERAGE_TRIPLES.csv",
+        "query": {
+          "description": "Task-level lift type and feature-family labels joined by task_id.",
+          "engine": "python/pandas",
+          "language": "python",
+          "sql": "SELECT * FROM taxonomy ORDER BY task_id",
+          "executed_at": "2026-08-30",
+          "tables_used": [
+            "COVERAGE_TRIPLES.csv"
+          ],
+          "filters": [
+            "150 task IDs present in the result matrix"
+          ],
+          "metric_definitions": [
+            "Task solvability = number of the four evaluated models that functionally pass a task, divided by four.",
+            "Bootstrap intervals resample tasks within each family or lift type."
+          ]
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Frozen Python-150 Benchmark Results: Exploratory Analysis"
+      },
+      {
+        "id": "technical-summary",
+        "type": "markdown",
+        "body": "## Technical summary\n\nDeepSeek V4 Flash records 99/150 Functional passes (66.0%), while Qwen3.5 and Qwen3.6 each record 59/150 (39.3%) and GPT-OSS records 27/150 (18.0%). The aggregate Qwen tie hides 40 task-level disagreements. Across all models, 42 tasks are solved by none and 11 by all four. These results are useful for exploratory benchmark analysis but are not eligible for the final Python-200′ main table because evaluator-image identity and context-policy checks remain unresolved."
+      },
+      {
+        "id": "capability-section",
+        "type": "markdown",
+        "body": "## DeepSeek leads the four-model comparison\n\nThe chart reports the evaluator-defined Functional Pass@1 rate with Wilson 95% intervals. DeepSeek's interval is separated from both Qwen configurations; GPT-OSS is lower still. The comparison describes complete model–OpenHands configurations, not base models in isolation."
+      },
+      {
+        "id": "functional-chart-block",
+        "type": "chart",
+        "chartId": "functional-chart"
+      },
+      {
+        "id": "model-table-block",
+        "type": "table",
+        "tableId": "model-table"
+      },
+      {
+        "id": "gates-section",
+        "type": "markdown",
+        "body": "## Public and Hidden behavior create the largest separation\n\nBuild and isolation are comparatively high for every model. The largest capability spread appears at Public and Hidden behavior, which is consistent with contract-completion and generalization failures rather than packaging alone. Gate rates are shown independently; they should not be read as a strictly nested funnel."
+      },
+      {
+        "id": "gate-chart-block",
+        "type": "chart",
+        "chartId": "gate-chart"
+      },
+      {
+        "id": "task-section",
+        "type": "markdown",
+        "body": "## Aggregate ties conceal complementary successes\n\nQwen3.5 and Qwen3.6 have the same 59/150 aggregate score, yet each exclusively passes 20 tasks. Task-level paired comparisons are therefore more informative than ranking equal totals alone. DeepSeek exclusively passes 46 tasks against either Qwen, while each Qwen exclusively passes six against DeepSeek."
+      },
+      {
+        "id": "pairwise-table-block",
+        "type": "table",
+        "tableId": "pairwise-table"
+      },
+      {
+        "id": "difficulty-section",
+        "type": "markdown",
+        "body": "## Composite and resource-heavy tasks remain the least solved\n\nDirect tasks are solved by an average of 2.20 of four models, compared with 1.36 for Adapted and 1.00 for Composite tasks. Family-level results are descriptive: task selection is not random, labels are AI-assisted, and the bootstrap intervals quantify variation across the observed tasks rather than population uncertainty."
+      },
+      {
+        "id": "lift-chart-block",
+        "type": "chart",
+        "chartId": "lift-chart"
+      },
+      {
+        "id": "family-table-block",
+        "type": "table",
+        "tableId": "family-table"
+      },
+      {
+        "id": "compactness-section",
+        "type": "markdown",
+        "body": "## Higher correctness does not imply compact extraction\n\nAmong functionally passing submissions, DeepSeek has a median reference-relative extraction size of 0.985 and a median copied fraction of 0.970. GPT-OSS passes fewer tasks but has a lower median copied fraction of 0.269. These pass-conditioned summaries describe different survivor sets and must not be interpreted as an unconditional compactness ranking."
+      },
+      {
+        "id": "compactness-table-block",
+        "type": "table",
+        "tableId": "compactness-table"
+      },
+      {
+        "id": "scope-section",
+        "type": "markdown",
+        "body": "## Scope, definitions, and methodology\n\nThe analysis covers 600 unique model-task pairs: four OpenHands configurations evaluated on the same 150 frozen tasks. Functional Pass@1 is the conjunction of build, Public, Hidden, and isolation gates. Wilson intervals use the 150-task denominator. Pairwise differences use exact McNemar tests; family and lift-type intervals bootstrap tasks. Missing evaluator records are counted as non-passes, matching the archived result contract."
+      },
+      {
+        "id": "limitations-section",
+        "type": "markdown",
+        "body": "## Limitations and robustness\n\nThe data matrix has no duplicate model-task pairs and complete token records, but 12 rows lack evaluator output and 48 rows violate the declared context allowance. The archived evaluator image also differs from the active paper freeze. Consequently, this report is suitable for exploratory analysis and figure development, not the final Python-200′ leaderboard or a causal claim about task attributes."
+      },
+      {
+        "id": "next-steps-section",
+        "type": "markdown",
+        "body": "## Recommended next steps\n\n1. Reuse the figure specifications, but replace the result matrix with fully eligible Python-200′ runs.\n2. Preserve paired task-level comparisons and split compactness by Python-150 versus Hard-50.\n3. Audit the AI-assisted taxonomy labels before presenting family differences as a primary empirical claim."
+      },
+      {
+        "id": "questions-section",
+        "type": "markdown",
+        "body": "## Further questions\n\n- Do the task-level model disagreements persist on the Hard-50 split?\n- Which contract-closure symptoms explain the 42 tasks solved by no model?\n- Does compactness remain model-dependent after conditioning on the same paired passing tasks?"
+      }
+    ],
+    "charts": [
+      {
+        "id": "functional-chart",
+        "type": "bar",
+        "title": "Functional Pass@1 by model",
+        "description": "Frozen Python-150; 150 assigned tasks per model.",
+        "dataset": "model_summary",
+        "encodings": {
+          "x": {
+            "field": "model",
+            "type": "nominal",
+            "title": "Model"
+          },
+          "y": {
+            "field": "functional_rate",
+            "type": "quantitative",
+            "title": "Functional Pass@1",
+            "format": "percent"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "valueLabels": true
+        },
+        "source": {
+          "id": "python150-model_summary",
+          "label": "Python-150 model summary",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified model_summary analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM model_summary",
+            "tables_used": [
+              "analysis.sqlite.model_summary"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Functional rate = functionally passing tasks / 150 assigned tasks."
+            ]
+          }
+        }
+      },
+      {
+        "id": "gate-chart",
+        "type": "bar",
+        "title": "Evaluator-gate pass rates",
+        "description": "Independent gate rates over the same 150 assigned tasks per model.",
+        "dataset": "gate_summary",
+        "encodings": {
+          "x": {
+            "field": "gate",
+            "type": "nominal",
+            "title": "Gate"
+          },
+          "y": {
+            "field": "rate",
+            "type": "quantitative",
+            "title": "Pass rate",
+            "format": "percent"
+          },
+          "color": {
+            "field": "model_short",
+            "type": "nominal",
+            "title": "Model"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "grouping": "grouped",
+          "legend": true
+        },
+        "source": {
+          "id": "python150-gate_summary",
+          "label": "Python-150 evaluator-gate summary",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified gate_summary analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM gate_summary",
+            "tables_used": [
+              "analysis.sqlite.gate_summary"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Gate rate = tasks passing the named evaluator gate / 150 assigned tasks."
+            ]
+          }
+        }
+      },
+      {
+        "id": "lift-chart",
+        "type": "bar",
+        "title": "Mean task solvability by lift type",
+        "description": "Mean share of the four models solving each task; task counts retained in the dataset.",
+        "dataset": "lift_type_summary",
+        "encodings": {
+          "x": {
+            "field": "lift_type",
+            "type": "nominal",
+            "title": "Lift type"
+          },
+          "y": {
+            "field": "mean_solve_fraction",
+            "type": "quantitative",
+            "title": "Mean share of models solving",
+            "format": "percent"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "valueLabels": true
+        },
+        "source": {
+          "id": "python150-lift_type_summary",
+          "label": "Python-150 lift-type solvability summary",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified lift_type_summary analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM lift_type_summary",
+            "tables_used": [
+              "analysis.sqlite.lift_type_summary"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Mean solve fraction averages task-level models_solved / 4 within each lift type."
+            ]
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "model-table",
+        "title": "Model-level functional results and audit fields",
+        "description": "Exact values over 150 assigned tasks per model.",
+        "dataset": "model_table",
+        "columns": [
+          {
+            "field": "model",
+            "label": "Model",
+            "type": "text"
+          },
+          {
+            "field": "functional_pass",
+            "label": "Pass",
+            "type": "number"
+          },
+          {
+            "field": "assigned",
+            "label": "Assigned",
+            "type": "number"
+          },
+          {
+            "field": "functional_rate",
+            "label": "Rate",
+            "type": "percent"
+          },
+          {
+            "field": "wilson_95",
+            "label": "Wilson 95%",
+            "type": "text"
+          },
+          {
+            "field": "context_violations",
+            "label": "Context violations",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "functional_rate",
+          "direction": "desc"
+        },
+        "source": {
+          "id": "python150-model_table",
+          "label": "Python-150 exact model table",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified model_table analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM model_table",
+            "tables_used": [
+              "analysis.sqlite.model_table"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Wilson 95% is computed from the assigned 150-task denominator."
+            ]
+          }
+        }
+      },
+      {
+        "id": "pairwise-table",
+        "title": "Exact paired task comparisons",
+        "description": "Left-only and right-only passes over the same 150 task IDs.",
+        "dataset": "pairwise_comparisons",
+        "columns": [
+          {
+            "field": "pair",
+            "label": "Pair",
+            "type": "text"
+          },
+          {
+            "field": "both_pass",
+            "label": "Both pass",
+            "type": "number"
+          },
+          {
+            "field": "left_only",
+            "label": "Left only",
+            "type": "number"
+          },
+          {
+            "field": "right_only",
+            "label": "Right only",
+            "type": "number"
+          },
+          {
+            "field": "both_fail",
+            "label": "Both fail",
+            "type": "number"
+          },
+          {
+            "field": "mcnemar_exact_p",
+            "label": "Exact p",
+            "type": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "mcnemar_exact_p",
+          "direction": "asc"
+        },
+        "source": {
+          "id": "python150-pairwise_comparisons",
+          "label": "Python-150 paired comparisons",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified pairwise_comparisons analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM pairwise_comparisons",
+            "tables_used": [
+              "analysis.sqlite.pairwise_comparisons"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Exact p is a two-sided exact McNemar test over discordant task outcomes."
+            ]
+          }
+        }
+      },
+      {
+        "id": "family-table",
+        "title": "Feature-family task solvability",
+        "description": "Observed Python-150 tasks; bootstrap intervals resample tasks within family.",
+        "dataset": "feature_family_summary",
+        "columns": [
+          {
+            "field": "feature_family",
+            "label": "Feature family",
+            "type": "text"
+          },
+          {
+            "field": "tasks",
+            "label": "Tasks",
+            "type": "number"
+          },
+          {
+            "field": "mean_models_solved",
+            "label": "Mean models solved",
+            "type": "number"
+          },
+          {
+            "field": "mean_solve_fraction",
+            "label": "Solve fraction",
+            "type": "percent"
+          },
+          {
+            "field": "bootstrap_low",
+            "label": "CI low",
+            "type": "percent"
+          },
+          {
+            "field": "bootstrap_high",
+            "label": "CI high",
+            "type": "percent"
+          }
+        ],
+        "defaultSort": {
+          "field": "mean_solve_fraction",
+          "direction": "asc"
+        },
+        "source": {
+          "id": "python150-feature_family_summary",
+          "label": "Python-150 feature-family summary",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified feature_family_summary analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM feature_family_summary",
+            "tables_used": [
+              "analysis.sqlite.feature_family_summary"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "Bootstrap intervals resample tasks within each observed feature family."
+            ]
+          }
+        }
+      },
+      {
+        "id": "compactness-table",
+        "title": "Pass-conditioned compactness summaries",
+        "description": "Medians and interquartile ranges among functionally passing submissions only.",
+        "dataset": "compactness_summary",
+        "columns": [
+          {
+            "field": "model",
+            "label": "Model",
+            "type": "text"
+          },
+          {
+            "field": "functional_pass",
+            "label": "Passing tasks",
+            "type": "number"
+          },
+          {
+            "field": "pass_rres_median",
+            "label": "Median RRES",
+            "type": "number"
+          },
+          {
+            "field": "pass_rres_q1",
+            "label": "RRES Q1",
+            "type": "number"
+          },
+          {
+            "field": "pass_rres_q3",
+            "label": "RRES Q3",
+            "type": "number"
+          },
+          {
+            "field": "pass_copy_fraction_median",
+            "label": "Median copied fraction",
+            "type": "percent"
+          }
+        ],
+        "defaultSort": {
+          "field": "functional_pass",
+          "direction": "desc"
+        },
+        "source": {
+          "id": "python150-compactness_summary",
+          "label": "Python-150 pass-conditioned compactness summary",
+          "path": "reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite",
+          "query": {
+            "description": "Read the verified compactness_summary analysis table.",
+            "engine": "sqlite",
+            "language": "sql",
+            "executed_at": "2026-08-30",
+            "sql": "SELECT * FROM compactness_summary",
+            "tables_used": [
+              "analysis.sqlite.compactness_summary"
+            ],
+            "filters": [
+              "Frozen Python-150 exploratory analysis"
+            ],
+            "metric_definitions": [
+              "RRES and copied fraction are summarized only among functionally passing submissions."
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-08-30",
+    "datasets": {
+      "model_summary": [
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "assigned": 150,
+          "functional_pass": 99,
+          "functional_rate": 0.66,
+          "wilson_low": 0.5810428721,
+          "wilson_high": 0.7309666497,
+          "evaluation_missing": 5,
+          "context_violations": 8,
+          "run_status_passed": 82,
+          "functional_despite_run_fail": 17,
+          "median_api_calls": 65.5,
+          "mean_api_calls": 73.7133333333,
+          "median_completion_tokens": 55571.5,
+          "agent_hours": 21.4713323458,
+          "pass_rres_median": 0.984576,
+          "pass_rres_q1": 0.785873,
+          "pass_rres_q3": 1.0335515,
+          "pass_copy_fraction_median": 0.969523,
+          "pass_copy_fraction_q1": 0.864848,
+          "pass_copy_fraction_q3": 0.987992
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "assigned": 150,
+          "functional_pass": 59,
+          "functional_rate": 0.3933333333,
+          "wilson_low": 0.318759857,
+          "wilson_high": 0.4732337952,
+          "evaluation_missing": 0,
+          "context_violations": 9,
+          "run_status_passed": 58,
+          "functional_despite_run_fail": 1,
+          "median_api_calls": 47.0,
+          "mean_api_calls": 50.84,
+          "median_completion_tokens": 21568.0,
+          "agent_hours": 54.19879251,
+          "pass_rres_median": 0.693294,
+          "pass_rres_q1": 0.4429965,
+          "pass_rres_q3": 0.956781,
+          "pass_copy_fraction_median": 0.62268,
+          "pass_copy_fraction_q1": 0.2532455,
+          "pass_copy_fraction_q3": 0.821185
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "assigned": 150,
+          "functional_pass": 59,
+          "functional_rate": 0.3933333333,
+          "wilson_low": 0.318759857,
+          "wilson_high": 0.4732337952,
+          "evaluation_missing": 4,
+          "context_violations": 31,
+          "run_status_passed": 59,
+          "functional_despite_run_fail": 0,
+          "median_api_calls": 64.0,
+          "mean_api_calls": 79.3133333333,
+          "median_completion_tokens": 33597.0,
+          "agent_hours": 27.0542043389,
+          "pass_rres_median": 0.816404,
+          "pass_rres_q1": 0.467815,
+          "pass_rres_q3": 1.229869,
+          "pass_copy_fraction_median": 0.635593,
+          "pass_copy_fraction_q1": 0.235354,
+          "pass_copy_fraction_q3": 0.8944485
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "assigned": 150,
+          "functional_pass": 27,
+          "functional_rate": 0.18,
+          "wilson_low": 0.1267576781,
+          "wilson_high": 0.2492232783,
+          "evaluation_missing": 3,
+          "context_violations": 0,
+          "run_status_passed": 27,
+          "functional_despite_run_fail": 0,
+          "median_api_calls": 22.0,
+          "mean_api_calls": 30.0133333333,
+          "median_completion_tokens": 12448.0,
+          "agent_hours": 7.0938193261,
+          "pass_rres_median": 0.789474,
+          "pass_rres_q1": 0.321783,
+          "pass_rres_q3": 1.6240565,
+          "pass_copy_fraction_median": 0.268657,
+          "pass_copy_fraction_q1": 0.0268045,
+          "pass_copy_fraction_q3": 0.5716445
+        }
+      ],
+      "model_table": [
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "assigned": 150,
+          "functional_pass": 99,
+          "functional_rate": 0.66,
+          "wilson_low": 0.5810428721,
+          "wilson_high": 0.7309666497,
+          "evaluation_missing": 5,
+          "context_violations": 8,
+          "run_status_passed": 82,
+          "functional_despite_run_fail": 17,
+          "median_api_calls": 65.5,
+          "mean_api_calls": 73.7133333333,
+          "median_completion_tokens": 55571.5,
+          "agent_hours": 21.4713323458,
+          "pass_rres_median": 0.984576,
+          "pass_rres_q1": 0.785873,
+          "pass_rres_q3": 1.0335515,
+          "pass_copy_fraction_median": 0.969523,
+          "pass_copy_fraction_q1": 0.864848,
+          "pass_copy_fraction_q3": 0.987992,
+          "wilson_95": "58.1%–73.1%"
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "assigned": 150,
+          "functional_pass": 59,
+          "functional_rate": 0.3933333333,
+          "wilson_low": 0.318759857,
+          "wilson_high": 0.4732337952,
+          "evaluation_missing": 0,
+          "context_violations": 9,
+          "run_status_passed": 58,
+          "functional_despite_run_fail": 1,
+          "median_api_calls": 47.0,
+          "mean_api_calls": 50.84,
+          "median_completion_tokens": 21568.0,
+          "agent_hours": 54.19879251,
+          "pass_rres_median": 0.693294,
+          "pass_rres_q1": 0.4429965,
+          "pass_rres_q3": 0.956781,
+          "pass_copy_fraction_median": 0.62268,
+          "pass_copy_fraction_q1": 0.2532455,
+          "pass_copy_fraction_q3": 0.821185,
+          "wilson_95": "31.9%–47.3%"
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "assigned": 150,
+          "functional_pass": 59,
+          "functional_rate": 0.3933333333,
+          "wilson_low": 0.318759857,
+          "wilson_high": 0.4732337952,
+          "evaluation_missing": 4,
+          "context_violations": 31,
+          "run_status_passed": 59,
+          "functional_despite_run_fail": 0,
+          "median_api_calls": 64.0,
+          "mean_api_calls": 79.3133333333,
+          "median_completion_tokens": 33597.0,
+          "agent_hours": 27.0542043389,
+          "pass_rres_median": 0.816404,
+          "pass_rres_q1": 0.467815,
+          "pass_rres_q3": 1.229869,
+          "pass_copy_fraction_median": 0.635593,
+          "pass_copy_fraction_q1": 0.235354,
+          "pass_copy_fraction_q3": 0.8944485,
+          "wilson_95": "31.9%–47.3%"
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "assigned": 150,
+          "functional_pass": 27,
+          "functional_rate": 0.18,
+          "wilson_low": 0.1267576781,
+          "wilson_high": 0.2492232783,
+          "evaluation_missing": 3,
+          "context_violations": 0,
+          "run_status_passed": 27,
+          "functional_despite_run_fail": 0,
+          "median_api_calls": 22.0,
+          "mean_api_calls": 30.0133333333,
+          "median_completion_tokens": 12448.0,
+          "agent_hours": 7.0938193261,
+          "pass_rres_median": 0.789474,
+          "pass_rres_q1": 0.321783,
+          "pass_rres_q3": 1.6240565,
+          "pass_copy_fraction_median": 0.268657,
+          "pass_copy_fraction_q1": 0.0268045,
+          "pass_copy_fraction_q3": 0.5716445,
+          "wilson_95": "12.7%–24.9%"
+        }
+      ],
+      "gate_summary": [
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "gate": "Build",
+          "gate_order": 0,
+          "passed": 144,
+          "assigned": 150,
+          "rate": 0.96
+        },
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "gate": "Public",
+          "gate_order": 1,
+          "passed": 120,
+          "assigned": 150,
+          "rate": 0.8
+        },
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "gate": "Hidden",
+          "gate_order": 2,
+          "passed": 106,
+          "assigned": 150,
+          "rate": 0.7066666667
+        },
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "gate": "Isolation",
+          "gate_order": 3,
+          "passed": 144,
+          "assigned": 150,
+          "rate": 0.96
+        },
+        {
+          "model": "DeepSeek V4 Flash",
+          "model_short": "DeepSeek",
+          "gate": "Functional",
+          "gate_order": 4,
+          "passed": 99,
+          "assigned": 150,
+          "rate": 0.66
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "gate": "Build",
+          "gate_order": 0,
+          "passed": 150,
+          "assigned": 150,
+          "rate": 1.0
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "gate": "Public",
+          "gate_order": 1,
+          "passed": 90,
+          "assigned": 150,
+          "rate": 0.6
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "gate": "Hidden",
+          "gate_order": 2,
+          "passed": 69,
+          "assigned": 150,
+          "rate": 0.46
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "gate": "Isolation",
+          "gate_order": 3,
+          "passed": 148,
+          "assigned": 150,
+          "rate": 0.9866666667
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "model_short": "Qwen3.5",
+          "gate": "Functional",
+          "gate_order": 4,
+          "passed": 59,
+          "assigned": 150,
+          "rate": 0.3933333333
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "gate": "Build",
+          "gate_order": 0,
+          "passed": 137,
+          "assigned": 150,
+          "rate": 0.9133333333
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "gate": "Public",
+          "gate_order": 1,
+          "passed": 85,
+          "assigned": 150,
+          "rate": 0.5666666667
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "gate": "Hidden",
+          "gate_order": 2,
+          "passed": 64,
+          "assigned": 150,
+          "rate": 0.4266666667
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "gate": "Isolation",
+          "gate_order": 3,
+          "passed": 135,
+          "assigned": 150,
+          "rate": 0.9
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "model_short": "Qwen3.6",
+          "gate": "Functional",
+          "gate_order": 4,
+          "passed": 59,
+          "assigned": 150,
+          "rate": 0.3933333333
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "gate": "Build",
+          "gate_order": 0,
+          "passed": 134,
+          "assigned": 150,
+          "rate": 0.8933333333
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "gate": "Public",
+          "gate_order": 1,
+          "passed": 66,
+          "assigned": 150,
+          "rate": 0.44
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "gate": "Hidden",
+          "gate_order": 2,
+          "passed": 32,
+          "assigned": 150,
+          "rate": 0.2133333333
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "gate": "Isolation",
+          "gate_order": 3,
+          "passed": 130,
+          "assigned": 150,
+          "rate": 0.8666666667
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "model_short": "GPT-OSS",
+          "gate": "Functional",
+          "gate_order": 4,
+          "passed": 27,
+          "assigned": 150,
+          "rate": 0.18
+        }
+      ],
+      "pairwise_comparisons": [
+        {
+          "left": "DeepSeek V4 Flash",
+          "right": "Qwen3.5 122B",
+          "pair": "DeepSeek vs Qwen3.5",
+          "both_pass": 53,
+          "left_only": 46,
+          "right_only": 6,
+          "both_fail": 45,
+          "discordant": 52,
+          "left_advantage": 40,
+          "mcnemar_exact_p": 1.03e-08
+        },
+        {
+          "left": "DeepSeek V4 Flash",
+          "right": "Qwen3.6 35B",
+          "pair": "DeepSeek vs Qwen3.6",
+          "both_pass": 53,
+          "left_only": 46,
+          "right_only": 6,
+          "both_fail": 45,
+          "discordant": 52,
+          "left_advantage": 40,
+          "mcnemar_exact_p": 1.03e-08
+        },
+        {
+          "left": "DeepSeek V4 Flash",
+          "right": "GPT-OSS 120B",
+          "pair": "DeepSeek vs GPT-OSS",
+          "both_pass": 24,
+          "left_only": 75,
+          "right_only": 3,
+          "both_fail": 48,
+          "discordant": 78,
+          "left_advantage": 72,
+          "mcnemar_exact_p": 5.238237034e-19
+        },
+        {
+          "left": "Qwen3.5 122B",
+          "right": "Qwen3.6 35B",
+          "pair": "Qwen3.5 vs Qwen3.6",
+          "both_pass": 39,
+          "left_only": 20,
+          "right_only": 20,
+          "both_fail": 71,
+          "discordant": 40,
+          "left_advantage": 0,
+          "mcnemar_exact_p": 1.0
+        },
+        {
+          "left": "Qwen3.5 122B",
+          "right": "GPT-OSS 120B",
+          "pair": "Qwen3.5 vs GPT-OSS",
+          "both_pass": 18,
+          "left_only": 41,
+          "right_only": 9,
+          "both_fail": 82,
+          "discordant": 50,
+          "left_advantage": 32,
+          "mcnemar_exact_p": 5.6141e-06
+        },
+        {
+          "left": "Qwen3.6 35B",
+          "right": "GPT-OSS 120B",
+          "pair": "Qwen3.6 vs GPT-OSS",
+          "both_pass": 17,
+          "left_only": 42,
+          "right_only": 10,
+          "both_fail": 81,
+          "discordant": 52,
+          "left_advantage": 32,
+          "mcnemar_exact_p": 9.0633e-06
+        }
+      ],
+      "lift_type_summary": [
+        {
+          "lift_type": "Direct",
+          "tasks": 56,
+          "mean_models_solved": 2.1964285714,
+          "mean_solve_fraction": 0.5491071429,
+          "bootstrap_low": 0.4732142857,
+          "bootstrap_high": 0.625,
+          "median_models_solved": 2.0
+        },
+        {
+          "lift_type": "Adapted",
+          "tasks": 76,
+          "mean_models_solved": 1.3552631579,
+          "mean_solve_fraction": 0.3388157895,
+          "bootstrap_low": 0.2697368421,
+          "bootstrap_high": 0.4111842105,
+          "median_models_solved": 1.0
+        },
+        {
+          "lift_type": "Composite",
+          "tasks": 18,
+          "mean_models_solved": 1.0,
+          "mean_solve_fraction": 0.25,
+          "bootstrap_low": 0.125,
+          "bootstrap_high": 0.3888888889,
+          "median_models_solved": 0.0
+        }
+      ],
+      "feature_family_summary": [
+        {
+          "feature_family": "cache_retry_policy",
+          "tasks": 8,
+          "mean_models_solved": 2.5,
+          "mean_solve_fraction": 0.625,
+          "bootstrap_low": 0.375,
+          "bootstrap_high": 0.84375,
+          "median_models_solved": 3.0
+        },
+        {
+          "feature_family": "protocol_state_transition",
+          "tasks": 9,
+          "mean_models_solved": 2.1111111111,
+          "mean_solve_fraction": 0.5277777778,
+          "bootstrap_low": 0.3888888889,
+          "bootstrap_high": 0.6666666667,
+          "median_models_solved": 2.0
+        },
+        {
+          "feature_family": "serialize_format_render",
+          "tasks": 19,
+          "mean_models_solved": 2.0526315789,
+          "mean_solve_fraction": 0.5131578947,
+          "bootstrap_low": 0.3947368421,
+          "bootstrap_high": 0.6315789474,
+          "median_models_solved": 2.0
+        },
+        {
+          "feature_family": "algorithm_data_structure",
+          "tasks": 11,
+          "mean_models_solved": 2.0,
+          "mean_solve_fraction": 0.5,
+          "bootstrap_low": 0.2954545455,
+          "bootstrap_high": 0.6818181818,
+          "median_models_solved": 3.0
+        },
+        {
+          "feature_family": "parse_tokenize_decode",
+          "tasks": 31,
+          "mean_models_solved": 1.7741935484,
+          "mean_solve_fraction": 0.4435483871,
+          "bootstrap_low": 0.3306451613,
+          "bootstrap_high": 0.5564516129,
+          "median_models_solved": 2.0
+        },
+        {
+          "feature_family": "workflow_session_orchestration",
+          "tasks": 5,
+          "mean_models_solved": 1.6,
+          "mean_solve_fraction": 0.4,
+          "bootstrap_low": 0.1,
+          "bootstrap_high": 0.7,
+          "median_models_solved": 2.0
+        },
+        {
+          "feature_family": "config_resolve_discover",
+          "tasks": 18,
+          "mean_models_solved": 1.3888888889,
+          "mean_solve_fraction": 0.3472222222,
+          "bootstrap_low": 0.2083333333,
+          "bootstrap_high": 0.4861111111,
+          "median_models_solved": 1.0
+        },
+        {
+          "feature_family": "registry_plugin_dispatch",
+          "tasks": 22,
+          "mean_models_solved": 1.2272727273,
+          "mean_solve_fraction": 0.3068181818,
+          "bootstrap_low": 0.1590909091,
+          "bootstrap_high": 0.4545454545,
+          "median_models_solved": 0.5
+        },
+        {
+          "feature_family": "validate_normalize_construct",
+          "tasks": 15,
+          "mean_models_solved": 1.1333333333,
+          "mean_solve_fraction": 0.2833333333,
+          "bootstrap_low": 0.1666666667,
+          "bootstrap_high": 0.4166666667,
+          "median_models_solved": 1.0
+        },
+        {
+          "feature_family": "resource_metadata_loading",
+          "tasks": 12,
+          "mean_models_solved": 1.0,
+          "mean_solve_fraction": 0.25,
+          "bootstrap_low": 0.0833333333,
+          "bootstrap_high": 0.4583333333,
+          "median_models_solved": 0.0
+        }
+      ],
+      "compactness_summary": [
+        {
+          "model": "DeepSeek V4 Flash",
+          "functional_pass": 99,
+          "pass_rres_median": 0.984576,
+          "pass_rres_q1": 0.785873,
+          "pass_rres_q3": 1.0335515,
+          "pass_copy_fraction_median": 0.969523,
+          "pass_copy_fraction_q1": 0.864848,
+          "pass_copy_fraction_q3": 0.987992
+        },
+        {
+          "model": "Qwen3.5 122B",
+          "functional_pass": 59,
+          "pass_rres_median": 0.693294,
+          "pass_rres_q1": 0.4429965,
+          "pass_rres_q3": 0.956781,
+          "pass_copy_fraction_median": 0.62268,
+          "pass_copy_fraction_q1": 0.2532455,
+          "pass_copy_fraction_q3": 0.821185
+        },
+        {
+          "model": "Qwen3.6 35B",
+          "functional_pass": 59,
+          "pass_rres_median": 0.816404,
+          "pass_rres_q1": 0.467815,
+          "pass_rres_q3": 1.229869,
+          "pass_copy_fraction_median": 0.635593,
+          "pass_copy_fraction_q1": 0.235354,
+          "pass_copy_fraction_q3": 0.8944485
+        },
+        {
+          "model": "GPT-OSS 120B",
+          "functional_pass": 27,
+          "pass_rres_median": 0.789474,
+          "pass_rres_q1": 0.321783,
+          "pass_rres_q3": 1.6240565,
+          "pass_copy_fraction_median": 0.268657,
+          "pass_copy_fraction_q1": 0.0268045,
+          "pass_copy_fraction_q3": 0.5716445
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "python150-results",
+      "label": "Frozen Python-150 task-level results",
+      "path": "reports/paper_analysis/python150_with_deepseek150_20260805/metrics_task_results.csv",
+      "query": {
+        "description": "Reproducible Python aggregation over 600 model-task result rows.",
+        "engine": "python/pandas",
+        "language": "python",
+        "sql": "SELECT * FROM results ORDER BY model_label, task_id",
+        "executed_at": "2026-08-30",
+        "tables_used": [
+          "metrics_task_results.csv"
+        ],
+        "filters": [
+          "Frozen Python-150 only",
+          "Four OpenHands model configurations",
+          "Functional Pass@1 from evaluator gates"
+        ],
+        "metric_definitions": [
+          "Functional Pass@1 = build AND public AND hidden AND isolation gates.",
+          "Wilson 95% intervals use the assigned 150-task denominator per model.",
+          "Compactness summaries include only functionally passing submissions."
+        ]
+      }
+    },
+    {
+      "id": "python150-taxonomy",
+      "label": "Frozen Python-150 lift taxonomy",
+      "path": "reports/lift_taxonomy/COVERAGE_TRIPLES.csv",
+      "query": {
+        "description": "Task-level lift type and feature-family labels joined by task_id.",
+        "engine": "python/pandas",
+        "language": "python",
+        "sql": "SELECT * FROM taxonomy ORDER BY task_id",
+        "executed_at": "2026-08-30",
+        "tables_used": [
+          "COVERAGE_TRIPLES.csv"
+        ],
+        "filters": [
+          "150 task IDs present in the result matrix"
+        ],
+        "metric_definitions": [
+          "Task solvability = number of the four evaluated models that functionally pass a task, divided by four.",
+          "Bootstrap intervals resample tasks within each family or lift type."
+        ]
+      }
+    }
+  ]
+}

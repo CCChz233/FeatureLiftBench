@@ -1,0 +1,129 @@
+{
+  "schema_version": "featureliftbench.local_asset_inventory.v1",
+  "generated_at": "2026-08-29T00:00:00+08:00",
+  "start_commit": "4da7f59cc97475f113cb9dadd1c18bcec605dbc5",
+  "assets": [
+    {
+      "path": "experiments/validation/agentic_evidence",
+      "category": "raw_validation_evidence",
+      "size_bytes": 287576064,
+      "tree_digest_sha256": "0363d365b67aeaacf33e8c1ebcf04c40416a801104840ae5e29e0b3e295f2223",
+      "canonical_copy": "self",
+      "rebuild_command": "See docs/AGENTIC_EVIDENCE_AUDIT.md",
+      "retention": "keep",
+      "decision": "moved from artifacts/research_analysis/agentic_evidence and reports/agentic_evidence raw subdirectories"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_copyheavy_swap_flash_20260828",
+      "category": "raw_validation_evidence",
+      "size_bytes": 62021632,
+      "tree_digest_sha256": "6752bd1d42948c06cc558a9d4277c8a271bcb69586b82d040443e842c39db2b9",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_copyheavy_swaps_20260827",
+      "category": "raw_validation_evidence",
+      "size_bytes": 37388288,
+      "tree_digest_sha256": "50a1ec62d11f57b3f687bb30e224d571b4d520933bbe6bd3a4e5a1d08b99122c",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_pilot_flash_20260827",
+      "category": "raw_validation_evidence",
+      "size_bytes": 73740288,
+      "tree_digest_sha256": "4e6876b63d528b3d72b56c58af4ce7d2d98ef74177c8a63a9c61bd369280831f",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_pilot_flash_swaps_20260827",
+      "category": "raw_validation_evidence",
+      "size_bytes": 8364032,
+      "tree_digest_sha256": "ecd5a8a279f208b0c32e876a472956523a2ace0bb61f8abe59754b8e8a897d0f",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_pilot_gates_20260827",
+      "category": "historical_gate_evidence",
+      "size_bytes": 96886784,
+      "tree_digest_sha256": "872b7c3a925801fdbb6f93c0f6ac9aa22c84289e383eaad87c0412a50170e72d",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "experiments/validation/hard50/hard50_remaining40_flash_20260827",
+      "category": "raw_validation_evidence",
+      "size_bytes": 360325120,
+      "tree_digest_sha256": "65ea837c63d314ea7b24f5197a9f12b48807660fc0aa82efd5e6321aa032ef37",
+      "canonical_copy": "self",
+      "retention": "keep",
+      "decision": "moved_after_point_named_approval"
+    },
+    {
+      "path": "benchmark/hard50_pilot",
+      "category": "benchmark_payload",
+      "size_bytes": 244981760,
+      "canonical_copy": "undetermined",
+      "retention": "keep",
+      "decision": "protected_high_risk_unknown"
+    },
+    {
+      "path": "benchmark/hard50",
+      "category": "benchmark_payload",
+      "size_bytes": 2396160,
+      "canonical_copy": "self; selected by benchmark/selection/python200_hard_suite.json",
+      "retention": "keep",
+      "decision": "protected_high_risk"
+    },
+    {
+      "path": "benchmark/vendor-wheels",
+      "category": "benchmark_payload",
+      "size_bytes": 145121280,
+      "canonical_copy": "offline release cache governed by wheel manifests",
+      "retention": "keep",
+      "decision": "protected_high_risk"
+    },
+    {
+      "path": "benchmark/sources",
+      "category": "benchmark_payload",
+      "size_bytes": 326066176,
+      "canonical_copy": "source registries and registered archives",
+      "retention": "keep",
+      "decision": "protected_high_risk"
+    },
+    {
+      "path": "benchmark/tasks",
+      "category": "benchmark_payload",
+      "size_bytes": 189534208,
+      "canonical_copy": "frozen Python-150 task root; working tree currently has user edits",
+      "retention": "keep",
+      "decision": "protected_high_risk"
+    },
+    {
+      "path": "archive",
+      "category": "archive",
+      "size_bytes": 1788809216,
+      "canonical_copy": "undetermined for directory payload; top-level tarball hashes recorded in the maintenance log",
+      "retention": "keep",
+      "proposed_action": "deduplicate against canonical experiments in a separately approved maintenance cycle",
+      "decision": "unknown"
+    },
+    {
+      "path": "AutoSaddler",
+      "category": "vendor_checkout",
+      "size_bytes": 4440064,
+      "canonical_copy": "https://github.com/microsoft/AutoSaddler.git at integrations/autosaddler_featureliftbench/AUTOSADDLER_PIN.json",
+      "rebuild_command": "install or clone commit 30e20ce",
+      "retention": "keep_during_active_integration_work",
+      "decision": "excluded_user_workspace"
+    }
+  ]
+}

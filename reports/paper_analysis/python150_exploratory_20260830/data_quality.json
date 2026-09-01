@@ -1,0 +1,35 @@
+{
+  "rows": 600,
+  "models": 4,
+  "tasks": 150,
+  "rows_per_model": {
+    "DeepSeek V4 Flash": 150,
+    "Qwen3.5 122B": 150,
+    "Qwen3.6 35B": 150,
+    "GPT-OSS 120B": 150
+  },
+  "duplicate_model_task_pairs": 0,
+  "null_key_cells": 0,
+  "evaluation_missing_rows": 12,
+  "evaluation_missing_by_model": {
+    "DeepSeek V4 Flash": 5,
+    "GPT-OSS 120B": 3,
+    "Qwen3.5 122B": 0,
+    "Qwen3.6 35B": 4
+  },
+  "token_complete_rows": 600,
+  "functional_pass_rows": 244,
+  "pass_rows_with_rres": 244,
+  "taxonomy_rows": 150,
+  "taxonomy_unique_tasks": 150,
+  "taxonomy_duplicate_tasks": 0,
+  "taxonomy_join_coverage": 150,
+  "context_violation_rows": 48,
+  "context_violations_by_model": {
+    "DeepSeek V4 Flash": 8,
+    "GPT-OSS 120B": 0,
+    "Qwen3.5 122B": 9,
+    "Qwen3.6 35B": 31
+  },
+  "eligibility_caveat": "Historical frozen Python-150 evidence only: evaluator image identity does not match the active paper freeze, and some runs violate the declared context allowance."
+}

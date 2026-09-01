@@ -1,0 +1,237 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Python-200′ Main Candidate Result",
+    "description": "Technical audit of the blocked 2026-08-29 DeepSeek V4 Flash OpenHands candidate.",
+    "generatedAt": "2026-08-29T12:11:02Z",
+    "sources": [
+      {
+        "id": "analysis_summary",
+        "label": "Python-200′ candidate analysis",
+        "path": "reports/paper_analysis/python200_hard_main_20260829/summary.json",
+        "query": {
+          "engine": "duckdb",
+          "language": "python",
+          "description": "Recomputes the received audit headline, audited failure classes, eligibility partitions, split and taxonomy cuts, compactness, usage, and provenance checks from the immutable suite.",
+          "sql": "SELECT task_id, suite_split, lift_type, feature_family, functional_pass, failure_stage, audit_failure_class, agent_attempted, freeze_preflight_blocked, dependency_install_failed, context_violation, context_overage_tokens, source_snapshot_match FROM read_csv_auto('reports/paper_analysis/python200_hard_main_20260829/task_results.csv', header = true, all_varchar = false)",
+          "tables_used": [
+            "experiments/python/openhands/deepseek-v4-flash/python200-hard-main-20260829/suite.json",
+            "benchmark/selection/python200_hard_suite.json",
+            "benchmark/sources/python200_hard_registry.json",
+            "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+            "reports/paper_analysis/python200_hard_main_20260829/failure_audit.json",
+            "reports/paper_analysis/python200_hard_main_20260829/context_audit.json"
+          ],
+          "filters": [
+            "Exactly the 200 task IDs in python200_hard_suite.json",
+            "One received suite record per selected task",
+            "Functional pass iff evaluator final_score >= 1.0"
+          ],
+          "metric_definitions": {
+            "Functional Pass@1": "Count of tasks with evaluator final_score >= 1.0 divided by all selected tasks; missing evaluator results count as failures.",
+            "Wilson 95% interval": "Two-sided Wilson score interval for a binomial proportion with z=1.959963984540054.",
+            "First failure stage": "First mutually exclusive non-pass outcome in missing submission, build, public, hidden, isolation order.",
+            "RRES": "Reference-relative extraction size; reported only on functional passes. Lower values indicate a smaller submitted footprint relative to the reference.",
+            "Audited failure class": "Outcome class reconstructed from per-task run, evaluator, and dependency records; infrastructure outcomes are separated from model/output evidence.",
+            "Strict replacement union": "Outcome-independent union of context violations, freeze-preflight blocks, and dependency-install failures, deduplicated by task ID."
+          }
+        }
+      },
+      {
+        "id": "intake_record",
+        "label": "Result intake and provenance record",
+        "path": "experiments/registry/result_intake_20260829_python200_hard_main.md",
+        "query": {
+          "engine": "sqlite",
+          "language": "sql",
+          "description": "Materializes the reviewed paper-eligibility and replacement gates recorded during bundle intake and offline audit.",
+          "sql": "SELECT 1 AS priority, 'Task-set identity' AS gate, 'Pass' AS status, '200/200 IDs match; no missing or extra tasks' AS evidence UNION ALL SELECT 2, 'Source identity', 'Partial', '183 emitted snapshot IDs match; 17 unavailable because no launch occurred' UNION ALL SELECT 3, 'Runtime identity', 'Pass', 'Agent/evaluator image digests recorded; 0 sandbox failures' UNION ALL SELECT 4, 'Freeze preflight', 'Blocked', '17 Python-150 tasks never launched after spec-hash mismatch' UNION ALL SELECT 5, 'Offline dependencies', 'Blocked', '16 Hard-50 evaluations stopped before behavioral tests' UNION ALL SELECT 6, 'Context compliance', 'Blocked', '59 attempted runs exceeded the prompt allowance' UNION ALL SELECT 7, 'Replacement policy', 'Frozen', '84 task IDs; retain the other 116 original outcomes' UNION ALL SELECT 8, 'Run stability', 'Open', 'Planned stratified repeats not complete'",
+          "tables_used": ["experiments/registry/result_intake_20260829_python200_hard_main.md"],
+          "filters": ["Candidate result intake gates reviewed on 2026-08-29"],
+          "metric_definitions": {"Priority": "Display order only; lower numbers are reviewed first and do not imply a quantitative risk score."}
+        }
+      }
+    ],
+    "cards": [
+      {
+        "id": "overall_pass",
+        "dataset": "headline",
+        "description": "Received-suite Functional Pass@1 audit headline; not leaderboard-eligible.",
+        "sourceId": "analysis_summary",
+        "metrics": [
+          {"label": "Functional Pass@1", "field": "rate", "format": "percent"},
+          {"label": "Passed", "field": "passed", "format": "number"},
+          {"label": "Wilson low", "field": "ci_low", "format": "percent"},
+          {"label": "Wilson high", "field": "ci_high", "format": "percent"}
+        ]
+      },
+      {
+        "id": "execution_coverage",
+        "dataset": "headline",
+        "description": "Tasks that reached agent execution versus tasks blocked at freeze preflight.",
+        "sourceId": "analysis_summary",
+        "metrics": [
+          {"label": "Agent attempted", "field": "agent_attempted", "format": "number"},
+          {"label": "Preflight blocked", "field": "freeze_preflight_blocked", "format": "number"}
+        ]
+      },
+      {
+        "id": "context_violations",
+        "dataset": "headline",
+        "description": "Runs that exceeded the configured prompt allowance at least once.",
+        "sourceId": "analysis_summary",
+        "metrics": [
+          {"label": "Context violations", "field": "context_violations", "format": "number"},
+          {"label": "Passing violations", "field": "context_violation_passes", "format": "number"}
+        ]
+      },
+      {
+        "id": "strict_replacement",
+        "dataset": "headline",
+        "description": "Frozen replacement union and the untouched fixed-clean subset.",
+        "sourceId": "analysis_summary",
+        "metrics": [
+          {"label": "Replace", "field": "strict_replacement_tasks", "format": "number"},
+          {"label": "Fixed clean", "field": "fixed_clean_tasks", "format": "number"}
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "audited_failure_chart",
+        "title": "Audited outcome attribution across 200 tasks",
+        "subtitle": "Infrastructure outcomes are separated from model/output evidence; categories are mutually exclusive.",
+        "showDescription": true,
+        "type": "bar",
+        "dataset": "audited_failures",
+        "sourceId": "analysis_summary",
+        "encodings": {
+          "x": {"field": "outcome", "type": "nominal", "title": "Audited outcome"},
+          "y": {"field": "count", "type": "quantitative", "title": "Tasks"}
+        },
+        "options": {
+          "orientation": "horizontal",
+          "grouping": "grouped",
+          "legend": {"show": false},
+          "valueLabels": true,
+          "xAxis": {"zero": true}
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "split_table",
+        "title": "Functional Pass@1 by suite split",
+        "subtitle": "Received-suite rates are infrastructure-confounded and not a clean split comparison.",
+        "showDescription": true,
+        "dataset": "split_rates",
+        "sourceId": "analysis_summary",
+        "columns": [
+          {"field": "split", "label": "Split"},
+          {"field": "passed", "label": "Passed", "format": "number"},
+          {"field": "total", "label": "Tasks", "format": "number"},
+          {"field": "rate", "label": "Pass rate", "format": "percent"},
+          {"field": "ci_low", "label": "Wilson low", "format": "percent"},
+          {"field": "ci_high", "label": "Wilson high", "format": "percent"},
+          {"field": "pass_rres_median", "label": "Pass RRES median", "format": "number"},
+          {"field": "eligibility_note", "label": "Eligibility note"}
+        ],
+        "defaultSort": {"field": "total", "direction": "desc"}
+      },
+      {
+        "id": "lift_table",
+        "title": "Functional Pass@1 by lift type",
+        "subtitle": "Provisional taxonomy cuts from the blocked candidate; replacement outcomes may change them.",
+        "showDescription": true,
+        "dataset": "lift_rates",
+        "sourceId": "analysis_summary",
+        "columns": [
+          {"field": "lift_type", "label": "Lift type"},
+          {"field": "passed", "label": "Passed", "format": "number"},
+          {"field": "total", "label": "Tasks", "format": "number"},
+          {"field": "rate", "label": "Pass rate", "format": "percent"},
+          {"field": "ci_low", "label": "Wilson low", "format": "percent"},
+          {"field": "ci_high", "label": "Wilson high", "format": "percent"}
+        ],
+        "defaultSort": {"field": "rate", "direction": "desc"}
+      },
+      {
+        "id": "gate_table",
+        "title": "Paper eligibility gates",
+        "subtitle": "The candidate is audit-ready, but execution, dependency, context, and stability gates remain open.",
+        "showDescription": true,
+        "dataset": "paper_gates",
+        "sourceId": "intake_record",
+        "columns": [
+          {"field": "gate", "label": "Gate"},
+          {"field": "status", "label": "Status"},
+          {"field": "evidence", "label": "Evidence"},
+          {"field": "priority", "label": "Priority", "format": "number"}
+        ],
+        "defaultSort": {"field": "priority", "direction": "asc"}
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# Python-200′ Main Candidate Result"},
+      {"id": "technical_summary", "type": "markdown", "sourceId": "analysis_summary", "body": "## Technical Summary\n\nThe received 2026-08-29 DeepSeek V4 Flash OpenHands package records **132/200 functional passes (66.0%; Wilson 95% 59.2%–72.2%)**, but this is an **audit headline, not a leaderboard result**. Only 183 tasks reached agent execution: 17 Python-150 tasks were blocked by freeze-spec mismatches, 16 Hard-50 evaluations stopped because locked offline dependencies were unavailable, and 59 attempted runs exceeded the prompt allowance. The outcome-independent union requiring replacement is **84 task IDs**; the untouched subset is **95 passes among 116 tasks**."},
+      {"id": "headline_metrics", "type": "metric-strip", "cardIds": ["overall_pass", "execution_coverage", "context_violations", "strict_replacement"]},
+      {"id": "failure_reading", "type": "markdown", "sourceId": "analysis_summary", "body": "## Nearly half of nominal non-passes are infrastructure outcomes\n\nThe package has 68 nominal non-passes, but **33 (48.5%) are infrastructure outcomes**: 17 freeze-preflight blocks and 16 offline dependency failures. The remaining model/output evidence is two genuine no-submission outcomes, 25 public-behavior failures, and eight hidden-only failures. No task first fails isolation. This correction prevents execution-environment failures from being reported as model incapability."},
+      {"id": "failure_chart_block", "type": "chart", "chartId": "audited_failure_chart"},
+      {"id": "suite_effect", "type": "markdown", "sourceId": "analysis_summary", "body": "## Raw split rates are not a clean difficulty comparison\n\nThe received package shows Python-150 at **103/150 (68.7%)** and Hard-50 at **29/50 (58.0%)**. The contrast is confounded in opposite directions: all 17 freeze-preflight blocks are in Python-150, while all 16 dependency-install failures are in Hard-50. The earlier independent Hard-50 calibration remains benchmark-design evidence, but this full-suite run cannot yet validate a new split effect."},
+      {"id": "split_table_block", "type": "table", "tableId": "split_table"},
+      {"id": "lift_reading", "type": "markdown", "sourceId": "analysis_summary", "body": "## Taxonomy cuts are prepared but provisional\n\nThe received outcomes show Direct **60/68**, Adapted **63/100**, and Composite **9/32**. The descriptive gradient is large enough to preserve as a preregistered analysis cut, but replacement outcomes may change its composition. It must not be framed as causal evidence or a final taxonomy result before eligibility cleanup."},
+      {"id": "lift_table_block", "type": "table", "tableId": "lift_table"},
+      {"id": "paper_value", "type": "markdown", "sourceId": "analysis_summary", "body": "## What this contributes to the paper\n\n1. It supplies an audit-ready candidate and a precise, frozen path to the missing Python-200′ result rather than a publishable score.\n2. It establishes a defensible failure taxonomy: 33 infrastructure outcomes versus 35 model/output non-passes.\n3. It prepares split, lift-type, compactness, and context-sensitivity tables that can be regenerated unchanged after replacement.\n4. It documents why the current raw split contrast is not admissible evidence, reducing the risk of overclaiming."},
+      {"id": "scope", "type": "markdown", "sourceId": "analysis_summary", "body": "## Scope and Definitions\n\nPopulation: the 200 task IDs in `python200_hard_suite.json`, comprising frozen Python-150 plus reviewed Hard-50. The received headline counts evaluator Functional Pass@1, where `final_score >= 1.0`; missing evaluator outputs count as non-passes. The paper-eligible result will instead merge replacement outcomes for the frozen 84-task union with original outcomes for the other 116 task IDs."},
+      {"id": "method", "type": "markdown", "sourceId": "analysis_summary", "body": "## Methodology\n\nThe audit joins suite summaries with each task's `run.json`, evaluator result, OpenHands usage record, registered task selection, source registry, and taxonomy. It reports Wilson 95% intervals; reconstructs mutually exclusive audit classes; separates dependency installation from submission build validity; and freezes the replacement set as the deduplicated union of context, freeze-preflight, and dependency violations. Selection is independent of pass/fail outcome."},
+      {"id": "compactness", "type": "markdown", "sourceId": "analysis_summary", "body": "## Limitations and Robustness\n\nThe package has no direct `benchmark_freeze_id`; 17 tasks lack emitted source provenance because they never launched; 16 tasks never reached behavioral evaluation; and 59 runs violated context policy. Pass-conditioned median RRES is 0.990 on Python-150 and 0.286 on Hard-50, but it remains provisional. The untouched subset is 95/116; the logical final range before replacement is 95/200–179/200, a stress bound rather than an estimate."},
+      {"id": "gate_table_block", "type": "table", "tableId": "gate_table"},
+      {"id": "next_steps", "type": "markdown", "body": "## Recommended Next Steps\n\n1. Repair and preflight the offline wheel set for the 16 dependency failures.\n2. Resolve all 17 active-spec/freeze mismatches and record a direct freeze binding.\n3. Execute exactly the frozen 84-task replacement set with hard context enforcement and unchanged model, prompt, profile, budget, task selection, and image pins.\n4. Merge by task ID using replacement outcomes only for the frozen union, then regenerate the paper bundle.\n5. Keep 132/200 out of the abstract and final leaderboard; preserve it only as the received-suite audit headline."},
+      {"id": "further_questions", "type": "markdown", "body": "## Further Questions\n\n- What is eligible Functional Pass@1 after the frozen replacement set?\n- How many context-violation outcomes change under hard enforcement?\n- Does the Direct–Adapted–Composite gradient remain after replacement and repeated runs?\n- Does an additional model reproduce the eligible split and compactness patterns?"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-08-29T12:11:02Z",
+    "datasets": {
+      "headline": [
+        {"rate": 0.66, "passed": 132, "total": 200, "ci_low": 0.5918849553, "ci_high": 0.7220845403, "agent_attempted": 183, "freeze_preflight_blocked": 17, "dependency_failures": 16, "context_violations": 59, "context_violation_passes": 37, "strict_replacement_tasks": 84, "fixed_clean_tasks": 116, "fixed_clean_passes": 95}
+      ],
+      "split_rates": [
+        {"split": "Python-200′", "passed": 132, "total": 200, "rate": 0.66, "ci_low": 0.5918849553, "ci_high": 0.7220845403, "pass_rres_median": 0.935635, "eligibility_note": "Blocked; replace frozen 84-task union"},
+        {"split": "Python-150", "passed": 103, "total": 150, "rate": 0.6866666667, "ci_low": 0.6085602498, "ci_high": 0.7554508590, "pass_rres_median": 0.990079, "eligibility_note": "17 freeze-preflight blocks"},
+        {"split": "Hard-50", "passed": 29, "total": 50, "rate": 0.58, "ci_low": 0.4423344177, "ci_high": 0.7062499665, "pass_rres_median": 0.286063, "eligibility_note": "16 offline dependency failures"}
+      ],
+      "audited_failures": [
+        {"outcome": "Pass", "count": 132, "claim_class": "pass", "rank": 1},
+        {"outcome": "Public behavior", "count": 25, "claim_class": "model/output", "rank": 2},
+        {"outcome": "Freeze preflight", "count": 17, "claim_class": "infrastructure", "rank": 3},
+        {"outcome": "Offline dependency", "count": 16, "claim_class": "infrastructure", "rank": 4},
+        {"outcome": "Hidden-only behavior", "count": 8, "claim_class": "model/output", "rank": 5},
+        {"outcome": "No submission", "count": 2, "claim_class": "model/output", "rank": 6}
+      ],
+      "lift_rates": [
+        {"lift_type": "Direct", "passed": 60, "total": 68, "rate": 0.8823529412, "ci_low": 0.7846509628, "ci_high": 0.9391650740},
+        {"lift_type": "Adapted", "passed": 63, "total": 100, "rate": 0.63, "ci_low": 0.5322052958, "ci_high": 0.7181763947},
+        {"lift_type": "Composite", "passed": 9, "total": 32, "rate": 0.28125, "ci_low": 0.1556458050, "ci_high": 0.4537450943}
+      ],
+      "paper_gates": [
+        {"gate": "Task-set identity", "status": "Pass", "evidence": "200/200 IDs match; no missing or extra tasks", "priority": 1},
+        {"gate": "Source identity", "status": "Partial", "evidence": "183 emitted IDs match; 17 unavailable because no launch occurred", "priority": 2},
+        {"gate": "Runtime identity", "status": "Pass", "evidence": "Agent/evaluator image digests recorded; 0 sandbox failures", "priority": 3},
+        {"gate": "Freeze preflight", "status": "Blocked", "evidence": "17 Python-150 tasks never launched after spec-hash mismatch", "priority": 4},
+        {"gate": "Offline dependencies", "status": "Blocked", "evidence": "16 Hard-50 evaluations stopped before behavioral tests", "priority": 5},
+        {"gate": "Context compliance", "status": "Blocked", "evidence": "59 attempted runs exceeded the prompt allowance", "priority": 6},
+        {"gate": "Replacement policy", "status": "Frozen", "evidence": "84 task IDs; retain the other 116 original outcomes", "priority": 7},
+        {"gate": "Run stability", "status": "Open", "evidence": "Planned stratified repeats not complete", "priority": 8}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "analysis_summary", "label": "Python-200′ candidate analysis", "path": "reports/paper_analysis/python200_hard_main_20260829/summary.json"},
+    {"id": "intake_record", "label": "Result intake and provenance record", "path": "experiments/registry/result_intake_20260829_python200_hard_main.md"}
+  ]
+}

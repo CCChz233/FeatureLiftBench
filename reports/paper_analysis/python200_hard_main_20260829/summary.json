@@ -1,0 +1,300 @@
+{
+  "schema_version": "featureliftbench.python200_hard_main_analysis.v1",
+  "suite": "python200-hard-main-20260829",
+  "generated_at": "2026-08-29T09:39:15Z",
+  "model": "deepseek/deepseek-v4-flash",
+  "profile": "openhands_deepseek_v4_flash_main",
+  "headline": {
+    "passed": 132,
+    "total": 200,
+    "rate": 0.66,
+    "wilson_95": [
+      0.5918849552683626,
+      0.7220845402909121
+    ]
+  },
+  "by_split": {
+    "hard50": {
+      "passed": 29,
+      "total": 50,
+      "rate": 0.58,
+      "wilson_95": [
+        0.4423344176857823,
+        0.7062499664528802
+      ]
+    },
+    "python150": {
+      "passed": 103,
+      "total": 150,
+      "rate": 0.6866666666666666,
+      "wilson_95": [
+        0.6085602497894558,
+        0.7554508589797957
+      ]
+    }
+  },
+  "by_lift_type": {
+    "Adapted": {
+      "passed": 63,
+      "total": 100,
+      "rate": 0.63,
+      "wilson_95": [
+        0.5322052958094291,
+        0.7181763946567546
+      ]
+    },
+    "Composite": {
+      "passed": 9,
+      "total": 32,
+      "rate": 0.28125,
+      "wilson_95": [
+        0.15564580497742764,
+        0.45374509425916565
+      ]
+    },
+    "Direct": {
+      "passed": 60,
+      "total": 68,
+      "rate": 0.8823529411764706,
+      "wilson_95": [
+        0.784650962802083,
+        0.9391650739766866
+      ]
+    }
+  },
+  "by_copytrap": {
+    "false": {
+      "passed": 128,
+      "total": 195,
+      "rate": 0.6564102564102564,
+      "wilson_95": [
+        0.5873105226425639,
+        0.7194665466959131
+      ]
+    },
+    "true": {
+      "passed": 4,
+      "total": 5,
+      "rate": 0.8,
+      "wilson_95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    }
+  },
+  "failure_stages": {
+    "build": 16,
+    "hidden": 8,
+    "missing_submission": 19,
+    "pass": 132,
+    "public": 25
+  },
+  "audit_failure_classes": {
+    "agent_no_submission": 2,
+    "dependency_install_infrastructure": 16,
+    "freeze_preflight_blocked": 17,
+    "hidden_only_behavior": 8,
+    "pass": 132,
+    "public_behavior": 25
+  },
+  "failure_stages_by_split": {
+    "hard50": {
+      "build": 16,
+      "hidden": 1,
+      "missing_submission": 1,
+      "pass": 29,
+      "public": 3
+    },
+    "python150": {
+      "hidden": 7,
+      "missing_submission": 18,
+      "pass": 103,
+      "public": 22
+    }
+  },
+  "workflow_status": {
+    "failed": 151,
+    "missing_submission": 2,
+    "passed": 47
+  },
+  "workflow_functional_crosstab": {
+    "failed|fail": 66,
+    "failed|pass": 85,
+    "missing_submission|fail": 2,
+    "passed|pass": 47
+  },
+  "compactness": {
+    "class_counts_on_passes": {
+      "compact_pass": 6,
+      "copy_heavy_pass": 110,
+      "functional_mixed_footprint": 16
+    },
+    "pass_rres_median": 0.935635,
+    "pass_rres_median_by_split": {
+      "hard50": 0.286063,
+      "python150": 0.990079
+    }
+  },
+  "usage": {
+    "available_runs": 183,
+    "missing_runs": 17,
+    "total_tokens": 806307663,
+    "effective_uncached_prompt_tokens": 14305907,
+    "completion_tokens": 9274588,
+    "prompt_cache_hit_rate": 0.9820510497635245,
+    "context_violation_runs": 59,
+    "median_total_tokens_pass": 3307437.0,
+    "median_total_tokens_fail": 4573037.0
+  },
+  "context_audit": {
+    "violation_runs": 59,
+    "violation_passes": 37,
+    "violation_rate": {
+      "passed": 37,
+      "total": 59,
+      "rate": 0.6271186440677966,
+      "wilson_95": [
+        0.4995359106706382,
+        0.7391600120767886
+      ]
+    },
+    "compliant_rate": {
+      "passed": 95,
+      "total": 124,
+      "rate": 0.7661290322580645,
+      "wilson_95": [
+        0.6843221984843502,
+        0.8319422481891601
+      ]
+    },
+    "unavailable_rate": {
+      "passed": 0,
+      "total": 17,
+      "rate": 0.0,
+      "wilson_95": [
+        0.0,
+        0.1843181350088518
+      ]
+    },
+    "strict_lower_bound_if_violations_invalidated": 0.475
+  },
+  "eligibility": {
+    "agent_attempted": 183,
+    "freeze_preflight_blocked": 17,
+    "dependency_install_failures": 16,
+    "context_violation_runs": 59,
+    "strict_rerun_union": 84,
+    "strict_rerun_task_ids": [
+      "aiohttp__url_params_core__hard3_001",
+      "alembic__revision_map_core__hard3_001",
+      "anyio__task_group_core__001",
+      "apscheduler__cron_trigger_core__hard3_001",
+      "arrow__parse_format_core__001",
+      "astroid__nodes_core__001",
+      "authlib__oauth2_server_core__001",
+      "beaker__session_cache_core__001",
+      "betamax__cassette_match_core__001",
+      "bleach__sanitize_core__001",
+      "cement__controller_plugin_core__001",
+      "cerberus__schema_validate_core__001",
+      "chameleon__template_compile_core__001",
+      "cherrypy__dispatch_tool_core__001",
+      "cliff__command_dispatch_core__001",
+      "connexion__openapi_resolver_core__001",
+      "copier__template_answers_core__001",
+      "coverage__source_selection_core__001",
+      "deepdiff__deep_compare_core__001",
+      "distlib__wheel_metadata_core__hard3_001",
+      "faker__provider_core__001",
+      "falcon__responder_routing_core__001",
+      "flask__route_dispatch_core__001",
+      "fs__url_opener_core__hard3_001",
+      "fsspec__url_chain_core__hard3_001",
+      "glom__spec_eval_core__hard3_001",
+      "goodconf__typed_env_core__001",
+      "graphene__schema_execute_core__001",
+      "hatch__project_metadata_core__hard3_001",
+      "humanize__naturaltime_core__001",
+      "hydra_core__compose_initialize_core__001",
+      "importlib_resources__traversable_tree_core__hard3_001",
+      "isort__settings_resolver_core__hard3_001",
+      "jinja2__compile_render_core__001",
+      "jinja2__lexer_parser_core__001",
+      "jsonschema__validator_core__001",
+      "jupyter_core__paths_resolver_core__hard3_001",
+      "jupyter_server__extension_config_core__hard3_001",
+      "lark__parse_tree_core__001",
+      "license_expression__policy_core__hard3_001",
+      "limits__strategy_storage_core__001",
+      "luigi__task_requires_core__001",
+      "multidict__multidict_mutation_core__hard3_001",
+      "networkx__dag_topo_core__001",
+      "oauthlib__grant_dispatch_core__001",
+      "openapi_schema_validator__draft_core__001",
+      "oslo_config__opt_group_core__001",
+      "oslo_policy__enforcer_core__001",
+      "pandera__dataframe_schema_core__001",
+      "parsel__selector_namespace_core__hard3_001",
+      "pendulum__parse_format_core__001",
+      "poetry_core__dependency_groups_core__hard3_001",
+      "polyfactory__model_factory_core__001",
+      "pre_commit__config_load_core__001",
+      "pydantic__field_validator_core__hard3_001",
+      "pydantic_settings__env_source_core__001",
+      "pydantic_v1__validation_error_core__001",
+      "pygments__formatter_core__001",
+      "pygments__lexer_core__001",
+      "pylint__config_find_core__001",
+      "pyramid__configurator_action_core__hard3_001",
+      "python_box__config_box_core__001",
+      "python_multipart__form_parse_core__001",
+      "quart__blueprint_dispatch_core__001",
+      "requests_cache__cache_key_core__hard3_001",
+      "rich__markup_parse_core__001",
+      "rocketry__cond_schedule_core__001",
+      "ruamel_yaml__roundtrip_core__001",
+      "schema__nested_validate_core__hard3_001",
+      "scrapy__item_loader_core__hard3_001",
+      "setuptools_scm__version_normalize_core__hard3_001",
+      "spiffworkflow__bpmn_engine_core__001",
+      "sqlalchemy__event_dispatch_core__hard3_001",
+      "starlette__route_matching_core__hard3_001",
+      "taskiq__broker_task_core__001",
+      "tenacity__retry_state_core__hard3_001",
+      "trafaret__validation_rules_core__hard3_001",
+      "transitions__state_machine_core__hard3_001",
+      "typer__command_parser_core__001",
+      "virtualenv__interpreter_spec_core__hard3_001",
+      "webob__request_response_core__001",
+      "wheel__metadata_normalize_core__hard3_001",
+      "zope_component__site_lookup_core__001",
+      "zope_interface__adapter_registry_core__001"
+    ],
+    "fixed_eligible_tasks": 116,
+    "fixed_eligible_passes": 95,
+    "final_pass_count_range_before_rerun": [
+      95,
+      179
+    ]
+  },
+  "identity": {
+    "expected_suite_id": "python200-hard-full-repository-no-hint-unreleased",
+    "task_set_sha256": "a28c301e83bf62b831c007b7c5ebc4fd0f6e4c012496d812fa90d233dfe81ad3",
+    "baseline_freeze_id": "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd",
+    "hard50_selection_id": "hard50-expansion-20260827-v1-reviewed",
+    "task_set_matches": 200,
+    "missing_task_count": 0,
+    "extra_task_count": 0,
+    "source_snapshot_matches": 183,
+    "source_snapshot_mismatches": 0,
+    "source_snapshot_unavailable": 17,
+    "recorded_benchmark_freeze_id": null
+  },
+  "runtime": {
+    "agent_backend": "docker",
+    "agent_docker_image": "sha256:0843b6633d48da91832ce16c0e6ac42baf2f04d7b08cb66061720f176a8f2eea",
+    "eval_backend": "docker",
+    "eval_docker_image": "sha256:d1ea357c125a6f4957e1246f770bd1deb4717448e46e779f62b0351213cad191",
+    "docker_sandbox_failures": 0
+  }
+}

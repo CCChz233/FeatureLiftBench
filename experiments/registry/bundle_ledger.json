@@ -1,6 +1,6 @@
 {
   "schema_version": "featureliftbench.experiment_bundle_ledger.v1",
-  "generated_at": "2026-08-04T11:33:41+00:00",
+  "generated_at": "2026-08-29T11:26:51+00:00",
   "migration": [
     {
       "source": "experiments/ablation",
@@ -302,6 +302,76 @@
       "kind": "bundle_retired",
       "status": "moved",
       "content_sha256": "ef3f408307335857d9baa346ce7d1567e90360e5d4d299835c7fc28887898e21"
+    },
+    {
+      "source": "experiments/FeatureLiftBench-deepseek-v4-flash-150-20260805.tar.gz",
+      "destination": "experiments/bundles/incoming/frozen-results/FeatureLiftBench-deepseek-v4-flash-150-20260805.tar.gz",
+      "kind": "bundle_keep",
+      "status": "moved",
+      "content_sha256": "d4b5303ccdaf1d5a188001e0b24de1694bf928af8647dacbae194db46cb6e28b"
+    },
+    {
+      "source": "experiments/python200-deepseek-v4-flash-lite-v1-vllm-local-0813-001-results-latest.tar.gz",
+      "destination": "experiments/bundles/incoming/frozen-results/python200-deepseek-v4-flash-lite-v1-vllm-local-0813-001-results-latest.tar.gz",
+      "kind": "bundle_keep",
+      "status": "moved",
+      "content_sha256": "0d950fb1210a5a40ed746fe31eeedb40f1a3d53f1fca0badead6ad83f9612208"
+    },
+    {
+      "source": "experiments/python200-hard-main-20260829.tar.gz",
+      "destination": "experiments/bundles/incoming/frozen-results/python200-hard-main-20260829.tar.gz",
+      "kind": "bundle_keep",
+      "status": "moved",
+      "content_sha256": "15d82d53adcf7488d3684d5153cc4c2221563191672a90e431ed504ae6ff81cc"
+    },
+    {
+      "source": "experiments/python200-hard-main-20260829.tar.gz.sha256",
+      "destination": "experiments/bundles/incoming/frozen-results/python200-hard-main-20260829.tar.gz.sha256",
+      "kind": "bundle_keep",
+      "status": "moved",
+      "content_sha256": "6b64ba420a1c8f993c1971eb6c80496e1de8a7fe8d16d159aaebfe943e9672e4"
+    },
+    {
+      "source": "experiments/hard50_copyheavy_swap_flash_20260828",
+      "destination": "experiments/validation/hard50/hard50_copyheavy_swap_flash_20260828",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "6752bd1d42948c06cc558a9d4277c8a271bcb69586b82d040443e842c39db2b9"
+    },
+    {
+      "source": "experiments/hard50_copyheavy_swaps_20260827",
+      "destination": "experiments/validation/hard50/hard50_copyheavy_swaps_20260827",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "50a1ec62d11f57b3f687bb30e224d571b4d520933bbe6bd3a4e5a1d08b99122c"
+    },
+    {
+      "source": "experiments/hard50_pilot_flash_20260827",
+      "destination": "experiments/validation/hard50/hard50_pilot_flash_20260827",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "4e6876b63d528b3d72b56c58af4ce7d2d98ef74177c8a63a9c61bd369280831f"
+    },
+    {
+      "source": "experiments/hard50_pilot_flash_swaps_20260827",
+      "destination": "experiments/validation/hard50/hard50_pilot_flash_swaps_20260827",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "ecd5a8a279f208b0c32e876a472956523a2ace0bb61f8abe59754b8e8a897d0f"
+    },
+    {
+      "source": "experiments/hard50_pilot_gates_20260827",
+      "destination": "experiments/validation/hard50/hard50_pilot_gates_20260827",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "872b7c3a925801fdbb6f93c0f6ac9aa22c84289e383eaad87c0412a50170e72d"
+    },
+    {
+      "source": "experiments/hard50_remaining40_flash_20260827",
+      "destination": "experiments/validation/hard50/hard50_remaining40_flash_20260827",
+      "kind": "validation",
+      "status": "moved",
+      "content_sha256": "65ea837c63d314ea7b24f5197a9f12b48807660fc0aa82efd5e6321aa032ef37"
     }
   ],
   "bundles": [

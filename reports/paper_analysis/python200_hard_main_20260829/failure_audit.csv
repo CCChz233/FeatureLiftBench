@@ -1,0 +1,85 @@
+task_id,suite_split,lift_type,feature_family,audit_failure_class,paper_attribution,context_violation,dependency_requirement,failed_test_count,error_types,evidence
+apischema__serialization_core__001,hard50,Adapted,validate_normalize_construct,agent_no_submission,model_or_output,False,,0,,agent did not create any files under workspace/submission
+dynaconf__settings_merge_core__001,python150,Adapted,config_resolve_discover,agent_no_submission,model_or_output,False,,0,,agent did not create any files under workspace/submission
+authlib__oauth2_server_core__001,hard50,Adapted,workflow_session_orchestration,dependency_install_infrastructure,infrastructure,False,cffi==2.1.1,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement cffi==2.1.1 (from versions: 1.17.1)
+ERROR: No matching distribution found for cffi==2.1.1"
+betamax__cassette_match_core__001,hard50,Direct,resource_metadata_loading,dependency_install_infrastructure,infrastructure,False,charset-normalizer==3.5.1,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement charset-normalizer==3.5.1 (from versions: 3.4.7)
+ERROR: No matching distribution found for charset-normalizer==3.5.1"
+connexion__openapi_resolver_core__001,hard50,Composite,registry_plugin_dispatch,dependency_install_infrastructure,infrastructure,False,rpds-py==2026.6.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement rpds-py==2026.6.3 (from versions: 0.20.0)
+ERROR: No matching distribution found for rpds-py==2026.6.3"
+copier__template_answers_core__001,hard50,Adapted,config_resolve_discover,dependency_install_infrastructure,infrastructure,True,pydantic-core==2.33.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement pydantic-core==2.33.2 (from versions: 2.23.4)
+ERROR: No matching distribution found for pydantic-core==2.33.2"
+goodconf__typed_env_core__001,hard50,Adapted,config_resolve_discover,dependency_install_infrastructure,infrastructure,False,pydantic-core==2.33.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement pydantic-core==2.33.2 (from versions: 2.23.4)
+ERROR: No matching distribution found for pydantic-core==2.33.2"
+limits__strategy_storage_core__001,hard50,Adapted,registry_plugin_dispatch,dependency_install_infrastructure,infrastructure,False,wrapt==1.17.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement wrapt==1.17.3 (from versions: 1.16.0)
+ERROR: No matching distribution found for wrapt==1.17.3"
+luigi__task_requires_core__001,hard50,Composite,workflow_session_orchestration,dependency_install_infrastructure,infrastructure,False,tornado==6.5.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement tornado==6.5.2 (from versions: none)
+ERROR: No matching distribution found for tornado==6.5.2"
+openapi_schema_validator__draft_core__001,hard50,Direct,validate_normalize_construct,dependency_install_infrastructure,infrastructure,False,rpds-py==2026.6.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement rpds-py==2026.6.3 (from versions: 0.20.0)
+ERROR: No matching distribution found for rpds-py==2026.6.3"
+oslo_config__opt_group_core__001,hard50,Composite,config_resolve_discover,dependency_install_infrastructure,infrastructure,True,wrapt==1.17.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement wrapt==1.17.3 (from versions: 1.16.0)
+ERROR: No matching distribution found for wrapt==1.17.3"
+oslo_policy__enforcer_core__001,hard50,Composite,registry_plugin_dispatch,dependency_install_infrastructure,infrastructure,True,wrapt==1.17.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement wrapt==1.17.3 (from versions: 1.16.0)
+ERROR: No matching distribution found for wrapt==1.17.3"
+pandera__dataframe_schema_core__001,hard50,Composite,validate_normalize_construct,dependency_install_infrastructure,infrastructure,True,pandas==2.2.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement pandas==2.2.3 (from versions: none)
+ERROR: No matching distribution found for pandas==2.2.3"
+quart__blueprint_dispatch_core__001,hard50,Adapted,registry_plugin_dispatch,dependency_install_infrastructure,infrastructure,True,MarkupSafe==3.0.3,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement MarkupSafe==3.0.3 (from versions: 2.1.5)
+ERROR: No matching distribution found for MarkupSafe==3.0.3"
+rocketry__cond_schedule_core__001,hard50,Direct,workflow_session_orchestration,dependency_install_infrastructure,infrastructure,False,pydantic-core==2.33.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement pydantic-core==2.33.2 (from versions: 2.23.4)
+ERROR: No matching distribution found for pydantic-core==2.33.2"
+spiffworkflow__bpmn_engine_core__001,hard50,Composite,workflow_session_orchestration,dependency_install_infrastructure,infrastructure,True,lxml==6.1.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement lxml==6.1.2 (from versions: none)
+ERROR: No matching distribution found for lxml==6.1.2"
+taskiq__broker_task_core__001,hard50,Composite,workflow_session_orchestration,dependency_install_infrastructure,infrastructure,True,aiohttp==3.12.15,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement aiohttp==3.12.15 (from versions: none)
+ERROR: No matching distribution found for aiohttp==3.12.15"
+zope_component__site_lookup_core__001,hard50,Composite,registry_plugin_dispatch,dependency_install_infrastructure,infrastructure,True,zope.interface==7.2,0,,"dependency install failed: ERROR: Could not find a version that satisfies the requirement zope.interface==7.2 (from versions: none)
+ERROR: No matching distribution found for zope.interface==7.2"
+distlib__wheel_metadata_core__hard3_001,python150,Adapted,resource_metadata_loading,freeze_preflight_blocked,infrastructure,,,0,,ValueError: distlib__wheel_metadata_core__hard3_001: active benchmark freeze spec hash mismatch
+fs__url_opener_core__hard3_001,python150,Adapted,registry_plugin_dispatch,freeze_preflight_blocked,infrastructure,,,0,,ValueError: fs__url_opener_core__hard3_001: active benchmark freeze spec hash mismatch
+fsspec__url_chain_core__hard3_001,python150,Adapted,config_resolve_discover,freeze_preflight_blocked,infrastructure,,,0,,ValueError: fsspec__url_chain_core__hard3_001: active benchmark freeze spec hash mismatch
+jupyter_server__extension_config_core__hard3_001,python150,Composite,registry_plugin_dispatch,freeze_preflight_blocked,infrastructure,,,0,,ValueError: jupyter_server__extension_config_core__hard3_001: active benchmark freeze spec hash mismatch
+license_expression__policy_core__hard3_001,python150,Direct,parse_tokenize_decode,freeze_preflight_blocked,infrastructure,,,0,,ValueError: license_expression__policy_core__hard3_001: active benchmark freeze spec hash mismatch
+poetry_core__dependency_groups_core__hard3_001,python150,Composite,resource_metadata_loading,freeze_preflight_blocked,infrastructure,,,0,,ValueError: poetry_core__dependency_groups_core__hard3_001: active benchmark freeze spec hash mismatch
+pydantic__field_validator_core__hard3_001,python150,Adapted,validate_normalize_construct,freeze_preflight_blocked,infrastructure,,,0,,ValueError: pydantic__field_validator_core__hard3_001: active benchmark freeze spec hash mismatch
+pydantic_v1__validation_error_core__001,python150,Adapted,validate_normalize_construct,freeze_preflight_blocked,infrastructure,,,0,,ValueError: pydantic_v1__validation_error_core__001: active benchmark freeze spec hash mismatch
+pyramid__configurator_action_core__hard3_001,python150,Composite,workflow_session_orchestration,freeze_preflight_blocked,infrastructure,,,0,,ValueError: pyramid__configurator_action_core__hard3_001: active benchmark freeze spec hash mismatch
+requests_cache__cache_key_core__hard3_001,python150,Composite,cache_retry_policy,freeze_preflight_blocked,infrastructure,,,0,,ValueError: requests_cache__cache_key_core__hard3_001: active benchmark freeze spec hash mismatch
+schema__nested_validate_core__hard3_001,python150,Adapted,validate_normalize_construct,freeze_preflight_blocked,infrastructure,,,0,,ValueError: schema__nested_validate_core__hard3_001: active benchmark freeze spec hash mismatch
+setuptools_scm__version_normalize_core__hard3_001,python150,Adapted,resource_metadata_loading,freeze_preflight_blocked,infrastructure,,,0,,ValueError: setuptools_scm__version_normalize_core__hard3_001: active benchmark freeze spec hash mismatch
+starlette__route_matching_core__hard3_001,python150,Adapted,registry_plugin_dispatch,freeze_preflight_blocked,infrastructure,,,0,,ValueError: starlette__route_matching_core__hard3_001: active benchmark freeze spec hash mismatch
+tenacity__retry_state_core__hard3_001,python150,Adapted,cache_retry_policy,freeze_preflight_blocked,infrastructure,,,0,,ValueError: tenacity__retry_state_core__hard3_001: active benchmark freeze spec hash mismatch
+trafaret__validation_rules_core__hard3_001,python150,Adapted,validate_normalize_construct,freeze_preflight_blocked,infrastructure,,,0,,ValueError: trafaret__validation_rules_core__hard3_001: active benchmark freeze spec hash mismatch
+virtualenv__interpreter_spec_core__hard3_001,python150,Adapted,parse_tokenize_decode,freeze_preflight_blocked,infrastructure,,,0,,ValueError: virtualenv__interpreter_spec_core__hard3_001: active benchmark freeze spec hash mismatch
+wheel__metadata_normalize_core__hard3_001,python150,Adapted,resource_metadata_loading,freeze_preflight_blocked,infrastructure,,,0,,ValueError: wheel__metadata_normalize_core__hard3_001: active benchmark freeze spec hash mismatch
+aiohttp__url_params_core__hard3_001,python150,Adapted,validate_normalize_construct,hidden_only_behavior,model_or_output,True,,1,,dependency lock is empty
+dateutil__zone_resolver_core__hard3_001,python150,Composite,resource_metadata_loading,hidden_only_behavior,model_or_output,False,,1,UnknownZoneError,dependency lock is empty
+installer__wheel_record_core__hard3_001,python150,Adapted,resource_metadata_loading,hidden_only_behavior,model_or_output,False,,1,,dependency lock is empty
+pygments__lexer_core__001,python150,Direct,parse_tokenize_decode,hidden_only_behavior,model_or_output,True,,1,,dependency lock is empty
+pytest__marker_registry_core__hard3_001,python150,Composite,registry_plugin_dispatch,hidden_only_behavior,model_or_output,False,,1,,dependency lock is empty
+python_decouple__config_repository_core__001,python150,Adapted,config_resolve_discover,hidden_only_behavior,model_or_output,False,,1,,dependency lock is empty
+responses__request_matcher_core__hard3_001,python150,Composite,registry_plugin_dispatch,hidden_only_behavior,model_or_output,False,,1,,hidden only behavior
+zope_interface__adapter_registry_core__001,hard50,Composite,registry_plugin_dispatch,hidden_only_behavior,model_or_output,True,,1,AssertionError,dependency lock is empty
+alembic__revision_map_core__hard3_001,python150,Adapted,algorithm_data_structure,public_behavior,model_or_output,True,,1,AttributeError,dependency lock is empty
+build__pyproject_backend_core__hard3_001,python150,Adapted,validate_normalize_construct,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+celery__signal_dispatch_core__hard3_001,python150,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,ValueError,dependency lock is empty
+click__lazy_command_core__hard3_001,python150,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,AttributeError,dependency lock is empty
+cookiecutter__repo_finder_core__hard3_001,python150,Composite,config_resolve_discover,public_behavior,model_or_output,False,,1,IndexError,dependency lock is empty
+decorator__signature_preserving_core__001,python150,Direct,workflow_session_orchestration,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+flake8__plugin_options_core__hard3_001,python150,Composite,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,AttributeError,dependency lock is empty
+flask__route_dispatch_core__001,python150,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,True,,1,AssertionError,dependency lock is empty
+hatch__project_metadata_core__hard3_001,python150,Adapted,resource_metadata_loading,public_behavior,model_or_output,True,,1,AssertionError,dependency lock is empty
+hydra_core__compose_initialize_core__001,hard50,Composite,registry_plugin_dispatch,public_behavior,model_or_output,True,,1,FileExistsError,public behavior
+importlib_resources__traversable_tree_core__hard3_001,python150,Composite,resource_metadata_loading,public_behavior,model_or_output,True,,1,AttributeError,dependency lock is empty
+jupyter_core__paths_resolver_core__hard3_001,python150,Adapted,config_resolve_discover,public_behavior,model_or_output,True,,1,AssertionError,dependency lock is empty
+keyring__backend_select_core__hard3_001,python150,Composite,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,,dependency lock is empty
+mkdocs__plugin_config_core__hard3_001,python150,Composite,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+multidict__multidict_mutation_core__hard3_001,python150,Direct,algorithm_data_structure,public_behavior,model_or_output,True,,1,,dependency lock is empty
+parsel__selector_namespace_core__hard3_001,python150,Adapted,parse_tokenize_decode,public_behavior,model_or_output,True,,1,,dependency lock is empty
+paste__dispatch_map_core__001,hard50,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+pluggy__hook_wrapper_core__hard3_001,python150,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,False,,1,TypeError,dependency lock is empty
+pylint__config_find_core__001,hard50,Adapted,config_resolve_discover,public_behavior,model_or_output,True,,0,ImportError,public behavior
+pytest__ini_markers_core__001,python150,Composite,config_resolve_discover,public_behavior,model_or_output,False,,1,AttributeError,dependency lock is empty
+readme_renderer__content_type_core__hard3_001,python150,Adapted,serialize_format_render,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+scrapy__item_loader_core__hard3_001,python150,Adapted,registry_plugin_dispatch,public_behavior,model_or_output,True,,1,TypeError,dependency lock is empty
+tox__factor_expression_core__hard3_001,python150,Adapted,parse_tokenize_decode,public_behavior,model_or_output,False,,1,AssertionError,dependency lock is empty
+typer__command_parser_core__001,python150,Direct,workflow_session_orchestration,public_behavior,model_or_output,True,,0,ModuleNotFoundError,dependency lock is empty
+yamale__schema_validate_core__hard3_001,python150,Adapted,validate_normalize_construct,public_behavior,model_or_output,False,,1,"AttributeError,SyntaxError",public behavior

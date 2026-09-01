@@ -1,0 +1,179 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+
+The \mainprotocol experiment fixes external task and execution conditions and
+varies only the model backend. Table~\ref{tab:factors} makes the experimental
+boundary explicit.
+
+\begin{table*}[t]
+  \caption{Controlled and varying factors in the \mainprotocol evaluation.}
+  \label{tab:factors}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.34\textwidth}X@{}}
+    \toprule
+    \textbf{Factor} & \textbf{Official Main treatment} \\
+    \midrule
+    Task contract and repository snapshot & Fixed per task \\
+    Initial workspace and source registry & Fixed per task \\
+    Agent runtime & Fixed to OpenHands \mainprotocol \\
+    Prompt, action budget, and context envelope & Fixed \\
+    Evaluator and Docker images & Fixed and digest-attested \\
+    Model backend & Varied in the main matrix \\
+    Public-test visibility & Withheld in Main; varied only in the RQ6 ablation \\
+    Source-location hint & Withheld in Main \\
+    Evaluator, reference, and Hidden tests & Never exposed to the agent \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Each main-table cell uses one attempt per task. We report Wilson 95\%
+confidence intervals for aggregate pass rates and exact task-level outcomes for
+paired comparisons. Because one attempt does not estimate repeated-run
+stochastic variance, seed sensitivity is evaluated separately on a stratified
+subset or retained as a limitation.
+
+\draftnote{Insert exact OpenHands revision, model profiles, prompt hash,
+action budget, context envelope, agent/evaluator image digests, provider or
+hardware details, timeout, and run dates from the frozen paper bundle.}
+
+\subsection{Functional Capability}
+
+Table~\ref{tab:main} is the intended paper main table. It will be populated
+only after every cell passes source-freeze, dependency, context, provenance,
+and image-identity checks.
+
+\begin{table*}[t]
+  \caption{Functional Pass@1 on the Python-200$'$ paper suite. This draft
+  intentionally leaves ineligible cells blank.}
+  \label{tab:main}
+  \centering
+  \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Model backend} & \textbf{Python-150} & \textbf{Hard-50}
+      & \textbf{Python-200$'$} & \textbf{Wilson 95\% CI} \\
+    \midrule
+    DeepSeek V4 Flash & -- & -- & -- & -- \\
+    Medium-capability model & -- & -- & -- & -- \\
+    Additional model(s) & -- & -- & -- & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\paragraph{Current evidence boundary.}
+A received DeepSeek V4 Flash package records 132/200 functional passes, but
+only 183 tasks launched. Seventeen baseline tasks were blocked before launch by
+a freeze-spec mismatch, 16 Hard-50 tasks encountered unavailable offline
+dependencies before behavioral evaluation, and 59 attempted runs violated the
+declared context allowance. The union of eligibility-affected tasks contains
+84 tasks. Therefore, 132/200 is a received-suite audit headline, not a
+leaderboard result, and is excluded from the abstract and final main table.
+Candidate counts for that package are in Appendix~\ref{app:full-results}.
+
+\paragraph{Exploratory frozen Python-150 matrix.}
+Until the eligible Python-200$'$ matrix is complete, we report the archived
+four-model OpenHands run on the frozen 150-task baseline
+(Table~\ref{tab:python150-functional}). This matrix contains 600 unique
+model--task rows. Twelve rows lack evaluator output and are counted as
+non-passes; 48 rows violate the archived context allowance; the evaluator image
+is not the active paper freeze. These numbers support figure design and
+cross-model hypotheses. They are not the Python-200$'$ leaderboard.
+
+\begin{table*}[t]
+  \caption{Exploratory Functional Pass@1 on frozen Python-150 (four OpenHands
+  configurations). Wilson intervals are 95\%. Eval-missing rows are non-passes.}
+  \label{tab:python150-functional}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \input{tables/tab_python150_functional}%
+  }
+\end{table*}
+
+On the superseded Python-150 + External-50 suite, the same protocol produced a
+wider 43/200--145/200 range because External-50 is easier and copy-heavy. That
+suite is retained only as historical context.
+
+\subsection{Failure Stages}
+
+For every eligible run, we report mutually exclusive first-failure counts.
+This prevents unavailable dependencies, preflight rejections, and missing
+evaluator evidence from being interpreted as model behavior.
+Table~\ref{tab:funnel} remains reserved for eligible Python-200$'$ runs.
+
+\begin{table*}[t]
+  \caption{Planned mutually exclusive outcome table for eligible
+  Python-200$'$ runs.}
+  \label{tab:funnel}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrrr}
+      \toprule
+      \textbf{Model} & \textbf{Pass} & \textbf{Missing} & \textbf{Build}
+        & \textbf{Public} & \textbf{Hidden} & \textbf{Isolation}
+        & \textbf{Infra. excluded} \\
+      \midrule
+      DeepSeek V4 Flash & -- & -- & -- & -- & -- & -- & -- \\
+      Medium-capability model & -- & -- & -- & -- & -- & -- & -- \\
+      \bottomrule
+    \end{tabular}%
+  }
+\end{table*}
+
+Table~\ref{tab:python150-firstfail} gives the corresponding mutually exclusive
+counts on the exploratory Python-150 matrix. Gates in
+Table~\ref{tab:python150-gates} are independent pass counts, not a nested
+funnel: a Hidden pass does not imply Functional Pass when isolation or another
+gate fails.
+
+\begin{table*}[t]
+  \caption{Mutually exclusive first outcomes on exploratory frozen Python-150.
+  Eval-missing rows have no evaluator output.}
+  \label{tab:python150-firstfail}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \input{tables/tab_python150_firstfail}%
+  }
+\end{table*}
+
+\begin{table}[t]
+  \caption{Independent evaluator-gate pass counts on exploratory frozen
+  Python-150 (denominator 150).}
+  \label{tab:python150-gates}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python150_gates}%
+  }
+\end{table}
+
+\subsection{Compactness and Task Dependence}
+
+Compactness is reported only among functionally passing tasks. Survivor sets
+differ by model, so compactness is not a second ranking of the same 150 tasks.
+Table~\ref{tab:compactness} uses the exploratory Python-150 matrix.
+Python-200$'$ compactness is reported only after the replacement merge; the
+received-package split medians are in Appendix~\ref{app:full-results} and are
+infrastructure-confounded.
+
+\begin{table*}[t]
+  \caption{Pass-conditioned compactness on exploratory frozen Python-150.
+  RRES is submission LOC / reference LOC among Functional Pass tasks.}
+  \label{tab:compactness}
+  \centering
+  \input{tables/tab_python150_compactness}
+\end{table*}
+
+Lift-type and feature-family slices are descriptive
+(Tables~\ref{tab:python150-lift} and~\ref{tab:python150-family}). Task
+selection is non-random and taxonomy labels are AI-assisted. Pairwise
+task-level McNemar tests are in Table~\ref{tab:python150-pairwise}.
+
+\begin{table}[t]
+  \caption{Mean models solved by lift type on exploratory frozen Python-150.
+  Bootstrap intervals are over tasks.}
+  \label{tab:python150-lift}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python150_lift}%
+  }
+\end{table}

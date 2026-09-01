@@ -45,11 +45,15 @@
 
 ## Experimental Evidence
 
-- 论文主套件 Python-200'（150+Hard-50）的跨模型 Main **尚未跑**。旧 Python-200
+- 论文主套件 Python-200'（150+Hard-50）已有 DeepSeek V4 Flash OpenHands Main
+  收到包的 **audit headline 132/200（66.0%）**，但仅 183 题启动：17 题
+  freeze-preflight blocked、16 题离线依赖失败、59 题触发 context-window audit，三类
+  问题去重后需严格替换 84 题；闭环前不能作为最终主表。旧 Python-200
   （150+External-50）Main 在 OpenHands 下对 Flash / Qwen3.5 / Qwen3.6 / GPT-OSS
   完整，Pass@1 为 21.5%–72.5%；该套件上 pass-conditioned RRES 中位数贴 1.000，
   主要来自 External-50 copy-heavy，**不能**当新主表，也不能跨模型排紧凑度。
-- Hard-50 Flash 校准为 29/50 = 58%，只说明难子集落在目标带，不是 200' 主表。
+- 候选整套结果拆分为 Python-150 103/150、Hard-50 29/50；单模型单次结果不能替代
+  跨模型主表或运行稳定性分析。
 - Official Main is OpenHands. DeepSeek Harness and Codex adapters exist as an
   optional runtime ablation with pinned revisions, but they have no scored
   Core-12 or Python-200 results yet and must not be merged into the OpenHands

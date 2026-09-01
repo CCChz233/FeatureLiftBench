@@ -1,6 +1,6 @@
 # FeatureLiftBench 整体设计思路
 
-> **Documentation status: current · Last verified: 2026-08-28**
+> **Documentation status: current · Last verified: 2026-08-31**
 
 - **状态：** 当前 Full-Repository / No-Hint 设计；release 数字见 [STATUS.md](STATUS.md)
 - **简明原则：** [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md)
@@ -22,6 +22,13 @@
 位置提示**的条件下，Agent 能否自行搜索和定位实现、检查上游
 tests/docs/examples、恢复依赖并解耦目标功能，最终构造
 **独立可安装、行为完整且尽量紧凑** 的功能模块。
+
+所有 Main 任务共享一个统一前提：Agent 得到的是一个**完整的任务范围**，而
+不是若干可选择实现的示例。Agent 必须把目标功能视为完整的 task-scoped
+module，主动从完整上游仓库的源码、测试、文档、示例、配置和资源中恢复实现
+位置、具体行为语义与传递闭包。TASK 中的 Target API、Required Behavior、
+Constraints 和 Exclusions 穷尽地划定评测范围；范围内的所有义务均为强制，
+但不要求复刻范围外的整个 upstream 项目。
 
 目标功能可带有不同类型的仓库级耦合（依赖、配置、状态、注册、资源等）；并不要求整个 upstream 仓库「处处高度纠缠」。
 
@@ -84,6 +91,12 @@ start-here/support retrieval 未改善 hidden 通过率。
 - `required_api` / `optional_api`（强制 vs 可选；禁止模糊「导出超集」）
 - behaviors：前置条件 · 操作 · 可观察结果
 - exclusions、forbidden
+
+公开契约负责穷尽地划定**义务范围和行为类别**；完整仓库负责提供这些义务的
+可发现实现证据与具体语义。Agent 不得把 behavior 中的示例当作只需拟合的
+case list，而应检查上游 tests/docs/examples，恢复范围内尚未在示例中展开的
+边界、异常、状态、资源与依赖语义。反过来，Hidden 也不得越过公开范围或要求
+无法从公开范围与上游证据合理推出的新义务。
 
 `required_api` **不能只是符号名单**。应覆盖导出路径、实体类型、函数/方法签名、默认参数、必需成员、必要异常类型等 **API surface**。Hidden 不得要求未声明的 surface（例如只声明 `State` 却要求未声明的 `State.parent`）。
 

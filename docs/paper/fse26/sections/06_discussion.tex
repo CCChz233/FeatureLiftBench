@@ -1,0 +1,68 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Feature Lifting Is a Distinct Agent Capability}
+
+Feature lifting asks a different question from issue repair. A repair agent
+succeeds inside the original repository and can rely on its package layout,
+resources, and test harness. A feature-lifting agent must infer which parts of
+that environment are semantically necessary and reconstruct them behind a new
+package boundary. It must satisfy an output contract after the original
+repository is removed. This combination makes dependency closure and
+modularization part of correctness rather than implementation style.
+
+The task is also different from code localization. Finding a relevant symbol
+can be necessary, but the \texttt{requests\_cache} and configuration examples
+show why it is insufficient. Conversely, a behaviorally equivalent rewrite can
+pass even if it copies little upstream code. \flb therefore evaluates delivered
+behavior and artifact independence, not whether the agent followed one
+prescribed extraction strategy.
+
+\subsection{Correctness and Compactness Should Remain Separate}
+
+A broad vendoring solution may preserve behavior but offer little reusable
+modularization. A very small package may omit rare behavior. Combining these
+dimensions into one scalar would obscure both failure modes and make tradeoffs
+difficult to interpret. \flb treats Functional Pass as the eligibility gate
+for compactness analysis. \rres is then a descriptive reference-relative
+measure, not a proof of minimality or semantic authenticity.
+
+The earlier External-50 expansion demonstrates the importance of this
+separation. High pass rates alone suggested that the task was nearly solved,
+while pass-conditioned footprints revealed that many solutions were close to
+whole-repository copying. Hard-50 and its copy-trap tasks retain functional
+difficulty while making broad copying visible.
+
+\subsection{Implications for Agent Design}
+
+The negative method results do not imply that agent workflows are irrelevant.
+They suggest that a useful workflow must improve the evidence available for
+contract closure rather than merely add procedural steps. Promising directions
+include explicit obligation tracking tied to public requirements, generation
+of boundary cases from exception and state semantics, provenance-aware
+dependency closure, artifact-level completeness checks, and calibrated
+uncertainty when a requirement cannot be verified legally.
+
+The Public-feedback ablation suggests a layered view of feedback. Executable
+Public tests can expose basic mismatches efficiently. Deeper Hidden behavior
+remains a generalization problem under the Main information boundary. A robust
+agent must use repository evidence and the public specification to anticipate
+unobserved but declared combinations without hard-coding benchmark examples.
+
+\subsection{Scope of the Claims}
+
+Our main scores characterize model backends embedded in a fixed OpenHands
+\mainprotocol configuration. They are not measurements of base models
+independent of runtime, prompt, context policy, or provider behavior. If no
+second-runtime experiment is completed, all model and trajectory claims are
+explicitly scoped to this protocol. Likewise, task-factor and semantic-failure
+analyses are descriptive and do not establish causal effects of repository
+properties.
+
+Harness-Bench argues that executable-agent capability should be reported at the
+model--harness configuration level~\cite{yao2026harnessbench}. \flb adopts that
+reporting discipline by fixing and attesting its Official Main runtime. Our
+scientific axis is nevertheless different: we introduce a task construct and
+study capability and failure within it, rather than treating harness variation
+as the main independent variable.
+

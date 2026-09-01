@@ -1,0 +1,173 @@
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Observed Failure Symptoms}
+
+Mechanical evaluation stages explain where a package first fails, but not why.
+We therefore code semantic symptoms from the submitted artifact and, where
+available, the trajectory. The coding scheme separates localization failure,
+contract/API completion, dependency or resource closure, behavior drift,
+packaging/modularization, over-copy, and test gaming. Labels may remain
+unknown when evidence is insufficient. Hidden failure alone is not proof of a
+semantic cause.
+
+\begin{table*}[t]
+  \caption{Semantic symptoms used for artifact and trajectory analysis.}
+  \label{tab:symptoms}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.23\textwidth}Xp{0.27\textwidth}@{}}
+    \toprule
+    \textbf{Symptom} & \textbf{Observable manifestation} & \textbf{Required evidence} \\
+    \midrule
+    Missing API/export & Required symbol or member is absent
+      & Public contract + package \\
+    Behavioral drift & Return, exception, timing, or edge behavior differs
+      & Contract mapping + evaluator + package \\
+    Resource closure & Registry, global state, schema, or resource is omitted
+      & Source evidence + failing case \\
+    Dependency closure & Required helper or legal dependency is absent
+      & Build/import evidence + lock + package \\
+    Package boundary & Logic exists but is not independently installable
+      & Package tree + evaluator \\
+    Copy-heavy pass & Functional gates pass through broad vendoring
+      & Passing result + RRES/copy evidence \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Semantic coding provenance and disagreement must be disclosed. Independent
+human review is preferred. AI-assisted coding is labeled as such and is not
+reported as human-gold inter-rater agreement.
+
+\subsection{Contract-Closure Failure}
+
+We use \emph{contract-closure failure} to describe a recurring symptom in which
+an agent identifies or reconstructs the broad target capability but fails to
+satisfy the complete observable contract of the independent package. The term
+connects the public specification, transitive feature closure, and evaluator
+outcome. It does not mean that Hidden tests introduce private requirements:
+every valid Hidden check must map to a public requirement.
+
+Three task dossiers illustrate the phenomenon:
+\begin{enumerate}
+  \item \textbf{Timed signing (\texttt{itsdangerous}).} An agent can implement
+        \texttt{dumps}/\texttt{loads} round trips and tamper detection while
+        returning the wrong exception semantics at an expiration boundary.
+        The missing behavior is the declared distinction between
+        \texttt{SignatureExpired} and a generic signature error.
+  \item \textbf{Configuration preservation (\texttt{configobj}).} Multiple
+        agents can parse and rewrite configuration values while failing to
+        preserve comments or honor \texttt{configspec} validation. The primary
+        path works, but round-trip and validation obligations remain open.
+  \item \textbf{Cache-key extraction (\texttt{requests\_cache}).} Agents locate
+        and copy the relevant cache-key implementation yet omit a required
+        \texttt{normalize\_body} export. Repository localization and broad code
+        reuse do not guarantee API closure.
+\end{enumerate}
+
+These cases support a narrower conclusion than ``localization is solved.''
+Current agents can often locate and reuse relevant implementation evidence,
+but contract closure remains a substantial failure surface. A stronger
+localization claim requires independent trajectory-level localization labels.
+
+\subsection{Public Feedback Separates Two Information Layers}
+
+To test whether Main failures are caused simply by the absence of executable
+feedback, we ran a paired information ablation on 12 DeepSeek V4 Flash tasks.
+Task, repository, specification, model, runtime, evaluator, context envelope,
+and step budget are fixed. The only intervention mounts
+\texttt{public\_tests/}; Hidden tests remain private.
+
+\begin{table}[t]
+  \caption{Paired Public-feedback ablation on 12 selected tasks.}
+  \label{tab:public-feedback}
+  \centering
+  \begin{tabular}{lr}
+    \toprule
+    \textbf{Condition} & \textbf{Functional Pass} \\
+    \midrule
+    Full-Repository / No-Hint Main & 0/12 \\
+    Public-feedback & 4/12 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All six selected Public-failure tasks flip the Public gate from 0 to 1.
+However, three remain Hidden failures, and four of five paired tasks that
+already passed Public retain their Hidden failure. Only two tasks flip Hidden
+from 0 to 1. Thus, withholding executable Public tests is a real bottleneck,
+but Public feedback is not a general Hidden oracle. We treat Public and Hidden
+as two evaluation depths of the same published contract whose outcomes can move
+separately. This ablation diagnoses the information boundary of Main; it does
+not enter the Python-200$'$ leaderboard.
+
+\subsection{Functional Sufficiency Often Precedes Agent Termination}
+
+On replayable trajectories that eventually pass, we evaluate every unique
+\texttt{featurelifted} tree and identify the earliest passing tree $T^*$. On
+the historical DeepSeek V4 Flash local Main run, 138 of 145 passing tasks have
+replayable gold. Median $T^*/T_{\mathrm{total}}$ is 0.40, with a median 0.75M
+tokens spent after a sufficient package first exists. Direct tasks reach
+sufficiency at a median fraction of 0.36, while Composite tasks reach it at
+0.51 (Table~\ref{tab:tstar}).
+
+\begin{table}[t]
+  \caption{Earliest functional sufficiency on historical DeepSeek V4 Flash
+  passing trajectories.}
+  \label{tab:tstar}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Slice} & \textbf{$n$} & \textbf{Median $T^*/T$}
+      & \textbf{Post-$T^*$ tokens} \\
+    \midrule
+    All gold passes & 138 & 0.40 & 0.75M \\
+    Direct & 58 & 0.36 & 0.74M \\
+    Adapted & 52 & 0.40 & 0.79M \\
+    Composite & 28 & 0.51 & 0.70M \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Post-sufficiency behavior is dominated by additional self-testing and
+repository inspection. This does not imply that a legal early-stopping rule is
+available. The agent cannot observe $T^*$, self-test novelty is weakly related
+to Hidden success, and 46\% of passing tasks still produce a new unique package
+after the earliest passing tree. Some later edits break and subsequently
+recover a passing package. The result supports a diagnostic claim about
+post-sufficiency spend, not the claim that failures would pass with more tokens
+or that one stopping rule generalizes across models.
+
+\subsection{Process Scaffolds Do Not Produce a Stable Main Improvement}
+
+We evaluated several legal interventions during benchmark development. Rather
+than selecting favorable pilots, Table~\ref{tab:negative} groups them by the
+hypothesis they test. These experiments differ in subset and date, so we do not
+pool them into one effect size or place them in the main leaderboard.
+
+\begin{table*}[t]
+  \caption{Development interventions and their diagnostic outcomes.}
+  \label{tab:negative}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.32\textwidth}X@{}}
+    \toprule
+    \textbf{Hypothesis} & \textbf{Interventions} & \textbf{Observed outcome} \\
+    \midrule
+    Better self-verification is sufficient
+      & Self-generated probes, test-first extraction, verification ledger
+      & No stable Functional gain; some variants cost more or regress \\
+    Executable contract checklists close behavior
+      & Self-Contract, Exec-Contract, spec-adversarial checks
+      & Can repair Public; evaluated Hidden subsets do not improve reliably \\
+    Correct intermediate packages are overwritten
+      & Repair loops, Rescue+, best-so-far replay
+      & No stable gain; 0/51 failed trajectories contain an earlier pass \\
+    Tighter budget/context control improves quality
+      & 2M cap, adaptive stop, compressed context, structure guidance
+      & Token savings trade off against Functional Pass \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Their common diagnostic value is that process scaffolding does not
+automatically close behavior unsupported by the agent's legal feedback.

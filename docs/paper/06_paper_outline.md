@@ -2,6 +2,10 @@
 
 > **Documentation status: current · Last verified: 2026-08-28**
 
+Current prose draft: [00_manuscript_zero_draft.md](00_manuscript_zero_draft.md).
+Harness-Bench structural comparison and the recommended seven-section spine:
+[01_harness_bench_structure_mapping.md](01_harness_bench_structure_mapping.md).
+
 ## Working title
 
 **FeatureLiftBench: Evaluating Repository-Level Feature Extraction by Code

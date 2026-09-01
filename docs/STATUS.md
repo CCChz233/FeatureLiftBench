@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-08-30**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Paper main suite（Python-200'）
@@ -19,7 +19,7 @@ Hard-50 **不得**写入 `benchmark/tasks/`。旧 E50 实体与历史分数保�
 | Unified task root | `benchmark/python200_hard_tasks/` |
 | Unified source registry | `benchmark/sources/python200_hard_registry.json` |
 | Hard-50 packages | `benchmark/hard50/`（无 `reference_solution/`） |
-| Paper table | **未出分**。不得把本 suite 写成已冻结主表。 |
+| Paper table | **收到包的审计 headline 为 132/200（66.0%）**；仅 183 题启动，严格替换集合 84 题，不得写成最终冻结主表。 |
 
 权威组合清单：
 [`benchmark/selection/python200_hard_suite.json`](../benchmark/selection/python200_hard_suite.json)。
@@ -33,8 +33,18 @@ Hard-50 Flash 校准（functional_gate，不是 suite `status`）：
 - 6 道 copy-heavy 换题：**6/6** 功能过，通过解 RRES 约 0.10–0.72
 - **合计 29/50 = 58%**（目标带 40%–65%）
 
-整套 200 Flash **未跑**。`run_python200_paper.sh` 仍指向旧 150+E50，且会跑
-150 freeze check。新主表入口：
+2026-08-29 已收到 200 题 Flash 结果包，原始记录为 **132/200 = 66.0%**（Wilson 95%
+59.2%–72.2%）；拆分为 Python-150 **103/150 = 68.7%**、Hard-50
+**29/50 = 58.0%**。任务 ID 200/200 匹配，183 个有 source provenance 的运行全部
+匹配 registry，Docker sandbox failures = 0。但这不是完整、合格的 200 题运行：只有
+183 题启动 Agent；17 个 Python-150 任务在启动前因 active-spec/freeze hash mismatch
+被挡住；16 个 Hard-50 任务因离线锁定依赖缺 wheel，尚未进入行为测试；另有 59 个
+已启动运行触发 context-window audit（37 个功能通过）。三类问题去重后冻结为 **84 题
+严格替换集合**；固定不动的 116 题中 95 题通过。因此 132/200 只能作为收到包的
+**audit headline**，不能进摘要或最终主表。分析、证明和替换清单见
+[`reports/paper_analysis/python200_hard_main_20260829/`](../reports/paper_analysis/python200_hard_main_20260829/)。
+
+`run_python200_paper.sh` 仍指向旧 150+E50，且会跑 150 freeze check。新主表入口：
 
 ```bash
 ./scripts/run_benchmark.sh --benchmark python200_hard --agent openhands --method main \
@@ -228,8 +238,11 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 
 ## Current Evidence Gaps
 
-0. **Python-200' 主表未出。** Hard-50 已 release 且 Flash 校准 29/50=58%；整套
-   200 Flash 未跑。150 工作树相对 freeze 有 drift。分析层已合并：
+0. **Python-200' 已有收到包的审计 headline，尚无合格主表分。** Flash 原始记录为
+   132/200=66.0%，但只有 183 题启动；17 题 freeze-preflight blocked、16 题离线依赖
+   失败、59 题 context violation，去重后的严格替换集合是 84 题。固定子集为
+   95/116。2026-08-30 离线 wheel 已 200/200；84 题替换因缺少原 Docker digest 未启动。
+   任务集与已发出的 source snapshot 均匹配；分析层与结果层已合并：
    `artifacts/research_analysis/python200_hard_task_taxonomy.csv`（200 行，
    `python200_hard_v1`）。旧 150+E50 的 21.5%–72.5% **不是** 新主表。
 1. RQ6 Public-feedback Flash-12 同日成对已齐：Main 0/12 → PF 4/12。Entrypoint-Hint
@@ -258,9 +271,15 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 
 ## Next Actions
 
-0. **论文主套件。** 分析层已合并（`python200_hard_task_taxonomy.csv`）。下一步在
-   **干净 freeze checkout** 上跑 Python-200' Flash；不要在脏 150 工作树上写冻结
-   主表。旧 150+E50 分数只作 superseded 对照。
+0. **论文主套件。** 收到包与离线审计已入库（audit headline 132/200）。2026-08-30
+   已把 CPython 3.11 Linux wheel 补到 **200/200**；冻结输入
+   `python200-hard-freeze846-input` `--check` 仍通过。84 题严格替换已在独立目录
+   **启动**（`python200-hard-main-20260830-strict84-replacement`），workers=1，
+   题根为 freeze 输入；**未覆盖** 20260829。本机没有收到包镜像 digest，实际用的是
+   本地 `latest`（agent `cc622920…` / eval `cccf858c…`），已写入
+   `launch_identity.json`，**不能**无声明并进最终主表。记录见
+   [`experiments/registry/python200_hard_wheel_closure_and_strict84_20260830.md`](../experiments/registry/python200_hard_wheel_closure_and_strict84_20260830.md)。
+   按 task ID 合并前不写最终主表。旧 150+E50 分数只作 superseded 对照。
 1. **停止脚手架迭代。** 不再开 V3、behavior_probe、TFL、Rescue+、V2 扩到 200；
    Spec-adversarial 已 Kill；Best-so-far checkpoint 离线已 Kill，不要实现 Agent。
    不要把 Active Dynamic Exploration 写成论文核心贡献。
@@ -289,8 +308,9 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    copy-all / 独立 freeze 仍按
    [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)，
    不并进 Python-150，也不进新主表。
-9. Hard-50 已在上文 Paper main suite：release 齐、Flash 58%、200 主表未跑。
-   不得把旧 E50 90%–94% 写进新主表。计划见
+9. Hard-50 已在上文 Paper main suite：release 齐；收到包原始记录为 29/50=58%，但
+   其中 16 题被离线依赖失败混杂，不能据此做新的 split 难度结论。独立的 29/50
+   校准仍是设计证据。不得把旧 E50 90%–94% 写进新主表。计划见
    [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。
 
 运行入口见 [RUN.md](../RUN.md)，实验与结果规范见 [EVALUATION.md](EVALUATION.md)。

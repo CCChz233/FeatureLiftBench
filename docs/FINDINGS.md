@@ -1,17 +1,35 @@
 # 当前方法结论
 
-> **Status: current · Last verified: 2026-08-28**
+> **Status: current · Last verified: 2026-08-29**
 > 跨模型 Main leaderboard 只维护在 [STATUS.md](STATUS.md)。
 > **当前 cost arm V1 = Main + 2M cap**，规范见 [METHOD_V1.md](METHOD_V1.md)。
 > 指标定义见 [EVALUATION.md](EVALUATION.md)。
 >
-> 下文 Functional 数字（Flash 144/200、Qwen V1 55/200 等）全部落在 **旧**
-> 150+External-50 套件上。论文新主表是 150+Hard-50，**尚未出分**。方法机制
+> 下文方法对比数字（Flash 144/200、Qwen V1 55/200 等）全部落在 **旧**
+> 150+External-50 套件上。论文新主表是 150+Hard-50；Flash 已有
+> **132/200（66.0%）收到包审计 headline**，但 17 题未启动、16 题依赖失败、59 题
+> context violation，去重后严格替换 84 题。方法机制
 > （无帽 Main 最强、脚手架补不了 Hidden、2M 有 Pass 税）仍成立；不要把 72%
 > 写进新主表。
 
 本文只解释方法对比。Rescue+、V2、TFL、Core-12、RQ6 Flash-12、Spec-adversarial
 Hidden-4、DeepSeek Harness / Codex runtime 和 AutoSaddler-FLB 通过率不进入主表。
+
+## Python-200′ candidate evidence
+
+2026-08-29 收到包记录 **132/200**，其中 Python-150 **103/150**、Hard-50
+**29/50**；这只是 audit headline。仅 183/200 真正启动 Agent，17 个 Python-150
+任务在 freeze preflight 被挡住；16 个 Hard-50 “build” 首败实际是评测器缺少离线锁定
+依赖，不是模型生成包构建失败。有效的模型/输出未通过是 no-submission 2、public 25、
+hidden-only 8，isolation 0。Direct / Adapted / Composite 的 60/68、63/100、9/32 以及
+通过题 RRES（Python-150 0.990、Hard-50 0.286）均只作替换后的预设分析切片。
+
+这组结果补上的是新题集的**审计与闭环路径**，不是完整单模型整套证据。原始 split
+对比被两类基础设施失败反向混杂，不能用来新增“Hard-50 更难”的实证结论；此前独立
+29/50 校准仍可作为设计证据。59 个 context-window audit violations（37 个通过）、
+17 个 preflight block 与 16 个依赖失败去重后形成 84 题冻结替换集合。闭环前不把
+132/200 写进摘要或最终 leaderboard。底稿见
+[`paper_readout.md`](../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md)。
 
 ## 结论先行
 

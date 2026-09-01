@@ -1,9 +1,12 @@
 # Paper Documents
 
-> **Status: current index · Last verified: 2026-08-28**
+> **Status: current index · Last verified: 2026-08-29**
 
 | Document | Role |
 | --- | --- |
+| [FSE LaTeX draft](fse26/README.md) | Compilable ACM `acmart` manuscript generated from the user-provided template |
+| [Manuscript zero draft](00_manuscript_zero_draft.md) | English argument draft; final main-table values and bibliography remain pending |
+| [Harness-Bench structure mapping](01_harness_bench_structure_mapping.md) | What to imitate, what not to imitate, and the proposed seven-section paper spine |
 | [Research Questions](02_research_questions.md) | Questions and hypotheses |
 | [Token utility results](03_results_token_utility.md) | RQ3 cost slice + RQ5 lift-type \(T^\*\)（旧 150+E50 轨迹） |
 | [RQ6 Public-feedback](04_results_rq6.md) | Information-boundary ablation (Flash-12; not main table) |
@@ -12,7 +15,13 @@
 | [Top-conference readiness plan](07_top_conference_readiness_plan.md) | Execution gates before submission |
 | [Known Limitations](limitations.md) | Scope and validity limits |
 
-论文主套件是 **冻结 Python-150 + Hard-50**（suite 仍 `unreleased`，整套 Flash 未跑）。
+论文主套件是 **冻结 Python-150 + Hard-50**（suite 仍 `unreleased`）。整套 Flash
+收到包的 **132/200（66.0%）只能作为 audit headline**：17 题未启动，16 题在离线
+依赖安装阶段失败，59 题触发 context-window audit，去重后严格替换集合为 84 题。
+闭环前不作为最终主表。分析见
+[Python-200′ candidate readout](../../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md)，
+论文段落底稿见
+[Results draft](../../reports/paper_analysis/python200_hard_main_20260829/results_draft.md)。
 见 [PLAN_HARD50_EXPANSION.md](../PLAN_HARD50_EXPANSION.md) 与
 [汇报_题集构成.md](../汇报_题集构成.md)。
 

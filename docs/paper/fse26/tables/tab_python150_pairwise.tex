@@ -1,0 +1,12 @@
+\begin{tabular}{llrrrrrr}
+\toprule
+\textbf{Left} & \textbf{Right} & \textbf{Both pass} & \textbf{Left only} & \textbf{Right only} & \textbf{Both fail} & \textbf{Left adv.} & \textbf{$p$} \\
+\midrule
+DeepSeek V4 Flash & Qwen3.5 122B & 53 & 46 & 6 & 45 & 40 & $1.03\times 10^{-8}$ \\
+DeepSeek V4 Flash & Qwen3.6 35B & 53 & 46 & 6 & 45 & 40 & $1.03\times 10^{-8}$ \\
+DeepSeek V4 Flash & GPT-OSS 120B & 24 & 75 & 3 & 48 & 72 & $5.24\times 10^{-19}$ \\
+Qwen3.5 122B & Qwen3.6 35B & 39 & 20 & 20 & 71 & 0 & 1.000 \\
+Qwen3.5 122B & GPT-OSS 120B & 18 & 41 & 9 & 82 & 32 & $5.61\times 10^{-6}$ \\
+Qwen3.6 35B & GPT-OSS 120B & 17 & 42 & 10 & 81 & 32 & $9.06\times 10^{-6}$ \\
+\bottomrule
+\end{tabular}

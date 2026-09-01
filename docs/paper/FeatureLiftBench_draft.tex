@@ -1,0 +1,1085 @@
+%% FeatureLiftBench FSE zero draft -- SINGLE FILE
+%% Compile: latexmk -pdf FeatureLiftBench_draft.tex
+\documentclass[acmsmall,anonymous,review,screen]{acmart}
+\begin{filecontents*}{FeatureLiftBench_draft.bib}
+@inproceedings{jimenez2024swebench,
+  author    = {Carlos E. Jimenez and John Yang and Alexander Wettig and others},
+  title     = {{SWE-bench}: Can Language Models Resolve Real-World {GitHub} Issues?},
+  booktitle = {Proceedings of the Twelfth International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=VTF8yNQM66}
+}
+
+@inproceedings{yang2024sweagent,
+  author    = {John Yang and Carlos Jimenez and Alexander Wettig and others},
+  title     = {{SWE-agent}: Agent-Computer Interfaces Enable Automated Software Engineering},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  year      = {2024},
+  pages     = {50528--50652}
+}
+
+@article{merrill2026terminalbench,
+  author  = {Mike A. Merrill and Alexander G. Shaw and Nicholas Carlini and others},
+  title   = {Terminal-Bench: Benchmarking Agents on Hard, Realistic Tasks in Command Line Interfaces},
+  journal = {arXiv preprint arXiv:2601.11868},
+  year    = {2026}
+}
+
+@article{yao2026harnessbench,
+  author  = {Yilun Yao and Xinyu Tan and Chao-Hsuan Liu and others},
+  title   = {Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows},
+  journal = {arXiv preprint arXiv:2605.27922},
+  year    = {2026}
+}
+
+@inproceedings{chen2021codex,
+  author    = {Mark Chen and Jerry Tworek and Heewoo Jun and others},
+  title     = {Evaluating Large Language Models Trained on Code},
+  booktitle = {arXiv preprint arXiv:2107.03374},
+  year      = {2021}
+}
+
+@article{weiser1984slicing,
+  author  = {Mark Weiser},
+  title   = {Program Slicing},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {SE-10},
+  number  = {4},
+  pages   = {352--357},
+  year    = {1984},
+  doi     = {10.1109/TSE.1984.5010248}
+}
+
+@inproceedings{tarr1999degrees,
+  author    = {Peri Tarr and Harold Ossher and William Harrison and Stanley M. Sutton Jr.},
+  title     = {N Degrees of Separation: Multi-Dimensional Separation of Concerns},
+  booktitle = {Proceedings of the 21st International Conference on Software Engineering},
+  pages     = {107--119},
+  year      = {1999},
+  doi       = {10.1145/302405.302457}
+}
+
+@article{dit2013featurelocation,
+  author  = {Bogdan Dit and Meghan Revelle and Malcom Gethers and Denys Poshyvanyk},
+  title   = {Feature Location in Source Code: A Taxonomy and Survey},
+  journal = {Journal of Software: Evolution and Process},
+  volume  = {25},
+  number  = {1},
+  pages   = {53--95},
+  year    = {2013},
+  doi     = {10.1002/smr.567}
+}
+
+
+\end{filecontents*}
+
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{xspace}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{gray},
+  breaklines=true,
+  frame=single,
+}
+
+\newcommand{\flb}{\textsc{FeatureLiftBench}\xspace}
+\newcommand{\rres}{\textsc{RRES}\xspace}
+\newcommand{\mainprotocol}{\textsc{Official Main}\xspace}
+\newcommand{\draftnote}[1]{\textcolor{red}{[Draft note: #1]}}
+
+\setcopyright{acmlicensed}
+\copyrightyear{2026}
+\acmYear{2026}
+\acmDOI{XXXXXXX.XXXXXXX}
+\acmConference[FSE '26]{Proceedings of the ACM International Conference
+  on the Foundations of Software Engineering}{September 14--18, 2026}{Seoul, South Korea}
+\acmISBN{978-1-4503-XXXX-X/26/09}
+
+\begin{document}
+
+\title{FeatureLiftBench: Evaluating Repository-Level Feature Extraction by Code Agents}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \city{Anonymous City}
+  \country{Anonymous Country}
+}
+\renewcommand{\shortauthors}{Anonymous Author(s)}
+
+\begin{abstract}
+Extracting a reusable feature from an existing repository differs from fixing
+a reported issue or generating a new implementation from scratch. An agent
+must locate relevant implementation evidence, recover its transitive behavioral
+and resource closure, adapt it into a standalone package, and preserve
+observable behavior without retaining a runtime dependency on the source
+repository. Existing code-agent benchmarks do not isolate this combination of
+repository understanding, behavioral preservation, modularization, and
+compactness. We introduce \flb, a benchmark for repository-level,
+behavior-preserving feature extraction by code agents. Its main Python suite
+contains 200 tasks drawn from 176 pinned open-source repositories. Under the
+Full-Repository / No-Hint protocol, an agent receives the complete repository
+and a complete public behavioral contract, but no source-location hints,
+benchmark tests, Hidden tests, or reference implementation. Deterministic
+Dockerized checks evaluate buildability, Public behavior, deeper Hidden
+behavior, and independence from the source repository. We separately measure
+the compactness of functionally passing packages relative to evaluator-side
+feasible references. Under a frozen OpenHands execution protocol, current
+agents achieve \draftnote{insert the final eligible Python-200-prime
+cross-model range}. Artifact and trajectory analyses identify recurring
+contract-closure failures, in which plausible packages omit required exports,
+exception semantics, state transitions, resources, or preservation details.
+Controlled information experiments further show that executable Public
+feedback can repair Public failures without generally eliminating Hidden
+failures, while evaluated self-testing, repair, checkpointing, and budget
+scaffolds do not stably outperform the strongest legal Main protocol. \flb
+provides a reproducible basis for measuring how code agents turn repository
+evidence into independent, behavior-complete artifacts.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>10011007.10011074.10011099.10011102</concept_id>
+  <concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10011007.10011074.10011111.10011113</concept_id>
+  <concept_desc>Software and its engineering~Software verification and validation</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10011007.10011074.10011099.10011693</concept_id>
+  <concept_desc>Software and its engineering~Software maintenance tools</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+\ccsdesc[300]{Software and its engineering~Software verification and validation}
+\ccsdesc[300]{Software and its engineering~Software maintenance tools}
+
+\keywords{code agents, repository-level evaluation, feature extraction,
+behavior preservation, software modularization, benchmark}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+
+Software maintenance frequently requires engineers to extract an existing
+capability from a large system: a parser must become a small library, a
+configuration resolver must be reused in another service, or a plugin registry
+must be separated from the framework that originally hosted it. This operation
+is common in modernization, dependency reduction, service decomposition, and
+reuse of legacy code. It is also deceptively difficult. The target behavior may
+be distributed across helper functions, stateful registries, resources,
+configuration defaults, error classes, and third-party dependencies. Copying
+the most obvious implementation region may produce a package that works on a
+happy path while silently changing edge behavior or retaining hidden
+dependencies on the original repository.
+
+Repository-level code agents appear well suited to this task. They can search
+large workspaces, inspect call sites and tests, edit multiple files, execute
+tools, and package new artifacts. However, current evaluation paradigms do not
+isolate whether an agent can perform behavior-preserving feature extraction.
+Issue-resolution benchmarks ask an agent to repair a repository until tests
+pass~\cite{jimenez2024swebench}. Greenfield code-generation benchmarks ask for
+a new implementation from a specification~\cite{chen2021codex}.
+Repository-understanding and localization studies test whether the relevant
+code can be found. None of these settings simultaneously requires an agent to
+recover an existing feature from an entangled repository, preserve a declared
+behavioral contract, remove dependence on the original package, and avoid
+solving the task through broad repository copying.
+
+Feature extraction therefore combines at least three obligations:
+\begin{enumerate}
+  \item \textbf{Locate:} identify implementation evidence relevant to the
+        requested capability;
+  \item \textbf{Close:} recover the APIs, helpers, state, resources,
+        dependencies, and edge semantics needed for behavioral completeness;
+  \item \textbf{Isolate:} package the recovered feature so that it executes
+        independently of the source repository.
+\end{enumerate}
+We use this decomposition as an explanatory model rather than a causal
+factorization. A final failure does not by itself reveal which obligation
+failed; semantic labels require trajectory and artifact evidence.
+
+We introduce \flb, a benchmark that evaluates these obligations under a
+controlled Full-Repository / No-Hint protocol. Each task provides a complete
+repository pinned to an immutable source revision and a complete public
+contract describing the required package interface and observable behavior.
+The agent may inspect the entire repository, but it is not given source-location
+hints, benchmark tests, Hidden tests, or a reference solution. It must produce
+a standalone \texttt{featurelifted} package. A submission passes only when it
+builds, satisfies both primary and deeper contract tests, and remains functional
+after access to the original repository is removed.
+
+\flb separates two quality dimensions. \emph{Functional Pass} measures whether
+the submission satisfies build, Public, Hidden, and isolation gates.
+\emph{Reference-Relative Extraction Size} (\rres) measures the normalized
+footprint of a functionally passing package relative to an evaluator-side
+feasible reference. Correctness and compactness are not combined into one
+score: a broad vendoring solution may preserve behavior but fail to demonstrate
+a compact extraction, while a small package may simply be incomplete.
+
+The main Python-200$'$ suite combines a frozen 150-task baseline with a
+separately calibrated Hard-50 split, for 200 tasks from 176 repositories. The
+Hard-50 split increases coverage of plugin registries, lifecycle and session
+behavior, multi-source configuration, validation boundaries, deep parsing, and
+direct copy-trap tasks. An earlier External-50 expansion is retained only as an
+easy, copy-heavy side split: strong-agent pass rates of 90--94\% and
+pass-conditioned footprints close to whole-repository copying showed that it
+was unsuitable for the paper's main difficulty claim.
+
+Our empirical study asks four groups of questions:
+\begin{itemize}
+  \item \textbf{Capability:} How often do current code agents produce
+        independent, behavior-complete feature packages?
+  \item \textbf{Quality:} When agents pass, how compact are their extractions?
+  \item \textbf{Failure mechanisms:} At which gate do agents fail, and which
+        contract obligations remain open?
+  \item \textbf{Information and resources:} How do executable feedback,
+        process scaffolds, and trajectory cost change outcomes?
+\end{itemize}
+
+Our analysis points to a recurring gap between plausible repository work and
+verifiable feature closure. Strong agents frequently produce buildable packages
+and pass primary behavior checks, yet fail on required exports, boundary
+conditions, exception semantics, stateful behavior, resource closure, or
+preservation details. We refer to this recurring symptom as
+\emph{contract-closure failure}. It is not inferred from a Hidden failure alone:
+attribution requires evidence that the relevant requirement was public and that
+the trajectory or artifact omitted or changed it. Controlled information
+experiments further suggest that executable Public feedback and Hidden
+behavioral completeness are distinct layers.
+
+This paper makes three main contributions:
+\begin{itemize}
+  \item \textbf{Benchmark asset.} We define repository-level,
+        behavior-preserving feature extraction and construct a suite of 200
+        tasks from 176 pinned Python repositories, with public contracts,
+        source registries, deterministic evaluators, evaluator-side feasible
+        references, isolation checks, and task-level provenance.
+  \item \textbf{Evaluation protocol.} We introduce a Full-Repository / No-Hint
+        protocol that fixes repository, contract, runtime, budget, and evaluator
+        while varying model backends. We report deterministic Functional Pass
+        separately from pass-conditioned compactness and process cost.
+  \item \textbf{Diagnostic analysis.} We analyze failure stages, semantic
+        contract-closure symptoms, task factors, information boundaries, and
+        trajectory cost. We also report negative results from legal
+        self-testing, repair, checkpoint, context, and budget-control
+        interventions rather than presenting them as successful methods.
+\end{itemize}
+
+\draftnote{After Gate A and Gate C, add one sentence with the eligible
+Python-200-prime capability range and the dominant failure-stage result.}
+
+
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{Executable Software-Engineering Benchmarks}
+
+Executable software-engineering benchmarks have established the importance of
+real repositories, tool use, sandboxed execution, and test-based verification.
+SWE-bench asks language models to resolve real GitHub issues in existing
+repositories~\cite{jimenez2024swebench}, while Terminal-Bench evaluates agents
+on realistic command-line tasks~\cite{merrill2026terminalbench}. Their central
+unit is typically an issue, a failing test, or a requested modification to the
+original workspace. \flb instead evaluates extraction into a new independent
+artifact. The source repository is evidence, not the final execution
+environment, and passing requires behavior preservation after the source
+package is unavailable.
+
+Agent-computer interfaces and runtime design can also change executable-agent
+performance~\cite{yang2024sweagent,yao2026harnessbench}. We therefore fix
+OpenHands as the \mainprotocol runtime for the model leaderboard. Runtime
+comparisons, when available, are reported separately rather than mixed into
+model scores.
+
+\subsection{Code Generation, Repository Understanding, and Localization}
+
+Code-generation benchmarks measure whether a model can synthesize a function or
+program from natural-language or executable specifications~\cite{chen2021codex}.
+Repository-understanding and feature-location research asks whether a developer
+or tool can identify files, entities, or regions relevant to a concern; Dit
+et~al. survey the feature-location literature and its evidence
+sources~\cite{dit2013featurelocation}. Feature lifting requires both inference
+and artifact construction, but success is not reducible to either. Locating the
+correct implementation is insufficient if transitive behavior or resources are
+omitted; generating a behaviorally similar implementation is insufficient if
+the public contract or independent package boundary is not preserved.
+
+\subsection{Program Slicing, Modularization, and Library Extraction}
+
+Feature extraction is related to program slicing~\cite{weiser1984slicing},
+multi-dimensional separation of concerns~\cite{tarr1999degrees}, refactoring,
+dependency analysis, and library migration. Classical techniques typically
+assume a program representation, slicing criterion, or human-specified
+boundary. \flb evaluates an autonomous agent from a natural-language public
+contract and a complete repository, and grades the final independent artifact
+by observable behavior. The benchmark does not claim to compute a minimal
+semantic slice: its frozen references are feasible comparison points, and
+\rres is a compactness proxy rather than a proof of optimality.
+
+\subsection{Information Boundaries in Agent Evaluation}
+
+Agent performance depends on the model, execution runtime, tools, context
+policy, and feedback interface. \flb separates these factors in two ways. The
+main leaderboard fixes the runtime and varies the model backend. Information
+ablations instead change what task evidence is visible while preserving model,
+runtime, evaluator, and budget. This design distinguishes model comparison from
+questions such as whether executable Public tests or source-location hints
+alter performance.
+
+\draftnote{Expand this section with a systematic, primary-source related-work
+review before submission, including repository-level generation, library
+extraction, modularization, and recent code-agent benchmarks.}
+
+
+\section{The FeatureLiftBench Benchmark}
+\label{sec:benchmark}
+
+\subsection{Repository-Level Feature-Lifting Setting}
+
+A task consists of a pinned source repository $R$, a public contract $S$, an
+initial workspace $W$, and a private evaluator $J$. Given $(R,S,W)$, an agent
+produces a package $P$ under a fixed execution protocol:
+\begin{equation}
+  P = \operatorname{Run}(M, H, R, S, W),
+  \label{eq:run}
+\end{equation}
+where $M$ is the model backend and $H$ is the fixed \mainprotocol runtime. The
+evaluator observes the collected package and assigns gate-level outcomes:
+\begin{equation}
+  \operatorname{Functional}(P)
+  = B(P) \land P_{\mathrm{pub}}(P)
+    \land H_{\mathrm{hid}}(P) \land I(P).
+  \label{eq:functional}
+\end{equation}
+Here, $B$ checks installation and imports, $P_{\mathrm{pub}}$ checks primary
+behavior from the public contract, $H_{\mathrm{hid}}$ checks deeper
+combinations and boundary behavior from that same contract, and $I$ checks
+independence from the source repository. A valid Hidden test must map to a
+published contract requirement.
+
+The agent receives the complete source tree and contract but no source-location
+hint. It does not see Public tests, Hidden tests, evaluator code, or the frozen
+reference. Extraction, adaptation, and behaviorally equivalent reimplementation
+are allowed. Runtime imports from the source project, forbidden paths, and
+undeclared dependency channels are disallowed.
+
+\begin{figure}[t]
+  \centering
+  \fbox{%
+    \parbox{0.92\linewidth}{\centering
+      Pinned repository + public contract\\[2pt]
+      $\downarrow$\\[2pt]
+      Full-Repository / No-Hint agent execution\\[2pt]
+      $\downarrow$\\[2pt]
+      Standalone \texttt{featurelifted} package + trajectory\\[2pt]
+      $\downarrow$\\[2pt]
+      Build $\rightarrow$ Public $\rightarrow$ Hidden $\rightarrow$ Isolation\\[2pt]
+      $\downarrow$\\[2pt]
+      Functional Pass + pass-conditioned compactness}}
+  \caption{The \flb evaluation pipeline. Protected tests, evaluator code, and
+  evaluator-side references are never exposed during agent execution.}
+  \Description{A pipeline from a pinned repository and public contract through
+  agent execution and a standalone package to build, Public, Hidden, and
+  isolation evaluation, followed by functional and compactness reporting.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Task Suite Design}
+
+The paper suite, Python-200$'$, contains 200 tasks from 176 repositories
+(Table~\ref{tab:suite}). It emphasizes Python libraries, developer tools, and
+framework components. One source repository may support multiple distinct
+tasks in the baseline split. Every task pins its upstream revision and records
+source identity in a canonical registry.
+
+\begin{table}[t]
+  \caption{Composition of the Python-200$'$ paper suite.}
+  \label{tab:suite}
+  \centering
+  \begin{tabular}{lrrl}
+    \toprule
+    \textbf{Split} & \textbf{Tasks} & \textbf{Repositories} & \textbf{Role} \\
+    \midrule
+    Frozen Python-150 & 150 & 127 & Baseline set \\
+    Hard-50 & 50 & 50 & Calibrated expansion \\
+    \midrule
+    Python-200$'$ & 200 & 176 & Main paper suite \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Tasks are organized along three descriptive axes. \emph{Feature family}
+records requested behavior, such as parsing, serialization, configuration,
+validation, resource handling, registry behavior, caching, protocols,
+algorithms, or workflows. \emph{Primary entanglement} records the dominant
+mechanism that makes independent extraction difficult: data-model,
+parser-state, framework, configuration/environment, resource, or third-party
+dependency entanglement. \emph{Lift type} describes the relationship between
+the requested artifact and source implementation: Direct, Adapted, or
+Composite. These labels support sampling and analysis; they are not shown to
+the agent and do not affect Functional Pass.
+
+The combined suite contains 68 Direct, 100 Adapted, and 32 Composite tasks.
+The Hard-50 expansion increases coverage of registry/plugin dispatch, workflow
+and session orchestration, configuration discovery, validation boundaries,
+deep parsing, and direct tooling copy traps. It was calibrated with a strong
+model at 29/50 functional passes, within a predeclared 40--65\% target band.
+This is benchmark-design evidence, not a substitute for the final main-table
+evaluation.
+
+An earlier External-50 expansion is retained as a side split rather than part
+of Python-200$'$. Strong-model pass rates of 90--94\% and pass-conditioned
+footprints close to one reference-relative unit revealed an easy, copy-heavy
+construction. This negative design result motivated Hard-50 and illustrates why
+functional outcome and extraction compactness must be measured separately.
+
+\subsection{Task Construction and Validation}
+
+Each candidate task is retained only when it satisfies four requirements:
+\begin{enumerate}
+  \item \textbf{Realism:} the requested feature corresponds to a plausible
+        reuse or modularization need in a real repository;
+  \item \textbf{Solvability:} a feasible independent implementation can be
+        produced from the pinned repository and public contract;
+  \item \textbf{Oracle-checkability:} success can be verified with
+        deterministic build, behavior, and isolation checks;
+  \item \textbf{Integrity:} the agent cannot obtain credit by reading
+        protected tests, retaining a forbidden source dependency, or bypassing
+        the intended artifact boundary.
+\end{enumerate}
+
+Task construction records a source revision and digest, public contract,
+required API, locked dependencies, Public/Hidden contract mapping,
+deterministic evaluator, and a feasible reference. Evaluator-side references
+are never exposed to agents. Automated and manual gates check source
+materialization, package imports, reference behavior, test isolation,
+forbidden dependencies, resource access, and freeze identity.
+
+The benchmark separates task packages from mutable working-tree state. Paper
+results must be evaluated against the frozen materialization identified by the
+active suite manifest. A source mismatch, unavailable locked dependency,
+evaluator defect, or context-policy violation is an eligibility or
+infrastructure outcome rather than a model failure.
+
+\subsection{Run Protocol and Evidence Collection}
+
+Each run follows a setup--execution--evaluation pipeline
+(Figure~\ref{fig:pipeline}). Setup materializes the pinned task workspace and
+records task, source, model, runtime, prompt, budget, and container identity.
+During execution, the agent may inspect the full repository, use shell and
+editing tools, run legal self-tests, and modify its submission workspace. The
+runner collects the final submission tree, model usage, actions, errors, and
+workspace snapshots. Evaluation installs the submission in a Dockerized
+offline environment and applies build, Public, Hidden, and isolation checks.
+
+Each task attempt produces four evidence layers: (1) the final artifact,
+(2) the agent trajectory and process status, (3) token, step, time, context,
+and resource statistics, and (4) the task-level deterministic evaluator result.
+The evaluator result is authoritative for Functional Pass. Agent completion or
+runner status is reported separately because an agent may hit a step limit after
+leaving a passing package, or may report completion while its artifact fails.
+
+\subsection{Metrics}
+
+\paragraph{Functional Pass@1.}
+A task receives one functional point only if all gates in
+Equation~\ref{eq:functional} pass. Functional failures receive one exclusive
+first-failure stage:
+\begin{equation}
+  \text{missing} \rightarrow \text{build} \rightarrow \text{public}
+  \rightarrow \text{hidden} \rightarrow \text{isolation}.
+\end{equation}
+Infrastructure and evidence-availability flags are reported separately from
+semantic model outcomes.
+
+\paragraph{Compactness.}
+For a functionally passing submission $P$ with evaluator-side feasible
+reference $P_{\mathrm{ref}}$, we report
+\begin{equation}
+  \operatorname{RRES}(P)
+  = \frac{\operatorname{normalized\_size}(P)}
+         {\operatorname{normalized\_size}(P_{\mathrm{ref}})}.
+  \label{eq:rres}
+\end{equation}
+\rres is accompanied by file, copied-code, and dependency-footprint
+diagnostics where evidence is available. It is reported only on functional
+passes. Cross-method compactness comparisons use the same-task subset on which
+both methods pass.
+
+\paragraph{Process and cost.}
+Tokens, steps, latency, completion status, and resource failures are diagnostic
+metrics. On passing trajectories with replayable package snapshots, $T^*$ is
+the earliest cumulative token point at which a unique package tree passes the
+evaluator. $T^*$ is undefined for failing trajectories and is not itself a
+deployable stopping rule.
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Experimental Setup}
+
+The \mainprotocol experiment fixes external task and execution conditions and
+varies only the model backend. Table~\ref{tab:factors} makes the experimental
+boundary explicit.
+
+\begin{table*}[t]
+  \caption{Controlled and varying factors in the \mainprotocol evaluation.}
+  \label{tab:factors}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.34\textwidth}X@{}}
+    \toprule
+    \textbf{Factor} & \textbf{Official Main treatment} \\
+    \midrule
+    Task contract and repository snapshot & Fixed per task \\
+    Initial workspace and source registry & Fixed per task \\
+    Agent runtime & Fixed to OpenHands \mainprotocol \\
+    Prompt, action budget, and context envelope & Fixed \\
+    Evaluator and Docker images & Fixed and digest-attested \\
+    Model backend & Varied in the main matrix \\
+    Public-test visibility & Withheld in Main; varied only in the RQ6 ablation \\
+    Source-location hint & Withheld in Main \\
+    Evaluator, reference, and Hidden tests & Never exposed to the agent \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Each main-table cell uses one attempt per task. We report Wilson 95\%
+confidence intervals for aggregate pass rates and exact task-level outcomes for
+paired comparisons. Because one attempt does not estimate repeated-run
+stochastic variance, seed sensitivity is evaluated separately on a stratified
+subset or retained as a limitation.
+
+\draftnote{Insert exact OpenHands revision, model profiles, prompt hash,
+action budget, context envelope, agent/evaluator image digests, provider or
+hardware details, timeout, and run dates from the frozen paper bundle.}
+
+\subsection{Functional Capability}
+
+Table~\ref{tab:main} is the intended paper main table. It will be populated
+only after every cell passes source-freeze, dependency, context, provenance,
+and image-identity checks.
+
+\begin{table*}[t]
+  \caption{Functional Pass@1 on the Python-200$'$ paper suite. This draft
+  intentionally leaves ineligible cells blank.}
+  \label{tab:main}
+  \centering
+  \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Model backend} & \textbf{Python-150} & \textbf{Hard-50}
+      & \textbf{Python-200$'$} & \textbf{Wilson 95\% CI} \\
+    \midrule
+    DeepSeek V4 Flash & -- & -- & -- & -- \\
+    Medium-capability model & -- & -- & -- & -- \\
+    Additional model(s) & -- & -- & -- & -- \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\paragraph{Current evidence boundary.}
+A received DeepSeek V4 Flash package records 132/200 functional passes, but
+only 183 tasks launched. Seventeen baseline tasks were blocked before launch by
+a freeze-spec mismatch, 16 Hard-50 tasks encountered unavailable offline
+dependencies before behavioral evaluation, and 59 attempted runs violated the
+declared context allowance. The union of eligibility-affected tasks contains
+84 tasks. Therefore, 132/200 is a received-suite audit headline, not a
+leaderboard result, and is excluded from the abstract and final main table.
+The received package is an audit headline only and is not a leaderboard.
+
+\paragraph{Exploratory frozen Python-150 matrix.}
+Until the eligible Python-200$'$ matrix is complete, we report the archived
+four-model OpenHands run on the frozen 150-task baseline
+(Table~\ref{tab:python150-functional}). This matrix contains 600 unique
+model--task rows. Twelve rows lack evaluator output and are counted as
+non-passes; 48 rows violate the archived context allowance; the evaluator image
+is not the active paper freeze. These numbers support figure design and
+cross-model hypotheses. They are not the Python-200$'$ leaderboard.
+
+\begin{table*}[t]
+  \caption{Exploratory Functional Pass@1 on frozen Python-150 (four OpenHands
+  configurations). Wilson intervals are 95\%. Eval-missing rows are non-passes.}
+  \label{tab:python150-functional}
+  \centering
+  \begin{tabular}{lrrrrrr}
+  \toprule
+  \textbf{Model} & \textbf{Pass} & \textbf{Rate} & \textbf{Wilson 95\%} & \textbf{Eval missing} & \textbf{Context viol.} & \textbf{Run-status passed} \\
+  \midrule
+  DeepSeek V4 Flash & 99/150 & 66.0\% & [58.1, 73.1] & 5 & 8 & 82 \\
+  Qwen3.5 122B & 59/150 & 39.3\% & [31.9, 47.3] & 0 & 9 & 58 \\
+  Qwen3.6 35B & 59/150 & 39.3\% & [31.9, 47.3] & 4 & 31 & 59 \\
+  GPT-OSS 120B & 27/150 & 18.0\% & [12.7, 24.9] & 3 & 0 & 27 \\
+  \bottomrule
+  \end{tabular}
+\end{table*}
+
+On the superseded Python-150 + External-50 suite, the same protocol produced a
+wider 43/200--145/200 range because External-50 is easier and copy-heavy. That
+suite is retained only as historical context.
+
+\subsection{Failure Stages}
+
+For every eligible run, we report mutually exclusive first-failure counts.
+This prevents unavailable dependencies, preflight rejections, and missing
+evaluator evidence from being interpreted as model behavior.
+Table~\ref{tab:funnel} remains reserved for eligible Python-200$'$ runs.
+
+\begin{table*}[t]
+  \caption{Planned mutually exclusive outcome table for eligible
+  Python-200$'$ runs.}
+  \label{tab:funnel}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrrr}
+      \toprule
+      \textbf{Model} & \textbf{Pass} & \textbf{Missing} & \textbf{Build}
+        & \textbf{Public} & \textbf{Hidden} & \textbf{Isolation}
+        & \textbf{Infra. excluded} \\
+      \midrule
+      DeepSeek V4 Flash & -- & -- & -- & -- & -- & -- & -- \\
+      Medium-capability model & -- & -- & -- & -- & -- & -- & -- \\
+      \bottomrule
+    \end{tabular}%
+  }
+\end{table*}
+
+Table~\ref{tab:python150-firstfail} gives the corresponding mutually exclusive
+counts on the exploratory Python-150 matrix. Gates in
+Table~\ref{tab:python150-gates} are independent pass counts, not a nested
+funnel: a Hidden pass does not imply Functional Pass when isolation or another
+gate fails.
+
+\begin{table*}[t]
+  \caption{Mutually exclusive first outcomes on exploratory frozen Python-150.
+  Eval-missing rows have no evaluator output.}
+  \label{tab:python150-firstfail}
+  \centering
+  \begin{tabular}{lrrrrrrr}
+  \toprule
+  \textbf{Model} & \textbf{Pass} & \textbf{Eval missing} & \textbf{Build} & \textbf{Public} & \textbf{Hidden} & \textbf{Isolation} & \textbf{Other} \\
+  \midrule
+  DeepSeek V4 Flash & 99 & 5 & 1 & 24 & 21 & 0 & 0 \\
+  Qwen3.5 122B & 59 & 0 & 0 & 60 & 30 & 1 & 0 \\
+  Qwen3.6 35B & 59 & 4 & 9 & 52 & 26 & 0 & 0 \\
+  GPT-OSS 120B & 27 & 3 & 13 & 68 & 39 & 0 & 0 \\
+  \bottomrule
+  \end{tabular}
+\end{table*}
+
+\begin{table}[t]
+  \caption{Independent evaluator-gate pass counts on exploratory frozen
+  Python-150 (denominator 150).}
+  \label{tab:python150-gates}
+  \centering
+  \begin{tabular}{lrrrrr}
+  \toprule
+  \textbf{Model} & \textbf{Build} & \textbf{Public} & \textbf{Hidden} & \textbf{Isolation} & \textbf{Functional} \\
+  \midrule
+  DeepSeek V4 Flash & 144/150 & 120/150 & 106/150 & 144/150 & 99/150 \\
+  Qwen3.5 122B & 150/150 & 90/150 & 69/150 & 148/150 & 59/150 \\
+  Qwen3.6 35B & 137/150 & 85/150 & 64/150 & 135/150 & 59/150 \\
+  GPT-OSS 120B & 134/150 & 66/150 & 32/150 & 130/150 & 27/150 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Compactness and Task Dependence}
+
+Compactness is reported only among functionally passing tasks. Survivor sets
+differ by model, so compactness is not a second ranking of the same 150 tasks.
+Table~\ref{tab:compactness} uses the exploratory Python-150 matrix.
+Python-200$'$ compactness is reported only after the replacement merge.
+
+\begin{table*}[t]
+  \caption{Pass-conditioned compactness on exploratory frozen Python-150.
+  RRES is submission LOC / reference LOC among Functional Pass tasks.}
+  \label{tab:compactness}
+  \centering
+  \begin{tabular}{lrrrr}
+  \toprule
+  \textbf{Model} & \textbf{$n$ pass} & \textbf{Median RRES} & \textbf{IQR} & \textbf{Median copy frac.} \\
+  \midrule
+  DeepSeek V4 Flash & 99 & 0.985 & [0.786, 1.034] & 0.970 \\
+  Qwen3.5 122B & 59 & 0.693 & [0.443, 0.957] & 0.623 \\
+  Qwen3.6 35B & 59 & 0.816 & [0.468, 1.230] & 0.636 \\
+  GPT-OSS 120B & 27 & 0.789 & [0.322, 1.624] & 0.269 \\
+  \bottomrule
+  \end{tabular}
+\end{table*}
+
+Lift-type slices are descriptive (Table~\ref{tab:python150-lift}). Task
+selection is non-random and taxonomy labels are AI-assisted.
+
+\begin{table}[t]
+  \caption{Mean models solved by lift type on exploratory frozen Python-150.
+  Bootstrap intervals are over tasks.}
+  \label{tab:python150-lift}
+  \centering
+  \begin{tabular}{lrrrr}
+  \toprule
+  \textbf{Lift type} & \textbf{Tasks} & \textbf{Mean models solved} & \textbf{Mean solve frac.} & \textbf{Bootstrap 95\%} \\
+  \midrule
+  Direct & 56 & 2.20 & 54.9\% & [47.3, 62.5] \\
+  Adapted & 76 & 1.36 & 33.9\% & [27.0, 41.1] \\
+  Composite & 18 & 1.00 & 25.0\% & [12.5, 38.9] \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Observed Failure Symptoms}
+
+Mechanical evaluation stages explain where a package first fails, but not why.
+We therefore code semantic symptoms from the submitted artifact and, where
+available, the trajectory. The coding scheme separates localization failure,
+contract/API completion, dependency or resource closure, behavior drift,
+packaging/modularization, over-copy, and test gaming. Labels may remain
+unknown when evidence is insufficient. Hidden failure alone is not proof of a
+semantic cause.
+
+\begin{table*}[t]
+  \caption{Semantic symptoms used for artifact and trajectory analysis.}
+  \label{tab:symptoms}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.23\textwidth}Xp{0.27\textwidth}@{}}
+    \toprule
+    \textbf{Symptom} & \textbf{Observable manifestation} & \textbf{Required evidence} \\
+    \midrule
+    Missing API/export & Required symbol or member is absent
+      & Public contract + package \\
+    Behavioral drift & Return, exception, timing, or edge behavior differs
+      & Contract mapping + evaluator + package \\
+    Resource closure & Registry, global state, schema, or resource is omitted
+      & Source evidence + failing case \\
+    Dependency closure & Required helper or legal dependency is absent
+      & Build/import evidence + lock + package \\
+    Package boundary & Logic exists but is not independently installable
+      & Package tree + evaluator \\
+    Copy-heavy pass & Functional gates pass through broad vendoring
+      & Passing result + RRES/copy evidence \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Semantic coding provenance and disagreement must be disclosed. Independent
+human review is preferred. AI-assisted coding is labeled as such and is not
+reported as human-gold inter-rater agreement.
+
+\subsection{Contract-Closure Failure}
+
+We use \emph{contract-closure failure} to describe a recurring symptom in which
+an agent identifies or reconstructs the broad target capability but fails to
+satisfy the complete observable contract of the independent package. The term
+connects the public specification, transitive feature closure, and evaluator
+outcome. It does not mean that Hidden tests introduce private requirements:
+every valid Hidden check must map to a public requirement.
+
+Three task dossiers illustrate the phenomenon:
+\begin{enumerate}
+  \item \textbf{Timed signing (\texttt{itsdangerous}).} An agent can implement
+        \texttt{dumps}/\texttt{loads} round trips and tamper detection while
+        returning the wrong exception semantics at an expiration boundary.
+        The missing behavior is the declared distinction between
+        \texttt{SignatureExpired} and a generic signature error.
+  \item \textbf{Configuration preservation (\texttt{configobj}).} Multiple
+        agents can parse and rewrite configuration values while failing to
+        preserve comments or honor \texttt{configspec} validation. The primary
+        path works, but round-trip and validation obligations remain open.
+  \item \textbf{Cache-key extraction (\texttt{requests\_cache}).} Agents locate
+        and copy the relevant cache-key implementation yet omit a required
+        \texttt{normalize\_body} export. Repository localization and broad code
+        reuse do not guarantee API closure.
+\end{enumerate}
+
+These cases support a narrower conclusion than ``localization is solved.''
+Current agents can often locate and reuse relevant implementation evidence,
+but contract closure remains a substantial failure surface. A stronger
+localization claim requires independent trajectory-level localization labels.
+
+\subsection{Public Feedback Separates Two Information Layers}
+
+To test whether Main failures are caused simply by the absence of executable
+feedback, we ran a paired information ablation on 12 DeepSeek V4 Flash tasks.
+Task, repository, specification, model, runtime, evaluator, context envelope,
+and step budget are fixed. The only intervention mounts
+\texttt{public\_tests/}; Hidden tests remain private.
+
+\begin{table}[t]
+  \caption{Paired Public-feedback ablation on 12 selected tasks.}
+  \label{tab:public-feedback}
+  \centering
+  \begin{tabular}{lr}
+    \toprule
+    \textbf{Condition} & \textbf{Functional Pass} \\
+    \midrule
+    Full-Repository / No-Hint Main & 0/12 \\
+    Public-feedback & 4/12 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All six selected Public-failure tasks flip the Public gate from 0 to 1.
+However, three remain Hidden failures, and four of five paired tasks that
+already passed Public retain their Hidden failure. Only two tasks flip Hidden
+from 0 to 1. Thus, withholding executable Public tests is a real bottleneck,
+but Public feedback is not a general Hidden oracle. We treat Public and Hidden
+as two evaluation depths of the same published contract whose outcomes can move
+separately. This ablation diagnoses the information boundary of Main; it does
+not enter the Python-200$'$ leaderboard.
+
+\subsection{Functional Sufficiency Often Precedes Agent Termination}
+
+On replayable trajectories that eventually pass, we evaluate every unique
+\texttt{featurelifted} tree and identify the earliest passing tree $T^*$. On
+the historical DeepSeek V4 Flash local Main run, 138 of 145 passing tasks have
+replayable gold. Median $T^*/T_{\mathrm{total}}$ is 0.40, with a median 0.75M
+tokens spent after a sufficient package first exists. Direct tasks reach
+sufficiency at a median fraction of 0.36, while Composite tasks reach it at
+0.51 (Table~\ref{tab:tstar}).
+
+\begin{table}[t]
+  \caption{Earliest functional sufficiency on historical DeepSeek V4 Flash
+  passing trajectories.}
+  \label{tab:tstar}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Slice} & \textbf{$n$} & \textbf{Median $T^*/T$}
+      & \textbf{Post-$T^*$ tokens} \\
+    \midrule
+    All gold passes & 138 & 0.40 & 0.75M \\
+    Direct & 58 & 0.36 & 0.74M \\
+    Adapted & 52 & 0.40 & 0.79M \\
+    Composite & 28 & 0.51 & 0.70M \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Post-sufficiency behavior is dominated by additional self-testing and
+repository inspection. This does not imply that a legal early-stopping rule is
+available. The agent cannot observe $T^*$, self-test novelty is weakly related
+to Hidden success, and 46\% of passing tasks still produce a new unique package
+after the earliest passing tree. Some later edits break and subsequently
+recover a passing package. The result supports a diagnostic claim about
+post-sufficiency spend, not the claim that failures would pass with more tokens
+or that one stopping rule generalizes across models.
+
+\subsection{Process Scaffolds Do Not Produce a Stable Main Improvement}
+
+We evaluated several legal interventions during benchmark development. Rather
+than selecting favorable pilots, Table~\ref{tab:negative} groups them by the
+hypothesis they test. These experiments differ in subset and date, so we do not
+pool them into one effect size or place them in the main leaderboard.
+
+\begin{table*}[t]
+  \caption{Development interventions and their diagnostic outcomes.}
+  \label{tab:negative}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.32\textwidth}X@{}}
+    \toprule
+    \textbf{Hypothesis} & \textbf{Interventions} & \textbf{Observed outcome} \\
+    \midrule
+    Better self-verification is sufficient
+      & Self-generated probes, test-first extraction, verification ledger
+      & No stable Functional gain; some variants cost more or regress \\
+    Executable contract checklists close behavior
+      & Self-Contract, Exec-Contract, spec-adversarial checks
+      & Can repair Public; evaluated Hidden subsets do not improve reliably \\
+    Correct intermediate packages are overwritten
+      & Repair loops, Rescue+, best-so-far replay
+      & No stable gain; 0/51 failed trajectories contain an earlier pass \\
+    Tighter budget/context control improves quality
+      & 2M cap, adaptive stop, compressed context, structure guidance
+      & Token savings trade off against Functional Pass \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Their common diagnostic value is that process scaffolding does not
+automatically close behavior unsupported by the agent's legal feedback.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Feature Lifting Is a Distinct Agent Capability}
+
+Feature lifting asks a different question from issue repair. A repair agent
+succeeds inside the original repository and can rely on its package layout,
+resources, and test harness. A feature-lifting agent must infer which parts of
+that environment are semantically necessary and reconstruct them behind a new
+package boundary. It must satisfy an output contract after the original
+repository is removed. This combination makes dependency closure and
+modularization part of correctness rather than implementation style.
+
+The task is also different from code localization. Finding a relevant symbol
+can be necessary, but the \texttt{requests\_cache} and configuration examples
+show why it is insufficient. Conversely, a behaviorally equivalent rewrite can
+pass even if it copies little upstream code. \flb therefore evaluates delivered
+behavior and artifact independence, not whether the agent followed one
+prescribed extraction strategy.
+
+\subsection{Correctness and Compactness Should Remain Separate}
+
+A broad vendoring solution may preserve behavior but offer little reusable
+modularization. A very small package may omit rare behavior. Combining these
+dimensions into one scalar would obscure both failure modes and make tradeoffs
+difficult to interpret. \flb treats Functional Pass as the eligibility gate
+for compactness analysis. \rres is then a descriptive reference-relative
+measure, not a proof of minimality or semantic authenticity.
+
+The earlier External-50 expansion demonstrates the importance of this
+separation. High pass rates alone suggested that the task was nearly solved,
+while pass-conditioned footprints revealed that many solutions were close to
+whole-repository copying. Hard-50 and its copy-trap tasks retain functional
+difficulty while making broad copying visible.
+
+\subsection{Implications for Agent Design}
+
+The negative method results do not imply that agent workflows are irrelevant.
+They suggest that a useful workflow must improve the evidence available for
+contract closure rather than merely add procedural steps. Promising directions
+include explicit obligation tracking tied to public requirements, generation
+of boundary cases from exception and state semantics, provenance-aware
+dependency closure, artifact-level completeness checks, and calibrated
+uncertainty when a requirement cannot be verified legally.
+
+The Public-feedback ablation suggests a layered view of feedback. Executable
+Public tests can expose basic mismatches efficiently. Deeper Hidden behavior
+remains a generalization problem under the Main information boundary. A robust
+agent must use repository evidence and the public specification to anticipate
+unobserved but declared combinations without hard-coding benchmark examples.
+
+\subsection{Scope of the Claims}
+
+Our main scores characterize model backends embedded in a fixed OpenHands
+\mainprotocol configuration. They are not measurements of base models
+independent of runtime, prompt, context policy, or provider behavior. If no
+second-runtime experiment is completed, all model and trajectory claims are
+explicitly scoped to this protocol. Likewise, task-factor and semantic-failure
+analyses are descriptive and do not establish causal effects of repository
+properties.
+
+Harness-Bench argues that executable-agent capability should be reported at the
+model--harness configuration level~\cite{yao2026harnessbench}. \flb adopts that
+reporting discipline by fixing and attesting its Official Main runtime. Our
+scientific axis is nevertheless different: we introduce a task construct and
+study capability and failure within it, rather than treating harness variation
+as the main independent variable.
+
+
+\section{Threats to Validity and Responsible Release}
+\label{sec:threats}
+
+\paragraph{Construct validity.}
+Functional Pass is a deterministic but finite operationalization of behavioral
+completeness. Public and Hidden tests are mapped to one published contract, but
+finite tests cannot prove semantic equivalence. A Hidden requirement that is
+not observable from the public contract is a task defect, not an agent failure.
+We therefore plan an independent Hidden-contract audit and report full,
+observable-only, and conservative sensitivity views. Functional Pass is binary
+and does not give headline partial credit. \rres, copied-code fraction, files,
+and dependency footprint are proxies that may miss semantic copying or penalize
+legitimate alternative implementations.
+
+\paragraph{Internal validity.}
+Results depend on source materialization, locked dependencies, prompt and
+context policy, agent/evaluator containers, model endpoints, and runner state.
+The received 2026-08-29 candidate demonstrates how freeze mismatches, missing
+offline wheels, and context-policy violations can contaminate a nominal score.
+We therefore separate infrastructure from model outcomes and require source,
+dependency, context, provenance, and image attestations for the paper bundle.
+Method pilots differ in subset and date; they support mechanism hypotheses but
+are not pooled into a causal estimate.
+
+\paragraph{External validity.}
+Python-200$'$ is a maintainer- and AI-assisted selection of Python libraries,
+tooling, and framework components. It is not a random sample of software
+repositories and does not establish performance on large product applications,
+GUI software, GPU systems, distributed services, or non-Python ecosystems.
+Popular upstream projects may also appear in model training data. Repository
+diversity does not guarantee balanced behavior or entanglement mechanisms.
+
+\paragraph{Reliability and statistical conclusion validity.}
+The main table initially uses one attempt per task. Without repeated trials it
+does not estimate stochastic run-to-run variance. We report binomial confidence
+intervals for aggregate rates and exact task-level outcomes for paired
+comparisons, but neither replaces repeated-run sensitivity. Model APIs and
+serving stacks may change despite stable model names. We record exact dates,
+profiles, source freezes, and container identities and plan a stratified
+repeated-run study.
+
+\paragraph{Annotation validity.}
+Task taxonomy, closure records, and semantic failure labels include AI-assisted
+curation. We disclose provenance and unknown rates and do not report these
+labels as independent human gold. Inter-rater agreement is reported only when
+raters are genuinely independent humans.
+
+\paragraph{Runtime dependence.}
+Official Main fixes OpenHands. Scores may change under another runtime, tool
+interface, context policy, or recovery strategy. Runtime comparisons remain
+separate from the model leaderboard unless evaluated with a controlled paired
+protocol.
+
+\paragraph{Licensing and release.}
+Upstream repositories retain heterogeneous licenses. Release packaging, source
+acquisition, evaluator-side references, and generated submissions must preserve
+license obligations. Large source and result archives may be distributed via
+checksummed acquisition instructions rather than committed directly.
+
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented \flb, a benchmark for repository-level, behavior-preserving
+feature extraction by code agents. The benchmark asks agents to turn a complete
+but entangled repository into an independent package under a public behavioral
+contract, without source-location hints or access to benchmark tests. Its
+deterministic evaluator separates functional correctness from the compactness
+of passing solutions.
+
+The emerging evidence suggests that current agents can often navigate
+repositories and construct plausible packages while still failing to close
+required APIs, boundary semantics, state, resources, and preservation behavior.
+Controlled feedback and trajectory analyses further indicate that Public
+repair, Hidden generalization, and post-sufficiency self-testing are distinct
+phenomena. \draftnote{Replace ``emerging evidence'' with the final eligible
+cross-model result and its bounded interpretation.} By releasing tasks, source
+provenance, evaluators, traces, and reproducibility metadata, \flb aims to
+support research on agents that extract reusable software rather than only
+modify it in place.
+
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{FeatureLiftBench_draft}
+
+\appendix
+
+
+\section{Declaration of LLM Usage}
+\label{app:llm}
+
+Large language models assisted with task curation, annotation, analysis code,
+statistical summarization, and manuscript editing. All reported scientific
+claims, task contracts, evaluator behavior, quantitative summaries, and final
+conclusions are reviewed by the authors. AI-assisted semantic labels are marked
+as such and are not reported as independent human gold.
+
+
+\end{document}

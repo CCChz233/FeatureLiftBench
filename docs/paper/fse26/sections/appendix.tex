@@ -1,0 +1,159 @@
+\section{Declaration of LLM Usage}
+\label{app:llm}
+
+Large language models assisted with task curation, annotation, analysis code,
+statistical summarization, and manuscript editing. All reported scientific
+claims, task contracts, evaluator behavior, quantitative summaries, and final
+conclusions are reviewed by the authors. AI-assisted semantic labels are marked
+as such and are not reported as independent human gold.
+
+\section{Models, Runtime, and Reproducibility Configuration}
+\label{app:configuration}
+
+\draftnote{Insert the final configuration table: model endpoints, OpenHands
+revision, profiles, prompt hash, budgets, context policy, provider dates,
+hardware, and container digests.}
+
+The exploratory Python-150 matrix uses four OpenHands configurations on the
+same 150 task IDs. Interaction-volume diagnostics for that matrix are in
+Table~\ref{tab:python150-cost}. They are not a cost ranking and are not pooled
+across models.
+
+\begin{table}[t]
+  \caption{Interaction volume on exploratory frozen Python-150. Completion
+  tokens are medians over assigned tasks.}
+  \label{tab:python150-cost}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python150_cost}%
+  }
+\end{table}
+
+\section{Full Results and Sensitivity Tables}
+\label{app:full-results}
+
+Numeric snippets in \texttt{docs/paper/fse26/tables/} are generated from
+\texttt{reports/paper\_analysis/python150\_exploratory\_20260830/tables/} and
+\texttt{reports/paper\_analysis/python200\_hard\_main\_20260829/summary.json}.
+Regenerate with
+\texttt{python3.12 reports/paper\_analysis/python150\_exploratory\_20260830/export\_latex\_tables.py}.
+
+\subsection{Exploratory Python-150}
+
+\begin{table*}[t]
+  \caption{Paired Functional Pass counts on exploratory frozen Python-150.
+  $p$ is an exact McNemar test on discordant tasks.}
+  \label{tab:python150-pairwise}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \input{tables/tab_python150_pairwise}%
+  }
+\end{table*}
+
+\begin{table}[t]
+  \caption{Mean models solved by feature family on exploratory frozen
+  Python-150. Bootstrap intervals are over tasks.}
+  \label{tab:python150-family}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python150_family}%
+  }
+\end{table}
+
+\begin{table}[t]
+  \caption{Number of tasks solved by $k$ of four models, by lift type.}
+  \label{tab:python150-solve-count}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python150_solve_count}%
+  }
+\end{table}
+
+\input{tables/tab_python150_task_matrix}
+
+\subsection{Python-200$'$ received package (not a leaderboard)}
+
+The following tables copy the 2026-08-29 received DeepSeek V4 Flash package
+exactly, including infrastructure outcomes. They must not be captioned as the
+final Python-200$'$ leaderboard.
+
+\begin{table}[t]
+  \caption{Received-suite audit headline. Includes freeze blocks and missing
+  wheels.}
+  \label{tab:python200-audit}
+  \centering
+  \input{tables/tab_python200_audit}
+\end{table}
+
+\begin{table}[t]
+  \caption{Eligibility partition of the received Python-200$'$ package.}
+  \label{tab:python200-eligibility}
+  \centering
+  \input{tables/tab_python200_eligibility}
+\end{table}
+
+\begin{table}[t]
+  \caption{Audit failure classes after separating infrastructure from
+  model/output outcomes.}
+  \label{tab:python200-failure-classes}
+  \centering
+  \input{tables/tab_python200_failure_classes}
+\end{table}
+
+\begin{table}[t]
+  \caption{Recorded first outcomes by split in the received package.
+  Hard-50 build failures are offline-dependency infrastructure.}
+  \label{tab:python200-stages-received}
+  \centering
+  \input{tables/tab_python200_stages_received}
+\end{table}
+
+\begin{table}[t]
+  \caption{Lift-type rates in the received package. Infrastructure outcomes
+  are not removed.}
+  \label{tab:python200-lift-candidate}
+  \centering
+  \input{tables/tab_python200_lift_candidate}
+\end{table}
+
+\begin{table}[t]
+  \caption{Pass-conditioned RRES in the received package. Split contrast is
+  infrastructure-confounded.}
+  \label{tab:python200-compactness-candidate}
+  \centering
+  \input{tables/tab_python200_compactness_candidate}
+\end{table}
+
+\begin{table}[t]
+  \caption{Context-window audit slices in the received package.}
+  \label{tab:python200-context}
+  \centering
+  \resizebox{\columnwidth}{!}{%
+    \input{tables/tab_python200_context}%
+  }
+\end{table}
+
+The replacement union, repeated-run results, observable-only Hidden analysis,
+and attested image identities remain pending.
+
+\section{Representative FeatureLift Task Cards}
+\label{app:task-cards}
+
+Each task card will report the source repository and revision, public objective,
+expected package, primary entanglement, allowed dependencies, evaluator gates,
+reference footprint, and one audited failure example.
+
+\section{Negative Intervention Registry}
+\label{app:negative-registry}
+
+The intervention registry will report task subsets, dates, exact protocol
+differences, paired outcomes, cost, stopping decisions, and evidence limitations
+for every development intervention summarized in
+Table~\ref{tab:negative}.
+
+\section{Artifact and Reproduction Manifest}
+\label{app:artifact}
+
+The artifact manifest will provide suite SHA, freeze ID, source registry,
+offline-wheel closure, image identities, task-level checksums, analysis
+commands, and verified result-bundle acquisition instructions.

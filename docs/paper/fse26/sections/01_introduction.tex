@@ -1,0 +1,111 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Software maintenance frequently requires engineers to extract an existing
+capability from a large system: a parser must become a small library, a
+configuration resolver must be reused in another service, or a plugin registry
+must be separated from the framework that originally hosted it. This operation
+is common in modernization, dependency reduction, service decomposition, and
+reuse of legacy code. It is also deceptively difficult. The target behavior may
+be distributed across helper functions, stateful registries, resources,
+configuration defaults, error classes, and third-party dependencies. Copying
+the most obvious implementation region may produce a package that works on a
+happy path while silently changing edge behavior or retaining hidden
+dependencies on the original repository.
+
+Repository-level code agents appear well suited to this task. They can search
+large workspaces, inspect call sites and tests, edit multiple files, execute
+tools, and package new artifacts. However, current evaluation paradigms do not
+isolate whether an agent can perform behavior-preserving feature extraction.
+Issue-resolution benchmarks ask an agent to repair a repository until tests
+pass~\cite{jimenez2024swebench}. Greenfield code-generation benchmarks ask for
+a new implementation from a specification~\cite{chen2021codex}.
+Repository-understanding and localization studies test whether the relevant
+code can be found. None of these settings simultaneously requires an agent to
+recover an existing feature from an entangled repository, preserve a declared
+behavioral contract, remove dependence on the original package, and avoid
+solving the task through broad repository copying.
+
+Feature extraction therefore combines at least three obligations:
+\begin{enumerate}
+  \item \textbf{Locate:} identify implementation evidence relevant to the
+        requested capability;
+  \item \textbf{Close:} recover the APIs, helpers, state, resources,
+        dependencies, and edge semantics needed for behavioral completeness;
+  \item \textbf{Isolate:} package the recovered feature so that it executes
+        independently of the source repository.
+\end{enumerate}
+We use this decomposition as an explanatory model rather than a causal
+factorization. A final failure does not by itself reveal which obligation
+failed; semantic labels require trajectory and artifact evidence.
+
+We introduce \flb, a benchmark that evaluates these obligations under a
+controlled Full-Repository / No-Hint protocol. Each task provides a complete
+repository pinned to an immutable source revision and a complete public
+contract describing the required package interface and observable behavior.
+The agent may inspect the entire repository, but it is not given source-location
+hints, benchmark tests, Hidden tests, or a reference solution. It must produce
+a standalone \texttt{featurelifted} package. A submission passes only when it
+builds, satisfies both primary and deeper contract tests, and remains functional
+after access to the original repository is removed.
+
+\flb separates two quality dimensions. \emph{Functional Pass} measures whether
+the submission satisfies build, Public, Hidden, and isolation gates.
+\emph{Reference-Relative Extraction Size} (\rres) measures the normalized
+footprint of a functionally passing package relative to an evaluator-side
+feasible reference. Correctness and compactness are not combined into one
+score: a broad vendoring solution may preserve behavior but fail to demonstrate
+a compact extraction, while a small package may simply be incomplete.
+
+The main Python-200$'$ suite combines a frozen 150-task baseline with a
+separately calibrated Hard-50 split, for 200 tasks from 176 repositories. The
+Hard-50 split increases coverage of plugin registries, lifecycle and session
+behavior, multi-source configuration, validation boundaries, deep parsing, and
+direct copy-trap tasks. An earlier External-50 expansion is retained only as an
+easy, copy-heavy side split: strong-agent pass rates of 90--94\% and
+pass-conditioned footprints close to whole-repository copying showed that it
+was unsuitable for the paper's main difficulty claim.
+
+Our empirical study asks four groups of questions:
+\begin{itemize}
+  \item \textbf{Capability:} How often do current code agents produce
+        independent, behavior-complete feature packages?
+  \item \textbf{Quality:} When agents pass, how compact are their extractions?
+  \item \textbf{Failure mechanisms:} At which gate do agents fail, and which
+        contract obligations remain open?
+  \item \textbf{Information and resources:} How do executable feedback,
+        process scaffolds, and trajectory cost change outcomes?
+\end{itemize}
+
+Our analysis points to a recurring gap between plausible repository work and
+verifiable feature closure. Strong agents frequently produce buildable packages
+and pass primary behavior checks, yet fail on required exports, boundary
+conditions, exception semantics, stateful behavior, resource closure, or
+preservation details. We refer to this recurring symptom as
+\emph{contract-closure failure}. It is not inferred from a Hidden failure alone:
+attribution requires evidence that the relevant requirement was public and that
+the trajectory or artifact omitted or changed it. Controlled information
+experiments further suggest that executable Public feedback and Hidden
+behavioral completeness are distinct layers.
+
+This paper makes three main contributions:
+\begin{itemize}
+  \item \textbf{Benchmark asset.} We define repository-level,
+        behavior-preserving feature extraction and construct a suite of 200
+        tasks from 176 pinned Python repositories, with public contracts,
+        source registries, deterministic evaluators, evaluator-side feasible
+        references, isolation checks, and task-level provenance.
+  \item \textbf{Evaluation protocol.} We introduce a Full-Repository / No-Hint
+        protocol that fixes repository, contract, runtime, budget, and evaluator
+        while varying model backends. We report deterministic Functional Pass
+        separately from pass-conditioned compactness and process cost.
+  \item \textbf{Diagnostic analysis.} We analyze failure stages, semantic
+        contract-closure symptoms, task factors, information boundaries, and
+        trajectory cost. We also report negative results from legal
+        self-testing, repair, checkpoint, context, and budget-control
+        interventions rather than presenting them as successful methods.
+\end{itemize}
+
+\draftnote{After Gate A and Gate C, add one sentence with the eligible
+Python-200-prime capability range and the dominant failure-stage result.}
+

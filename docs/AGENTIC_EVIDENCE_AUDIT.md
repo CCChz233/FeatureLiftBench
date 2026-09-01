@@ -41,11 +41,11 @@ Choose a new output directory; the generator never replaces a non-empty one.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/generate_agentic_evidence_canaries.py \
-  --output reports/agentic_evidence/canaries_v1
+  --output experiments/validation/agentic_evidence/canaries_v1
 
 PYTHONPATH=harness python3.12 \
   harness/scripts/generate_agentic_evidence_canaries.py \
-  --output reports/agentic_evidence/canaries_v1 \
+  --output experiments/validation/agentic_evidence/canaries_v1 \
   --check
 ```
 
@@ -58,8 +58,8 @@ profile and a placeholder key if its client requires a non-empty value.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries.py \
-  reports/agentic_evidence/canaries_v1 \
-  reports/agentic_evidence/runs/auditor-r1 \
+  experiments/validation/agentic_evidence/canaries_v1 \
+  experiments/validation/agentic_evidence/runs/auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-auditor-r1 \
   --limit 2
@@ -72,8 +72,8 @@ require a tool-capable Agent that can search the repository.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries_direct.py \
-  reports/agentic_evidence/canaries_v1 \
-  reports/agentic_evidence/runs/direct-auditor-r1 \
+  experiments/validation/agentic_evidence/canaries_v1 \
+  experiments/validation/agentic_evidence/runs/direct-auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-direct-auditor-r1 \
   --limit 2
@@ -85,8 +85,8 @@ or schema failures are retried:
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/run_agentic_evidence_canaries.py \
-  reports/agentic_evidence/canaries_v1 \
-  reports/agentic_evidence/runs/auditor-r1 \
+  experiments/validation/agentic_evidence/canaries_v1 \
+  experiments/validation/agentic_evidence/runs/auditor-r1 \
   --agent-profile deepseek_v4_flash \
   --agent-id deepseek-v4-flash-auditor-r1 \
   --resume
@@ -108,9 +108,9 @@ exit, not a normal completion.
 ```bash
 PYTHONPATH=harness python3.12 \
   harness/scripts/score_agentic_evidence_canaries.py \
-  reports/agentic_evidence/canaries_v1 \
-  reports/agentic_evidence/runs/auditor-r1 \
-  --output reports/agentic_evidence/runs/auditor-r1/calibration.json
+  experiments/validation/agentic_evidence/canaries_v1 \
+  experiments/validation/agentic_evidence/runs/auditor-r1 \
+  --output experiments/validation/agentic_evidence/runs/auditor-r1/calibration.json
 ```
 
 The repaired 40-case synthetic freeze reached 40/40 valid and 40/40 correct.

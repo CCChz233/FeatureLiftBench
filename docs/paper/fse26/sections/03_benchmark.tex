@@ -1,0 +1,181 @@
+\section{The FeatureLiftBench Benchmark}
+\label{sec:benchmark}
+
+\subsection{Repository-Level Feature-Lifting Setting}
+
+A task consists of a pinned source repository $R$, a public contract $S$, an
+initial workspace $W$, and a private evaluator $J$. Given $(R,S,W)$, an agent
+produces a package $P$ under a fixed execution protocol:
+\begin{equation}
+  P = \operatorname{Run}(M, H, R, S, W),
+  \label{eq:run}
+\end{equation}
+where $M$ is the model backend and $H$ is the fixed \mainprotocol runtime. The
+evaluator observes the collected package and assigns gate-level outcomes:
+\begin{equation}
+  \operatorname{Functional}(P)
+  = B(P) \land P_{\mathrm{pub}}(P)
+    \land H_{\mathrm{hid}}(P) \land I(P).
+  \label{eq:functional}
+\end{equation}
+Here, $B$ checks installation and imports, $P_{\mathrm{pub}}$ checks primary
+behavior from the public contract, $H_{\mathrm{hid}}$ checks deeper
+combinations and boundary behavior from that same contract, and $I$ checks
+independence from the source repository. A valid Hidden test must map to a
+published contract requirement.
+
+The agent receives the complete source tree and contract but no source-location
+hint. It does not see Public tests, Hidden tests, evaluator code, or the frozen
+reference. Extraction, adaptation, and behaviorally equivalent reimplementation
+are allowed. Runtime imports from the source project, forbidden paths, and
+undeclared dependency channels are disallowed.
+
+\begin{figure}[t]
+  \centering
+  \fbox{%
+    \parbox{0.92\linewidth}{\centering
+      Pinned repository + public contract\\[2pt]
+      $\downarrow$\\[2pt]
+      Full-Repository / No-Hint agent execution\\[2pt]
+      $\downarrow$\\[2pt]
+      Standalone \texttt{featurelifted} package + trajectory\\[2pt]
+      $\downarrow$\\[2pt]
+      Build $\rightarrow$ Public $\rightarrow$ Hidden $\rightarrow$ Isolation\\[2pt]
+      $\downarrow$\\[2pt]
+      Functional Pass + pass-conditioned compactness}}
+  \caption{The \flb evaluation pipeline. Protected tests, evaluator code, and
+  evaluator-side references are never exposed during agent execution.}
+  \Description{A pipeline from a pinned repository and public contract through
+  agent execution and a standalone package to build, Public, Hidden, and
+  isolation evaluation, followed by functional and compactness reporting.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Task Suite Design}
+
+The paper suite, Python-200$'$, contains 200 tasks from 176 repositories
+(Table~\ref{tab:suite}). It emphasizes Python libraries, developer tools, and
+framework components. One source repository may support multiple distinct
+tasks in the baseline split. Every task pins its upstream revision and records
+source identity in a canonical registry.
+
+\begin{table}[t]
+  \caption{Composition of the Python-200$'$ paper suite.}
+  \label{tab:suite}
+  \centering
+  \begin{tabular}{lrrl}
+    \toprule
+    \textbf{Split} & \textbf{Tasks} & \textbf{Repositories} & \textbf{Role} \\
+    \midrule
+    Frozen Python-150 & 150 & 127 & Baseline set \\
+    Hard-50 & 50 & 50 & Calibrated expansion \\
+    \midrule
+    Python-200$'$ & 200 & 176 & Main paper suite \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Tasks are organized along three descriptive axes. \emph{Feature family}
+records requested behavior, such as parsing, serialization, configuration,
+validation, resource handling, registry behavior, caching, protocols,
+algorithms, or workflows. \emph{Primary entanglement} records the dominant
+mechanism that makes independent extraction difficult: data-model,
+parser-state, framework, configuration/environment, resource, or third-party
+dependency entanglement. \emph{Lift type} describes the relationship between
+the requested artifact and source implementation: Direct, Adapted, or
+Composite. These labels support sampling and analysis; they are not shown to
+the agent and do not affect Functional Pass.
+
+The combined suite contains 68 Direct, 100 Adapted, and 32 Composite tasks.
+The Hard-50 expansion increases coverage of registry/plugin dispatch, workflow
+and session orchestration, configuration discovery, validation boundaries,
+deep parsing, and direct tooling copy traps. It was calibrated with a strong
+model at 29/50 functional passes, within a predeclared 40--65\% target band.
+This is benchmark-design evidence, not a substitute for the final main-table
+evaluation.
+
+An earlier External-50 expansion is retained as a side split rather than part
+of Python-200$'$. Strong-model pass rates of 90--94\% and pass-conditioned
+footprints close to one reference-relative unit revealed an easy, copy-heavy
+construction. This negative design result motivated Hard-50 and illustrates why
+functional outcome and extraction compactness must be measured separately.
+
+\subsection{Task Construction and Validation}
+
+Each candidate task is retained only when it satisfies four requirements:
+\begin{enumerate}
+  \item \textbf{Realism:} the requested feature corresponds to a plausible
+        reuse or modularization need in a real repository;
+  \item \textbf{Solvability:} a feasible independent implementation can be
+        produced from the pinned repository and public contract;
+  \item \textbf{Oracle-checkability:} success can be verified with
+        deterministic build, behavior, and isolation checks;
+  \item \textbf{Integrity:} the agent cannot obtain credit by reading
+        protected tests, retaining a forbidden source dependency, or bypassing
+        the intended artifact boundary.
+\end{enumerate}
+
+Task construction records a source revision and digest, public contract,
+required API, locked dependencies, Public/Hidden contract mapping,
+deterministic evaluator, and a feasible reference. Evaluator-side references
+are never exposed to agents. Automated and manual gates check source
+materialization, package imports, reference behavior, test isolation,
+forbidden dependencies, resource access, and freeze identity.
+
+The benchmark separates task packages from mutable working-tree state. Paper
+results must be evaluated against the frozen materialization identified by the
+active suite manifest. A source mismatch, unavailable locked dependency,
+evaluator defect, or context-policy violation is an eligibility or
+infrastructure outcome rather than a model failure.
+
+\subsection{Run Protocol and Evidence Collection}
+
+Each run follows a setup--execution--evaluation pipeline
+(Figure~\ref{fig:pipeline}). Setup materializes the pinned task workspace and
+records task, source, model, runtime, prompt, budget, and container identity.
+During execution, the agent may inspect the full repository, use shell and
+editing tools, run legal self-tests, and modify its submission workspace. The
+runner collects the final submission tree, model usage, actions, errors, and
+workspace snapshots. Evaluation installs the submission in a Dockerized
+offline environment and applies build, Public, Hidden, and isolation checks.
+
+Each task attempt produces four evidence layers: (1) the final artifact,
+(2) the agent trajectory and process status, (3) token, step, time, context,
+and resource statistics, and (4) the task-level deterministic evaluator result.
+The evaluator result is authoritative for Functional Pass. Agent completion or
+runner status is reported separately because an agent may hit a step limit after
+leaving a passing package, or may report completion while its artifact fails.
+
+\subsection{Metrics}
+
+\paragraph{Functional Pass@1.}
+A task receives one functional point only if all gates in
+Equation~\ref{eq:functional} pass. Functional failures receive one exclusive
+first-failure stage:
+\begin{equation}
+  \text{missing} \rightarrow \text{build} \rightarrow \text{public}
+  \rightarrow \text{hidden} \rightarrow \text{isolation}.
+\end{equation}
+Infrastructure and evidence-availability flags are reported separately from
+semantic model outcomes.
+
+\paragraph{Compactness.}
+For a functionally passing submission $P$ with evaluator-side feasible
+reference $P_{\mathrm{ref}}$, we report
+\begin{equation}
+  \operatorname{RRES}(P)
+  = \frac{\operatorname{normalized\_size}(P)}
+         {\operatorname{normalized\_size}(P_{\mathrm{ref}})}.
+  \label{eq:rres}
+\end{equation}
+\rres is accompanied by file, copied-code, and dependency-footprint
+diagnostics where evidence is available. It is reported only on functional
+passes. Cross-method compactness comparisons use the same-task subset on which
+both methods pass.
+
+\paragraph{Process and cost.}
+Tokens, steps, latency, completion status, and resource failures are diagnostic
+metrics. On passing trajectories with replayable package snapshots, $T^*$ is
+the earliest cumulative token point at which a unique package tree passes the
+evaluator. $T^*$ is undefined for failing trajectories and is not itself a
+deployable stopping rule.

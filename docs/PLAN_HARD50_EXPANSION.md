@@ -117,6 +117,8 @@ STATUS：新 suite 行；旧 `python200-full-repository-no-hint-20260801-v1` 标
 - [x] 扩满 50 + `python200_hard_tasks/` release（suite `python200-hard-full-repository-no-hint-unreleased`）
 - [x] 余 40 Flash（功能 25/40=62.5%；Hard-50 合计 29/50=58%）
 - [x] 6 道换题 Flash：功能 **6/6**（suite 5 passed / 1 failed=`pika` agent exit 86，但 `functional_gate=1.0`）；通过解 RRES 0.10–0.72。Hard-50 拼回 **29/50 = 58%**（带内）
-- [x] 重建 `hard50/` + `python200_hard_tasks/` + `python200_hard_registry`（digest `6b1cac758212…`；suite 仍 `python200-hard-full-repository-no-hint-unreleased`）。**尚未**跑整套 200 Flash
+- [x] 重建 `hard50/` + `python200_hard_tasks/` + `python200_hard_registry`（digest `6b1cac758212…`；suite 仍 `python200-hard-full-repository-no-hint-unreleased`）
 - [x] 合并 150 taxonomy + Hard-50 ledger 为 Python-200' 分析层表（`python200_hard_v1`）
-- [ ] 新主表 150+Hard-50 整套 200 Flash（干净 freeze checkout）；E50 旁路分列
+- [x] 结果包接收与离线审计：原始 headline 132/200；17 题未启动、16 题依赖失败、59 题 context violation
+- [x] 冻结严格替换集合：三类问题按 task ID 去重为 84 题；固定子集 95/116
+- [ ] 结果资格闭环：修复离线依赖与 freeze-spec mismatch，严格替换 84 题并按 task ID 合并

@@ -1,6 +1,6 @@
 # Hidden contract provenance audit
 
-> **Status: in progress · Agent adjudication planned · Started: 2026-08-20**
+> **Status: current candidate remediation complete; historical consensus still pending · Started: 2026-08-20 · Last checked: 2026-08-31**
 > 这是 RQ4 机制标注，不是新 Agent 方法。不看 Hidden 测试源码当「仓库证据」。
 > 切片：Flash Main Hidden-failure 并集 33 题。
 
@@ -61,3 +61,23 @@ Flash No-Hint Main-200 Hidden 首败并集（本地 0812 ∪ API）：
 初标 **Underdetermined 过半**，但容易把「没逐字写进 spec」标成这一档。论文表前必须由两个独立 Agent 按同一公开输入复核 Underdetermined vs Recoverable；错误字符串、JSON 空格、`__all__` 黑名单等冲突保持 `abstain`，不强行归类。该 Agent 审计本身不是 human gold。
 
 不要把这 33 题分布写成 Qwen/OSS 结论。不要据此改 Hidden 测试。
+
+## Python-200′ current-candidate remediation
+
+The 18 `Underdetermined` labels above describe historical task revisions and
+remain unchanged as provenance. For the current `python200_hard` candidate:
+
+- 17/18 tasks are in Python-200′; `joserfc__jwt_claims_core__001` belongs to the
+  superseded External-50 and is not in the paper suite;
+- 11 current tasks now make the disputed obligation explicit in `public_spec`;
+- 6 current tasks narrow evaluator assertions that required an unjustified exact
+  string, index convention, denylist, or serialization spelling;
+- therefore the current candidate has **0 unresolved items from this preliminary
+  18-task blocker list**.
+
+Machine-readable ledger:
+[`python200_prime_candidate_rejudgement_20260831.json`](../artifacts/research_analysis/hidden_provenance/python200_prime_candidate_rejudgement_20260831.json).
+
+This is an AI-assisted maintainer rejudgement, not independent human gold. It
+does not retroactively make the old Flash-33 labels or old model runs eligible
+for the new freeze.

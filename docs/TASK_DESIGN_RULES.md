@@ -1,6 +1,6 @@
 # FeatureLiftBench Task Design Rules（规格宪法）
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-31**
 
 - **状态：** 当前 Full-Repository / No-Hint task contract 规范
 - **效力：** 主榜入库与新题/晋升的权威规则；与旧文档冲突时以本文为准
@@ -17,6 +17,30 @@ FeatureLiftBench 评估：在提供完整公开功能契约与完整 pinned 上�
 紧凑的功能模块。
 
 Benchmark **不规定** Agent 的探索、推理、测试或停止流程；任何方法只要遵守相同的可见信息、工具环境与输出约束，均可参与评测。
+
+### 0.1 所有任务共享的完整功能责任
+
+所有 Agent workspace 的 TASK 必须由 renderer 注入统一前提，且任务不得覆盖、
+弱化或省略：
+
+> Agent 必须把目标功能视为一个完整的 task-scoped module，而不是若干孤立示例。
+> Agent 负责主动检查完整上游仓库中的源码、测试、文档、示例、配置与资源，恢复
+> 实现位置、可观察契约、边界与异常语义、状态行为以及传递代码和数据闭包。
+
+该前提按以下方式解释：
+
+1. `Target API + Required Behavior + Constraints + Exclusions` 构成穷尽的
+   **scope boundary**；范围内全部义务均为强制，范围外 upstream 功能不要求实现。
+2. TASK 中的例子用于说明语义，**不是**允许 Agent 只拟合的测试 case list。
+3. Agent 必须从完整仓库证据中恢复范围内未逐一展开的具体输入组合、边界、异常、
+   状态、资源和依赖语义。
+4. Hidden 可以加深范围内的案例与组合，但不得新增范围外 API、行为类别、环境假设，
+   或一个无法从公开范围与上游证据合理发现的义务。
+5. “完整功能”始终指完整实现任务划定的功能切片，不等于复刻整个上游仓库。
+
+该文字属于 Main 协议级 invariant，由 `render_agent_workspace_task()` 统一注入，
+稳定标识为 `featureliftbench.complete_feature_responsibility.v1`，不由每道任务
+重复人工维护，因此不会形成第二份 task-specific 规格源。
 
 论文路线是 **Benchmark 基础 + 方法研究**：先冻结规格与评测口径，再在合规任务上验证 Contract/API closure recovery；不提前承诺某一工具有效。
 
@@ -117,6 +141,11 @@ optional_api: []
 
 每条必须有稳定 `id`（如 `B001`）。描述可不暴露具体 hidden 输入样本，但须使合理实现者知道义务。
 
+Behaviors 应完整覆盖功能切片的义务类别，但不需要列举 evaluator 的每个具体输入。
+出题者必须保证：合理 Agent 能先从 TASK 判断需要恢复哪些契约，再从完整仓库的
+tests/docs/examples/source 中找到足够证据确定具体语义。不得用“请自行发现”为由
+隐藏任务范围、Required API 或新的行为类别。
+
 ### 2.3 其它公开字段
 
 - `exclusions`：明确不做的能力；hidden 不得要求 exclusions 内行为。
@@ -202,6 +231,9 @@ Benchmark 只规定：
 
 不规定 Agent 必须维护何种中间状态或采用何种推理顺序。
 
+Agent workspace 的 TASK 在 task-specific `public_spec` 之外统一包含
+`Complete Feature Responsibility` 协议段，明确自主契约恢复与完整交付责任。
+
 ---
 
 ## 6. 实验臂（语义契约不变）
@@ -263,14 +295,16 @@ visibility、public-test feedback 或非语义文风；每次只能归因于明�
 24. 日志/缓存不暴露 hidden 内容。
 25. 完整 `repo/` 保留 upstream tracked tests/docs/examples/config/resources；
     所有排除都服从统一、非目标相关规则。
+26. 所有 compliant Main workspace TASK 均包含 renderer 注入的
+    `Complete Feature Responsibility`，且任务不能以 metadata 覆盖该前提。
 
 ### 7.5 任务有效性
 
-26. 空实现 / 简单 stub 必须失败。
-27. 仅拟合浅层基础测试的方案应被 hidden 区分。
-28. 直接 import 原仓必须失败。
-29. 整仓复制可以 functional pass，但须在独立 compactness 指标中明显差。
-30. 不依赖随机网络、墙钟时间或机器特定环境（除非规格显式声明且可复现）。
+27. 空实现 / 简单 stub 必须失败。
+28. 仅拟合浅层基础测试的方案应被 hidden 区分。
+29. 直接 import 原仓必须失败。
+30. 整仓复制可以 functional pass，但须在独立 compactness 指标中明显差。
+31. 不依赖随机网络、墙钟时间或机器特定环境（除非规格显式声明且可复现）。
 
 ---
 

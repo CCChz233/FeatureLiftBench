@@ -1,6 +1,6 @@
 # Incremental Task Rules
 
-> **Documentation status: current · Last verified: 2026-08-29**
+> **Documentation status: current · Last verified: 2026-08-31**
 
 本文规定新任务进入 Python Main 的生命周期。出题宪法见
 [TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md)，package schema 见
@@ -14,10 +14,12 @@
 2. 来源必须先进入 canonical source registry；Main 不接受 target-aware
    source slice。
 3. `public_spec` 是唯一公开契约，`TASK.md` 由它生成。
-4. public/hidden/evaluation/reference 都是 private evaluator assets。
-5. promotion 依赖可执行证据，不依赖文档宣称。
-6. 独立人工审核不是硬门禁；若使用人工复核，按真实 provenance 报告。
-7. 任务或 source 变化后必须生成新的 benchmark freeze。
+4. 所有 Agent workspace TASK 由 renderer 统一注入完整功能责任：目标功能是
+   完整 task-scoped module，Agent 必须从完整仓库自主恢复具体契约与闭包。
+5. public/hidden/evaluation/reference 都是 private evaluator assets。
+6. promotion 依赖可执行证据，不依赖文档宣称。
+7. 独立人工审核不是硬门禁；若使用人工复核，按真实 provenance 报告。
+8. 任务或 source 变化后必须生成新的 benchmark freeze。
 
 ## Lifecycle
 
@@ -92,6 +94,7 @@ metadata 可没有 `status=main`；新任务应显式记录。
 - `evaluation_spec` 双向映射；
 - hidden 不引入新 API/behavior；
 - `TASK.md` hash 与 `public_spec` 一致；
+- Agent workspace TASK 包含统一完整功能责任前提，且单题不能覆盖或弱化；
 - Main workspace 无 entrypoints、paths、symbols、lines 或 closure hints。
 
 ### 4. Package gate

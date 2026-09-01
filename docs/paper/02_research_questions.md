@@ -111,8 +111,11 @@ into the OpenHands Python-200 Main table.
 
 ## Evidence order
 
-1. 论文主表是 Python-200'（150+Hard-50），**尚未出分**。旧跨模型 Python-200
-   （150+E50，21.5%–72.5%）见 [STATUS.md](../STATUS.md)，只作 superseded 对照。
+1. 论文主表是 Python-200'（150+Hard-50）。DeepSeek V4 Flash 收到包的 audit
+   headline 为 132/200（66.0%），但 17 题未启动、16 题依赖失败、59 题 context
+   violation，去重后需严格替换 84 题；当前没有合格 RQ1 主表分。旧跨模型
+   Python-200（150+E50，21.5%–72.5%）见
+   [STATUS.md](../STATUS.md)，只作 superseded 对照。
 2. DeepSeek 旧 Python-200 上可报告 RQ1–RQ4 机制（Main vs 已退役 Lite V1），换套件后
    主表数字要重跑。
 3. Cost arm：**Qwen3.6-35B V1-200 已完成**（55/200，旧套件）；Flash 全量 V1 未跑，

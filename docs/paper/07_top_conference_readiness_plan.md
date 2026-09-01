@@ -1,6 +1,6 @@
 # 顶会投稿就绪路线图
 
-> **Status: active execution plan · Last updated: 2026-08-28**  
+> **Status: active execution plan · Last updated: 2026-08-29**
 > 目标：把 FeatureLiftBench 收敛成一篇以 benchmark 和 empirical study 为主的顶会论文。  
 > 原则：停止继续发散新 Agent 方法；优先补齐 **Python-200'（150+Hard-50）** 的
 > 分析层、干净主表和可复现性。
@@ -11,7 +11,9 @@
 
 当前真正的 blocker 不再是「E50 混进主表却没拆开」——E50 已降为旁路——而是：
 
-1. Python-200' 整套 Flash **未跑**，不能把旧 72% 当新主表；
+1. Python-200' Flash 收到包有 **132/200 audit headline**，但 17 题未启动、16 题离线
+   依赖失败、59 题 context violation；严格替换集合为 84 题，不能把它或旧 72%
+   直接当最终新主表；
 2. 150 工作树相对 freeze 有 drift，脏树上的 200 分不能当冻结分；
 3. 150 分析层未与 Hard-50 ledger 合并；
 4. Hidden 合同出处审计仍按原路线进行，不阻塞分析层合并。
@@ -81,7 +83,7 @@ discussion。
 **失败处理**：只修协议和 runner，不扩大案例、不调高预算掩盖失败。
 
 **建议输出目录**：
-`reports/agentic_evidence/runs/flash33-distlib-tool-smoke-r4-<date>/`
+`experiments/validation/agentic_evidence/runs/flash33-distlib-tool-smoke-r4-<date>/`
 
 ### Gate 1：Flash-33 Agent provenance 审计
 
@@ -147,8 +149,9 @@ discussion。
 必须先完成：
 
 - ~~合并 150 taxonomy CSV 与 Hard-50 ledger~~（已完成：`python200_hard_v1`）；
-- 在 **干净 freeze checkout** 上跑 Python-200' Flash（评测根
+- ~~接收并审计 Python-200' Flash 包~~（原始 headline 132/200；评测根
   `benchmark/python200_hard_tasks/`，registry `python200_hard_registry.json`）；
+- 修复 16 个离线依赖、解决 17 个 freeze-spec mismatch，并对冻结的 84 题严格替换；
 - 列 **150 / Hard-50 / Python-200'**，禁止混入 E50 90%–94%。
 
 然后对主表输出：
@@ -238,7 +241,7 @@ provenance 初标，以及任何 `summary.passed` 计数。
 - [ ] 冲突不会被 severity 规则覆盖；
 - [ ] 所有非 abstain 标签都有可重放公开引用；
 - [ ] Hidden sensitivity 已完成，且主结论对 unresolved 的处理方式透明；
-- [ ] Python-150 / Hard-50 的通过率和 copy/compactness 已拆分；
+- [x] Python-150 / Hard-50 的通过率和 copy/compactness 已拆分；
 - [x] Python-200' 分析层（taxonomy × lift × copy-trap）已合并；
 - [ ] 关键比较有正确的 paired policy 和区间；
 - [ ] 至少完成 DeepSeek 24-task 三次运行稳定性检查，或在 limitations 中明确延期；
@@ -251,7 +254,8 @@ provenance 初标，以及任何 `summary.passed` 计数。
 当前下一步只做（与组会口径一致）：
 
 1. Python-200' 分析层已合并（`python200_hard_task_taxonomy.csv`）；
-2. 在干净 freeze checkout 上规划 / 跑 Python-200' Flash；不要在脏 150 树上写冻结主表；
+2. 收到包 audit headline 为 132/200；按冻结清单修复依赖与 freeze mismatch，并对
+   84 题做严格替换、按 task ID 合并，闭环前不要写冻结主表；
 3. Hidden provenance 仍按 Gate 0→1→2 推进，不阻塞第 1 步；
 4. 生成 150 / Hard-50 RRES 分解；E50 只作旁路；
 5. 跑 24-task stability（在 200' 主表之后分层抽样）；
@@ -259,7 +263,8 @@ provenance 初标，以及任何 `summary.passed` 计数。
 7. 冻结 paper bundle，开始写正文。
 
 在 Gate 1 和 Gate 2 完成前，不把当前 Hidden 初标写成论文金标结论。
-在 Python-200' Flash 出分前，不把旧 72% 写进摘要。不再扩展新的 Agent 方法。
+在 Python-200' 严格替换结果通过全部资格门前，不把 132/200 或旧 72% 写进
+摘要。不再扩展新的 Agent 方法。
 
 相关入口：
 

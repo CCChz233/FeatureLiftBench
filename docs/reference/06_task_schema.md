@@ -1,6 +1,6 @@
 # Task Schema
 
-> **Documentation status: current · Last verified: 2026-08-04**
+> **Documentation status: current · Last verified: 2026-08-31**
 
 任务包是 maintainer/evaluator 资产，不等于 Agent workspace。公开契约和门禁
 见 [TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md)，source 规则见
@@ -111,7 +111,7 @@ benchmark/sources/archives/<content-addressed>.tar.gz  # local/ignored
 
 ```text
 workspace/
-  TASK.md
+  TASK.md                  # task-specific public_spec + 全局完整功能责任前提
   repo/                    # registry archive 物化的完整 source tree
   requirements.lock
   submission/
@@ -129,6 +129,12 @@ source entrypoints or hints
 
 上游仓库自身的 tests/docs/examples/config/resources 属于完整 source tree，
 仍可见。
+
+`TASK.md` 的 task-specific 部分仍由 `metadata.public_spec` 单一生成；运行时
+renderer 额外注入全局 `Complete Feature Responsibility` 协议段，要求 Agent
+把目标视为完整 task-scoped module，并主动从完整仓库恢复实现位置、具体契约
+语义和传递闭包。该全局段不由单题 metadata 维护，不改变 scope boundary，
+也不能成为 Hidden 扩展未公开义务的依据。
 
 ## Submission
 

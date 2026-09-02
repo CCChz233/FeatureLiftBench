@@ -3,13 +3,13 @@
 # test-blind Main/Public-feedback run.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 usage() {
   cat >&2 <<'EOF'
 Usage:
-  harness/scripts/run_python_hard50_compliant_ablation.sh [options]
+  harness/scripts/archive/run_python_hard50_compliant_ablation.sh [options]
 
 Options:
   --run-id ID       Stable run directory suffix (default: timestamp).

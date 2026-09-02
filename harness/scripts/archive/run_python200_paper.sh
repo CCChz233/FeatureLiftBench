@@ -2,7 +2,7 @@
 # Run the frozen Python-150 plus the balanced External-50 as one paper suite.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 usage() {

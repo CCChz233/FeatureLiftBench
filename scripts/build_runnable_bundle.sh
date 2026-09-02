@@ -123,7 +123,7 @@ python3 benchmark/selection/scripts/materialize_python200_release.py --check
 python3 benchmark/selection/scripts/audit_python200_balance.py --check
 python3 benchmark/selection/scripts/audit_python200_wheels.py --python-version 311
 
-./harness/scripts/run_python200_paper.sh <openhands-profile> <run-id>
+./harness/scripts/archive/run_python200_paper.sh <openhands-profile> <run-id>
 # add --execute after plan looks correct
 \`\`\`
 

@@ -2,7 +2,7 @@
 # Prepare or explicitly execute one frozen-paper OpenHands run on hard-extension-50.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 usage() {

@@ -4,7 +4,7 @@
 # Usage:
 #   ./setup.sh
 #   # edit .env with API keys if preflight warns
-#   ./harness/scripts/run_python150_paper.sh <openhands-profile>
+#   ./harness/scripts/archive/run_python150_paper.sh <openhands-profile>
 #
 # Optional env:
 #   PYTHON=python3.12  VENV_DIR=.venv  SKIP_MINI=1  MINI_BIN=/path/to/mini
@@ -128,7 +128,7 @@ Setup complete.
 
 Canonical Python-200 plan (no API call):
 
-  ./harness/scripts/run_python200_paper.sh openhands_deepseek_v4_flash
+  ./harness/scripts/archive/run_python200_paper.sh openhands_deepseek_v4_flash
 
 Same CLI level as OpenHands, after this bootstrap:
 

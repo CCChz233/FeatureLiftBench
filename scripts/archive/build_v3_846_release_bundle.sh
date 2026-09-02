@@ -117,7 +117,7 @@ No-Hint release. It intentionally excludes machine-local \`.env\` and
 
 After unpacking, run \`PYTHON=python3.12 SKIP_MINI=1 ./setup.sh\`, create the
 machine-local config files, build the agent/evaluator Docker images, and use
-\`harness/scripts/run_python150_paper.sh\`. Add \`--execute\` only after the
+\`harness/scripts/archive/run_python150_paper.sh\`. Add \`--execute\` only after the
 plan-only invocation succeeds.
 EOF
 

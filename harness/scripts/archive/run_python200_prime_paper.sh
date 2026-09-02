@@ -2,7 +2,7 @@
 # Run the frozen Python-200-prime paper suite (Python-150 + promoted Hard-50).
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 usage() {

@@ -9,7 +9,7 @@
 # - one agent attempt per task (Pass@1; rate-limit retries are infra retries)
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
 usage() {

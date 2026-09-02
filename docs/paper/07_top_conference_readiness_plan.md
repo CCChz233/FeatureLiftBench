@@ -273,5 +273,5 @@ provenance 初标，以及任何 `summary.passed` 计数。
 - [Hidden Contract Provenance](../HIDDEN_CONTRACT_PROVENANCE.md)
 - [Known Limitations](limitations.md)
 - [Reports index](../../reports/README.md)
-- [External-50 → Python-150 工程规格](../PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
+- [External-50 → Python-150 工程规格](../archive/plans/PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)
   （Gate 3 的建设路径；独立 freeze，不并进 150）

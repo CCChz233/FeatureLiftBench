@@ -1,13 +1,13 @@
 # FeatureLiftBench 运行速查
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > 完整服务器流程见 [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md)，
 > 当前 release 事实见 [STATUS.md](docs/STATUS.md)。
 > 实验轴是 **benchmark × agent × method**（`--arm` 是 `--method` 的别名）。
 
 只认两个启动方式：`./scripts/run_benchmark.sh` 与安装后的 `featureliftbench` CLI。
 根目录 `run_benchmark.sh` / `run_experiment.sh` 是薄转发。其它根目录 `run_*.sh`
-已弃用，见 [scripts/README.md](scripts/README.md)。
+已删除，见 [scripts/README.md](scripts/README.md)。
 
 ## Setup
 
@@ -27,7 +27,7 @@ cp harness/config/agents.example.toml harness/config/agents.toml
 ## 论文主套件（Python-200'）
 
 冻结 Python-150 + Hard-50。**整套 Flash 未出分。** 不要用
-`./harness/scripts/run_python200_paper.sh`（仍指向已 superseded 的 150+External-50）。
+`./harness/scripts/archive/run_python200_paper.sh`（仍指向已 superseded 的 150+External-50）。
 
 ```bash
 ./scripts/run_benchmark.sh \
@@ -48,7 +48,7 @@ PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog list
 PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog check
 ```
 
-`--arm` 等于 `--method`。`./harness/scripts/run_python200_paper.sh` 仍会跑旧
+`--arm` 等于 `--method`。`./harness/scripts/archive/run_python200_paper.sh` 仍会跑旧
 150 freeze check，不能用来写新主表。
 
 ## 无模型调用的套件检查
@@ -64,7 +64,7 @@ PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog check
 旧 150+External-50 的 plan-only（历史套件，不是新主表）：
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   <openhands-profile> \
   python200-plan
 ```
@@ -114,7 +114,7 @@ Runtime ablation 输出在
 落在该旧套件上，不要写成 200' 通过率。
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   <openhands-profile> \
   <run-id> \
   --workers <n> \

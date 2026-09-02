@@ -27,7 +27,7 @@ snapshot sampling means reported \(T^\*/T_{\mathrm{total}}\) is an **upper
 bound**; those upper bounds are still below 2M, so the 2M-cap question is
 unaffected.
 
-Analysis: [TOKEN_UTILITY.md](../TOKEN_UTILITY.md). Snapshots:
+Analysis: [TOKEN_UTILITY.md](../archive/snapshots/TOKEN_UTILITY.md). Snapshots:
 [`token_utility_phase1_20260818.json`](../../artifacts/research_analysis/current_results/token_utility_phase1_20260818.json),
 [`token_utility_phase1_cross_e50_20260818.json`](../../artifacts/research_analysis/current_results/token_utility_phase1_cross_e50_20260818.json),
 [`token_utility_characterize_20260818.json`](../../artifacts/research_analysis/current_results/token_utility_characterize_20260818.json).

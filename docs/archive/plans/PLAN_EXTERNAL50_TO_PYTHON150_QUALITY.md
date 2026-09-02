@@ -1,9 +1,9 @@
 # Plan: External-50 一天合同升格
 
-> **Documentation status: reference · Created: 2026-08-26 · Last verified: 2026-08-29**  
+> **Status: archived · Last verified: 2026-09-02**
 > **执行日：2026-08-27。合同升格已完成**（见文末进度）。不是当前跑分入口。  
 > 剩余 copy-all / 独立 freeze 仍按本文，且 **不并进 Python-150、不进 Python-200' 主表**。  
-> 扩题已结束：[archive/plans/PLAN_EXTERNAL50_EXPANSION.md](archive/plans/PLAN_EXTERNAL50_EXPANSION.md)  
+> 扩题已结束：[archive/plans/PLAN_EXTERNAL50_EXPANSION.md](PLAN_EXTERNAL50_EXPANSION.md)  
 > 难度对齐的新 50 题不改本 split，见 [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md)。
 
 ## 当天完成定义
@@ -68,7 +68,7 @@ PYTHONPATH=harness python3 -B -m featureliftbench.cli validate-task \
 
 ## 规范
 
-[TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) · [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md) · [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)
+[TASK_DESIGN_RULES.md](../../TASK_DESIGN_RULES.md) · [HIDDEN_CONTRACT_PROVENANCE.md](../../HIDDEN_CONTRACT_PROVENANCE.md) · [07_incremental_task_rules.md](../../reference/07_incremental_task_rules.md)
 
 ## 进度
 

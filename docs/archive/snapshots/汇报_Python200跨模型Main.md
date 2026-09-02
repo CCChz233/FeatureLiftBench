@@ -1,9 +1,9 @@
 # Python-200 跨模型 Main
 
-> **Status: current · Last verified: 2026-08-28**  
+> **Status: archived · Last verified: 2026-09-02**
 > 用途：组会 / 汇报直接投屏。  
 > **这是旧 Python-200（150 + External-50），不是论文新主表。**  
-> 新主套件见 [STATUS.md](STATUS.md) 与 [汇报_题集构成.md](汇报_题集构成.md)。  
+> 新主套件见 [STATUS.md](../../STATUS.md) 与 [汇报_题集构成.md](汇报_题集构成.md)。  
 > 条件：Full-Repository / No-Hint Main，120 步，每题一次。  
 > 指标：evaluator `functional_gate`；`summary.passed` / `run.status` 只作运行诊断。  
 > **不是**当前 V1（Main+2M），也不是旧 Lite V1 checker/repair 协议。
@@ -51,8 +51,8 @@ Qwen3.5 几乎总能交卷并过 build。
 - Qwen3.6-35B External-50 的 `run.status` 几乎全失败，但 Functional 仍是 36/50。
 - 通过题 RRES 中位数全贴 1.000，是 External-50 copy-heavy；跨模型不能比紧凑度。
 - 不要把这张表和当前 V1、旧 Lite V1、Rescue+、V2、Core-12 混在一起。
-- Qwen V1-200 已完成（55/200），解释在 [FINDINGS.md](FINDINGS.md)，不要写进本表。
+- Qwen V1-200 已完成（55/200），解释在 [FINDINGS.md](../../FINDINGS.md)，不要写进本表。
 
-证据：[STATUS.md](STATUS.md) ·
-[`python200_cross_model_main_20260818.json`](../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json)。
+证据：[STATUS.md](../../STATUS.md) ·
+[`python200_cross_model_main_20260818.json`](../../../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json)。
 DeepSeek 方法对比仍看 [汇报_实验结果表.md](汇报_实验结果表.md)。

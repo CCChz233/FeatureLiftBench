@@ -1,9 +1,9 @@
 # RQ6 Public-feedback
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: archived · Last verified: 2026-09-02**
 > 本文件是 **RQ6 Public-feedback** 信息消融的唯一规范。不是新 agent 方法，
-> 数字不进 Python-200 主表。解释见 [FINDINGS.md](FINDINGS.md)；论文稿见
-> [paper/04_results_rq6.md](paper/04_results_rq6.md)。
+> 数字不进 Python-200 主表。解释见 [FINDINGS.md](../../FINDINGS.md)；论文稿见
+> [paper/04_results_rq6.md](../../paper/04_results_rq6.md)。
 > Flash-12 同日成对 **已冻结**。不要扩到 Python-200'。
 
 ## 定义
@@ -28,13 +28,13 @@ evaluator 运行。
 artifact-aware、recency、pre-submit audit、checker 或 repair。
 `run_python200_paper.sh --execute` 会拒绝 `mount_public_tests`。
 
-机器可读冻结：[`harness/config/methods/rq6_public_feedback.json`](../harness/config/methods/rq6_public_feedback.json)。
+机器可读冻结：[`harness/config/methods/rq6_public_feedback.json`](../../../harness/config/methods/rq6_public_feedback.json)。
 
 ## 切片
 
 Flash-12：从 Flash Main-200（本地 0812 与 API 的交集）各取 6 道
 `public_failure` 与 6 道 `hidden_failure`。清单
-[`rq6_public_feedback_flash12_v1.txt`](../harness/config/experiments/rq6_public_feedback_flash12_v1.txt)。
+[`rq6_public_feedback_flash12_v1.txt`](../../../harness/config/experiments/rq6_public_feedback_flash12_v1.txt)。
 
 同日必须重跑这 12 题的 Main。不得用数周前的 145/200 套件当 n=12 对照。
 
@@ -76,7 +76,7 @@ PYTHONPATH=harness python3 harness/scripts/compare_rq6_public_feedback.py \
 ## 当前证据（Flash-12 已齐）
 
 套件：`experiments/ablations/public_feedback/flash12-deepseek-v4-flash-20260819-220335/`。
-快照：[`rq6_public_feedback_flash12_20260820.json`](../artifacts/research_analysis/current_results/rq6_public_feedback_flash12_20260820.json)。
+快照：[`rq6_public_feedback_flash12_20260820.json`](../../../artifacts/research_analysis/current_results/rq6_public_feedback_flash12_20260820.json)。
 
 - 端点：DeepSeek API Flash；信封如上。挂载完整性：Main 12/12 未挂，Public-feedback 12/12 已挂。
 - 同日 Main：**0/12** `functional_gate`。`bleach` 无 submission，Main 未评测。

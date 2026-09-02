@@ -1,10 +1,10 @@
 # Hard-50 选题矩阵（冻结草稿）
 
-> **Status: current · Last verified: 2026-08-28**  
-> 权威机读副本：[`benchmark/selection/hard50_selection_matrix.json`](../benchmark/selection/hard50_selection_matrix.json)  
+> **Status: archived · Last verified: 2026-09-02**
+> 权威机读副本：[`benchmark/selection/hard50_selection_matrix.json`](../../../benchmark/selection/hard50_selection_matrix.json)  
 > 配额是目标，不是为贴标签而假 Composite。50 selected 已落地；`direct_tooling_copytrap` 是 RQ2 选题格，不是第 11 个 feature family。
 
-对应论文轴见 [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md) 与 [paper/02_research_questions.md](paper/02_research_questions.md)。
+对应论文轴见 [PLAN_HARD50_EXPANSION.md](PLAN_HARD50_EXPANSION.md) 与 [paper/02_research_questions.md](../../paper/02_research_questions.md)。
 
 ## 机制族 × 目标 n
 
@@ -29,7 +29,7 @@ Lift 贴近 Python-150：**Adapted 25 / Composite 13 / Direct 12**（50% / 26% /
 
 - `level`: **high**
 - types: **≥2**，优先含 `implicit_dependency_coupling` 或 `framework_coupling`
-- 分析字段默认不进 TASK（[TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) §2.4）
+- 分析字段默认不进 TASK（[TASK_DESIGN_RULES.md](../../TASK_DESIGN_RULES.md) §2.4）
 
 ## 仓规模
 

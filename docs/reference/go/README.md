@@ -12,4 +12,4 @@ Go language split 设计文档（calibration / seed 阶段，非 paper-ready Pyt
 | [03_go_difficulty_rubric.md](03_go_difficulty_rubric.md) | 难度 rubric |
 | [04_go_task_examples.md](04_go_task_examples.md) | 示例（含 placeholder 说明） |
 
-按题设计笔记：[../go_task_designs/](../go_task_designs/)
+按题设计笔记：[../go_task_designs/](../go_task_designs)

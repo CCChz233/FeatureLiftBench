@@ -1,6 +1,10 @@
 # Failure Taxonomy
 
-> **Documentation status: current · Last verified: 2026-08-20**
+> **Documentation status: current · Last verified: 2026-09-01**
+
+> 仓库级操作规范、字段约束、人工复核和论文分母以
+> [`docs/FAILURE_ANALYSIS_PROTOCOL.md`](../FAILURE_ANALYSIS_PROTOCOL.md) 为准。
+> 本文保留论文叙事所需的精简分类和历史解释。
 
 ## Labeling policy
 
@@ -178,3 +182,25 @@ Historical labeled evidence is in
 [`reports/failure_attribution_20260720/`](../../reports/failure_attribution_20260720)
 and [TRAJECTORY_FINDINGS.md](../reference/research_analysis/TRAJECTORY_FINDINGS.md), both under
 `mixed_snapshot_v1` conditions.
+
+## Python-200′ 2026-08-29 trajectory audit
+
+The current suite-specific first pass is
+[`failure_process_analysis.md`](../../reports/paper_analysis/python200_hard_main_20260829/failure_process_analysis.md).
+It adds a mandatory TASK–evaluator alignment gate before Agent attribution.
+
+- 34 initially plausible Agent-failure candidates；
+- 19 contract-aligned functional failures and 2 non-deliveries；
+- 6 contract-ambiguous cases excluded pending adjudication；
+- 7 evaluator-misaligned cases excluded and queued for task repair；
+- 17/19 aligned functional failures ended with an explicit completion or
+  verification claim；
+- among the 21 attributable cases, 16 are false contract closure, 2 are
+  non-delivery, 2 end at the step budget, and 1 explicitly prioritizes upstream
+  behavior over the task-scoped contract.
+
+These are assistant first-pass trajectory labels, not human gold annotations.
+The paper-safe mechanism claim is that current Agents frequently generate a
+substantial implementation but fail to build discriminating checks for the full
+observable contract. Do not report the original 34 as a clean Agent-failure
+denominator.

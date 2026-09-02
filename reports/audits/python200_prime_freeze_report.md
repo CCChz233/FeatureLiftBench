@@ -63,7 +63,7 @@ Oracle evidence 中记录的 evaluator image ID 与上述 evaluator digest 一�
 - Compactness 注册表：`benchmark/references/python200_prime_compactness.json`
 - Hidden 契约重审：`artifacts/research_analysis/hidden_provenance/python200_prime_candidate_rejudgement_20260831.json`
 - 正式冻结构建器：`scripts/build_python200_prime_final_freeze.py`
-- 正式主实验运行器：`harness/scripts/run_python200_prime_paper.sh`
+- 正式主实验运行器：`harness/scripts/archive/run_python200_prime_paper.sh`
 
 正式冻结可重复自校验：
 
@@ -88,7 +88,7 @@ python3.12 scripts/build_python200_prime_final_freeze.py --check \
 正式启动会调用模型 API 并产生费用，因此必须在明确批准后执行：
 
 ```bash
-harness/scripts/run_python200_prime_paper.sh \
+harness/scripts/archive/run_python200_prime_paper.sh \
   openhands_deepseek_v4_flash \
   python200-prime-deepseek-v4-flash-main-r1 \
   --workers 4 \
@@ -99,7 +99,7 @@ harness/scripts/run_python200_prime_paper.sh \
 中断后从同一目录续跑：
 
 ```bash
-harness/scripts/run_python200_prime_paper.sh \
+harness/scripts/archive/run_python200_prime_paper.sh \
   openhands_deepseek_v4_flash \
   --workers 4 \
   --timeout 3600 \

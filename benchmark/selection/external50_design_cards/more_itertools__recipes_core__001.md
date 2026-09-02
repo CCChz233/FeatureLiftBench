@@ -13,7 +13,7 @@
 **lift_review_flag:** Confirm Direct; recipes module is usually direct extract
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

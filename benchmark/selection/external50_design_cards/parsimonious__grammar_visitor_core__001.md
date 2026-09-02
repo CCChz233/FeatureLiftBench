@@ -13,7 +13,7 @@
 **lift_review_flag:** Check whether Grammar+NodeVisitor is one documented workflow vs invented glue
 
 > Skim pass + pin resolved. Materialize next; staging only (no promote).  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

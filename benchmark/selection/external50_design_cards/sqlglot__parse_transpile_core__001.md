@@ -16,7 +16,7 @@
 **skim_notes:** Composite OK but large. Freeze dialects: sqlite, postgres, mysql. API: parse_one/parse/transpile/Expression.sql + ParseError. No optimizer/DB execute.
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

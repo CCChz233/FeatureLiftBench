@@ -1,6 +1,6 @@
 # V1：Main + 2M token cap
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > 本文件是当前 **V1** 方法的唯一规范。旧 `contract_closure_gate_lite_v1*`
 > 协议（checker / structure-stop / repair）已退役，只作历史对照。
 > 结果解释见 [FINDINGS.md](FINDINGS.md)；不要把 Core-12 写成 Python-200 通过率。
@@ -74,7 +74,7 @@ Qwen3.6-35B V1-200 **已经跑完**（旧套件 55/200），不要重复启动�
 Plan-only（旧 runner，含 150 freeze check）：
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   openhands_deepseek_v4_flash_v1 \
   python200-v1-plan
 ```
@@ -82,7 +82,7 @@ Plan-only（旧 runner，含 150 freeze check）：
 DeepSeek API 单进程复现：
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   openhands_deepseek_v4_flash_v1 \
   <run-id> \
   --execute
@@ -106,7 +106,7 @@ Qwen3.6-35B 四路并行当时用本机 tmux（`:8030`–`:8033`，各 50 题；
 合并后的正式 suite：
 `experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001/`
 
-题单：[`harness/config/experiments/python200_v1_shards/`](../harness/config/experiments/python200_v1_shards/)。
+题单：[`harness/config/experiments/python200_v1_shards/`](../harness/config/experiments/python200_v1_shards)。
 手动合并：
 
 ```bash

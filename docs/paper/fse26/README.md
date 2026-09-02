@@ -33,7 +33,7 @@ The Markdown argument draft is
 [../00_manuscript_zero_draft.md](../00_manuscript_zero_draft.md). The structural
 mapping to Harness-Bench is
 [../01_harness_bench_structure_mapping.md](../01_harness_bench_structure_mapping.md).
-Generated numeric tables live in [tables/](tables/) and are filled from the
+Generated numeric tables live in [tables/](tables) and are filled from the
 Python-150 exploratory CSVs plus the Python-200′ received-suite summary. They
 are not the eligible leaderboard.
 

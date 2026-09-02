@@ -16,7 +16,7 @@
 **skim_notes:** Adapted OK. Freeze Required API to parse_stylesheet + serialize + QualifiedRule/AtRule/ParseError. Drop parse_rule_list/parse_component_value_list from required.
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

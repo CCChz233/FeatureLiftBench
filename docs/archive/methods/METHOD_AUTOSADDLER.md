@@ -1,6 +1,6 @@
 # AutoSaddler-FLB (OpenHands 上的可行性试验)
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: archived · Last verified: 2026-09-02**
 > 目的：看 AutoSaddler 在 **FeatureLiftBench + OpenHands** 上有没有用。
 > 这不是 Official Main，也还没有正式分数。试出来的数不要写进 OpenHands 论文主表。
 
@@ -50,6 +50,6 @@ python -m autosaddler_featureliftbench.runner \
 需要 `.env`、Docker 评测镜像、OpenHands 在 `PATH` 里。输出在
 `experiments/methods/autosaddler_flb/causal_pilot_runs/`。
 
-Pin 与对接说明：[AUTOSADDLER_PIN.json](../integrations/autosaddler_featureliftbench/AUTOSADDLER_PIN.json) ·
-[integration README](../integrations/autosaddler_featureliftbench/README.md)。
+Pin 与对接说明：[AUTOSADDLER_PIN.json](../../../integrations/autosaddler_featureliftbench/AUTOSADDLER_PIN.json) ·
+[integration README](../../../integrations/autosaddler_featureliftbench/README.md)。
 微软仓不进本仓库 git；`autosaddler` 按 commit 安装。

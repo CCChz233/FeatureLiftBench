@@ -13,7 +13,7 @@
 **lift_review_flag:** none
 
 > Skim pass + pin resolved. Replaces `libcst__parse_transform_core__001` (native rename blocked). Staging only (no promote).  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

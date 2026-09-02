@@ -8,4 +8,4 @@
 | --- | --- | --- |
 | [autosaddler_featureliftbench](autosaddler_featureliftbench/README.md) | `autosaddler` | Prompt-only AutoSaddler V2；评测仍是 OpenHands Main |
 
-规范见 [METHOD_AUTOSADDLER.md](../docs/METHOD_AUTOSADDLER.md)。
+规范见 [METHOD_AUTOSADDLER.md](../docs/archive/methods/METHOD_AUTOSADDLER.md)。

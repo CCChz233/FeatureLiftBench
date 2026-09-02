@@ -14,7 +14,7 @@
 方法侧：**TFL 正式负结果已归档**（Functional **1/6**，相对 Main **−1**）。
 关键结论：**“会写测试”≠“会写与 FLB 目标语义对齐的测试”**。
 
-**扩题计划：** [PLAN_EXTERNAL50_EXPANSION.md](../../PLAN_EXTERNAL50_EXPANSION.md)  
+**扩题计划：** [PLAN_EXTERNAL50_EXPANSION.md](PLAN_EXTERNAL50_EXPANSION.md)  
 （总调度表 + [`external50_design_cards/`](../../../benchmark/selection/external50_design_cards)；当前阶段 = **填 design card**，非批量 materialize）。  
 契约审计本波可搁置。
 

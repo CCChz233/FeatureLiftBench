@@ -188,7 +188,7 @@ Qwen3-Coder 只有 Core-100 且使用 204,800 context，其余 450 条使用 131
 | scrapy item loader / DeepSeek | implementation | public pass、52 probes | missing-field error semantics | smaller discriminating probes |
 | license-expression / Qwen3.6-35B | verification | final edit 后未 fresh verify | AND/OR precedence | mandatory post-edit verification |
 
-每个案例的动态信号、Agent 已知信息、探针、condensation、遗漏可见性和证据路径见 [representative_case_dossiers.md](./representative_case_dossiers.md)。
+每个案例的动态信号、Agent 已知信息、探针、condensation、遗漏可见性和证据路径见 [representative_case_dossiers.md](representative_case_dossiers.md)。
 
 ## F. 证据边界
 
@@ -220,6 +220,6 @@ Qwen3-Coder 只有 Core-100 且使用 204,800 context，其余 450 条使用 131
 
 ## 方法与复现
 
-主表逐条连接 trajectory、usage/context audit、evaluator result/log、metadata、oracle manifest 和 taxonomy。阶段 A–N 保存于 [trajectory_stage_labels_550.csv](./trajectory_stage_labels_550.csv)。分析脚本为 [build_failure_attribution.py](./build_failure_attribution.py)，已完整执行的 notebook 为 [failure_attribution_analysis.ipynb](./failure_attribution_analysis.ipynb)。
+主表逐条连接 trajectory、usage/context audit、evaluator result/log、metadata、oracle manifest 和 taxonomy。阶段 A–N 保存于 [trajectory_stage_labels_550.csv](trajectory_stage_labels_550.csv)。分析脚本为 [build_failure_attribution.py](build_failure_attribution.py)，已完整执行的 notebook 为 [failure_attribution_analysis.ipynb](failure_attribution_analysis.ipynb)。
 
 符号识别、依赖闭包和动态机制标签采用保守启发式并保留 `yes/no/unclear` 与证据 ID；hidden-test 源代码不用于构造 Agent 行为特征。回归按 task 聚类稳健标准误，但仍是观察性模型。

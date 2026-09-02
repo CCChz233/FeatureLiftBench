@@ -1,6 +1,6 @@
 # Agent Runtime Ablation (DeepSeek Harness / Codex)
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > DeepSeek Harness 与 Codex 和 OpenHands 同级：clone 后跑 `./setup.sh` 即可调用。
 > 这不是 Official Main，也不是信息消融。**尚无正式分数**。
 

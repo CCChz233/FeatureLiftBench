@@ -1,6 +1,6 @@
 # 当前方法结论
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > 跨模型 Main leaderboard 只维护在 [STATUS.md](STATUS.md)。
 > **当前 cost arm V1 = Main + 2M cap**，规范见 [METHOD_V1.md](METHOD_V1.md)。
 > 指标定义见 [EVALUATION.md](EVALUATION.md)。
@@ -46,7 +46,7 @@ hidden-only 8，isolation 0。Direct / Adapted / Composite 的 60/68、63/100、
    已齐：Main **0/12** → Public-feedback **4/12**。public 失败 6/6 救回 public；
    hidden 失败成对 5 题里 4 题 Hidden 不动。yamale / wheel 两道 hidden 0→1，不是
    大量泄漏。数字不进 Python-200 主表。见
-   [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md) 与
+   [METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md) 与
    [paper/04_results_rq6.md](paper/04_results_rq6.md)。
 7. **Spec-adversarial 已 Kill。** Hidden-4 同日成对：Main **0/4** → SA **0/4**；
    Hidden 0→1 = **0/4**。过程上四题 checker 全绿，仍抬不动 Hidden。不要
@@ -54,8 +54,8 @@ hidden-only 8，isolation 0。Direct / Adapted / Composite 的 60/68、63/100、
    [archive/methods/METHOD_SPEC_ADVERSARIAL.md](archive/methods/METHOD_SPEC_ADVERSARIAL.md)。
 8. **Best-so-far checkpoint 已 Kill。** Flash 本地 Main 51 道失败题补评全部独特树，
    Functional 0→1 = **0/51**。不是「过关树被最后一棵覆盖」。不要实现 checkpoint
-   Agent。见 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
-9. Token 金标见 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)；论文 RQ3/RQ5 稿见
+   Agent。见 [TOKEN_UTILITY.md](archive/snapshots/TOKEN_UTILITY.md)。
+9. Token 金标见 [TOKEN_UTILITY.md](archive/snapshots/TOKEN_UTILITY.md)；论文 RQ3/RQ5 稿见
    [paper/03_results_token_utility.md](paper/03_results_token_utility.md)。
    Flash 通过题中位数 60% 的 token 花在已经 Functional Pass 之后，主要是自测。
    Direct \(T^\*/T\) 0.36、Composite 0.51；非正式难度分不开。不要写一条跨模型
@@ -179,7 +179,7 @@ Lite 多掉的题主要落在 Public / Hidden，不是 isolation。
 | Verification-aware | Distill-24 14/24 < 同日 LLM summary 16/24 | 自测 ledger 不抬 Pass；overflow 修补重跑未齐 |
 
 归档：[archive/methods/](archive/methods/README.md)。RQ6 不是脚手架，见
-[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 
 ## 可以与不可以宣称
 
@@ -212,7 +212,7 @@ Lite 多掉的题主要落在 Public / Hidden，不是 isolation。
 
 Phase 0 代理：[`token_utility_phase0_20260818.json`](../artifacts/research_analysis/current_results/token_utility_phase0_20260818.json)。
 Phase 1 金标：[`token_utility_phase1_20260818.json`](../artifacts/research_analysis/current_results/token_utility_phase1_20260818.json)。
-协议见 [TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
+协议见 [TOKEN_UTILITY.md](archive/snapshots/TOKEN_UTILITY.md)。
 
 | 套件 | Pass 最后写包/总量 中位数 | Pass 最早充分树/总量 中位数 | 最后写入 ≥2M | 最早充分 ≥2M |
 | --- | ---: | ---: | ---: | ---: |
@@ -225,7 +225,7 @@ Flash 通过题多数在总用量 40% 处已经有能过的树。Phase 0 的 21 
 不要据此写 stop 规则。过关之后的 token 主要花在自测上；Flash 独有上游 `tests/`
 oracle。按模型 × Lift 的 \(T^\*\) 表见
 [paper/03_results_token_utility.md](paper/03_results_token_utility.md)，分析见
-[TOKEN_UTILITY.md](TOKEN_UTILITY.md)。
+[TOKEN_UTILITY.md](archive/snapshots/TOKEN_UTILITY.md)。
 
 ## 证据与复现
 

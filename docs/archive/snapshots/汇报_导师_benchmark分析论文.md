@@ -1,8 +1,11 @@
 # 导师汇报：FeatureLiftBench 论文进展与转向建议
 
+> **Status: archived · Last verified: 2026-09-02**
+> 已从 current 文档树移出，不是运行入口。数字以 STATUS.md 为准。
+
 > **用途：** 2026-08-31 向导师汇报论文进展。  
 > **建议时长：** 10–15 分钟主讲，其余内容作备用。  
-> **数字口径：** 以 [`STATUS.md`](STATUS.md) 和 [`FINDINGS.md`](FINDINGS.md) 为准。  
+> **数字口径：** 以 [`STATUS.md`](../../STATUS.md) 和 [`FINDINGS.md`](../../FINDINGS.md) 为准。  
 > **一句话结论：** 论文建议从“提出一个稳定涨分的 Agent 方法”转向 **Benchmark + Empirical Analysis**；方法实验不是删掉，而是作为负结果和失败机理证据。
 
 ---
@@ -348,12 +351,12 @@ FeatureLiftBench：仓库级、行为保持的功能抽取 Benchmark + Empirical
 
 | 内容 | 文档 |
 | --- | --- |
-| 当前题集、结果和资格口径 | [`STATUS.md`](STATUS.md) |
-| 方法结论与负结果 | [`FINDINGS.md`](FINDINGS.md) |
+| 当前题集、结果和资格口径 | [`STATUS.md`](../../STATUS.md) |
+| 方法结论与负结果 | [`FINDINGS.md`](../../FINDINGS.md) |
 | 题集构成 | [`汇报_题集构成.md`](汇报_题集构成.md) |
 | Agent 失败案例 | [`汇报_Agent瓶颈案例.md`](汇报_Agent瓶颈案例.md) |
-| 收到包审计 | [`paper_readout.md`](../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md) |
-| 失败与 context 审计 | [`failure_audit.md`](../reports/paper_analysis/python200_hard_main_20260829/failure_audit.md) · [`context_audit.md`](../reports/paper_analysis/python200_hard_main_20260829/context_audit.md) |
-| 严格替换任务列表 | [`strict_replacement_task_ids.txt`](../reports/paper_analysis/python200_hard_main_20260829/strict_replacement_task_ids.txt) |
-| 论文 RQ | [`paper/02_research_questions.md`](paper/02_research_questions.md) |
-| 顶会准备闸门 | [`paper/07_top_conference_readiness_plan.md`](paper/07_top_conference_readiness_plan.md) |
+| 收到包审计 | [`paper_readout.md`](../../../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md) |
+| 失败与 context 审计 | [`failure_audit.md`](../../../reports/paper_analysis/python200_hard_main_20260829/failure_audit.md) · [`context_audit.md`](../../../reports/paper_analysis/python200_hard_main_20260829/context_audit.md) |
+| 严格替换任务列表 | [`strict_replacement_task_ids.txt`](../../../reports/paper_analysis/python200_hard_main_20260829/strict_replacement_task_ids.txt) |
+| 论文 RQ | [`paper/02_research_questions.md`](../../paper/02_research_questions.md) |
+| 顶会准备闸门 | [`paper/07_top_conference_readiness_plan.md`](../../paper/07_top_conference_readiness_plan.md) |

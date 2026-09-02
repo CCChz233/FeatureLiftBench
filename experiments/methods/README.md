@@ -14,6 +14,6 @@ V1 Core-12 诊断路径以 [METHOD_V1.md](../../docs/METHOD_V1.md) 为准（不�
 
 方法解释：当前臂见 [`docs/FINDINGS.md`](../../docs/FINDINGS.md)；停用稿见
 [`docs/archive/methods/`](../../docs/archive/methods/README.md)。
-AutoSaddler 规范见 [`docs/METHOD_AUTOSADDLER.md`](../../docs/METHOD_AUTOSADDLER.md)。
+AutoSaddler 规范见 [`docs/archive/methods/METHOD_AUTOSADDLER.md`](../../docs/archive/methods/METHOD_AUTOSADDLER.md)。
 
 新正式 ablation 应使用标准 Python suite 布局，并在 metadata 中登记 arm。

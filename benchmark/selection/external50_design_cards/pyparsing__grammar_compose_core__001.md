@@ -16,7 +16,7 @@
 **skim_notes:** Adapted OK (not Direct). Freeze helpers: Word, Literal, Keyword, Regex, Optional, ZeroOrMore, OneOrMore, Group, Suppress + parse_string + ParseResults + ParseException. No parse actions in tests.
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

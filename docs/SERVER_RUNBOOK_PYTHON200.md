@@ -1,6 +1,6 @@
 # Server Runbook: Python-200' Main
 
-> **Status: current · Last verified: 2026-09-01**
+> **Status: current · Last verified: 2026-09-02**
 > Paper suite: frozen Python-150 + Hard-50 (`python200_hard`). Full Flash table
 > is **not** run. Condition: Full-Repository / No-Hint, benchmark tests hidden,
 > one task attempt.
@@ -9,7 +9,7 @@
 > discontinued. DeepSeek Harness / Codex is optional and is not Official Main;
 > see [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md).
 >
-> `./harness/scripts/run_python200_paper.sh` still targets the **superseded**
+> `./harness/scripts/archive/run_python200_paper.sh` still targets the **superseded**
 > 150 + External-50 release. Do not use it to write the new main table. Replay
 > commands for that suite are in §11.
 
@@ -91,7 +91,7 @@ same agent/evaluator identities or re-evaluate the baseline submissions under th
 ## 4. Catalog Preflight (no model calls)
 
 ```bash
-./harness/scripts/run_python200_prime_paper.sh \
+./harness/scripts/archive/run_python200_prime_paper.sh \
   openhands_deepseek_v4_flash \
   python200-prime-deepseek-v4-flash-main-r1 \
   --workers 4 --timeout 3600
@@ -185,7 +185,7 @@ Do not promote the smoke attempt into Pass@1 of the formal suite.
 ## 6. Launch Full Python-200'
 
 ```bash
-./harness/scripts/run_python200_prime_paper.sh \
+./harness/scripts/archive/run_python200_prime_paper.sh \
   openhands_deepseek_v4_flash \
   python200-prime-deepseek-v4-flash-main-r1 \
   --workers 4 --timeout 3600 --execute
@@ -205,7 +205,7 @@ Lite Rescue、Rescue+ 和 Adaptive Budget V2 已停。不要再跑
 Monitor task-level terminal `run.json` files and suite progress without editing results.
 
 ```bash
-./harness/scripts/run_python200_prime_paper.sh \
+./harness/scripts/archive/run_python200_prime_paper.sh \
   openhands_deepseek_v4_flash \
   --workers 4 --timeout 3600 \
   --resume experiments/python/openhands/deepseek-v4-flash/python200-prime-deepseek-v4-flash-main-r1 \
@@ -241,11 +241,11 @@ Current blockers and available evidence are listed in [STATUS.md](STATUS.md).
 
 | Command / path | Why |
 | --- | --- |
-| `./harness/scripts/run_python200_paper.sh` | Still the 150+External-50 runner + 150 freeze gate |
+| `./harness/scripts/archive/run_python200_paper.sh` | Still the 150+External-50 runner + 150 freeze gate |
 | `./scripts/run_benchmark.sh --benchmark python200_hard` | Generic runner; it does not enforce the final Python-200′ freeze ID |
 | `--suite main` | Legacy alias for **python150**, not Python-200' |
 | `benchmark/python200_tasks/` | Superseded unified view |
-| Root `run.sh`, `run_openhands.sh`, `run_easy.sh`, … | Deprecated wrappers; see [scripts/README.md](../scripts/README.md) |
+| Root `run.sh`, `run_openhands.sh`, `run_easy.sh`, … | Removed 2026-09-02; use `./scripts/run_benchmark.sh` |
 | `./logs/*.sh` | Removed ops wrappers; use `run_benchmark.sh` |
 
 ## 11. Replay: superseded 150 + External-50
@@ -260,7 +260,7 @@ python3 benchmark/selection/scripts/finalize_python200_dependencies.py --check
 python3 benchmark/selection/scripts/audit_python200_balance.py --check
 python3 benchmark/selection/scripts/audit_python200_wheels.py --python-version 311
 python3 benchmark/selection/scripts/check_python200_baseline_freeze.py
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   <openhands-profile> \
   <run-id> \
   --workers <n> \

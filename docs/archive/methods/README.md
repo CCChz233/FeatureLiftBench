@@ -1,6 +1,6 @@
 # Archived Method Documents
 
-> **Status: archived · Indexed: 2026-08-18**
+> **Status: archived · Indexed: 2026-09-02**
 
 These documents preserve completed experiments, negative results and discontinued method
 directions. They are evidence and design history, not current benchmark protocol or runbooks.
@@ -26,6 +26,11 @@ directions. They are evidence and design history, not current benchmark protocol
 | Rescue+ protocol (2026-08-16) | [ContractClosureGate_LiteRescuePlus_20260816.md](ContractClosureGate_LiteRescuePlus_20260816.md) |
 | Rescue+ diagnostic suite | [RESCUE_PLUS_DIAGNOSTIC_SUITE.md](RESCUE_PLUS_DIAGNOSTIC_SUITE.md) |
 | Historical scaffolding negative results | [汇报_方法创新.md](汇报_方法创新.md) |
+| CGVL (screening Kill) | [CGVL](METHOD_CGVL.md) |
+| VCT (component Kill, unimplemented) | [VCT](METHOD_VCT.md) |
+| RQ6 Public-feedback | [RQ6](METHOD_RQ6_PUBLIC_FEEDBACK.md) |
+| AutoSaddler-FLB | [AutoSaddler](METHOD_AUTOSADDLER.md) |
+| Harness-Selected Differential (rejected) | [HSD](METHOD_HSD.md) |
 
 Current formal arms are defined in [../../EVALUATION.md](../../EVALUATION.md).
 Current cost arm **V1 = Main + 2M** is [../../METHOD_V1.md](../../METHOD_V1.md).

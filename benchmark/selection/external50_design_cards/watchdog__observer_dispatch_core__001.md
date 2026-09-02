@@ -16,7 +16,7 @@
 **skim_notes:** Composite OK but platform-coupled. Prefer PollingObserver in tests for determinism. Freeze schedule/start/stop + FileSystemEventHandler create/modify/delete. Short timeouts + temp dir.
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

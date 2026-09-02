@@ -1,6 +1,6 @@
 # FeatureLiftBench 仓库整理与维护手册
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > 目标：整个仓库清晰、可维护；过时文件删除；当前论文身份不被整理误改。
 > 本文是可复用流程，不是某一次清理的执行记录。每次大规模整理另写维护记录。
 
@@ -58,7 +58,7 @@
 | 已归档但仍被引用 | `docs/archive/` 中论文或 FINDINGS 链到的负结果 |
 | 正式入口 | `RUN.md`、`setup.sh`、`scripts/run_benchmark.sh`、`featureliftbench` CLI |
 
-组会稿 `docs/汇报_*.md` 是 **derived**：可以更新或归档，数字冲突以 `docs/STATUS.md` 为准，不要当成第二份权威。
+组会稿已归档到 `docs/archive/snapshots/`，是 **derived**：数字冲突以 `docs/STATUS.md` 为准，不要当成第二份权威。
 
 ### 3.3 Unknown
 
@@ -140,9 +140,8 @@ Agent 或协作者按本手册整理时：低/中风险可以做；高风险只�
 - 说明：`README.md`、`RUN.md`、`BUNDLE.md`
 - 安装：`setup.sh`
 - 跑实验：`./scripts/run_benchmark.sh`（或 CLI `featureliftbench`）
-- 薄兼容转发（保留直到文档不再引用）：`run_benchmark.sh` → `scripts/run_benchmark.sh`；`run_experiment.sh` → `scripts/run_experiment.sh`
-
-根目录其它 `run_*.sh`、`start_run.sh`、`resume_run.sh`、`check_env.sh` 等视为 **兼容层候选退役**：先从 `RUN.md` / `docs/README.md` 去掉链接，保留一到两个迁移周期的弃用提示，再删除。不要再往根目录加新的 `run_*.sh`。新脚本进 `scripts/` 或 `harness/scripts/`。
+- 薄兼容转发：`run_benchmark.sh` → `scripts/run_benchmark.sh`；`run_experiment.sh` → `scripts/run_experiment.sh`
+- 2026-09-02 已删除根目录旧 wrapper（`run.sh`、`run_openhands.sh`、`run_easy.sh`、`start_run.sh` 等）。不要再往根目录加新的 `run_*.sh`。新脚本进 `scripts/` 或 `harness/scripts/`。
 
 ## 7. 什么时候启动整理
 

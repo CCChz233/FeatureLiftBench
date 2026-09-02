@@ -120,4 +120,4 @@ PYTHONPATH=harness python3 harness/scripts/compare_core12_context_efficiency.py 
 `…/verification_aware-20260819-195214` 只到 20 题，不是 Distill-24 结果。
 
 不要 Python-200，不要再调 ledger。下一正式臂是 RQ6 Public-feedback，见
-[METHOD_RQ6_PUBLIC_FEEDBACK.md](../../METHOD_RQ6_PUBLIC_FEEDBACK.md)。
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。

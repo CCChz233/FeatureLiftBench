@@ -1,11 +1,11 @@
 # FeatureLiftBench Task Design Rules（规格宪法）
 
-> **Documentation status: current · Last verified: 2026-08-31**
+> **Documentation status: current · Last verified: 2026-09-01**
 
 - **状态：** 当前 Full-Repository / No-Hint task contract 规范
 - **效力：** 主榜入库与新题/晋升的权威规则；与旧文档冲突时以本文为准
 - **当前 release：** 所有动态数量、readiness 与 freeze 状态见 [STATUS.md](STATUS.md)。
-- **相关：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)（整体思路）· [EVALUATION.md](EVALUATION.md)（实验与计分）· [06_task_schema.md](reference/06_task_schema.md)（包布局）· [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)（生命周期）
+- **相关：** [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md)（整体思路）· [EVALUATION.md](EVALUATION.md)（实验与计分）· [BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md)（验证门禁与三态打标）· [06_task_schema.md](reference/06_task_schema.md)（包布局）· [07_incremental_task_rules.md](reference/07_incremental_task_rules.md)（生命周期）
 
 ---
 
@@ -214,7 +214,7 @@ forbidden、输出布局与功能门说明），不见上游实现定位。
   Agent 可以检查、改写并用于自测。
 - Public-feedback 臂可显式挂载 `public_tests/`；它与 Main 必须共用相同
   `public_spec`、任务版本和 evaluator，结果须分报。规范见
-  [METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。
+  [METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 
 ---
 
@@ -336,6 +336,8 @@ config/environment）安排额外人工复核，应单独报告，不改变主�
 4. 模型实验、retrieval 或方法研究不得反向修改失败题的契约以制造增益。
 
 具体 release 进度和下一步只在 [STATUS.md](STATUS.md) 维护。
+
+题目是否符合本文条款，按 [BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md) §13 打标；不要另造一套「AI / 人工」或修复代价分级。
 
 操作细节：[07_incremental_task_rules.md](reference/07_incremental_task_rules.md)；
 正式运行：[SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md)。

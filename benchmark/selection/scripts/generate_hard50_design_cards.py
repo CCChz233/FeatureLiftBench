@@ -795,7 +795,7 @@ def main() -> int:
 
     matrix = {
         "schema_version": "featureliftbench.hard50_selection_matrix.v1",
-        "doc": "docs/hard50_selection_matrix.md",
+        "doc": "docs/archive/plans/hard50_selection_matrix.md",
         "families": [
             {"id": "registry_plugin_dispatch", "target_n": 13, "rqs": ["RQ1", "RQ4", "RQ5"]},
             {"id": "config_resolve_discover", "target_n": 11, "rqs": ["RQ1", "RQ4"]},

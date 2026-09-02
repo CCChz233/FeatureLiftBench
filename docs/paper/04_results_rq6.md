@@ -3,7 +3,7 @@
 > **Documentation status: current · Last verified: 2026-08-20**
 > Flash-12 same-day pair is complete. Not a Python-200 main-table result.
 > Not a new agent method.
-> Protocol: [METHOD_RQ6_PUBLIC_FEEDBACK.md](../METHOD_RQ6_PUBLIC_FEEDBACK.md).
+> Protocol: [METHOD_RQ6_PUBLIC_FEEDBACK.md](../archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md).
 
 **Claim.** Under Full-Repository / No-Hint Main, Flash already has the public
 contract text but not executable benchmark tests. Mounting `public_tests/`

@@ -2,7 +2,7 @@
 
 > **Documentation status: archived · Indexed: 2026-08-04**  
 > 扩题已结束。要把已发布的 External-50 **提升到 Python-150 工程规格**，见现行
-> [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](../../PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)。
+> [PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md](PLAN_EXTERNAL50_TO_PYTHON150_QUALITY.md)。
 
 **状态：** 已冻结 External-50 release · **50/50 design cards 已填** · **Python-200 release checks 通过**  
 **日期：** 2026-08-01  
@@ -13,12 +13,12 @@
 | **Design cards（50 已填）** | [`benchmark/selection/external50_design_cards/`](../../../benchmark/selection/external50_design_cards/) |
 | Cards 索引 | [`external50_design_cards/README.md`](../../../benchmark/selection/external50_design_cards/README.md) |
 | 填卡脚本 | [`benchmark/selection/scripts/fill_external50_design_cards.py`](../../../benchmark/selection/scripts/fill_external50_design_cards.py) |
-| Pilot materialize 脚本 | [`harness/scripts/materialize_external50_pilot.py`](../../../harness/scripts/materialize_external50_pilot.py) |
-| W1 materialize 脚本 | [`harness/scripts/materialize_external50_w1.py`](../../../harness/scripts/materialize_external50_w1.py) |
-| W2 materialize 脚本 | [`harness/scripts/materialize_external50_w2.py`](../../../harness/scripts/materialize_external50_w2.py) |
-| W3 materialize 脚本 | [`harness/scripts/materialize_external50_w3.py`](../../../harness/scripts/materialize_external50_w3.py) |
-| W4 materialize 脚本 | [`harness/scripts/materialize_external50_w4.py`](../../../harness/scripts/materialize_external50_w4.py) |
-| W5 materialize 脚本 | [`harness/scripts/materialize_external50_w5.py`](../../../harness/scripts/materialize_external50_w5.py) |
+| Pilot materialize 脚本 | [`harness/scripts/archive/materialize_external50_pilot.py`](../../../harness/scripts/archive/materialize_external50_pilot.py) |
+| W1 materialize 脚本 | [`harness/scripts/archive/materialize_external50_w1.py`](../../../harness/scripts/archive/materialize_external50_w1.py) |
+| W2 materialize 脚本 | [`harness/scripts/archive/materialize_external50_w2.py`](../../../harness/scripts/archive/materialize_external50_w2.py) |
+| W3 materialize 脚本 | [`harness/scripts/archive/materialize_external50_w3.py`](../../../harness/scripts/archive/materialize_external50_w3.py) |
+| W4 materialize 脚本 | [`harness/scripts/archive/materialize_external50_w4.py`](../../../harness/scripts/archive/materialize_external50_w4.py) |
+| W5 materialize 脚本 | [`harness/scripts/archive/materialize_external50_w5.py`](../../../harness/scripts/archive/materialize_external50_w5.py) |
 | Staging（50 题） | `benchmark/staging/`（release 后已清空） |
 
 **目标：** 新增 50 道题（50 个新 upstream 仓，不复用 External-150）。  
@@ -271,7 +271,7 @@ Skill：`featureliftbench-create-task` → `validate-task` →（批准）`promo
 已有完整、同条件 Python-150 结果时，可以只运行扩展的 50 题：
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   <openhands-profile> \
   <run-id> \
   --external-only \

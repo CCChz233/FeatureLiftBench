@@ -1,6 +1,6 @@
 # Agentic Evidence Audit
 
-> **Status: calibrated; Flash-33 full run pending · Last verified: 2026-08-26**
+> **Status: archived · Last verified: 2026-09-02**
 > This is an automated provenance audit. It is not yet a coding-agent method
 > arm and does not enter the Python-200 leaderboard.
 

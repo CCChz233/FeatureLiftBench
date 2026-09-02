@@ -17,7 +17,7 @@ Pilot 10 (ledger `pilot_candidates`, after 2026-08-27 swaps):
 
 Swapped-out packages: `_swapped_out/`. Do not discover them as Pilot tasks.
 
-Protocol: [docs/PLAN_HARD50_EXPANSION.md](../../docs/PLAN_HARD50_EXPANSION.md) Phase 1.  
+Protocol: [docs/archive/plans/PLAN_HARD50_EXPANSION.md](../../docs/archive/plans/PLAN_HARD50_EXPANSION.md) Phase 1.  
 Do not write packages into `benchmark/tasks/` or `benchmark/external50/`.
 
 Calibration (required before opening the remaining 40):

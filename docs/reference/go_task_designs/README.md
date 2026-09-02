@@ -2,7 +2,7 @@
 
 > **Documentation status: reference · Last verified: 2026-08-04**
 
-Go split 按题设计笔记。现行 Go 规划见 [../go/](../go/)。模板：[TEMPLATE.md](TEMPLATE.md)。
+Go split 按题设计笔记。现行 Go 规划见 [../go/](../go)。模板：[TEMPLATE.md](TEMPLATE.md)。
 
 Go main split 尚未 paper-ready；这些笔记服务于 pilot / calibration 任务设计。
 它们是 maintainer-side 资料，不会进入 Agent workspace。仍使用旧

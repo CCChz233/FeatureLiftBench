@@ -57,7 +57,7 @@ P1 已新增独立的 `contract_closure_gate_lite_rescue` 实验臂，但尚未�
 计划检查命令（不调用模型）：
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue \
   lite-rescue-plan \
   --workers 2 \

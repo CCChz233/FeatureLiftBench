@@ -1,6 +1,6 @@
 # FeatureLiftBench Task Layout
 
-> **Documentation status: current · Last verified: 2026-08-29**
+> **Documentation status: current · Last verified: 2026-09-02**
 
 This directory holds task packages, named suites, source registries, and freeze
 inputs. **Runnable suite names live in [`suites.toml`](suites.toml).** Do not
@@ -15,7 +15,8 @@ Paper identity and freeze hashes are maintained only in
 
 | `--benchmark` | Task root | Role |
 | --- | --- | --- |
-| `python200_hard` | `python200_hard_tasks/` | **Paper main.** 200 symlinks: 150 → `tasks/`, 50 → `hard50/`. Unreleased; full Flash table not run. |
+| `python200_hard` | `python200_hard_tasks/` | **Paper freeze asset.** 200 symlinks: 150 → `tasks/`, 50 → `hard50/`. Unreleased. |
+| `python200_hard_standard` | same root, v1 163 ids | **v1 provisional analysis set.** Superseded pending protocol v2 adjudication. Do not treat as the paper-final subset. |
 | `python150` | `tasks/` | Frozen Python-150 packages. Paper 150 scores must use the freeze artifact, not a dirty worktree. |
 | `hard50` | `hard50/` | Hard-50 packages only (no `reference_solution/`). Do **not** copy into `tasks/`. |
 | `python200_legacy` | `python200_tasks/` | **Superseded** 150 + External-50 view. Historical scores only. |
@@ -150,8 +151,8 @@ python3 scripts/check_task_lifecycle.py
 
 ## Related docs
 
-- [`docs/汇报_题集构成.md`](../docs/汇报_题集构成.md) — paper suite composition
-- [`docs/PLAN_HARD50_EXPANSION.md`](../docs/PLAN_HARD50_EXPANSION.md) — Hard-50 release
+- [`docs/STATUS.md`](../docs/STATUS.md) — paper suite identity and counts
+- [`docs/archive/plans/PLAN_HARD50_EXPANSION.md`](../docs/archive/plans/PLAN_HARD50_EXPANSION.md) — Hard-50 release record
 - [`docs/reference/06_task_schema.md`](../docs/reference/06_task_schema.md)
 - [`docs/reference/07_incremental_task_rules.md`](../docs/reference/07_incremental_task_rules.md)
 - [`docs/FULL_REPOSITORY_SOURCE_POLICY.md`](../docs/FULL_REPOSITORY_SOURCE_POLICY.md)

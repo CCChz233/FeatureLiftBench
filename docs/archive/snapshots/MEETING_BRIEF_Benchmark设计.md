@@ -2,7 +2,7 @@
 
 > **Status: archived · Last verified: 2026-08-17**
 > 用途：2026-08-05 组会设计稿；当前数字以 [STATUS.md](../../STATUS.md) 为准。
-> 题集构成以 [汇报_题集构成.md](../../汇报_题集构成.md) 为准。
+> 题集构成以 [汇报_题集构成.md](汇报_题集构成.md) 为准。
 > 日期：2026-08-05  
 > 旗舰例题三道（互补）：安全 token · CLI 框架 · 配置 round-trip  
 > 详细规范见 `docs/BENCHMARK_DESIGN.md`；数字以 `docs/STATUS.md` / `docs/FINDINGS.md` 为准
@@ -26,7 +26,7 @@
 | 能搜到文件就算成功 | 契约闭合 + 解耦 + 干净环境可跑 |
 
 工程里更常见的难题是：既要行为对齐，又要解开依赖/配置/状态等**纠缠（entanglement）**，交出真正能单独安装使用的模块（减依赖、控供应链、内嵌最小能力）。  
-（注：这里说的是 feature lifting 的主纠缠机制，不是 Constantine/PDG 那套经典 coupling taxonomy；详见 `docs/汇报_题集构成.md` §3。）
+（注：这里说的是 feature lifting 的主纠缠机制，不是 Constantine/PDG 那套经典 coupling taxonomy；详见 `docs/archive/snapshots/汇报_题集构成.md` §3。）
 
 ---
 

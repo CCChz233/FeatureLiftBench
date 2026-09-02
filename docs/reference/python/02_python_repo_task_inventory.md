@@ -10,7 +10,7 @@
 机器事实源：
 
 - [`benchmark/sources/registry.json`](../../../benchmark/sources/registry.json)
-- [`benchmark/tasks/`](../../../benchmark/tasks/)
+- [`benchmark/tasks/`](../../../benchmark/tasks)
 - [`v3_main_readiness.json`](../../../reports/audits/v3_main_readiness.json)
 - [`python150_task_taxonomy.csv`](../../../artifacts/research_analysis/python150_task_taxonomy.csv)
 

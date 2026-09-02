@@ -1,6 +1,6 @@
 # Incremental Task Rules
 
-> **Documentation status: current · Last verified: 2026-08-31**
+> **Documentation status: current · Last verified: 2026-09-01**
 
 本文规定新任务进入 Python Main 的生命周期。出题宪法见
 [TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md)，package schema 见
@@ -20,6 +20,9 @@
 6. promotion 依赖可执行证据，不依赖文档宣称。
 7. 独立人工审核不是硬门禁；若使用人工复核，按真实 provenance 报告。
 8. 任务或 source 变化后必须生成新的 benchmark freeze。
+
+题目是否符合 [TASK_DESIGN_RULES.md](../TASK_DESIGN_RULES.md)，按
+[BENCHMARK_VALIDATION_GATE.md](../BENCHMARK_VALIDATION_GATE.md) §13 打标。
 
 ## Lifecycle
 

@@ -51,7 +51,7 @@ primary budget 下比较。
 ## Plan-only 命令
 
 ```bash
-./harness/scripts/run_python200_paper.sh \
+./harness/scripts/archive/run_python200_paper.sh \
   openhands_deepseek_v4_flash_contract_closure_gate_lite_rescue_plus \
   lite-rescue-plus-plan \
   --workers 2 \

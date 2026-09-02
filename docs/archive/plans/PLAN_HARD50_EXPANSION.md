@@ -1,6 +1,6 @@
 # Plan: Hard-50 进新 Python-200（论文对齐 + 宁难勿易）
 
-> **Documentation status: current · Created: 2026-08-27 · Last verified: 2026-08-28**  
+> **Status: archived · Last verified: 2026-09-02**
 > 旧 External-50 实体与历史结果不动。Hard-50 与冻结 Python-150 组成新主套件。  
 > 选题矩阵：[hard50_selection_matrix.md](hard50_selection_matrix.md) · ledger：`benchmark/selection/hard50_expansion_20260827.json`
 
@@ -27,7 +27,7 @@
 
 ## 论文主张 → 选题必须服务什么
 
-论文定位（[paper/07_top_conference_readiness_plan.md](paper/07_top_conference_readiness_plan.md)、[paper/06_paper_outline.md](paper/06_paper_outline.md)）：
+论文定位（[paper/07_top_conference_readiness_plan.md](../../paper/07_top_conference_readiness_plan.md)、[paper/06_paper_outline.md](../../paper/06_paper_outline.md)）：
 
 > 评测代码 Agent **从完整纠缠仓库**抽取 **行为完整、独立、尽量紧凑** 的功能包；
 > 主瓶颈是行为闭合 / 不可见 Hidden / 无效自测尾部——不是绿场写码，也不是修 issue。

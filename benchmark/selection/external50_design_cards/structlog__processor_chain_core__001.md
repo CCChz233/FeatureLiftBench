@@ -16,7 +16,7 @@
 **skim_notes:** Composite OK. Freeze processors: TimeStamper, add_log_level, KeyValueRenderer, JSONRenderer. Use PrintLogger/list capture + reset_defaults. No stdlib/twisted integrations.
 
 > Filled for design_card phase. `feasibility.commit` still unresolved until pin.  
-> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/PLAN_EXTERNAL50_EXPANSION.md`.
+> Spec authority: `docs/TASK_DESIGN_RULES.md`. Workflow: `docs/archive/plans/PLAN_EXTERNAL50_EXPANSION.md`.
 
 ## target_api
 

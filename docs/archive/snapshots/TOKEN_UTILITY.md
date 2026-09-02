@@ -1,6 +1,6 @@
 # Token utility 回顾分析（离线）
 
-> **Status: current · Last verified: 2026-08-20**
+> **Status: archived · Last verified: 2026-09-02**
 > 这不是新方法臂。禁止据此写 stop / repair / V3。金标只能是某一时刻
 > `submission/featurelifted/` 的 `functional_gate`，不能是轨迹叙事。
 > Phase 3：验证循环组合 AUC 弱，不写停机规则。距上次独特树的间隔是唯一
@@ -11,7 +11,7 @@
 在已有 Main / V1 轨迹上回答两件事：
 
 1. 长轨迹上有效计算落在哪一段（论文 **RQ3** 的成本切片，不是新协议；capability
-   通过率仍是 RQ1）。稿：[paper/03_results_token_utility.md](paper/03_results_token_utility.md)。
+   通过率仍是 RQ1）。稿：[paper/03_results_token_utility.md](../../paper/03_results_token_utility.md)。
 2. 合法运行时信号能否把「有效尾巴」和空转分开。分不开就不要写停机规则。
 
 V2 已经用「最近有没有写 submission」当进展，把自测判成 stall。本分析必须先离线
@@ -149,7 +149,7 @@ Flash 本地 Main-200、51 道 replay-ok 失败、385 棵独特树、334 次 doc
 
 通过题上 T* vs 最后一棵树（Phase 1 已有金标，138 题）：74 题 T* 就是 last；37 题 T* 字节更小，中位只少 **0.47%**。
 
-**Kill 抬 Pass。** 失败不是「有过关树被扔掉」。不要实现 Best-so-far / artifact checkpoint Agent。紧凑性差额不够开新臂。摘要：[`checkpoint_oracle_flash_fail_summary_20260820.json`](../artifacts/research_analysis/current_results/checkpoint_oracle_flash_fail_summary_20260820.json)。
+**Kill 抬 Pass。** 失败不是「有过关树被扔掉」。不要实现 Best-so-far / artifact checkpoint Agent。紧凑性差额不够开新臂。摘要：[`checkpoint_oracle_flash_fail_summary_20260820.json`](../../../artifacts/research_analysis/current_results/checkpoint_oracle_flash_fail_summary_20260820.json)。
 
 ## Characterization — T* 按模型 × Lift × 难度
 
@@ -237,7 +237,7 @@ hard3 交叉格 n<8，不当主结果。
   分数提前过关，并不省绝对 token。
 - OSS 格子太小，只说明会过的弱模型轨迹短，不说明 Composite 对 OSS 更容易。
 
-快照：[`token_utility_characterize_20260818.json`](../artifacts/research_analysis/current_results/token_utility_characterize_20260818.json)。
+快照：[`token_utility_characterize_20260818.json`](../../../artifacts/research_analysis/current_results/token_utility_characterize_20260818.json)。
 
 ## Phase 2 — 成对 2M 税（已完成，仍不是截断同一轨迹）
 
@@ -281,7 +281,7 @@ isort 在 0.90M 已过、随后改坏、1.49M 才恢复。后段写入不是无�
 V2 把「最近没写文件」当 stall 会误杀；但这些 token 也改变不了已经成立的
 Functional Pass。
 
-快照：[`token_utility_post_pass_existing_gold_20260818.json`](../artifacts/research_analysis/current_results/token_utility_post_pass_existing_gold_20260818.json)。
+快照：[`token_utility_post_pass_existing_gold_20260818.json`](../../../artifacts/research_analysis/current_results/token_utility_post_pass_existing_gold_20260818.json)。
 
 ## 跨模型 — 过关后是不是都在自测
 
@@ -310,7 +310,7 @@ Functional Pass。
   整题失败。
 
 脚本：`harness/scripts/analyze_token_utility_post_pass.py`。快照：
-[`token_utility_post_pass_cross_model_20260818.json`](../artifacts/research_analysis/current_results/token_utility_post_pass_cross_model_20260818.json)。
+[`token_utility_post_pass_cross_model_20260818.json`](../../../artifacts/research_analysis/current_results/token_utility_post_pass_cross_model_20260818.json)。
 
 ## 过关后的 verification loop
 
@@ -376,9 +376,9 @@ PYTHONPATH=harness python3 harness/scripts/analyze_token_utility_phase3.py \
 - **唯一明显强于时间对照的信号是「距上次独特树多久」。** 在 0.5–1.5M 带里 Flash 的 `tokens_so_far` 只剩 0.57，`tokens_since_last_useful_write` 还是 0.79。这是 stall-after-edit，不是 self-test novelty。它接近 V2 的「最近没写 submission」，但金标对齐的是独特树而不是任意写文件。现在仍然**不写 stop 规则**：过关后 46% 的题还会长新树，其中有的会改坏。
 - Flash / Qwen 必须继续分层。Qwen 过关后重复读 51%，Flash 11%；同一条「重复读就停」会对两个模型做不同的事。
 
-快照：[`token_utility_phase3_20260818.json`](../artifacts/research_analysis/current_results/token_utility_phase3_20260818.json)。脚本：`harness/scripts/analyze_token_utility_phase3.py`。单测：`harness/tests/test_token_utility_phase3.py`。
+快照：[`token_utility_phase3_20260818.json`](../../../artifacts/research_analysis/current_results/token_utility_phase3_20260818.json)。脚本：`harness/scripts/analyze_token_utility_phase3.py`。单测：`harness/tests/test_token_utility_phase3.py`。
 
-论文 RQ3/RQ5 稿：[paper/03_results_token_utility.md](paper/03_results_token_utility.md)。
+论文 RQ3/RQ5 稿：[paper/03_results_token_utility.md](../../paper/03_results_token_utility.md)。
 
 ## 不要做
 

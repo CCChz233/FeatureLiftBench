@@ -14,7 +14,7 @@ main benchmark:
 The safe entrypoint is:
 
 ```bash
-./harness/scripts/run_python150_paper.sh <openhands-profile> [run-id]
+./harness/scripts/archive/run_python150_paper.sh <openhands-profile> [run-id]
 ```
 
 It is plan-only by default. Add `--execute` only after checking credentials,
@@ -129,7 +129,7 @@ python3 scripts/materialize_full_sources.py --check
 python3 scripts/build_v3_benchmark_freeze.py --check
 python3 scripts/audit_v3_main_readiness.py --strict
 
-./harness/scripts/run_python150_paper.sh \
+./harness/scripts/archive/run_python150_paper.sh \
   openhands_deepseek_v4_flash \
   compliant150-flash-main-001
 ```
@@ -214,7 +214,7 @@ submission, context-policy, or Docker failures are not.
 Plan first:
 
 ```bash
-./harness/scripts/run_python150_paper.sh \
+./harness/scripts/archive/run_python150_paper.sh \
   openhands_deepseek_v4_flash \
   compliant150-deepseek-v4-flash-main-001
 ```
@@ -224,7 +224,7 @@ Then enter `tmux` and execute the same explicit profile and run ID:
 ```bash
 tmux new -s flb150
 
-./harness/scripts/run_python150_paper.sh \
+./harness/scripts/archive/run_python150_paper.sh \
   openhands_deepseek_v4_flash \
   compliant150-deepseek-v4-flash-main-001 \
   --workers 1 \
@@ -271,7 +271,7 @@ Do not start a second runner against the same output directory.
 Use the exact same profile, images, and output directory:
 
 ```bash
-./harness/scripts/run_python150_paper.sh \
+./harness/scripts/archive/run_python150_paper.sh \
   openhands_deepseek_v4_flash \
   --resume experiments/python/openhands/<model-slug>/<run-id> \
   --workers 1 \
@@ -315,7 +315,7 @@ does not turn AI-assisted annotations into human gold.
 Use the same runner and change only the explicit profile:
 
 ```bash
-./harness/scripts/run_python150_paper.sh \
+./harness/scripts/archive/run_python150_paper.sh \
   openhands_qwen3_6_27b_fp8_paper \
   compliant150-qwen27b-main-001
 ```

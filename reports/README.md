@@ -7,7 +7,7 @@
 `experiments/`. Generated summaries never override per-task `run.json` and `eval/result.json`.
 
 Hard-50 Flash 校准原料在
-[`experiments/validation/hard50/`](../experiments/validation/hard50/)；
+[`experiments/validation/hard50/`](../experiments/validation/hard50)；
 agentic-evidence 小结在 [agentic_evidence/](agentic_evidence/README.md)。
 
 ## Current Release Audits

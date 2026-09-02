@@ -201,7 +201,7 @@ evaluator 资产；Agent workspace 不复制、不挂载、不可访问。`repo/
 `--agent-public-tests`。可验证的 No-Hint Main 与 Entrypoint-Hint 切换已
 落地；当前 release 的 Full-Repository materialization 状态见
 [STATUS.md](STATUS.md)。RQ6 Public-feedback 的 Flash-12 成对规范见
-[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。历史 `no_public`
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。历史 `no_public`
 名称保留为 test-blind 的兼容别名，但不自动等同于 v3 Main。换 coding runtime
 （DeepSeek Harness / Codex）不是上表信息消融，见
 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。

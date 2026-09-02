@@ -1,6 +1,6 @@
 # FeatureLiftBench 评测与实验规范
 
-> **Status: current · Last verified: 2026-08-29**
+> **Status: current · Last verified: 2026-09-02**
 > 本文件是 Main 条件、正式实验臂、评分和结果留存要求的唯一当前规范。
 
 ## Official Main
@@ -61,7 +61,7 @@ CGCC-lite、FCEC 和 PDR 是历史方法研究，**停止扩样本**，见
 叠脚手架。正式信息消融是上表 Public-Feedback / Entrypoint-Hint 等臂。
 
 RQ6 只跑 **Public-feedback**，且只在 Flash-12 同日成对切片上。规范见
-[METHOD_RQ6_PUBLIC_FEEDBACK.md](METHOD_RQ6_PUBLIC_FEEDBACK.md)。读出是
+[METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。读出是
 `functional_gate` 加 public/hidden 翻转。**不要**把该切片写入 Python-200 主表。
 Entrypoint-Hint / Pruned-Context / Short-prompt 尚未跑，不要与本臂叠。
 

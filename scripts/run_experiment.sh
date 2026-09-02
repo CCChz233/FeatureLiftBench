@@ -34,7 +34,7 @@ Catalog (list ids):
   PYTHONPATH=harness python -B -m featureliftbench.cli catalog check
 
 Benchmark:
-  --benchmark python200_hard|python150|hard50|python200_legacy|sanity|staging|batch3_pilot
+  --benchmark python200_hard|python200_hard_standard|python150|hard50|python200_legacy|sanity|staging|batch3_pilot
       Named suite from benchmark/suites.toml (sets --tasks-root and --source-registry)
   --suite sanity|main|staging|pilot
       Legacy alias. `main` means python150, not the paper Python-200' suite.
@@ -162,6 +162,15 @@ if [[ -n "${BENCHMARK}" ]]; then
     SOURCE_REGISTRY="${CATALOG_SOURCE_REGISTRY}"
   fi
   SUITE="${CATALOG_BENCHMARK_ID}"
+  if [[ -z "${TASK_FILE}" && -n "${CATALOG_TASK_FILE:-}" ]]; then
+    TASK_FILE="${CATALOG_TASK_FILE}"
+  fi
+  if [[ "${SUITE}" == "python200_hard_standard" ]]; then
+    echo "warning: python200_hard_standard is the v1 163 provisional subset (superseded pending v2). Do not start new experiments. Use --benchmark python200_hard." >&2
+  fi
+  if [[ "${SUITE}" == "python200_legacy" ]]; then
+    echo "warning: python200_legacy is superseded 150+External-50. Do not report as the paper main table. Use --benchmark python200_hard." >&2
+  fi
 fi
 
 eval "$(catalog agent --agent "${AGENT}" --format bash)"

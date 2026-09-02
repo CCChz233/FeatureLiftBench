@@ -2952,6 +2952,18 @@ def prepare_agent_workspace(
             public_spec=public_spec,
         )
         (workspace_path / "submission").mkdir(exist_ok=True)
+    elif options.cgvl:
+        from .cgvl import install_cgvl_workspace
+
+        public_spec = (
+            metadata.get("public_spec")
+            if isinstance(metadata.get("public_spec"), dict)
+            else {}
+        )
+        if not isinstance(public_spec, dict) or not public_spec:
+            raise ValueError("cgvl requires metadata.public_spec")
+        install_cgvl_workspace(workspace_path, public_spec=public_spec)
+        (workspace_path / "submission").mkdir(exist_ok=True)
     elif options.contract_closure_budget_control:
         (workspace_path / "submission").mkdir(exist_ok=True)
     elif (
@@ -3038,6 +3050,10 @@ def prepare_agent_workspace(
         task_markdown = (
             task_markdown.rstrip() + "\n\n" + spec_adversarial_appendix()
         )
+    elif options.cgvl:
+        from .cgvl import task_appendix as cgvl_appendix
+
+        task_markdown = task_markdown.rstrip() + "\n\n" + cgvl_appendix()
     elif (
         options.contract_closure_gate
         or options.contract_closure_gate_lite

@@ -35,6 +35,7 @@ DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
 PROMPT_APPEND_FILE_ENV = "FEATURELIFTBENCH_OPENHANDS_PROMPT_APPEND_FILE"
 RAW_USAGE_FILENAMES = ("openhands_usage.json", "usage.json")
 OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE = 86
+CGVL_FINISH_GATE_RETURN_CODE = 87
 INFRASTRUCTURE_ERROR_FILE = "openhands_infrastructure_error.json"
 
 
@@ -253,6 +254,8 @@ def run(config: OpenHandsRunnerConfig) -> int:
         raw_usage,
         parse_openhands_compression_events(events_path),
     )
+    if returncode == 0:
+        returncode = _maybe_enforce_cgvl_finish_gate(config, env)
     _maybe_write_pre_submit_audit(config, env, events_path)
     exit_status = "passed" if returncode == 0 else "openhands_failed"
     if command_result.log_limit_exceeded:
@@ -265,6 +268,8 @@ def run(config: OpenHandsRunnerConfig) -> int:
         exit_status = "command_not_found"
     elif returncode == OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE:
         exit_status = "tool_validation_error"
+    elif returncode == CGVL_FINISH_GATE_RETURN_CODE:
+        exit_status = "cgvl_gate_failed"
     _write_usage(
         config,
         exit_status=exit_status,
@@ -681,6 +686,19 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "./run_contract_check.py until ok=true. Do not finish while red. "
             "Do not hunt public_tests/ or hidden_tests/.\n\n"
         )
+    elif options.cgvl:
+        from .cgvl import openhands_appendix as cgvl_openhands_appendix
+
+        closure_section = (
+            "## Contract-Guided Verification Loop\n\n"
+            + cgvl_openhands_appendix()
+            + "\n"
+        )
+        test_hint = (
+            "Fill cgvl_cells/ from cgvl_matrix.json and run ./run_cgvl_check.py "
+            "until ok=true. Do not finish while red. Do not hunt public_tests/ "
+            "or hidden_tests/.\n\n"
+        )
     elif options.adaptive_budget_v2:
         from .adaptive_budget_v2 import ADAPTIVE_BUDGET_V2_PHASE_ENV
         from .adaptive_budget_v2 import targeted_repair_openhands_appendix
@@ -912,6 +930,69 @@ def _condenser_kind_for_mode(mode: str) -> str:
     return mapping.get(mode, mode)
 
 
+def _maybe_enforce_cgvl_finish_gate(
+    config: OpenHandsRunnerConfig,
+    env: dict[str, str],
+) -> int:
+    """Reject a nominal OpenHands finish when the CGVL checker is still red."""
+
+    from .ablation import ablation_options_from_env
+
+    options = ablation_options_from_env(env)
+    if not options.cgvl:
+        return 0
+    checker = config.workspace_dir / "run_cgvl_check.py"
+    record_path = config.agent_output_dir / "cgvl_finish_gate.json"
+    payload: dict[str, Any] = {
+        "enforced": True,
+        "checker": str(checker),
+        "ok": False,
+        "returncode": None,
+        "error": "",
+    }
+    if not checker.is_file():
+        payload["error"] = "missing run_cgvl_check.py"
+        record_path.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        return CGVL_FINISH_GATE_RETURN_CODE
+    try:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(checker),
+                "--workspace",
+                str(config.workspace_dir),
+            ],
+            cwd=config.workspace_dir,
+            env=env,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        payload["returncode"] = completed.returncode
+        payload["stdout"] = completed.stdout[-20000:]
+        payload["stderr"] = completed.stderr[-20000:]
+        evidence_path = config.workspace_dir / "cgvl_evidence.json"
+        evidence: dict[str, Any] = {}
+        if evidence_path.is_file():
+            loaded = json.loads(evidence_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                evidence = loaded
+        payload["ok"] = completed.returncode == 0 and bool(evidence.get("ok"))
+        payload["red_count"] = evidence.get("red_count")
+        payload["green_count"] = evidence.get("green_count")
+    except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
+        payload["error"] = f"{type(exc).__name__}: {exc}"
+    record_path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return 0 if payload["ok"] else CGVL_FINISH_GATE_RETURN_CODE
+
+
 def _maybe_write_pre_submit_audit(
     config: OpenHandsRunnerConfig,
     env: dict[str, str],
@@ -935,6 +1016,14 @@ def _maybe_write_pre_submit_audit(
         write_audit(
             config.workspace_dir,
             config.agent_output_dir / "spec_adversarial_audit.json",
+        )
+        return
+    if options.cgvl:
+        from .cgvl import write_audit as write_cgvl_audit
+
+        write_cgvl_audit(
+            config.workspace_dir,
+            config.agent_output_dir / "cgvl_audit.json",
         )
 
 

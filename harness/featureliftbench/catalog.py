@@ -75,6 +75,7 @@ class SuiteSpec:
     status: str
     paper_main: bool
     description: str
+    task_file: str
 
 
 @dataclass(frozen=True)
@@ -211,6 +212,7 @@ def load_catalog(
             status=str(row.get("status") or "internal"),
             paper_main=bool(row.get("paper_main")),
             description=str(row.get("description") or ""),
+            task_file=str(row.get("task_file") or ""),
         )
 
     return Catalog(
@@ -303,6 +305,7 @@ def resolved_payload(resolved: ResolvedRun) -> dict[str, Any]:
                 "benchmark_paper_main": resolved.suite.paper_main,
                 "tasks_root": resolved.tasks_root,
                 "source_registry": resolved.source_registry,
+                "task_file": resolved.suite.task_file or "",
             }
         )
     return payload
@@ -316,6 +319,7 @@ def emit_bash(payload: Mapping[str, Any]) -> str:
         f"CATALOG_PROFILE={shlex.quote(str(payload.get('profile', '')))}",
         f"CATALOG_TASKS_ROOT={shlex.quote(str(payload.get('tasks_root', '') or ''))}",
         f"CATALOG_SOURCE_REGISTRY={shlex.quote(str(payload.get('source_registry', '') or ''))}",
+        f"CATALOG_TASK_FILE={shlex.quote(str(payload.get('task_file', '') or ''))}",
         f"CATALOG_BENCHMARK_ID={shlex.quote(str(payload.get('benchmark_id', '') or ''))}",
         f"CATALOG_PAPER_TABLE={shlex.quote('1' if payload.get('paper_table') else '0')}",
     ]
@@ -372,6 +376,27 @@ def check_catalog(catalog: Catalog | None = None) -> list[str]:
                 errors.append(
                     f"suite {suite.id}: source_registry missing {suite.source_registry}"
                 )
+        if suite.task_file:
+            task_file = REPO_ROOT / suite.task_file
+            if not task_file.is_file():
+                errors.append(f"suite {suite.id}: task_file missing {suite.task_file}")
+            else:
+                ids = [
+                    line.strip()
+                    for line in task_file.read_text(encoding="utf-8").splitlines()
+                    if line.strip() and not line.strip().startswith("#")
+                ]
+                if not ids:
+                    errors.append(f"suite {suite.id}: task_file is empty")
+                seen: set[str] = set()
+                for task_id in ids:
+                    if task_id in seen:
+                        errors.append(f"suite {suite.id}: duplicate task_id {task_id}")
+                    seen.add(task_id)
+                    if not (tasks_root / task_id / "metadata.json").is_file():
+                        errors.append(
+                            f"suite {suite.id}: task_file id missing {task_id}"
+                        )
 
     paper_agents = sorted(
         agent.id for agent in loaded.agents.values() if agent.paper_table
@@ -513,6 +538,7 @@ def cmd_suite(*, benchmark: str, fmt: str) -> int:
         "source_registry": suite.source_registry,
         "status": suite.status,
         "paper_main": suite.paper_main,
+        "task_file": suite.task_file,
     }
     if fmt == "json":
         print(json.dumps(payload, indent=2, sort_keys=True))
@@ -523,6 +549,7 @@ def cmd_suite(*, benchmark: str, fmt: str) -> int:
                     f"CATALOG_BENCHMARK_ID={shlex.quote(suite.id)}\n",
                     f"CATALOG_TASKS_ROOT={shlex.quote(suite.tasks_root)}\n",
                     f"CATALOG_SOURCE_REGISTRY={shlex.quote(suite.source_registry)}\n",
+                    f"CATALOG_TASK_FILE={shlex.quote(suite.task_file)}\n",
                 ]
             )
         )

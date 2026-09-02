@@ -25,6 +25,7 @@ onto Python-200'.
 | `short_prompt` | Information ablation | no |
 | `pruned_context` | Information ablation | no |
 | `autosaddler` | AutoSaddler trial on FeatureLift + OpenHands | no |
+| `cgvl` | Contract-guided verification loop (screening) | no |
 
 `--arm` is an alias of `--method`. Source of truth: [registry.toml](registry.toml).
 
@@ -43,4 +44,8 @@ PYTHONPATH=harness python3.12 -B -m featureliftbench.cli catalog list --kind met
    without a pre-registered comparison and a screening stop rule.
 
 AutoSaddler-FLB (`--method autosaddler`) is a prompt-pack optimizer with a
-separate train loop. See [METHOD_AUTOSADDLER.md](../docs/METHOD_AUTOSADDLER.md).
+separate train loop. See [METHOD_AUTOSADDLER.md](../docs/archive/methods/METHOD_AUTOSADDLER.md).
+
+CGVL (`--method cgvl`) is a screening arm: harness-expanded contract matrix,
+discriminating public-entry cells, and an evidence finish gate. See
+[METHOD_CGVL.md](../docs/archive/methods/METHOD_CGVL.md). Do not merge it into the paper table.

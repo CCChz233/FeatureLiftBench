@@ -1,0 +1,298 @@
+{
+  "generated_at": "2026-09-01T13:45:19.866523+00:00",
+  "run": "experiments/python/openhands/deepseek-v4-flash/python200-hard-main-20260829",
+  "packets": [
+    {
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "failing_tests": [
+        {
+          "test": "test_invalid_header_name_raises",
+          "source": "def test_invalid_header_name_raises():\n    headers = CIMultiDict()\n    with pytest.raises(InvalidHeaderName):\n        headers[\"bad header\"] = \"1\"",
+          "clause_ids": [
+            "B002",
+            "B003"
+          ],
+          "clause_texts": [
+            "B002: `normalize_headers` returns a case-insensitive `CIMultiDict`.",
+            "B003: Invalid header names raise `InvalidHeaderName`."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "Failed: DID NOT RAISE <class 'featurelifted.headers.InvalidHeaderName'>"
+      ],
+      "symbols_exercised": [
+        "CIMultiDict.__getitem__",
+        "CIMultiDict.__setitem__",
+        "CIMultiDict.getall",
+        "str.__contains__"
+      ],
+      "declared_members": [
+        "CIMultiDict.getall"
+      ],
+      "submission_definitions": {
+        "CIMultiDict": "class CIMultiDict(MutableMapping):\n    \"\"\"Case-insensitive multi-valued mapping.\n\n    Keys compare equal regardless of letter casing, duplicate keys are kept in\n    insertion order, and ``getall(key)`` returns every value stored for a key.\n    \"\"\"\n\n    def __init__(self, *args, **kwargs) -> None:\n        self._items: list[tuple[str, Any]] = []\n        self._key_to_pos: dict[str, list[int]] = {}\n        if args:\n            if len(args) > 1:\n                raise TypeError(\n                    \"CIMultiDict expected at most 1 positional argument, \"\n                    f\"got {len(args)}\"\n                )\n            self._extend(args[0])\n        if kwargs:\n            self._extend(kwargs)\n\n    # ------------------------------------------------------------------\n    # Internal helpers\n    # ------------------------------------------------------------------\n    def _extend(self, arg: Any) -> None:\n        if isinstance(arg, Mapping):\n            iterable = arg.items()\n        else:\n            iterable = arg\n        for key, value in iterable:\n            self.add(key, value)\n\n    def _rebuild_without(self, remove: set[int]) -> None:\n        \"\"\"Rebuild internal tables dropping the given positions.\"\"\"\n        new_items: list[tuple[str, Any]] = []\n        new_key_to_pos: dict[str, list[int]] = {}\n        for index, pair in enumerate(self._items):\n            if index in remove:\n                continue\n            new_items.append(pair)\n            new_key_to_pos.setdefault(_ci_key(pair[0]), []).append(\n                len(new_items) - 1\n            )\n        self._items = new_items\n        self._key_to_pos = new_key_to_pos\n\n    # ------------------------------------------------------------------\n    # Core multi-dict mutations\n    # ------------------------------------------------------------------\n    def add(self, key: str, value: Any) -> None:\n        \"\"\"Append *value* for *key*, keeping any existing values.\"\"\"\n        self._items.append((key, value))\n        self._ke",
+        "__setitem__": "def __setitem__(self, key: str, value: Any) -> None:\n        positions = self._key_to_pos.get(_ci_key(key))\n        if positions is None:\n            self.add(key, value)\n            return\n        remove = set(positions[1:])\n        if not remove:\n            # Replace the single stored pair in place, updating casing.\n            self._items[positions[0]] = (key, value)\n            return\n        new_items: list[tuple[str, Any]] = []\n        new_key_to_pos: dict[str, list[int]] = {}\n        for index, (old_key, old_value) in enumerate(self._items):\n            if index in remove:\n                continue\n            if index == positions[0]:\n                old_key, old_value = key, value\n            new_items.append((old_key, old_value))\n            new_key_to_pos.setdefault(_ci_key(old_key), []).append(\n                len(new_items) - 1\n            )\n        self._items = new_items\n        self._key_to_pos = new_key_to_pos",
+        "__getitem__": "def __getitem__(self, key: str) -> Any:\n        positions = self._key_to_pos.get(_ci_key(key))\n        if positions is None:\n            raise KeyError(key)\n        return self._items[positions[0]][1]",
+        "getall": "def getall(self, key: str) -> list[str]:\n        \"\"\"Return all values stored for *key* as a list.\"\"\"\n        positions = self._key_to_pos.get(_ci_key(key))\n        if positions is None:\n            raise KeyError(key)\n        return [self._items[pos][1] for pos in positions]",
+        "__contains__": "def __contains__(self, key: object) -> bool:\n        if not isinstance(key, str):\n            return False\n        return _ci_key(key) in self._key_to_pos"
+      }
+    },
+    {
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "failing_tests": [
+        {
+          "test": "test_alias_resolution",
+          "source": "def test_alias_resolution():\n    resolver = ZoneResolver()\n    resolver.register_alias(\"US/Eastern\", \"America/New_York\")\n    zone = resolver.load_zone(\"US/Eastern\", {\"America/New_York\": TZIF})\n    assert zone.name == \"America/New_York\"\n    assert resolver.get(\"US/Eastern\") is zone",
+          "clause_ids": [
+            "B003"
+          ],
+          "clause_texts": [
+            "B003: When a zone alias is resolved, ZoneResolver follows aliases to the canonical zone and raises UnknownZoneError for missing names or alias cycles."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "featurelifted._resolver.UnknownZoneError: US/Eastern"
+      ],
+      "symbols_exercised": [
+        "ZoneResolver.get",
+        "ZoneResolver.load_zone",
+        "ZoneResolver.register_alias"
+      ],
+      "declared_members": [
+        "ZoneResolver.get",
+        "ZoneResolver.load_zone",
+        "ZoneResolver.register_alias"
+      ],
+      "submission_definitions": {
+        "ZoneResolver": "class ZoneResolver(object):\n    \"\"\"Resolves time zone names to parsed :class:`TZZone` objects.\n\n    Zones are loaded from raw tzfile bytes via :meth:`load_zone`. Registered\n    aliases are followed (with cycle detection) to the canonical zone name.\n    \"\"\"\n\n    def __init__(self) -> None:\n        self._zones = {}\n        self._aliases = {}\n        self._cache = {}\n\n    def load_zone(self, name: str, tzdata: dict[str, bytes]) -> TZZone:\n        \"\"\"Load the zone named ``name`` from the ``tzdata`` mapping.\n\n        ``tzdata`` maps zone names to raw tzfile bytes; the zone identified by\n        ``name`` is parsed and made available to :meth:`get`.\n\n        :param name: the zone name to load.\n        :param tzdata: a mapping of zone names to tzfile bytes.\n        :raises UnknownZoneError: if ``name`` is not present in ``tzdata``.\n        \"\"\"\n        if name not in tzdata:\n            raise UnknownZoneError(name)\n        data = tzdata[name]\n        zone = build_zone(name, data)\n        self._zones[name] = data\n        self._cache[name] = zone\n        return zone\n\n    def get(self, name: str) -> TZZone:\n        \"\"\"Return the parsed zone for ``name``.\n\n        Aliases are followed to their canonical zone name with cycle\n        detection.\n\n        :param name: a zone name or alias.\n        :raises UnknownZoneError: if the name is missing or an alias cycle is\n            encountered.\n        \"\"\"\n        canonical = self._resolve(name)\n        zone = self._cache.get(canonical)\n        if zone is None:\n            data = self._zones.get(canonical)\n            if data is None:\n                raise UnknownZoneError(name)\n            zone = build_zone(canonical, data)\n            self._cache[canonical] = zone\n        return zone\n\n    def register_alias(self, alias: str, canonical: str) -> None:\n        \"\"\"Register ``alias`` as a name for ``canonical``.\"\"\"\n        self._aliases[alias] = canonical\n\n    def _resolve(self, name):\n        \"\"\"Follow alias chains to a canonical zone nam",
+        "load_zone": "def load_zone(self, name: str, tzdata: dict[str, bytes]) -> TZZone:\n        \"\"\"Load the zone named ``name`` from the ``tzdata`` mapping.\n\n        ``tzdata`` maps zone names to raw tzfile bytes; the zone identified by\n        ``name`` is parsed and made available to :meth:`get`.\n\n        :param name: the zone name to load.\n        :param tzdata: a mapping of zone names to tzfile bytes.\n        :raises UnknownZoneError: if ``name`` is not present in ``tzdata``.\n        \"\"\"\n        if name not in tzdata:\n            raise UnknownZoneError(name)\n        data = tzdata[name]\n        zone = build_zone(name, data)\n        self._zones[name] = data\n        self._cache[name] = zone\n        return zone",
+        "get": "def get(self, name: str) -> TZZone:\n        \"\"\"Return the parsed zone for ``name``.\n\n        Aliases are followed to their canonical zone name with cycle\n        detection.\n\n        :param name: a zone name or alias.\n        :raises UnknownZoneError: if the name is missing or an alias cycle is\n            encountered.\n        \"\"\"\n        canonical = self._resolve(name)\n        zone = self._cache.get(canonical)\n        if zone is None:\n            data = self._zones.get(canonical)\n            if data is None:\n                raise UnknownZoneError(name)\n            zone = build_zone(canonical, data)\n            self._cache[canonical] = zone\n        return zone",
+        "register_alias": "def register_alias(self, alias: str, canonical: str) -> None:\n        \"\"\"Register ``alias`` as a name for ``canonical``.\"\"\"\n        self._aliases[alias] = canonical"
+      }
+    },
+    {
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "failing_tests": [
+        {
+          "test": "test_multiple_dist_info_raises",
+          "source": "def test_multiple_dist_info_raises():\n    names = [\"a-1.dist-info/METADATA\", \"b-2.dist-info/RECORD\"]\n    with pytest.raises(ValueError):\n        find_dist_info(names)",
+          "clause_ids": [
+            "B002"
+          ],
+          "clause_texts": [
+            "B002: `find_dist_info` locates a unique `.dist-info` directory among archive names."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "Failed: DID NOT RAISE <class 'ValueError'>"
+      ],
+      "symbols_exercised": [],
+      "declared_members": [],
+      "submission_definitions": {}
+    },
+    {
+      "task_id": "pygments__lexer_core__001",
+      "failing_tests": [
+        {
+          "test": "test_stripall_option_removes_whitespace_tokens",
+          "source": "def test_stripall_option_removes_whitespace_tokens() -> None:\n    lexer = PythonLexer(stripall=True)\n    pairs = list(lex(\"  x  =  1  \", lexer))\n\n    assert all(ttype is not token.Text for ttype, _ in pairs)\n    assert [value for _, value in pairs if value.strip()] == [\"x\", \"=\", \"1\"]",
+          "clause_ids": [
+            "B004"
+          ],
+          "clause_texts": [
+            "B004: The extracted feature must support this observable behavior: honor lexer options such as stripall and ensurenl. Required observable cases include stripall option removes whitespace tokens."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "assert False",
+        "+  where False = all(<generator object test_stripall_option_removes_whitespace_tokens.<locals>.<genexpr> at 0x795860db0120>)"
+      ],
+      "symbols_exercised": [
+        "token.Comment",
+        "token.Literal",
+        "token.Number",
+        "token.Operator",
+        "token.String",
+        "token.Text"
+      ],
+      "declared_members": [
+        "token.Comment",
+        "token.Comment.Single",
+        "token.Keyword",
+        "token.Literal",
+        "token.Literal.String",
+        "token.Literal.String.Single",
+        "token.Name",
+        "token.Name.Function",
+        "token.Number",
+        "token.Number.Integer",
+        "token.Operator",
+        "token.String",
+        "token.String.Double",
+        "token.Text"
+      ],
+      "submission_definitions": {}
+    },
+    {
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "failing_tests": [
+        {
+          "test": "test_check_unknown_strict_raises",
+          "source": "def test_check_unknown_strict_raises():\n    registry = MarkerRegistry()\n    try:\n        registry.check_unknown(\"missing\", strict=True)\n    except KeyError:\n        pass\n    else:\n        raise AssertionError(\"strict unknown marker should raise KeyError\")",
+          "clause_ids": [
+            "B003"
+          ],
+          "clause_texts": [
+            "B003: `check_unknown` warns or raises for unregistered markers."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "featurelifted._mark.UnknownMarkerWarning: Unknown marker 'missing' not found in `markers` configuration option"
+      ],
+      "symbols_exercised": [
+        "MarkerRegistry.check_unknown",
+        "MarkerRegistry.get",
+        "MarkerRegistry.merge_plugin_markers",
+        "MarkerRegistry.register"
+      ],
+      "declared_members": [
+        "MarkerRegistry.check_unknown",
+        "MarkerRegistry.from_ini",
+        "MarkerRegistry.get",
+        "MarkerRegistry.merge_plugin_markers",
+        "MarkerRegistry.register"
+      ],
+      "submission_definitions": {
+        "MarkerRegistry": "class MarkerRegistry:\n    \"\"\"Registry of known markers and their descriptions.\n\n    Markers can be registered directly via :meth:`register`, loaded from\n    ini-style configuration via :meth:`from_ini`, or contributed by plugins\n    via :meth:`merge_plugin_markers`.\n    \"\"\"\n\n    def __init__(self) -> None:\n        self._markers: dict[str, Marker] = {}\n\n    @classmethod\n    def from_ini(cls, value: str | list[str]) -> MarkerRegistry:\n        \"\"\"Build a registry from ``markers`` ini configuration lines.\n\n        ``value`` may be a list of marker lines or a single (possibly\n        multi-line) string.  Each line has the form ``name(condition):\n        description``; the condition and description are optional.\n        \"\"\"\n        registry = cls()\n        if isinstance(value, str):\n            lines = value.splitlines()\n        else:\n            lines = value\n        for line in lines:\n            parsed = _parse_marker_line(line)\n            if parsed is None:\n                continue\n            name, description = parsed\n            registry.register(name, description)\n        return registry\n\n    def register(\n        self, name: str, description: str = \"\", *, _overwrite: bool = False\n    ) -> None:\n        \"\"\"Register a marker under ``name`` with the given ``description``.\n\n        By default an already-registered marker is left untouched; pass\n        ``_overwrite=True`` to replace it.\n        \"\"\"\n        if name not in self._markers or _overwrite:\n            self._markers[name] = Marker(name, description)\n\n    def merge_plugin_markers(self, plugin_markers: dict[str, str]) -> None:\n        \"\"\"Register markers provided by plugins.\n\n        Each plugin marker is registered with its description unless a\n        marker with the same name is already known; existing markers are\n        never overwritten.\n        \"\"\"\n        for name, description in plugin_markers.items():\n            if name not in self._markers:\n                self._markers[name] = Marker(name, descri",
+        "register": "def register(\n        self, name: str, description: str = \"\", *, _overwrite: bool = False\n    ) -> None:\n        \"\"\"Register a marker under ``name`` with the given ``description``.\n\n        By default an already-registered marker is left untouched; pass\n        ``_overwrite=True`` to replace it.\n        \"\"\"\n        if name not in self._markers or _overwrite:\n            self._markers[name] = Marker(name, description)",
+        "merge_plugin_markers": "def merge_plugin_markers(self, plugin_markers: dict[str, str]) -> None:\n        \"\"\"Register markers provided by plugins.\n\n        Each plugin marker is registered with its description unless a\n        marker with the same name is already known; existing markers are\n        never overwritten.\n        \"\"\"\n        for name, description in plugin_markers.items():\n            if name not in self._markers:\n                self._markers[name] = Marker(name, description)",
+        "get": "def get(self, name: str) -> Marker | None:\n        \"\"\"Return the marker registered under ``name``, or ``None``.\"\"\"\n        return self._markers.get(name)",
+        "check_unknown": "def check_unknown(self, name: str, *, strict: bool = False) -> None:\n        \"\"\"Check whether ``name`` is a registered marker.\n\n        If the marker is not registered an :class:`UnknownMarkerWarning` is\n        emitted; when ``strict`` is true the warning is raised instead.\n        \"\"\"\n        if name in self._markers:\n            return\n        if strict:\n            raise UnknownMarkerWarning(\n                f\"Unknown marker {name!r} not found in `markers` \"\n                \"configuration option\"\n            )\n        warnings.warn(\n            f\"Unknown marker {name!r} - is this a typo?  You can register \"\n            \"custom marks to avoid this warning - for details, see \"\n            \"https://docs.pytest.org/en/stable/how-to/mark.html\",\n            UnknownMarkerWarning,\n            stacklevel=2,\n        )"
+      }
+    },
+    {
+      "task_id": "python_decouple__config_repository_core__001",
+      "failing_tests": [
+        {
+          "test": "test_env_file_quotes_comments_and_empty",
+          "source": "def test_env_file_quotes_comments_and_empty(tmp_path):\n    path = tmp_path / \".env\"\n    path.write_text(\"NAME='Ada Lovelace' # note\\nEMPTY=\\nFLAG=YES\\n\", encoding=\"utf-8\")\n    config = Config(RepositoryEnv(path), environ={})\n    assert config(\"NAME\") == \"Ada Lovelace\"\n    assert config(\"EMPTY\") == \"\"\n    assert config(\"FLAG\", cast=bool) is True",
+          "clause_ids": [
+            "B001",
+            "B002",
+            "B003",
+            "B004"
+          ],
+          "clause_texts": [
+            "B001: The extracted feature must support this observable behavior: environment variables override repository values. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float.",
+            "B002: The extracted feature must support this observable behavior: .env quoted-value and comment parsing. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float.",
+            "B003: The extracted feature must support this observable behavior: required and default value behavior. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float.",
+            "B004: The extracted feature must support this observable behavior: bool, int, float, Csv, and Choices casting. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "assert \"'Ada Lovelace' # note\" == 'Ada Lovelace'",
+        "- Ada Lovelace",
+        "+ 'Ada Lovelace' # note"
+      ],
+      "symbols_exercised": [],
+      "declared_members": [],
+      "submission_definitions": {}
+    },
+    {
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "failing_tests": [
+        {
+          "test": "test_query_and_header_matchers_and_once_behavior",
+          "source": "def test_query_and_header_matchers_and_once_behavior():\n    registry = MockResponseRegistry()\n    registry.add(\n        MockResponse(\n            url=\"http://example.com?a=1\",\n            method=\"GET\",\n            matchers=[query_string_matcher({\"a\": \"1\"}), header_matcher({\"X-Test\": \"1\"})],\n            once=True,\n        )\n    )\n    request = PreparedRequest()\n    request.prepare(method=\"GET\", url=\"http://example.com?a=1\", headers={\"X-Test\": \"1\"})\n    first, _ = registry.find(request)\n    second, _ = registry.find(request)\n    assert first is not None\n    assert second is None\n    assert len(registry.call_history) == 2",
+          "clause_ids": [
+            "B002",
+            "B003"
+          ],
+          "clause_texts": [
+            "B002: Support `query_string_matcher` and `header_matcher` helper matchers.",
+            "B003: `once=True` responses are removed after the first successful match."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "assert 1 == 2",
+        "+  where 1 = len([Call(request=<PreparedRequest [GET]>, response=<featurelifted.MockResponse object at 0x75c3dd23a410>)])",
+        "+    where [Call(request=<PreparedRequest [GET]>, response=<featurelifted.MockResponse object at 0x75c3dd23a410>)] = <featurelifted.MockResponseRegistry object at 0x75c3dd23a4d0>.call_history"
+      ],
+      "symbols_exercised": [
+        "MockResponseRegistry._responses",
+        "MockResponseRegistry.add",
+        "MockResponseRegistry.call_history",
+        "MockResponseRegistry.find",
+        "MockResponseRegistry.reset"
+      ],
+      "declared_members": [
+        "MockResponseRegistry._responses",
+        "MockResponseRegistry.add",
+        "MockResponseRegistry.call_history",
+        "MockResponseRegistry.find",
+        "MockResponseRegistry.reset"
+      ],
+      "submission_definitions": {
+        "MockResponseRegistry": "class MockResponseRegistry:\n    \"\"\"Registry that stores ``MockResponse`` objects and finds matches.\"\"\"\n\n    def __init__(self) -> None:\n        self._responses: List[MockResponse] = []\n        self.call_history: CallList = CallList()\n\n    @property\n    def registered(self) -> List[MockResponse]:\n        return self._responses\n\n    def reset(self) -> None:\n        self._responses = []\n        self.call_history.reset()\n\n    def add(self, response: MockResponse) -> MockResponse:\n        if any(response is resp for resp in self.registered):\n            # If the same instance is registered more than once, store a copy.\n            response = copy.deepcopy(response)\n        self.registered.append(response)\n        return response\n\n    def _record_call(self, response: MockResponse, request: PreparedRequest) -> None:\n        response.call_count += 1\n        call = Call(request, response)\n        self.call_history.add_call(call)\n        response._calls.add_call(call)\n        if response.once:\n            for i, resp in enumerate(self.registered):\n                if resp is response:\n                    self.registered.pop(i)\n                    break\n\n    def find(\n        self, request: PreparedRequest\n    ) -> Tuple[Optional[MockResponse], List[str]]:\n        \"\"\"Find the first registered response matching the request.\n\n        Returns a tuple of the matched response (``None`` if nothing matched)\n        and a list of reasons why the other registered responses did not match.\n        \"\"\"\n        found = None\n        found_match = None\n        match_failed_reasons: List[str] = []\n        for i, response in enumerate(self.registered):\n            match_result, reason = response.matches(request)\n            if match_result:\n                if found is None:\n                    found = i\n                    found_match = response\n                else:\n                    if self.registered[found].call_count > 0:\n                        # The previously matched response was alrea",
+        "add": "def add(self, request: Any, response: Any) -> None:\n        self._calls.append(Call(request, response))",
+        "reset": "def reset(self) -> None:\n        self._calls = []",
+        "find": "def find(\n        self, request: PreparedRequest\n    ) -> Tuple[Optional[MockResponse], List[str]]:\n        \"\"\"Find the first registered response matching the request.\n\n        Returns a tuple of the matched response (``None`` if nothing matched)\n        and a list of reasons why the other registered responses did not match.\n        \"\"\"\n        found = None\n        found_match = None\n        match_failed_reasons: List[str] = []\n        for i, response in enumerate(self.registered):\n            match_result, reason = response.matches(request)\n            if match_result:\n                if found is None:\n                    found = i\n                    found_match = response\n                else:\n                    if self.registered[found].call_count > 0:\n                        # The previously matched response was already used.\n                        self.registered.pop(found)\n                        found_match = response\n                        break\n                    # Multiple matches found. Remove & return the first response.\n                    match = self.registered.pop(found)\n                    self._record_call(match, request)\n                    return match, match_failed_reasons\n            else:\n                match_failed_reasons.append(reason)\n\n        if found_match is not None:\n            self._record_call(found_match, request)\n        return found_match, match_failed_reasons"
+      }
+    },
+    {
+      "task_id": "zope_interface__adapter_registry_core__001",
+      "failing_tests": [
+        {
+          "test": "test_named_registration_exactness_and_unregister_value_guard",
+          "source": "def test_named_registration_exactness_and_unregister_value_guard() -> None:\n    class ISource(fl.Interface):\n        pass\n\n    class ITarget(fl.Interface):\n        pass\n\n    unnamed = object()\n    named = object()\n    registry = fl.AdapterRegistry()\n    registry.register((ISource,), ITarget, \"\", unnamed)\n    registry.register((ISource,), ITarget, \"blue\", named)\n    assert registry.registered((ISource,), ITarget) is unnamed\n    assert registry.registered((ISource,), ITarget, \"blue\") is named\n    assert not registry.unregister((ISource,), ITarget, \"blue\", unnamed)\n    assert registry.registered((ISource,), ITarget, \"blue\") is named\n    assert not registry.unregister((ISource,), ITarget, \"blue\", named)\n    assert registry.registered((ISource,), ITarget, \"blue\") is None\n    assert registry.registered((ISource,), ITarget) is unnamed",
+          "clause_ids": [
+            "B003"
+          ],
+          "clause_texts": [
+            "B003: Registrations are separated by text name: named and unnamed adapters can coexist, `registered` reports only an exact registration, and `unregister` removes only the matching registration and value."
+          ]
+        }
+      ],
+      "assertion_evidence": [
+        "AssertionError: assert not True",
+        "+  where True = <bound method BaseAdapterRegistry.unregister of <featurelifted.adapter.AdapterRegistry object at 0x7d71b747fb90>>((<InterfaceClass test_hidden_behavior.ISource>,), <InterfaceClass test_hidden_behavior.ITarget>, 'blue', <object object at 0x7d71b8136660>)",
+        "+    where <bound method BaseAdapterRegistry.unregister of <featurelifted.adapter.AdapterRegistry object at 0x7d71b747fb90>> = <featurelifted.adapter.AdapterRegistry object at 0x7d71b747fb90>.unregister"
+      ],
+      "symbols_exercised": [
+        "AdapterRegistry.lookupAll",
+        "AdapterRegistry.queryAdapter",
+        "AdapterRegistry.queryMultiAdapter",
+        "AdapterRegistry.register",
+        "AdapterRegistry.registered",
+        "AdapterRegistry.unregister",
+        "InterfaceSpecification.__contains__"
+      ],
+      "declared_members": [
+        "AdapterRegistry.lookup",
+        "AdapterRegistry.lookupAll",
+        "AdapterRegistry.queryAdapter",
+        "AdapterRegistry.queryMultiAdapter",
+        "AdapterRegistry.register",
+        "AdapterRegistry.registered",
+        "AdapterRegistry.unregister"
+      ],
+      "submission_definitions": {
+        "AdapterRegistry": "class AdapterRegistry(BaseAdapterRegistry):\n    \"\"\"\n    A full implementation of ``IAdapterRegistry`` that adds support for\n    sub-registries.\n    \"\"\"\n\n    LookupClass = AdapterLookup\n\n    def __init__(self, bases=()):\n        # AdapterRegisties are invalidating registries, so\n        # we need to keep track of our invalidating subregistries.\n        self._v_subregistries = weakref.WeakKeyDictionary()\n\n        super().__init__(bases)\n\n    def _addSubregistry(self, r):\n        self._v_subregistries[r] = 1\n\n    def _removeSubregistry(self, r):\n        if r in self._v_subregistries:\n            del self._v_subregistries[r]\n\n    def _setBases(self, bases):\n        old = self.__dict__.get('__bases__', ())\n        for r in old:\n            if r not in bases:\n                r._removeSubregistry(self)\n        for r in bases:\n            if r not in old:\n                r._addSubregistry(self)\n\n        super()._setBases(bases)\n\n    def changed(self, originally_changed):\n        super().changed(originally_changed)\n\n        for sub in self._v_subregistries.keys():\n            sub.changed(originally_changed)",
+        "register": "def register(self, required, provided, name, value):\n        if not isinstance(name, str):\n            raise ValueError('name is not a string')\n        if value is None:\n            self.unregister(required, provided, name, value)\n            return\n\n        required = tuple([_convert_None_to_Interface(r) for r in required])\n        name = _normalize_name(name)\n        order = len(required)\n        byorder = self._adapters\n        while len(byorder) <= order:\n            byorder.append(self._mappingType())\n        components = byorder[order]\n        key = required + (provided,)\n\n        for k in key:\n            d = components.get(k)\n            if d is None:\n                d = self._mappingType()\n                components[k] = d\n            components = d\n\n        if components.get(name) is value:\n            return\n\n        components[name] = value\n\n        n = self._provided.get(provided, 0) + 1\n        self._provided[provided] = n\n        if n == 1:\n            self._v_lookup.add_extendor(provided)\n\n        self.changed(self)",
+        "registered": "def registered(self, required, provided, name=''):\n        return self._find_leaf(\n            self._adapters,\n            required,\n            provided,\n            _normalize_name(name)\n        )",
+        "unregister": "def unregister(self, required, provided, name, value=None):\n        required = tuple([_convert_None_to_Interface(r) for r in required])\n        order = len(required)\n        byorder = self._adapters\n        if order >= len(byorder):\n            return False\n        components = byorder[order]\n        key = required + (provided,)\n\n        # Keep track of how we got to `components`:\n        lookups = []\n        for k in key:\n            d = components.get(k)\n            if d is None:\n                return False\n            lookups.append((components, k))\n            components = d\n\n        old = components.get(name)\n        if old is None:\n            return False\n        if (value is not None) and (old is not value):\n            return False\n\n        del components[name]\n        if not components:\n            # Clean out empty containers, since we don't want our keys\n            # to reference global objects (interfaces) unnecessarily.\n            # This is often a problem when an interface is slated for\n            # removal; a hold-over entry in the registry can make it\n            # difficult to remove such interfaces.\n            for comp, k in reversed(lookups):\n                d = comp[k]\n                if d:\n                    break\n                else:\n                    del comp[k]\n            while byorder and not byorder[-1]:\n                del byorder[-1]\n        n = self._provided[provided] - 1\n        if n == 0:\n            del self._provided[provided]\n            self._v_lookup.remove_extendor(provided)\n        else:\n            self._provided[provided] = n\n\n        self.changed(self)\n        return True",
+        "queryAdapter": "def queryAdapter(self, object, provided, name='', default=None):\n        return self.adapter_hook(provided, object, name, default)",
+        "lookupAll": "def lookupAll(self, required, provided):\n        cache = self._mcache.get(provided)\n        if cache is None:\n            cache = {}\n            self._mcache[provided] = cache\n\n        required = tuple(required)\n        result = cache.get(required, _not_in_mapping)\n        if result is _not_in_mapping:\n            result = self._uncached_lookupAll(required, provided)\n            cache[required] = result\n\n        return result",
+        "queryMultiAdapter": "def queryMultiAdapter(self, objects, provided, name='', default=None):\n        factory = self.lookup([providedBy(o) for o in objects], provided, name)\n        if factory is None:\n            return default\n\n        result = factory(*[\n            o.__self__ if isinstance(o, super) else o for o in objects\n        ])\n        if result is None:\n            return default\n\n        return result",
+        "__contains__": "def __contains__(self, interface):\n        \"\"\"Test whether an interface is in the specification\n        \"\"\"\n\n        return self.extends(interface) and interface in self.interfaces()"
+      }
+    }
+  ]
+}

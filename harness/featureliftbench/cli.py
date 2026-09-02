@@ -32,6 +32,103 @@ def main(argv: list[str] | None = None) -> int:
     validate_parser.add_argument("task_dir", type=Path)
     validate_parser.add_argument("--json", action="store_true", help="print machine-readable output")
 
+    benchmark_gate_parser = subparsers.add_parser(
+        "validate-benchmark",
+        help="run the read-only, evidence-backed validation gate for a named suite",
+    )
+    benchmark_gate_parser.add_argument(
+        "--benchmark",
+        default="python200_hard",
+        help="named suite from benchmark/suites.toml",
+    )
+    benchmark_gate_parser.add_argument(
+        "--output",
+        type=Path,
+        help="new report directory; defaults to reports/benchmark_gate/<suite>_<time>",
+    )
+    benchmark_gate_parser.add_argument(
+        "--task-id",
+        action="append",
+        default=[],
+        help="limit to one task id; repeat for a smoke subset",
+    )
+    benchmark_gate_parser.add_argument(
+        "--no-source-materialization",
+        action="store_true",
+        help="verify archive identity but leave source-dependent checks undetermined",
+    )
+    benchmark_gate_parser.add_argument(
+        "--oracle-summary",
+        type=Path,
+        help="N=3 oracle revalidation summary; defaults to the Python-200' audit",
+    )
+    benchmark_gate_parser.add_argument(
+        "--adjudications",
+        type=Path,
+        help="CSV that confirms, overturns, or leaves mechanical findings unresolved",
+    )
+    benchmark_gate_parser.add_argument(
+        "--api-review",
+        action="store_true",
+        help="use the legacy one-shot reviewer on explicitly approved private evidence",
+    )
+    benchmark_gate_parser.add_argument(
+        "--agent-review",
+        action="store_true",
+        help="use the constrained multi-turn validator agent on ambiguous tasks",
+    )
+    benchmark_gate_parser.add_argument("--review-model")
+    benchmark_gate_parser.add_argument("--review-api-base")
+    benchmark_gate_parser.add_argument(
+        "--review-api-key-env",
+        default="FEATURELIFTBENCH_VALIDATOR_API_KEY",
+    )
+    benchmark_gate_parser.add_argument(
+        "--review-env-file",
+        type=Path,
+        help="dotenv-style reviewer configuration; secrets are never written to reports",
+    )
+    benchmark_gate_parser.add_argument(
+        "--review-timeout-seconds",
+        type=int,
+        default=180,
+    )
+    benchmark_gate_parser.add_argument(
+        "--review-max-output-tokens",
+        type=int,
+        default=4096,
+    )
+    benchmark_gate_parser.add_argument(
+        "--review-reasoning-effort",
+        choices=("low", "high", "max"),
+        default="low",
+    )
+    benchmark_gate_parser.add_argument(
+        "--agent-max-turns",
+        type=int,
+        default=6,
+    )
+    benchmark_gate_parser.add_argument(
+        "--agent-max-total-tokens",
+        type=int,
+        default=40000,
+    )
+    benchmark_gate_parser.add_argument(
+        "--agent-review-all-selected",
+        action="store_true",
+        help="also run the agent on mechanically clear selected controls",
+    )
+    benchmark_gate_parser.add_argument(
+        "--acknowledge-private-evaluator-policy",
+        action="store_true",
+        help="confirm the endpoint is authorized for no-training/no-retention evaluator data",
+    )
+    benchmark_gate_parser.add_argument(
+        "--require-pass",
+        action="store_true",
+        help="return non-zero unless every selected task meets all blocking checks",
+    )
+
     render_parser = subparsers.add_parser(
         "render-task",
         help="render TASK.md from metadata.public_spec",
@@ -372,6 +469,21 @@ def main(argv: list[str] | None = None) -> int:
         action="store_false",
         help="Disable the spec-adversarial self-test arm (default)",
     )
+    contract_closure_gate.add_argument(
+        "--cgvl",
+        dest="cgvl",
+        action="store_true",
+        help=(
+            "Contract-Guided Verification Loop v2: compact behavior cells, exact "
+            "public-entry calls, executable assertions, isolation, and a hard finish gate"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-cgvl",
+        dest="cgvl",
+        action="store_false",
+        help="Disable CGVL (default)",
+    )
     run_agent_parser.set_defaults(
         contract_closure_gate=None,
         contract_closure_gate_lite=None,
@@ -383,6 +495,7 @@ def main(argv: list[str] | None = None) -> int:
         adaptive_budget_v2=None,
         pre_submit_contract_audit=None,
         spec_adversarial_self_test=None,
+        cgvl=None,
     )
     run_agent_parser.add_argument(
         "--env-file",
@@ -582,6 +695,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "validate-task":
         return _cmd_validate_task(args)
+    if args.command == "validate-benchmark":
+        return _cmd_validate_benchmark(args)
     if args.command == "render-task":
         return _cmd_render_task(args)
     if args.command == "migrate-task-spec":
@@ -633,6 +748,65 @@ def _cmd_validate_task(args: argparse.Namespace) -> int:
             print(f"warning: {warning}", file=sys.stderr)
 
     return 0 if result.valid else 1
+
+
+def _cmd_validate_benchmark(args: argparse.Namespace) -> int:
+    from .agent_config import _read_env_file
+    from .benchmark_gate import (
+        DEFAULT_ORACLE_SUMMARY,
+        GateRunOptions,
+        MEETS,
+        reviewer_config_from_environment,
+        run_benchmark_gate,
+    )
+
+    try:
+        if args.api_review and args.agent_review:
+            raise ValueError("choose either --api-review or --agent-review, not both")
+        reviewer = None
+        if args.api_review or args.agent_review:
+            reviewer = reviewer_config_from_environment(
+                model=args.review_model,
+                api_base=args.review_api_base,
+                api_key_env=args.review_api_key_env,
+                timeout_seconds=args.review_timeout_seconds,
+                env_values=_read_env_file(args.review_env_file),
+                mode="agent" if args.agent_review else "one_shot",
+                max_output_tokens=args.review_max_output_tokens,
+                reasoning_effort=args.review_reasoning_effort,
+                agent_max_turns=args.agent_max_turns,
+                agent_max_total_tokens=args.agent_max_total_tokens,
+                agent_pending_only=not args.agent_review_all_selected,
+            )
+        payload = run_benchmark_gate(
+            GateRunOptions(
+                benchmark=args.benchmark,
+                output=args.output,
+                task_ids=tuple(args.task_id),
+                source_materialization=not args.no_source_materialization,
+                oracle_summary=args.oracle_summary or DEFAULT_ORACLE_SUMMARY,
+                adjudications=args.adjudications,
+                reviewer=reviewer,
+                private_evaluator_policy_acknowledged=(
+                    args.acknowledge_private_evaluator_policy
+                ),
+            )
+        )
+    except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+
+    summary = {
+        "benchmark": payload["benchmark"],
+        "task_count": payload["task_count"],
+        "label_counts": payload["label_counts"],
+        "output": payload["output"],
+        "selection_written": False,
+    }
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    if args.require_pass and payload["label_counts"].get(MEETS) != payload["task_count"]:
+        return 1
+    return 0
 
 
 def _load_task_metadata(task_dir: Path) -> dict:
@@ -780,6 +954,7 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             adaptive_budget_v2=args.adaptive_budget_v2,
             pre_submit_contract_audit=args.pre_submit_contract_audit,
             spec_adversarial_self_test=args.spec_adversarial_self_test,
+            cgvl=args.cgvl,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
         retry_only_statuses = parse_retry_only_statuses(args.retry_only_status)

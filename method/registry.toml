@@ -75,7 +75,7 @@ aliases = ["public_feedback", "public-feedback", "public"]
 status = "ablation"
 paper_table = false
 spec = "harness/config/methods/rq6_public_feedback.json"
-docs = "docs/METHOD_RQ6_PUBLIC_FEEDBACK.md"
+docs = "docs/archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md"
 description = "RQ6 Public-feedback: mount public_tests/. Hidden stays evaluator-only."
 run_agent_flags = [
   "--no-agent-source-hints",
@@ -330,7 +330,7 @@ aliases = ["autosaddler", "autosaddler-flb", "autosaddler_flb", "self-harness"]
 status = "screening"
 paper_table = false
 spec = "harness/config/methods/autosaddler.json"
-docs = "docs/METHOD_AUTOSADDLER.md"
+docs = "docs/archive/methods/METHOD_AUTOSADDLER.md"
 description = "Prompt-only AutoSaddler search over four OpenHands appendix components. Same Main information boundary. Screening only; do not merge into the OpenHands paper table."
 run_agent_flags = [
   "--no-agent-source-hints",
@@ -345,3 +345,25 @@ run_agent_flags = [
 
 [methods.autosaddler.profiles]
 openhands = "openhands_deepseek_v4_flash_main"
+
+[methods.cgvl]
+aliases = ["cgvl", "contract_guided_verification", "contract-guided-verification"]
+status = "screening"
+paper_table = false
+spec = "harness/config/methods/cgvl.json"
+docs = "docs/archive/methods/METHOD_CGVL.md"
+description = "Screening v2: compact Bxxx closure cells, exact public-entry tracing, executable assertions/counterexamples, isolation scan, and a hard finish gate. Same Main information boundary."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+  "--cgvl",
+]
+
+[methods.cgvl.profiles]
+openhands = "openhands_deepseek_v4_flash_cgvl"

@@ -10,6 +10,7 @@ from featureliftbench.catalog import check_catalog
 from featureliftbench.catalog import emit_bash
 from featureliftbench.catalog import get_agent
 from featureliftbench.catalog import get_method
+from featureliftbench.catalog import get_suite
 from featureliftbench.catalog import load_catalog
 from featureliftbench.catalog import resolve_run
 from featureliftbench.catalog import resolved_payload
@@ -70,6 +71,26 @@ class CatalogTests(unittest.TestCase):
         self.assertTrue(payload["paper_table"])
         self.assertIn("CATALOG_PROFILE=", emit_bash(payload))
 
+    def test_python200_hard_standard_is_task_file_subset(self) -> None:
+        suite = get_suite(self.catalog, "python200_hard_standard")
+        self.assertEqual(suite.tasks_root, "benchmark/python200_hard_tasks")
+        self.assertEqual(
+            suite.task_file,
+            "harness/config/experiments/python200_hard_standard.txt",
+        )
+        self.assertFalse(suite.paper_main)
+        self.assertEqual(suite.status, "superseded")
+        resolved = resolve_run(
+            agent="openhands",
+            method="main",
+            benchmark="163-standard",
+            catalog=self.catalog,
+        )
+        payload = resolved_payload(resolved)
+        self.assertEqual(payload["benchmark_id"], "python200_hard_standard")
+        self.assertEqual(payload["task_file"], suite.task_file)
+        self.assertIn("CATALOG_TASK_FILE=", emit_bash(payload))
+
     def test_runtime_agents_share_main_method(self) -> None:
         dsh = resolve_run(
             agent="dsh",
@@ -100,6 +121,17 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(
             method.profiles["openhands"],
             "openhands_deepseek_v4_flash_main",
+        )
+
+    def test_cgvl_is_screening_not_paper_table(self) -> None:
+        method = get_method(self.catalog, "contract-guided-verification")
+        self.assertEqual(method.id, "cgvl")
+        self.assertFalse(method.paper_table)
+        self.assertEqual(method.status, "screening")
+        self.assertIn("--cgvl", method.run_agent_flags)
+        self.assertEqual(
+            method.profiles["openhands"],
+            "openhands_deepseek_v4_flash_cgvl",
         )
 
     def test_unknown_method_errors(self) -> None:

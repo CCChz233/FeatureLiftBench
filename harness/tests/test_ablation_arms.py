@@ -79,6 +79,10 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(spec_adversarial_self_test=True).ablation_arm,
             "spec_adversarial_self_test",
         )
+        self.assertEqual(
+            AblationOptions(cgvl=True).ablation_arm,
+            "cgvl",
+        )
 
     def test_contract_closure_gate_is_mutually_exclusive_with_other_methods(self) -> None:
         with self.assertRaisesRegex(ValueError, "mutually exclusive"):
@@ -132,6 +136,11 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(
                 spec_adversarial_self_test=True,
                 test_first_lift=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                cgvl=True,
+                spec_adversarial_self_test=True,
             )
 
     def test_cli_overrides_profile(self) -> None:
@@ -372,6 +381,24 @@ class AblationWorkspaceTests(unittest.TestCase):
             self.assertFalse((control_workspace / "flb-contract-check").exists())
             self.assertIn("Equal-Budget Implementation Review", control_prompt)
             self.assertIn("No contract checker", control_prompt)
+
+            cgvl_workspace = Path(tmp) / "cgvl"
+            prepare_agent_workspace(
+                task_dir,
+                cgvl_workspace,
+                metadata,
+                ablation=AblationOptions(cgvl=True),
+            )
+            cgvl_prompt = (cgvl_workspace / "TASK.md").read_text(encoding="utf-8")
+            self.assertTrue((cgvl_workspace / "cgvl_matrix.json").is_file())
+            self.assertTrue((cgvl_workspace / "run_cgvl_check.py").is_file())
+            self.assertTrue((cgvl_workspace / "cgvl_cells").is_dir())
+            self.assertIn("Contract-Guided Verification Loop", cgvl_prompt)
+            self.assertNotIn(
+                "source_entrypoints",
+                (cgvl_workspace / "cgvl_matrix.json").read_text(encoding="utf-8"),
+            )
+            self.assertFalse((cgvl_workspace / "public_tests").exists())
 
             main_workspace = Path(tmp) / "main"
             prepare_agent_workspace(

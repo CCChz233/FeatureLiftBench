@@ -1,0 +1,68 @@
+{
+  "schema_version": "featureliftbench.failure_analysis.v1",
+  "generated_at": "2026-09-01T05:31:13.938506+00:00",
+  "suite": "python200-hard-main-20260829",
+  "model": "deepseek/deepseek-v4-flash",
+  "profile": "openhands_deepseek_v4_flash_main",
+  "sources": {
+    "suite": "experiments/python/openhands/deepseek-v4-flash/python200-hard-main-20260829/suite.json",
+    "failure_audit": "reports/paper_analysis/python200_hard_main_20260829/failure_audit.csv",
+    "annotations": "reports/paper_analysis/python200_hard_main_20260829/failure_root_cause_annotations.csv"
+  },
+  "nonpasses": 68,
+  "eligibility_counts": {
+    "benchmark_invalid_candidate": 8,
+    "infrastructure_invalid": 33,
+    "valid_agent_evidence": 27
+  },
+  "first_failure_stage_all": {
+    "build_failure": 16,
+    "hidden_failure": 8,
+    "missing_submission": 2,
+    "preflight_blocked": 17,
+    "public_failure": 25
+  },
+  "first_failure_stage_valid_agent": {
+    "hidden_failure": 8,
+    "missing_submission": 2,
+    "public_failure": 17
+  },
+  "root_cause_valid_agent": {
+    "agent_process_non_delivery": 2,
+    "behavior_drift": 19,
+    "contract_api_completion": 6
+  },
+  "root_cause_valid_agent_by_split": {
+    "hard50": {
+      "agent_process_non_delivery": 1,
+      "behavior_drift": 1,
+      "contract_api_completion": 1
+    },
+    "python150": {
+      "agent_process_non_delivery": 1,
+      "behavior_drift": 18,
+      "contract_api_completion": 5
+    }
+  },
+  "valid_agent_failures": 27,
+  "valid_agent_context_violations": 11,
+  "review_status_counts": {
+    "assistant_first_pass": 35,
+    "automatic": 33
+  },
+  "human_adjudication": {
+    "status": "pending",
+    "note": "Semantic causes are an assistant first pass. Hidden-only failures, unknowns, and benchmark-invalid candidates require independent human review before paper-level causal claims."
+  },
+  "validation": {
+    "status": "pass",
+    "checks": {
+      "unique_failure_task_ids": true,
+      "eligibility_partition_complete": true,
+      "valid_stage_partition_complete": true,
+      "valid_root_cause_partition_complete": true,
+      "all_rows_have_evidence_summary": true,
+      "all_rows_have_review_provenance": true
+    }
+  }
+}

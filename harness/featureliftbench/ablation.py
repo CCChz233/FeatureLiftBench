@@ -37,6 +37,7 @@ CONTRACT_CLOSURE_BUDGET_CONTROL_ENV = (
 ADAPTIVE_BUDGET_V2_ENV = "FEATURELIFTBENCH_ADAPTIVE_BUDGET_V2"
 PRE_SUBMIT_CONTRACT_AUDIT_ENV = "FEATURELIFTBENCH_PRE_SUBMIT_CONTRACT_AUDIT"
 SPEC_ADVERSARIAL_SELF_TEST_ENV = "FEATURELIFTBENCH_SPEC_ADVERSARIAL_SELF_TEST"
+CGVL_ENV = "FEATURELIFTBENCH_CGVL"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
@@ -69,6 +70,7 @@ class AblationOptions:
     adaptive_budget_v2: bool = False
     pre_submit_contract_audit: bool = False
     spec_adversarial_self_test: bool = False
+    cgvl: bool = False
 
     def __post_init__(self) -> None:
         style = str(self.prompt_style or "standard").strip().lower()
@@ -139,6 +141,7 @@ class AblationOptions:
             "spec_adversarial_self_test",
             bool(self.spec_adversarial_self_test),
         )
+        object.__setattr__(self, "cgvl", bool(self.cgvl))
         method_arms = sum(
             1
             for flag in (
@@ -156,6 +159,7 @@ class AblationOptions:
                 self.adaptive_budget_v2,
                 self.pre_submit_contract_audit,
                 self.spec_adversarial_self_test,
+                self.cgvl,
             )
             if flag
         )
@@ -166,13 +170,15 @@ class AblationOptions:
                 "contract_closure_gate_lite_v1, contract_closure_gate_lite_rescue, "
                 "contract_closure_gate_lite_rescue_plus, "
                 "contract_closure_gate_v3, contract_closure_budget_control, "
-                "adaptive_budget_v2, pre_submit_contract_audit, and "
-                "spec_adversarial_self_test "
+                "adaptive_budget_v2, pre_submit_contract_audit, "
+                "spec_adversarial_self_test, and cgvl "
                 "are mutually exclusive"
             )
 
     @property
     def ablation_arm(self) -> str:
+        if self.cgvl:
+            return "cgvl"
         if self.spec_adversarial_self_test:
             return "spec_adversarial_self_test"
         if self.pre_submit_contract_audit:
@@ -256,6 +262,7 @@ class AblationOptions:
             SPEC_ADVERSARIAL_SELF_TEST_ENV: (
                 "1" if self.spec_adversarial_self_test else "0"
             ),
+            CGVL_ENV: "1" if self.cgvl else "0",
             ABLATION_ARM_ENV: self.ablation_arm,
         }
 
@@ -285,6 +292,7 @@ class AblationOptions:
             "adaptive_budget_v2": self.adaptive_budget_v2,
             "pre_submit_contract_audit": self.pre_submit_contract_audit,
             "spec_adversarial_self_test": self.spec_adversarial_self_test,
+            "cgvl": self.cgvl,
         }
 
 
@@ -379,6 +387,8 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
     pre_submit_contract_audit = audit_raw not in {"0", "false", "no", "off", ""}
     sa_raw = str(values.get(SPEC_ADVERSARIAL_SELF_TEST_ENV, "0")).strip().lower()
     spec_adversarial_self_test = sa_raw not in {"0", "false", "no", "off", ""}
+    cgvl_raw = str(values.get(CGVL_ENV, "0")).strip().lower()
+    cgvl = cgvl_raw not in {"0", "false", "no", "off", ""}
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -401,6 +411,7 @@ def ablation_options_from_env(env: Mapping[str, str] | None = None) -> AblationO
         adaptive_budget_v2=adaptive_budget_v2,
         pre_submit_contract_audit=pre_submit_contract_audit,
         spec_adversarial_self_test=spec_adversarial_self_test,
+        cgvl=cgvl,
     )
 
 
@@ -428,6 +439,7 @@ def resolve_ablation_options(
     adaptive_budget_v2: bool | None = None,
     pre_submit_contract_audit: bool | None = None,
     spec_adversarial_self_test: bool | None = None,
+    cgvl: bool | None = None,
 ) -> AblationOptions:
     """Resolve ablation with precedence: explicit CLI > process env > .env > profile > defaults."""
 
@@ -625,9 +637,34 @@ def resolve_ablation_options(
     else:
         resolved_spec_adversarial = bool(spec_adversarial_self_test)
 
+    if cgvl is None:
+        resolved_cgvl = _first_bool(
+            process_env.get(CGVL_ENV),
+            env_values.get(CGVL_ENV),
+            profile.get("cgvl"),
+            default=False,
+        )
+    else:
+        resolved_cgvl = bool(cgvl)
+
     # An explicit positive CLI selection chooses that arm even when the profile
     # defaults to the sibling closure arm.
-    if spec_adversarial_self_test is True:
+    if cgvl is True:
+        resolved_ccg = False
+        resolved_ccg_lite = False
+        resolved_ccg_lite_v1 = False
+        resolved_ccg_lite_rescue = False
+        resolved_ccg_lite_rescue_plus = False
+        resolved_ccg_v3 = False
+        resolved_ccg_control = False
+        resolved_v2 = False
+        resolved_pre_submit_audit = False
+        resolved_spec_adversarial = False
+        resolved_td = False
+        resolved_ec = False
+        resolved_sc = False
+        resolved_tfl = False
+    elif spec_adversarial_self_test is True:
         resolved_ccg = False
         resolved_ccg_lite = False
         resolved_ccg_lite_v1 = False
@@ -641,6 +678,7 @@ def resolve_ablation_options(
         resolved_ec = False
         resolved_sc = False
         resolved_tfl = False
+        resolved_cgvl = False
     elif pre_submit_contract_audit is True:
         resolved_ccg = False
         resolved_ccg_lite = False
@@ -736,6 +774,20 @@ def resolve_ablation_options(
         resolved_pre_submit_audit = False
         resolved_spec_adversarial = False
 
+    if (
+        spec_adversarial_self_test is True
+        or pre_submit_contract_audit is True
+        or adaptive_budget_v2 is True
+        or contract_closure_gate is True
+        or contract_closure_gate_lite is True
+        or contract_closure_gate_lite_v1 is True
+        or contract_closure_gate_lite_rescue is True
+        or contract_closure_gate_lite_rescue_plus is True
+        or contract_closure_gate_v3 is True
+        or contract_closure_budget_control is True
+    ):
+        resolved_cgvl = False
+
     return AblationOptions(
         mount_public_tests=mount,
         prompt_style=style,
@@ -756,6 +808,7 @@ def resolve_ablation_options(
         adaptive_budget_v2=resolved_v2,
         pre_submit_contract_audit=resolved_pre_submit_audit,
         spec_adversarial_self_test=resolved_spec_adversarial,
+        cgvl=resolved_cgvl,
     )
 
 

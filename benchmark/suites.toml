@@ -14,6 +14,15 @@ status = "unreleased"
 paper_main = true
 description = "Paper main suite: frozen Python-150 + Hard-50. Full Flash table not run."
 
+[suites.python200_hard_standard]
+aliases = ["python200-hard-standard", "python200_hard_standard", "163-standard"]
+tasks_root = "benchmark/python200_hard_tasks"
+source_registry = "benchmark/sources/python200_hard_registry.json"
+task_file = "harness/config/experiments/python200_hard_standard.txt"
+status = "superseded"
+paper_main = false
+description = "v1 163 provisional subset of python200_hard. Superseded pending protocol v2 adjudication. Do not start new experiments."
+
 [suites.python150]
 aliases = ["python-150", "python150", "suite-main"]
 tasks_root = "benchmark/tasks"

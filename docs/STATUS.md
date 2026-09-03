@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-09-02**
+> **Status: current · Last verified: 2026-09-03**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Paper main suite（Python-200'）
@@ -13,13 +13,16 @@ Hard-50 **不得**写入 `benchmark/tasks/`。旧 E50 实体与历史分数保�
 | Suite | `python200-hard-full-repository-no-hint-unreleased` |
 | Task count | 200（150 + 50） |
 | Repositories / snapshots | 176 / 182 |
-| Baseline freeze | `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd` |
+| Baseline freeze | `0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542`（150 前任；C1 修复后工作树会 drift，论文不以它为 200 题身份） |
+| Baseline freeze 前身 | `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd`（加固前；只对上当前 150 题中的 102 题） |
+| Python-200′ active freeze | `6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`（freeze v2，修复后题包 + 200/0 选题） |
+| Python-200′ predecessor freeze | `474862c22165ac9cc8ab895f1e265dd0bb43da81f52e77561b29fde44798a8d8`（v1；132/200 Flash 只挂这里） |
 | Hard-50 selection | `hard50-expansion-20260827-v1-reviewed` |
-| Hard-50 release tree | `6b1cac758212…`（全哈希见 suite JSON） |
+| Hard-50 release tree | `61c61ee521c398325633a50c85eb0749142014ef4d765dd1abaf38496ca5285a` |
 | Unified task root | `benchmark/python200_hard_tasks/` |
 | Unified source registry | `benchmark/sources/python200_hard_registry.json` |
 | Hard-50 packages | `benchmark/hard50/`（无 `reference_solution/`） |
-| Paper table | **收到包的审计 headline 为 132/200（66.0%）**；仅 183 题启动，严格替换集合 84 题，不得写成最终冻结主表。 |
+| Paper table | **v1 freeze 上收到包的审计 headline 为 132/200（66.0%）**；不得改挂到 freeze v2。仅 183 题启动，严格替换集合 84 题，不得写成最终冻结主表。 |
 
 权威组合清单：
 [`benchmark/selection/python200_hard_suite.json`](../benchmark/selection/python200_hard_suite.json)。
@@ -45,19 +48,24 @@ Hard-50 Flash 校准（functional_gate，不是 suite `status`）：
 
 题目是否符合 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)，按
 [BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md) **v2** 对当前
-`benchmark/python200_hard_tasks/` 打标。v1 的 **163/37** 是不安全二分类的
-**provisional / superseded pending v2 adjudication**，不能当作最终论文数字，
-也不得据此开新实验。`--benchmark python200_hard_standard` 目前仍指向那份 v1
-名单；正式分析子集要等 `undetermined = 0` 后显式发布。统一 P0 门禁已在
-canonical full source 上跑满 200 道：**166 机械通过 ∪ 0 已确认违反 ∪ 34
-待定**；C1 命中 22 道，C2 canonical-entrypoint 命中 13 道，重叠 1 道。
-比旧 task-local C2 多出的 `h2__frame_parse_core__001` 指向 canonical h2 源码树
-之外的 `hyperframe.*`，现进入裁决而非直接判坏。L1、canonical source identity
-与 Oracle N=3 均为 200/200 pass；C4 whole-test overlap 为 171 clear / 29
-advisory finding，不参与
-三态标准标签。第一份只读台账：
-[`reports/benchmark_gate/python200_hard_20260902_p0_v2/`](../reports/benchmark_gate/python200_hard_20260902_p0_v2)。
-这是观测标签，不改冻结题目，也没有发布分析子集。
+`benchmark/python200_hard_tasks/` 打标。v1 的 **163/37** 已作废，不得写入论文。
+2026-09-03 freeze v2 已发布：**200 符合 / 0 确认违反 / 0 待定**（baseline 150 +
+Hard-50 50）。权威名单
+[`benchmark/selection/python200_hard_standard_suite.json`](../benchmark/selection/python200_hard_standard_suite.json)
+（schema v2，与父套件 200 题同一 `task_set_sha256`）。`--benchmark python200_hard_standard`
+现在指向这 200 题，不再是排除 32 道 blocking 违反的分析子集。168/32 前任归档在
+`artifacts/research_analysis/python200_prime/predecessors/v1_freeze_474862c2/`。
+2026-09-02 的 168/32 是 **v1 freeze** 上的契约标签，只能作为修复前对照。
+裁决与修复台账：
+[`reports/benchmark_gate/python200_hard_20260903_v2_repair2/`](../reports/benchmark_gate/python200_hard_20260903_v2_repair2)、
+[`PLAN_FREEZE_V2.md`](PLAN_FREEZE_V2.md)。
+C1/C2/C4 修复后九行门禁 200/200 pass；candidate
+`212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254`；
+eval/agent 镜像 `featureliftbench-eval:python200-prime-212930ea` /
+`featureliftbench-agent:python200-prime-212930ea`；该镜像上 Oracle 200×3 为
+600/600。38 道修复范围审查为 AI 辅助 + 维护者裁决，`gold=false`，
+`independent_human_review=false`。资格干净的 116 题与 v1 标签相交的 **81/96**
+是 v1 freeze 上的敏感性切片，不得写入摘要或最终主表，也不得改挂到 freeze v2。
 
 `harness/scripts/archive/run_python200_paper.sh` 仍指向旧 150+E50，且会跑 150 freeze check。新主表入口：
 
@@ -254,14 +262,19 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 
 ## Current Evidence Gaps
 
-0. **Python-200′ 标准分析子集尚未 v2 冻结。** 163/37 是 v1 二分类临时结果。
-   协议已升到三态；C1 命中与入口悬空须先裁决。候选标签在
-   `reports/paper_analysis/benchmark_tiers_v2_candidate/`。`undetermined > 0`
-   时不得发布名单，也不得把 163 写入论文。
+0. **Python-200′ freeze v2 已发布：200/0，`undetermined = 0`。**
+   活跃 freeze 为 `6c20ff03…`。v1 的 168/32 与 163/37 都作废为对照。
+   漏报抽检 20/20 C1 无未声明成员，不能据此报 Hidden 公平性召回率。
+   资格干净的 116 题上，v1 标签切片 **81/96** 仍只属于 freeze `474862c2…`，
+   不得写入摘要或最终主表，也不得改挂到 freeze v2。
 1. **Python-200' 已有收到包的审计 headline，尚无合格主表分。** Flash 原始记录为
    132/200=66.0%，但只有 183 题启动；17 题 freeze-preflight blocked、16 题离线依赖
    失败、59 题 context violation，去重后的严格替换集合是 84 题。固定子集为
-   95/116。2026-08-30 离线 wheel 已 200/200；84 题替换因缺少原 Docker digest 未启动。
+   95/116。2026-08-30 离线 wheel 已 200/200。84 题替换目录已有 **38/84**
+   `run.json`，停在 `lark__parse_tree_core__001`；本机 `latest` 镜像 digest
+   （agent `cc622920…` / eval `cccf858c…`）对不上论文钉（`0843b663…` /
+   `d1ea357c…`），**不得合并、不得写最终主表**。核对记录
+   [`strict84_replacement_audit_20260902.md`](../reports/paper_analysis/python200_hard_main_20260829/strict84_replacement_audit_20260902.md)。
    任务集与已发出的 source snapshot 均匹配；分析层与结果层已合并：
    `artifacts/research_analysis/python200_hard_task_taxonomy.csv`（200 行，
    `python200_hard_v1`）。旧 150+E50 的 21.5%–72.5% **不是** 新主表。
@@ -269,10 +282,23 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    未跑。见 [METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 3. Spec-adversarial Hidden-4 已 Kill（Hidden 0→1 = 0/4）。不要扩面。见
    [archive/methods/METHOD_SPEC_ADVERSARIAL.md](archive/methods/METHOD_SPEC_ADVERSARIAL.md)。
-4. Hidden provenance Flash-33 初标已落盘（AI 辅助，非 gold）。下一步按
-   [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md) 做双 Agent
-   consensus；冲突和无法证明的 obligation 保持 abstain 后再做敏感性分析。见
-   [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
+4. Hidden provenance Flash-33 初标已落盘（AI 辅助，非 gold；Explicit 11 /
+   Recoverable 4 / Ambiguous 0 / Underdetermined 18）。Gate 0 已于 2026-09-02
+   重跑（R5）：结果与 R4 完全一致——记录 valid、源树未改，但 early stop 未触发、
+   非正常退出（rc=3）。**根因已定位**：agent 用满 24 步，只在被 final prompt 逼出的
+   最后一动作里写记录，而 adapter 的早停轮询只在子进程存活时求值，故该记录不可见；
+   rc=3 是 mini-swe-agent 的步数耗尽信号，与崩溃不可区分。runner 已补
+   `termination_path` 记账：Gate 1 的 26 例中 24 例走 `early_stop_after_valid_record`，
+   说明机制本身没坏，distlib 是 24 步内收不了的离群例；wave10-b 有 1 例
+   `budget_exhausted_without_record`，**fail-closed 要求已被经验满足**。
+   **Gate 0 已裁定通过（2026-09-02）**：协议显式承认第三条路径
+   `budget_exhausted_with_valid_record`，条件是记录独立 valid、源树未改、单独记账
+   不计 normal exit；不放宽 24 步预算、不换案例。Gate 1 的全部非 API 前置已就绪
+   （33 例套件、多 reviewer 聚合改造均已完成），只差 33×2 次审计（约 3.5–4 h），
+   **本轮决定不投 API**：在 33/33 存在之前，Hidden provenance 按已声明局限写，
+   初标 `gold=false`，不得作为公平性金标结论。核对
+   [`GATE_CHECK_20260902.md`](../reports/agentic_evidence/GATE_CHECK_20260902.md)。
+   见 [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
 5. DeepSeek API 全量 V1-200 未跑；不是 blocker，Flash Core-12 已表明 cap 税。
 6. 旧 Python-200（150+E50）RRES 中位数贴 1.000，主要来自 E50 copy-heavy。新主表
    紧凑度应拆 Python-150 与 Hard-50，并报 copy 比例。E50 只作旁路对照。独立升格
@@ -291,17 +317,21 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
 
 ## Next Actions
 
-0. **v2 标准标签。** 裁决 `reports/paper_analysis/benchmark_tiers_v2_candidate/adjudication_queue.csv`。
-   未清空 `undetermined` 前不要 `--write-selection`，也不要把 v1 的 163 当论文数字。
+0. **freeze v2 标准标签已发布（200/0）。** 不要把 163、未裁决的 166/34 或
+   已归档的 168/32 当现行论文数字。旧 Flash 132/200 与 81/96 只挂 v1 freeze
+   `474862c2…`。下一步是在 freeze v2 镜像上重跑 Main，不是再修这 200 道题。
 1. **论文主套件。** 收到包与离线审计已入库（audit headline 132/200）。2026-08-30
-   已把 CPython 3.11 Linux wheel 补到 **200/200**；冻结输入
-   `python200-hard-freeze846-input` `--check` 仍通过。84 题严格替换已在独立目录
-   **启动**（`python200-hard-main-20260830-strict84-replacement`），workers=1，
-   题根为 freeze 输入；**未覆盖** 20260829。本机没有收到包镜像 digest，实际用的是
-   本地 `latest`（agent `cc622920…` / eval `cccf858c…`），已写入
-   `launch_identity.json`，**不能**无声明并进最终主表。记录见
-   [`experiments/registry/python200_hard_wheel_closure_and_strict84_20260830.md`](../experiments/registry/python200_hard_wheel_closure_and_strict84_20260830.md)。
-   按 task ID 合并前不写最终主表。旧 150+E50 分数只作 superseded 对照。
+   已把 CPython 3.11 Linux wheel 补到 **200/200**；冻结输入已换成契约加固后的
+   `python200-hard-hardened-input`（`--check` 通过，`task_set_sha256`
+   `a28c301e…`，与门禁台账一致）。旧的 `python200-hard-freeze846-input` 由
+   `SUPERSEDED.md` 标注作废：它物化自加固前的 `8438e3a3`，48 道基线题的
+   metadata/hidden 是旧的。84 题严格替换目录
+   （`python200-hard-main-20260830-strict84-replacement`）**未覆盖** 20260829，
+   但 2026-09-02 核对为 **38/84 完成、停在 lark、无活进程**；镜像仍是本地
+   `latest`（`cc622920…` / `cccf858c…`），不是论文钉（`0843b663…` /
+   `d1ea357c…`）。**不合并、不写最终主表。** 续跑也不得覆盖 20260829。核对
+   [`strict84_replacement_audit_20260902.md`](../reports/paper_analysis/python200_hard_main_20260829/strict84_replacement_audit_20260902.md)。
+   旧 150+E50 分数只作 superseded 对照。
 2. **停止脚手架迭代。** 不再开 V3、behavior_probe、TFL、Rescue+、V2 扩到 200；
    Spec-adversarial 已 Kill；Best-so-far checkpoint 离线已 Kill，不要实现 Agent。
    不要把 Active Dynamic Exploration 写成论文核心贡献。失败分析派生的
@@ -315,11 +345,11 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    为 6/12。数字不进 Python-200 主表。见
    [archive/methods/METHOD_ARTIFACT_AWARE.md](archive/methods/METHOD_ARTIFACT_AWARE.md) 与
    [archive/methods/METHOD_PRE_SUBMIT_AUDIT.md](archive/methods/METHOD_PRE_SUBMIT_AUDIT.md)。
-5. RQ6 n=12 已冻结，不要扩到 Python-200。Hidden provenance Flash-33 初标已落盘
-   （AI 辅助，非 gold）：Explicit 11 / Recoverable 4 / Ambiguous 0 /
-   Underdetermined 18。按 [顶会投稿就绪路线图](paper/07_top_conference_readiness_plan.md)
-   完成双 Agent consensus 和 sensitivity 后再写进论文 RQ4。见
-   [HIDDEN_CONTRACT_PROVENANCE.md](HIDDEN_CONTRACT_PROVENANCE.md)。
+5. RQ6 n=12 已冻结，不要扩到 Python-200。Hidden provenance Flash-33 初标可复读
+   （packets/labels 33/33 对齐，`gold=false`），不得写成 gold。Gate 0 产物仍在
+   但就绪勾未过；Gate 1 只有 3+10 题局部 consensus，未授权前不要开全量双 Agent
+   或 Gate 2 敏感性。核对
+   [`GATE_CHECK_20260902.md`](../reports/agentic_evidence/GATE_CHECK_20260902.md)。
    可写卷宗；新主表 RRES 拆 150 / Hard-50。不要叠 Entrypoint-Hint。数字不进主表。
 6. 不要把 Rescue+、Frozen 45 步信封、V2、Core-12、RQ6 Flash-12、Spec-adversarial
    Hidden-4，或 DeepSeek Harness / Codex runtime 通过率写进论文主表。

@@ -18,6 +18,7 @@ def test_required_api_surface():
     assert hasattr(ExtensionManager, 'map')
     assert hasattr(ExtensionManager, 'names')
     assert ExtensionManager is not None
+    assert hasattr(ExtensionManager, '__getitem__')
     assert isinstance(NamedExtensionManager, type)
     assert hasattr(NamedExtensionManager, 'names')
     assert issubclass(NoMatches, BaseException)

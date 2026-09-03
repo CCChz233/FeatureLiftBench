@@ -1,6 +1,6 @@
 # FeatureLiftBench Task Layout
 
-> **Documentation status: current · Last verified: 2026-09-02**
+> **Documentation status: current · Last verified: 2026-09-03**
 
 This directory holds task packages, named suites, source registries, and freeze
 inputs. **Runnable suite names live in [`suites.toml`](suites.toml).** Do not
@@ -16,7 +16,7 @@ Paper identity and freeze hashes are maintained only in
 | `--benchmark` | Task root | Role |
 | --- | --- | --- |
 | `python200_hard` | `python200_hard_tasks/` | **Paper freeze asset.** 200 symlinks: 150 → `tasks/`, 50 → `hard50/`. Unreleased. |
-| `python200_hard_standard` | same root, v1 163 ids | **v1 provisional analysis set.** Superseded pending protocol v2 adjudication. Do not treat as the paper-final subset. |
+| `python200_hard_standard` | same root, 200 ids | **freeze v2 labels 200/0.** Predecessor 168/32 archived. Not an Agent leaderboard. |
 | `python150` | `tasks/` | Frozen Python-150 packages. Paper 150 scores must use the freeze artifact, not a dirty worktree. |
 | `hard50` | `hard50/` | Hard-50 packages only (no `reference_solution/`). Do **not** copy into `tasks/`. |
 | `python200_legacy` | `python200_tasks/` | **Superseded** 150 + External-50 view. Historical scores only. |
@@ -73,8 +73,11 @@ the clone-and-run paper surface.
 
 ### `benchmark/tasks/` — frozen Python-150
 
-- 150 packages admitted to freeze
-  `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd`.
+- 150 packages admitted to the contract-hardened freeze
+  `0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542`.
+  Its pre-hardening ancestor `846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd`
+  matches only 102/150 of these packages; experiment runs materialized from that
+  ancestor must be reported against it, not against the current freeze.
 - The worktree may drift relative to that freeze. Paper 150 numbers must come
   from the freeze artifact, not an uncommitted dirty tree.
 - **New tasks must not be created here.** Promote from staging/pilot only after

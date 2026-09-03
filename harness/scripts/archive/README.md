@@ -33,8 +33,18 @@ paper Main command. Use `./scripts/run_benchmark.sh --benchmark python200_hard`.
 
 `flb_test_first.py`, `run_cgcc_warm_repair.py`, `compare_core12_*.py`,
 `compare_spec_adversarial_hidden4.py`, `compare_distill24_main_2m_cap.py`,
-agentic-evidence canary runners, `replay_contract_closure_gate.py`,
-`calibrate_vct_stall.py`, `probe_upstream_differential.py`.
+`replay_contract_closure_gate.py`, `calibrate_vct_stall.py`,
+`probe_upstream_differential.py`.
+
+## Still live despite living here
+
+`run_agentic_evidence_canaries.py` is **not** a killed one-shot. It is the
+runner for Hidden-provenance **Gate 0 and Gate 1**, both still open paper DoD
+items ([07_top_conference_readiness_plan.md](../../../docs/paper/07_top_conference_readiness_plan.md)).
+It stays in this directory only because
+`retry_invalid_agentic_evidence_cases.py` resolves it as a same-directory
+sibling. Current status:
+[GATE_CHECK_20260902.md](../../../reports/agentic_evidence/GATE_CHECK_20260902.md).
 
 ## Deprecated wrappers (use live scripts instead)
 

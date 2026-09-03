@@ -26,7 +26,7 @@ SUITE_MANIFEST = ROOT / "benchmark/selection/python200_hard_suite.json"
 MAIN_REGISTRY = ROOT / "benchmark/sources/registry.json"
 HARD50_REGISTRY = ROOT / "benchmark/sources/hard50_registry.json"
 COMBINED_REGISTRY = ROOT / "benchmark/sources/python200_hard_registry.json"
-FREEZE_ID = "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd"
+FREEZE_ID = "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542"
 EXCLUDED_NAMES = {"repo", "reference_solution", "__pycache__", ".pytest_cache"}
 
 

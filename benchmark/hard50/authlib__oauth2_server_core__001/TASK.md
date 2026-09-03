@@ -27,6 +27,7 @@ from featurelifted import (
 - `InvalidClientError` must be importable and raisable
 - `OAuth2Request(method, uri, body=None, headers=None)` class constructor
   - `OAuth2Request.__init__(self, method, uri, body=None, headers=None)`
+  - `OAuth2Request.payload` attribute must exist on instances
 
 ## Required Behavior
 

@@ -22,7 +22,7 @@ if str(HARNESS) not in sys.path:
 from featureliftbench.constitution_validate import STANDARD_MODULE_METADATA_REFS  # noqa: E402
 
 
-HARDENER_PATH = ROOT / "scripts/harden_experiment_contracts.py"
+HARDENER_PATH = ROOT / "scripts/archive/harden_experiment_contracts.py"
 SPEC = importlib.util.spec_from_file_location("flb_contract_hardener", HARDENER_PATH)
 if SPEC is None or SPEC.loader is None:
     raise RuntimeError(f"cannot load {HARDENER_PATH}")

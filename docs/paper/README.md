@@ -1,6 +1,6 @@
 # Paper Documents
 
-> **Status: current index · Last verified: 2026-09-02**
+> **Status: current index · Last verified: 2026-09-03**
 
 | Document | Role |
 | --- | --- |
@@ -15,11 +15,14 @@
 | [Top-conference readiness plan](07_top_conference_readiness_plan.md) | Execution gates before submission |
 | [Known Limitations](limitations.md) | Scope and validity limits |
 
-论文主套件是 **冻结 Python-150 + Hard-50**（suite 仍 `unreleased`）。整套 Flash
-收到包的 **132/200（66.0%）只能作为 audit headline**：17 题未启动，16 题在离线
-依赖安装阶段失败，59 题触发 context-window audit，去重后严格替换集合为 84 题。
-闭环前不作为最终主表。分析见
-[Python-200′ candidate readout](../../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md)，
+论文主套件是 **冻结 Python-150 + Hard-50**（freeze v2
+`6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`）。
+整套 Flash 收到包的 **132/200（66.0%）只能作为 v1 freeze 的 audit headline**，
+不得改挂到 freeze v2。freeze v2 契约完整度标签为 **200/0**。资格干净的 116 题
+与 v1 符合标准相交为 **81/96**，只作 v1 敏感性。v2 上尚无合格 Main 主表。分析见
+[Python-200′ candidate readout](../../reports/paper_analysis/python200_hard_main_20260829/paper_readout.md)
+与
+[offline standard slice](../../reports/paper_analysis/python200_hard_main_20260829/offline_standard_slice_20260902/README.md)。
 论文段落底稿见
 [Results draft](../../reports/paper_analysis/python200_hard_main_20260829/results_draft.md)。
 题集身份见 [STATUS.md](../STATUS.md)；Hard-50 完成记录见

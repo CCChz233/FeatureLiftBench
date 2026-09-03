@@ -19,6 +19,7 @@ from featurelifted import (
   - `APISpec.__init__(self, title: str, version: str, openapi_version: str, plugins: Sequence[BasePlugin] = (), **options) -> None`
   - `APISpec.path(self, path: str | None = None, *, operations: dict | None = None, summary: str | None = None, description: str | None = None, parameters: list[dict] | None = None, **kwargs) -> APISpec`
   - `APISpec.to_dict(self) -> dict`
+  - `APISpec.components` attribute must exist on instances
 - `BasePlugin()` class constructor
   - `BasePlugin.init_spec(self, spec: APISpec) -> None`
   - `BasePlugin.path_helper(self, path: str | None = None, operations: dict | None = None, parameters: list[dict] | None = None, **kwargs) -> str | None`

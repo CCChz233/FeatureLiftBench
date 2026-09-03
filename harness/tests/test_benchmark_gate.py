@@ -163,6 +163,44 @@ class BenchmarkGateTests(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
+    def test_repair_review_uses_explicit_scope_verdict(self) -> None:
+        metadata = json.loads((AIOHTTP / "metadata.json").read_text(encoding="utf-8"))
+        nodeid = metadata["evaluation_spec"]["hidden_test_mappings"][0]["nodeid"]
+        behavior = metadata["evaluation_spec"]["hidden_test_mappings"][0]["behavior_ids"][0]
+        review = {
+            "surface_compliance": "pass",
+            "hidden_fairness": "fair",
+            "repair_scope": "scope_preserved",
+            "summary": "the repair discloses an existing obligation",
+            "findings": [
+                {
+                    "rule": "repair_scope",
+                    "behavior_ids": [behavior],
+                    "hidden_nodeids": [nodeid],
+                    "api_paths": ["featurelifted.build_url"],
+                    "source_paths": ["aiohttp/helpers.py"],
+                    "verdict": "scope_preserved",
+                    "reason": "the old behavior already covered this operation",
+                }
+            ],
+        }
+        errors = _validate_review(
+            review,
+            metadata=metadata,
+            source_paths={"aiohttp/helpers.py"},
+            repair_context={"repair_categories": ["C1"]},
+        )
+        self.assertEqual(errors, [])
+
+        review["findings"][0]["verdict"] = "fair"
+        errors = _validate_review(
+            review,
+            metadata=metadata,
+            source_paths={"aiohttp/helpers.py"},
+            repair_context={"repair_categories": ["C1"]},
+        )
+        self.assertIn("repair_scope finding verdict does not match repair_scope", errors)
+
     def test_api_review_finding_stays_pending(self) -> None:
         metadata = json.loads((AIOHTTP / "metadata.json").read_text(encoding="utf-8"))
         nodeid = metadata["evaluation_spec"]["hidden_test_mappings"][0]["nodeid"]
@@ -336,6 +374,77 @@ class BenchmarkGateTests(unittest.TestCase):
             ["aiohttp/helpers.py"],
         )
         self.assertEqual(findings[0]["rule"], "L2_AGENT_REVIEW")
+
+    def test_invalid_source_request_gets_one_protocol_repair_turn(self) -> None:
+        metadata = json.loads((AIOHTTP / "metadata.json").read_text(encoding="utf-8"))
+        nodeids = [
+            row["nodeid"]
+            for row in metadata["evaluation_spec"]["hidden_test_mappings"]
+        ]
+        behavior = metadata["evaluation_spec"]["hidden_test_mappings"][0]["behavior_ids"][0]
+        allowed_symbol = metadata["public_spec"]["source_entrypoints"][0]
+        actions = [
+            ({"action": "inspect_source", "symbols": ["not.an.allowed.symbol"]}, {"total_tokens": 10}),
+            ({"action": "inspect_source", "symbols": [allowed_symbol]}, {"total_tokens": 20}),
+            ({"action": "inspect_hidden", "nodeids": nodeids}, {"total_tokens": 30}),
+            (
+                {
+                    "action": "submit",
+                    "review": {
+                        "surface_compliance": "pass",
+                        "hidden_fairness": "fair",
+                        "summary": "recovered from an invalid evidence request",
+                        "findings": [
+                            {
+                                "rule": "fairness",
+                                "behavior_ids": [behavior],
+                                "hidden_nodeids": [nodeids[0]],
+                                "api_paths": ["featurelifted.build_url"],
+                                "source_paths": ["aiohttp/helpers.py"],
+                                "verdict": "fair",
+                                "reason": "the inspected behavior matches the public clause",
+                            }
+                        ],
+                    },
+                },
+                {"total_tokens": 40},
+            ),
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary)
+            path = source / "aiohttp" / "helpers.py"
+            path.parent.mkdir()
+            path.write_text("def strip_auth_from_url(value):\n    return value\n", encoding="utf-8")
+            snapshot = mock.Mock()
+            snapshot.modules = {"aiohttp.helpers": path}
+            snapshot.longest_module_prefix.return_value = (
+                "aiohttp.helpers",
+                "strip_auth_from_url",
+            )
+            reviewer = ReviewerConfig(
+                model="test-model",
+                api_base="http://review.invalid/v1",
+                api_key="test-key",
+                mode="agent",
+                agent_pending_only=False,
+                agent_max_turns=4,
+            )
+            with mock.patch(
+                "featureliftbench.benchmark_gate._call_chat",
+                side_effect=actions,
+            ):
+                check, _findings = _agent_review_check(
+                    task_dir=AIOHTTP,
+                    metadata=metadata,
+                    source_root=source,
+                    snapshot=snapshot,
+                    findings=[],
+                    config=reviewer,
+                )
+        self.assertEqual(check["status"], PASS)
+        self.assertEqual(check["details"]["turns"], 4)
+        self.assertTrue(check["details"]["trace"][0]["rejected"])
+        self.assertEqual(check["details"]["usage"]["total_tokens"], 100)
 
     def test_surface_flag_accepts_mechanical_member_without_all_nodeids(self) -> None:
         metadata = json.loads((AIOHTTP / "metadata.json").read_text(encoding="utf-8"))

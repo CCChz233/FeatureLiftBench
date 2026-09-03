@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -95,6 +95,15 @@
             "path": "featurelifted.Configuration.__init__",
             "kind": "method",
             "signature": "(self, config_: Mapping[str, Any], lowercase_keys: bool = False)"
+          },
+          {
+            "path": "featurelifted.Configuration.__getitem__",
+            "kind": "method",
+            "signature": "(self, item: str) -> Union[ForwardRef('Configuration'), Any]"
+          },
+          {
+            "path": "featurelifted.Configuration.y",
+            "kind": "attribute"
           }
         ]
       },
@@ -107,6 +116,18 @@
             "path": "featurelifted.ConfigurationSet.__init__",
             "kind": "method",
             "signature": "(self, *configs: Configuration)"
+          },
+          {
+            "path": "featurelifted.ConfigurationSet.left",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ConfigurationSet.right",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ConfigurationSet.shared",
+            "kind": "attribute"
           }
         ]
       },
@@ -315,6 +336,61 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.Configuration.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+          "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+          "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+          "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Configuration.y",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+          "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+          "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+          "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet.left",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+          "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+          "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+          "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet.right",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+          "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+          "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+          "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigurationSet.shared",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_constructor_and_nested_path_keys",
+          "hidden_tests/test_hidden_behavior.py::test_env_prefix_nested_separator",
+          "hidden_tests/test_hidden_behavior.py::test_later_layer_fills_only_missing_keys",
+          "hidden_tests/test_hidden_behavior.py::test_missing_key_raises_keyerror",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -332,6 +408,6 @@
     "oracle_loc": 2116,
     "oracle_dependency_count": 1
   },
-  "spec_hash": "7e6b29c7b797f64e429b7b3a98d1733fa7dde552b138686ac59e94d153d01f62",
-  "generated_task_hash": "99fe5462b5e7fbdaea47e3162df05825419235ac867678204d8e37b7337b13df"
+  "spec_hash": "1d18fa2b47d38c8d38452b9ab0d5f9dfc1657661f3d59b762c6aa6dedec75cd3",
+  "generated_task_hash": "c6f4cb171dc631479ccfaecff2fca5fecadef073e55f76b06d02d50eb85bb346"
 }

@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -102,6 +102,10 @@
             "path": "featurelifted.APISpec.to_dict",
             "kind": "method",
             "signature": "(self) -> dict"
+          },
+          {
+            "path": "featurelifted.APISpec.components",
+            "kind": "attribute"
           }
         ]
       },
@@ -307,6 +311,16 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.APISpec.components",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_openapi_version_is_emitted",
+          "hidden_tests/test_hidden_behavior.py::test_plugin_can_rewrite_path",
+          "hidden_tests/test_hidden_behavior.py::test_two_paths_and_two_schemas_are_independent",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -317,8 +331,8 @@
       "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
     }
   },
-  "spec_hash": "af0017113dc38e47d01ded32a253fbf9d5b39b12eefd65b74eccced01542f8e9",
-  "generated_task_hash": "c1a40b17f040bdc3809464502f71ef83c92c328c288cd6f67411074a067ed8f9",
+  "spec_hash": "5ecdb641f0784d5a0e1bc5e6bf4db535dbb955d886e9a9d9a891061c7bbe0c4c",
+  "generated_task_hash": "1e2a0d57de831cb40b76b414d646f7eb430c476f1a8f33124081c59264d89e73",
   "scoring_reference": {
     "copy_all_bytes": 621301,
     "copy_all_loc": 6193,

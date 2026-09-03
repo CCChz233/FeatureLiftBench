@@ -21,6 +21,8 @@ from featurelifted import (
 - `normalize_headers(headers: 'dict[str, str]') -> 'CIMultiDict'`
 - `CIMultiDict(*args, **kwargs) -> 'None'` class constructor
   - `CIMultiDict.getall(self, key: 'str') -> 'list[str]'`
+  - `CIMultiDict.__getitem__(self, key: 'str') -> 'str'`
+  - `CIMultiDict.__setitem__(self, key: 'str', value: 'str') -> 'None'`
 - `InvalidHeaderName` must be importable and raisable
 
 ## Required Behavior
@@ -28,7 +30,7 @@ from featurelifted import (
 - `build_url` merges query parameters into a base URL.
 - `normalize_headers` returns a case-insensitive `CIMultiDict`.
 - Invalid header names raise `InvalidHeaderName`.
-- The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.CIMultiDict.__setitem__`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -50,6 +52,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B001** — `build_url` merges query parameters into a base URL.
 - **B002** — `normalize_headers` returns a case-insensitive `CIMultiDict`.
 - **B003** — Invalid header names raise `InvalidHeaderName`.
-- **B004** — The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract.
+- **B004** — The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.CIMultiDict.__setitem__`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract.
 - **B005** — the submitted package does not import forbidden upstream packages: aiohttp.
 <!-- featureliftbench:behavior-clauses:end -->

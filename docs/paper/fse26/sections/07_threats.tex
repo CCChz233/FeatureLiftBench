@@ -6,21 +6,32 @@ Functional Pass is a deterministic but finite operationalization of behavioral
 completeness. Public and Hidden tests are mapped to one published contract, but
 finite tests cannot prove semantic equivalence. A Hidden requirement that is
 not observable from the public contract is a task defect, not an agent failure.
-We therefore plan an independent Hidden-contract audit and report full,
-observable-only, and conservative sensitivity views. Functional Pass is binary
-and does not give headline partial credit. \rres, copied-code fraction, files,
-and dependency footprint are proxies that may miss semantic copying or penalize
-legitimate alternative implementations.
+The freeze~v2 200/0 labels measure whether Hidden uses undeclared members and whether
+declared entry points resolve; they are not a semantic Hidden-fairness gold
+set. A 20-task C1 sample of \texttt{meets\_standard} tasks found no additional
+undeclared members, which is a detector precision/recall-sample note rather
+than Hidden-fairness recall. Independent dual-agent provenance audit of the
+Flash-33 Hidden-failure slice is incomplete (Gate~0 smoke produced a valid
+record but not the required runner exit; Gate~1 covers 3+10 tasks, not 33/33)
+and is not reported as gold. We therefore keep full, observable-only, and
+conservative sensitivity views as planned analyses rather than current
+results. Functional Pass is binary and does not give headline partial credit.
+\rres, copied-code fraction, files, and dependency footprint are proxies that
+may miss semantic copying or penalize legitimate alternative implementations.
 
 \paragraph{Internal validity.}
 Results depend on source materialization, locked dependencies, prompt and
 context policy, agent/evaluator containers, model endpoints, and runner state.
 The received 2026-08-29 candidate demonstrates how freeze mismatches, missing
 offline wheels, and context-policy violations can contaminate a nominal score.
-We therefore separate infrastructure from model outcomes and require source,
-dependency, context, provenance, and image attestations for the paper bundle.
-Method pilots differ in subset and date; they support mechanism hypotheses but
-are not pooled into a causal estimate.
+A later 84-task replacement directory is incomplete (38/84) and uses local
+\texttt{latest} image digests that do not match the received-suite pins
+(Appendix~\ref{app:artifact}); we do not merge it. We therefore separate
+infrastructure from model outcomes and require source, dependency, context,
+provenance, and image attestations for the paper bundle. Method pilots differ
+in subset and date; they support mechanism hypotheses but are not pooled into
+a causal estimate. The 81/96 slice is a sensitivity cut of already-eligible
+rows, not a repaired 200-task run.
 
 \paragraph{External validity.}
 Python-200$'$ is a maintainer- and AI-assisted selection of Python libraries,
@@ -34,20 +45,23 @@ diversity does not guarantee balanced behavior or entanglement mechanisms.
 The main table initially uses one attempt per task. Without repeated trials it
 does not estimate stochastic run-to-run variance. We report binomial confidence
 intervals for aggregate rates and exact task-level outcomes for paired
-comparisons, but neither replaces repeated-run sensitivity. Model APIs and
-serving stacks may change despite stable model names. We record exact dates,
-profiles, source freezes, and container identities and plan a stratified
-repeated-run study.
+comparisons, but neither replaces repeated-run sensitivity. A stratified
+24-task stability study is deferred. Model APIs and serving stacks may change
+despite stable model names. We record exact dates, profiles, source freezes,
+and container identities.
 
 \paragraph{Annotation validity.}
-Task taxonomy, closure records, and semantic failure labels include AI-assisted
-curation. We disclose provenance and unknown rates and do not report these
-labels as independent human gold. Inter-rater agreement is reported only when
-raters are genuinely independent humans.
+Task taxonomy, closure records, semantic failure labels, clause-narrowing
+codes, and Flash-33 provenance labels include AI-assisted curation. We
+disclose provenance and unknown rates and do not report these labels as
+independent human gold. Inter-rater agreement is reported only when raters are
+genuinely independent humans. The v2 surface/entry adjudications are
+maintainer decisions over mechanical hits, not Hidden-semantics gold.
 
 \paragraph{Runtime dependence.}
 Official Main fixes OpenHands. Scores may change under another runtime, tool
-interface, context policy, or recovery strategy. Runtime comparisons remain
+interface, context policy, or recovery strategy. DeepSeek Harness and Codex
+adapters exist but have no paired Core-12 scores; runtime comparisons remain
 separate from the model leaderboard unless evaluated with a controlled paired
 protocol.
 
@@ -56,4 +70,3 @@ Upstream repositories retain heterogeneous licenses. Release packaging, source
 acquisition, evaluator-side references, and generated submissions must preserve
 license obligations. Large source and result archives may be distributed via
 checksummed acquisition instructions rather than committed directly.
-

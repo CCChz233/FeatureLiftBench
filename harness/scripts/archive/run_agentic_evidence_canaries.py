@@ -9,6 +9,7 @@ import json
 import shutil
 import sys
 import tempfile
+from collections import Counter
 from dataclasses import replace
 from pathlib import Path
 from typing import Any, Callable
@@ -27,6 +28,37 @@ from featureliftbench.agentic_evidence.direct_auditor import coerce_confidence
 from featureliftbench.agentic_evidence.prompts import AUDITOR_FINAL_PROMPT
 from featureliftbench.agentic_evidence.prompts import auditor_prompt
 from featureliftbench.agentic_evidence.schema import validate_audit_record
+
+
+# mini-swe-agent exits 3 when it consumes the configured step limit. That is a
+# budget-exhaustion signal, not a crash, and it is indistinguishable from a
+# crash in `returncode` alone. The adapter's early-stop poll only runs while the
+# child is alive, so a record written by the forced final action is never
+# observed as a completion artifact. `_termination_path` reconstructs which of
+# the accounted paths a run actually took.
+_MINI_STEP_LIMIT_RETURNCODE = 3
+
+
+def _termination_path(
+    *,
+    returncode: int,
+    timed_out: bool,
+    completion_detected: bool,
+    record_valid: bool,
+) -> str:
+    if timed_out:
+        return "timeout"
+    if completion_detected:
+        return "early_stop_after_valid_record"
+    if returncode == 0:
+        return "agent_self_exit_with_valid_record" if record_valid else (
+            "agent_self_exit_without_record"
+        )
+    if returncode == _MINI_STEP_LIMIT_RETURNCODE:
+        return "budget_exhausted_with_valid_record" if record_valid else (
+            "budget_exhausted_without_record"
+        )
+    return "agent_error"
 
 
 def _tree_digest(root: Path) -> str:
@@ -328,6 +360,12 @@ def main() -> int:
                     and not result.completion_detected
                 ),
                 "errors": sorted(set(errors)),
+                "termination_path": _termination_path(
+                    returncode=result.returncode,
+                    timed_out=result.timed_out,
+                    completion_detected=result.completion_detected,
+                    record_valid=not errors,
+                ),
                 "source_tree_unchanged": before == after,
                 "agent_result": result.payload(
                     stdout_log=case_output / "agent.stdout.log",
@@ -361,6 +399,9 @@ def main() -> int:
         "timeout_count": sum(
             bool((row.get("agent_result") or {}).get("timed_out"))
             for row in results
+        ),
+        "termination_paths": dict(
+            sorted(Counter(row.get("termination_path") for row in results).items())
         ),
         "results": results,
     }

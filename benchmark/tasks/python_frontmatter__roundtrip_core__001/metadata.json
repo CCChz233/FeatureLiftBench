@@ -109,6 +109,11 @@
             "path": "featurelifted.Post.to_dict",
             "kind": "method",
             "signature": "(self) -> 'dict[str, object]'"
+          },
+          {
+            "path": "featurelifted.Post.__getitem__",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'object'"
           }
         ]
       },
@@ -167,7 +172,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.Post.__getitem__`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -228,7 +233,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.Post.__getitem__`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -406,6 +411,22 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.Post.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_checks_detects_frontmatter",
+          "hidden_tests/test_hidden_behavior.py::test_crlf_bytes_normalize",
+          "hidden_tests/test_hidden_behavior.py::test_custom_dump_delimiters",
+          "hidden_tests/test_hidden_behavior.py::test_empty_frontmatter_block",
+          "hidden_tests/test_hidden_behavior.py::test_extra_space_after_opening_delimiter",
+          "hidden_tests/test_hidden_behavior.py::test_no_frontmatter_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_no_frontmatter_returns_empty_metadata",
+          "hidden_tests/test_hidden_behavior.py::test_parse_defaults_merge",
+          "hidden_tests/test_hidden_behavior.py::test_post_to_dict",
+          "hidden_tests/test_hidden_behavior.py::test_unicode_metadata_roundtrip",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -423,7 +444,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 2,
-  "spec_hash": "0c8518fe7be20784c41a9819e1247d7c271f6da45ec516a25deb2ca10508869e",
-  "generated_task_hash": "2ee837c5bbc9df32e0cf3a2657833110605e0510852ea3baf6891f5f14c405db"
+  "task_revision": 3,
+  "spec_hash": "fcae5ca1631d2c144d24acb44b5578bb4590d5296317dd20430289799f7f89b4",
+  "generated_task_hash": "84c1bc9abfc339fb6ce69db96f8aa2ab8f96b7424dfe2b6d154a892ab3ca5f1f"
 }

@@ -46,7 +46,7 @@
     ],
     "name": "version_from_scm",
     "source_entrypoints": [
-      "setuptools_scm.version.version_from_scm"
+      "src.setuptools_scm._get_version.get_version"
     ]
   },
   "language": "python",
@@ -107,7 +107,7 @@
       }
     ],
     "source_entrypoints": [
-      "setuptools_scm.version.version_from_scm"
+      "src.setuptools_scm._get_version.get_version"
     ],
     "exclusions": [
       "network access",
@@ -220,7 +220,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 5,
-  "spec_hash": "5fcf31222449563caf31d98a1d2d54d5c4a98432deb104f68d5ced2ab01543a0",
+  "task_revision": 6,
+  "spec_hash": "e2c879571310feff4dc3b9b1ea55cec25f8e11027fd615879b299c866522c8b0",
   "generated_task_hash": "41aa3204746af99494a7d4cb1ad25edcae158744363e8602c5eaee90f9700f64"
 }

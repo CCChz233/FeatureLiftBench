@@ -1,0 +1,45 @@
+\begin{longtable}{llp{0.42\textwidth}}
+\caption{Python-200$'$ tasks with a confirmed v2 contract-completeness violation. These tasks remain in the frozen 200-task asset; they are excluded only from the analysis subset.} \\
+\label{tab:violators} \\
+\toprule
+\textbf{Task} & \textbf{Rules} & \textbf{Undeclared member or dangling symbol} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Task} & \textbf{Rules} & \textbf{Undeclared member or dangling symbol} \\
+\midrule
+\endhead
+aiohttp\_\_url\_params\_core\_\_hard3\_001 & C1, C2 & CIMultiDict.\_\_getitem\_\_; CIMultiDict.\_\_setitem\_\_; aiohttp.helpers.build\_url \\
+apispec\_\_plugin\_documenter\_core\_\_001 & C1 & APISpec.components \\
+asttokens\_\_token\_annotate\_core\_\_001 & C1 & ASTTokens.tree \\
+authlib\_\_oauth2\_server\_core\_\_001 & C1 & OAuth2Request.payload \\
+beaker\_\_session\_cache\_core\_\_001 & C1 & Session.\_\_setitem\_\_; Session.get; Session.id \\
+build\_\_pyproject\_backend\_core\_\_hard3\_001 & C2 & build.\_builder.parse\_build\_system\_table \\
+cachetools\_\_cache\_eviction\_core\_\_001 & C1 & LFUCache.\_\_contains\_\_; LFUCache.\_\_getitem\_\_; LFUCache.\_\_setitem\_\_; LRUCache.\_\_contain... \\
+click\_\_lazy\_command\_core\_\_hard3\_001 & C2 & click.core.LazyCommandCollection \\
+configobj\_\_roundtrip\_config\_core\_\_001 & C1 & ConfigObj.\_\_getitem\_\_ \\
+cookiecutter\_\_repo\_finder\_core\_\_hard3\_001 & C2 & cookiecutter.repository.RepoFinder \\
+dateutil\_\_zone\_resolver\_core\_\_hard3\_001 & C2 & dateutil.zoneinfo.ZoneResolver \\
+deepdiff\_\_deep\_compare\_core\_\_001 & C1 & DeepDiff.\_\_contains\_\_ \\
+diskcache\_\_eviction\_policy\_core\_\_hard3\_001 & C2 & diskcache.core.EvictionPolicyPlanner \\
+fs\_\_url\_opener\_core\_\_hard3\_001 & C2 & fs.opener.registry.FSOpenerRegistry \\
+hatch\_\_project\_metadata\_core\_\_hard3\_001 & C2 & hatchling.metadata.core.normalize\_project\_metadata \\
+importlib\_metadata\_\_entry\_points\_core\_\_001 & C1 & EntryPoints.\_\_getitem\_\_ \\
+installer\_\_wheel\_record\_core\_\_hard3\_001 & C2 & installer.records.parse\_wheel\_record \\
+intervaltree\_\_interval\_tree\_core\_\_001 & C1 & IntervalTree.\_\_contains\_\_; IntervalTree.\_\_getitem\_\_ \\
+jsonpointer\_\_resolve\_core\_\_001 & C1 & JsonPointer.\_\_contains\_\_ \\
+multidict\_\_multidict\_mutation\_core\_\_hard3\_001 & C1 & CIMultiDict.\_\_getitem\_\_; MultiDict.\_\_getitem\_\_ \\
+oslo\_config\_\_opt\_group\_core\_\_001 & C1 & ConfigOpts.host; ConfigOpts.port; ConfigOpts.timeout; ConfigOpts.worker \\
+packaging\_\_requirement\_marker\_specifier\_\_001 & C1 & SpecifierSet.\_\_contains\_\_ \\
+python\_configuration\_\_layered\_config\_core\_\_001 & C1 & Configuration.\_\_getitem\_\_; Configuration.y; ConfigurationSet.left; ConfigurationSet.r... \\
+python\_frontmatter\_\_roundtrip\_core\_\_001 & C1 & Post.\_\_getitem\_\_ \\
+readme\_renderer\_\_content\_type\_core\_\_hard3\_001 & C2 & readme\_renderer.render\_readme \\
+setuptools\_scm\_\_version\_normalize\_core\_\_hard3\_001 & C2 & setuptools\_scm.version.version\_from\_scm \\
+sortedcontainers\_\_sorted\_list\_core\_\_001 & C1 & SortedList.\_\_delitem\_\_ \\
+spiffworkflow\_\_bpmn\_engine\_core\_\_001 & C1 & BpmnWorkflow.data \\
+stevedore\_\_extension\_manager\_core\_\_hard3\_001 & C1 & ExtensionManager.\_\_getitem\_\_ \\
+virtualenv\_\_interpreter\_spec\_core\_\_hard3\_001 & C2 & virtualenv.discovery.py\_info.parse\_spec \\
+webob\_\_request\_response\_core\_\_001 & C1 & Response.body; Response.content\_type; Response.json\_body; Response.status\_code \\
+websockets\_\_handshake\_parse\_core\_\_001 & C1 & Headers.\_\_getitem\_\_ \\
+\bottomrule
+\end{longtable}

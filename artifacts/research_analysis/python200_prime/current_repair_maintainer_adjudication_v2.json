@@ -1,0 +1,111 @@
+{
+  "generated_at": "2026-09-03T04:49:35+00:00",
+  "gold": false,
+  "independent_human_review": false,
+  "ledger_id": "d127cb15e31a3b0051dd0a7be519a540a553a5dcf7a918bb5ed74e0c13a0b1ab",
+  "protocol": "docs/BENCHMARK_REPAIR_PROTOCOL.md",
+  "reviewer": "coding-agent-maintainer-proxy",
+  "rule": "C1 disclosure of Hidden-exercised in-scope members is scope_preserved; C2 dangling-to-resolved source_entrypoints without required_api/Hidden change is scope_preserved. Do not weaken Hidden.",
+  "schema_version": "featureliftbench.python200_prime_repair_maintainer_adjudication.v1",
+  "task_count": 6,
+  "verdicts": {
+    "authlib__oauth2_server_core__001": {
+      "action": "keep_repair",
+      "ai_review_scope": "scope_changed",
+      "api_paths": [
+        "featurelifted.OAuth2Request.payload"
+      ],
+      "basis": "C1 disclosure of an already exercised member. hidden_tests/test_hidden_behavior.py MemoryServer.create_oauth2_request assigns req.payload; CodeGrant.save_authorization_code reads request.payload.redirect_uri and request.payload.scope. Matches the 2026-09-02 confirmed C1 finding. Adding featurelifted.OAuth2Request.payload to required_api does not add a new grant-flow behavior.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_behavior.py::test_unknown_client_is_invalid",
+        "hidden_tests/test_hidden_behavior.py::test_save_token_records_issued_token"
+      ],
+      "repair_class": "C1",
+      "source_paths": [
+        "authlib/oauth2/rfc6749/__init__.py"
+      ],
+      "verdict": "scope_preserved"
+    },
+    "beaker__session_cache_core__001": {
+      "action": "keep_repair",
+      "ai_review_scope": "scope_changed",
+      "api_paths": [
+        "featurelifted.Session.__setitem__",
+        "featurelifted.Session.get",
+        "featurelifted.Session.id"
+      ],
+      "basis": "C1 disclosure. test_sessions_are_isolated_by_id already uses first['user'] = 'ada' (__setitem__), other.get('user') (get), and first.id != other.id. Pre-repair B001 already required mapping-like Session storage. The AI review treated a longer required_api as a scope expansion; the repair protocol classifies this as disclosure.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_behavior.py::test_sessions_are_isolated_by_id"
+      ],
+      "repair_class": "C1",
+      "source_paths": [
+        "beaker/session.py"
+      ],
+      "verdict": "scope_preserved"
+    },
+    "deepdiff__deep_compare_core__001": {
+      "action": "keep_repair",
+      "ai_review_scope": "scope_changed",
+      "api_paths": [
+        "featurelifted.DeepDiff.__contains__"
+      ],
+      "basis": "C1 disclosure. test_list_item_added asserts 'iterable_item_added' in diff, which exercises DeepDiff.__contains__. B001 already covers list item added. No Hidden or behavior change.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_behavior.py::test_list_item_added"
+      ],
+      "repair_class": "C1",
+      "source_paths": [
+        "deepdiff/diff.py"
+      ],
+      "verdict": "scope_preserved"
+    },
+    "installer__wheel_record_core__hard3_001": {
+      "action": "keep_repair",
+      "ai_review_scope": "insufficient_evidence",
+      "api_paths": [
+        "featurelifted.parse_wheel_record"
+      ],
+      "basis": "Reviewer protocol failure (invalid JSON). C2 provenance only: installer.records.parse_wheel_record (dangling, task-invented) -> installer.records.parse_record_file (resolved in pinned snapshot). required_api still exposes featurelifted.parse_wheel_record; Hidden tests unchanged.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_contract.py::test_find_dist_info_unique",
+        "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+      ],
+      "repair_class": "C2",
+      "source_paths": [
+        "installer/records.py"
+      ],
+      "verdict": "scope_preserved"
+    },
+    "python_frontmatter__roundtrip_core__001": {
+      "action": "keep_repair",
+      "ai_review_scope": "insufficient_evidence",
+      "api_paths": [
+        "featurelifted.Post.__getitem__"
+      ],
+      "basis": "Reviewer protocol failure (turn budget). Hidden already uses Post.__getitem__ via post['test'], loaded['title'], and repost['language']. B005 already requires dict-like metadata access. Adding Post.__getitem__ is disclosure.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_behavior.py::test_extra_space_after_opening_delimiter",
+        "hidden_tests/test_hidden_behavior.py::test_crlf_bytes_normalize",
+        "hidden_tests/test_hidden_behavior.py::test_unicode_metadata_roundtrip"
+      ],
+      "repair_class": "C1",
+      "source_paths": [],
+      "verdict": "scope_preserved"
+    },
+    "websockets__handshake_parse_core__001": {
+      "action": "keep_repair",
+      "ai_review_scope": "insufficient_evidence",
+      "api_paths": [
+        "featurelifted.Headers.__getitem__"
+      ],
+      "basis": "Reviewer protocol failure (turn budget). test_headers_multiple_connection_values uses headers['connection'], i.e. Headers.__getitem__. B004 already requires case-insensitive Headers lookup.",
+      "hidden_nodeids": [
+        "hidden_tests/test_hidden_behavior.py::test_headers_multiple_connection_values"
+      ],
+      "repair_class": "C1",
+      "source_paths": [],
+      "verdict": "scope_preserved"
+    }
+  }
+}

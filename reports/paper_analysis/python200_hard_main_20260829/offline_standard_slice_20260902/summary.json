@@ -1,0 +1,234 @@
+{
+  "schema_version": "featureliftbench.offline_standard_slice.v1",
+  "generated_at": "2026-09-02",
+  "gold": false,
+  "leaderboard": false,
+  "note": "Fixed 116 has no context-window violations. 81/96 is a sensitivity slice, not Python-200' Functional Pass.",
+  "label_counts": {
+    "meets_standard": 168,
+    "violates": 32,
+    "undetermined": 0
+  },
+  "label_split": {
+    "baseline_meets": 126,
+    "hard50_meets": 42
+  },
+  "surface_entry": {
+    "surface_only": 20,
+    "entry_only": 11,
+    "both": 1
+  },
+  "slices": {
+    "frozen116": {
+      "n": 116,
+      "pass": 95,
+      "rate": 0.8189655172413793,
+      "wilson95": [
+        0.739047646396424,
+        0.8784340961704309
+      ],
+      "stages": {
+        "pass": 95,
+        "missing_submission": 2,
+        "hidden": 5,
+        "public": 14
+      },
+      "context_violations": 0,
+      "median_rres_passes": 0.973404,
+      "rres_iqr": [
+        0.69404,
+        1.017897
+      ],
+      "n_rres": 95
+    },
+    "meets_frozen96": {
+      "n": 96,
+      "pass": 81,
+      "rate": 0.84375,
+      "wilson95": [
+        0.7580833433259717,
+        0.9029637552782173
+      ],
+      "stages": {
+        "pass": 81,
+        "missing_submission": 2,
+        "hidden": 3,
+        "public": 10
+      },
+      "context_violations": 0,
+      "median_rres_passes": 0.980998,
+      "rres_iqr": [
+        0.736582,
+        1.024992
+      ],
+      "n_rres": 81
+    },
+    "violates_frozen20": {
+      "n": 20,
+      "pass": 14,
+      "rate": 0.7,
+      "wilson95": [
+        0.4810232237710206,
+        0.854524726031006
+      ],
+      "stages": {
+        "pass": 14,
+        "public": 4,
+        "hidden": 2
+      },
+      "context_violations": 0,
+      "median_rres_passes": 0.7948569999999999,
+      "rres_iqr": [
+        0.59551075,
+        0.999235
+      ],
+      "n_rres": 14
+    },
+    "meets168": {
+      "n": 168,
+      "pass": 115,
+      "rate": 0.6845238095238095,
+      "wilson95": [
+        0.6107947976421473,
+        0.7500025878570566
+      ],
+      "stages": {
+        "pass": 115,
+        "missing_submission": 16,
+        "hidden": 5,
+        "public": 19,
+        "build": 13
+      },
+      "context_violations": 51,
+      "median_rres_passes": 0.948192,
+      "rres_iqr": [
+        0.6009955,
+        1.0098775
+      ],
+      "n_rres": 115
+    },
+    "violates32": {
+      "n": 32,
+      "pass": 17,
+      "rate": 0.53125,
+      "wilson95": [
+        0.3644923793257382,
+        0.6913087009831766
+      ],
+      "stages": {
+        "pass": 17,
+        "build": 3,
+        "public": 6,
+        "missing_submission": 3,
+        "hidden": 3
+      },
+      "context_violations": 8,
+      "median_rres_passes": 0.765589,
+      "rres_iqr": [
+        0.511703,
+        0.990079
+      ],
+      "n_rres": 17
+    },
+    "meets_replace72": {
+      "n": 72,
+      "pass": 34,
+      "rate": 0.4722222222222222,
+      "wilson95": [
+        0.3612631919907143,
+        0.5859953046654743
+      ],
+      "stages": {
+        "pass": 34,
+        "missing_submission": 14,
+        "build": 13,
+        "hidden": 2,
+        "public": 9
+      },
+      "context_violations": 51,
+      "median_rres_passes": 0.7536685,
+      "rres_iqr": [
+        0.2971685,
+        0.98429575
+      ],
+      "n_rres": 34
+    },
+    "violates_replace12": {
+      "n": 12,
+      "pass": 3,
+      "rate": 0.25,
+      "wilson95": [
+        0.08894003962896138,
+        0.53231033912066
+      ],
+      "stages": {
+        "pass": 3,
+        "missing_submission": 3,
+        "build": 3,
+        "hidden": 1,
+        "public": 2
+      },
+      "context_violations": 8,
+      "median_rres_passes": 0.511703,
+      "rres_iqr": [
+        0.398883,
+        0.7006479999999999
+      ],
+      "n_rres": 3
+    }
+  },
+  "c4_advisory": {
+    "n": 29,
+    "overlap_violates": 2,
+    "overlap_meets": 27,
+    "task_ids": [
+      "anyio__task_group_core__001",
+      "arrow__parse_format_core__001",
+      "bandit__config_plugin_core__001",
+      "betamax__cassette_match_core__001",
+      "cement__controller_plugin_core__001",
+      "copier__template_answers_core__001",
+      "coverage__path_remap_core__001",
+      "croniter__cron_parse_core__001",
+      "dataclasses_json__serde_core__001",
+      "diskcache__eviction_policy_core__hard3_001",
+      "falcon__responder_routing_core__001",
+      "graphene__schema_execute_core__001",
+      "httpretty__uri_stub_core__001",
+      "jinja2__filters_tests_core__001",
+      "license_expression__policy_core__hard3_001",
+      "markdown__extensions_core__001",
+      "mashumaro__dataclass_codec_core__001",
+      "mitmproxy__url_parse_core__001",
+      "oauthlib__grant_dispatch_core__001",
+      "paste__dispatch_map_core__001",
+      "pendulum__parse_format_core__001",
+      "pika__channel_spec_core__001",
+      "pre_commit__config_load_core__001",
+      "pylint__config_find_core__001",
+      "python_dotenv__env_parse_core__001",
+      "spiffworkflow__bpmn_engine_core__001",
+      "sqlparse__parse_format_core__001",
+      "sqlparse__parse_split_core__001",
+      "stdnum__isbn_validate_core__001"
+    ]
+  },
+  "checksums_sha256": {
+    "python200_hard_suite.json": "b1e18cd459e8ed3c001afe54ec77273a5701eed3e6017a39f2ee067a81602802",
+    "python200_hard_standard_suite.json": "958389c4513e5c3b9d00c3ca3ebaf3fd9f3719ed328b46777aee958ba1a6347f",
+    "python200_hard_excluded.json": "4d9384ee565bcbcdbd3946be7fda126b306219d6e4db98e2d22b04fa0165a528",
+    "adjudications.csv": "55f6cce85fddc4f4d6f1619b8b8950c3c87ea1812a48845cd5af0e0fde92b1c7",
+    "python200_hard_registry.json": "f2b5801a2648dd27d07963fc696935e1dc3d7ca6d405fb290c5623f8b777f1e4",
+    "task_results.csv": "c9d8919eec7e307211f4b6c7b36d2fabdff7d7ac7953e64653a83f60f37cccde",
+    "strict_replacement_task_ids.txt": "2c83595701af8bd81f547507400e924362ac4ed1f83b64755fc3eb57b151d1b7"
+  },
+  "required_images": {
+    "agent": "sha256:0843b6633d48da91832ce16c0e6ac42baf2f04d7b08cb66061720f176a8f2eea",
+    "eval": "sha256:d1ea357c125a6f4957e1246f770bd1deb4717448e46e779f62b0351213cad191"
+  },
+  "local_latest_images": {
+    "agent": "sha256:cc6229204b71d871ebd3eea0a251c9947e8b5631aeb652a4159d8591d43033fe",
+    "eval": "sha256:cccf858c5f9b278de16bf9317aa032fd61c022dd1c257016ab08d5b68990f368",
+    "mergeable": false
+  }
+}

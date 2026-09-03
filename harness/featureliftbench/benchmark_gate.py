@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from .catalog import get_suite, load_catalog
+from .constitution_validate import _validate_task_leakage
 from .paths import REPO_ROOT
 from .source_archive import (
     load_source_registry,
@@ -59,6 +60,14 @@ DEFAULT_ORACLE_SUMMARY = (
     / "reports"
     / "audits"
     / "python200_prime_oracle_revalidation"
+    / "summary.json"
+)
+
+DEFAULT_UPSTREAM_DIRECT_SUMMARY = (
+    REPO_ROOT
+    / "reports"
+    / "audits"
+    / "python200_prime_g2prime"
     / "summary.json"
 )
 
@@ -123,6 +132,7 @@ class GateRunOptions:
     task_ids: tuple[str, ...] = ()
     source_materialization: bool = True
     oracle_summary: Path | None = DEFAULT_ORACLE_SUMMARY
+    upstream_direct_summary: Path | None = DEFAULT_UPSTREAM_DIRECT_SUMMARY
     adjudications: Path | None = None
     reviewer: ReviewerConfig | None = None
     private_evaluator_policy_acknowledged: bool = False
@@ -453,15 +463,77 @@ def _entrypoint_check(
 
 
 class _NormalizeTests(ast.NodeTransformer):
+    """Erase incidental naming, keep everything that carries a test's meaning.
+
+    Local identifiers and parameter names are incidental: the same assertion
+    reads the same whether the variable is ``aliases`` or ``a``. Three things
+    are not incidental and are kept verbatim:
+
+    - **Literals.** An earlier revision replaced every literal with a type
+      marker, which collapsed distinct parameterizations of one API call and
+      produced 29/200 advisory hits on Python-200', all false positives (two
+      ``croniter`` cases differing only in the cron expression and the expected
+      datetime, for example).
+    - **Imported symbols.** The subject under test arrives by import, so
+      collapsing it hides the difference between ``validate(...)`` and
+      ``compact(...)``, or between ``CamelPerson`` and ``CamelFieldPerson``.
+    - **Attribute names**, since the member being asserted on is the point.
+    """
+
+    def __init__(self, significant: frozenset[str] = frozenset()) -> None:
+        super().__init__()
+        self._significant = significant
+
     def visit_Name(self, node: ast.Name) -> ast.AST:  # noqa: N802
+        if node.id in self._significant:
+            return node
         return ast.copy_location(ast.Name(id="_NAME", ctx=node.ctx), node)
 
     def visit_arg(self, node: ast.arg) -> ast.AST:  # noqa: N802
         return ast.copy_location(ast.arg(arg="_ARG", annotation=None), node)
 
-    def visit_Constant(self, node: ast.Constant) -> ast.AST:  # noqa: N802
-        marker = f"_{type(node.value).__name__.upper()}"
-        return ast.copy_location(ast.Constant(value=marker), node)
+
+def _significant_names(tree: ast.Module) -> frozenset[str]:
+    """Named subjects in a test module, as opposed to incidental locals.
+
+    Imported symbols are the API under test. Module-level classes and helpers
+    are fixtures the tests are built around, and their names distinguish
+    otherwise identical bodies: ``CamelPerson`` and ``CamelFieldPerson`` differ
+    only in their decorators, so a body-only comparison would collapse
+    class-level and field-level letter casing onto one shape.
+    """
+    names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                names.add(alias.asname or alias.name.split(".")[0])
+        elif isinstance(node, ast.ImportFrom):
+            for alias in node.names:
+                names.add(alias.asname or alias.name)
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef):
+            names.add(node.name)
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if not node.name.startswith("test"):
+                names.add(node.name)
+    return frozenset(names)
+
+
+def _strip_docstring(node: ast.AST) -> None:
+    """Drop a leading string expression from every body that can carry one."""
+    for child in ast.walk(node):
+        body = getattr(child, "body", None)
+        if not isinstance(body, list) or not body:
+            continue
+        if not isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        first = body[0]
+        if (
+            isinstance(first, ast.Expr)
+            and isinstance(first.value, ast.Constant)
+            and isinstance(first.value.value, str)
+        ):
+            del body[0]
 
 
 def _normalized_test_shapes(root: Path) -> tuple[set[str], list[str]]:
@@ -475,6 +547,7 @@ def _normalized_test_shapes(root: Path) -> tuple[set[str], list[str]]:
         except (OSError, SyntaxError, ValueError) as exc:
             errors.append(f"{path.name}: {exc}")
             continue
+        significant = _significant_names(tree)
         for node in tree.body:
             if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
@@ -482,7 +555,10 @@ def _normalized_test_shapes(root: Path) -> tuple[set[str], list[str]]:
                 continue
             node.name = "_TEST"
             node.decorator_list = []
-            normalized = _NormalizeTests().visit(ast.fix_missing_locations(node))
+            _strip_docstring(node)
+            normalized = _NormalizeTests(significant).visit(
+                ast.fix_missing_locations(node)
+            )
             shapes.add(ast.dump(normalized, include_attributes=False))
     return shapes, errors
 
@@ -531,6 +607,202 @@ def _load_oracle_evidence(path: Path | None) -> tuple[dict[str, list[dict[str, A
         if task_id:
             by_task[task_id].append(row)
     return dict(by_task), sha256_file(path)
+
+
+def _load_upstream_direct_evidence(
+    path: Path | None,
+) -> tuple[dict[str, dict[str, Any]], str]:
+    if path is None or not path.is_file():
+        return {}, ""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    by_task: dict[str, dict[str, Any]] = {}
+    for row in payload.get("records") or []:
+        task_id = str(row.get("task_id") or "")
+        if task_id:
+            by_task[task_id] = row
+    return by_task, sha256_file(path)
+
+
+def _upstream_direct_check(task_id: str, record: dict[str, Any] | None) -> dict[str, Any]:
+    """G2' — the pinned upstream, submitted directly, must not satisfy the contract.
+
+    Evidence strength is carried through rather than flattened. Most tasks are
+    cleared because the isolation layer refuses an upstream import before any
+    behavior runs; that is a real property of the harness but it is not evidence
+    about the task's contract, so the check records which mechanism applied.
+    """
+    if not record:
+        return _check(
+            UNDETERMINED,
+            blocking=True,
+            reason="task is not covered by the upstream-direct audit",
+            mechanical_result="error",
+        )
+    status = str(record.get("status") or "")
+    outcome = record.get("outcome") or {}
+    evidence = [{
+        "evidence_strength": record.get("evidence_strength"),
+        "block_mechanism": record.get("block_mechanism"),
+        "first_block": record.get("first_block"),
+        "functional_gate": outcome.get("functional_gate"),
+        "stubbed_names": record.get("stubbed_names") or [],
+        "errors": outcome.get("errors") or [],
+    }]
+    if status == "fail":
+        return _check(
+            FAIL,
+            blocking=True,
+            evidence=evidence,
+            reason="the pinned upstream, submitted directly, satisfies the contract",
+            mechanical_result="hit",
+            adjudication="confirmed_violation",
+        )
+    if status == "pass":
+        return _check(
+            PASS,
+            blocking=True,
+            evidence=evidence,
+            reason=str(record.get("reason") or "upstream-direct submission does not pass"),
+        )
+    return _check(
+        UNDETERMINED,
+        blocking=True,
+        evidence=evidence,
+        reason=str(record.get("reason") or "upstream-direct audit was inconclusive"),
+        mechanical_result="error",
+    )
+
+
+_ISOLATION_FLAGS = (
+    "pass",
+    "forbidden_imports_pass",
+    "forbidden_dependencies_pass",
+    "forbidden_runtime_capabilities_pass",
+    "runtime_import_origin_pass",
+    "source_filesystem_absent",
+    "network_disabled",
+    "submission_location_pass",
+    "mount_allowlist_pass",
+)
+_SANDBOX_EXPECTED = {
+    "backend": "docker",
+    "network": "none",
+    "read_only_rootfs": True,
+    "cap_drop": "ALL",
+    "returncode": 0,
+}
+_VERIFICATION_MODE = "docker_functional_capsule_v1"
+
+
+def _isolation_check(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    """L4 — surface the sandbox contract per task instead of implying it.
+
+    The evaluator already enforces these flags on every run, but the gate ledger
+    has to be diffable: "was this task still evaluated under no-network,
+    read-only, source-absent conditions" must be answerable from the report
+    rather than by re-reading the evaluator. Evidence comes from the same N=3
+    oracle revalidation the oracle check consumes.
+    """
+    if not runs:
+        return _check(
+            UNDETERMINED,
+            blocking=True,
+            reason="task is not covered by an isolation-bearing evaluation",
+            mechanical_result="error",
+        )
+    violations: list[str] = []
+    for row in runs:
+        result = row.get("result") or {}
+        isolation = result.get("isolation") or {}
+        sandbox = result.get("sandbox") or {}
+        repetition = row.get("repetition")
+        if not isolation and not sandbox:
+            violations.append(f"r{repetition}: no isolation or sandbox record")
+            continue
+        for flag in _ISOLATION_FLAGS:
+            if isolation.get(flag) is not True:
+                violations.append(f"r{repetition}: isolation.{flag}={isolation.get(flag)!r}")
+        if isolation.get("verification_mode") != _VERIFICATION_MODE:
+            violations.append(
+                f"r{repetition}: verification_mode="
+                f"{isolation.get('verification_mode')!r}"
+            )
+        for key, expected in _SANDBOX_EXPECTED.items():
+            if sandbox.get(key) != expected:
+                violations.append(f"r{repetition}: sandbox.{key}={sandbox.get(key)!r}")
+    evidence = [{
+        "repetitions": sorted(row.get("repetition") for row in runs),
+        "violations": violations[:12],
+    }]
+    if violations:
+        return _check(
+            FAIL,
+            blocking=True,
+            evidence=evidence,
+            reason="evaluation did not hold the declared isolation contract",
+            mechanical_result="hit",
+            adjudication="confirmed_violation",
+        )
+    return _check(
+        PASS,
+        blocking=True,
+        evidence=evidence,
+        reason=(
+            f"isolation contract held on all {len(runs)} repetitions "
+            f"({_VERIFICATION_MODE})"
+        ),
+    )
+
+
+def _leakage_check(task_dir: Path) -> dict[str, Any]:
+    """L5 — private evaluator assets must not reach the Agent-facing TASK.md.
+
+    ``validate_constitution`` already applies these rules, but only for tasks
+    whose ``spec_status`` is ``compliant``, and the result is folded into
+    ``L1_PACKAGE``. Running them unconditionally as their own row makes the
+    coverage explicit and keeps a non-compliant task from silently skipping it.
+    """
+    try:
+        metadata = json.loads((task_dir / "metadata.json").read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return _check(
+            UNDETERMINED,
+            blocking=True,
+            reason=f"metadata is unreadable for the leakage rules: {exc}",
+            mechanical_result="error",
+        )
+    if not (task_dir / "TASK.md").is_file():
+        return _check(
+            FAIL,
+            blocking=True,
+            reason="TASK.md is missing, so the Agent-facing surface cannot be audited",
+            mechanical_result="hit",
+            adjudication="confirmed_violation",
+        )
+    try:
+        errors = _validate_task_leakage(task_dir, metadata)
+    except (OSError, ValueError) as exc:
+        return _check(
+            UNDETERMINED,
+            blocking=True,
+            reason=f"leakage rules could not be applied: {type(exc).__name__}: {exc}",
+            mechanical_result="error",
+        )
+    if errors:
+        return _check(
+            FAIL,
+            blocking=True,
+            evidence=errors,
+            reason="TASK.md exposes a private evaluator asset",
+            mechanical_result="hit",
+            adjudication="confirmed_violation",
+        )
+    return _check(
+        PASS,
+        blocking=True,
+        reason="TASK.md does not mention hidden tests, evaluation_spec, "
+        "oracle_manifest, or private metadata keys",
+    )
 
 
 def _oracle_check(
@@ -958,7 +1230,7 @@ def _review_prompt(
         "\"summary\":\"short evidence-backed summary\",\"findings\":[{"
         "\"rule\":\"surface|fairness\",\"behavior_ids\":[],"
         "\"hidden_nodeids\":[],\"api_paths\":[],\"source_paths\":[],"
-        "\"verdict\":\"fair|confirmed_violation|undetermined\","
+        "\"verdict\":\"fair|confirmed_violation|undetermined|scope_preserved|scope_changed|insufficient_evidence\","
         "\"reason\":\"concise, auditable reason\"}]}\n"
         "Every cited id/path must occur in the supplied packet. If evidence is missing, "
         "return undetermined. Do not include chain-of-thought.\n\nPACKET:\n"
@@ -1061,6 +1333,7 @@ def _validate_review(
     metadata: dict[str, Any],
     source_paths: set[str],
     finding_api_paths: set[str] | None = None,
+    repair_context: dict[str, Any] | None = None,
 ) -> list[str]:
     errors: list[str] = []
     if review.get("surface_compliance") not in {PASS, FAIL, UNDETERMINED}:
@@ -1074,13 +1347,40 @@ def _validate_review(
     allowed_nodeids = _mapped_nodeids(metadata)
     allowed_api = _alias_api_paths(_required_api_paths(metadata.get("public_spec") or {}))
     allowed_api |= _alias_api_paths(finding_api_paths or set())
+    allowed_rules = {"surface", "fairness"}
+    if repair_context is not None:
+        allowed_rules.add("repair_scope")
+        repair_scope = review.get("repair_scope")
+        if repair_scope not in {"scope_preserved", "scope_changed", "insufficient_evidence"}:
+            errors.append("invalid repair_scope")
+        repair_findings = [
+            finding
+            for finding in findings
+            if isinstance(finding, dict) and finding.get("rule") == "repair_scope"
+        ]
+        if not repair_findings:
+            errors.append("repair review requires a repair_scope finding")
+        expected_verdict = {
+            "scope_preserved": "scope_preserved",
+            "scope_changed": "scope_changed",
+            "insufficient_evidence": "insufficient_evidence",
+        }.get(repair_scope)
+        if expected_verdict and any(
+            finding.get("verdict") != expected_verdict for finding in repair_findings
+        ):
+            errors.append("repair_scope finding verdict does not match repair_scope")
     for index, finding in enumerate(findings):
         if not isinstance(finding, dict):
             errors.append(f"finding {index} is not an object")
             continue
-        if finding.get("rule") not in {"surface", "fairness"}:
+        if finding.get("rule") not in allowed_rules:
             errors.append(f"finding {index} has invalid rule")
-        if finding.get("verdict") not in {"fair", "confirmed_violation", UNDETERMINED}:
+        allowed_verdicts = (
+            {"scope_preserved", "scope_changed", "insufficient_evidence"}
+            if finding.get("rule") == "repair_scope"
+            else {"fair", "confirmed_violation", UNDETERMINED}
+        )
+        if finding.get("verdict") not in allowed_verdicts:
             errors.append(f"finding {index} has invalid verdict")
         if not isinstance(finding.get("reason"), str) or not finding.get("reason", "").strip():
             errors.append(f"finding {index} has no reason")
@@ -1172,6 +1472,7 @@ def _agent_initial_prompt(
     metadata: dict[str, Any],
     findings: list[dict[str, Any]],
     config: ReviewerConfig,
+    repair_context: dict[str, Any] | None = None,
 ) -> str:
     packet = {
         "task_id": task_id,
@@ -1183,6 +1484,25 @@ def _agent_initial_prompt(
         "citable_mechanical_api": sorted(_mechanical_api_paths(findings)),
         "source_role": CANONICAL_SOURCE_ROLE,
     }
+    if repair_context is not None:
+        packet["repair_context"] = repair_context
+    repair_schema = (
+        '"repair_scope":"scope_preserved|scope_changed|insufficient_evidence",'
+        if repair_context is not None
+        else ""
+    )
+    repair_rule = "|repair_scope" if repair_context is not None else ""
+    repair_instruction = (
+        "For repair_scope, compare pre_repair_public_spec, the repair delta, "
+        "the inspected Hidden observations and canonical source. scope_preserved "
+        "means the patch only disclosed, corrected or diversified an obligation "
+        "already inside the old functional scope; scope_changed means it expanded "
+        "or narrowed that scope. A repair_scope finding must repeat the same "
+        "verdict value (scope_preserved, scope_changed or insufficient_evidence). "
+        "Include one repair_scope finding with citations. "
+        if repair_context is not None
+        else ""
+    )
     return (
         "Audit one FeatureLiftBench task using only the constrained actions below. "
         "Your job is to flag package defects, not to fix them. Hidden tests are "
@@ -1196,8 +1516,8 @@ def _agent_initial_prompt(
         "3. {\"action\":\"submit\",\"review\":{"
         "\"surface_compliance\":\"pass|fail|undetermined\","
         "\"hidden_fairness\":\"fair|underdetermined|undecided\","
-        "\"summary\":\"short evidence-backed summary\",\"findings\":[{"
-        "\"rule\":\"surface|fairness\",\"behavior_ids\":[],"
+        "\"summary\":\"short evidence-backed summary\"," + repair_schema + "\"findings\":[{"
+        "\"rule\":\"surface|fairness" + repair_rule + "\",\"behavior_ids\":[],"
         "\"hidden_nodeids\":[],\"api_paths\":[],\"source_paths\":[],"
         "\"verdict\":\"fair|confirmed_violation|undetermined\","
         "\"reason\":\"concise auditable reason\"}]}}\n"
@@ -1221,7 +1541,7 @@ def _agent_initial_prompt(
         "the cited nodeids. Submit at least one finding with citations. Every "
         "citation must have appeared in the initial packet or a tool result. "
         "In source_paths, copy exact file-path keys from source_evidence when "
-        "possible; symbols are normalized to those files. If evidence is "
+        "possible; symbols are normalized to those files. " + repair_instruction + "If evidence is "
         "insufficient, submit undetermined. Do not reveal chain-of-thought.\n\n"
         "INITIAL_PACKET:\n" + json.dumps(packet, ensure_ascii=False, sort_keys=True)
     )
@@ -1268,6 +1588,7 @@ def _agent_review_check(
     snapshot: Any | None,
     findings: list[dict[str, Any]],
     config: ReviewerConfig,
+    repair_context: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if source_root is None:
         return _agent_check_result(
@@ -1295,6 +1616,7 @@ def _agent_review_check(
         metadata=metadata,
         findings=findings,
         config=config,
+        repair_context=repair_context,
     )
     messages = [
         {
@@ -1316,6 +1638,7 @@ def _agent_review_check(
     seen_actions: set[str] = set()
     recovery_used = False
     submit_repair_used = False
+    action_repair_used = False
     call_config = config
     mechanical_api = _mechanical_api_paths(findings)
     max_turns = config.agent_max_turns
@@ -1413,14 +1736,30 @@ def _agent_review_check(
                 or len(requested) > config.agent_max_nodeids_per_turn
                 or any(str(value) not in allowed_nodeids for value in requested)
             ):
-                return _agent_check_result(
-                    status=UNDETERMINED,
-                    reason="validator agent requested invalid hidden evidence",
-                    config=config,
-                    usage=usage,
-                    trace=trace,
-                    evidence=[{"turn": turn, "requested": requested}],
-                ), []
+                trace.append({
+                    "turn": turn,
+                    "action": "inspect_hidden",
+                    "requested": requested,
+                    "rejected": ["request must use only allowed hidden nodeids within the per-turn limit"],
+                    "usage": turn_usage,
+                })
+                if action_repair_used:
+                    return _agent_check_result(
+                        status=UNDETERMINED,
+                        reason="validator agent repeatedly requested invalid hidden evidence",
+                        config=config,
+                        usage=usage,
+                        trace=trace,
+                        evidence=[{"turn": turn, "requested": requested}],
+                    ), []
+                action_repair_used = True
+                if turn >= max_turns:
+                    max_turns += 1
+                messages.extend([
+                    {"role": "assistant", "content": json.dumps(action, ensure_ascii=False)},
+                    {"role": "user", "content": "ACTION_REJECTED: request only allowed_nodeids from the initial packet. Allowed nodeids: " + json.dumps(sorted(allowed_nodeids), ensure_ascii=False) + ". Continue with one valid JSON action."},
+                ])
+                continue
             nodeids = [str(value) for value in requested]
             per_item = max(1_000, config.agent_tool_result_chars // len(nodeids))
             observation = {
@@ -1439,14 +1778,30 @@ def _agent_review_check(
                 or len(requested) > config.agent_max_symbols_per_turn
                 or any(str(value) not in allowed_symbols for value in requested)
             ):
-                return _agent_check_result(
-                    status=UNDETERMINED,
-                    reason="validator agent requested invalid source evidence",
-                    config=config,
-                    usage=usage,
-                    trace=trace,
-                    evidence=[{"turn": turn, "requested": requested}],
-                ), []
+                trace.append({
+                    "turn": turn,
+                    "action": "inspect_source",
+                    "requested": requested,
+                    "rejected": ["request must use only declared source_entrypoints within the per-turn limit"],
+                    "usage": turn_usage,
+                })
+                if action_repair_used:
+                    return _agent_check_result(
+                        status=UNDETERMINED,
+                        reason="validator agent repeatedly requested invalid source evidence",
+                        config=config,
+                        usage=usage,
+                        trace=trace,
+                        evidence=[{"turn": turn, "requested": requested}],
+                    ), []
+                action_repair_used = True
+                if turn >= max_turns:
+                    max_turns += 1
+                messages.extend([
+                    {"role": "assistant", "content": json.dumps(action, ensure_ascii=False)},
+                    {"role": "user", "content": "ACTION_REJECTED: request only source_entrypoints from the initial packet. Allowed source_entrypoints: " + json.dumps(sorted(allowed_symbols), ensure_ascii=False) + ". Continue with one valid JSON action."},
+                ])
+                continue
             symbols = [str(value) for value in requested]
             source, unavailable = _source_evidence(
                 source_root,
@@ -1508,6 +1863,7 @@ def _agent_review_check(
                     metadata=metadata,
                     source_paths=source_paths,
                     finding_api_paths=mechanical_api,
+                    repair_context=repair_context,
                 )
                 if not review.get("findings"):
                     errors.append("agent review must contain at least one cited finding")
@@ -1599,7 +1955,7 @@ def _agent_review_check(
                             "role": "user",
                             "content": (
                                 "SUBMIT_REJECTED: deterministic verification failed. "
-                                "Resubmit exactly one submit action. Fix only the citations. "
+                                "Resubmit exactly one submit action and fix the listed validation errors. "
                                 "Use allowed_source_paths file paths, not symbols. "
                                 "Undeclared mechanical members may be cited with or without "
                                 "the featurelifted. prefix. Canonical source is the "
@@ -1637,9 +1993,13 @@ def _agent_review_check(
             conclusive = (
                 review.get("surface_compliance") == PASS
                 and review.get("hidden_fairness") == "fair"
+                and (
+                    repair_context is None
+                    or review.get("repair_scope") == "scope_preserved"
+                )
             )
             flagged = any(
-                item.get("verdict") == "confirmed_violation"
+                item.get("verdict") in {"confirmed_violation", "scope_changed"}
                 for item in review.get("findings") or []
                 if isinstance(item, dict)
             )
@@ -1812,6 +2172,7 @@ def _task_record(
     task_dir: Path,
     source_workspace: CanonicalSourceWorkspace,
     oracle_runs: dict[str, list[dict[str, Any]]],
+    upstream_direct: dict[str, dict[str, Any]],
     adjudications: dict[tuple[str, str], dict[str, str]],
     reviewer: ReviewerConfig | None,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -1868,6 +2229,11 @@ def _task_record(
         oracle_runs.get(task_id, []),
         str(identity.get("source_tree_sha256") or ""),
     )
+    checks["L3_G2PRIME_UPSTREAM"] = _upstream_direct_check(
+        task_id, upstream_direct.get(task_id)
+    )
+    checks["L4_ISOLATION_N3"] = _isolation_check(oracle_runs.get(task_id, []))
+    checks["L5_TASK_LEAKAGE"] = _leakage_check(task_dir)
     checks["L5_C4_TEST_OVERLAP"] = _overlap_check(task_dir)
     if reviewer is not None:
         if reviewer.mode == "agent":
@@ -2091,6 +2457,9 @@ def run_benchmark_gate(options: GateRunOptions) -> dict[str, Any]:
 
     adjudications = load_adjudications(options.adjudications)
     oracle_runs, oracle_sha = _load_oracle_evidence(options.oracle_summary)
+    upstream_direct, upstream_direct_sha = _load_upstream_direct_evidence(
+        options.upstream_direct_summary
+    )
     output = options.output or _default_output(options.benchmark)
     source_workspace = CanonicalSourceWorkspace(
         registry_path,
@@ -2104,6 +2473,7 @@ def run_benchmark_gate(options: GateRunOptions) -> dict[str, Any]:
                 task_dir=tasks_root / task_id,
                 source_workspace=source_workspace,
                 oracle_runs=oracle_runs,
+                upstream_direct=upstream_direct,
                 adjudications=adjudications,
                 reviewer=options.reviewer,
             )
@@ -2129,6 +2499,12 @@ def run_benchmark_gate(options: GateRunOptions) -> dict[str, Any]:
         "source_registry_sha256": sha256_file(registry_path),
         "oracle_summary": str(options.oracle_summary) if options.oracle_summary else None,
         "oracle_summary_sha256": oracle_sha or None,
+        "upstream_direct_summary": (
+            str(options.upstream_direct_summary)
+            if options.upstream_direct_summary
+            else None
+        ),
+        "upstream_direct_summary_sha256": upstream_direct_sha or None,
         "adjudications": str(options.adjudications) if options.adjudications else None,
         "adjudications_sha256": (
             sha256_file(options.adjudications) if options.adjudications else None

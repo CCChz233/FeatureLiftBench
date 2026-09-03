@@ -14,10 +14,11 @@ TASK_FILE = REPO_ROOT / "harness" / "config" / "experiments" / "python200_hard_s
 
 
 class StandardSuiteTests(unittest.TestCase):
-    """v1 published selection still partitions the parent 200.
+    """v2 published analysis subset partitions the parent 200.
 
-    These files are provisional / superseded pending protocol v2 adjudication.
-    Do not treat the 163 count as the paper-final analysis set.
+    ``python200_hard_standard_suite.json`` is the protocol-v2
+    ``meets_standard`` list after freeze v2 repair (200/0, undetermined=0).
+    The predecessor 168/32 cut is archived; this list now matches the parent 200.
     """
     def test_standard_subset_partitions_the_parent_suite(self) -> None:
         parent = json.loads(PARENT.read_text(encoding="utf-8"))

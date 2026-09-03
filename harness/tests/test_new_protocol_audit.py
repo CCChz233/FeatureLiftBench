@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = ROOT / "scripts" / "audit_new_protocol_readiness.py"
+SCRIPT = ROOT / "scripts" / "archive" / "audit_new_protocol_readiness.py"
 SPEC = importlib.util.spec_from_file_location("audit_new_protocol_readiness", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 AUDIT_MODULE = importlib.util.module_from_spec(SPEC)

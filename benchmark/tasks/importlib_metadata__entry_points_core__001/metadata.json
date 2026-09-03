@@ -116,6 +116,11 @@
             "path": "featurelifted.EntryPoints.select",
             "kind": "method",
             "signature": "(self, **params)"
+          },
+          {
+            "path": "featurelifted.EntryPoints.__getitem__",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'EntryPoint'"
           }
         ],
         "signature": "(iterable=(), /)"
@@ -168,7 +173,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.EntryPoints.__getitem__`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -225,7 +230,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.EntryPoints.__getitem__`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -336,6 +341,13 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.EntryPoints.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_path_distribution_entry_points",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -352,7 +364,7 @@
       "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 3,
-  "spec_hash": "a78799c03d6bcc85c1669e998f7e1ce8ce72145301cfa103505dd5c46ba03667",
-  "generated_task_hash": "19a32c85c833e33515ab8df6f15edc4c3a5c571598de4c97f36e4b35be1defc0"
+  "task_revision": 4,
+  "spec_hash": "a3c62d2b8d1c4674b813715b6dc4c3a09cc878191b085191d9fcd25186f1f1d9",
+  "generated_task_hash": "4fda617bd467567512dcdeb60cf45e8f3a5d174c33d37a71b1a3887f7e2f0dfb"
 }

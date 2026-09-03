@@ -249,8 +249,13 @@ approver:          # 高风险必填
 | catalog / method / agent 目录 | `PYTHONPATH=harness python3 -B -m featureliftbench.cli catalog check` |
 | 题包、suite、symlink | `python3 scripts/check_task_lifecycle.py` 以及对应 Oracle/Docker 门 |
 | harness 代码 | 相关单元测试 |
+| **移动或归档任何脚本** | **`PYTHONPATH=harness python3.12 -m pytest harness/tests -q` 必须全绿，不得靠 `--ignore` 掩盖** |
 
-不要用文档检查代替题包功能门。批次结束后再看状态和体积：
+不要用文档检查代替题包功能门。文档检查也**发现不了**脚本移动造成的代码级断链：
+`check_docs.py` 只查相对链接，`importlib.util.spec_from_file_location` 硬编码的路径
+不在它的视野里。2026-09-02 复盘的实例见 §9 末。
+
+批次结束后再看状态和体积：
 
 ```bash
 git status --short --untracked-files=all
@@ -412,3 +417,27 @@ du -sh ./* ./.agents ./.github 2>/dev/null | sort -h
 5. 重跑受影响的 docs / catalog / lifecycle / Oracle。
 6. 在记录里写事故原因和新的防护。
 7. 无法证明与原资产一致时标为新版本，不得冒充原 freeze 或原 Pass@1。
+
+### 14.1 已复盘事故：脚本归档断链（commit `50fcf71f`）
+
+`50fcf71f`（Stratify official scripts）把 44 个脚本移进 `archive/`，其中两个仍被
+硬编码路径引用，移动后**运行即失败**：
+
+| 被移动 | 断链的引用方 | 性质 |
+| --- | --- | --- |
+| `scripts/harden_experiment_contracts.py` | `scripts/generate_contract_api_patches.py`（**在用脚本**）、`harness/tests/test_contract_hardening.py` | 生产代码 + 测试 |
+| `scripts/audit_new_protocol_readiness.py` | `harness/tests/test_new_protocol_audit.py` | 测试 |
+
+后果：三个测试在收集阶段就报 `FileNotFoundError`，一度被用 `--ignore` 绕过；而
+`generate_contract_api_patches.py` 是 freeze v2 给 `required_api` 补成员要用的工具，
+断了却没人发现。2026-09-02 已把三处路径改指 `scripts/archive/`，
+`harness/tests` 恢复 **666 passed / 0 failed，无 ignore**。
+
+`run_agentic_evidence_canaries.py` 是同一次归档里的另一类错误：它没有断链，但被归到
+"killed-method / one-shot comparators"，而它其实是 Hidden provenance Gate 0/1 的
+在用 runner。分类错误不会被任何自动检查抓到，只能靠归档时确认"这个脚本服务的
+DoD 项是否还开着"。
+
+**防护**：移动脚本后必须跑全量 `harness/tests` 且不得使用 `--ignore`；归档前先
+`rg -n "scripts/<name>.py"` 全仓搜一遍硬编码引用，并确认该脚本没有在服务任何未关闭的
+DoD 勾。

@@ -23,6 +23,8 @@ from featurelifted import (
   - `IntervalTree.overlap(self, begin, end=None)`
   - `IntervalTree.remove_envelop(self, begin, end)`
   - `IntervalTree.remove_overlap(self, begin, end=None)`
+  - `IntervalTree.__contains__(self, item)`
+  - `IntervalTree.__getitem__(self, index)`
 
 ## Required Behavior
 
@@ -31,7 +33,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: remove_overlap and remove_envelop bulk deletion. Required observable cases include remove interval; remove overlap multiple; envelop vs overlap; remove envelop.
 - The extracted feature must support this observable behavior: chop trims overhanging intervals and optional datafunc relabeling. Required observable cases include chop splits intervals; chop datafunc.
 - The extracted feature must support this observable behavior: self-balancing tree queries through Node search helpers. Required observable cases include remove overlap multiple.
-- The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap`, `featurelifted.IntervalTree.__contains__`, `featurelifted.IntervalTree.__getitem__` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -54,6 +56,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: remove_overlap and remove_envelop bulk deletion. Required observable cases include remove interval; remove overlap multiple; envelop vs overlap; remove envelop.
 - **B004** — The extracted feature must support this observable behavior: chop trims overhanging intervals and optional datafunc relabeling. Required observable cases include chop splits intervals; chop datafunc.
 - **B005** — The extracted feature must support this observable behavior: self-balancing tree queries through Node search helpers. Required observable cases include remove overlap multiple.
-- **B006** — The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap`, `featurelifted.IntervalTree.__contains__`, `featurelifted.IntervalTree.__getitem__` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: intervaltree.
 <!-- featureliftbench:behavior-clauses:end -->

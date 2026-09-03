@@ -35,13 +35,16 @@ from featureliftbench.freeze import file_manifest, manifest_digest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE_REF = "8438e3a3c05e9c8ed65a835f42321c7cf07d5977"
+# Commit whose benchmark/tasks matches the contract-hardened Python-150 freeze
+# 0b106842. The earlier 8438e3a3 predates that hardening and materializes stale
+# metadata/hidden tests for 48 baseline tasks.
+BASE_REF = "f822ff2824f5ecef791eb8dbf6ed4ab4e99d0ffd"
 FREEZE_PATH = ROOT / "artifacts/research_analysis/v3/current_benchmark_freeze.json"
 SELECTION_PATH = ROOT / "benchmark/selection/python200_hard_suite.json"
 HARD50_ROOT = ROOT / "benchmark/hard50"
 SOURCE_REGISTRY = ROOT / "benchmark/sources/python200_hard_registry.json"
 DEFAULT_OUTPUT = (
-    ROOT / "experiments/validation/preflight/python200-hard-freeze846-input"
+    ROOT / "experiments/validation/preflight/python200-hard-hardened-input"
 )
 EXCLUDED_NAMES = {"reference_solution", "__pycache__", ".pytest_cache"}
 
@@ -161,7 +164,7 @@ def materialize(output: Path) -> dict[str, Any]:
         )
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
-        prefix="flb-python200-hard-freeze846-", dir=output.parent
+        prefix="flb-python200-hard-input-", dir=output.parent
     ) as temporary_name:
         temporary = Path(temporary_name)
         git_root = temporary / "git"

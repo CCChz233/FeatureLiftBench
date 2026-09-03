@@ -21,6 +21,7 @@ from featurelifted import (
 - `BpmnWorkflow(spec)` class constructor
   - `BpmnWorkflow.do_engine_steps(self, will_complete_task=None, did_complete_task=None)`
   - `BpmnWorkflow.is_completed(self) -> bool`
+  - `BpmnWorkflow.data` attribute must exist on instances
 
 ## Required Behavior
 

@@ -68,22 +68,38 @@ discussion。
 
 ### Gate 0：修复后的 Agent 审计闭环 smoke
 
-**目标**：证明 Agent 能在硬步数上限内一次性写出记录，并被独立校验器提前终止。
+**目标**：证明 Agent 能在硬步数上限内写出一份独立可验的记录，且运行按可归因的
+路径终止、失败时 fail-closed。
 
-**动作**：对当前公开的 distlib 单案例先跑一遍 R4；不改变任务输入，不使用旧标签。
+**动作**：对当前公开的 distlib 单案例跑一遍；不改变任务输入，不使用旧标签。
 
 **通过条件**：
 
 - `audit_record.json` 存在且独立验证为 valid；
 - `source_tree_unchanged=true`；
-- 记录稳定后触发 early stop，或 Agent 正常写完后退出；
-- 达到 24 步而未写记录时，退出码非零且报告不记为 normal exit；
+- 运行落在下列**已记账终止路径**之一，且报告显式写明是哪一条：
+  1. `early_stop_after_valid_record`——记录稳定后被独立校验器提前终止；
+  2. `agent_self_exit_with_valid_record`——Agent 写完后自行正常退出；
+  3. `budget_exhausted_with_valid_record`——用满步数预算，在被 final prompt 逼出的
+     最后一动作里写出记录。
+- 达到 24 步而未写记录时（`budget_exhausted_without_record`），退出码非零且报告
+  不记为 normal exit；
 - stdout/stderr、trajectory、validation 和 run summary 均保留。
+
+**路径 3 的裁定依据（2026-09-02）**：distlib 例两次重跑（R4、R5，相隔七天）都落在
+路径 3，是稳定性质而非噪声。它此前不被承认，原因是 adapter 的早停轮询只在子进程
+存活时求值，最后一动作写出的记录不可见；且 `rc=3`（mini-swe-agent 步数耗尽）与崩溃
+在 `returncode` 上不可区分。补上 `termination_path` 记账后可见：Gate 1 的 26 例中
+24 例走路径 1，**早停机制没坏**，distlib 只是 24 步内收不了的离群例；
+`flash33-gate1-wave10-auditor-b` 有 1 例 `budget_exhausted_without_record`，
+被记为 invalid、退出码非零、不计 normal exit，**fail-closed 要求已被经验满足**。
+因此路径 3 承认为合法通过路径，但**必须单独记账，不得混入 normal exit 计数**。
+承认路径 3 不放宽预算（仍为 24 步）、不更换案例。
 
 **失败处理**：只修协议和 runner，不扩大案例、不调高预算掩盖失败。
 
-**建议输出目录**：
-`experiments/validation/agentic_evidence/runs/flash33-distlib-tool-smoke-r4-<date>/`
+**输出目录**：
+`experiments/validation/agentic_evidence/runs/flash33-distlib-tool-smoke-r5_20260902/`
 
 ### Gate 1：Flash-33 Agent provenance 审计
 
@@ -236,10 +252,15 @@ provenance 初标，以及任何 `summary.passed` 计数。
 
 只有以下条件全部满足，才认为“可以投稿”：
 
-- [ ] Gate 0 smoke 通过，审计 runner fail-closed；
-- [ ] Flash-33 公开审计 33/33 有明确的 valid/invalid/abstain 状态；
-- [ ] 冲突不会被 severity 规则覆盖；
-- [ ] 所有非 abstain 标签都有可重放公开引用；
+- [x] Gate 0 smoke 通过，审计 runner fail-closed（2026-09-02，R5 走
+      `budget_exhausted_with_valid_record`；fail-closed 由 wave10-b 的
+      `budget_exhausted_without_record` 例经验证实。台账
+      [`GATE_CHECK_20260902.md`](../../reports/agentic_evidence/GATE_CHECK_20260902.md)）；
+- [ ] Flash-33 公开审计 33/33 有明确的 valid/invalid/abstain 状态
+      （**2026-09-02 决定暂不投 API**：非 API 前置已全部就绪，只差 33×2 次审计
+      约 3.5–4 h。在跑完之前，Hidden provenance 按已声明局限写，不得当金标）；
+- [x] 冲突不会被 severity 规则覆盖（`flash33_aggregate.py` 已实现，17 项单测通过）；
+- [ ] 所有非 abstain 标签都有可重放公开引用（随 33/33 一并结清）；
 - [ ] Hidden sensitivity 已完成，且主结论对 unresolved 的处理方式透明；
 - [x] Python-150 / Hard-50 的通过率和 copy/compactness 已拆分；
 - [x] Python-200' 分析层（taxonomy × lift × copy-trap）已合并；

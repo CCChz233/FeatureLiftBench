@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -97,6 +97,20 @@
             "path": "featurelifted.Session.load",
             "kind": "method",
             "signature": "(self)"
+          },
+          {
+            "path": "featurelifted.Session.__setitem__",
+            "kind": "method",
+            "signature": "(self, key, value, /)"
+          },
+          {
+            "path": "featurelifted.Session.get",
+            "kind": "method",
+            "signature": "(self, key, default=None, /)"
+          },
+          {
+            "path": "featurelifted.Session.id",
+            "kind": "attribute"
           }
         ]
       },
@@ -286,6 +300,33 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.Session.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cache_decorator_get_or_create",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_sessions_are_isolated_by_id",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.get",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cache_decorator_get_or_create",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_sessions_are_isolated_by_id",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Session.id",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cache_decorator_get_or_create",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_sessions_are_isolated_by_id",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -303,6 +344,6 @@
     "oracle_loc": 3418,
     "oracle_dependency_count": 0
   },
-  "spec_hash": "d251bb1abc82c3c6df8a97ce84458377088094bcdd5fd16a83f3cb0c5aa828d6",
-  "generated_task_hash": "3a32c5f467166f27cee584cf7252217ee24b14066acc1e798150244bb60e14e5"
+  "spec_hash": "e005ef4ec13c0138ebb4a3a797ed45aa92d7b000d11d26fc2dafe06c4fbed825",
+  "generated_task_hash": "69143a6460c53df274239e1b930bcb2f5c80279820d8ec3a599241011eb1b917"
 }

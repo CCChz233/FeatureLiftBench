@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -98,6 +98,10 @@
             "path": "featurelifted.ASTTokens.get_token",
             "kind": "method",
             "signature": "(self, lineno, col_offset)"
+          },
+          {
+            "path": "featurelifted.ASTTokens.tree",
+            "kind": "attribute"
           }
         ]
       }
@@ -243,6 +247,15 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.ASTTokens.tree",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_binop_and_assignment_source_snippets",
+          "hidden_tests/test_hidden_behavior.py::test_get_token_at_number_literal",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -260,6 +273,6 @@
     "oracle_loc": 1285,
     "oracle_dependency_count": 0
   },
-  "spec_hash": "3a9997b3141c867840fe5ad883d6e2ec5fb34558de9effc8552b970697251d90",
-  "generated_task_hash": "a629ffe91791173f5d2bb86db3f52430bfc125a176b96c4d21acd975f5c3ac02"
+  "spec_hash": "28a4dab9581749b294648246dfe4d5b96862064e2185c30ec0031d329430f8b2",
+  "generated_task_hash": "7eb06182677df06ea63adc0d0960219705a95fd2734d26af7dbed05741677756"
 }

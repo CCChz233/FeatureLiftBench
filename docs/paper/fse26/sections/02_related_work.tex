@@ -22,40 +22,42 @@ model scores.
 
 \subsection{Code Generation, Repository Understanding, and Localization}
 
-Code-generation benchmarks measure whether a model can synthesize a function or
-program from natural-language or executable specifications~\cite{chen2021codex}.
-Repository-understanding and feature-location research asks whether a developer
-or tool can identify files, entities, or regions relevant to a concern; Dit
-et~al. survey the feature-location literature and its evidence
-sources~\cite{dit2013featurelocation}. Feature lifting requires both inference
-and artifact construction, but success is not reducible to either. Locating the
-correct implementation is insufficient if transitive behavior or resources are
-omitted; generating a behaviorally similar implementation is insufficient if
-the public contract or independent package boundary is not preserved.
+Function-level code generation measures whether a model can synthesize a
+program from a natural-language or executable specification, as in HumanEval
+and related synthesis
+suites~\cite{chen2021codex,austin2021mbpp,lai2023ds1000,zhuo2024bigcodebench,jain2024livecodebench}.
+Repository-level completion and retrieval study whether a model can use
+in-repo context to finish or locate code~\cite{zhang2023repocoder,liu2024repobench}.
+Feature-location research asks whether a developer or tool can identify files,
+entities, or regions relevant to a concern~\cite{dit2013featurelocation}.
+Feature lifting requires both inference and artifact construction, but success
+is not reducible to either. Locating the correct implementation is insufficient
+if transitive behavior or resources are omitted; generating a behaviorally
+similar implementation is insufficient if the public contract or independent
+package boundary is not preserved.
 
 \subsection{Program Slicing, Modularization, and Library Extraction}
 
 Feature extraction is related to program slicing~\cite{weiser1984slicing},
-multi-dimensional separation of concerns~\cite{tarr1999degrees}, refactoring,
-dependency analysis, and library migration. Classical techniques typically
-assume a program representation, slicing criterion, or human-specified
-boundary. \flb evaluates an autonomous agent from a natural-language public
-contract and a complete repository, and grades the final independent artifact
-by observable behavior. The benchmark does not claim to compute a minimal
-semantic slice: its frozen references are feasible comparison points, and
-\rres is a compactness proxy rather than a proof of optimality.
+multi-dimensional separation of concerns~\cite{tarr1999degrees}, and the
+refactoring literature that surveys how developers extract and modularize
+behavior~\cite{mens2004refactoring}. Classical techniques typically assume a
+program representation, slicing criterion, or human-specified boundary. \flb
+evaluates an autonomous agent from a natural-language public contract and a
+complete repository, and grades the final independent artifact by observable
+behavior. The benchmark does not claim to compute a minimal semantic slice: its
+frozen references are feasible comparison points, and \rres is a compactness
+proxy rather than a proof of optimality.
 
 \subsection{Information Boundaries in Agent Evaluation}
 
 Agent performance depends on the model, execution runtime, tools, context
-policy, and feedback interface. \flb separates these factors in two ways. The
-main leaderboard fixes the runtime and varies the model backend. Information
+policy, and feedback interface~\cite{yang2024sweagent,wang2024openhands,yao2026harnessbench}.
+\flb separates these factors in two ways. The main leaderboard fixes OpenHands
+as the \mainprotocol runtime and varies the model backend. Information
 ablations instead change what task evidence is visible while preserving model,
 runtime, evaluator, and budget. This design distinguishes model comparison from
 questions such as whether executable Public tests or source-location hints
-alter performance.
-
-\draftnote{Expand this section with a systematic, primary-source related-work
-review before submission, including repository-level generation, library
-extraction, modularization, and recent code-agent benchmarks.}
+alter performance. Runtime replications, when completed, are reported
+separately rather than mixed into model scores.
 

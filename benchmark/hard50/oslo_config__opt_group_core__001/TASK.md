@@ -21,6 +21,10 @@ from featurelifted import (
   - `ConfigOpts.register_opt(self, opt: Opt, group: str | OptGroup | None = None, cli: bool = False) -> bool`
   - `ConfigOpts.register_group(self, group: OptGroup) -> None`
   - `ConfigOpts.__getattr__(self, name: str) -> Any`
+  - `ConfigOpts.host` attribute must exist on instances
+  - `ConfigOpts.port` attribute must exist on instances
+  - `ConfigOpts.timeout` attribute must exist on instances
+  - `ConfigOpts.worker` attribute must exist on instances
 - `Opt(name: str, type=None, dest=None, short=None, default=None, positional=False, metavar=None, help=None, secret=False, required=None, deprecated_name=None, deprecated_group=None, deprecated_opts=None, sample_default=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, mutable=False, advanced=False)` class constructor
   - `Opt.__init__(self, name: str, type=None, dest=None, short=None, default=None, positional=False, metavar=None, help=None, secret=False, required=None, deprecated_name=None, deprecated_group=None, deprecated_opts=None, sample_default=None, deprecated_for_removal=False, deprecated_reason=None, deprecated_since=None, mutable=False, advanced=False)`
 - `OptGroup(name: str, title: str | None = None, help: str | None = None, dynamic_group_owner: str = "", driver_option: str = "")` class constructor

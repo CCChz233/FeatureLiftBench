@@ -1,6 +1,6 @@
 # Python-200′ wheel closure and strict-84 replacement prep — 2026-08-30
 
-> **Status: wheels closed; 84-task replacement running on local `latest` images · Last verified: 2026-08-30**
+> **Status: wheels closed; 84-task replacement stalled at 38/84 on local `latest` · Last verified: 2026-09-02**
 >
 > `132/200` remains an audit headline only. This note does not promote a leaderboard.
 
@@ -131,9 +131,12 @@ Do not analyze the empty 20260830 directory as if it were a suite.
 2. **Hard context enforcement is still audit-only in the proxy.** This run keeps
    the received Main condenser settings (trigger 122880). A fail-closed prompt
    guard would be a protocol change and was not enabled.
-3. **84-task replacement is in progress.** Resume, if needed, must write only
-   into the 20260830 replacement directory. Do not analyze that directory as a
-   complete suite until all 84 `run.json` files exist.
+3. **84-task replacement is incomplete (2026-09-02 check: 38/84 `run.json`).**
+   Log stopped at `[39/84] started lark__parse_tree_core__001`; that workspace
+   has no `run.json` and no live process. Resume, if needed, must write only
+   into the 20260830 replacement directory. Do not merge and do not analyze
+   that directory as a complete suite. Eligibility note:
+   `reports/paper_analysis/python200_hard_main_20260829/strict84_replacement_audit_20260902.md`.
 
 ## What not to do
 

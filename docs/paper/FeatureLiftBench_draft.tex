@@ -1,7 +1,7 @@
 %% FeatureLiftBench FSE zero draft -- SINGLE FILE
 %% Compile: latexmk -pdf FeatureLiftBench_draft.tex
 \documentclass[acmsmall,anonymous,review,screen]{acmart}
-\begin{filecontents*}{FeatureLiftBench_draft.bib}
+\begin{filecontents*}[overwrite]{FeatureLiftBench_draft.bib}
 @inproceedings{jimenez2024swebench,
   author    = {Carlos E. Jimenez and John Yang and Alexander Wettig and others},
   title     = {{SWE-bench}: Can Language Models Resolve Real-World {GitHub} Issues?},
@@ -71,6 +71,67 @@
   doi     = {10.1002/smr.567}
 }
 
+@article{austin2021mbpp,
+  author  = {Jacob Austin and Augustus Odena and Maxwell Nye and others},
+  title   = {Program Synthesis with Large Language Models},
+  journal = {arXiv preprint arXiv:2108.07732},
+  year    = {2021}
+}
+
+@inproceedings{lai2023ds1000,
+  author    = {Yuhang Lai and Chengxi Li and Yiming Wang and others},
+  title     = {{DS-1000}: A Natural and Reliable Benchmark for Data Science Code Generation},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  year      = {2023},
+  pages     = {18319--18345}
+}
+
+@article{zhuo2024bigcodebench,
+  author  = {Terry Yue Zhuo and Minh Chien Vu and Jenny Chim and others},
+  title   = {{BigCodeBench}: Benchmarking Code Generation with Diverse Function Calls and Complex Instructions},
+  journal = {arXiv preprint arXiv:2406.15877},
+  year    = {2024}
+}
+
+@article{jain2024livecodebench,
+  author  = {Naman Jain and King Han and Alex Gu and others},
+  title   = {{LiveCodeBench}: Holistic and Contamination Free Evaluation of Large Language Models for Code},
+  journal = {arXiv preprint arXiv:2403.07974},
+  year    = {2024}
+}
+
+@inproceedings{zhang2023repocoder,
+  author    = {Fengji Zhang and Bei Chen and Yue Zhang and others},
+  title     = {{RepoCoder}: Repository-Level Code Completion Through Iterative Retrieval and Generation},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2023},
+  year      = {2023},
+  pages     = {2471--2484}
+}
+
+@inproceedings{liu2024repobench,
+  author    = {Tianyang Liu and Canwen Xu and Julian McAuley},
+  title     = {{RepoBench}: Benchmarking Repository-Level Code Auto-Completion Systems},
+  booktitle = {Proceedings of the Twelfth International Conference on Learning Representations},
+  year      = {2024}
+}
+
+@article{wang2024openhands,
+  author  = {Xingyao Wang and Boxuan Li and Yufan Song and others},
+  title   = {{OpenHands}: An Open Platform for {AI} Software Developers as Generalist Agents},
+  journal = {arXiv preprint arXiv:2407.16732},
+  year    = {2024}
+}
+
+@article{mens2004refactoring,
+  author  = {Tom Mens and Tom Tourw{\'e}},
+  title   = {A Survey of Software Refactoring},
+  journal = {IEEE Transactions on Software Engineering},
+  volume  = {30},
+  number  = {2},
+  pages   = {126--139},
+  year    = {2004},
+  doi     = {10.1109/TSE.2004.1265817}
+}
 
 \end{filecontents*}
 
@@ -78,6 +139,7 @@
 \usepackage{listings}
 \usepackage{tabularx}
 \usepackage{graphicx}
+\usepackage{longtable}
 \usepackage{xspace}
 
 \lstset{
@@ -268,7 +330,10 @@ This paper makes three main contributions:
         behavior-preserving feature extraction and construct a suite of 200
         tasks from 176 pinned Python repositories, with public contracts,
         source registries, deterministic evaluators, evaluator-side feasible
-        references, isolation checks, and task-level provenance.
+        references, isolation checks, and task-level provenance. A v2
+        contract-completeness label on freeze~v2 is 200/0/0 after repairing
+        32 confirmed surface or entry-point defects recorded on the
+        predecessor freeze (then 168/32/0), without changing suite membership.
   \item \textbf{Evaluation protocol.} We introduce a Full-Repository / No-Hint
         protocol that fixes repository, contract, runtime, budget, and evaluator
         while varying model backends. We report deterministic Functional Pass
@@ -308,42 +373,44 @@ model scores.
 
 \subsection{Code Generation, Repository Understanding, and Localization}
 
-Code-generation benchmarks measure whether a model can synthesize a function or
-program from natural-language or executable specifications~\cite{chen2021codex}.
-Repository-understanding and feature-location research asks whether a developer
-or tool can identify files, entities, or regions relevant to a concern; Dit
-et~al. survey the feature-location literature and its evidence
-sources~\cite{dit2013featurelocation}. Feature lifting requires both inference
-and artifact construction, but success is not reducible to either. Locating the
-correct implementation is insufficient if transitive behavior or resources are
-omitted; generating a behaviorally similar implementation is insufficient if
-the public contract or independent package boundary is not preserved.
+Function-level code generation measures whether a model can synthesize a
+program from a natural-language or executable specification, as in HumanEval
+and related synthesis
+suites~\cite{chen2021codex,austin2021mbpp,lai2023ds1000,zhuo2024bigcodebench,jain2024livecodebench}.
+Repository-level completion and retrieval study whether a model can use
+in-repo context to finish or locate code~\cite{zhang2023repocoder,liu2024repobench}.
+Feature-location research asks whether a developer or tool can identify files,
+entities, or regions relevant to a concern~\cite{dit2013featurelocation}.
+Feature lifting requires both inference and artifact construction, but success
+is not reducible to either. Locating the correct implementation is insufficient
+if transitive behavior or resources are omitted; generating a behaviorally
+similar implementation is insufficient if the public contract or independent
+package boundary is not preserved.
 
 \subsection{Program Slicing, Modularization, and Library Extraction}
 
 Feature extraction is related to program slicing~\cite{weiser1984slicing},
-multi-dimensional separation of concerns~\cite{tarr1999degrees}, refactoring,
-dependency analysis, and library migration. Classical techniques typically
-assume a program representation, slicing criterion, or human-specified
-boundary. \flb evaluates an autonomous agent from a natural-language public
-contract and a complete repository, and grades the final independent artifact
-by observable behavior. The benchmark does not claim to compute a minimal
-semantic slice: its frozen references are feasible comparison points, and
-\rres is a compactness proxy rather than a proof of optimality.
+multi-dimensional separation of concerns~\cite{tarr1999degrees}, and the
+refactoring literature that surveys how developers extract and modularize
+behavior~\cite{mens2004refactoring}. Classical techniques typically assume a
+program representation, slicing criterion, or human-specified boundary. \flb
+evaluates an autonomous agent from a natural-language public contract and a
+complete repository, and grades the final independent artifact by observable
+behavior. The benchmark does not claim to compute a minimal semantic slice: its
+frozen references are feasible comparison points, and \rres is a compactness
+proxy rather than a proof of optimality.
 
 \subsection{Information Boundaries in Agent Evaluation}
 
 Agent performance depends on the model, execution runtime, tools, context
-policy, and feedback interface. \flb separates these factors in two ways. The
-main leaderboard fixes the runtime and varies the model backend. Information
+policy, and feedback interface~\cite{yang2024sweagent,wang2024openhands,yao2026harnessbench}.
+\flb separates these factors in two ways. The main leaderboard fixes OpenHands
+as the \mainprotocol runtime and varies the model backend. Information
 ablations instead change what task evidence is visible while preserving model,
 runtime, evaluator, and budget. This design distinguishes model comparison from
 questions such as whether executable Public tests or source-location hints
-alter performance.
-
-\draftnote{Expand this section with a systematic, primary-source related-work
-review before submission, including repository-level generation, library
-extraction, modularization, and recent code-agent benchmarks.}
+alter performance. Runtime replications, when completed, are reported
+separately rather than mixed into model scores.
 
 
 \section{The FeatureLiftBench Benchmark}
@@ -476,6 +543,34 @@ active suite manifest. A source mismatch, unavailable locked dependency,
 evaluator defect, or context-policy violation is an eligibility or
 infrastructure outcome rather than a model failure.
 
+\subsection{Contract Completeness of the Frozen Asset}
+\label{sec:standard-subset}
+
+The frozen Python-200$'$ asset is 200 tasks. Independently of agent scores, we
+label each task for whether Hidden tests stay inside the published
+\texttt{required\_api} and whether declared source entry points resolve in the
+pinned source snapshot. Protocol v2 uses three states:
+\texttt{meets\_standard}, \texttt{violates}, and \texttt{undetermined}. On the
+predecessor freeze, after adjudicating every mechanical hit, the labels were
+168/32/0: 32 tasks had confirmed undeclared Hidden members and/or dangling
+source entry points. Those defects were repaired in freeze v2 by disclosing
+already exercised API members, correcting dangling provenance pointers, and
+replacing six advisory overlapping Hidden cases. The published freeze~v2
+labels are 200/0/0 (Table~\ref{tab:standard-labels}). This is a
+\emph{contract-completeness} measurement of the same 200-task membership, not a
+new leaderboard and not a Hidden-fairness gold set. Agent scores from the
+predecessor freeze must not be transferred onto freeze~v2. Public/Hidden
+test-shape overlap (C4) was advisory; the six overlapping Hidden tests were
+rewritten before freeze~v2 and do not enter the three-state label.
+
+\begin{table}[t]
+  \caption{v2 contract-completeness labels on the frozen 200-task asset.
+  Not a Functional Pass table.}
+  \label{tab:standard-labels}
+  \centering
+  \input{offline_tables/tab_python200_standard_labels}
+\end{table}
+
 \subsection{Run Protocol and Evidence Collection}
 
 Each run follows a setup--execution--evaluation pipeline
@@ -601,6 +696,41 @@ declared context allowance. The union of eligibility-affected tasks contains
 leaderboard result, and is excluded from the abstract and final main table.
 The received package is an audit headline only and is not a leaderboard.
 
+\paragraph{Fixed eligible subset (not a 200-task score).}
+Of the 200 received rows, 116 tasks have no freeze block, no missing offline
+wheel, and no context-window violation. On that fixed subset DeepSeek V4 Flash
+records 95/116 functional passes (81.9\%, Wilson 95\% [73.9, 87.8]).
+Intersecting the same 116 tasks with the predecessor-freeze 168-task analysis labels yields 81/96
+(84.4\%, [75.8, 90.3]) on tasks that then met the surface/entry clauses and 14/20
+(70.0\%, [48.1, 85.5]) on confirmed violators (Table~\ref{tab:eligibility-slice}).
+That 81/96 slice belongs to freeze \texttt{474862c2} and must not be retagged
+onto freeze~v2. The 20-task violator interval is wide and is not a causal claim
+that contract violations cause failure: 14 of those 20 still pass. Seventy-two
+predecessor \texttt{meets\_standard} tasks lie in the 84-task replacement union
+and have no eligible replacement yet; they are omitted from this slice. First-failure
+counts on the fixed 116 have no infrastructure contamination
+(Table~\ref{tab:fixed116-funnel}): two missing submissions, 14 Public, 5
+Hidden, and 0 isolation. Pass-conditioned median \rres on the 81 predecessor
+\texttt{meets\_standard} passes is 0.981 (IQR $[0.737, 1.025]$).
+
+\begin{table*}[t]
+  \caption{DeepSeek V4 Flash Functional Pass on eligibility slices of the
+  2026-08-29 received package, crossed with predecessor-freeze
+  (\texttt{474862c2}) contract labels. Not freeze~v2 scores and not the
+  Python-200$'$ leaderboard.}
+  \label{tab:eligibility-slice}
+  \centering
+  \input{offline_tables/tab_python200_eligibility_slice}
+\end{table*}
+
+\begin{table*}[t]
+  \caption{Mutually exclusive first outcomes on the fixed eligible 116-task
+  subset (no freeze block, wheel gap, or context violation).}
+  \label{tab:fixed116-funnel}
+  \centering
+  \input{offline_tables/tab_python200_fixed116_funnel}
+\end{table*}
+
 \paragraph{Exploratory frozen Python-150 matrix.}
 Until the eligible Python-200$'$ matrix is complete, we report the archived
 four-model OpenHands run on the frozen 150-task baseline
@@ -702,7 +832,19 @@ gate fails.
 Compactness is reported only among functionally passing tasks. Survivor sets
 differ by model, so compactness is not a second ranking of the same 150 tasks.
 Table~\ref{tab:compactness} uses the exploratory Python-150 matrix.
-Python-200$'$ compactness is reported only after the replacement merge.
+On the received Flash package, pass-conditioned median \rres on the fixed
+eligible 116 is 0.973 ($n=95$); on the 81 \texttt{meets\_standard} passes in
+that subset it is 0.981 (Table~\ref{tab:fixed116-rres}). These medians describe
+the received OpenHands/Flash survivor set. They are not a Python-200$'$
+compactness ranking and are not comparable across models until paired
+pass-sets exist.
+
+\begin{table}[t]
+  \caption{Pass-conditioned RRES on the fixed eligible 116-task Flash subset.}
+  \label{tab:fixed116-rres}
+  \centering
+  \input{offline_tables/tab_python200_fixed116_rres}
+\end{table}
 
 \begin{table*}[t]
   \caption{Pass-conditioned compactness on exploratory frozen Python-150.
@@ -811,6 +953,18 @@ These cases support a narrower conclusion than ``localization is solved.''
 Current agents can often locate and reuse relevant implementation evidence,
 but contract closure remains a substantial failure surface. A stronger
 localization claim requires independent trajectory-level localization labels.
+
+On the received Flash package, eight tasks first fail Hidden after passing
+build and Public. An AI-assisted reading of those eight public contracts
+(not independent human gold) finds four obligations recoverable from the
+published specification or \texttt{required\_api}, and four that are
+open, contradicted, or absent in the public contract. The recoverable
+failures are therefore not explained by missing Public tests; the other four
+bound how much any agent-side method can win on this slice. Several of the
+eight also appear in the predecessor-freeze surface/entry violation list
+(Appendix~\ref{app:violators}), so Hidden-first failure and contract
+incompleteness can co-occur on that freeze. We do not treat the 4/8 split as a suite-wide
+fairness rate.
 
 \subsection{Public Feedback Separates Two Information Layers}
 
@@ -991,21 +1145,32 @@ Functional Pass is a deterministic but finite operationalization of behavioral
 completeness. Public and Hidden tests are mapped to one published contract, but
 finite tests cannot prove semantic equivalence. A Hidden requirement that is
 not observable from the public contract is a task defect, not an agent failure.
-We therefore plan an independent Hidden-contract audit and report full,
-observable-only, and conservative sensitivity views. Functional Pass is binary
-and does not give headline partial credit. \rres, copied-code fraction, files,
-and dependency footprint are proxies that may miss semantic copying or penalize
-legitimate alternative implementations.
+The freeze~v2 200/0 labels measure whether Hidden uses undeclared members and whether
+declared entry points resolve; they are not a semantic Hidden-fairness gold
+set. A 20-task C1 sample of \texttt{meets\_standard} tasks found no additional
+undeclared members, which is a detector precision/recall-sample note rather
+than Hidden-fairness recall. Independent dual-agent provenance audit of the
+Flash-33 Hidden-failure slice is incomplete (Gate~0 smoke produced a valid
+record but not the required runner exit; Gate~1 covers 3+10 tasks, not 33/33)
+and is not reported as gold. We therefore keep full, observable-only, and
+conservative sensitivity views as planned analyses rather than current
+results. Functional Pass is binary and does not give headline partial credit.
+\rres, copied-code fraction, files, and dependency footprint are proxies that
+may miss semantic copying or penalize legitimate alternative implementations.
 
 \paragraph{Internal validity.}
 Results depend on source materialization, locked dependencies, prompt and
 context policy, agent/evaluator containers, model endpoints, and runner state.
 The received 2026-08-29 candidate demonstrates how freeze mismatches, missing
 offline wheels, and context-policy violations can contaminate a nominal score.
-We therefore separate infrastructure from model outcomes and require source,
-dependency, context, provenance, and image attestations for the paper bundle.
-Method pilots differ in subset and date; they support mechanism hypotheses but
-are not pooled into a causal estimate.
+A later 84-task replacement directory is incomplete (38/84) and uses local
+\texttt{latest} image digests that do not match the received-suite pins
+(Appendix~\ref{app:artifact}); we do not merge it. We therefore separate
+infrastructure from model outcomes and require source, dependency, context,
+provenance, and image attestations for the paper bundle. Method pilots differ
+in subset and date; they support mechanism hypotheses but are not pooled into
+a causal estimate. The 81/96 slice is a sensitivity cut of already-eligible
+rows, not a repaired 200-task run.
 
 \paragraph{External validity.}
 Python-200$'$ is a maintainer- and AI-assisted selection of Python libraries,
@@ -1019,20 +1184,23 @@ diversity does not guarantee balanced behavior or entanglement mechanisms.
 The main table initially uses one attempt per task. Without repeated trials it
 does not estimate stochastic run-to-run variance. We report binomial confidence
 intervals for aggregate rates and exact task-level outcomes for paired
-comparisons, but neither replaces repeated-run sensitivity. Model APIs and
-serving stacks may change despite stable model names. We record exact dates,
-profiles, source freezes, and container identities and plan a stratified
-repeated-run study.
+comparisons, but neither replaces repeated-run sensitivity. A stratified
+24-task stability study is deferred. Model APIs and serving stacks may change
+despite stable model names. We record exact dates, profiles, source freezes,
+and container identities.
 
 \paragraph{Annotation validity.}
-Task taxonomy, closure records, and semantic failure labels include AI-assisted
-curation. We disclose provenance and unknown rates and do not report these
-labels as independent human gold. Inter-rater agreement is reported only when
-raters are genuinely independent humans.
+Task taxonomy, closure records, semantic failure labels, clause-narrowing
+codes, and Flash-33 provenance labels include AI-assisted curation. We
+disclose provenance and unknown rates and do not report these labels as
+independent human gold. Inter-rater agreement is reported only when raters are
+genuinely independent humans. The v2 surface/entry adjudications are
+maintainer decisions over mechanical hits, not Hidden-semantics gold.
 
 \paragraph{Runtime dependence.}
 Official Main fixes OpenHands. Scores may change under another runtime, tool
-interface, context policy, or recovery strategy. Runtime comparisons remain
+interface, context policy, or recovery strategy. DeepSeek Harness and Codex
+adapters exist but have no paired Core-12 scores; runtime comparisons remain
 separate from the model leaderboard unless evaluated with a controlled paired
 protocol.
 
@@ -1071,6 +1239,68 @@ modify it in place.
 
 \appendix
 
+\section{Confirmed Contract-Completeness Violations}
+\label{app:violators}
+
+Table~\ref{tab:violators} lists the 32 tasks that carried a confirmed
+surface (C1) or entry-point (C2) violation on the predecessor freeze
+\texttt{474862c2}. Those defects were repaired before freeze~v2; they are
+historical findings, not the published 200/0 labels.
+
+\input{offline_tables/tab_python200_violators}
+
+\section{C4 Test-Overlap Advisory}
+\label{app:c4}
+
+Normalized Public/Hidden whole-test overlap is advisory pending threshold
+calibration. On the predecessor freeze it did not change the 168/32 labels;
+the six overlapping Hidden cases were rewritten before freeze~v2
+(Table~\ref{tab:c4-advisory}).
+
+\begin{table}[t]
+  \caption{C4 test-overlap: predecessor advisory counts versus freeze~v2
+  after the six Hidden rewrites.}
+  \label{tab:c4-advisory}
+  \centering
+  \input{offline_tables/tab_python200_c4_advisory}
+\end{table}
+
+\section{Identity Checksums and Image Pins}
+\label{app:artifact}
+
+The following SHA-256 file digests identify the analysis inputs used in
+Section~\ref{sec:standard-subset} and Tables~\ref{tab:eligibility-slice}--\ref{tab:fixed116-rres}.
+They are not a complete paper-bundle freeze.
+
+\begin{itemize}
+  \item Parent suite JSON:
+        \texttt{b1e18cd459e8ed3c001afe54ec77273a5701eed3e6017a39f2ee067a81602802}
+  \item Analysis-subset JSON:
+        \texttt{958389c4513e5c3b9d00c3ca3ebaf3fd9f3719ed328b46777aee958ba1a6347f}
+  \item Excluded-task JSON:
+        \texttt{4d9384ee565bcbcdbd3946be7fda126b306219d6e4db98e2d22b04fa0165a528}
+  \item Adjudications CSV:
+        \texttt{55f6cce85fddc4f4d6f1619b8b8950c3c87ea1812a48845cd5af0e0fde92b1c7}
+  \item Required agent image:
+        \texttt{sha256:0843b6633d48da91832ce16c0e6ac42baf2f04d7b08cb66061720f176a8f2eea}
+  \item Required evaluator image:
+        \texttt{sha256:d1ea357c125a6f4957e1246f770bd1deb4717448e46e779f62b0351213cad191}
+\end{itemize}
+The incomplete 84-task replacement used local \texttt{latest} images
+\texttt{cc622920\ldots} / \texttt{cccf858c\ldots} and is not mergeable.
+Those image pins belong to the 2026-08-29 received package, not freeze~v2.
+
+Freeze~v2 (paper asset) identities:
+\begin{itemize}
+  \item Freeze ID:
+        \texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}
+  \item Candidate ID:
+        \texttt{212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254}
+  \item Agent image:
+        \texttt{sha256:0a05b2e797e1e39ee0630131cfd9e670403ce684cd74c8375ecf7e8d444f7595}
+  \item Evaluator image:
+        \texttt{sha256:bacb3078db5e9558e9953575b5eb52f247b112dc63b7705ad7c48a7b4d864cae}
+\end{itemize}
 
 \section{Declaration of LLM Usage}
 \label{app:llm}

@@ -24,6 +24,7 @@ from featurelifted import (
   - `Post.content` attribute must exist on instances
   - `Post.metadata` attribute must exist on instances
   - `Post.to_dict(self) -> 'dict[str, object]'`
+  - `Post.__getitem__(self, name: 'str') -> 'object'`
 - `parse(text: 'str', encoding: 'str' = 'utf-8', handler: 'BaseHandler | None' = None, **defaults: 'object') -> 'tuple[dict[str, object], str]'`
 - `load(fd: 'str | io.IOBase | pathlib.Path', encoding: 'str' = 'utf-8', handler: 'BaseHandler | None' = None, **defaults: 'object') -> 'Post'`
 - `loads(text: 'str', encoding: 'str' = 'utf-8', handler: 'BaseHandler | None' = None, **defaults: 'object') -> 'Post'`
@@ -38,7 +39,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: detect delimiter lines with optional trailing whitespace. Required observable cases include extra space after opening delimiter; checks detects frontmatter.
 - The extracted feature must support this observable behavior: normalize CRLF input and merge parse defaults. Required observable cases include parse returns metadata and content; crlf bytes normalize; parse defaults merge.
 - The extracted feature must support this observable behavior: Post dict-like metadata access and to_dict export. Required observable cases include no frontmatter returns empty metadata; unicode metadata roundtrip; post to dict.
-- The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.Post.__getitem__`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -62,6 +63,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: detect delimiter lines with optional trailing whitespace. Required observable cases include extra space after opening delimiter; checks detects frontmatter.
 - **B004** — The extracted feature must support this observable behavior: normalize CRLF input and merge parse defaults. Required observable cases include parse returns metadata and content; crlf bytes normalize; parse defaults merge.
 - **B005** — The extracted feature must support this observable behavior: Post dict-like metadata access and to_dict export. Required observable cases include no frontmatter returns empty metadata; unicode metadata roundtrip; post to dict.
-- **B006** — The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.Post`, `featurelifted.Post.content`, `featurelifted.Post.metadata`, `featurelifted.Post.to_dict`, `featurelifted.Post.__getitem__`, `featurelifted.parse`, `featurelifted.load`, `featurelifted.loads`, `featurelifted.dump`, `featurelifted.dumps`, `featurelifted.checks` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: frontmatter.
 <!-- featureliftbench:behavior-clauses:end -->

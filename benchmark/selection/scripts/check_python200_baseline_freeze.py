@@ -17,7 +17,10 @@ from build_v3_benchmark_freeze import _tree_digest  # noqa: E402
 FREEZE_PATH = ROOT / "artifacts/research_analysis/v3/current_benchmark_freeze.json"
 TASK_ROOT = ROOT / "benchmark/tasks"
 REGISTRY_PATH = ROOT / "benchmark/sources/registry.json"
-EXPECTED_FREEZE_ID = "846b814726217623fa205cb7688bee61e6c21c43efda1ebd05e79b5ed8cb4fbd"
+# Contract-hardened Python-150 freeze (2026-09-01). Ancestor 846b8147 predates
+# the hardening and matches only 102/150 of the current baseline packages; runs
+# executed against it must be interpreted with that ancestor, not this freeze.
+EXPECTED_FREEZE_ID = "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542"
 
 
 def main() -> int:

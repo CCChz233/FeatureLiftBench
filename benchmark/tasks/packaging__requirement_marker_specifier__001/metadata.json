@@ -109,6 +109,11 @@
             "path": "featurelifted.SpecifierSet.filter",
             "kind": "method",
             "signature": "(self, iterable: 'Iterable[UnparsedVersionVar]', prereleases: 'bool | None' = None) -> 'Iterator[UnparsedVersionVar]'"
+          },
+          {
+            "path": "featurelifted.SpecifierSet.__contains__",
+            "kind": "method",
+            "signature": "(self, item: 'UnparsedVersion') -> 'bool'"
           }
         ]
       },
@@ -197,7 +202,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, `featurelifted.Marker.evaluate`, and 5 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.SpecifierSet.__contains__`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, and 6 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -261,7 +266,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, `featurelifted.Marker.evaluate`, and 5 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.SpecifierSet.__contains__`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, and 6 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -434,6 +439,16 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.SpecifierSet.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_marker_boolean_logic_default_environment_and_errors",
+          "hidden_tests/test_hidden_behavior.py::test_requirement_urls_extras_and_marker_evaluation",
+          "hidden_tests/test_hidden_behavior.py::test_specifier_prerelease_wildcard_compatible_and_filtering",
+          "hidden_tests/test_hidden_behavior.py::test_version_normalization_ordering_and_invalid_inputs",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -450,7 +465,7 @@
       "oracle_signature_source": "benchmark/submissions/<task_id>/oracle"
     }
   },
-  "task_revision": 3,
-  "spec_hash": "c77b02beb0cbd5afc4f2aad2f1bb31d901051e9865cecd74c4d01ae2600dcf00",
-  "generated_task_hash": "b19990994f83ca227e48b58f20938df7cfd1e0659abb44fdf2d47e92121cae7a"
+  "task_revision": 4,
+  "spec_hash": "725d8c9b5c31d83fe7b3b9c71dbc60a99e017d1f7047b71673cc6411a6b6daf4",
+  "generated_task_hash": "1f5bb83c691d9a7380568ab388d48e032036884e4abab63f7e8f7f5ae9365b74"
 }

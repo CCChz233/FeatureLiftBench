@@ -119,6 +119,11 @@
           {
             "path": "featurelifted.ExtensionManager.namespace",
             "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ExtensionManager.__getitem__",
+            "kind": "method",
+            "signature": "(self, name: 'str') -> 'Extension'"
           }
         ]
       },
@@ -204,7 +209,7 @@
       },
       {
         "id": "B010",
-        "text": "The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, `featurelifted.Extension`, and 1 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.ExtensionManager.__getitem__`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, and 2 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -288,7 +293,7 @@
       {
         "behavior_id": "B010",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, `featurelifted.Extension`, and 1 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.ExtensionManager.__getitem__`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, and 2 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B011",
@@ -448,6 +453,17 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.ExtensionManager.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_duplicate_names_can_raise_multiple_matches",
+          "hidden_tests/test_hidden_contract.py::test_duplicate_names_default_to_last_extension",
+          "hidden_tests/test_hidden_contract.py::test_load_failure_callback_gets_manager_entrypoint_and_exception",
+          "hidden_tests/test_hidden_contract.py::test_map_exception_policy_can_ignore_or_propagate",
+          "hidden_tests/test_hidden_contract.py::test_named_extension_manager_filters_reports_missing_and_orders_names",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -465,7 +481,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "8778926e56703d935ea0b3e8a5d74c414c3bef7a6e3a0999dc8576bcdc45e0bd",
-  "generated_task_hash": "73e205abf6c7ce6715398378a60052c1ffbb07a30956afb9478ebb31b4429b31"
+  "task_revision": 5,
+  "spec_hash": "ece4269853d51c8ea7e52ea1ff2ba4747aca25530fa7964d10d0d9a2377d4d3f",
+  "generated_task_hash": "ef38abe73883d7083d2a862e74c2a94e4e168e7ab47560cc09c231bfbf3aca8a"
 }

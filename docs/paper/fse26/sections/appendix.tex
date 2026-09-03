@@ -136,6 +136,32 @@ final Python-200$'$ leaderboard.
 The replacement union, repeated-run results, observable-only Hidden analysis,
 and attested image identities remain pending.
 
+\section{Confirmed Contract-Completeness Violations}
+\label{app:violators}
+
+Table~\ref{tab:violators} lists the 32 tasks that carried a confirmed
+surface (C1) or entry-point (C2) violation on the predecessor freeze
+\texttt{474862c2}. Those defects were repaired before freeze~v2; they are
+historical findings, not the published 200/0 labels.
+
+\input{tables/tab_python200_violators}
+
+\section{C4 Test-Overlap Advisory}
+\label{app:c4}
+
+Normalized Public/Hidden whole-test overlap is advisory pending threshold
+calibration. On the predecessor freeze it did not change the 168/32 labels;
+the six overlapping Hidden cases were rewritten before freeze~v2
+(Table~\ref{tab:c4-advisory}).
+
+\begin{table}[t]
+  \caption{C4 test-overlap: predecessor advisory counts versus freeze~v2
+  after the six Hidden rewrites.}
+  \label{tab:c4-advisory}
+  \centering
+  \input{tables/tab_python200_c4_advisory}
+\end{table}
+
 \section{Representative FeatureLift Task Cards}
 \label{app:task-cards}
 
@@ -154,6 +180,40 @@ Table~\ref{tab:negative}.
 \section{Artifact and Reproduction Manifest}
 \label{app:artifact}
 
-The artifact manifest will provide suite SHA, freeze ID, source registry,
-offline-wheel closure, image identities, task-level checksums, analysis
-commands, and verified result-bundle acquisition instructions.
+The following SHA-256 file digests identify the analysis inputs used in
+Section~\ref{sec:standard-subset} and Tables~\ref{tab:eligibility-slice}--\ref{tab:fixed116-rres}.
+They are not a complete paper-bundle freeze.
+
+\begin{itemize}
+  \item Parent suite JSON:
+        \texttt{b1e18cd459e8ed3c001afe54ec77273a5701eed3e6017a39f2ee067a81602802}
+  \item Analysis-subset JSON:
+        \texttt{958389c4513e5c3b9d00c3ca3ebaf3fd9f3719ed328b46777aee958ba1a6347f}
+  \item Excluded-task JSON:
+        \texttt{4d9384ee565bcbcdbd3946be7fda126b306219d6e4db98e2d22b04fa0165a528}
+  \item Adjudications CSV:
+        \texttt{55f6cce85fddc4f4d6f1619b8b8950c3c87ea1812a48845cd5af0e0fde92b1c7}
+  \item Required agent image:
+        \texttt{sha256:0843b6633d48da91832ce16c0e6ac42baf2f04d7b08cb66061720f176a8f2eea}
+  \item Required evaluator image:
+        \texttt{sha256:d1ea357c125a6f4957e1246f770bd1deb4717448e46e779f62b0351213cad191}
+\end{itemize}
+The incomplete 84-task replacement used local \texttt{latest} images
+\texttt{cc622920\ldots} / \texttt{cccf858c\ldots} and is not mergeable.
+Those image pins belong to the 2026-08-29 received package, not freeze~v2.
+
+Freeze~v2 (paper asset) identities:
+\begin{itemize}
+  \item Freeze ID:
+        \texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}
+  \item Candidate ID:
+        \texttt{212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254}
+  \item Agent image:
+        \texttt{sha256:0a05b2e797e1e39ee0630131cfd9e670403ce684cd74c8375ecf7e8d444f7595}
+  \item Evaluator image:
+        \texttt{sha256:bacb3078db5e9558e9953575b5eb52f247b112dc63b7705ad7c48a7b4d864cae}
+\end{itemize}
+
+The remaining paper-bundle fields (OpenHands revision, prompt hash, provider
+dates, and a one-command reconstruction of the eligible 200-task table) stay
+pending until the 84-task replacement is merged under the pinned images.

@@ -19,3 +19,4 @@ def test_required_api_surface():
     assert hasattr(SortedList, 'irange')
     assert hasattr(SortedList, 'islice')
     assert hasattr(SortedList, 'update')
+    assert hasattr(SortedList, '__delitem__')

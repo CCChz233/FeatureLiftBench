@@ -86,6 +86,11 @@
             "path": "featurelifted.DeepDiff.get",
             "kind": "method",
             "signature": "(self, key, default=None, /)"
+          },
+          {
+            "path": "featurelifted.DeepDiff.__contains__",
+            "kind": "method",
+            "signature": "(self, key, /)"
           }
         ]
       },
@@ -116,7 +121,7 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.DeepDiff`, `featurelifted.DeepDiff.get`, `featurelifted.parse_path`, `featurelifted.extract` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.DeepDiff`, `featurelifted.DeepDiff.get`, `featurelifted.DeepDiff.__contains__`, `featurelifted.parse_path`, `featurelifted.extract` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -161,7 +166,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.DeepDiff`, `featurelifted.DeepDiff.get`, `featurelifted.parse_path`, `featurelifted.extract` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.DeepDiff`, `featurelifted.DeepDiff.get`, `featurelifted.DeepDiff.__contains__`, `featurelifted.parse_path`, `featurelifted.extract` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -254,6 +259,17 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.DeepDiff.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_exclude_paths_wildcard",
+          "hidden_tests/test_hidden_behavior.py::test_list_item_added",
+          "hidden_tests/test_hidden_behavior.py::test_nested_dict_change",
+          "hidden_tests/test_hidden_behavior.py::test_no_deepdiff_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_parse_path_and_extract",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -271,7 +287,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 2,
-  "spec_hash": "0f0070f71b35c9e16a196388fa9697c038d240d342bf933c785bfed99d5be318",
-  "generated_task_hash": "b330dbde258db269b154fa73933cdadd525599ca20562a70d5d5a56d31fcd1a4"
+  "task_revision": 3,
+  "spec_hash": "9503ef3fa67f51862c339879f6d7a8c147a856ef538ad75dae380275a88fbba9",
+  "generated_task_hash": "adf69844145ed57c978114ba4acf9ae65eee823a06dfddf61da34029229a97b2"
 }

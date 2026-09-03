@@ -13,6 +13,7 @@ def test_required_api_surface():
     assert isinstance(ConfigObj, type)
     assert hasattr(ConfigObj, 'validate')
     assert hasattr(ConfigObj, 'write')
+    assert hasattr(ConfigObj, '__getitem__')
     assert issubclass(DuplicateError, BaseException)
     assert callable(flatten_errors)
     assert callable(get_extra_values)

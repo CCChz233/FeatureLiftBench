@@ -150,6 +150,11 @@
             "path": "featurelifted.SortedList.update",
             "kind": "method",
             "signature": "(self, iterable)"
+          },
+          {
+            "path": "featurelifted.SortedList.__delitem__",
+            "kind": "method",
+            "signature": "(self, index)"
           }
         ]
       }
@@ -178,7 +183,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 1 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 2 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -240,7 +245,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 1 listed members with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 2 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -417,6 +422,19 @@
         "covered_by_tests": [
           "hidden_tests/test_hidden_behavior.py::test_hidden_bisect_with_small_load"
         ]
+      },
+      {
+        "path": "featurelifted.SortedList.__delitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_hidden_bisect_with_small_load",
+          "hidden_tests/test_hidden_behavior.py::test_hidden_check_invariants",
+          "hidden_tests/test_hidden_behavior.py::test_hidden_delete_random_invariants",
+          "hidden_tests/test_hidden_behavior.py::test_hidden_index_duplicate_window",
+          "hidden_tests/test_hidden_behavior.py::test_hidden_irange_inclusive_bounds",
+          "hidden_tests/test_hidden_behavior.py::test_hidden_islice_reverse",
+          "hidden_tests/test_hidden_behavior.py::test_no_sortedcontainers_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -434,7 +452,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 2,
-  "spec_hash": "fd7e0f317b3b5a111de3590023becbffd9c60dab872c5e2e3f369a823b8ee4ab",
-  "generated_task_hash": "a134028450872ab59af055dee1f96af72f9c99f4ef356ad2a269d33f1c2b0b61"
+  "task_revision": 3,
+  "spec_hash": "be973b5da3429a9f5073e172e42b3a58a050990457be043c1ee1563e5161e302",
+  "generated_task_hash": "4cb47f59e4fb3e5cef0542bbe11f193616b93848f0981af675ddfa40710d81d0"
 }

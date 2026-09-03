@@ -1,0 +1,1 @@
+Freeze 45b7fd43 / candidate 180dc917 bound repaired task packages and 600/600 Oracle, but harness experiment files were still the predecessor 168/32 overlay. Replaced by freeze v2 after writing 200/0 selection files into harness/config/experiments/.

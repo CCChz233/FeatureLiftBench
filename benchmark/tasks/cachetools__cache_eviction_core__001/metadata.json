@@ -95,18 +95,67 @@
           {
             "path": "featurelifted.LRUCache.maxsize",
             "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.LRUCache.__contains__",
+            "kind": "method",
+            "signature": "(self, key)"
+          },
+          {
+            "path": "featurelifted.LRUCache.__getitem__",
+            "kind": "method",
+            "signature": "(self, key, cache_getitem=<function Cache.__getitem__ at 0x102f4f4c0>)"
+          },
+          {
+            "path": "featurelifted.LRUCache.__setitem__",
+            "kind": "method",
+            "signature": "(self, key, value, cache_setitem=<function Cache.__setitem__ at 0x102f4f560>)"
           }
         ]
       },
       {
         "path": "featurelifted.TTLCache",
         "kind": "class",
-        "signature": "(maxsize, ttl, timer=<built-in function monotonic>, getsizeof=None)"
+        "signature": "(maxsize, ttl, timer=<built-in function monotonic>, getsizeof=None)",
+        "members": [
+          {
+            "path": "featurelifted.TTLCache.__contains__",
+            "kind": "method",
+            "signature": "(self, key)"
+          },
+          {
+            "path": "featurelifted.TTLCache.__getitem__",
+            "kind": "method",
+            "signature": "(self, key, cache_getitem=<function Cache.__getitem__ at 0x102f4f4c0>)"
+          },
+          {
+            "path": "featurelifted.TTLCache.__setitem__",
+            "kind": "method",
+            "signature": "(self, key, value, cache_setitem=<function Cache.__setitem__ at 0x102f4f560>)"
+          }
+        ]
       },
       {
         "path": "featurelifted.LFUCache",
         "kind": "class",
-        "signature": "(maxsize, getsizeof=None)"
+        "signature": "(maxsize, getsizeof=None)",
+        "members": [
+          {
+            "path": "featurelifted.LFUCache.__contains__",
+            "kind": "method",
+            "signature": "(self, key)"
+          },
+          {
+            "path": "featurelifted.LFUCache.__getitem__",
+            "kind": "method",
+            "signature": "(self, key, cache_getitem=<function Cache.__getitem__ at 0x102f4f4c0>)"
+          },
+          {
+            "path": "featurelifted.LFUCache.__setitem__",
+            "kind": "method",
+            "signature": "(self, key, value, cache_setitem=<function Cache.__setitem__ at 0x102f4f560>)"
+          }
+        ]
       },
       {
         "path": "featurelifted.cached",
@@ -148,7 +197,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.TTLCache`, `featurelifted.LFUCache`, `featurelifted.cached`, `featurelifted.hashkey`, `featurelifted.typedkey` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.LRUCache.__contains__`, `featurelifted.LRUCache.__getitem__`, `featurelifted.LRUCache.__setitem__`, `featurelifted.TTLCache`, `featurelifted.TTLCache.__contains__`, `featurelifted.TTLCache.__getitem__`, `featurelifted.TTLCache.__setitem__`, `featurelifted.LFUCache`, `featurelifted.LFUCache.__contains__`, `featurelifted.LFUCache.__getitem__`, and 4 listed members with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -206,7 +255,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.TTLCache`, `featurelifted.LFUCache`, `featurelifted.cached`, `featurelifted.hashkey`, `featurelifted.typedkey` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.LRUCache.__contains__`, `featurelifted.LRUCache.__getitem__`, `featurelifted.LRUCache.__setitem__`, `featurelifted.TTLCache`, `featurelifted.TTLCache.__contains__`, `featurelifted.TTLCache.__getitem__`, `featurelifted.TTLCache.__setitem__`, `featurelifted.LFUCache`, `featurelifted.LFUCache.__contains__`, `featurelifted.LFUCache.__getitem__`, and 4 listed members with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -338,6 +387,123 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.LFUCache.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LFUCache.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LFUCache.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LRUCache.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LRUCache.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.LRUCache.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TTLCache.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TTLCache.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.TTLCache.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cached_info_tracks_hits_and_misses",
+          "hidden_tests/test_hidden_behavior.py::test_lfu_evicts_lowest_frequency",
+          "hidden_tests/test_hidden_behavior.py::test_lru_eviction_order",
+          "hidden_tests/test_hidden_behavior.py::test_lru_maxsize_enforced",
+          "hidden_tests/test_hidden_behavior.py::test_no_cachetools_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_ttl_expiry_with_mock_timer",
+          "hidden_tests/test_hidden_behavior.py::test_typedkey_distinguishes_value_types",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -355,7 +521,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 2,
-  "spec_hash": "9d12546b69bdbc559f09ea841675d4cee65860cb4365402da590b416e01fe87e",
-  "generated_task_hash": "6f02c1d59a1d5f5c8b293ea2ff6b73ad0e6b4ce7c997466d1c56eebed81d4ec9"
+  "task_revision": 3,
+  "spec_hash": "d57c490ef0b5ffa1dbffe99d9baf5fe32d8979090c867dd98c606003912f59af",
+  "generated_task_hash": "6fe6fa0069c77fc3b2836ee3bec275b09dc04e97fcaaf83c5366abf706dc5950"
 }

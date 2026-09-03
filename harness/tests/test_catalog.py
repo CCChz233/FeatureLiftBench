@@ -79,7 +79,7 @@ class CatalogTests(unittest.TestCase):
             "harness/config/experiments/python200_hard_standard.txt",
         )
         self.assertFalse(suite.paper_main)
-        self.assertEqual(suite.status, "superseded")
+        self.assertEqual(suite.status, "unreleased")
         resolved = resolve_run(
             agent="openhands",
             method="main",

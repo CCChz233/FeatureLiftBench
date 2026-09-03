@@ -19,6 +19,9 @@ from featurelifted import (
 - `Session(request, id=None, use_cookies=True, type=None, **kwargs)` class constructor
   - `Session.save(self, accessed_only=False)`
   - `Session.load(self)`
+  - `Session.__setitem__(self, key, value, /)`
+  - `Session.get(self, key, default=None, /)`
+  - `Session.id` attribute must exist on instances
 - `CacheManager(**kwargs)` class constructor
   - `CacheManager.get_cache(self, name, **kwargs)`
   - `CacheManager.cache(self, *args, **kwargs)`

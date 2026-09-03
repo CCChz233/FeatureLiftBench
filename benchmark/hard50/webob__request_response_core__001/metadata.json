@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -99,7 +99,25 @@
       {
         "path": "featurelifted.Response",
         "kind": "class",
-        "signature": "(body=None, status=None, headerlist=None, app_iter=None, content_type=None, conditional_response=None, charset=..., **kw)"
+        "signature": "(body=None, status=None, headerlist=None, app_iter=None, content_type=None, conditional_response=None, charset=..., **kw)",
+        "members": [
+          {
+            "path": "featurelifted.Response.body",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Response.content_type",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Response.json_body",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.Response.status_code",
+            "kind": "attribute"
+          }
+        ]
       }
     ],
     "optional_api": [],
@@ -267,6 +285,50 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.Response.body",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_header_also_lands_in_environ",
+          "hidden_tests/test_hidden_behavior.py::test_json_response_uses_compact_body_and_custom_status",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_post_form_is_urlencoded",
+          "hidden_tests/test_hidden_behavior.py::test_query_multidict_keeps_repeated_keys",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Response.content_type",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_header_also_lands_in_environ",
+          "hidden_tests/test_hidden_behavior.py::test_json_response_uses_compact_body_and_custom_status",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_post_form_is_urlencoded",
+          "hidden_tests/test_hidden_behavior.py::test_query_multidict_keeps_repeated_keys",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Response.json_body",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_header_also_lands_in_environ",
+          "hidden_tests/test_hidden_behavior.py::test_json_response_uses_compact_body_and_custom_status",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_post_form_is_urlencoded",
+          "hidden_tests/test_hidden_behavior.py::test_query_multidict_keeps_repeated_keys",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.Response.status_code",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_header_also_lands_in_environ",
+          "hidden_tests/test_hidden_behavior.py::test_json_response_uses_compact_body_and_custom_status",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_post_form_is_urlencoded",
+          "hidden_tests/test_hidden_behavior.py::test_query_multidict_keeps_repeated_keys",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -284,6 +346,6 @@
     "oracle_loc": 11071,
     "oracle_dependency_count": 0
   },
-  "spec_hash": "7b9bd893eda2fb0972ffcbf04a4873f8732bc60db5e51f5c60e00b48d813a05b",
-  "generated_task_hash": "8a7acf50e47a347bec0932e516b8ba3bcd73d8265da017efcbce42239877352e"
+  "spec_hash": "a040dcfa2e3f62f776a0d1d9e86f945c944a0a1e93880c68963b3553f56972ae",
+  "generated_task_hash": "648724c3647703aba631bd5b81db7318a74b70e7d761b8f20f5bcec3d38119dd"
 }

@@ -71,6 +71,41 @@ declared context allowance. The union of eligibility-affected tasks contains
 leaderboard result, and is excluded from the abstract and final main table.
 Candidate counts for that package are in Appendix~\ref{app:full-results}.
 
+\paragraph{Fixed eligible subset (not a 200-task score).}
+Of the 200 received rows, 116 tasks have no freeze block, no missing offline
+wheel, and no context-window violation. On that fixed subset DeepSeek V4 Flash
+records 95/116 functional passes (81.9\%, Wilson 95\% [73.9, 87.8]).
+Intersecting the same 116 tasks with the predecessor-freeze 168-task
+analysis labels yields 81/96
+(84.4\%, [75.8, 90.3]) on tasks that then met the surface/entry clauses and 14/20
+(70.0\%, [48.1, 85.5]) on confirmed violators
+(Table~\ref{tab:eligibility-slice}). That 81/96 slice belongs to freeze
+\texttt{474862c2} and must not be retagged onto freeze~v2. The 20-task
+violator interval is wide and is not a causal claim that contract violations
+cause failure: 14 of those 20 still pass. Seventy-two predecessor
+\texttt{meets\_standard} tasks lie in the 84-task
+replacement union and have no eligible replacement yet; they are omitted from
+this slice. First-failure counts on the fixed 116 have no infrastructure
+contamination (Table~\ref{tab:fixed116-funnel}).
+
+\begin{table*}[t]
+  \caption{DeepSeek V4 Flash Functional Pass on eligibility slices of the
+  2026-08-29 received package, crossed with predecessor-freeze
+  (\texttt{474862c2}) contract labels. Not freeze~v2 scores and not the
+  Python-200$'$ leaderboard.}
+  \label{tab:eligibility-slice}
+  \centering
+  \input{tables/tab_python200_eligibility_slice}
+\end{table*}
+
+\begin{table*}[t]
+  \caption{Mutually exclusive first outcomes on the fixed eligible 116-task
+  subset (no freeze block, wheel gap, or context violation).}
+  \label{tab:fixed116-funnel}
+  \centering
+  \input{tables/tab_python200_fixed116_funnel}
+\end{table*}
+
 \paragraph{Exploratory frozen Python-150 matrix.}
 Until the eligible Python-200$'$ matrix is complete, we report the archived
 four-model OpenHands run on the frozen 150-task baseline
@@ -151,9 +186,19 @@ gate fails.
 Compactness is reported only among functionally passing tasks. Survivor sets
 differ by model, so compactness is not a second ranking of the same 150 tasks.
 Table~\ref{tab:compactness} uses the exploratory Python-150 matrix.
-Python-200$'$ compactness is reported only after the replacement merge; the
-received-package split medians are in Appendix~\ref{app:full-results} and are
-infrastructure-confounded.
+On the received Flash package, pass-conditioned median \rres on the fixed
+eligible 116 is 0.973 ($n=95$); on the 81 \texttt{meets\_standard} passes in
+that subset it is 0.981 (Table~\ref{tab:fixed116-rres}). These medians describe
+the received OpenHands/Flash survivor set. They are not a Python-200$'$
+compactness ranking. Received-package split medians in
+Appendix~\ref{app:full-results} remain infrastructure-confounded.
+
+\begin{table}[t]
+  \caption{Pass-conditioned RRES on the fixed eligible 116-task Flash subset.}
+  \label{tab:fixed116-rres}
+  \centering
+  \input{tables/tab_python200_fixed116_rres}
+\end{table}
 
 \begin{table*}[t]
   \caption{Pass-conditioned compactness on exploratory frozen Python-150.

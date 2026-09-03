@@ -1,6 +1,6 @@
 # FeatureLiftBench FSE LaTeX Draft
 
-> **Status: draft · Last verified: 2026-08-30**
+> **Status: draft · Last verified: 2026-09-03**
 
 This directory contains the ACM `acmart` LaTeX zero draft derived from the
 paper evidence under `docs/paper/`.
@@ -23,7 +23,12 @@ latexmk -c
 
 - Red `Draft note` text marks claims or metadata that must be filled only from
   the frozen paper bundle.
-- `132/200` is a received-suite audit headline, not the paper leaderboard.
+- The freeze~v2 contract-completeness labels are 200/0, not a
+  leaderboard. Freeze ID
+  `6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`.
+  The predecessor freeze was 168/32. The 81/96 Flash slice and
+  132/200 audit headline belong to freeze `474862c2` and must not be retagged
+  onto freeze~v2.
 - `21.5%--72.5%` belongs to the superseded Python-150 + External-50 suite and
   appears only as historical context.
 - The main table must use eligible Python-200′ runs with attested source,

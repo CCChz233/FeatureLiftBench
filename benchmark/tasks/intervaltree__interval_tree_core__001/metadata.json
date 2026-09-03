@@ -133,6 +133,16 @@
             "path": "featurelifted.IntervalTree.remove_overlap",
             "kind": "method",
             "signature": "(self, begin, end=None)"
+          },
+          {
+            "path": "featurelifted.IntervalTree.__contains__",
+            "kind": "method",
+            "signature": "(self, item)"
+          },
+          {
+            "path": "featurelifted.IntervalTree.__getitem__",
+            "kind": "method",
+            "signature": "(self, index)"
           }
         ]
       }
@@ -161,7 +171,7 @@
       },
       {
         "id": "B006",
-        "text": "The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap`, `featurelifted.IntervalTree.__contains__`, `featurelifted.IntervalTree.__getitem__` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
@@ -226,7 +236,7 @@
       {
         "behavior_id": "B006",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.Interval`, `featurelifted.IntervalTree`, `featurelifted.IntervalTree.at`, `featurelifted.IntervalTree.chop`, `featurelifted.IntervalTree.envelop`, `featurelifted.IntervalTree.overlap`, `featurelifted.IntervalTree.remove_envelop`, `featurelifted.IntervalTree.remove_overlap`, `featurelifted.IntervalTree.__contains__`, `featurelifted.IntervalTree.__getitem__` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B007",
@@ -376,6 +386,34 @@
         "covered_by_tests": [
           "hidden_tests/test_hidden_behavior.py::test_remove_overlap_multiple"
         ]
+      },
+      {
+        "path": "featurelifted.IntervalTree.__contains__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_chop_datafunc",
+          "hidden_tests/test_hidden_behavior.py::test_chop_splits_intervals",
+          "hidden_tests/test_hidden_behavior.py::test_complex_point_query",
+          "hidden_tests/test_hidden_behavior.py::test_distinct_data_same_range",
+          "hidden_tests/test_hidden_behavior.py::test_envelop_vs_overlap",
+          "hidden_tests/test_hidden_behavior.py::test_no_intervaltree_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_remove_envelop",
+          "hidden_tests/test_hidden_behavior.py::test_remove_overlap_multiple",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.IntervalTree.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_chop_datafunc",
+          "hidden_tests/test_hidden_behavior.py::test_chop_splits_intervals",
+          "hidden_tests/test_hidden_behavior.py::test_complex_point_query",
+          "hidden_tests/test_hidden_behavior.py::test_distinct_data_same_range",
+          "hidden_tests/test_hidden_behavior.py::test_envelop_vs_overlap",
+          "hidden_tests/test_hidden_behavior.py::test_no_intervaltree_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_remove_envelop",
+          "hidden_tests/test_hidden_behavior.py::test_remove_overlap_multiple",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -393,7 +431,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 2,
-  "spec_hash": "b8b0f5d7945c2a0a72081f872f40a3310f021114b4990e776a1e8fe324ce98ff",
-  "generated_task_hash": "acc81f76b4a4d06c5eb2038790fc9c1f0abc773bade3ef63adec5798eb1ae79b"
+  "task_revision": 3,
+  "spec_hash": "fa107d3be526954681558101e5007b79a3b3d8aa505dde07737d577074b17ae4",
+  "generated_task_hash": "859448e53c4ec4751a94b458fb70ac9e5541c45350a45201abfe8caed105b526"
 }

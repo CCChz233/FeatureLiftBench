@@ -1,8 +1,9 @@
 # FeatureLiftBench 基准验证与发布门禁
 
-> **Status: current · Gate protocol: v2 · Last verified: 2026-09-02**
-> P0 机械门禁已落地；分析子集未发布；筛题与 Agent 评审暂停。
-> 本文规定如何验证题目、如何打三态标签。不规定 Agent 方法，也不改已冻结题包。
+> **Status: current · Gate protocol: v2 · Last verified: 2026-09-03**
+> P0 机械门禁已落地；freeze v2 分析标签已发布（200/0，`undetermined = 0`）。
+> 168/32 是 v1 freeze 前任。筛题与 Agent 评审暂停。不改已发布 freeze 的题包。
+> 本文规定如何验证题目、如何打三态标签。不规定 Agent 方法。
 
 ## 1. 一句话目标
 
@@ -55,6 +56,38 @@
 10. **模型不拥有发布权限。** API reviewer 只生成带引用的语义证据；最终标签由
     版本化聚合规则生成，默认只写报告。发布分析子集必须显式请求。
 
+## 3.1 当前门禁行实况（Python-200′，2026-09-02）
+
+`gate_version = featureliftbench.benchmark_gate.v2.p0`，台账
+`reports/benchmark_gate/python200_hard_20260902_p1_l4l5/`。**9 行检查，覆盖 200/200**：
+
+| 门禁行 | pass | fail | undetermined |
+| --- | ---: | ---: | ---: |
+| `L1_PACKAGE` | 200 | 0 | 0 |
+| `SOURCE_IDENTITY` | 200 | 0 | 0 |
+| `L2_C1_SURFACE` | 179 | **21** | 0 |
+| `L2_C2_ENTRYPOINT` | 188 | **12** | 0 |
+| `L3_ORACLE_N3` | 200 | 0 | 0 |
+| `L3_G2PRIME_UPSTREAM` | 200 | 0 | 0 |
+| `L4_ISOLATION_N3` | 200 | 0 | 0 |
+| `L5_TASK_LEAKAGE` | 200 | 0 | 0 |
+| `L5_C4_TEST_OVERLAP` | 194 | 0 | **6** |
+
+上表是台账 `python200_hard_20260902_p1_l4l5` 的**历史快照**。2026-09-02 已按
+[PLAN_FREEZE_V2.md](PLAN_FREEZE_V2.md) §3.3 改写 6 道 hidden 测试；随后完成
+C1/C2 修复。现行 freeze v2 九行门禁
+`reports/benchmark_gate/python200_hard_20260903_v2_repair2/` 为
+**200 `meets_standard` / 0 `violates` / 0 `undetermined`**，静态 C4 为
+**200 clear / 0 hit**。168/32 只作为 v1 freeze `474862c2` 对照。
+
+这 39 条失败/命中（去重 38 题）的逐题修复方案在
+[PLAN_FREEZE_V2.md](PLAN_FREEZE_V2.md)，且已写入 freeze v2 题包。
+**不要再改已冻结的题包**；任何新修复都是另一次 freeze。
+
+尚未成为门禁行的设计项：C3 上游蕴含探针（环境依赖）、G2_naive 与 G3_copy_all
+（提交内容只覆盖 52/200）、G4_probes（0/200 有 probe 表）、G1 的 extraction 带
+（v2 语义下不可移植）、agent workspace 泄漏（在独立 audit 脚本里）。逐项理由见 L3/L5。
+
 ## 4. 五层检查
 
 每层标注：**已有**（复用，不重建）/ **新增** / **阻断性**（blocking 用于晋升，advisory 用于冻结集）。
@@ -77,19 +110,71 @@
 
 ### L3 Oracle 有效性 — 已有但只覆盖 batch-1
 
-`generate_gate_report.py` 已实现 G1–G4，质量很高，问题是只在 batch-1 晋升流水线里跑过：
+`generate_gate_report.py` 已实现 G1–G4，质量很高，问题是只在 batch-1 晋升流水线里跑过。
+它是**聚合器不是 runner**：只读 `evidence/python/batch1/<id>/review/{oracle,naive,copy_all,flash}/result.json`。
 
-| Gate | 判定 | 状态 |
+2026-09-02 逐门核过一遍推广可行性。结论是**只有 G0/G1 的 oracle 部分能推广，G2/G3/G4
+都缺基础数据**，且 G1 的 extraction 带**语义已失效不能移植**：
+
+| Gate | 判定 | 全量 200 推广状态 |
 | --- | --- | --- |
-| G1_oracle | oracle 全通过，extraction ∈ [0.09, 0.60] | 已有 |
-| G2_naive | naive：public 过、hidden **挂**、`functional_gate == 0` | 已有 |
-| G3_copy_all | copy_all 全过且 extraction 显著高于 oracle | 已有 |
-| G4_probes | 移除 probe 文件后指定 hidden 必须失败（反作弊） | 已有 `verify_module_probes.py` |
-| **G2′ 原仓库直评** | 未修改的 `repo/` 直接作为提交必须失败 | **新增** |
+| G0_task_shape | validate_task + output imports | **已推广** = `L1_PACKAGE` 200/200 |
+| G1_oracle（通过部分） | oracle 全通过 | **已推广** = `L3_ORACLE_N3` 200/200（N=3，600 次运行） |
+| G1_oracle（extraction 带） | extraction ∈ [0.09, 0.60] | **不可移植，见下** |
+| G2_naive | naive：public 过、hidden **挂**、`functional_gate == 0` | **阻塞**：naive 提交只覆盖 52/200 |
+| **G2′ 原仓库直评** | 未修改 `repo/` 直评必须失败 | **已落地** = `L3_G2PRIME_UPSTREAM` 200/200 |
+| G3_copy_all | copy_all 全过且 extraction 显著高于 oracle | **阻塞**：copy_all 提交只覆盖 52/200 |
+| G4_probes | 移除 probe 文件后指定 hidden 必须失败 | **阻塞**：0/200 题有 probe 表 |
 
-G2 现在依赖预置的 `benchmark/submissions/<id>/naive`，不是从 `repo/` 机械生成的。补 G2′ 才能真正回答"原始仓库应失败"。
+**G1 的 extraction 带不可移植。** v2 把 `extraction_ratio` 重定义为**相对冻结参考解**，
+不再相对完整上游仓库（`scoring.py` 里写明是 compatibility alias）。因此 oracle 的
+extraction 按构造恒为 1.0——实测 600 次 oracle 运行的
+`extraction_ratio_to_reference` 取值集合就是 `{1.0}`。把 [0.09, 0.60] 直接套上去会让
+200 题全挂。要恢复这条约束，必须**重新定义**一个作用在冻结参考解与 canonical 上游之间的
+判据（`benchmark/references/python200_prime_compactness.json` 已记录每题参考解的
+`python_loc` 与 `file_count`，200/200，但没有上游 LOC 也没有定阈值），而不是移植旧带。
 
-**新增工作量：中。** 主要是把 G1–G4 从 batch-1 脚本推广到全量任务，并补 G2′。
+**G2 / G3 的阻塞是内容缺口不是代码缺口：**
+
+| 提交类型 | 存在 | 属于本套件 | 缺口 |
+| --- | ---: | ---: | ---: |
+| `oracle` | 158 | 150 | 50（Hard-50 走 `hard50_reference_solution`，见 L1） |
+| `naive` | 56 | 52 | **148** |
+| `copy_all` | 56 | 52 | **148** |
+
+补 G2 需要为 148 题手写 naive 参考（不可机械化，naive 的定义就是"简化但通得过 public"）。
+补 G3 需要为 148 题做机械 vendoring + 导入改写，这个变换本身不平凡（相对导入、
+`__init__` 再导出、C 扩展），且 copy-all 通过本来就由 compactness / RRES 承接。
+
+**G4 的阻塞是这套题根本没有 probe 表：** `evaluation/module_probes.json` 0/200，
+`docs/task_designs/<id>.md` 0/200。`verify_module_probes.py` 对 200 题会一律抽到 0 条
+probe。反作弊要覆盖本套件，必须先为题目产出 probe 表。
+| **G2′ 原仓库直评** | 未修改的 `repo/` 直接作为提交必须失败 | **已落地**（2026-09-02） |
+
+G2 依赖预置的 `benchmark/submissions/<id>/naive`（仅 52/200 属于本套件），不是从 `repo/`
+机械生成的。G2′ 由 `harness/scripts/audit_upstream_direct_submission.py` 实现：复用
+C3 的 `build_shim`，按 `required_api` 把固定 `repo/` 重导出为 `featurelifted`，在钉住的
+评测镜像里直评。`functional_gate == 1.0` 即 blocking 缺陷。台账
+`reports/audits/python200_prime_g2prime/summary.json`，门禁行 `L3_G2PRIME_UPSTREAM`。
+
+首轮全量结果（评测镜像 `featureliftbench-eval:python200-prime-769f2486`）：
+**200/200 清过，0 阻断缺陷**。分机制：
+
+| 机制 | 题数 |
+| --- | ---: |
+| `isolation_refused_upstream_import`（build 阶段被 forbidden imports 挡住） | 146 |
+| `behavioral_failure`（走到 public 才失败） | 54 |
+
+**这条检查的判别力有限，台账里必须照实记。** 146 题是隔离层在任何行为运行前就拒绝了
+上游导入，这是 harness 的真实性质，但不是关于契约的证据，因此记为
+`evidence_strength: isolation_only`。54 题虽然走到行为层，但都伴随 `stubbed_names`
+非空（题目新造了上游没有的名字），记为 `reshaped`。**`strong` 为 0。**
+
+G2′ 回答的是"提交上游本身会不会被放过"，**没有**回答"机械 vendoring 加改写导入之后
+会不会被放过"。后者的失败模式（copy-all 功能通过）按设计由 compactness / RRES 与
+G3 承接，尚未有独立机械检查。
+
+**剩余工作量：中。** 把 G1–G4 从 batch-1 脚本推广到全量任务。
 
 ### L4 环境隔离与可复现 — 已有，缺确定性
 
@@ -99,22 +184,73 @@ G2 现在依赖预置的 `benchmark/submissions/<id>/naive`，不是从 `repo/` 
 | forbidden imports / 路径访问 / 符号链接攻击 | 已有 | `checks.py`、`isolation_checks.py` |
 | 依赖锁定与 vendor wheel | 已有 | `dependency_audit.py` |
 | locale / timezone / hash 冻结 | 已有 | `evaluator.py` |
-| **重复运行结果一致** | **新增** | 同一 oracle 连跑 N=3 次，`functional_gate` 与失败测试集合必须完全一致 |
+| **重复运行结果一致** | **已落地** | 同一 oracle 连跑 N=3 次，`functional_gate` 与 fingerprint 必须完全一致；见 `L3_ORACLE_N3` |
+| **隔离契约成为门禁行** | **已落地**（2026-09-02） | `L4_ISOLATION_N3` |
 
-**新增工作量：小。** 一个循环加一次集合比较。建议 N=3，只在晋升时跑，全量重跑成本太高。
+隔离本来只由 evaluator 强制、证据埋在 oracle 台账里，报告读不出来。`L4_ISOLATION_N3`
+把它提成显式一行：逐题、逐 repetition 校验
+`isolation.{pass, forbidden_imports_pass, forbidden_dependencies_pass,
+forbidden_runtime_capabilities_pass, runtime_import_origin_pass,
+source_filesystem_absent, network_disabled, submission_location_pass,
+mount_allowlist_pass}` 全为 true、`verification_mode ==
+docker_functional_capsule_v1`，且 `sandbox` 为 `network=none`、`read_only_rootfs=true`、
+`cap_drop=ALL`、`returncode=0`。证据复用同一份 N=3 oracle 台账，不额外跑 Docker。
+
+首轮全量：**200/200 pass**。这条的价值在于可 diff——"这道题是不是仍然在无网络、只读、
+源码树缺席的条件下被评的"，现在能直接从 `gate_report` 回答。
 
 ### L5 难度与泄漏 — 部分已有
 
 | 检查 | 状态 |
 | --- | --- |
-| `TASK.md` 不得提及 `hidden_tests/`、`evaluation_spec`、`oracle_manifest` | 已有（`_validate_task_leakage()`） |
-| agent workspace 不得含测试与参考解 | 已有（v2/v3 readiness audit） |
-| **public_tests 与 hidden_tests 不得等同或高度重叠** | **新增** |
+| `TASK.md` 不得提及 `hidden_tests/`、`evaluation_spec`、`oracle_manifest` | **已成门禁行** `L5_TASK_LEAKAGE`（2026-09-02） |
+| agent workspace 不得含测试与参考解 | 已有（v2/v3 readiness audit、`audit_no_hint_workspace`），**未**进门禁行 |
+| **public_tests 与 hidden_tests 不得等同或高度重叠** | **已落地** `L5_C4_TEST_OVERLAP` |
 | 基础设施失败不计入难度 | 已有，属失败分析层（见 [FAILURE_ANALYSIS_PROTOCOL.md](FAILURE_ANALYSIS_PROTOCOL.md)） |
 
-public≡hidden 检查建议用**归一化 AST 比较**而非文本 diff：剥离注释、docstring、变量名与字面量后比较断言结构，报告重叠率。阈值先设为 advisory，收集分布后再定 blocking 线。
+`_validate_task_leakage()` 原先只对 `spec_status: compliant` 的题生效，且结果被折进
+`L1_PACKAGE`。`L5_TASK_LEAKAGE` 无条件重跑这组规则并单独成行，这样覆盖是显式的，
+将来出现非 compliant 的题也不会静默跳过。当前 200 题全为 `compliant`，首轮
+**200/200 pass**。agent workspace 那条仍在独立 audit 脚本里，没有进门禁行。
 
-**新增工作量：小。**
+public≡hidden 检查用**归一化 AST 比较**而非文本 diff，报告重叠率。阈值仍为
+advisory。**归一化到什么程度是这条检查的全部难点**，实测（2026-09-02，200 题）：
+
+| 归一化策略 | 命中题数 | 其中真重复 |
+| --- | ---: | ---: |
+| 剥离注释 + docstring + 变量名 + **字面量** | 29 | **0** |
+| 保留字面量 | 8 | 6 |
+| 保留字面量 + 导入符号 | 7 | 6 |
+| 保留字面量 + 导入符号 + 模块级定义（当前） | **6** | **6** |
+
+**剥离字面量是错的。** 字面量往往就是用例之间唯一的区别，抹掉它会把同一 API 的不同
+参数化折叠成一个 shape。原策略 29 个命中全是假阳性，例如两条 `croniter` 用例只差 cron
+表达式与期望 datetime。同理，导入符号（`validate` vs `compact`）和测试文件里模块级定义
+的 fixture 类（`CamelPerson` vs `CamelFieldPerson`，只差装饰器）都必须保留，否则
+body 相同就会误判。局部变量名与形参名仍然归一——它们确实是偶然的。
+
+当前 6 个命中**全部为真重复**：public 与 hidden 各有一个测试函数体逐字相同
+（`pylint__config_find_core__001` 连函数名都相同）。
+
+| 任务 | public / hidden 同体测试 |
+| --- | --- |
+| `anyio__task_group_core__001` | `test_fail_after_timeout` / `test_fail_after_timeout_is_timeout_error` |
+| `copier__template_answers_core__001` | `test_invalid_choice_raises` / `test_invalid_choice_raises_value_error` |
+| `mitmproxy__url_parse_core__001` | `test_parse_http_ipv4_port` / `test_parse_http_explicit_port` |
+| `pika__channel_spec_core__001` | `test_heartbeat_roundtrip` / `test_heartbeat_bytes_roundtrip` |
+| `pre_commit__config_load_core__001` | `test_default_minimum_pre_commit_version` / `test_empty_repos_default_version` |
+| `pylint__config_find_core__001` | `test_configuration_file_disable_turns_message_off`（同名） |
+
+这 6 题每题只有 1 条重复（`overlap_ratio` 0.25–0.50），**不是** public≡hidden 整体等同，
+按 §4.2.6 public 可做浅层 smoke 的规定，危害是"该 hidden 断言不提供 public 之外的信息"，
+不是题目失效。2026-09-02 已在工作区改写 hidden（见
+[PLAN_FREEZE_V2.md](PLAN_FREEZE_V2.md) §3.3 试修结果）；发布台账仍记录修复前的 6 个
+advisory 命中，直到门禁重跑。
+
+**已知限制：** C4 只比较测试函数体。两个 body 可以相同而 fixture 不同；当前靠保留模块级
+定义的名字来区分，没有做 fixture 定义的传递比较。
+
+**剩余工作量：小**（阈值定 blocking 线需要更多套件上的分布）。
 
 ## 5. L2 契约蕴含：核心设计
 
@@ -140,7 +276,7 @@ Full-Repository 的 canonical source。若 canonical archive 缺失、摘要不�
 | **C1 未声明接口面** | AST 解析 hidden 测试，抽取经 `featurelifted` 导入符号驱动的成员（含 `__setitem__` / `__getitem__` / `__contains__` 等 dunder，通过局部数据流归属到类）；不在 `required_api` 路径或 members 中的即命中。函数返回值按签名返回类型归属，避免把 `f()` 的成员误记到 `f` 上 | blocking |
 | **C2 入口锚定** | `public_spec.source_entrypoints` 的每个符号必须能在固定 `repo/` 中找到定义（模块级 def/class/assign、类方法、模块名，均计入）。指空即命中 | blocking |
 | **C3 上游蕴含探针** | 把 `repo/` 按 `required_api` 重导出为合成 `featurelifted` 包，跑 hidden 行为用例。**断言级**失败 → `upstream_contradicts`；**形状级**失败（ImportError / TypeError / AttributeError / 任务新造名字的桩） → `api_reshaped`，探针对该题不下结论 | advisory |
-| **C4 public≡hidden 重叠** | 归一化 AST 比较，见 L5 | advisory |
+| **C4 public≡hidden 重叠** | 归一化 AST 比较，见 L5。**已落地**，门禁行 `L5_C4_TEST_OVERLAP` | advisory |
 
 C1 的作用域绑定必须满足：类体局部绑定不得泄漏进函数作用域；局部变量被未知
 返回类型重新赋值时必须清除旧类型绑定。Graphene 回归用于假阳性保护，
@@ -412,14 +548,17 @@ Python-200' 资产保持不变。
 
 >
 > v1 的二分类（`meets_standard` / `violates`）及据此写出的 163/37 名单是
-> **provisional / superseded pending v2 adjudication**，不能当作最终论文数字。
+> **provisional / superseded**。v2 已发布分析子集见 [STATUS.md](STATUS.md)，
+> 不得把 163 当作论文数字。
 
 本文规定如何判定一道 FeatureLiftBench 题目是否符合已发布的出题标准，以及如何把判定落成可复跑标签。
 
 标准本身在 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)。五层门禁见上文。本节规定**怎么检、怎么标、怎么发布**，不改标准，也不改已冻结的 200 道题包。
 
-当前套件上的候选标签只写在 [STATUS.md](STATUS.md) 和
-`reports/paper_analysis/benchmark_tiers_v2_candidate/`。本文不维护题数。v1 产物留在
+当前套件上的**已发布**分析子集在
+`benchmark/selection/python200_hard_standard_suite.json`；工作标签与裁决在
+`reports/paper_analysis/benchmark_tiers_v2_candidate/`。数字以
+[STATUS.md](STATUS.md) 为准。v1 产物留在
 `reports/paper_analysis/benchmark_tiers/`，供对照，不得再覆盖。
 
 ## 13.1 何时使用
@@ -500,7 +639,8 @@ Python-200' 资产保持不变。
 | 项 | 为什么不进 v2 |
 | --- | --- |
 | 门禁 C3 上游蕴含探针 | 依赖按题环境，覆盖不稳定；`upstream_contradicts` 是下界 |
-| 门禁 C4 public≡hidden 重叠 | 尚未实现 |
+| 门禁 C4 public≡hidden 重叠 | 已实现但仍 advisory：blocking 阈值未定。工作区 6 个真命中已改写（2026-09-02），发布台账尚未重跑 |
+| 门禁 G2′ 原仓库直评 | 已实现且 200/200 清过，但 146/200 是隔离层拦截，`evidence_strength: strong` 为 0 |
 | `evaluation_spec` 与 `evaluation/behavior_contract.json` 双份映射漂移 | constitution 映射已通过时，这不是 Agent 可见契约条款 |
 | `review_status` / 独立人工审核 | 原则 7：不是硬门禁 |
 | 契约承诺多于 hidden 检查 | §4.2.6 允许 public 做浅层 smoke |
@@ -600,7 +740,9 @@ task_id,rule,verdict,hidden_file,nodeid,inferred_type,member,in_required_api,beh
 - `meets_standard_candidate.txt` ∪ `violates_confirmed.txt` ∪ `undetermined.txt` = 全套；
 - 三者两两不相交。
 
-数字写入 [STATUS.md](STATUS.md) 时必须标明是 v2 **候选**还是已发布。本协议和 `labels.md` 冲突时，以本次命令产出的 `labels.json` 为准。
+数字写入 [STATUS.md](STATUS.md) 时必须标明是 v2 **候选**还是已发布。已发布分析子集以
+`benchmark/selection/python200_hard_standard_suite.json` 为准。本协议和 `labels.md`
+冲突时，以本次命令产出的 `labels.json` 为准。
 
 ## 13.6 产物
 

@@ -46,7 +46,7 @@
     ],
     "name": "build_url normalize_headers",
     "source_entrypoints": [
-      "aiohttp.helpers.build_url"
+      "aiohttp.helpers.strip_auth_from_url"
     ]
   },
   "language": "python",
@@ -100,6 +100,16 @@
             "path": "featurelifted.CIMultiDict.getall",
             "kind": "method",
             "signature": "(self, key: 'str') -> 'list[str]'"
+          },
+          {
+            "path": "featurelifted.CIMultiDict.__getitem__",
+            "kind": "method",
+            "signature": "(self, key: 'str') -> 'str'"
+          },
+          {
+            "path": "featurelifted.CIMultiDict.__setitem__",
+            "kind": "method",
+            "signature": "(self, key: 'str', value: 'str') -> 'None'"
           }
         ]
       },
@@ -124,11 +134,11 @@
       },
       {
         "id": "B004",
-        "text": "The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.CIMultiDict.__setitem__`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract."
       }
     ],
     "source_entrypoints": [
-      "aiohttp.helpers.build_url"
+      "aiohttp.helpers.strip_auth_from_url"
     ],
     "exclusions": [
       "network access",
@@ -170,7 +180,7 @@
       {
         "behavior_id": "B004",
         "clause_kind": "api_surface",
-        "text": "The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract."
+        "text": "The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.CIMultiDict.__setitem__`, `featurelifted.InvalidHeaderName` with the kinds and callable signatures listed in this contract."
       },
       {
         "behavior_id": "B005",
@@ -248,6 +258,24 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict.__getitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_build_url_preserves_existing_query",
+          "hidden_tests/test_hidden_contract.py::test_ci_multidict_case_insensitive",
+          "hidden_tests/test_hidden_contract.py::test_invalid_header_name_raises",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.CIMultiDict.__setitem__",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_contract.py::test_build_url_preserves_existing_query",
+          "hidden_tests/test_hidden_contract.py::test_ci_multidict_case_insensitive",
+          "hidden_tests/test_hidden_contract.py::test_invalid_header_name_raises",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -265,7 +293,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "b9acdf882f9fe8464059fef64a1e7f1293caa4d8b43bd7176c28f1c30b33aeaf",
-  "generated_task_hash": "51095a5cd67e2e729393e74e9ce575bcc2d24bd50cd33cc7d06576cc72a7005c"
+  "task_revision": 6,
+  "spec_hash": "6571a09deb13827c8284a2533669ceb4baaf62d85d8dc6a4ed2373a750c7da44",
+  "generated_task_hash": "6c0a6ef33e7c35b85d95898de7d848f14d5c4fe4b6f60f67aab5d6572474ba7d"
 }

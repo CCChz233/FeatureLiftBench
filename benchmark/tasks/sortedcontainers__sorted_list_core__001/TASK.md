@@ -27,6 +27,7 @@ from featurelifted import (
   - `SortedList.irange(self, minimum=None, maximum=None, inclusive=(True, True), reverse=False)`
   - `SortedList.islice(self, start=None, stop=None, reverse=False)`
   - `SortedList.update(self, iterable)`
+  - `SortedList.__delitem__(self, index)`
 
 ## Required Behavior
 
@@ -35,7 +36,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: positional indexing and slice reads with small load factors. Required observable cases include bisect with small load.
 - The extracted feature must support this observable behavior: irange/islice inclusive bounds and reverse iteration. Required observable cases include add and iteration; irange inclusive bounds; islice reverse.
 - The extracted feature must support this observable behavior: sublist merge/delete invariants validated via _check after _reset. Required observable cases include delete random invariants; check invariants.
-- The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 1 listed members with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 2 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -58,6 +59,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: positional indexing and slice reads with small load factors. Required observable cases include bisect with small load.
 - **B004** — The extracted feature must support this observable behavior: irange/islice inclusive bounds and reverse iteration. Required observable cases include add and iteration; irange inclusive bounds; islice reverse.
 - **B005** — The extracted feature must support this observable behavior: sublist merge/delete invariants validated via _check after _reset. Required observable cases include delete random invariants; check invariants.
-- **B006** — The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 1 listed members with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.SortedList`, `featurelifted.SortedList._check`, `featurelifted.SortedList._lists`, `featurelifted.SortedList._maxes`, `featurelifted.SortedList._reset`, `featurelifted.SortedList.add`, `featurelifted.SortedList.bisect`, `featurelifted.SortedList.bisect_left`, `featurelifted.SortedList.bisect_right`, `featurelifted.SortedList.index`, `featurelifted.SortedList.irange`, `featurelifted.SortedList.islice`, and 2 listed members with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: sortedcontainers.
 <!-- featureliftbench:behavior-clauses:end -->

@@ -16,6 +16,7 @@ def test_required_api_surface():
     assert Post is not None
     assert Post is not None
     assert hasattr(Post, 'to_dict')
+    assert hasattr(Post, '__getitem__')
     assert callable(parse)
     assert callable(load)
     assert callable(loads)

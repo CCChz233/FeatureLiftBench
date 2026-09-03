@@ -26,6 +26,7 @@ from featurelifted import (
   - `ExtensionManager.map(self, func: 'Callable[..., Any]', *args: 'Any', **kwds: 'Any') -> 'list[Any]'`
   - `ExtensionManager.names(self) -> 'list[str]'`
   - `ExtensionManager.namespace` attribute must exist on instances
+  - `ExtensionManager.__getitem__(self, name: 'str') -> 'Extension'`
 - `NamedExtensionManager(namespace: 'str', names: 'Iterable[str]', entry_points: 'Iterable[Any] | None' = None, invoke_on_load: 'bool' = False, invoke_args: 'tuple[Any, ...] | None' = None, invoke_kwds: 'dict[str, Any] | None' = None, name_order: 'bool' = False, propagate_map_exceptions: 'bool' = False, on_load_failure_callback: 'Callable[[ExtensionManager, Any, BaseException], None] | None' = None, on_missing_entrypoints_callback: 'Callable[[Iterable[str]], None] | None' = None, *, conflict_resolver: 'Callable[[str, str, list[Extension]], Extension]' = <function ignore_conflicts>) -> 'None'` class constructor
   - `NamedExtensionManager.names(self) -> 'list[str]'`
 - `NoMatches` must be importable and raisable
@@ -46,7 +47,7 @@ from featurelifted import (
 - map and map_method invoke callbacks across loaded extensions and preserve or propagate results and configured exceptions.
 - Duplicate names follow ignore_conflicts or raise MultipleMatches under error_on_conflict.
 - NamedExtensionManager filters requested names, reports missing names through its callback, and can preserve requested order.
-- The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, `featurelifted.Extension`, and 1 listed members with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.ExtensionManager.__getitem__`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, and 2 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -78,6 +79,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B007** — map and map_method invoke callbacks across loaded extensions and preserve or propagate results and configured exceptions.
 - **B008** — Duplicate names follow ignore_conflicts or raise MultipleMatches under error_on_conflict.
 - **B009** — NamedExtensionManager filters requested names, reports missing names through its callback, and can preserve requested order.
-- **B010** — The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, `featurelifted.Extension`, and 1 listed members with the kinds and callable signatures listed in this contract.
+- **B010** — The package exposes the required task API paths `featurelifted.EntryPointSpec`, `featurelifted.ExtensionManager`, `featurelifted.ExtensionManager.map`, `featurelifted.ExtensionManager.names`, `featurelifted.ExtensionManager.namespace`, `featurelifted.ExtensionManager.__getitem__`, `featurelifted.NamedExtensionManager`, `featurelifted.NamedExtensionManager.names`, `featurelifted.NoMatches`, `featurelifted.MultipleMatches`, `featurelifted.error_on_conflict`, `featurelifted.ignore_conflicts`, and 2 listed members with the kinds and callable signatures listed in this contract.
 - **B011** — the submitted package does not import forbidden upstream packages: stevedore.
 <!-- featureliftbench:behavior-clauses:end -->

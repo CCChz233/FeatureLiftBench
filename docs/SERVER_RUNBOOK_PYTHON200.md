@@ -1,10 +1,12 @@
 # Server Runbook: Python-200' Main
 
-> **Status: current · Last verified: 2026-09-02**
+> **Status: current · Last verified: 2026-09-03**
 > Paper suite: frozen Python-150 + Hard-50 (`python200_hard`). Full Flash table
 > is **not** run. Condition: Full-Repository / No-Hint, benchmark tests hidden,
 > one task attempt.
-> Formal freeze: `474862c22165ac9cc8ab895f1e265dd0bb43da81f52e77561b29fde44798a8d8`.
+> Formal freeze: `6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`
+> (v2). Predecessor `474862c22165ac9cc8ab895f1e265dd0bb43da81f52e77561b29fde44798a8d8`
+> keeps the 132/200 Flash audit headline.
 > Launch Official Main or current V1 only. Rescue+ / Lite checker arms are
 > discontinued. DeepSeek Harness / Codex is optional and is not Official Main;
 > see [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md).
@@ -25,47 +27,48 @@
 
 Do not print `.env`, API keys, or the full private agent configuration into logs.
 
-## 2. Verify the Checkout
+## 2. Upload freeze v2 (the only paper pack)
 
-The public Git checkout intentionally omits unreleased Hard-50 hidden tests,
-reference solutions, Oracle submissions and newly collected wheels.  Build the
-checksummed overlay on the preparation machine, then transfer both files:
-
-```bash
-python3.12 scripts/build_python200_server_overlay.py
-scp exports/server-overlays/python200-prime-server-overlay-769f2486c0ab.tar.gz* \
-  <server>:<transfer-directory>/
-```
-
-On the server, clone the public repository at the recorded commit.  Verify the
-archive before applying it at the repository root:
+Copy the whole folder `exports/python200-prime-freeze-v2/` to the server.
+Do not upload `exports/archive/` or anything under `server-overlays/`.
+Instructions: `exports/python200-prime-freeze-v2/README.md`.
 
 ```bash
-python3.12 scripts/build_python200_server_overlay.py \
-  --verify <transfer-directory>/python200-prime-server-overlay-769f2486c0ab.tar.gz
-tar -xzf <transfer-directory>/python200-prime-server-overlay-769f2486c0ab.tar.gz \
-  -C <FeatureLiftBench-checkout>
+scp -r exports/python200-prime-freeze-v2 <server>:<transfer-directory>/
 ```
 
-For a server without network access, build with `--include-source-archives` and
-transfer the resulting `-offline.tar.gz` instead.  Never put `.env` in this
-overlay; configure credentials directly on the server.
+On the server:
+
+```bash
+cd <transfer-directory>/python200-prime-freeze-v2
+shasum -a 256 -c SHA256SUMS
+mkdir -p FeatureLiftBench
+tar -xzf worktree.tar.gz -C FeatureLiftBench
+python3.12 FeatureLiftBench/scripts/build_python200_server_overlay.py \
+  --verify overlay-offline.tar.gz
+tar -xzf overlay-offline.tar.gz -C FeatureLiftBench
+docker load < images.tar.gz
+```
+
+Never put `.env` in the pack; configure credentials on the server.
 
 After the overlay is applied:
 
 ```bash
-git rev-parse HEAD
+cd FeatureLiftBench
 python3.12 scripts/build_python200_prime_candidate_freeze.py --check
-python3.12 scripts/build_python200_prime_v3_compat_freeze.py --check
+python3.12 scripts/build_python200_prime_final_freeze.py --check \
+  --agent-image featureliftbench-agent:python200-prime-212930ea \
+  --evaluator-image featureliftbench-eval:python200-prime-212930ea
 python3.12 benchmark/selection/scripts/materialize_python200_hard_release.py --check
-python3.12 benchmark/selection/scripts/check_python200_baseline_freeze.py
 python3.12 scripts/check_task_lifecycle.py
-python3.12 scripts/materialize_full_sources.py \
-  --registry benchmark/sources/python200_hard_registry.json --workers 8
 ```
 
-`check_python200_baseline_freeze.py` only protects the frozen Python-150 tree.
-It does not admit Hard-50 into `benchmark/tasks/`. Do not bypass catalog or
+`check_python200_baseline_freeze.py` pins the frozen Python-150 tree
+(`0b106842…`) and does not admit Hard-50 into `benchmark/tasks/`. Freeze v2
+repaired overlapping Python-150 packages, so that check now reports drift on
+the live tree. Do not roll back those repairs to make the 150 check green.
+Paper identity is Python-200′ freeze v2 `6c20ff03…`. Do not bypass catalog or
 symlink checks for a formal run.
 
 ## 3. Build and Pin Images
@@ -74,15 +77,15 @@ Build the exact frozen Agent and evaluator images, then record their immutable
 identities:
 
 ```bash
-export FEATURELIFTBENCH_BENCHMARK_ID=769f2486c0abb9f0df6324f74b8313da6e1711febce1208c945a2511bd3a7c18
+export FEATURELIFTBENCH_BENCHMARK_ID=212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254
 export FEATURELIFTBENCH_DOCKER_PLATFORM=linux/amd64
 FEATURELIFTBENCH_INSTALL_OPENHANDS=1 \
-  ./docker/build_agent_image.sh featureliftbench-agent:python200-prime-769f2486
-./docker/build_eval_image.sh featureliftbench-eval:python200-prime-769f2486
+  ./docker/build_agent_image.sh featureliftbench-agent:python200-prime-212930ea
+./docker/build_eval_image.sh featureliftbench-eval:python200-prime-212930ea
 
 python3.12 scripts/build_python200_prime_final_freeze.py --check \
-  --agent-image featureliftbench-agent:python200-prime-769f2486 \
-  --evaluator-image featureliftbench-eval:python200-prime-769f2486
+  --agent-image featureliftbench-agent:python200-prime-212930ea \
+  --evaluator-image featureliftbench-eval:python200-prime-212930ea
 ```
 
 Use those identities explicitly in every model run. If extending an existing baseline, use the

@@ -21,9 +21,11 @@ from featurelifted import (
   - `MultiDict.add(self, key: 'str', value: 'object') -> 'None'`
   - `MultiDict.popall(self, key: 'str') -> 'list[object]'`
   - `MultiDict.popone(self, key: 'str', default=Ellipsis)`
+  - `MultiDict.__getitem__(self, key: 'str') -> 'object'`
 - `CIMultiDict(*args, **kwargs) -> 'None'` class constructor
   - `CIMultiDict.add(self, key: 'str', value: 'object') -> 'None'`
   - `CIMultiDict.getall(self, key: 'str') -> 'list[object]'`
+  - `CIMultiDict.__getitem__(self, key: 'str') -> 'object'`
 - `MultiDictProxy(base: 'MultiDict') -> 'None'` class constructor
 - `CIMultiDictProxy(base: 'CIMultiDict') -> 'None'` class constructor
   - `CIMultiDictProxy.add(self, key: 'str', value: 'object') -> 'None'`
@@ -34,7 +36,7 @@ from featurelifted import (
 - getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value.
 - MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state.
 - CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations.
-- The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.MultiDict.__getitem__`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -58,6 +60,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — getall and getone retrieve repeated values, while popone removes the most recent matching value and popall removes every matching value.
 - **B003** — MultiDictProxy and CIMultiDictProxy reflect subsequent mutations of their underlying mappings without exposing independent copied state.
 - **B004** — CIMultiDict folds keys case-insensitively for lookup, replacement, deletion, and repeated-value operations.
-- **B005** — The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.MultiDict`, `featurelifted.MultiDict.add`, `featurelifted.MultiDict.popall`, `featurelifted.MultiDict.popone`, `featurelifted.MultiDict.__getitem__`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.add`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.MultiDictProxy`, `featurelifted.CIMultiDictProxy`, `featurelifted.CIMultiDictProxy.add` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: multidict.
 <!-- featureliftbench:behavior-clauses:end -->

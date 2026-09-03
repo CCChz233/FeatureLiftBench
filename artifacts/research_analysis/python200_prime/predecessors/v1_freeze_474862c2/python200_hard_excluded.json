@@ -1,0 +1,1378 @@
+{
+  "schema_version": "featureliftbench.python200_hard_excluded.v2",
+  "parent_suite_id": "python200-hard-full-repository-no-hint-unreleased",
+  "protocol_version": "v2",
+  "n": 32,
+  "tasks": [
+    {
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "failed_rules": [
+        "R-SURFACE",
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "CIMultiDict.__getitem__",
+            "CIMultiDict.__setitem__"
+          ],
+          "input_sha256": "af06182a35a370d6d12f3a879fc43ff8921bd1f26f4c4bb3160d9d9e2c350536"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "aiohttp.helpers.build_url"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "apispec__plugin_documenter_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "APISpec.components"
+          ],
+          "input_sha256": "0c41f805bbe5294e06cb80777cecab540641e6590cc763f7847289acd7a55b1e"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "asttokens__token_annotate_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "ASTTokens.tree"
+          ],
+          "input_sha256": "8f20b7de83c2cff1551e3f95d0529bda491db3b5bddd26608d65382e0b01226e"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "authlib__oauth2_server_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "OAuth2Request.payload"
+          ],
+          "input_sha256": "ec346a5ebae48992cb5ba2117c8f1d8f18b948015de95dad2b5e14320742b006"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "beaker__session_cache_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "Session.__setitem__",
+            "Session.get",
+            "Session.id"
+          ],
+          "input_sha256": "0d65104af602f1db7e438d4130aa2be6361c9743d46a27edf01453a5ee1bb0f4"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "01e38ea2dd5d0243b8a577f25eac745596e770f8077f074fbff2b473d48ad63e"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "build._builder.parse_build_system_table"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "cachetools__cache_eviction_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "LFUCache.__contains__",
+            "LFUCache.__getitem__",
+            "LFUCache.__setitem__",
+            "LRUCache.__contains__",
+            "LRUCache.__getitem__",
+            "LRUCache.__setitem__",
+            "TTLCache.__contains__",
+            "TTLCache.__getitem__",
+            "TTLCache.__setitem__"
+          ],
+          "input_sha256": "3d4e8032e57147862ced4fecdd35d95a1af65c4b79ac3824bdd310db1cd7e106"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "click__lazy_command_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "6a8a798166e2a0fc3a99517ff921f177297c6cd9021bcb1f55a5523134060b32"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "click.core.LazyCommandCollection"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "configobj__roundtrip_config_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "ConfigObj.__getitem__"
+          ],
+          "input_sha256": "a48ac69b5856ea0c67345f29497ace3a9be0db62c5625151ad831a73f846c948"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "07a734650117b3f0c1aded28a02ae07406e472d2ad7af359297a8a35b29e6399"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "cookiecutter.repository.RepoFinder"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4c4e1442f1b4a071a46f0d9fe77520fdad08125df069b10525ce28a5fb2ba7af"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "dateutil.zoneinfo.ZoneResolver"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "deepdiff__deep_compare_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "DeepDiff.__contains__"
+          ],
+          "input_sha256": "4cee2da5e196f0da3b26a38fa6350bd4c086e6a2a514a86da43a8e8925e1750b"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "diskcache__eviction_policy_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e47434153de5957ead36621da5cfc8ced913142c5b7586fd4f373074efba5646"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "diskcache.core.EvictionPolicyPlanner"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "fs__url_opener_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "626d7e179a3fb268d86e1afd5b612ffe09f50c1b859010e321ecf1510bf8b958"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "fs.opener.registry.FSOpenerRegistry"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "b35820727e06c09a5eb5d3d2ac2421a3284e81bd67a0ff741a92cf4ad686ee34"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "hatchling.metadata.core.normalize_project_metadata"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "EntryPoints.__getitem__"
+          ],
+          "input_sha256": "dcfb7d5fddfc5e7011124048ee8d7a3c898cc6460b5ee1b85a1f1c762582e602"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "74bf68852677857b2d7214ad1c39bcb395da3436ec3302aca5709f77c278fc7d"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "installer.records.parse_wheel_record"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "intervaltree__interval_tree_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "IntervalTree.__contains__",
+            "IntervalTree.__getitem__"
+          ],
+          "input_sha256": "5cea2ec91fb9bbce1e5b2b068c474a17ef89d1e21ab36157ec332487e9c843ae"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "jsonpointer__resolve_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "JsonPointer.__contains__"
+          ],
+          "input_sha256": "46889243bc959f265609f7b37c12cb458554aee025312c9bc2b167e02eb78205"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "CIMultiDict.__getitem__",
+            "MultiDict.__getitem__"
+          ],
+          "input_sha256": "7041e0aa369026e001c32cc216cb038b8f9b838dd921b9a56e1f094daec39477"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "oslo_config__opt_group_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "ConfigOpts.host",
+            "ConfigOpts.port",
+            "ConfigOpts.timeout",
+            "ConfigOpts.worker"
+          ],
+          "input_sha256": "339bc41171ca9f772f4c797f9efae459359e3b8eb7959ea987cd06e9141e90d1"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "packaging__requirement_marker_specifier__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "SpecifierSet.__contains__"
+          ],
+          "input_sha256": "9a69a18ebd417ee061c0a6df91d6fa2006354a62fff759a7962fae7a7cb046d7"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "python_configuration__layered_config_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "Configuration.__getitem__",
+            "Configuration.y",
+            "ConfigurationSet.left",
+            "ConfigurationSet.right",
+            "ConfigurationSet.shared"
+          ],
+          "input_sha256": "c198e16b494307e70d3a6d560883eddcb859da31a4845d788c1918b7c2d70db0"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "python_frontmatter__roundtrip_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "Post.__getitem__"
+          ],
+          "input_sha256": "383e19f1dc72404a9d1aa51759563412531a919bbb796cafab3fe9da3105ac23"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "1107f9579f906fa543d198fe4f3bc1ca5f6e5187a64334ab0f5bcc5fdc18095a"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "readme_renderer.render_readme"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "d93ae941fe401f36e583917b0918288e978b7a56f5a2dd91f0ed82ff311db613"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "setuptools_scm.version.version_from_scm"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "SortedList.__delitem__"
+          ],
+          "input_sha256": "8aa8112fdcebde41f6785f0799f8fa8c938e700a9790d84411135c44e4a2a5a7"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "spiffworkflow__bpmn_engine_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "BpmnWorkflow.data"
+          ],
+          "input_sha256": "a29840dc8755b63a11d33e4593b2199d70dc723ca2889c0d955d6a3e9b8500e8"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "ExtensionManager.__getitem__"
+          ],
+          "input_sha256": "86827eddc8ee7f8bfef430af3a9900a508fb65d39a0eee605648bb8ad07d1cd8"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "failed_rules": [
+        "R-ENTRY"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "3cbfa31e6494427080b335f36007d90d3ed2b20d919a4cbdb192569fdb407aef"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "virtualenv.discovery.py_info.parse_spec"
+          ],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "webob__request_response_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "Response.body",
+            "Response.content_type",
+            "Response.json_body",
+            "Response.status_code"
+          ],
+          "input_sha256": "fa6b5d2455bc0f136783dd6a9dc253894946037c2fa629f9fed00dd12b82cb68"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    },
+    {
+      "task_id": "websockets__handshake_parse_core__001",
+      "failed_rules": [
+        "R-SURFACE"
+      ],
+      "checks": [
+        {
+          "rule": "R-PACKAGE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "5e1203a73bc2c44e9b423d48e5b39c10d3660e0dae84b07d54384e7cc7f61625"
+        },
+        {
+          "rule": "R-ORACLE",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "e5dd28ef2dbc55f8fa32d8fe76892e8907ae74f87b2b99334f7b68407469485b"
+        },
+        {
+          "rule": "R-SURFACE",
+          "status": "fail",
+          "mechanical_result": "hit",
+          "adjudication": "confirmed_violation",
+          "evidence": [
+            "Headers.__getitem__"
+          ],
+          "input_sha256": "6077a96f44e09bad0b9325fd82ca067b2ad74a1575ce3f7da2dd8cc05581b69e"
+        },
+        {
+          "rule": "R-ENTRY",
+          "status": "pass",
+          "mechanical_result": "clear",
+          "adjudication": "not_needed",
+          "evidence": [],
+          "input_sha256": "4377c73640ac969b4950a77e81aee6b8a6a055fb643d28a8049192a6d8a9157e"
+        }
+      ]
+    }
+  ]
+}

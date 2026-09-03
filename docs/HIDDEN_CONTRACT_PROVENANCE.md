@@ -1,6 +1,6 @@
 # Hidden contract provenance audit
 
-> **Status: current candidate remediation complete; historical consensus still pending · Started: 2026-08-20 · Last checked: 2026-08-31**
+> **Status: current candidate remediation complete; historical consensus still pending · Started: 2026-08-20 · Last checked: 2026-09-02**
 > 这是 RQ4 机制标注，不是新 Agent 方法。不看 Hidden 测试源码当「仓库证据」。
 > 切片：Flash Main Hidden-failure 并集 33 题。
 
@@ -81,3 +81,13 @@ Machine-readable ledger:
 This is an AI-assisted maintainer rejudgement, not independent human gold. It
 does not retroactively make the old Flash-33 labels or old model runs eligible
 for the new freeze.
+
+2026-09-02 inventory (Gate 0 **passed** on the R5 re-run under the amended
+protocol path `budget_exhausted_with_valid_record`; Gate 1 unblocked but
+deliberately not run, so still only wave3/wave10; initial labels replayable and
+not gold):
+[`reports/agentic_evidence/GATE_CHECK_20260902.md`](../reports/agentic_evidence/GATE_CHECK_20260902.md).
+
+Until Flash-33 reaches 33/33 dual-auditor consensus, Hidden provenance is a
+**declared limitation**, not a result: no Hidden-fairness number here may be
+reported as gold, and Gate 2 sensitivity analysis cannot be run.

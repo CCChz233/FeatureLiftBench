@@ -1,6 +1,6 @@
 # Harness-Bench 结构映射与 FeatureLiftBench 写作方案
 
-> **Status: current · Last verified: 2026-08-30**  
+> **Status: current · Last verified: 2026-09-02**  
 > **参考论文：** *Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows* (arXiv:2605.27922v1, 16 pages).  
 > **用途：** 只借鉴论证结构和证据排布，不复制其科学主轴、评分公式或实验矩阵。
 
@@ -223,7 +223,7 @@ Harness-Bench 的正文约 9 页，剩余为参考文献和附录。
 | 部分 | 现在能否写 | 主要材料 | 未闭环项 |
 | --- | --- | --- | --- |
 | Abstract | 可写结构稿 | 任务、规模、指标、机制证据 | 最终主表数字不能填 |
-| Introduction | 可写 80%–90% | 任务定义、相邻基准差异、贡献 | 完整 related-work 引用待补 |
+| Introduction | 可写 90% | 任务定义、相邻基准差异、贡献 | 最终主表数字仍空；related-work 主引用已进 LaTeX 稿 |
 | Benchmark | 可写 90% | 冻结套件、taxonomy、设计和评测文档 | 入题 attrition 和红队细节待浓缩 |
 | Evaluation / Setup | 可写 90% | `EVALUATION.md`、freeze、images、profiles | 最终 paper bundle 尚未冻结 |
 | Main Results | 只能写表结构与证据边界 | 收到包审计、旧套件历史对照 | 合格 Python-200′ 主表与新套件跨模型 |

@@ -20,8 +20,13 @@ from featurelifted import (
 
 - `Configuration(config_: Mapping[str, Any], lowercase_keys: bool = False)` class constructor
   - `Configuration.__init__(self, config_: Mapping[str, Any], lowercase_keys: bool = False)`
+  - `Configuration.__getitem__(self, item: str) -> Union[ForwardRef('Configuration'), Any]`
+  - `Configuration.y` attribute must exist on instances
 - `ConfigurationSet(*configs: Configuration)` class constructor
   - `ConfigurationSet.__init__(self, *configs: Configuration)`
+  - `ConfigurationSet.left` attribute must exist on instances
+  - `ConfigurationSet.right` attribute must exist on instances
+  - `ConfigurationSet.shared` attribute must exist on instances
 - `config_from_dict(data: Mapping, *, lowercase_keys: bool = False) -> Configuration`
 - `config_from_env(prefix: str, separator: str = '__', *, strip_prefix: bool = True) -> Configuration`
 - `config_from_path(path: str, remove_level: int = 1) -> Configuration`

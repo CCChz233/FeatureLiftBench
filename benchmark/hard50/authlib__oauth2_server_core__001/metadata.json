@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "remaining",
@@ -132,6 +132,10 @@
             "path": "featurelifted.OAuth2Request.__init__",
             "kind": "method",
             "signature": "(self, method, uri, body=None, headers=None)"
+          },
+          {
+            "path": "featurelifted.OAuth2Request.payload",
+            "kind": "attribute"
           }
         ]
       }
@@ -314,6 +318,15 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.OAuth2Request.payload",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_hidden_behavior.py::test_save_token_records_issued_token",
+          "hidden_tests/test_hidden_behavior.py::test_unknown_client_is_invalid",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -331,6 +344,6 @@
     "oracle_loc": 16908,
     "oracle_dependency_count": 1
   },
-  "spec_hash": "f608f14bd08e7c16465413764f11bfbafcb0dc7b5133f855b796881a3767e2a7",
-  "generated_task_hash": "ddbce0d3dacfdba88b00187d91a2fa7b63a1528299725a31b9d78744dd8f076d"
+  "spec_hash": "b82cf97cf36e03ced7d5670b8996479dd7379335871950a910460a46d47dd633",
+  "generated_task_hash": "6f29ac4a096eebf81ebf84ebb69cef390877b4ca0116e52dd3cbf4e776300f96"
 }

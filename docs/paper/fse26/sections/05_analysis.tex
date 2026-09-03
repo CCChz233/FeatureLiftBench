@@ -70,6 +70,18 @@ Current agents can often locate and reuse relevant implementation evidence,
 but contract closure remains a substantial failure surface. A stronger
 localization claim requires independent trajectory-level localization labels.
 
+On the received Flash package, eight tasks first fail Hidden after passing
+build and Public. An AI-assisted reading of those eight public contracts
+(not independent human gold) finds four obligations recoverable from the
+published specification or \texttt{required\_api}, and four that are
+open, contradicted, or absent in the public contract. The recoverable
+failures are therefore not explained by missing Public tests; the other four
+bound how much any agent-side method can win on this slice. Several of the
+eight also appear in the predecessor-freeze surface/entry violation list
+(Appendix~\ref{app:violators}), so Hidden-first failure and contract
+incompleteness can co-occur on that freeze. We do not treat the 4/8 split as a suite-wide
+fairness rate.
+
 \subsection{Public Feedback Separates Two Information Layers}
 
 To test whether Main failures are caused simply by the absence of executable

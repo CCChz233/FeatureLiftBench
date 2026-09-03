@@ -18,6 +18,10 @@ from featurelifted import (
 - `Request(environ, charset=None, unicode_errors=None, decode_param_names=None, **kw)` class constructor
   - `Request.blank(cls, path, environ=None, base_url=None, headers=None, POST=None, **kw)`
 - `Response(body=None, status=None, headerlist=None, app_iter=None, content_type=None, conditional_response=None, charset=..., **kw)` class constructor
+  - `Response.body` attribute must exist on instances
+  - `Response.content_type` attribute must exist on instances
+  - `Response.json_body` attribute must exist on instances
+  - `Response.status_code` attribute must exist on instances
 
 ## Required Behavior
 

@@ -27,6 +27,7 @@ from featurelifted import (
 - `Specifier(spec: 'str' = '', prereleases: 'bool | None' = None) -> 'None'` class constructor
 - `SpecifierSet(specifiers: 'str' = '', prereleases: 'bool | None' = None) -> 'None'` class constructor
   - `SpecifierSet.filter(self, iterable: 'Iterable[UnparsedVersionVar]', prereleases: 'bool | None' = None) -> 'Iterator[UnparsedVersionVar]'`
+  - `SpecifierSet.__contains__(self, item: 'UnparsedVersion') -> 'bool'`
 - `Requirement(requirement_string: 'str') -> 'None'` class constructor
   - `Requirement.extras` attribute must exist on instances
   - `Requirement.marker` attribute must exist on instances
@@ -48,7 +49,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: parse PEP 508 requirements with extras, URL requirements, specifiers, and environment markers. Required observable cases include requirements and markers api; invalid requirement is rejected; requirement urls extras and marker evaluation.
 - The extracted feature must support this observable behavior: parse and evaluate environment markers with and/or grouping, in/not in operators, extra handling, and default environment values. Required observable cases include requirements and markers api; marker boolean logic default environment and errors.
 - The extracted feature must support this observable behavior: raise stable InvalidVersion, InvalidSpecifier, InvalidRequirement, and InvalidMarker errors for malformed input. Required observable cases include version normalization ordering and invalid inputs.
-- The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, `featurelifted.Marker.evaluate`, and 5 listed members with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.SpecifierSet.__contains__`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, and 6 listed members with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -73,6 +74,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: parse PEP 508 requirements with extras, URL requirements, specifiers, and environment markers. Required observable cases include requirements and markers api; invalid requirement is rejected; requirement urls extras and marker evaluation.
 - **B004** — The extracted feature must support this observable behavior: parse and evaluate environment markers with and/or grouping, in/not in operators, extra handling, and default environment values. Required observable cases include requirements and markers api; marker boolean logic default environment and errors.
 - **B005** — The extracted feature must support this observable behavior: raise stable InvalidVersion, InvalidSpecifier, InvalidRequirement, and InvalidMarker errors for malformed input. Required observable cases include version normalization ordering and invalid inputs.
-- **B006** — The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, `featurelifted.Marker.evaluate`, and 5 listed members with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.Version`, `featurelifted.Specifier`, `featurelifted.SpecifierSet`, `featurelifted.SpecifierSet.filter`, `featurelifted.SpecifierSet.__contains__`, `featurelifted.Requirement`, `featurelifted.Requirement.extras`, `featurelifted.Requirement.marker`, `featurelifted.Requirement.name`, `featurelifted.Requirement.specifier`, `featurelifted.Requirement.url`, `featurelifted.Marker`, and 6 listed members with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: packaging.
 <!-- featureliftbench:behavior-clauses:end -->

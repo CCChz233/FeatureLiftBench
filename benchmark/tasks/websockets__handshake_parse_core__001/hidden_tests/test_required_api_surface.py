@@ -17,6 +17,7 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(Headers, type)
     assert hasattr(Headers, 'get_all')
+    assert hasattr(Headers, '__getitem__')
     assert isinstance(Request, type)
     assert hasattr(Request, 'parse')
     assert isinstance(Response, type)

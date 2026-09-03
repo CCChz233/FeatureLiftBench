@@ -15,3 +15,5 @@ def test_required_api_surface():
     assert hasattr(IntervalTree, 'overlap')
     assert hasattr(IntervalTree, 'remove_envelop')
     assert hasattr(IntervalTree, 'remove_overlap')
+    assert hasattr(IntervalTree, '__contains__')
+    assert hasattr(IntervalTree, '__getitem__')

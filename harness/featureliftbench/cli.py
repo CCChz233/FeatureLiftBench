@@ -63,6 +63,11 @@ def main(argv: list[str] | None = None) -> int:
         help="N=3 oracle revalidation summary; defaults to the Python-200' audit",
     )
     benchmark_gate_parser.add_argument(
+        "--upstream-direct-summary",
+        type=Path,
+        help="G2' upstream-direct submission audit; defaults to the Python-200' audit",
+    )
+    benchmark_gate_parser.add_argument(
         "--adjudications",
         type=Path,
         help="CSV that confirms, overturns, or leaves mechanical findings unresolved",
@@ -754,6 +759,7 @@ def _cmd_validate_benchmark(args: argparse.Namespace) -> int:
     from .agent_config import _read_env_file
     from .benchmark_gate import (
         DEFAULT_ORACLE_SUMMARY,
+        DEFAULT_UPSTREAM_DIRECT_SUMMARY,
         GateRunOptions,
         MEETS,
         reviewer_config_from_environment,
@@ -785,6 +791,9 @@ def _cmd_validate_benchmark(args: argparse.Namespace) -> int:
                 task_ids=tuple(args.task_id),
                 source_materialization=not args.no_source_materialization,
                 oracle_summary=args.oracle_summary or DEFAULT_ORACLE_SUMMARY,
+                upstream_direct_summary=(
+                    args.upstream_direct_summary or DEFAULT_UPSTREAM_DIRECT_SUMMARY
+                ),
                 adjudications=args.adjudications,
                 reviewer=reviewer,
                 private_evaluator_policy_acknowledged=(

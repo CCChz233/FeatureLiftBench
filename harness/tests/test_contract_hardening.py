@@ -10,7 +10,7 @@ from featureliftbench.task_spec_migrate import _render_required_api_surface_test
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = ROOT / "scripts" / "harden_experiment_contracts.py"
+SCRIPT = ROOT / "scripts" / "archive" / "harden_experiment_contracts.py"
 SPEC = importlib.util.spec_from_file_location("harden_experiment_contracts", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 HARDENER = importlib.util.module_from_spec(SPEC)

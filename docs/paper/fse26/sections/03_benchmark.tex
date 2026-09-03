@@ -128,6 +128,34 @@ active suite manifest. A source mismatch, unavailable locked dependency,
 evaluator defect, or context-policy violation is an eligibility or
 infrastructure outcome rather than a model failure.
 
+\subsection{Contract Completeness of the Frozen Asset}
+\label{sec:standard-subset}
+
+The frozen Python-200$'$ asset is 200 tasks. Independently of agent scores, we
+label each task for whether Hidden tests stay inside the published
+\texttt{required\_api} and whether declared source entry points resolve in the
+pinned source snapshot. Protocol v2 uses three states:
+\texttt{meets\_standard}, \texttt{violates}, and \texttt{undetermined}. On the
+predecessor freeze, after adjudicating every mechanical hit, the labels were
+168/32/0: 32 tasks had confirmed undeclared Hidden members and/or dangling
+source entry points. Those defects were repaired in freeze v2 by disclosing
+already exercised API members, correcting dangling provenance pointers, and
+replacing six advisory overlapping Hidden cases. The published freeze~v2
+labels are 200/0/0 (Table~\ref{tab:standard-labels}). This is a
+\emph{contract-completeness} measurement of the same 200-task membership, not a
+new leaderboard and not a Hidden-fairness gold set. Agent scores from the
+predecessor freeze must not be transferred onto freeze~v2. Public/Hidden
+test-shape overlap (C4) was advisory; the six overlapping Hidden tests were
+rewritten before freeze~v2 and do not enter the three-state label.
+
+\begin{table}[t]
+  \caption{Freeze~v2 contract-completeness labels on the 200-task paper suite.
+  Predecessor freeze labels were 168/32/0. Not a Functional Pass table.}
+  \label{tab:standard-labels}
+  \centering
+  \input{tables/tab_python200_standard_labels}
+\end{table}
+
 \subsection{Run Protocol and Evidence Collection}
 
 Each run follows a setup--execution--evaluation pipeline

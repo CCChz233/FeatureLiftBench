@@ -25,6 +25,7 @@ from featurelifted import (
   - `JsonPointer.from_parts(parts)`
   - `JsonPointer.get_parts(self)`
   - `JsonPointer.path` attribute must exist on instances
+  - `JsonPointer.__contains__(self, item)`
 - `JsonPointerException` must be importable and raisable
 - `resolve_pointer(doc, pointer, default=<object object>)`
 - `set_pointer(doc, pointer, value, inplace=True)`
@@ -37,7 +38,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: set values including array append via '-' token. Required observable cases include resolve array index; set pointer inplace; array index rejects leading zero; set append via dash; set out of place deepcopy.
 - The extracted feature must support this observable behavior: escape and unescape ~ and / in token names. Required observable cases include escape round trip paths.
 - The extracted feature must support this observable behavior: default values for missing paths and invalid escapes. Required observable cases include json pointer path round trip; escape round trip paths; invalid escape raises; resolve missing with default.
-- The package exposes the required task API paths `featurelifted.EndOfList`, `featurelifted.JsonPointer`, `featurelifted.JsonPointer.from_parts`, `featurelifted.JsonPointer.get_parts`, `featurelifted.JsonPointer.path`, `featurelifted.JsonPointerException`, `featurelifted.resolve_pointer`, `featurelifted.set_pointer`, `featurelifted.escape`, `featurelifted.unescape` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.EndOfList`, `featurelifted.JsonPointer`, `featurelifted.JsonPointer.from_parts`, `featurelifted.JsonPointer.get_parts`, `featurelifted.JsonPointer.path`, `featurelifted.JsonPointer.__contains__`, `featurelifted.JsonPointerException`, `featurelifted.resolve_pointer`, `featurelifted.set_pointer`, `featurelifted.escape`, `featurelifted.unescape` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -59,6 +60,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B002** — The extracted feature must support this observable behavior: set values including array append via '-' token. Required observable cases include resolve array index; set pointer inplace; array index rejects leading zero; set append via dash; set out of place deepcopy.
 - **B003** — The extracted feature must support this observable behavior: escape and unescape ~ and / in token names. Required observable cases include escape round trip paths.
 - **B004** — The extracted feature must support this observable behavior: default values for missing paths and invalid escapes. Required observable cases include json pointer path round trip; escape round trip paths; invalid escape raises; resolve missing with default.
-- **B005** — The package exposes the required task API paths `featurelifted.EndOfList`, `featurelifted.JsonPointer`, `featurelifted.JsonPointer.from_parts`, `featurelifted.JsonPointer.get_parts`, `featurelifted.JsonPointer.path`, `featurelifted.JsonPointerException`, `featurelifted.resolve_pointer`, `featurelifted.set_pointer`, `featurelifted.escape`, `featurelifted.unescape` with the kinds and callable signatures listed in this contract.
+- **B005** — The package exposes the required task API paths `featurelifted.EndOfList`, `featurelifted.JsonPointer`, `featurelifted.JsonPointer.from_parts`, `featurelifted.JsonPointer.get_parts`, `featurelifted.JsonPointer.path`, `featurelifted.JsonPointer.__contains__`, `featurelifted.JsonPointerException`, `featurelifted.resolve_pointer`, `featurelifted.set_pointer`, `featurelifted.escape`, `featurelifted.unescape` with the kinds and callable signatures listed in this contract.
 - **B006** — the submitted package does not import forbidden upstream packages: jsonpointer.
 <!-- featureliftbench:behavior-clauses:end -->

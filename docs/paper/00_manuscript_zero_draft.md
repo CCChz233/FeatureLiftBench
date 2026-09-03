@@ -1,6 +1,6 @@
 # FeatureLiftBench: Evaluating Repository-Level Feature Extraction by Code Agents
 
-> **Status: draft · Last verified: 2026-08-30**  
+> **Status: draft · Last verified: 2026-09-02**  
 > **Manuscript stage:** zero draft for structure and argument review.  
 > **Not submission-ready.** The final Python-200′ leaderboard, cross-model matrix, Hidden-contract sensitivity analysis, image attestations, and bibliography are still pending. Bracketed `TBD` items must be replaced only from the frozen paper bundle.  
 > **Evidence rule:** historical Python-200 results use the superseded Python-150 + External-50 suite and are labeled accordingly. The received 132/200 candidate is an audit headline, not a main result.
@@ -49,19 +49,23 @@ This paper makes three main contributions:
 
 Executable software-engineering benchmarks such as issue-resolution and terminal-agent suites have established the importance of real repositories, tool use, sandboxed execution, and test-based verification. Their central unit is typically an issue, a failing test, or a user-requested modification to the original workspace. FeatureLiftBench instead evaluates extraction into a new independent artifact. The source repository is evidence, not the final execution environment, and passing requires behavior preservation after the source package is unavailable.
 
-**TODO(BIB):** position against SWE-bench, Terminal-Bench, repository-level repair benchmarks, and agent coding evaluations using exact citations and protocol differences.
+**TODO(BIB):** remaining secondary citations (API-migration surveys, additional
+agent-harness papers) can still be added; primary positioning against
+SWE-bench, Terminal-Bench, HumanEval/BigCodeBench/LiveCodeBench, RepoCoder,
+RepoBench, slicing/refactoring, and OpenHands/Harness-Bench is in
+`FeatureLiftBench_draft.tex` / `fse26/sections/02_related_work.tex`.
 
 ### 2.2 Code Generation, Repository Understanding, and Localization
 
 Function-level and repository-level code-generation benchmarks measure whether a model can synthesize code from natural-language or executable specifications. Repository-understanding and localization tasks measure whether a model can identify files, symbols, or regions relevant to a change. Feature lifting requires both inference and artifact construction, but success is not reducible to either. Locating the correct implementation is insufficient if transitive behavior or resources are omitted; generating a behaviorally similar implementation is insufficient if the public contract is not preserved.
 
-**TODO(BIB):** add HumanEval/BigCodeBench-style generation, RepoQA/localization, and repository-context studies.
+**TODO(BIB):** optional extras only; HumanEval/MBPP/DS-1000/BigCodeBench/LiveCodeBench and RepoQA-style localization (RepoCoder, RepoBench) are cited in the LaTeX draft.
 
 ### 2.3 Program Slicing, Modularization, and Library Extraction
 
 Feature extraction is related to program slicing, concern separation, refactoring, dependency analysis, and library migration. Classical techniques typically assume a program representation, slicing criterion, or human-specified boundary. FeatureLiftBench instead evaluates an autonomous agent from a natural-language public contract and a complete repository, and grades the final independent artifact by observable behavior. The benchmark does not claim to compute a minimal semantic slice; its frozen references are feasible comparison points, and RRES is a compactness proxy rather than a proof of optimality.
 
-**TODO(BIB):** integrate program slicing, concern modeling, refactoring, API migration, and extract-library work.
+**TODO(BIB):** optional extras only; slicing, concern separation, and refactoring survey citations are in the LaTeX draft.
 
 ### 2.4 Agent Execution and Information Boundaries
 

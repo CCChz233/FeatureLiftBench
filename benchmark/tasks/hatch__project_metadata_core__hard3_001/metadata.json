@@ -49,7 +49,7 @@
     ],
     "name": "normalize_project_metadata select_environment",
     "source_entrypoints": [
-      "hatchling.metadata.core.normalize_project_metadata"
+      "src.hatchling.metadata.core.ProjectMetadata"
     ]
   },
   "language": "python",
@@ -119,7 +119,7 @@
       }
     ],
     "source_entrypoints": [
-      "hatchling.metadata.core.normalize_project_metadata"
+      "src.hatchling.metadata.core.ProjectMetadata"
     ],
     "exclusions": [
       "network access",
@@ -246,7 +246,7 @@
       "independent_human_review": false
     }
   },
-  "task_revision": 4,
-  "spec_hash": "5d2fdb304437ea0f94c726cb302d3c0c46556512b3af409e1ad1ed7c65ce2b67",
+  "task_revision": 5,
+  "spec_hash": "9f1982ff80ae545753362455f8661206a12d1fb114eb195e789038a3e9e2b1b9",
   "generated_task_hash": "e0f2b9b1a3f463a85704136134936b0c7e257ab436c4fbeeeafc62677eb2e386"
 }

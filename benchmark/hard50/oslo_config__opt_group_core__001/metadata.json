@@ -3,7 +3,7 @@
   "language": "python",
   "difficulty": "hard",
   "status": "materialized_candidate",
-  "task_revision": 1,
+  "task_revision": 2,
   "tags": [
     "hard50",
     "pilot",
@@ -118,6 +118,22 @@
             "path": "featurelifted.ConfigOpts.__getattr__",
             "kind": "method",
             "signature": "(self, name: str) -> Any"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.host",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.port",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.timeout",
+            "kind": "attribute"
+          },
+          {
+            "path": "featurelifted.ConfigOpts.worker",
+            "kind": "attribute"
           }
         ]
       },
@@ -341,6 +357,46 @@
         "covered_by_tests": [
           "hidden_tests/test_required_api_surface.py::test_required_api_surface"
         ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.host",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+          "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+          "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.port",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+          "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+          "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.timeout",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+          "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+          "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
+      },
+      {
+        "path": "featurelifted.ConfigOpts.worker",
+        "covered_by_tests": [
+          "hidden_tests/test_hidden_behavior.py::test_cli_override_preserves_other_file_values",
+          "hidden_tests/test_hidden_behavior.py::test_default_and_group_are_independent",
+          "hidden_tests/test_hidden_behavior.py::test_group_file_overlay",
+          "hidden_tests/test_hidden_behavior.py::test_no_upstream_import_surface",
+          "hidden_tests/test_required_api_surface.py::test_required_api_surface"
+        ]
       }
     ],
     "manual_review": {
@@ -351,8 +407,8 @@
       "notes": "Checked required API closure, observable behavior wording, test mappings, and hidden-spec inclusion."
     }
   },
-  "spec_hash": "bcf6a850da1b32c1b54ed1dc94541dd4e27c9ea9bf3eda219daeac8ab1fcc385",
-  "generated_task_hash": "6ea39635ce832aa70eea3082fc2a0939d0d11cd7b041c21b4b766c331fec4161",
+  "spec_hash": "6b02ce1d13810e0977d13d3ed1736d3e60486f0fa63e5f898f49804f42d18f64",
+  "generated_task_hash": "2e76d8c231a01b2c6c465c71acdbcfb507f4db9e16723ec58e064a80a32fe0a3",
   "scoring_reference": {
     "copy_all_bytes": 637603,
     "copy_all_loc": 13304,

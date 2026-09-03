@@ -1,0 +1,33 @@
+task_id,suite_split,lift_type,failed_rules,surface,entry,evidence,in_fixed116,functional_pass_received,failure_stage
+aiohttp__url_params_core__hard3_001,python150,Adapted,R-SURFACE|R-ENTRY,True,True,CIMultiDict.__getitem__; CIMultiDict.__setitem__; aiohttp.helpers.build_url,False,False,hidden
+apispec__plugin_documenter_core__001,hard50,Adapted,R-SURFACE,True,False,APISpec.components,True,True,pass
+asttokens__token_annotate_core__001,hard50,Direct,R-SURFACE,True,False,ASTTokens.tree,True,True,pass
+authlib__oauth2_server_core__001,hard50,Adapted,R-SURFACE,True,False,OAuth2Request.payload,False,False,build
+beaker__session_cache_core__001,hard50,Adapted,R-SURFACE,True,False,Session.__setitem__; Session.get; Session.id,False,True,pass
+build__pyproject_backend_core__hard3_001,python150,Adapted,R-ENTRY,False,True,build._builder.parse_build_system_table,True,False,public
+cachetools__cache_eviction_core__001,python150,Direct,R-SURFACE,True,False,LFUCache.__contains__; LFUCache.__getitem__; LFUCache.__setitem__; LRUCache.__contains__; LRUCache.__getitem__; LRUCache.__setitem__; TTLCache.__contains__; TTLCache.__getitem__; TTLCache.__setitem__,True,True,pass
+click__lazy_command_core__hard3_001,python150,Adapted,R-ENTRY,False,True,click.core.LazyCommandCollection,True,False,public
+configobj__roundtrip_config_core__001,python150,Direct,R-SURFACE,True,False,ConfigObj.__getitem__,True,True,pass
+cookiecutter__repo_finder_core__hard3_001,python150,Composite,R-ENTRY,False,True,cookiecutter.repository.RepoFinder,True,False,public
+dateutil__zone_resolver_core__hard3_001,python150,Composite,R-ENTRY,False,True,dateutil.zoneinfo.ZoneResolver,True,False,hidden
+deepdiff__deep_compare_core__001,python150,Direct,R-SURFACE,True,False,DeepDiff.__contains__,False,True,pass
+diskcache__eviction_policy_core__hard3_001,python150,Composite,R-ENTRY,False,True,diskcache.core.EvictionPolicyPlanner,True,True,pass
+fs__url_opener_core__hard3_001,python150,Adapted,R-ENTRY,False,True,fs.opener.registry.FSOpenerRegistry,False,False,missing_submission
+hatch__project_metadata_core__hard3_001,python150,Adapted,R-ENTRY,False,True,hatchling.metadata.core.normalize_project_metadata,False,False,public
+importlib_metadata__entry_points_core__001,python150,Direct,R-SURFACE,True,False,EntryPoints.__getitem__,True,True,pass
+installer__wheel_record_core__hard3_001,python150,Adapted,R-ENTRY,False,True,installer.records.parse_wheel_record,True,False,hidden
+intervaltree__interval_tree_core__001,python150,Direct,R-SURFACE,True,False,IntervalTree.__contains__; IntervalTree.__getitem__,True,True,pass
+jsonpointer__resolve_core__001,python150,Direct,R-SURFACE,True,False,JsonPointer.__contains__,True,True,pass
+multidict__multidict_mutation_core__hard3_001,python150,Direct,R-SURFACE,True,False,CIMultiDict.__getitem__; MultiDict.__getitem__,False,False,public
+oslo_config__opt_group_core__001,hard50,Composite,R-SURFACE,True,False,ConfigOpts.host; ConfigOpts.port; ConfigOpts.timeout; ConfigOpts.worker,False,False,build
+packaging__requirement_marker_specifier__001,python150,Direct,R-SURFACE,True,False,SpecifierSet.__contains__,True,True,pass
+python_configuration__layered_config_core__001,hard50,Adapted,R-SURFACE,True,False,Configuration.__getitem__; Configuration.y; ConfigurationSet.left; ConfigurationSet.right; ConfigurationSet.shared,True,True,pass
+python_frontmatter__roundtrip_core__001,python150,Direct,R-SURFACE,True,False,Post.__getitem__,True,True,pass
+readme_renderer__content_type_core__hard3_001,python150,Adapted,R-ENTRY,False,True,readme_renderer.render_readme,True,False,public
+setuptools_scm__version_normalize_core__hard3_001,python150,Adapted,R-ENTRY,False,True,setuptools_scm.version.version_from_scm,False,False,missing_submission
+sortedcontainers__sorted_list_core__001,python150,Direct,R-SURFACE,True,False,SortedList.__delitem__,True,True,pass
+spiffworkflow__bpmn_engine_core__001,hard50,Composite,R-SURFACE,True,False,BpmnWorkflow.data,False,False,build
+stevedore__extension_manager_core__hard3_001,python150,Composite,R-SURFACE,True,False,ExtensionManager.__getitem__,True,True,pass
+virtualenv__interpreter_spec_core__hard3_001,python150,Adapted,R-ENTRY,False,True,virtualenv.discovery.py_info.parse_spec,False,False,missing_submission
+webob__request_response_core__001,hard50,Direct,R-SURFACE,True,False,Response.body; Response.content_type; Response.json_body; Response.status_code,False,True,pass
+websockets__handshake_parse_core__001,python150,Adapted,R-SURFACE,True,False,Headers.__getitem__,True,True,pass

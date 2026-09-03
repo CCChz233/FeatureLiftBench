@@ -10,5 +10,6 @@ from featurelifted import (
 def test_required_api_surface():
     assert isinstance(DeepDiff, type)
     assert hasattr(DeepDiff, 'get')
+    assert hasattr(DeepDiff, '__contains__')
     assert callable(parse_path)
     assert callable(extract)

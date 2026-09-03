@@ -178,6 +178,7 @@ scripts/archive/scratch/
 !scripts/build_python200_prime_candidate_freeze.py
 !scripts/build_python200_prime_compactness_registry.py
 !scripts/build_python200_prime_final_freeze.py
+!scripts/build_python200_prime_repair_ledger.py
 !scripts/build_python200_prime_v3_compat_freeze.py
 !scripts/build_python200_server_overlay.py
 !scripts/revalidate_python200_prime_oracles.py
@@ -216,8 +217,19 @@ benchmark/vendor-wheels/*.whl
 # uninitialized .git (no HEAD); git then treats them as submodules and
 # `git add .` fails with "does not have a commit checked out".
 exports/*
+!exports/README.md
 !exports/*.README.md
 !exports/*.sha256
+!exports/python200-prime-freeze-v2/
+exports/python200-prime-freeze-v2/*
+!exports/python200-prime-freeze-v2/README.md
+!exports/python200-prime-freeze-v2/SHA256SUMS
+!exports/archive/
+exports/archive/*
+!exports/archive/README.md
+!exports/server-overlays/
+exports/server-overlays/*
+!exports/server-overlays/README.md
 
 # Suite logs; not part of the tracked source tree.
 logs/

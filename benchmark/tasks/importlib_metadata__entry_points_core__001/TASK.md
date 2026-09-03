@@ -24,6 +24,7 @@ from featurelifted import (
   - `EntryPoint.module` attribute must exist on instances
 - `EntryPoints(iterable=(), /)` class constructor
   - `EntryPoints.select(self, **params)`
+  - `EntryPoints.__getitem__(self, name: 'str') -> 'EntryPoint'`
 - `PathDistribution(path: 'SimplePath') -> 'None'` class constructor
   - `PathDistribution.entry_points` attribute must exist on instances
 - `Sectioned()` class constructor
@@ -36,7 +37,7 @@ from featurelifted import (
 - The extracted feature must support this observable behavior: load entry point targets. Required observable cases include path distribution entry points.
 - The extracted feature must support this observable behavior: read entry points from PathDistribution metadata directories. Required observable cases include path distribution entry points.
 - The extracted feature must support this observable behavior: parse INI-style sectioned entry point config. Required observable cases include entry point value parsing and selection; sectioned entry point config; path distribution entry points.
-- The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract.
+- The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.EntryPoints.__getitem__`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract.
 
 ## Constraints
 
@@ -59,6 +60,6 @@ The stable clause IDs below define the public behavior contract. Hidden tests ma
 - **B003** — The extracted feature must support this observable behavior: load entry point targets. Required observable cases include path distribution entry points.
 - **B004** — The extracted feature must support this observable behavior: read entry points from PathDistribution metadata directories. Required observable cases include path distribution entry points.
 - **B005** — The extracted feature must support this observable behavior: parse INI-style sectioned entry point config. Required observable cases include entry point value parsing and selection; sectioned entry point config; path distribution entry points.
-- **B006** — The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract.
+- **B006** — The package exposes the required task API paths `featurelifted.EntryPoint`, `featurelifted.EntryPoint.name`, `featurelifted.EntryPoint.value`, `featurelifted.EntryPoint.attr`, `featurelifted.EntryPoint.module`, `featurelifted.EntryPoints`, `featurelifted.EntryPoints.select`, `featurelifted.EntryPoints.__getitem__`, `featurelifted.PathDistribution`, `featurelifted.PathDistribution.entry_points`, `featurelifted.Sectioned`, `featurelifted.Sectioned.section_pairs` with the kinds and callable signatures listed in this contract.
 - **B007** — the submitted package does not import forbidden upstream packages: importlib_metadata.
 <!-- featureliftbench:behavior-clauses:end -->

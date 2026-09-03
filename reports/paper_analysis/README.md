@@ -1,6 +1,6 @@
 # Paper analysis
 
-> **Status: current index · Last verified: 2026-09-01**
+> **Status: current index · Last verified: 2026-09-02**
 
 Current candidate evidence:
 
@@ -18,14 +18,19 @@ Current candidate evidence:
   failures and asks whether each obligation was recoverable from the public
   contract at all, which bounds how much any agent-side method can win;
   `clause_narrowing/evidence_packets.md` carries the per-task evidence.
+  `strict84_replacement_audit_20260902.md`.
+  Offline v2 analysis subset × received-package slice (81/96 on the fixed
+  eligible 116; not a leaderboard):
+  `offline_standard_slice_20260902/`.
 
-- `benchmark_tiers/`: **v1 provisional** two-state labels (`meets_standard` /
-  `violates`) and the 163-task list they produced. Superseded pending v2
-  adjudication; do not treat 163/37 as the paper analysis set.
-- `benchmark_tiers_v2_candidate/`: protocol v2 three-state candidate labels.
-  Official `python200_hard_standard_suite.json` is written only after
-  `undetermined = 0` and an explicit `--write-selection`.
-  Protocol: [BENCHMARK_VALIDATION_GATE.md](../../docs/BENCHMARK_VALIDATION_GATE.md) §13.
+- `benchmark_tiers/`: **v1 provisional** two-state labels. Historical only;
+  do not treat 163/37 as the paper analysis set.
+- `benchmark_tiers_v2_candidate/`: protocol v2 three-state labels and
+  `adjudications.csv`. Official analysis subset is
+  `benchmark/selection/python200_hard_standard_suite.json` (**168/32**,
+  `undetermined = 0`, schema v2). Precision/recall-sample notes:
+  `precision.md`. Protocol:
+  [BENCHMARK_VALIDATION_GATE.md](../../docs/BENCHMARK_VALIDATION_GATE.md) §13.
 
 Exploratory historical evidence:
 

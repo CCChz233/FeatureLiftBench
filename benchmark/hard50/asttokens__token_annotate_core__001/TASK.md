@@ -18,6 +18,7 @@ from featurelifted import (
   - `ASTTokens.__init__(self, source_text, parse=False, tree=None, filename='<unknown>', tokens=None)`
   - `ASTTokens.get_text(self, node, padded=True) -> str`
   - `ASTTokens.get_token(self, lineno, col_offset)`
+  - `ASTTokens.tree` attribute must exist on instances
 
 ## Required Behavior
 

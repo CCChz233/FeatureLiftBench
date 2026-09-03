@@ -93,7 +93,7 @@
       "behavior_id": "B006",
       "clause_kind": "api_surface",
       "spec_anchor": "metadata.json#/public_spec/behaviors/B006",
-      "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.TTLCache`, `featurelifted.LFUCache`, `featurelifted.cached`, `featurelifted.hashkey`, `featurelifted.typedkey` with the kinds and callable signatures listed in this contract."
+      "text": "The package exposes the required task API paths `featurelifted.LRUCache`, `featurelifted.LRUCache.maxsize`, `featurelifted.LRUCache.__contains__`, `featurelifted.LRUCache.__getitem__`, `featurelifted.LRUCache.__setitem__`, `featurelifted.TTLCache`, `featurelifted.TTLCache.__contains__`, `featurelifted.TTLCache.__getitem__`, `featurelifted.TTLCache.__setitem__`, `featurelifted.LFUCache`, `featurelifted.LFUCache.__contains__`, `featurelifted.LFUCache.__getitem__`, and 4 listed members with the kinds and callable signatures listed in this contract."
     },
     {
       "behavior_id": "B007",
@@ -156,7 +156,7 @@
     "metadata.json#/feature/excluded_behaviors",
     "metadata.json#/output"
   ],
-  "spec_sha256": "6f02c1d59a1d5f5c8b293ea2ff6b73ad0e6b4ce7c997466d1c56eebed81d4ec9",
+  "spec_sha256": "6fe6fa0069c77fc3b2836ee3bec275b09dc04e97fcaaf83c5366abf706dc5950",
   "task_id": "cachetools__cache_eviction_core__001",
   "unmapped_hidden_test_nodeids": [],
   "unmapped_public_test_nodeids": []

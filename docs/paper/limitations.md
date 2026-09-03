@@ -1,6 +1,6 @@
 # Known Limitations
 
-> **Documentation status: current · Last verified: 2026-08-28**
+> **Documentation status: current · Last verified: 2026-09-03**
 
 ## Dataset Construction
 
@@ -29,6 +29,18 @@
   not be promoted to headline authenticity claims without manual audit.
 - A behaviorally equivalent rewrite can pass even if it does not literally extract upstream
   code. The benchmark measures reconstruction under repository evidence, not internal intent.
+- **Hidden-contract provenance is unresolved.** Whether a Hidden obligation is recoverable from
+  the public inputs alone has only replayable AI-assisted initial labels
+  (`gold=false`; Explicit 11 / Recoverable 4 / Ambiguous 0 / Underdetermined 18 over Flash-33)
+  plus partial dual-auditor consensus on 13 of 33 cases. Gate 0 of the audit protocol passed on
+  2026-09-02, but the full 33/33 dual-auditor run was not executed, so no Hidden-fairness rate
+  is reported as gold and the Gate 2 sensitivity analysis is not available. Consequently we do
+  not claim that model failures are attributable to agent capability rather than unobservable
+  Hidden contracts.
+- **The 32 blocking contract defects from the predecessor freeze were repaired
+  in freeze v2** (21 undeclared-API-surface, 12 dangling source entrypoints,
+  one task in both, plus six advisory C4 Hidden rewrites). The published labels
+  are 200/0. The 168/32 cut is archived against freeze `474862c2`.
 
 ## Evaluation
 
@@ -48,7 +60,8 @@
 - 论文主套件 Python-200'（150+Hard-50）已有 DeepSeek V4 Flash OpenHands Main
   收到包的 **audit headline 132/200（66.0%）**，但仅 183 题启动：17 题
   freeze-preflight blocked、16 题离线依赖失败、59 题触发 context-window audit，三类
-  问题去重后需严格替换 84 题；闭环前不能作为最终主表。旧 Python-200
+  问题去重后需严格替换 84 题；闭环前不能作为最终主表。资格已干净的 116 题为
+  95/116；与前任 freeze 的 168 题符合标准相交为 **81/96**，只作 v1 敏感性，不进摘要，也不得改挂到 freeze v2。旧 Python-200
   （150+External-50）Main 在 OpenHands 下对 Flash / Qwen3.5 / Qwen3.6 / GPT-OSS
   完整，Pass@1 为 21.5%–72.5%；该套件上 pass-conditioned RRES 中位数贴 1.000，
   主要来自 External-50 copy-heavy，**不能**当新主表，也不能跨模型排紧凑度。

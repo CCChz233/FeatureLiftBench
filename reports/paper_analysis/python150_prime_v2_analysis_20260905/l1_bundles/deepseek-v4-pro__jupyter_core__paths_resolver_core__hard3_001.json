@@ -1,0 +1,50 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.jupyter_config_dir",
+    "function:featurelifted.jupyter_config_path",
+    "function:featurelifted.jupyter_data_dir",
+    "function:featurelifted.jupyter_path",
+    "function:featurelifted.jupyter_runtime_dir"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When JUPYTER_CONFIG_PATH or JUPYTER_PATH is set, its entries are ordered ahead of the applicable default search paths."
+    },
+    {
+      "id": "B002",
+      "text": "When JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, or JUPYTER_RUNTIME_DIR is set, the corresponding resolver returns that explicit directory."
+    },
+    {
+      "id": "B003",
+      "text": "Without overrides, the path resolvers return deterministic Linux, macOS, and Windows user and system defaults for the selected platform."
+    },
+    {
+      "id": "B004",
+      "text": "When JUPYTER_NO_CONFIG is enabled, normal user and environment config paths are suppressed according to isolated-config behavior."
+    },
+    {
+      "id": "B005",
+      "text": "When JUPYTER_PREFER_ENV_PATH changes preference, environment-level paths move before or after user paths without dropping either group."
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.jupyter_config_dir`, `featurelifted.jupyter_config_path`, `featurelifted.jupyter_data_dir`, `featurelifted.jupyter_path`, `featurelifted.jupyter_runtime_dir` with the kinds and callable signatures listed in this contr"
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: jupyter_core, platformdirs"
+    }
+  ],
+  "log": "        assert jupyter_data_dir(env={}, home=\"/Users/alice\", platform=\"darwin\") == \"/Users/alice/Library/Jupyter\"\n>       assert jupyter_data_dir(env={\"APPDATA\": r\"C:\\Users\\Alice\\AppData\\Roaming\"}, home=r\"C:\\Users\\Alice\", platform=\"win32\") == r\"C:\\Users\\Alice\\AppData\\Roaming\\jupyter\"\nE       AssertionError: assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'\nE         - C:\\Users\\Alice\\AppData\\Roaming\\jupyter\nE         + /tmp/featureliftbench-eval-dwv7a_1n/C:\\Users\\Alice\\AppData\\Roaming/jupyter\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:24: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\nfrom .paths import (\n    jupyter_config_dir,\n    jupyter_config_path,\n    jupyter_data_dir,\n    jupyter_path,\n    jupyter_runtime_dir,\n)\n\n__all__ = [\n    \"jupyter_config_dir\",\n    \"jupyter_config_path\",\n    \"jupyter_data_dir\",\n    \"jupyter_path\",\n    \"jupyter_runtime_dir\",\n]\n\n## featurelifted/__init__.py:5\n    jupyter_config_dir,\n    jupyter_config_path,\n    jupyter_data_dir,\n    jupyter_path,\n    jupyter_runtime_dir,\n)\n\n__all__ = [\n    \"jupyter_config_dir\",\n    \"jupyter_config_path\",\n    \"jupyter_data_dir\",\n    \"jupyter_path\",\n    \"jupyter_runtime_dir\",\n]\n\n## featurelifted/__init__.py:6\n    jupyter_config_path,\n    jupyter_data_dir,\n    jupyter_path,\n    jupyter_runtime_dir,\n)\n\n__all__ = [\n    \"jupyter_config_dir\",\n    \"jupyter_config_path\",\n    \"jupyter_data_dir\",\n    \"jupyter_path\",\n    \"jupyter_runtime_dir\",\n]\n\n## featurelifted/__init__.py:7\n    jupyter_data_dir,\n    jupyter_path,\n    jupyter_runtime_dir,\n)\n\n__all__ = [\n    \"jupyter_config_dir\",\n    \"jupyter_config_path\",\n    \"jupyter_data_dir\",\n    \"jupyter_path\",\n    \"jupyter_runtime_dir\",\n]"
+}

@@ -1,0 +1,79 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "requests_cache__cache_key_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "cache_retry_policy",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.CachePolicy",
+    "method:featurelifted.CachePolicy.from_headers",
+    "attribute:featurelifted.CachePolicy.expiration_seconds",
+    "attribute:featurelifted.CachePolicy.should_store",
+    "function:featurelifted.create_key",
+    "function:featurelifted.get_expiration",
+    "function:featurelifted.create_cache_key",
+    "function:featurelifted.normalize_body",
+    "function:featurelifted.normalize_headers",
+    "function:featurelifted.normalize_params"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "create_key normalizes method, URL, parameters, selected headers, and body before returning a deterministic cache-key digest."
+    },
+    {
+      "id": "B002",
+      "text": "create_cache_key reads request-like objects and produces the same key as create_key with equivalent explicit fields."
+    },
+    {
+      "id": "B003",
+      "text": "normalize_url lowercases scheme and host, merges explicit parameters, sorts query items, and preserves key-only or repeated parameters."
+    },
+    {
+      "id": "B004",
+      "text": "normalize_params sorts parameters and redacts configured ignored values without removing their keys."
+    },
+    {
+      "id": "B005",
+      "text": "normalize_headers includes only matched headers, normalizes names and whitespace, and deterministically orders multi-value content."
+    },
+    {
+      "id": "B006",
+      "text": "normalize_body canonicalizes JSON key order and form-encoded parameters and redacts ignored values in both body forms."
+    },
+    {
+      "id": "B007",
+      "text": "get_matched_headers returns the normalized header subset requested by match_headers and excludes unmatched headers."
+    },
+    {
+      "id": "B008",
+      "text": "CachePolicy.from_headers interprets Cache-Control and Expires headers into storage and expiration decisions."
+    },
+    {
+      "id": "B009",
+      "text": "get_expiration returns max-age seconds, Expires relative to now, no-store suppression, or the declared default when no directive applies."
+    },
+    {
+      "id": "B010",
+      "text": "`Cache-Control: max-age=N` sets expiration to `N` seconds."
+    },
+    {
+      "id": "B011",
+      "text": "Use `default` expiration when no cache header applies."
+    },
+    {
+      "id": "B012",
+      "text": "The package exposes the required task API paths `featurelifted.CachePolicy`, `featurelifted.CachePolicy.from_headers`, `featurelifted.CachePolicy.expiration_seconds`, `featurelifted.CachePolicy.should_store`, `featurelifted.create_key`, `featurelifted.get_expiration`, `featurelif"
+    },
+    {
+      "id": "B013",
+      "text": "the submitted package does not import forbidden upstream packages: requests_cache, requests, url_normalize"
+    }
+  ],
+  "log": ">       assert headers[\"accept\"] == \"application/json, text/html\"\nE       KeyError: 'accept'\n/workspace/evaluation-capsule/<hidden> KeyError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:27\n__all__ = [\n    'CachePolicy',\n    'create_cache_key',\n    'create_key',\n    'get_expiration',\n    'get_matched_headers',\n    'normalize_body',\n    'normalize_headers',\n    'normalize_params',\n    'normalize_url',\n]\n\n# Maximum JSON request body size that will be filtered and normalized\nMAX_NORM_BODY_SIZE = 10 * 1024 * 1024\n\nKVList = list[tuple[str, str]]\nParamList = Optional[Iterable[str]]\n\nDEFAULT_PORTS = {\n\n## featurelifted/__init__.py:28\n    'CachePolicy',\n    'create_cache_key',\n    'create_key',\n    'get_expiration',\n    'get_matched_headers',\n    'normalize_body',\n    'normalize_headers',\n    'normalize_params',\n    'normalize_url',\n]\n\n# Maximum JSON request body size that will be filtered and normalized\nMAX_NORM_BODY_SIZE = 10 * 1024 * 1024\n\nKVList = list[tuple[str, str]]\nParamList = Optional[Iterable[str]]\n\nDEFAULT_PORTS = {\n    'ftp': '21',\n\n## featurelifted/__init__.py:29\n    'create_cache_key',\n    'create_key',\n    'get_expiration',\n    'get_matched_headers',\n    'normalize_body',\n    'normalize_headers',\n    'normalize_params',\n    'normalize_url',\n]\n\n# Maximum JSON request body size that will be filtered and normalized\nMAX_NORM_BODY_SIZE = 10 * 1024 * 1024\n\nKVList = list[tuple[str, str]]\nParamList = Optional[Iterable[str]]\n\nDEFAULT_PORTS = {\n    'ftp': '21',\n    'http': '80',\n\n## featurelifted/__init__.py:30\n    'create_key',\n    'get_expiration',\n    'get_matched_headers',\n    'normalize_body',\n    'normalize_headers',\n    'normalize_params',\n    'normalize_url',\n]\n\n# Maximum JSON request body size that will be filtered and normalized\nMAX_NORM_BODY_SIZE = 10 * 1024 * 1024\n\nKVList = list[tuple[str, str]]\nParamList = Optional[Iterable[str]]\n\nDEFAULT_PORTS = {\n    'ftp': '21',\n    'http': '80',\n    'https': '443',"
+}

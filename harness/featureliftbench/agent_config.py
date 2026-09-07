@@ -90,6 +90,7 @@ def load_agent_run_config(
     adaptive_budget_v2: bool | None = None,
     pre_submit_contract_audit: bool | None = None,
     spec_adversarial_self_test: bool | None = None,
+    obligation_guided: bool | None = None,
     cgvl: bool | None = None,
 ) -> LoadedAgentConfig:
     """Load shared agent config and merge it into a run config.
@@ -133,6 +134,7 @@ def load_agent_run_config(
         adaptive_budget_v2=adaptive_budget_v2,
         pre_submit_contract_audit=pre_submit_contract_audit,
         spec_adversarial_self_test=spec_adversarial_self_test,
+        obligation_guided=obligation_guided,
         cgvl=cgvl,
     )
 
@@ -582,6 +584,7 @@ def load_agent_run_config(
         "adaptive_budget_v2": ablation.adaptive_budget_v2,
         "pre_submit_contract_audit": ablation.pre_submit_contract_audit,
         "spec_adversarial_self_test": ablation.spec_adversarial_self_test,
+        "obligation_guided": ablation.obligation_guided,
         "cgvl": ablation.cgvl,
     }
     return LoadedAgentConfig(run_config=run_config, summary=summary)

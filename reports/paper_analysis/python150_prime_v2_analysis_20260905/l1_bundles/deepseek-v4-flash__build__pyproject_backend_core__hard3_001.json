@@ -1,0 +1,37 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "build__pyproject_backend_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.validate_source_directory",
+    "function:featurelifted.parse_build_system_table",
+    "exception:featurelifted.BuildException",
+    "exception:featurelifted.BuildSystemTableValidationError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When parse_build_system_table receives pyproject data, it validates build-system.requires and build-backend and raises BuildSystemTableValidationError for malformed tables."
+    },
+    {
+      "id": "B002",
+      "text": "When validate_source_directory checks a source tree, it accepts valid project roots and raises BuildException for missing or invalid source directories."
+    },
+    {
+      "id": "B003",
+      "text": "The package exposes the required task API paths `featurelifted.validate_source_directory`, `featurelifted.parse_build_system_table`, `featurelifted.BuildException`, `featurelifted.BuildSystemTableValidationError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B004",
+      "text": "the submitted package does not import forbidden upstream packages: build"
+    }
+  ],
+  "log": ">       assert table[\"build-backend\"] == \"setuptools.build_meta\"\nE       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'\nE         - setuptools.build_meta\nE         + setuptools.build_meta:__legacy__\nE         ?                      +++++++++++\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:11\n\nfrom ._builder import parse_build_system_table, validate_source_directory\nfrom ._exceptions import BuildException, BuildSystemTableValidationError, TypoWarning\n\n__version__ = '0.1.0'\n\n__all__ = [\n    'BuildException',\n    'BuildSystemTableValidationError',\n    'TypoWarning',\n    'parse_build_system_table',\n    'validate_source_directory',\n]\n\n## featurelifted/__init__.py:12\nfrom ._builder import parse_build_system_table, validate_source_directory\nfrom ._exceptions import BuildException, BuildSystemTableValidationError, TypoWarning\n\n__version__ = '0.1.0'\n\n__all__ = [\n    'BuildException',\n    'BuildSystemTableValidationError',\n    'TypoWarning',\n    'parse_build_system_table',\n    'validate_source_directory',\n]\n\n## featurelifted/__init__.py:17\n__all__ = [\n    'BuildException',\n    'BuildSystemTableValidationError',\n    'TypoWarning',\n    'parse_build_system_table',\n    'validate_source_directory',\n]\n\n## featurelifted/__init__.py:18\n    'BuildException',\n    'BuildSystemTableValidationError',\n    'TypoWarning',\n    'parse_build_system_table',\n    'validate_source_directory',\n]"
+}

@@ -1,0 +1,43 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "decorator__signature_preserving_core__001",
+  "stage": "public_failure",
+  "lift_type": "Direct",
+  "feature_family": "workflow_session_orchestration",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.decorate",
+    "function:featurelifted.decorator"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: caller receives the original function before bound arguments. Required observable cases include metadata signature and call order; invalid calls follow original signature; async caller and wrapped."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: decorated call enforces the original function signature. Required observable cases include metadata signature and call order; invalid calls follow original signature; async caller and wrapped."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: name, docstring, module, annotations, wrapped, and inspect.signature are preserved. Required observable cases include metadata signature and call order; invalid calls follow original signature; async caller and wrapped."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: async callers and coroutine functions remain awaitable. Required observable cases include metadata signature and call order; invalid calls follow original signature; async caller and wrapped."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.decorate`, `featurelifted.decorator` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "The submitted package does not import forbidden upstream packages: decorator."
+    }
+  ],
+  "log": "        assert add(2, b=3) == 10\n        assert str(inspect.signature(add)) == \"(a: int, b: int = 1) -> int\"\n        assert add.__name__ == \"add\" and add.__doc__ == \"add values\"\n>       assert calls == [((2,), {\"b\": 3})]\nE       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]\nE         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})\nE         Use -v to get more diff\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:2\n\"\"\"\nfeaturelifted: signature-preserving function decorators.\n\nA task-scoped extraction of the core ``decorate`` / ``decorator``\nfunctionality from the well-known ``decorator`` package (BSD-2-Clause,\nCopyright (c) 2005-2021, Michele Simionato).\n\nA \"caller\" is a function of the form ``def caller(f, *args, **kw)`` that\nreceives the original (undecorated) function followed by the arguments of\nthe decorated call.  ``decorator`` turns such a caller into a\nsignature-preserving decorator (or a factory of decorators, when the\ncaller declares parameters with default values).  The decorated functions\nkeep name, docstring, module, annotations, ``__wrapped__`` and the\noriginal ``inspect.signature``.\n\"\"\"\nimport inspect\nfrom inspect import iscoroutinefunction, isgeneratorfunction\n\n__version__ = '5.1.1'\n\n## featurelifted/__init__.py:4\n\nA task-scoped extraction of the core ``decorate`` / ``decorator``\nfunctionality from the well-known ``decorator`` package (BSD-2-Clause,\nCopyright (c) 2005-2021, Michele Simionato).\n\nA \"caller\" is a function of the form ``def caller(f, *args, **kw)`` that\nreceives the original (undecorated) function followed by the arguments of\nthe decorated call.  ``decorator`` turns such a caller into a\nsignature-preserving decorator (or a factory of decorators, when the\ncaller declares parameters with default values).  The decorated functions\nkeep name, docstring, module, annotations, ``__wrapped__`` and the\noriginal ``inspect.signature``.\n\"\"\"\nimport inspect\nfrom inspect import iscoroutinefunction, isgeneratorfunction\n\n__version__ = '5.1.1'\n__all__ = ['decorate', 'decorator']\n\n\n## featurelifted/__init__.py:5\nA task-scoped extraction of the core ``decorate`` / ``decorator``\nfunctionality from the well-known ``decorator`` package (BSD-2-Clause,\nCopyright (c) 2005-2021, Michele Simionato).\n\nA \"caller\" is a function of the form ``def caller(f, *args, **kw)`` that\nreceives the original (undecorated) function followed by the arguments of\nthe decorated call.  ``decorator`` turns such a caller into a\nsignature-preserving decorator (or a factory of decorators, when the\ncaller declares parameters with default values).  The decorated functions\nkeep name, docstring, module, annotations, ``__wrapped__`` and the\noriginal ``inspect.signature``.\n\"\"\"\nimport inspect\nfrom inspect import iscoroutinefunction, isgeneratorfunction\n\n__version__ = '5.1.1'\n__all__ = ['decorate', 'decorator']\n\nPOS = inspect.Parameter.POSITIONAL_OR_KEYWORD\n\n## featurelifted/__init__.py:9\nA \"caller\" is a function of the form ``def caller(f, *args, **kw)`` that\nreceives the original (undecorated) function followed by the arguments of\nthe decorated call.  ``decorator`` turns such a caller into a\nsignature-preserving decorator (or a factory of decorators, when the\ncaller declares parameters with default values).  The decorated functions\nkeep name, docstring, module, annotations, ``__wrapped__`` and the\noriginal ``inspect.signature``.\n\"\"\"\nimport inspect\nfrom inspect import iscoroutinefunction, isgeneratorfunction\n\n__version__ = '5.1.1'\n__all__ = ['decorate', 'decorator']\n\nPOS = inspect.Parameter.POSITIONAL_OR_KEYWORD\nEMPTY = inspect.Parameter.empty\n\n\ndef _fix(args, kwargs, sig):"
+}

@@ -1,0 +1,67 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "alembic__revision_map_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "algorithm_data_structure",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Revision",
+    "class:featurelifted.RevisionMap",
+    "attribute:featurelifted.RevisionMap.heads",
+    "attribute:featurelifted.RevisionMap.bases",
+    "attribute:featurelifted.RevisionMap.branch_labels",
+    "method:featurelifted.RevisionMap.get_revision",
+    "method:featurelifted.RevisionMap.get_revisions",
+    "method:featurelifted.RevisionMap.get_heads",
+    "method:featurelifted.RevisionMap.get_current_head",
+    "method:featurelifted.RevisionMap.ancestors",
+    "method:featurelifted.RevisionMap.iterate_revisions",
+    "exception:featurelifted.CycleDetected",
+    "exception:featurelifted.MissingRevision",
+    "exception:featurelifted.MultipleHeads"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When Revision objects are created, scalar and iterable down revisions, branch labels, and dependencies are normalized without losing their distinct graph roles."
+    },
+    {
+      "id": "B002",
+      "text": "When RevisionMap is built from explicit revisions, it links versioned parents, dependency edges, and branch labels into a queryable graph."
+    },
+    {
+      "id": "B003",
+      "text": "For linear, branched, and merged revision graphs, RevisionMap reports the versioned bases and heads that have no versioned parent or child."
+    },
+    {
+      "id": "B004",
+      "text": "When a branch label is assigned, branch-label lookup resolves that revision and propagates the label to eligible descendants."
+    },
+    {
+      "id": "B005",
+      "text": "When ancestors are requested, dependency revisions are included only when dependency-aware traversal is enabled."
+    },
+    {
+      "id": "B006",
+      "text": "When symbolic identifiers such as head or base are requested, RevisionMap resolves them and rejects ambiguous heads."
+    },
+    {
+      "id": "B007",
+      "text": "Missing revisions, multiple-head requests, and revision cycles raise the declared explicit graph errors."
+    },
+    {
+      "id": "B008",
+      "text": "The package exposes the required task API paths `featurelifted.Revision`, `featurelifted.RevisionMap`, `featurelifted.RevisionMap.heads`, `featurelifted.RevisionMap.bases`, `featurelifted.RevisionMap.branch_labels`, `featurelifted.RevisionMap.get_revision`, `featurelifted.Revisio"
+    },
+    {
+      "id": "B009",
+      "text": "the submitted package does not import forbidden upstream packages: alembic, sqlalchemy"
+    }
+  ],
+  "log": "        assert revmap.get_heads() == [\"merge\"]\n        assert revmap.get_revision(\"merge\").is_merge_point\n>       assert revmap.get_revision(\"base\").is_branch_point\nE       AttributeError: 'NoneType' object has no attribute 'is_branch_point'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:25: AttributeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:7\nfrom .revision import LoopDetected\nfrom .revision import MissingRevision\nfrom .revision import MultipleHeads\nfrom .revision import RangeNotAncestorError\nfrom .revision import ResolutionError\nfrom .revision import Revision\nfrom .revision import RevisionError\nfrom .revision import RevisionMap\n\n__all__ = [\n    \"CycleDetected\",\n    \"DependencyCycleDetected\",\n    \"DependencyLoopDetected\",\n    \"LoopDetected\",\n    \"MissingRevision\",\n    \"MultipleHeads\",\n    \"RangeNotAncestorError\",\n    \"ResolutionError\",\n    \"Revision\",\n\n## featurelifted/__init__.py:11\nfrom .revision import ResolutionError\nfrom .revision import Revision\nfrom .revision import RevisionError\nfrom .revision import RevisionMap\n\n__all__ = [\n    \"CycleDetected\",\n    \"DependencyCycleDetected\",\n    \"DependencyLoopDetected\",\n    \"LoopDetected\",\n    \"MissingRevision\",\n    \"MultipleHeads\",\n    \"RangeNotAncestorError\",\n    \"ResolutionError\",\n    \"Revision\",\n    \"RevisionError\",\n    \"RevisionMap\",\n]\n\n## featurelifted/__init__.py:12\nfrom .revision import Revision\nfrom .revision import RevisionError\nfrom .revision import RevisionMap\n\n__all__ = [\n    \"CycleDetected\",\n    \"DependencyCycleDetected\",\n    \"DependencyLoopDetected\",\n    \"LoopDetected\",\n    \"MissingRevision\",\n    \"MultipleHeads\",\n    \"RangeNotAncestorError\",\n    \"ResolutionError\",\n    \"Revision\",\n    \"RevisionError\",\n    \"RevisionMap\",\n]\n\n## featurelifted/__init__.py:13\nfrom .revision import RevisionError\nfrom .revision import RevisionMap\n\n__all__ = [\n    \"CycleDetected\",\n    \"DependencyCycleDetected\",\n    \"DependencyLoopDetected\",\n    \"LoopDetected\",\n    \"MissingRevision\",\n    \"MultipleHeads\",\n    \"RangeNotAncestorError\",\n    \"ResolutionError\",\n    \"Revision\",\n    \"RevisionError\",\n    \"RevisionMap\",\n]"
+}

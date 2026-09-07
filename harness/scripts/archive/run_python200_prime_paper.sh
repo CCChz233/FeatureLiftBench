@@ -123,6 +123,7 @@ method_flags = [
     "adaptive_budget_v2",
     "pre_submit_contract_audit",
     "spec_adversarial_self_test",
+    "obligation_guided",
 ]
 enabled = [key for key in method_flags if bool(profile.get(key, False))]
 if enabled:

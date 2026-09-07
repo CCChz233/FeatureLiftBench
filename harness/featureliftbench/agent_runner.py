@@ -89,6 +89,21 @@ RATE_LIMIT_PATTERNS = tuple(
 
 # SiliconFlow TPM limits use a rolling 60s window; wait long enough to clear it.
 RATE_LIMIT_RETRY_WAIT_SECONDS = 65.0
+TRANSIENT_API_RETRY_WAIT_SECONDS = {
+    "rate_limit": RATE_LIMIT_RETRY_WAIT_SECONDS,
+    "rate_limited": RATE_LIMIT_RETRY_WAIT_SECONDS,
+    "invalid_encrypted_content": 8.0,
+    "tool_validation_error": 2.0,
+}
+ENCRYPTED_CONTENT_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"invalid_encrypted",
+        r"encrypted content could not",
+        r"could not be decrypted",
+        r"encrypted content for item",
+    )
+)
 
 
 @dataclass(frozen=True)
@@ -100,6 +115,7 @@ class _SuiteCheckpointContext:
     agent_config_summary: dict[str, Any] | None
     worker_count: int
     retry_rate_limit: int
+    retry_transient_api: int
     retry_only_statuses: frozenset[str]
     extra_agent_passes: int
     max_task_attempts: int | None
@@ -124,6 +140,7 @@ def run_agent_on_path(
     task_ids: list[str] | None = None,
     skip_completed_dir: str | Path | None = None,
     retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     resume_dir: str | Path | None = None,
     resume_mode: bool = False,
     retry_only_statuses: frozenset[str] | None = None,
@@ -160,6 +177,7 @@ def run_agent_on_path(
         progress=progress,
         skip_completed_dir=skip_completed_dir,
         retry_rate_limit=retry_rate_limit,
+        retry_transient_api=retry_transient_api,
         resume_dir=resume_dir,
         resume_mode=resume_mode,
         retry_only_statuses=retry_only_statuses or DEFAULT_RETRY_ONLY_STATUSES,
@@ -181,6 +199,7 @@ def run_agent_on_suite(
     progress: bool = False,
     skip_completed_dir: str | Path | None = None,
     retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     resume_dir: str | Path | None = None,
     resume_mode: bool = False,
     retry_only_statuses: frozenset[str] = DEFAULT_RETRY_ONLY_STATUSES,
@@ -244,6 +263,7 @@ def run_agent_on_suite(
         agent_config_summary=agent_config_summary,
         worker_count=worker_count,
         retry_rate_limit=max(1, int(retry_rate_limit)),
+        retry_transient_api=max(1, int(retry_transient_api)),
         retry_only_statuses=retry_only_statuses,
         extra_agent_passes=extra_passes,
         max_task_attempts=max_task_attempts,
@@ -265,6 +285,7 @@ def run_agent_on_suite(
         num_workers=worker_count,
         progress=progress,
         retry_rate_limit=max(1, int(retry_rate_limit)),
+        retry_transient_api=max(1, int(retry_transient_api)),
         eval_docker=eval_docker,
         eval_docker_image=eval_docker_image,
         agent_docker=agent_docker,
@@ -301,6 +322,7 @@ def run_agent_on_suite(
             num_workers=worker_count,
             progress=progress,
             retry_rate_limit=max(1, int(retry_rate_limit)),
+            retry_transient_api=max(1, int(retry_transient_api)),
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -316,6 +338,7 @@ def run_agent_on_suite(
             output_path=output_path,
             worker_count=worker_count,
             retry_rate_limit=max(1, int(retry_rate_limit)),
+            retry_transient_api=max(1, int(retry_transient_api)),
             retry_only_statuses=retry_only_statuses,
             extra_agent_passes=extra_passes,
             pass_index=pass_index + 1,
@@ -337,6 +360,7 @@ def run_agent_on_suite(
         "eval_backend": "docker" if eval_docker else "local",
         "eval_docker_image": eval_docker_image if eval_docker else "",
         "retry_rate_limit": max(1, int(retry_rate_limit)),
+        "retry_transient_api": max(1, int(retry_transient_api)),
         "retry_only_statuses": sorted(retry_only_statuses),
         "extra_agent_passes": extra_passes,
         "max_task_attempts": max_task_attempts,
@@ -2180,6 +2204,7 @@ def _run_suite_tasks(
     num_workers: int,
     progress: bool,
     retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
@@ -2200,6 +2225,7 @@ def _run_suite_tasks(
                 total=total,
                 progress_manager=progress_manager,
                 retry_rate_limit=retry_rate_limit,
+                retry_transient_api=retry_transient_api,
                 eval_docker=eval_docker,
                 eval_docker_image=eval_docker_image,
                 agent_docker=agent_docker,
@@ -2217,6 +2243,7 @@ def _run_suite_tasks(
         progress=progress,
         progress_manager=None,
         retry_rate_limit=retry_rate_limit,
+        retry_transient_api=retry_transient_api,
         eval_docker=eval_docker,
         eval_docker_image=eval_docker_image,
         agent_docker=agent_docker,
@@ -2236,6 +2263,7 @@ def _execute_suite_tasks(
     progress: bool = False,
     progress_manager: SuiteBatchProgressManager | None = None,
     retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
@@ -2257,6 +2285,7 @@ def _execute_suite_tasks(
                         progress=progress and progress_manager is None,
                         progress_manager=progress_manager,
                         retry_rate_limit=retry_rate_limit,
+                        retry_transient_api=retry_transient_api,
                         eval_docker=eval_docker,
                         eval_docker_image=eval_docker_image,
                         agent_docker=agent_docker,
@@ -2284,6 +2313,7 @@ def _execute_suite_tasks(
             progress=progress and progress_manager is None,
             progress_manager=progress_manager,
             retry_rate_limit=retry_rate_limit,
+            retry_transient_api=retry_transient_api,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -2338,6 +2368,7 @@ def _run_suite_task_safely(
     progress: bool,
     progress_manager: SuiteBatchProgressManager | None = None,
     retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
@@ -2357,7 +2388,8 @@ def _run_suite_task_safely(
             run_output=run_output,
             config=config,
             agent_config_summary=agent_config_summary,
-            max_attempts=retry_rate_limit,
+            retry_rate_limit=retry_rate_limit,
+            retry_transient_api=retry_transient_api,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
             agent_docker=agent_docker,
@@ -2584,6 +2616,7 @@ def _write_suite_snapshot(
     output_path: Path,
     worker_count: int,
     retry_rate_limit: int,
+    retry_transient_api: int,
     retry_only_statuses: frozenset[str],
     extra_agent_passes: int,
     pass_index: int,
@@ -2604,6 +2637,7 @@ def _write_suite_snapshot(
         "runs": [compact_suite_run_entry(run) for run in runs],
         "num_workers": worker_count,
         "retry_rate_limit": retry_rate_limit,
+        "retry_transient_api": retry_transient_api,
         "agent_config": agent_config_summary or {},
     }
     snapshot_path.write_text(json.dumps(snapshot, indent=2, sort_keys=True), encoding="utf-8")
@@ -2628,6 +2662,7 @@ def _write_suite_checkpoint(
         "eval_backend": "docker" if ctx.eval_docker else "local",
         "eval_docker_image": ctx.eval_docker_image if ctx.eval_docker else "",
         "retry_rate_limit": ctx.retry_rate_limit,
+        "retry_transient_api": ctx.retry_transient_api,
         "retry_only_statuses": sorted(ctx.retry_only_statuses),
         "extra_agent_passes": ctx.extra_agent_passes,
         "max_task_attempts": ctx.max_task_attempts,
@@ -2677,15 +2712,19 @@ def _run_suite_task_with_retries(
     run_output: Path,
     config: AgentRunConfig,
     agent_config_summary: dict[str, Any] | None,
-    max_attempts: int = 1,
+    retry_rate_limit: int = 1,
+    retry_transient_api: int = 3,
     eval_docker: bool = False,
     eval_docker_image: str = DEFAULT_EVAL_IMAGE,
     agent_docker: bool = False,
     agent_docker_image: str = DEFAULT_AGENT_IMAGE,
 ) -> dict[str, Any]:
-    attempts = max(1, int(max_attempts))
+    rate_limit_attempts = max(1, int(retry_rate_limit))
+    transient_attempts = max(1, int(retry_transient_api))
     result: dict[str, Any] = {}
-    for attempt in range(attempts):
+    reasons: list[str] = []
+    attempt = 0
+    while True:
         result = run_agent_on_task(
             task_dir,
             run_output,
@@ -2696,18 +2735,143 @@ def _run_suite_task_with_retries(
             agent_docker=agent_docker,
             agent_docker_image=agent_docker_image,
         )
-        if result.get("status") == "passed" or not _is_rate_limit_failure(result):
-            return result
-        if attempt < attempts - 1:
-            task_id = result.get("task_id", task_dir.name)
-            print(
-                f"Rate limit on {task_id}; retrying in {RATE_LIMIT_RETRY_WAIT_SECONDS:.0f}s "
-                f"(attempt {attempt + 2}/{attempts})...",
-                file=sys.stderr,
-                flush=True,
-            )
-            time.sleep(RATE_LIMIT_RETRY_WAIT_SECONDS)
+        attempt += 1
+        reason = _transient_retry_reason(result)
+        if reason is None:
+            break
+        cap = max(rate_limit_attempts, transient_attempts)
+        if attempt >= cap:
+            break
+        reasons.append(reason)
+        wait_seconds = TRANSIENT_API_RETRY_WAIT_SECONDS.get(reason, 8.0)
+        task_id = result.get("task_id", task_dir.name)
+        print(
+            f"Transient API/protocol failure ({reason}) on {task_id}; "
+            f"retrying in {wait_seconds:.0f}s "
+            f"(attempt {attempt + 1}/{cap})...",
+            file=sys.stderr,
+            flush=True,
+        )
+        _preserve_transient_attempt_agent(run_output, attempt)
+        time.sleep(wait_seconds)
+    if reasons:
+        result = _record_transient_retries(
+            result,
+            run_output,
+            attempts=attempt,
+            reasons=reasons,
+        )
     return result
+
+
+def _preserve_transient_attempt_agent(run_output: Path, attempt: int) -> None:
+    agent_dir = run_output / "agent"
+    archive_dir = run_output / f"agent.attempt{attempt}"
+    if not agent_dir.is_dir() or archive_dir.exists():
+        return
+    shutil.copytree(agent_dir, archive_dir, dirs_exist_ok=False)
+
+
+def _record_transient_retries(
+    result: dict[str, Any],
+    run_output: Path,
+    *,
+    attempts: int,
+    reasons: list[str],
+) -> dict[str, Any]:
+    payload = dict(result)
+    payload["transient_retries"] = {
+        "attempts": attempts,
+        "reasons": list(reasons),
+        "recovered": payload.get("status") != "missing_submission"
+        and bool((payload.get("submission") or {}).get("exists")),
+    }
+    run_json = payload.get("run_json")
+    path = Path(run_json) if isinstance(run_json, str) and run_json else run_output / "run.json"
+    try:
+        path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    except OSError:
+        pass
+    return payload
+
+
+def _submission_exists(result: dict[str, Any]) -> bool:
+    submission = result.get("submission")
+    return isinstance(submission, dict) and submission.get("exists") is True
+
+
+def _infrastructure_error_from_result(result: dict[str, Any]) -> dict[str, Any] | None:
+    agent = result.get("agent") if isinstance(result.get("agent"), dict) else {}
+    usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
+    infra = usage.get("infrastructure_error")
+    if isinstance(infra, dict) and infra:
+        return infra
+    run_json = result.get("run_json")
+    if not isinstance(run_json, str) or not run_json:
+        return None
+    infra_path = Path(run_json).parent / "agent" / "openhands_infrastructure_error.json"
+    if not infra_path.is_file():
+        return None
+    try:
+        payload = json.loads(infra_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _collect_retry_evidence_text(result: dict[str, Any]) -> str:
+    chunks: list[str] = []
+    agent = result.get("agent") if isinstance(result.get("agent"), dict) else {}
+    usage = agent.get("usage") if isinstance(agent.get("usage"), dict) else {}
+    for value in (
+        usage.get("exit_status"),
+        agent.get("reason"),
+    ):
+        if isinstance(value, str) and value:
+            chunks.append(value)
+    infra = _infrastructure_error_from_result(result)
+    if infra is not None:
+        for key in ("failure_class", "error"):
+            value = infra.get(key)
+            if isinstance(value, str) and value:
+                chunks.append(value)
+    errors = result.get("errors")
+    if isinstance(errors, list):
+        chunks.extend(str(item) for item in errors)
+    run_json = result.get("run_json")
+    if isinstance(run_json, str) and run_json:
+        events_path = Path(run_json).parent / "agent" / "openhands_events.jsonl"
+        if events_path.is_file():
+            try:
+                chunks.append(events_path.read_text(encoding="utf-8", errors="replace")[-20000:])
+            except OSError:
+                pass
+    return "\n".join(chunks)
+
+
+def _transient_retry_reason(result: dict[str, Any]) -> str | None:
+    """Return a retry class only for empty-submission API/protocol flakes.
+
+    Functional failures that already produced a package are never retried here.
+    """
+
+    if result.get("status") == "passed" or _submission_exists(result):
+        return None
+    if result.get("status") == "invalid_task":
+        return None
+    infra = _infrastructure_error_from_result(result)
+    if isinstance(infra, dict) and infra.get("retryable") is True:
+        failure_class = str(infra.get("failure_class") or "")
+        if failure_class in TRANSIENT_API_RETRY_WAIT_SECONDS:
+            return failure_class
+        if failure_class:
+            return failure_class
+    text = _collect_retry_evidence_text(result)
+    if any(pattern.search(text) for pattern in ENCRYPTED_CONTENT_PATTERNS):
+        return "invalid_encrypted_content"
+    if _is_rate_limit_failure(result):
+        return "rate_limit"
+    return None
 
 
 def _is_rate_limit_failure(result: dict[str, Any]) -> bool:
@@ -2952,6 +3116,21 @@ def prepare_agent_workspace(
             public_spec=public_spec,
         )
         (workspace_path / "submission").mkdir(exist_ok=True)
+    elif options.obligation_guided:
+        from .obligation_guided import install_obligation_guided_workspace
+
+        public_spec = (
+            metadata.get("public_spec")
+            if isinstance(metadata.get("public_spec"), dict)
+            else {}
+        )
+        if not isinstance(public_spec, dict) or not public_spec:
+            raise ValueError("obligation_guided requires metadata.public_spec")
+        install_obligation_guided_workspace(
+            workspace_path,
+            public_spec=public_spec,
+        )
+        (workspace_path / "submission").mkdir(exist_ok=True)
     elif options.cgvl:
         from .cgvl import install_cgvl_workspace
 
@@ -3049,6 +3228,12 @@ def prepare_agent_workspace(
 
         task_markdown = (
             task_markdown.rstrip() + "\n\n" + spec_adversarial_appendix()
+        )
+    elif options.obligation_guided:
+        from .obligation_guided import task_appendix as obligation_guided_appendix
+
+        task_markdown = (
+            task_markdown.rstrip() + "\n\n" + obligation_guided_appendix()
         )
     elif options.cgvl:
         from .cgvl import task_appendix as cgvl_appendix

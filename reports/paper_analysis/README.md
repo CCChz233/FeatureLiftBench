@@ -1,8 +1,13 @@
 # Paper analysis
 
-> **Status: current index · Last verified: 2026-09-02**
+> **Status: current index · Last verified: 2026-09-04**
 
 Current candidate evidence:
+
+- `python200_prime_v2_main_20260904/`: freeze v2 OpenHands Main mechanical analysis
+  (DeepSeek 143/200, Luna/OpenLux 132/200, Qwen 80/200). Start at
+  `readout.md`. **24 shared freeze-preflight blocks**; Hard-50 is *not* harder
+  than launched Python-150. Semantic 5.3 labels are not done. GLM-Flash excluded.
 
 - `python200_hard_main_20260829/`: DeepSeek V4 Flash OpenHands Main on the
   Python-200′ (frozen Python-150 + Hard-50) task set. Start with

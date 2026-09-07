@@ -1,0 +1,39 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "readme_renderer__content_type_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "serialize_format_render",
+  "files": [
+    "featurelifted/__init__.py",
+    "featurelifted/markdown.py"
+  ],
+  "n_files": 2,
+  "required_api": [
+    "function:featurelifted.render_readme"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`render_readme(content, content_type)` selects plain, markdown, or reST renderers."
+    },
+    {
+      "id": "B002",
+      "text": "Unknown media types fall back to plain text with warnings."
+    },
+    {
+      "id": "B003",
+      "text": "Unsupported charset parameters produce warnings."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.render_readme` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: readme_renderer"
+    }
+  ],
+  "log": ">       assert \"markdown\" in html\nE       AssertionError: assert 'markdown' in '<h1>Title</h1>\\n'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nThis package provides the task-scoped ``render_readme`` entry point that\ndispatches a README document to a plain text, Markdown, or reStructuredText\nrenderer based on its ``Content-Type``.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom . import markdown, rst, txt\n\n__all__ = [\"render_readme\"]\n\n_PLAIN = \"text/plain\"\n_MARKDOWN = \"text/markdown\"\n_RST = \"text/x-rst\"\n\n# Only UTF-8 content is accepted. A ``charset`` parameter carrying any\n# other value is reported back to the caller as a warning.\n_SUPPORTED_CHARSETS = frozenset({\"utf-8\", \"utf8\"})\n\n## featurelifted/__init__.py:12\n\n__all__ = [\"render_readme\"]\n\n_PLAIN = \"text/plain\"\n_MARKDOWN = \"text/markdown\"\n_RST = \"text/x-rst\"\n\n# Only UTF-8 content is accepted. A ``charset`` parameter carrying any\n# other value is reported back to the caller as a warning.\n_SUPPORTED_CHARSETS = frozenset({\"utf-8\", \"utf8\"})\n\n\ndef _parse_content_type(content_type: str) -> tuple[str, dict[str, str]]:\n    \"\"\"Split a ``Content-Type`` value into media type and parameters.\"\"\"\n    parts = content_type.split(\";\")\n    media_type = parts[0].strip().lower()\n    params: dict[str, str] = {}\n\n    for part in parts[1:]:\n\n## featurelifted/__init__.py:44\n\ndef render_readme(content: str, content_type: str) -> tuple[str, list[str]]:\n    \"\"\"Render ``content`` according to ``content_type``.\n\n    Returns a ``(rendered, warnings)`` pair. Unknown media types fall back\n    to the plain text renderer, and unsupported charset parameters are\n    reported through ``warnings``.\n    \"\"\"\n    warnings: list[str] = []\n    media_type, params = _parse_content_type(content_type)\n\n    charset = params.get(\"charset\")\n    if charset is not None and charset.lower() not in _SUPPORTED_CHARSETS:\n        warnings.append(\n            f\"Unsupported charset {charset!r}; only UTF-8 is supported.\"\n        )\n\n    if media_type == _MARKDOWN:\n        rendered = markdown.render(content)\n\n## featurelifted/markdown.py:4\nThis intentionally implements only a small, dependency-free subset of\nMarkdown. The task-scoped feature is the ``render_readme`` content-type\ndispatch, not a complete CommonMark/GFM implementation.\n\"\"\"\n\nimport re\nfrom html import escape as html_escape\n\n_ATX_HEADING = re.compile(r\"^(#{1,6})\\s+(.*)$\")\n\n\ndef render(raw: str) -> str:\n    \"\"\"Render a Markdown document to a small subset of HTML.\"\"\"\n    lines = raw.split(\"\\n\")\n    out: list[str] = []\n    paragraph: list[str] = []\n    in_fence = False\n    fence: list[str] = []\n"
+}

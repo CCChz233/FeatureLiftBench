@@ -1,0 +1,47 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "python_decouple__config_repository_core__001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Choices",
+    "class:featurelifted.Config",
+    "class:featurelifted.Csv",
+    "class:featurelifted.RepositoryDict",
+    "class:featurelifted.RepositoryEnv",
+    "exception:featurelifted.UndefinedValueError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: environment variables override repository values. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: .env quoted-value and comment parsing. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: required and default value behavior. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: bool, int, float, Csv, and Choices casting. Required observable cases include precedence defaults and casts; csv cast; env file quotes comments and empty; choices and float."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.Choices`, `featurelifted.Config`, `featurelifted.Csv`, `featurelifted.RepositoryDict`, `featurelifted.RepositoryEnv`, `featurelifted.UndefinedValueError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "The submitted package does not import forbidden upstream packages: python_decouple."
+    }
+  ],
+  "log": ">       assert config(\"NAME\") == \"Ada Lovelace\"\nE       assert \"'Ada Lovelace' # note\" == 'Ada Lovelace'\nE         - Ada Lovelace\nE         + 'Ada Lovelace' # note\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:12\n2. The repository (``.env`` file, dictionary, ...);\n3. The ``default`` argument passed to ``Config.get``.\n\"\"\"\n\nimport os\nfrom shlex import shlex\n\nTRUE_VALUES = {\"y\", \"yes\", \"t\", \"true\", \"on\", \"1\"}\nFALSE_VALUES = {\"n\", \"no\", \"f\", \"false\", \"off\", \"0\"}\n\n\ndef strtobool(value):\n    \"\"\"Convert a string representation of truth to True or False.\"\"\"\n    if isinstance(value, bool):\n        return value\n    value = value.lower()\n\n    if value in TRUE_VALUES:\n        return True\n\n## featurelifted/__init__.py:36\n\nclass UndefinedValueError(Exception):\n    \"\"\"Raised when a required option is neither defined nor defaulted.\"\"\"\n\n\nclass Undefined(object):\n    \"\"\"Sentinel type used to represent undefined values.\"\"\"\n\n\n# Reference instance used to represent undefined values.\nundefined = Undefined()\n\n\nclass Config(object):\n    \"\"\"Handle the retrieval of configuration options.\n\n    ``repository`` is the source of configuration values (e.g. a\n    ``RepositoryEnv`` or ``RepositoryDict`` instance).  ``environ`` is the\n    mapping consulted for environment variable overrides; it defaults to\n\n## featurelifted/__init__.py:48\n\nclass Config(object):\n    \"\"\"Handle the retrieval of configuration options.\n\n    ``repository`` is the source of configuration values (e.g. a\n    ``RepositoryEnv`` or ``RepositoryDict`` instance).  ``environ`` is the\n    mapping consulted for environment variable overrides; it defaults to\n    ``os.environ``.\n    \"\"\"\n\n    def __init__(self, repository, environ=None):\n        self.repository = repository\n        self.environ = os.environ if environ is None else environ\n\n    def _cast_boolean(self, value):\n        \"\"\"Convert config values to boolean as ConfigParser does.\"\"\"\n        value = str(value)\n        return bool(value) if value == '' else bool(strtobool(value))\n\n\n## featurelifted/__init__.py:52\n    ``repository`` is the source of configuration values (e.g. a\n    ``RepositoryEnv`` or ``RepositoryDict`` instance).  ``environ`` is the\n    mapping consulted for environment variable overrides; it defaults to\n    ``os.environ``.\n    \"\"\"\n\n    def __init__(self, repository, environ=None):\n        self.repository = repository\n        self.environ = os.environ if environ is None else environ\n\n    def _cast_boolean(self, value):\n        \"\"\"Convert config values to boolean as ConfigParser does.\"\"\"\n        value = str(value)\n        return bool(value) if value == '' else bool(strtobool(value))\n\n    @staticmethod\n    def _cast_do_nothing(value):\n        return value\n"
+}

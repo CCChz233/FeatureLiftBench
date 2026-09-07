@@ -8,14 +8,11 @@ contract, without source-location hints or access to benchmark tests. Its
 deterministic evaluator separates functional correctness from the compactness
 of passing solutions.
 
-The emerging evidence suggests that current agents can often navigate
-repositories and construct plausible packages while still failing to close
-required APIs, boundary semantics, state, resources, and preservation behavior.
-Controlled feedback and trajectory analyses further indicate that Public
-repair, Hidden generalization, and post-sufficiency self-testing are distinct
-phenomena. \draftnote{Replace ``emerging evidence'' with the final eligible
-cross-model result and its bounded interpretation.} By releasing tasks, source
-provenance, evaluators, traces, and reproducibility metadata, \flb aims to
-support research on agents that extract reusable software rather than only
-modify it in place.
-
+On freeze~v2 Python-150 under Official Main, five backends span 24.0\% to
+76.7\% Functional Pass. The suite is not saturated. Failures concentrate at
+Public and Hidden behavior. On the two strongest models, artifact-level
+failures are dominated by incomplete contract recovery rather than by missing
+packages or uninspected source trees. Passing is not the same as compact
+extraction. By releasing tasks, source provenance, evaluators, traces, and
+reproducibility metadata, \flb aims to support research on agents that extract
+reusable software rather than only modify it in place.

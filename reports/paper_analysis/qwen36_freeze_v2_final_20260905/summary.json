@@ -1,0 +1,84 @@
+{
+  "closed": true,
+  "model": "Qwen3.6-35B-A3B-FP8",
+  "profile": "openhands_qwen3_6_35b_a3b_fp8_paper",
+  "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1",
+  "freeze_v2_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+  "candidate": "212930ea",
+  "generated_at": "2026-09-05T00:23:21Z",
+  "headline": {
+    "n": 24,
+    "functional_passed": 6,
+    "functional_failed": 18,
+    "functional_pass_rate": 0.25,
+    "functional_evaluated": 21,
+    "missing_submissions": 3,
+    "run_status": {
+      "passed": 6,
+      "failed": 18
+    },
+    "denominator": "all 24 freeze-v2 tasks; empty submissions count as Functional Fail",
+    "not_a_200_main_table": true
+  },
+  "process_vs_capability": {
+    "empty_tve": [
+      "importlib_metadata__entry_points_core__001",
+      "intervaltree__interval_tree_core__001",
+      "virtualenv__interpreter_spec_core__hard3_001"
+    ],
+    "empty_count": 3,
+    "empty_class": "tool_validation_error",
+    "empty_detail": "OpenHands required security_risk on tool calls; model omitted it and never wrote submission. Already attempt=2. Closed.",
+    "packages_evaluated": 21,
+    "functional_among_packages": "6/21",
+    "do_not_quote_as": "true capability 6/21 or 6/172"
+  },
+  "first_fail_among_packages": {
+    "public": 10,
+    "hidden": 3,
+    "build": 2,
+    "isolation": 0,
+    "unknown": 0
+  },
+  "passed_task_ids": [
+    "cachetools__cache_eviction_core__001",
+    "diskcache__eviction_policy_core__hard3_001",
+    "jsonpointer__resolve_core__001",
+    "packaging__requirement_marker_specifier__001",
+    "python_frontmatter__roundtrip_core__001",
+    "stevedore__extension_manager_core__hard3_001"
+  ],
+  "empty_task_ids": [
+    "importlib_metadata__entry_points_core__001",
+    "intervaltree__interval_tree_core__001",
+    "virtualenv__interpreter_spec_core__hard3_001"
+  ],
+  "failed_with_package_task_ids": [
+    "aiohttp__url_params_core__hard3_001",
+    "build__pyproject_backend_core__hard3_001",
+    "click__lazy_command_core__hard3_001",
+    "configobj__roundtrip_config_core__001",
+    "cookiecutter__repo_finder_core__hard3_001",
+    "dateutil__zone_resolver_core__hard3_001",
+    "deepdiff__deep_compare_core__001",
+    "fs__url_opener_core__hard3_001",
+    "hatch__project_metadata_core__hard3_001",
+    "installer__wheel_record_core__hard3_001",
+    "multidict__multidict_mutation_core__hard3_001",
+    "readme_renderer__content_type_core__hard3_001",
+    "setuptools_scm__version_normalize_core__hard3_001",
+    "sortedcontainers__sorted_list_core__001",
+    "websockets__handshake_parse_core__001"
+  ],
+  "parent_200_mix_warning": {
+    "n": 200,
+    "freeze_v2_tasks": 24,
+    "old_python150_freeze_0b106842": 126,
+    "hard50_no_freeze": 50,
+    "parent_suite_functional_passed_evaluated": "86/169 in suite.json — mixed freeze, do not report as freeze v2"
+  },
+  "artifacts": {
+    "suite_slice": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1/suite.freeze_v2_final.json",
+    "report_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/reports/paper_analysis/qwen36_freeze_v2_final_20260905"
+  }
+}

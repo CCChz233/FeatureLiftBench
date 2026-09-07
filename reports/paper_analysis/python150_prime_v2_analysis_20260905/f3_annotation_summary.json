@@ -1,0 +1,60 @@
+{
+  "schema_version": "featureliftbench.failure_analysis.v1",
+  "split": "python150",
+  "models": [
+    "deepseek-v4-pro",
+    "deepseek-v4-flash"
+  ],
+  "review_status": "assistant_first_pass",
+  "independent_human_review": false,
+  "n_annotated": 77,
+  "n_valid_agent": 63,
+  "n_benchmark_invalid_candidate": 14,
+  "defect_task_ids": [
+    "click__lazy_command_core__hard3_001",
+    "flake8__plugin_options_core__hard3_001",
+    "hatch__project_metadata_core__hard3_001",
+    "pluggy__hook_wrapper_core__hard3_001",
+    "pytest__ini_markers_core__001",
+    "readme_renderer__content_type_core__hard3_001",
+    "setuptools_scm__version_normalize_core__hard3_001"
+  ],
+  "root_cause_valid_agent": {
+    "behavior_drift": 54,
+    "contract_api_completion": 7,
+    "packaging_modularization": 2
+  },
+  "root_cause_valid_agent_by_model": {
+    "deepseek-v4-flash": {
+      "behavior_drift": 28,
+      "contract_api_completion": 5,
+      "packaging_modularization": 2
+    },
+    "deepseek-v4-pro": {
+      "behavior_drift": 26,
+      "contract_api_completion": 2
+    }
+  },
+  "closure_classes": [
+    "behavior_drift",
+    "contract_api_completion",
+    "dependency_closure"
+  ],
+  "closure_n": 61,
+  "localization_n": 0,
+  "packaging_n": 2,
+  "unknown_n": 0,
+  "closure_share_of_valid": 0.9683,
+  "close_read_tier": "L1",
+  "scope": "python150 artifact failures for deepseek-v4-pro and deepseek-v4-flash",
+  "caveats": [
+    "L1 output-side close-read of contract, first-failure log, and submission. Not L2 dual review.",
+    "Trajectory screen: every remaining valid_agent_evidence failure issued deep repo inspect (find/grep/cat or file view under repo/). Localization primary remains 0 after that screen, not because it was skipped.",
+    "Hidden summaries are desensitized; no hidden test names or assertions.",
+    "Hidden-only fairness (Protocol §11) is AI-assisted clause-mapping only; freeze contracts still mark formal_human_double_review_pending.",
+    "Qwen/Luna/OSS unlabeled in the Pro+Flash census. Stratified L1 postsample is postsample_annotations.csv / f3_postsample_summary.json; do not merge those counts into the census valid denominator.",
+    "Process-layer screen: process_layer_summary.json. Finding 3 does not use process tags as the primary cause.",
+    "Defects excluded: click.invoke, pluggy.call_historic, hatch hyphenation, readme markdown marker, pytest ini description strip vs B003, flake8 undeclared register_options, setuptools_scm default node vs public 1.2.3.",
+    "poetry_core recoded from unknown to behavior_drift after trajectory showed poetry-core inspection plus wrong metadata schema."
+  ]
+}

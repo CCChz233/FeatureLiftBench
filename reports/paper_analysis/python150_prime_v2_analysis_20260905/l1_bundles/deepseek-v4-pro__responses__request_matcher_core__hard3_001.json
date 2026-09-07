@@ -1,0 +1,50 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "responses__request_matcher_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.MockResponseRegistry",
+    "attribute:featurelifted.MockResponseRegistry._responses",
+    "method:featurelifted.MockResponseRegistry.add",
+    "attribute:featurelifted.MockResponseRegistry.call_history",
+    "method:featurelifted.MockResponseRegistry.find",
+    "method:featurelifted.MockResponseRegistry.reset",
+    "class:featurelifted.MockResponse",
+    "function:featurelifted.query_string_matcher",
+    "function:featurelifted.header_matcher"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Register `MockResponse` objects and find the first matching `PreparedRequest`."
+    },
+    {
+      "id": "B002",
+      "text": "Support `query_string_matcher` and `header_matcher` helper matchers."
+    },
+    {
+      "id": "B003",
+      "text": "`once=True` responses are removed after the first successful match."
+    },
+    {
+      "id": "B004",
+      "text": "`reset()` clears registered responses and call history."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.MockResponseRegistry`, `featurelifted.MockResponseRegistry._responses`, `featurelifted.MockResponseRegistry.add`, `featurelifted.MockResponseRegistry.call_history`, `featurelifted.MockResponseRegistry.find`, `featurel"
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: responses"
+    }
+  ],
+  "log": "        assert first is not None\n        assert second is None\n>       assert len(registry.call_history) == 2\nE       assert 1 == 2\nE        +  where 1 = len([<PreparedRequest [GET]>])\nE        +    where [<PreparedRequest [GET]>] = <featurelifted.MockResponseRegistry object at 0x72f70066c350>.call_history\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:7\n        header_matcher,\n        MockResponse,\n        MockResponseRegistry,\n        query_string_matcher,\n    )\n\n``MockResponse`` describes a single mock response and knows how to decide\nwhether a prepared request matches it.  ``MockResponseRegistry`` stores those\nresponses and returns the first match for a request while recording call\nhistory.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable, Optional\nfrom urllib.parse import parse_qsl, urlsplit\n\nfrom requests import PreparedRequest\n\n## featurelifted/__init__.py:8\n        MockResponse,\n        MockResponseRegistry,\n        query_string_matcher,\n    )\n\n``MockResponse`` describes a single mock response and knows how to decide\nwhether a prepared request matches it.  ``MockResponseRegistry`` stores those\nresponses and returns the first match for a request while recording call\nhistory.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable, Optional\nfrom urllib.parse import parse_qsl, urlsplit\n\nfrom requests import PreparedRequest\n\n\n## featurelifted/__init__.py:9\n        MockResponseRegistry,\n        query_string_matcher,\n    )\n\n``MockResponse`` describes a single mock response and knows how to decide\nwhether a prepared request matches it.  ``MockResponseRegistry`` stores those\nresponses and returns the first match for a request while recording call\nhistory.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable, Optional\nfrom urllib.parse import parse_qsl, urlsplit\n\nfrom requests import PreparedRequest\n\n__all__ = [\n\n## featurelifted/__init__.py:12\n\n``MockResponse`` describes a single mock response and knows how to decide\nwhether a prepared request matches it.  ``MockResponseRegistry`` stores those\nresponses and returns the first match for a request while recording call\nhistory.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable, Optional\nfrom urllib.parse import parse_qsl, urlsplit\n\nfrom requests import PreparedRequest\n\n__all__ = [\n    \"header_matcher\",\n    \"MockResponse\",\n    \"MockResponseRegistry\","
+}

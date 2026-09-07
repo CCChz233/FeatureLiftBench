@@ -1,0 +1,45 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "glom__spec_eval_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "algorithm_data_structure",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.glom",
+    "object:featurelifted.T",
+    "class:featurelifted.Coalesce",
+    "exception:featurelifted.PathAccessError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`glom` evaluates dict/list/tuple specs, dotted path strings, callables, `T`, and `Coalesce`."
+    },
+    {
+      "id": "B002",
+      "text": "`Coalesce` returns the first successful child spec or a configured default."
+    },
+    {
+      "id": "B003",
+      "text": "When a T expression is evaluated, attribute and item traversal start from the current target and compose in expression order."
+    },
+    {
+      "id": "B004",
+      "text": "When dotted-path or T traversal cannot access a requested component, glom raises PathAccessError unless a declared default handles the failure."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.glom`, `featurelifted.T`, `featurelifted.Coalesce`, `featurelifted.PathAccessError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: glom"
+    }
+  ],
+  "log": ">       assert glom(target, Coalesce([\"missing\", \"a\"], default=0)) == 1\nE       AssertionError: assert 0 == 1\nE        +  where 0 = glom({'a': 1}, Coalesce(['missing', 'a'], default=0))\nE        +    where Coalesce(['missing', 'a'], default=0) = Coalesce(['missing', 'a'], default=0)\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:1\n\"\"\"featurelifted: a standalone, spec-evaluation subset of glom.\n\nThis package exposes the spec-evaluation core of the ``glom`` library\nas a self-contained module with no third-party runtime dependencies.\n\nPublic task API::\n\n    from featurelifted import glom, T, Coalesce, PathAccessError\n\"\"\"\nfrom .core import (\n    glom,\n    T,\n    Coalesce,\n    PathAccessError,\n)\n\n__all__ = [\n    'glom',\n\n## featurelifted/__init__.py:3\n\nThis package exposes the spec-evaluation core of the ``glom`` library\nas a self-contained module with no third-party runtime dependencies.\n\nPublic task API::\n\n    from featurelifted import glom, T, Coalesce, PathAccessError\n\"\"\"\nfrom .core import (\n    glom,\n    T,\n    Coalesce,\n    PathAccessError,\n)\n\n__all__ = [\n    'glom',\n    'T',\n    'Coalesce',\n\n## featurelifted/__init__.py:8\n\n    from featurelifted import glom, T, Coalesce, PathAccessError\n\"\"\"\nfrom .core import (\n    glom,\n    T,\n    Coalesce,\n    PathAccessError,\n)\n\n__all__ = [\n    'glom',\n    'T',\n    'Coalesce',\n    'PathAccessError',\n]\n\n__version__ = '23.2.0.dev0'\n\n## featurelifted/__init__.py:11\nfrom .core import (\n    glom,\n    T,\n    Coalesce,\n    PathAccessError,\n)\n\n__all__ = [\n    'glom',\n    'T',\n    'Coalesce',\n    'PathAccessError',\n]\n\n__version__ = '23.2.0.dev0'"
+}

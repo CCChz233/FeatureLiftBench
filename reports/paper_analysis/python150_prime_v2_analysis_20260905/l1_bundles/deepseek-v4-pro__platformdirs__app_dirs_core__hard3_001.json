@@ -1,0 +1,52 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "platformdirs__app_dirs_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.user_cache_dir",
+    "function:featurelifted.user_config_dir",
+    "function:featurelifted.user_data_dir"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`XDG_DATA_HOME`, `XDG_CONFIG_HOME`, and `XDG_CACHE_HOME` override defaults when they are non-blank."
+    },
+    {
+      "id": "B002",
+      "text": "Defaults are `~/.local/share`, `~/.config`, and `~/.cache`."
+    },
+    {
+      "id": "B003",
+      "text": "On macOS, data and config paths default to Library/Application Support and cache paths default to Library/Caches under home."
+    },
+    {
+      "id": "B004",
+      "text": "On macOS, non-blank XDG directory overrides take precedence over the Library defaults."
+    },
+    {
+      "id": "B005",
+      "text": "Data/config use `LOCALAPPDATA` by default and `APPDATA` when `roaming=True`."
+    },
+    {
+      "id": "B006",
+      "text": "On Windows, appauthor, appauthor=False, version, roaming, and cache opinion options determine the exact appended path segments."
+    },
+    {
+      "id": "B007",
+      "text": "The package exposes the required task API paths `featurelifted.user_cache_dir`, `featurelifted.user_config_dir`, `featurelifted.user_data_dir` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: platformdirs"
+    }
+  ],
+  "log": ">       assert user_data_dir(\"App\", appauthor=\"Vendor\", platform=\"windows\", env=env) == (\nE       AssertionError: assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'\nE         - C:\\Users\\Alice\\AppData\\Local\\Vendor\\App\nE         ?                             ^      ^\nE         + C:\\Users\\Alice\\AppData\\Local/Vendor/App\nE         ?                             ^      ^\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:28: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:17\n__all__ = [\n    \"user_cache_dir\",\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\nEnv = Mapping[str, str]\n\n\ndef _resolve_env(env: Env | None) -> Mapping[str, str]:\n    \"\"\"Return the environment mapping to read variables from.\"\"\"\n    return os.environ if env is None else env\n\n\ndef _resolve_home(home: str | None) -> str:\n    \"\"\"Return the home directory used to expand ``~`` in defaults.\"\"\"\n    return home if home is not None else os.path.expanduser(\"~\")\n\n\n\n## featurelifted/__init__.py:18\n    \"user_cache_dir\",\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\nEnv = Mapping[str, str]\n\n\ndef _resolve_env(env: Env | None) -> Mapping[str, str]:\n    \"\"\"Return the environment mapping to read variables from.\"\"\"\n    return os.environ if env is None else env\n\n\ndef _resolve_home(home: str | None) -> str:\n    \"\"\"Return the home directory used to expand ``~`` in defaults.\"\"\"\n    return home if home is not None else os.path.expanduser(\"~\")\n\n\ndef _non_blank(env: Mapping[str, str], name: str) -> str:\n\n## featurelifted/__init__.py:19\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\nEnv = Mapping[str, str]\n\n\ndef _resolve_env(env: Env | None) -> Mapping[str, str]:\n    \"\"\"Return the environment mapping to read variables from.\"\"\"\n    return os.environ if env is None else env\n\n\ndef _resolve_home(home: str | None) -> str:\n    \"\"\"Return the home directory used to expand ``~`` in defaults.\"\"\"\n    return home if home is not None else os.path.expanduser(\"~\")\n\n\ndef _non_blank(env: Mapping[str, str], name: str) -> str:\n    \"\"\"Return a stripped, non-blank value for *name* (``\"\"`` when unset/blank).\"\"\"\n\n## featurelifted/__init__.py:106\n\ndef user_data_dir(\n    appname: str | None = None,\n    appauthor: str | bool | None = None,\n    version: str | None = None,\n    roaming: bool = False,\n    platform: str = \"linux\",\n    env: Env | None = None,\n    home: str | None = None,\n) -> str:\n    \"\"\"Return the user data directory for *appname* on *platform*.\n\n    ``env`` supplies environment variables such as ``XDG_DATA_HOME`` and\n    ``LOCALAPPDATA``/``APPDATA``; it defaults to the real process environment.\n    ``home`` overrides the user home directory used for ``~`` defaults.\n    \"\"\"\n    environment = _resolve_env(env)\n    if _is_windows(platform):\n        base = _windows_base(environment, roaming, _resolve_home(home))"
+}

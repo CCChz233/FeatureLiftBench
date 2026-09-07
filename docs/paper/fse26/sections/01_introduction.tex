@@ -57,14 +57,11 @@ feasible reference. Correctness and compactness are not combined into one
 score: a broad vendoring solution may preserve behavior but fail to demonstrate
 a compact extraction, while a small package may simply be incomplete.
 
-The main Python-200$'$ suite combines a frozen 150-task baseline with a
-separately calibrated Hard-50 split, for 200 tasks from 176 repositories. The
-Hard-50 split increases coverage of plugin registries, lifecycle and session
-behavior, multi-source configuration, validation boundaries, deep parsing, and
-direct copy-trap tasks. An earlier External-50 expansion is retained only as an
-easy, copy-heavy side split: strong-agent pass rates of 90--94\% and
-pass-conditioned footprints close to whole-repository copying showed that it
-was unsuitable for the paper's main difficulty claim.
+The released Python-200$'$ suite combines a frozen 150-task baseline with a
+separately constructed Hard-50 expansion, for 200 tasks from 176 repositories.
+The headline empirical study is freeze~v2 Official Main on Python-150 with
+five model backends. Official Hard-50 is reported in the appendix; we do not
+use it as the paper's difficulty claim.
 
 Our empirical study asks four groups of questions:
 \begin{itemize}
@@ -103,12 +100,9 @@ This paper makes three main contributions:
         while varying model backends. We report deterministic Functional Pass
         separately from pass-conditioned compactness and process cost.
   \item \textbf{Diagnostic analysis.} We analyze failure stages, semantic
-        contract-closure symptoms, task factors, information boundaries, and
-        trajectory cost. We also report negative results from legal
-        self-testing, repair, checkpoint, context, and budget-control
-        interventions rather than presenting them as successful methods.
+        contract-closure symptoms, in-suite construction difficulty, and
+        pass-conditioned compactness on freeze~v2 Python-150. Historical
+        information-boundary and cost measurements are reported as
+        non-main diagnostics, not as methods that raise the leaderboard.
 \end{itemize}
-
-\draftnote{After Gate A and Gate C, add one sentence with the eligible
-Python-200-prime capability range and the dominant failure-stage result.}
 

@@ -1,0 +1,46 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "filelock__reentrant_lock_core__001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "workflow_session_orchestration",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.FileLock",
+    "method:featurelifted.FileLock.acquire",
+    "attribute:featurelifted.FileLock.is_locked",
+    "method:featurelifted.FileLock.release",
+    "exception:featurelifted.Timeout"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: exclusive lock-file acquisition across instances. Required observable cases include context and reentrant release; nonblocking contention; force release and idempotence; two instances can acquire sequentially."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: reentrant acquire and balanced release on one instance. Required observable cases include context and reentrant release; nonblocking contention; force release and idempotence; two instances can acquire sequentially."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: timeout and non-blocking acquisition. Required observable cases include context and reentrant release; nonblocking contention; force release and idempotence; two instances can acquire sequentially."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: context-manager release and lock-file cleanup. Required observable cases include context and reentrant release; nonblocking contention; force release and idempotence; two instances can acquire sequentially."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.FileLock`, `featurelifted.FileLock.acquire`, `featurelifted.FileLock.is_locked`, `featurelifted.FileLock.release`, `featurelifted.Timeout` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "The submitted package does not import forbidden upstream packages: filelock."
+    }
+  ],
+  "log": "            assert lock.is_locked and path.exists()\n            assert lock.is_locked\n>       assert not lock.is_locked and not path.exists()\nE       AssertionError: assert (not False and not True)\nE        +  where False = <featurelifted._api.FileLock object at 0x746e83eea890>.is_locked\nE        +  and   True = <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')>()\nE        +    where <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')> = PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock').exists\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:8\n\n    from featurelifted import FileLock, Timeout\n\n    lock = FileLock(\"path/to/lock\")\n    with lock:\n        pass\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom ._api import FileLock\nfrom ._error import Timeout\n\n__version__ = \"3.13.1\"\n\n__all__ = [\n    \"FileLock\",\n    \"Timeout\",\n    \"__version__\",\n\n## featurelifted/__init__.py:10\n\n    lock = FileLock(\"path/to/lock\")\n    with lock:\n        pass\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom ._api import FileLock\nfrom ._error import Timeout\n\n__version__ = \"3.13.1\"\n\n__all__ = [\n    \"FileLock\",\n    \"Timeout\",\n    \"__version__\",\n]\n\n## featurelifted/__init__.py:17\n\nfrom ._api import FileLock\nfrom ._error import Timeout\n\n__version__ = \"3.13.1\"\n\n__all__ = [\n    \"FileLock\",\n    \"Timeout\",\n    \"__version__\",\n]\n\n## featurelifted/__init__.py:18\nfrom ._api import FileLock\nfrom ._error import Timeout\n\n__version__ = \"3.13.1\"\n\n__all__ = [\n    \"FileLock\",\n    \"Timeout\",\n    \"__version__\",\n]"
+}

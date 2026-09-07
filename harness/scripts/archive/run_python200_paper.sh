@@ -112,6 +112,7 @@ method_flags = {
     "spec_adversarial_self_test": bool(
         profile.get("spec_adversarial_self_test", False)
     ),
+    "obligation_guided": bool(profile.get("obligation_guided", False)),
 }
 selected = [arm for arm, enabled in method_flags.items() if enabled]
 if len(selected) > 1:
@@ -386,6 +387,7 @@ case "$METHOD_ARM" in
   contract_closure_budget_control) COMMAND+=(--contract-closure-budget-control) ;;
   pre_submit_contract_audit) COMMAND+=(--pre-submit-contract-audit) ;;
   spec_adversarial_self_test) COMMAND+=(--spec-adversarial-self-test) ;;
+  obligation_guided) COMMAND+=(--obligation-guided) ;;
   *) echo "Unsupported method arm resolved from profile: $METHOD_ARM" >&2; exit 2 ;;
 esac
 [[ -z "$RESUME_DIR" ]] || COMMAND+=(--resume "$OUTPUT_DIR")
@@ -409,8 +411,8 @@ echo "Eval image: $EVAL_IMAGE"
 echo "Output: $OUTPUT_DIR"
 printf 'Command:'; printf ' %q' "${COMMAND[@]}"; printf '\n'
 
-if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" ]]; then
-  echo "Screening arm: $METHOD_ARM is Core-12 / Hidden-4 only. Full Python-200 --execute is refused."
+if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" || "$METHOD_ARM" == "obligation_guided" ]]; then
+  echo "Screening arm: $METHOD_ARM is Core-12 / Hidden-4 / pilot-30 only. Full Python-200 --execute is refused."
 fi
 
 if [[ "$EXECUTE" -ne 1 ]]; then
@@ -418,7 +420,7 @@ if [[ "$EXECUTE" -ne 1 ]]; then
   exit 0
 fi
 
-if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" ]]; then
+if [[ "$METHOD_ARM" == "recency_masking" || "$METHOD_ARM" == "artifact_aware" || "$METHOD_ARM" == "verification_aware" || "$METHOD_ARM" == "pre_submit_contract_audit" || "$METHOD_ARM" == "spec_adversarial_self_test" || "$METHOD_ARM" == "obligation_guided" ]]; then
   echo "Refusing full Python-200 execute for $METHOD_ARM. Use the dedicated screening runner." >&2
   exit 2
 fi

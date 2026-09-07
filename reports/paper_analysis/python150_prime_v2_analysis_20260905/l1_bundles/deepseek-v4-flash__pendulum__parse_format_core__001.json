@@ -1,0 +1,72 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "pendulum__parse_format_core__001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "constant:featurelifted.UTC",
+    "class:featurelifted.Date",
+    "attribute:featurelifted.Date.day",
+    "attribute:featurelifted.Date.hour",
+    "attribute:featurelifted.Date.minute",
+    "attribute:featurelifted.Date.month",
+    "attribute:featurelifted.Date.year",
+    "class:featurelifted.DateTime",
+    "attribute:featurelifted.DateTime.hour",
+    "attribute:featurelifted.DateTime.microsecond",
+    "attribute:featurelifted.DateTime.minute",
+    "attribute:featurelifted.DateTime.offset",
+    "class:featurelifted.Duration",
+    "attribute:featurelifted.Duration.hours",
+    "method:featurelifted.Duration.in_days",
+    "attribute:featurelifted.Duration.minutes",
+    "attribute:featurelifted.Duration.months",
+    "attribute:featurelifted.Duration.remaining_days",
+    "attribute:featurelifted.Duration.remaining_seconds",
+    "attribute:featurelifted.Duration.weeks",
+    "attribute:featurelifted.Duration.years",
+    "exception:featurelifted.ParserError",
+    "class:featurelifted.Time",
+    "module:featurelifted.datetime",
+    "module:featurelifted.duration",
+    "function:featurelifted.fixed_timezone",
+    "function:featurelifted.parse"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: parse ISO8601 dates, datetimes with Z or numeric offsets, and durations. Required observable cases include parse iso date; parse iso datetime zulu; parse iso duration; parse iso week calendar date; parse duration weeks "
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: parse common YYYY-MM-DD and HH:mm:ss combinations. Required observable cases include parse common day first; parse subsecond truncation; parse invalid iso raises."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: construct DateTime and Duration instances. Required observable cases include parse subsecond truncation."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: format datetimes with Pendulum tokens (YYYY, MM, DD, HH, mm, ss, Z). Required observable cases include datetime format tokens; format literal brackets."
+    },
+    {
+      "id": "B005",
+      "text": "The extracted feature must support this observable behavior: duration component properties (years, months, weeks, days, hours, minutes, seconds). Required observable cases include duration constructor and total seconds; parse duration weeks component; parse duration full componen"
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.UTC`, `featurelifted.Date`, `featurelifted.Date.day`, `featurelifted.Date.hour`, `featurelifted.Date.minute`, `featurelifted.Date.month`, `featurelifted.Date.year`, `featurelifted.DateTime`, `featurelifted.DateTime.ho"
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: pendulum"
+    }
+  ],
+  "log": "E       TypeError: 'module' object is not callable\n/workspace/evaluation-capsule/public_tests/test_public_api.py:26: TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:21\nfrom featurelifted.constants import YEARS_PER_DECADE\nfrom featurelifted.date import Date\nfrom featurelifted.datetime import DateTime\nfrom featurelifted.day import WeekDay\nfrom featurelifted.duration import Duration\nfrom featurelifted.formatting import Formatter\nfrom featurelifted.helpers import format_diff\nfrom featurelifted.helpers import get_locale\nfrom featurelifted.helpers import locale\nfrom featurelifted.helpers import set_locale\nfrom featurelifted.helpers import week_ends_at\nfrom featurelifted.helpers import week_starts_at\nfrom featurelifted.interval import Interval\nfrom featurelifted.parser import parse as parse\nfrom featurelifted.parsing.exceptions import ParserError\nfrom featurelifted.time import Time\nfrom featurelifted.tz import UTC\nfrom featurelifted.tz import fixed_timezone\nfrom featurelifted.tz import local_timezone\n\n## featurelifted/__init__.py:22\nfrom featurelifted.date import Date\nfrom featurelifted.datetime import DateTime\nfrom featurelifted.day import WeekDay\nfrom featurelifted.duration import Duration\nfrom featurelifted.formatting import Formatter\nfrom featurelifted.helpers import format_diff\nfrom featurelifted.helpers import get_locale\nfrom featurelifted.helpers import locale\nfrom featurelifted.helpers import set_locale\nfrom featurelifted.helpers import week_ends_at\nfrom featurelifted.helpers import week_starts_at\nfrom featurelifted.interval import Interval\nfrom featurelifted.parser import parse as parse\nfrom featurelifted.parsing.exceptions import ParserError\nfrom featurelifted.time import Time\nfrom featurelifted.tz import UTC\nfrom featurelifted.tz import fixed_timezone\nfrom featurelifted.tz import local_timezone\nfrom featurelifted.tz import set_local_timezone\n\n## featurelifted/__init__.py:23\nfrom featurelifted.datetime import DateTime\nfrom featurelifted.day import WeekDay\nfrom featurelifted.duration import Duration\nfrom featurelifted.formatting import Formatter\nfrom featurelifted.helpers import format_diff\nfrom featurelifted.helpers import get_locale\nfrom featurelifted.helpers import locale\nfrom featurelifted.helpers import set_locale\nfrom featurelifted.helpers import week_ends_at\nfrom featurelifted.helpers import week_starts_at\nfrom featurelifted.interval import Interval\nfrom featurelifted.parser import parse as parse\nfrom featurelifted.parsing.exceptions import ParserError\nfrom featurelifted.time import Time\nfrom featurelifted.tz import UTC\nfrom featurelifted.tz import fixed_timezone\nfrom featurelifted.tz import local_timezone\nfrom featurelifted.tz import set_local_timezone\nfrom featurelifted.tz import test_local_timezone\n\n## featurelifted/__init__.py:36\nfrom featurelifted.time import Time\nfrom featurelifted.tz import UTC\nfrom featurelifted.tz import fixed_timezone\nfrom featurelifted.tz import local_timezone\nfrom featurelifted.tz import set_local_timezone\nfrom featurelifted.tz import test_local_timezone\nfrom featurelifted.tz import timezones\nfrom featurelifted.tz.timezone import FixedTimezone\nfrom featurelifted.tz.timezone import Timezone\n\n\nMONDAY = WeekDay.MONDAY\nTUESDAY = WeekDay.TUESDAY\nWEDNESDAY = WeekDay.WEDNESDAY\nTHURSDAY = WeekDay.THURSDAY\nFRIDAY = WeekDay.FRIDAY\nSATURDAY = WeekDay.SATURDAY\nSUNDAY = WeekDay.SUNDAY\n"
+}

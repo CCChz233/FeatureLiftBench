@@ -35,6 +35,7 @@ DEFAULT_OPENHANDS_COMMAND_ENV = "FEATURELIFTBENCH_OPENHANDS_COMMAND"
 PROMPT_APPEND_FILE_ENV = "FEATURELIFTBENCH_OPENHANDS_PROMPT_APPEND_FILE"
 RAW_USAGE_FILENAMES = ("openhands_usage.json", "usage.json")
 OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE = 86
+OPENHANDS_INFRASTRUCTURE_ERROR_RETURN_CODE = OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE
 CGVL_FINISH_GATE_RETURN_CODE = 87
 INFRASTRUCTURE_ERROR_FILE = "openhands_infrastructure_error.json"
 
@@ -237,12 +238,19 @@ def run(config: OpenHandsRunnerConfig) -> int:
     )
     infrastructure_error = _detect_openhands_infrastructure_error(events_path)
     if infrastructure_error is not None:
+        recovered = returncode == 0 and _submission_has_python_files(
+            config.submission_dir
+        )
+        infrastructure_error["promoted_to_process_failure"] = not recovered
         (config.agent_output_dir / INFRASTRUCTURE_ERROR_FILE).write_text(
             json.dumps(infrastructure_error, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
         )
-        if returncode == 0:
-            returncode = OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE
+        # OpenHands may emit one security_risk validation error, recover, and
+        # still exit 0 with a real submission. Do not rewrite that as process
+        # failure; keep the audit file. Empty submissions stay failed.
+        if returncode == 0 and not recovered:
+            returncode = OPENHANDS_INFRASTRUCTURE_ERROR_RETURN_CODE
     raw_usage_path = config.agent_output_dir / "openhands_usage.json"
     if events_path is not None and not raw_usage_path.is_file():
         write_usage_from_events(
@@ -266,8 +274,10 @@ def run(config: OpenHandsRunnerConfig) -> int:
         exit_status = "timeout"
     elif returncode == 127:
         exit_status = "command_not_found"
-    elif returncode == OPENHANDS_TOOL_VALIDATION_ERROR_RETURN_CODE:
-        exit_status = "tool_validation_error"
+    elif returncode == OPENHANDS_INFRASTRUCTURE_ERROR_RETURN_CODE:
+        exit_status = str(
+            (infrastructure_error or {}).get("failure_class") or "tool_validation_error"
+        )
     elif returncode == CGVL_FINISH_GATE_RETURN_CODE:
         exit_status = "cgvl_gate_failed"
     _write_usage(
@@ -686,6 +696,19 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "./run_contract_check.py until ok=true. Do not finish while red. "
             "Do not hunt public_tests/ or hidden_tests/.\n\n"
         )
+    elif options.obligation_guided:
+        from .obligation_guided import openhands_appendix as og_openhands_appendix
+
+        closure_section = (
+            "## Obligation-Guided Feature Lifting\n\n"
+            + og_openhands_appendix()
+            + "\n"
+        )
+        test_hint = (
+            "Fill obligation_ledger.json so every public-contract row cites "
+            "repo_evidence.path and implementation.path. Do not add rows, "
+            "guess Hidden tests, or treat pytest as coverage.\n\n"
+        )
     elif options.cgvl:
         from .cgvl import openhands_appendix as cgvl_openhands_appendix
 
@@ -1018,6 +1041,14 @@ def _maybe_write_pre_submit_audit(
             config.agent_output_dir / "spec_adversarial_audit.json",
         )
         return
+    if options.obligation_guided:
+        from .obligation_guided import write_audit as write_obligation_audit
+
+        write_obligation_audit(
+            config.workspace_dir,
+            config.agent_output_dir / "obligation_guided_audit.json",
+        )
+        return
     if options.cgvl:
         from .cgvl import write_audit as write_cgvl_audit
 
@@ -1313,32 +1344,27 @@ def _json_object_line(text: str) -> dict[str, Any] | None:
     return payload if isinstance(payload, dict) else None
 
 
-def _detect_openhands_infrastructure_error(
-    events_path: Path | None,
+def _submission_has_python_files(submission_dir: Path) -> bool:
+    return submission_dir.is_dir() and any(submission_dir.rglob("*.py"))
+
+
+_INFRA_FAILURE_RANK = {
+    "invalid_encrypted_content": 3,
+    "rate_limited": 2,
+    "tool_validation_error": 1,
+}
+
+
+def _classify_openhands_infrastructure_event(
+    payload: dict[str, Any],
+    *,
+    line_number: int,
 ) -> dict[str, Any] | None:
-    """Return an auditable OpenHands infrastructure error from JSONL events.
-
-    OpenHands can emit an ``AgentErrorEvent`` for an invalid tool-call payload,
-    print a goodbye message, and still exit zero. That is not a successful agent
-    completion and must not be confused with an empty model submission.
-    """
-
-    if events_path is None or not events_path.is_file():
-        return None
-    try:
-        lines = events_path.read_text(encoding="utf-8", errors="replace").splitlines()
-    except OSError:
-        return None
-    for line_number, line in enumerate(lines, start=1):
-        payload = _json_object_line(line)
-        if payload is None or payload.get("kind") != "AgentErrorEvent":
-            continue
+    kind = str(payload.get("kind") or "")
+    if kind == "AgentErrorEvent":
         error = payload.get("error")
-        if not isinstance(error, str):
-            continue
-        lowered = error.lower()
-        if "error validating tool" not in lowered:
-            continue
+        if not isinstance(error, str) or "error validating tool" not in error.lower():
+            return None
         return {
             "schema_version": "featureliftbench.openhands_infrastructure_error.v1",
             "failure_class": "tool_validation_error",
@@ -1348,7 +1374,78 @@ def _detect_openhands_infrastructure_error(
             "tool_name": str(payload.get("tool_name") or ""),
             "error": error[:2000],
         }
-    return None
+    if kind != "ConversationErrorEvent":
+        return None
+    detail_parts = [
+        str(payload.get("code") or ""),
+        str(payload.get("detail") or ""),
+        str(payload.get("error") or ""),
+        str(payload.get("message") or ""),
+    ]
+    text = "\n".join(detail_parts)
+    lowered = text.lower()
+    if any(
+        needle in lowered
+        for needle in (
+            "invalid_encrypted",
+            "encrypted content could not",
+            "could not be decrypted",
+            "encrypted content for item",
+        )
+    ):
+        failure_class = "invalid_encrypted_content"
+    elif "429" in lowered or "rate limit" in lowered or "too many requests" in lowered:
+        failure_class = "rate_limited"
+    else:
+        return None
+    return {
+        "schema_version": "featureliftbench.openhands_infrastructure_error.v1",
+        "failure_class": failure_class,
+        "retryable": True,
+        "event_id": str(payload.get("id") or ""),
+        "event_line": line_number,
+        "tool_name": str(payload.get("tool_name") or ""),
+        "error": text[:2000],
+    }
+
+
+def _detect_openhands_infrastructure_error(
+    events_path: Path | None,
+) -> dict[str, Any] | None:
+    """Return an auditable OpenHands infrastructure error from JSONL events.
+
+    OpenHands can emit an ``AgentErrorEvent`` for an invalid tool-call payload,
+    print a goodbye message, and still exit zero. An empty submission plus that
+    event is not a successful agent completion. A later recovered run that still
+    wrote Python under ``submission/`` is recorded here but not failed.
+
+    Provider protocol flakes such as OpenLux ``invalid_encrypted_content`` arrive
+    as ``ConversationErrorEvent`` and are ranked above tool-validation noise when
+    both appear in the same trajectory.
+    """
+
+    if events_path is None or not events_path.is_file():
+        return None
+    try:
+        lines = events_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return None
+    best: dict[str, Any] | None = None
+    best_rank = -1
+    for line_number, line in enumerate(lines, start=1):
+        payload = _json_object_line(line)
+        if payload is None:
+            continue
+        classified = _classify_openhands_infrastructure_event(
+            payload, line_number=line_number
+        )
+        if classified is None:
+            continue
+        rank = _INFRA_FAILURE_RANK.get(str(classified.get("failure_class") or ""), 0)
+        if rank >= best_rank:
+            best = classified
+            best_rank = rank
+    return best
 
 
 def _openhands_max_steps(env: dict[str, str]) -> int | None:

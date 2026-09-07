@@ -1,0 +1,40 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "hatch__project_metadata_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "resource_metadata_loading",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.normalize_project_metadata",
+    "function:featurelifted.select_environment",
+    "exception:featurelifted.MetadataValidationError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`normalize_project_metadata` lowercases names, sorts dependencies, and validates classifiers."
+    },
+    {
+      "id": "B002",
+      "text": "`select_environment` resolves environment inheritance and include chains."
+    },
+    {
+      "id": "B003",
+      "text": "Circular inheritance raises `ValueError`; invalid classifiers raise `MetadataValidationError`."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.normalize_project_metadata`, `featurelifted.select_environment`, `featurelifted.MetadataValidationError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: hatch, hatchling"
+    }
+  ],
+  "log": ">       assert normalized[\"name\"] == \"my-package\"\nE       AssertionError: assert 'my package' == 'my-package'\nE         - my-package\nE         ?   ^\nE         + my package\nE         ?   ^\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:15\n__all__ = [\n    \"MetadataValidationError\",\n    \"normalize_project_metadata\",\n    \"select_environment\",\n]\n\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when a project metadata value fails validation.\"\"\"\n\n\n# PEP 503 normalized names: collapse runs of ``-``, ``_``, and ``.`` into a\n# single ``-`` and lowercase the result.\n_NAME_SEPARATORS = re.compile(r\"[-_.]+\")\n\n# The top-level trove classifier categories. Every valid (public) PyPI\n# classifier starts with one of these, followed by ``::``.\n_CLASSIFIER_CATEGORIES = frozenset(\n    {\n\n## featurelifted/__init__.py:16\n    \"MetadataValidationError\",\n    \"normalize_project_metadata\",\n    \"select_environment\",\n]\n\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when a project metadata value fails validation.\"\"\"\n\n\n# PEP 503 normalized names: collapse runs of ``-``, ``_``, and ``.`` into a\n# single ``-`` and lowercase the result.\n_NAME_SEPARATORS = re.compile(r\"[-_.]+\")\n\n# The top-level trove classifier categories. Every valid (public) PyPI\n# classifier starts with one of these, followed by ``::``.\n_CLASSIFIER_CATEGORIES = frozenset(\n    {\n        \"Development Status\",\n\n## featurelifted/__init__.py:17\n    \"normalize_project_metadata\",\n    \"select_environment\",\n]\n\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when a project metadata value fails validation.\"\"\"\n\n\n# PEP 503 normalized names: collapse runs of ``-``, ``_``, and ``.`` into a\n# single ``-`` and lowercase the result.\n_NAME_SEPARATORS = re.compile(r\"[-_.]+\")\n\n# The top-level trove classifier categories. Every valid (public) PyPI\n# classifier starts with one of these, followed by ``::``.\n_CLASSIFIER_CATEGORIES = frozenset(\n    {\n        \"Development Status\",\n        \"Environment\",\n\n## featurelifted/__init__.py:21\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when a project metadata value fails validation.\"\"\"\n\n\n# PEP 503 normalized names: collapse runs of ``-``, ``_``, and ``.`` into a\n# single ``-`` and lowercase the result.\n_NAME_SEPARATORS = re.compile(r\"[-_.]+\")\n\n# The top-level trove classifier categories. Every valid (public) PyPI\n# classifier starts with one of these, followed by ``::``.\n_CLASSIFIER_CATEGORIES = frozenset(\n    {\n        \"Development Status\",\n        \"Environment\",\n        \"Framework\",\n        \"Intended Audience\",\n        \"License\",\n        \"Natural Language\","
+}

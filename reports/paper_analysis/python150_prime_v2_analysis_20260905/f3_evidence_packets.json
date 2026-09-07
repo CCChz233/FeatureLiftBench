@@ -1,0 +1,3254 @@
+[
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "aiohttp__url_params_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "191",
+    "required_api_n": 7,
+    "required_present_n": 7,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_invalid_header_name_raises"
+      ],
+      "error_hits": [
+        "test_invalid_header_name_raises"
+      ],
+      "lines": [
+        "E       Failed: DID NOT RAISE <class 'featurelifted.InvalidHeaderName'>",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 147,
+      "reads": 3,
+      "edits": 8,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "alembic__revision_map_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "1262",
+    "required_api_n": 14,
+    "required_present_n": 12,
+    "required_missing_leaves": [
+      "bases",
+      "branch_labels"
+    ],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_merge_revision_removes_branch_heads"
+      ],
+      "error_hits": [
+        "test_merge_revision_removes_branch_heads",
+        "AttributeError | 'NoneType' object has no attribute 'is_branch_point'",
+        "AttributeError | 'NoneType' object has no attribute 'is_branch_point'"
+      ],
+      "lines": [
+        "assert revmap.get_heads() == [\"merge\"]",
+        "assert revmap.get_revision(\"merge\").is_merge_point",
+        ">       assert revmap.get_revision(\"base\").is_branch_point",
+        "E       AttributeError: 'NoneType' object has no attribute 'is_branch_point'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:25: AttributeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B007"
+    ],
+    "trajectory": {
+      "events": 129,
+      "reads": 1,
+      "edits": 5,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "build__pyproject_backend_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "85",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_default_build_system_when_missing"
+      ],
+      "error_hits": [
+        "test_default_build_system_when_missing",
+        "AssertionError | assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'",
+        "AssertionError | assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'"
+      ],
+      "lines": [
+        ">       assert table[\"build-backend\"] == \"setuptools.build_meta\"",
+        "E       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'",
+        "E         - setuptools.build_meta",
+        "E         + setuptools.build_meta:__legacy__",
+        "E         ?                      +++++++++++",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 44,
+      "reads": 0,
+      "edits": 4,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "celery__signal_dispatch_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "214",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "ValueError",
+        "test_signal_send_invokes_receiver"
+      ],
+      "error_hits": [
+        "test_signal_send_invokes_receiver",
+        "ValueError | Signal receiver must accept keyword arguments.",
+        "ValueError | Signal receiver must accept keyword arguments."
+      ],
+      "lines": [
+        "assert callable(receiver), 'Signal receivers must be callable'",
+        ">           raise ValueError(",
+        "E           ValueError: Signal receiver must accept keyword arguments.",
+        "submission-runtime/featurelifted/signal.py:135: ValueError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 68,
+      "reads": 2,
+      "edits": 8,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "click__lazy_command_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "160",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_lazy_command_invoke"
+      ],
+      "error_hits": [
+        "test_lazy_command_invoke",
+        "AttributeError | 'LazyCommandCollection' object has no attribute 'invoke'",
+        "AttributeError | 'LazyCommandCollection' object has no attribute 'invoke'"
+      ],
+      "lines": [
+        ">       assert collection.invoke([\"echo\", \"hi\"]) == [\"hi\"]",
+        "E       AttributeError: 'LazyCommandCollection' object has no attribute 'invoke'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:10: AttributeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 163,
+      "reads": 2,
+      "edits": 11,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "cookiecutter__repo_finder_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "101",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_find_template_with_abbreviation"
+      ],
+      "error_hits": [
+        "test_find_template_with_abbreviation"
+      ],
+      "lines": [
+        "E           IndexError: Replacement index 1 out of range for positional args tuple",
+        "submission-runtime/featurelifted/__init__.py:63: IndexError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 118,
+      "reads": 1,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "decorator__signature_preserving_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "workflow_session_orchestration",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "91",
+    "required_api_n": 2,
+    "required_present_n": 2,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_metadata_signature_and_call_order"
+      ],
+      "error_hits": [
+        "test_metadata_signature_and_call_order",
+        "AssertionError | assert [((2, 3), {})] == [((2,), {'b': 3})]",
+        "AssertionError | assert [((2, 3), {})] == [((2,), {'b': 3})]"
+      ],
+      "lines": [
+        "assert add(2, b=3) == 10",
+        "assert str(inspect.signature(add)) == \"(a: int, b: int = 1) -> int\"",
+        "assert add.__name__ == \"add\" and add.__doc__ == \"add values\"",
+        ">       assert calls == [((2,), {\"b\": 3})]",
+        "E       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]",
+        "E         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 44,
+      "reads": 1,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "filelock__reentrant_lock_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "workflow_session_orchestration",
+    "first_failure_stage": "public_failure",
+    "n_files": 10,
+    "submitted_loc": "203",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_context_and_reentrant_release"
+      ],
+      "error_hits": [
+        "test_context_and_reentrant_release",
+        "AssertionError | assert (not False and not True)",
+        "AssertionError | assert (not False and not True)"
+      ],
+      "lines": [
+        "assert lock.is_locked and path.exists()",
+        "assert lock.is_locked",
+        ">       assert not lock.is_locked and not path.exists()",
+        "E       AssertionError: assert (not False and not True)",
+        "E        +  where False = <featurelifted._unix.UnixFileLock object at 0x71c905a55410>.is_locked",
+        "E        +  and   True = <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')>()",
+        "E        +    where <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')> = PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.l",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 46,
+      "reads": 2,
+      "edits": 7,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "flake8__plugin_options_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 4,
+    "submitted_loc": "198",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_option_manager_registers_plugin_options"
+      ],
+      "error_hits": [
+        "test_option_manager_registers_plugin_options",
+        "AttributeError | 'OptionManager' object has no attribute 'register_options'",
+        "AttributeError | 'OptionManager' object has no attribute 'register_options'"
+      ],
+      "lines": [
+        "E       AttributeError: 'OptionManager' object has no attribute 'register_options'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:8: AttributeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 129,
+      "reads": 3,
+      "edits": 15,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "flask__route_dispatch_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 4,
+    "submitted_loc": "299",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_static_and_typed_routes"
+      ],
+      "error_hits": [
+        "test_static_and_typed_routes",
+        "AssertionError | assert <Response 200 OK> == <Response 200 OK>",
+        "AssertionError | assert <Response 200 OK> == <Response 200 OK>"
+      ],
+      "lines": [
+        ">       assert app.dispatch(\"/hello\") == Response(\"hello\", 200)",
+        "E       AssertionError: assert <Response 200 OK> == <Response 200 OK>",
+        "E        +  where <Response 200 OK> = <bound method App.dispatch of <featurelifted.app.App object at 0x7521b9c74ad0>>('/hello')",
+        "E        +    where <bound method App.dispatch of <featurelifted.app.App object at 0x7521b9c74ad0>> = <featurelifted.app.App object at 0x7521b9c74ad0>.dispatch",
+        "E        +  and   <Response 200 OK> = Response('hello', 200)",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:9: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 72,
+      "reads": 2,
+      "edits": 5,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "hatch__project_metadata_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "171",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_normalize_project_metadata"
+      ],
+      "error_hits": [
+        "test_normalize_project_metadata",
+        "AssertionError | assert 'my package' == 'my-package'",
+        "AssertionError | assert 'my package' == 'my-package'"
+      ],
+      "lines": [
+        ">       assert normalized[\"name\"] == \"my-package\"",
+        "E       AssertionError: assert 'my package' == 'my-package'",
+        "E         - my-package",
+        "E         ?   ^",
+        "E         + my package",
+        "E         ?   ^",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 126,
+      "reads": 5,
+      "edits": 5,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "json_logic__evaluator_core__hard3_001",
+    "lift_type": "Direct",
+    "hard3": true,
+    "feature_family": "cache_retry_policy",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "154",
+    "required_api_n": 1,
+    "required_present_n": 1,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_short_circuit_and"
+      ],
+      "error_hits": [
+        "test_short_circuit_and"
+      ],
+      "lines": [
+        ">       assert jsonLogic(rule, {}) is False",
+        "E   ZeroDivisionError: float division by zero",
+        "submission-runtime/featurelifted/__init__.py:161: ZeroDivisionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 32,
+      "reads": 2,
+      "edits": 2,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "234",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_data_dir_platform_defaults"
+      ],
+      "error_hits": [
+        "test_data_dir_platform_defaults",
+        "AssertionError | assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'",
+        "AssertionError | assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'"
+      ],
+      "lines": [
+        "assert jupyter_data_dir(env={}, home=\"/Users/alice\", platform=\"darwin\") == \"/Users/alice/Library/Jupyter\"",
+        ">       assert jupyter_data_dir(env={\"APPDATA\": r\"C:\\Users\\Alice\\AppData\\Roaming\"}, home=r\"C:\\Users\\Alice\", platform=\"win32\") == r\"C:\\Users\\Alice\\AppData\\Roaming\\jupyter\"",
+        "E       AssertionError: assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'",
+        "E         - C:\\Users\\Alice\\AppData\\Roaming\\jupyter",
+        "E         + /tmp/featureliftbench-eval-dwv7a_1n/C:\\Users\\Alice\\AppData\\Roaming/jupyter",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:24: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 87,
+      "reads": 3,
+      "edits": 11,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "keyring__backend_select_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "177",
+    "required_api_n": 15,
+    "required_present_n": 15,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_select_highest_priority_backend"
+      ],
+      "error_hits": [
+        "test_select_highest_priority_backend",
+        "AssertionError | assert False",
+        "AssertionError | assert False"
+      ],
+      "lines": [
+        ">       assert isinstance(select_backend([Low, High]), High)",
+        "E       AssertionError: assert False",
+        "E        +  where False = isinstance(<class 'test_public_contract.High'>, High)",
+        "E        +    where <class 'test_public_contract.High'> = select_backend([<class 'test_public_contract.Low'>, <class 'test_public_contract.High'>])",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:21: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B006"
+    ],
+    "trajectory": {
+      "events": 79,
+      "reads": 3,
+      "edits": 6,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "license_expression__policy_core__hard3_001",
+    "lift_type": "Direct",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 4,
+    "submitted_loc": "1843",
+    "required_api_n": 9,
+    "required_present_n": 9,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_validate_reports_unknown_symbol_without_normalized_expression"
+      ],
+      "error_hits": [
+        "test_validate_reports_unknown_symbol_without_normalized_expression",
+        "AssertionError | assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']",
+        "AssertionError | assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']"
+      ],
+      "lines": [
+        "assert info.normalized_expression is None",
+        "assert info.invalid_symbols == [\"UnknownLicense\"]",
+        ">       assert info.errors == [\"Unknown license symbol: UnknownLicense\"]",
+        "E       AssertionError: assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']",
+        "E         At index 0 diff: 'Unknown license key(s): UnknownLicense' != 'Unknown license symbol: UnknownLicense'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003",
+      "B006",
+      "B008",
+      "B009"
+    ],
+    "trajectory": {
+      "events": 232,
+      "reads": 11,
+      "edits": 10,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "mkdocs__plugin_config_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "111",
+    "required_api_n": 6,
+    "required_present_n": 5,
+    "required_missing_leaves": [
+      "names"
+    ],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_plugin_collection_runs_event_by_priority"
+      ],
+      "error_hits": [
+        "test_plugin_collection_runs_event_by_priority",
+        "AssertionError | assert [] == ['b', 'a']",
+        "AssertionError | assert [] == ['b', 'a']"
+      ],
+      "lines": [
+        ">       assert collection.run_event(\"on_config\") == [\"b\", \"a\"]",
+        "E       AssertionError: assert [] == ['b', 'a']",
+        "E         Right contains 2 more items, first extra item: 'b'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 62,
+      "reads": 2,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "multidict__multidict_mutation_core__hard3_001",
+    "lift_type": "Direct",
+    "hard3": true,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "1126",
+    "required_api_n": 12,
+    "required_present_n": 12,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_multidict_duplicate_keys_and_getall"
+      ],
+      "error_hits": [
+        "test_multidict_duplicate_keys_and_getall"
+      ],
+      "lines": [
+        ">       assert md[\"a\"] == 2",
+        "E       assert 1 == 2",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:9: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002"
+    ],
+    "trajectory": {
+      "events": 100,
+      "reads": 1,
+      "edits": 3,
+      "repo_reads": 1
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "parsel__selector_namespace_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 5,
+    "submitted_loc": "1451",
+    "required_api_n": 10,
+    "required_present_n": 10,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_css_id_selector"
+      ],
+      "error_hits": [
+        "test_css_id_selector"
+      ],
+      "lines": [
+        ">       assert Selector(root).css(\"#main\").get() == \"hi\"",
+        "E       assert '<p id=\"main\">hi</p>' == 'hi'",
+        "E         - hi",
+        "E         + <p id=\"main\">hi</p>",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 188,
+      "reads": 4,
+      "edits": 15,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "platformdirs__app_dirs_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "137",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_windows_author_roaming_and_cache_layout"
+      ],
+      "error_hits": [
+        "test_windows_author_roaming_and_cache_layout",
+        "AssertionError | assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'",
+        "AssertionError | assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'"
+      ],
+      "lines": [
+        ">       assert user_data_dir(\"App\", appauthor=\"Vendor\", platform=\"windows\", env=env) == (",
+        "E       AssertionError: assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'",
+        "E         - C:\\Users\\Alice\\AppData\\Local\\Vendor\\App",
+        "E         ?                             ^      ^",
+        "E         + C:\\Users\\Alice\\AppData\\Local/Vendor/App",
+        "E         ?                             ^      ^",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:28: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B005",
+      "B006"
+    ],
+    "trajectory": {
+      "events": 68,
+      "reads": 1,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "pluggy__hook_wrapper_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 5,
+    "submitted_loc": "520",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_historic_replays_for_late_registration"
+      ],
+      "error_hits": [
+        "test_historic_replays_for_late_registration",
+        "TypeError | HookCaller.call_historic() got multiple values for argument 'result_callback'",
+        "TypeError | HookCaller.call_historic() got multiple values for argument 'result_callback'"
+      ],
+      "lines": [
+        "E       TypeError: HookCaller.call_historic() got multiple values for argument 'result_callback'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:8: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 121,
+      "reads": 2,
+      "edits": 16,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "poetry_core__dependency_groups_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "147",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_parse_main_and_optional_groups"
+      ],
+      "error_hits": [
+        "test_parse_main_and_optional_groups",
+        "AssertionError | assert 'main' in {}",
+        "AssertionError | assert 'main' in {}"
+      ],
+      "lines": [
+        ">       assert \"main\" in groups",
+        "E       AssertionError: assert 'main' in {}",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:11: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 77,
+      "reads": 0,
+      "edits": 7,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "pygments__lexer_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 13,
+    "submitted_loc": "3639",
+    "required_api_n": 18,
+    "required_present_n": 13,
+    "required_missing_leaves": [
+      "Double",
+      "Function",
+      "Integer",
+      "Single"
+    ],
+    "log": {
+      "error_kinds": [
+        "test_stripall_option_removes_whitespace_tokens"
+      ],
+      "error_hits": [
+        "test_stripall_option_removes_whitespace_tokens"
+      ],
+      "lines": [
+        ">       assert all(ttype is not token.Text for ttype, _ in pairs)",
+        "E       assert False",
+        "E        +  where False = all(<generator object test_stripall_option_removes_whitespace_tokens.<locals>.<genexpr> at 0x73a530fa0580>)",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B004"
+    ],
+    "trajectory": {
+      "events": 102,
+      "reads": 0,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "pytest__ini_markers_core__001",
+    "lift_type": "Composite",
+    "hard3": false,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "53",
+    "required_api_n": 8,
+    "required_present_n": 8,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_parse_multiline_markers"
+      ],
+      "error_hits": [
+        "test_parse_multiline_markers",
+        "AssertionError | assert ' web test' == 'web test'",
+        "AssertionError | assert ' web test' == 'web test'"
+      ],
+      "lines": [
+        "assert reg.names() == [\"a1\", \"a2\"]",
+        ">       assert reg.description(\"a1\") == \"web test\"",
+        "E       AssertionError: assert ' web test' == 'web test'",
+        "E         - web test",
+        "E         +  web test",
+        "E         ? +",
+        "/workspace/evaluation-capsule/public_tests/test_public_api.py:13: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 91,
+      "reads": 2,
+      "edits": 2,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "pytest__marker_registry_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "100",
+    "required_api_n": 8,
+    "required_present_n": 8,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_check_unknown_strict_raises"
+      ],
+      "error_hits": [
+        "test_check_unknown_strict_raises"
+      ],
+      "lines": [
+        "E           featurelifted.UnknownMarkerWarning: Unknown pytest.mark.missing - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B003"
+    ],
+    "trajectory": {
+      "events": 120,
+      "reads": 1,
+      "edits": 6,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "python_decouple__config_repository_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "125",
+    "required_api_n": 6,
+    "required_present_n": 6,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_env_file_quotes_comments_and_empty"
+      ],
+      "error_hits": [
+        "test_env_file_quotes_comments_and_empty"
+      ],
+      "lines": [
+        ">       assert config(\"NAME\") == \"Ada Lovelace\"",
+        "E       assert \"'Ada Lovelace' # note\" == 'Ada Lovelace'",
+        "E         - Ada Lovelace",
+        "E         + 'Ada Lovelace' # note",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 76,
+      "reads": 3,
+      "edits": 6,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "readme_renderer__content_type_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "serialize_format_render",
+    "first_failure_stage": "public_failure",
+    "n_files": 4,
+    "submitted_loc": "149",
+    "required_api_n": 1,
+    "required_present_n": 1,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_render_markdown_content_type"
+      ],
+      "error_hits": [
+        "test_render_markdown_content_type",
+        "AssertionError | assert 'markdown' in '<h1>Title</h1>\\n'",
+        "AssertionError | assert 'markdown' in '<h1>Title</h1>\\n'"
+      ],
+      "lines": [
+        ">       assert \"markdown\" in html",
+        "E       AssertionError: assert 'markdown' in '<h1>Title</h1>\\n'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 62,
+      "reads": 16,
+      "edits": 5,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "requests_cache__cache_key_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "cache_retry_policy",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "428",
+    "required_api_n": 10,
+    "required_present_n": 8,
+    "required_missing_leaves": [
+      "expiration_seconds",
+      "should_store"
+    ],
+    "log": {
+      "error_kinds": [
+        "KeyError",
+        "test_header_multi_value_normalization_and_redaction"
+      ],
+      "error_hits": [
+        "test_header_multi_value_normalization_and_redaction",
+        "KeyError | 'accept'",
+        "KeyError | 'accept'"
+      ],
+      "lines": [
+        ">       assert headers[\"accept\"] == \"application/json, text/html\"",
+        "E       KeyError: 'accept'",
+        "/workspace/evaluation-capsule/<hidden> KeyError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B005"
+    ],
+    "trajectory": {
+      "events": 113,
+      "reads": 3,
+      "edits": 12,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "responses__request_matcher_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "156",
+    "required_api_n": 9,
+    "required_present_n": 7,
+    "required_missing_leaves": [
+      "_responses",
+      "call_history"
+    ],
+    "log": {
+      "error_kinds": [
+        "test_query_and_header_matchers_and_once_behavior"
+      ],
+      "error_hits": [
+        "test_query_and_header_matchers_and_once_behavior"
+      ],
+      "lines": [
+        "assert first is not None",
+        "assert second is None",
+        ">       assert len(registry.call_history) == 2",
+        "E       assert 1 == 2",
+        "E        +  where 1 = len([<PreparedRequest [GET]>])",
+        "E        +    where [<PreparedRequest [GET]>] = <featurelifted.MockResponseRegistry object at 0x72f70066c350>.call_history",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 205,
+      "reads": 3,
+      "edits": 12,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "schema__nested_validate_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "370",
+    "required_api_n": 8,
+    "required_present_n": 8,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_or_and_composition"
+      ],
+      "error_hits": [
+        "test_or_and_composition",
+        "AssertionError | assert 'hi' == 'HI'",
+        "AssertionError | assert 'hi' == 'HI'"
+      ],
+      "lines": [
+        "assert validator.validate(\"x\") == \"x\"",
+        ">       assert And(str, lambda s: s.upper()).validate(\"hi\") == \"HI\"",
+        "E       AssertionError: assert 'hi' == 'HI'",
+        "E         - HI",
+        "E         + hi",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B003"
+    ],
+    "trajectory": {
+      "events": 60,
+      "reads": 1,
+      "edits": 2,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "scrapy__item_loader_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 6,
+    "submitted_loc": "479",
+    "required_api_n": 9,
+    "required_present_n": 8,
+    "required_missing_leaves": [
+      "default_output_processor"
+    ],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "ValueError",
+        "test_item_loader_applies_processors"
+      ],
+      "error_hits": [
+        "test_item_loader_applies_processors",
+        "AttributeError | 'list' object has no attribute 'strip'",
+        "ValueError | Error with input processor function: field='price' value=['9'] error='AttributeError: 'list' object has no attribute 'strip''",
+        "AttributeError | 'list' object has no attribute 'strip'",
+        "ValueError | Error with input processor function: field='price' value=['9'] error='AttributeError: 'list' object has no attribute 'strip''"
+      ],
+      "lines": [
+        "E   AttributeError: 'list' object has no attribute 'strip'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AttributeError",
+        ">           raise ValueError(",
+        "f\"Error with input processor {_proc.__class__.__name__}:\"",
+        "E           ValueError: Error with input processor function: field='price' value=['9'] error='AttributeError: 'list' object has no attribute 'strip''",
+        "submission-runtime/featurelifted/loader.py:222: ValueError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 159,
+      "reads": 0,
+      "edits": 17,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "107",
+    "required_api_n": 1,
+    "required_present_n": 1,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_version_from_tag"
+      ],
+      "error_hits": [
+        "test_version_from_tag",
+        "AssertionError | assert '1.2.3+g1234567' == '1.2.3'",
+        "AssertionError | assert '1.2.3+g1234567' == '1.2.3'"
+      ],
+      "lines": [
+        ">       assert version_from_scm(\".\", tag=\"v1.2.3\", distance=0, dirty=False) == \"1.2.3\"",
+        "E       AssertionError: assert '1.2.3+g1234567' == '1.2.3'",
+        "E         - 1.2.3",
+        "E         + 1.2.3+g1234567",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 86,
+      "reads": 3,
+      "edits": 4,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "starlette__route_matching_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 3,
+    "submitted_loc": "248",
+    "required_api_n": 9,
+    "required_present_n": 8,
+    "required_missing_leaves": [
+      "NONE"
+    ],
+    "log": {
+      "error_kinds": [
+        "test_method_mismatch_returns_no_match"
+      ],
+      "error_hits": [
+        "test_method_mismatch_returns_no_match"
+      ],
+      "lines": [
+        ">       assert match is Match.NONE",
+        "E       assert Match(1,) is Match(0,)",
+        "E        +  where Match(0,) = Match.NONE",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 80,
+      "reads": 0,
+      "edits": 4,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "tox__factor_expression_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "227",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_find_envs_brace_groups"
+      ],
+      "error_hits": [
+        "test_find_envs_brace_groups",
+        "AssertionError | assert set() == {'lint-py', 'test-py'}",
+        "AssertionError | assert set() == {'lint-py', 'test-py'}"
+      ],
+      "lines": [
+        ">       assert set(find_envs(\"{lint,test}-py\")) == {\"lint-py\", \"test-py\"}",
+        "E       AssertionError: assert set() == {'lint-py', 'test-py'}",
+        "E         Extra items in the right set:",
+        "E         'test-py'",
+        "E         'lint-py'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 94,
+      "reads": 0,
+      "edits": 8,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 2,
+    "submitted_loc": "264",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_discover_paths_by_glob"
+      ],
+      "error_hits": [
+        "test_discover_paths_by_glob",
+        "AssertionError | assert '/usr/bin/python*' is None",
+        "AssertionError | assert '/usr/bin/python*' is None"
+      ],
+      "lines": [
+        ">       assert constraint is None",
+        "E       AssertionError: assert '/usr/bin/python*' is None",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B003"
+    ],
+    "trajectory": {
+      "events": 185,
+      "reads": 3,
+      "edits": 6,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-pro",
+    "task_id": "yamale__schema_validate_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "public_failure",
+    "n_files": 15,
+    "submitted_loc": "778",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_basic_schema_validation"
+      ],
+      "error_hits": [
+        "test_basic_schema_validation",
+        "AttributeError | 'Name' object has no attribute 'func'",
+        "AttributeError | 'Name' object has no attribute 'func'"
+      ],
+      "lines": [
+        "raise ValueError(\"{} is an empty file!\".format(name))",
+        "except SyntaxError as e:",
+        ">           raise SyntaxError(error)",
+        "E           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'",
+        "submission-runtime/featurelifted/schema/schema.py:50: SyntaxError",
+        "raise ValueError(\"{} is an empty file!\".format(name))",
+        "except (TypeError, SyntaxError) as e:",
+        ">           raise SyntaxError(error)",
+        "E           SyntaxError: Schema error in file schema",
+        "E           Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'",
+        "submission-runtime/featurelifted/yamale.py:24: SyntaxError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 163,
+      "reads": 17,
+      "edits": 19,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "aiohttp__url_params_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 4,
+    "submitted_loc": "293",
+    "required_api_n": 7,
+    "required_present_n": 7,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_invalid_header_name_raises"
+      ],
+      "error_hits": [
+        "test_invalid_header_name_raises"
+      ],
+      "lines": [
+        "E       Failed: DID NOT RAISE <class 'featurelifted._headers.InvalidHeaderName'>",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 163,
+      "reads": 4,
+      "edits": 15,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "alembic__revision_map_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "1476",
+    "required_api_n": 14,
+    "required_present_n": 14,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_merge_revision_removes_branch_heads"
+      ],
+      "error_hits": [
+        "test_merge_revision_removes_branch_heads",
+        "AttributeError | 'NoneType' object has no attribute 'is_branch_point'",
+        "AttributeError | 'NoneType' object has no attribute 'is_branch_point'"
+      ],
+      "lines": [
+        "assert revmap.get_heads() == [\"merge\"]",
+        "assert revmap.get_revision(\"merge\").is_merge_point",
+        ">       assert revmap.get_revision(\"base\").is_branch_point",
+        "E       AttributeError: 'NoneType' object has no attribute 'is_branch_point'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:25: AttributeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B007"
+    ],
+    "trajectory": {
+      "events": 242,
+      "reads": 5,
+      "edits": 19,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "bleach__sanitize_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 37,
+    "submitted_loc": "12309",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_no_bleach_import_surface"
+      ],
+      "error_hits": [
+        "test_no_bleach_import_surface"
+      ],
+      "lines": [
+        ">           assert not import_pattern.search(text)",
+        "E           assert not <re.Match object; span=(1409, 1429), match='\\n        from bleach'>",
+        "E            +  where <re.Match object; span=(1409, 1429), match='\\n        from bleach'> = <built-in method search of re.Pattern object at 0x7979137372a0>('from itertools import chain\\nimport re\\nimport warnings\\n\\nfrom",
+        "E            +    where <built-in method search of re.Pattern object at 0x7979137372a0> = re.compile('^\\\\s*(?:from bleach|import bleach)\\\\b', re.MULTILINE).search",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B006"
+    ],
+    "trajectory": {
+      "events": 112,
+      "reads": 5,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "build__pyproject_backend_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "131",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_default_build_system_when_missing"
+      ],
+      "error_hits": [
+        "test_default_build_system_when_missing",
+        "AssertionError | assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'",
+        "AssertionError | assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'"
+      ],
+      "lines": [
+        ">       assert table[\"build-backend\"] == \"setuptools.build_meta\"",
+        "E       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'",
+        "E         - setuptools.build_meta",
+        "E         + setuptools.build_meta:__legacy__",
+        "E         ?                      +++++++++++",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 97,
+      "reads": 14,
+      "edits": 10,
+      "repo_reads": 9
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "celery__signal_dispatch_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "209",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "ValueError",
+        "test_signal_send_invokes_receiver"
+      ],
+      "error_hits": [
+        "test_signal_send_invokes_receiver",
+        "ValueError | Signal receiver must accept keyword arguments.",
+        "ValueError | Signal receiver must accept keyword arguments."
+      ],
+      "lines": [
+        "assert callable(receiver), 'Signal receivers must be callable'",
+        ">           raise ValueError(",
+        "E           ValueError: Signal receiver must accept keyword arguments.",
+        "submission-runtime/featurelifted/__init__.py:124: ValueError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 89,
+      "reads": 4,
+      "edits": 9,
+      "repo_reads": 1
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "click__lazy_command_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "609",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_lazy_command_invoke"
+      ],
+      "error_hits": [
+        "test_lazy_command_invoke",
+        "AssertionError | assert None == ['hi']",
+        "AssertionError | assert None == ['hi']"
+      ],
+      "lines": [
+        ">       assert collection.invoke([\"echo\", \"hi\"]) == [\"hi\"]",
+        "E       AssertionError: assert None == ['hi']",
+        "E        +  where None = <bound method Command.invoke of <LazyCommandCollection ['echo']>>(['echo', 'hi'])",
+        "E        +    where <bound method Command.invoke of <LazyCommandCollection ['echo']>> = <LazyCommandCollection ['echo']>.invoke",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:10: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 210,
+      "reads": 6,
+      "edits": 27,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "cookiecutter__repo_finder_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 4,
+    "submitted_loc": "197",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_find_template_with_abbreviation"
+      ],
+      "error_hits": [
+        "test_find_template_with_abbreviation"
+      ],
+      "lines": [
+        "E           IndexError: Replacement index 1 out of range for positional args tuple",
+        "submission-runtime/featurelifted/repository.py:66: IndexError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 101,
+      "reads": 0,
+      "edits": 9,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "dateutil__zone_resolver_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "170",
+    "required_api_n": 7,
+    "required_present_n": 7,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_alias_resolution"
+      ],
+      "error_hits": [
+        "test_alias_resolution"
+      ],
+      "lines": [
+        ":raises UnknownZoneError:",
+        ":raises InvalidTZFileError:",
+        "except KeyError:",
+        ">           raise UnknownZoneError(",
+        "E           featurelifted.UnknownZoneError: \"unknown zone: 'US/Eastern'\"",
+        "submission-runtime/featurelifted/__init__.py:165: UnknownZoneError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B003"
+    ],
+    "trajectory": {
+      "events": 142,
+      "reads": 7,
+      "edits": 22,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "decorator__signature_preserving_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "workflow_session_orchestration",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "111",
+    "required_api_n": 2,
+    "required_present_n": 2,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_metadata_signature_and_call_order"
+      ],
+      "error_hits": [
+        "test_metadata_signature_and_call_order",
+        "AssertionError | assert [((2, 3), {})] == [((2,), {'b': 3})]",
+        "AssertionError | assert [((2, 3), {})] == [((2,), {'b': 3})]"
+      ],
+      "lines": [
+        "assert add(2, b=3) == 10",
+        "assert str(inspect.signature(add)) == \"(a: int, b: int = 1) -> int\"",
+        "assert add.__name__ == \"add\" and add.__doc__ == \"add values\"",
+        ">       assert calls == [((2,), {\"b\": 3})]",
+        "E       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]",
+        "E         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 96,
+      "reads": 4,
+      "edits": 13,
+      "repo_reads": 1
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "filelock__reentrant_lock_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "workflow_session_orchestration",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "216",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_context_and_reentrant_release"
+      ],
+      "error_hits": [
+        "test_context_and_reentrant_release",
+        "AssertionError | assert (not False and not True)",
+        "AssertionError | assert (not False and not True)"
+      ],
+      "lines": [
+        "assert lock.is_locked and path.exists()",
+        "assert lock.is_locked",
+        ">       assert not lock.is_locked and not path.exists()",
+        "E       AssertionError: assert (not False and not True)",
+        "E        +  where False = <featurelifted._api.FileLock object at 0x746e83eea890>.is_locked",
+        "E        +  and   True = <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')>()",
+        "E        +    where <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')> = PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.l",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 85,
+      "reads": 7,
+      "edits": 13,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "flake8__plugin_options_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "265",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_option_manager_registers_plugin_options"
+      ],
+      "error_hits": [
+        "test_option_manager_registers_plugin_options",
+        "TypeError | list indices must be integers or slices, not str",
+        "TypeError | list indices must be integers or slices, not str"
+      ],
+      "lines": [
+        ">       assert manager.options[\"max_line_length\"].default == 79",
+        "E       TypeError: list indices must be integers or slices, not str",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:9: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 132,
+      "reads": 6,
+      "edits": 9,
+      "repo_reads": 1
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "flask__route_dispatch_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 6,
+    "submitted_loc": "766",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_static_and_typed_routes"
+      ],
+      "error_hits": [
+        "test_static_and_typed_routes",
+        "TypeError | The view function did not return a valid response. The return type must be a string, tuple with headers or status, Response instance, or HTTP exception, but it was a dict.",
+        "TypeError | The view function did not return a valid response. The return type must be a string, tuple with headers or status, Response instance, or HTTP exception, but it was a dict."
+      ],
+      "lines": [
+        "assert app.dispatch(\"/hello\") == Response(\"hello\", 200)",
+        ">       assert app.dispatch(\"/users/7\") == Response({\"id\": 7}, 201)",
+        "raise TypeError(",
+        "raise TypeError(",
+        ">           raise TypeError(",
+        "E           TypeError: The view function did not return a valid response. The return type must be a string, tuple with headers or status, Response instance, or HTTP exception, but it was a dict.",
+        "submission-runtime/featurelifted/app.py:296: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 179,
+      "reads": 10,
+      "edits": 23,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "glom__spec_eval_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 4,
+    "submitted_loc": "2129",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_coalesce_and_default"
+      ],
+      "error_hits": [
+        "test_coalesce_and_default",
+        "AssertionError | assert 0 == 1",
+        "AssertionError | assert 0 == 1"
+      ],
+      "lines": [
+        ">       assert glom(target, Coalesce([\"missing\", \"a\"], default=0)) == 1",
+        "E       AssertionError: assert 0 == 1",
+        "E        +  where 0 = glom({'a': 1}, Coalesce(['missing', 'a'], default=0))",
+        "E        +    where Coalesce(['missing', 'a'], default=0) = Coalesce(['missing', 'a'], default=0)",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 163,
+      "reads": 17,
+      "edits": 14,
+      "repo_reads": 12
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "hatch__project_metadata_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "167",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_normalize_project_metadata"
+      ],
+      "error_hits": [
+        "test_normalize_project_metadata",
+        "AssertionError | assert 'my package' == 'my-package'",
+        "AssertionError | assert 'my package' == 'my-package'"
+      ],
+      "lines": [
+        ">       assert normalized[\"name\"] == \"my-package\"",
+        "E       AssertionError: assert 'my package' == 'my-package'",
+        "E         - my-package",
+        "E         ?   ^",
+        "E         + my package",
+        "E         ?   ^",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 183,
+      "reads": 4,
+      "edits": 9,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "installer__wheel_record_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "77",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_multiple_dist_info_raises"
+      ],
+      "error_hits": [
+        "test_multiple_dist_info_raises"
+      ],
+      "lines": [
+        ">       with pytest.raises(ValueError):",
+        "E       Failed: DID NOT RAISE <class 'ValueError'>",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 86,
+      "reads": 13,
+      "edits": 5,
+      "repo_reads": 11
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "227",
+    "required_api_n": 5,
+    "required_present_n": 5,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_data_dir_platform_defaults"
+      ],
+      "error_hits": [
+        "test_data_dir_platform_defaults",
+        "AssertionError | assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'",
+        "AssertionError | assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'"
+      ],
+      "lines": [
+        "assert jupyter_data_dir(env={}, home=\"/Users/alice\", platform=\"darwin\") == \"/Users/alice/Library/Jupyter\"",
+        ">       assert jupyter_data_dir(env={\"APPDATA\": r\"C:\\Users\\Alice\\AppData\\Roaming\"}, home=r\"C:\\Users\\Alice\", platform=\"win32\") == r\"C:\\Users\\Alice\\AppData\\Roaming\\jupyter\"",
+        "E       AssertionError: assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'",
+        "E         - C:\\Users\\Alice\\AppData\\Roaming\\jupyter",
+        "E         + /tmp/featureliftbench-eval-p0hmlmkd/C:\\Users\\Alice\\AppData\\Roaming/jupyter",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:24: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 112,
+      "reads": 7,
+      "edits": 6,
+      "repo_reads": 3
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "jupyter_server__extension_config_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 2,
+    "submitted_loc": "188",
+    "required_api_n": 7,
+    "required_present_n": 7,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_config_precedence_and_disable"
+      ],
+      "error_hits": [
+        "test_config_precedence_and_disable",
+        "AssertionError | assert {'a': True, 'b': True} == {'a': True, 'b': False}",
+        "AssertionError | assert {'a': True, 'b': True} == {'a': True, 'b': False}"
+      ],
+      "lines": [
+        ">       assert store.get_extensions() == {\"a\": True, \"b\": False}",
+        "E       AssertionError: assert {'a': True, 'b': True} == {'a': True, 'b': False}",
+        "E         Omitting 1 identical items, use -vv to show",
+        "E         Differing items:",
+        "E         {'b': True} != {'b': False}",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002"
+    ],
+    "trajectory": {
+      "events": 123,
+      "reads": 1,
+      "edits": 10,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "keyring__backend_select_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 10,
+    "submitted_loc": "416",
+    "required_api_n": 15,
+    "required_present_n": 15,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_env_override_selects_named_backend"
+      ],
+      "error_hits": [
+        "test_env_override_selects_named_backend"
+      ],
+      "lines": [
+        "E       featurelifted.errors.BackendNotFound: low",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B006",
+      "B007"
+    ],
+    "trajectory": {
+      "events": 123,
+      "reads": 3,
+      "edits": 16,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "license_expression__policy_core__hard3_001",
+    "lift_type": "Direct",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 4,
+    "submitted_loc": "1588",
+    "required_api_n": 9,
+    "required_present_n": 9,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_validate_reports_unknown_symbol_without_normalized_expression"
+      ],
+      "error_hits": [
+        "test_validate_reports_unknown_symbol_without_normalized_expression",
+        "AssertionError | assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']",
+        "AssertionError | assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']"
+      ],
+      "lines": [
+        "assert info.normalized_expression is None",
+        "assert info.invalid_symbols == [\"UnknownLicense\"]",
+        ">       assert info.errors == [\"Unknown license symbol: UnknownLicense\"]",
+        "E       AssertionError: assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']",
+        "E         At index 0 diff: 'Unknown license key(s): UnknownLicense' != 'Unknown license symbol: UnknownLicense'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003",
+      "B006",
+      "B008",
+      "B009"
+    ],
+    "trajectory": {
+      "events": 256,
+      "reads": 5,
+      "edits": 13,
+      "repo_reads": 1
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "mkdocs__plugin_config_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "146",
+    "required_api_n": 6,
+    "required_present_n": 5,
+    "required_missing_leaves": [
+      "names"
+    ],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_plugin_collection_runs_event_by_priority"
+      ],
+      "error_hits": [
+        "test_plugin_collection_runs_event_by_priority",
+        "AssertionError | assert [] == ['b', 'a']",
+        "AssertionError | assert [] == ['b', 'a']"
+      ],
+      "lines": [
+        ">       assert collection.run_event(\"on_config\") == [\"b\", \"a\"]",
+        "E       AssertionError: assert [] == ['b', 'a']",
+        "E         Right contains 2 more items, first extra item: 'b'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 121,
+      "reads": 10,
+      "edits": 9,
+      "repo_reads": 7
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "multidict__multidict_mutation_core__hard3_001",
+    "lift_type": "Direct",
+    "hard3": true,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "1141",
+    "required_api_n": 12,
+    "required_present_n": 12,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_multidict_duplicate_keys_and_getall"
+      ],
+      "error_hits": [
+        "test_multidict_duplicate_keys_and_getall"
+      ],
+      "lines": [
+        ">       assert md[\"a\"] == 2",
+        "E       assert 1 == 2",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:9: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002"
+    ],
+    "trajectory": {
+      "events": 113,
+      "reads": 4,
+      "edits": 3,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "parsel__selector_namespace_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 10,
+    "submitted_loc": "1973",
+    "required_api_n": 10,
+    "required_present_n": 10,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_css_id_selector"
+      ],
+      "error_hits": [
+        "test_css_id_selector"
+      ],
+      "lines": [
+        ">       assert Selector(root).css(\"#main\").get() == \"hi\"",
+        "E       assert '<p id=\"main\">hi</p>' == 'hi'",
+        "E         - hi",
+        "E         + <p id=\"main\">hi</p>",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 265,
+      "reads": 12,
+      "edits": 31,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pendulum__parse_format_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 40,
+    "submitted_loc": "6174",
+    "required_api_n": 27,
+    "required_present_n": 27,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_datetime_format_tokens"
+      ],
+      "error_hits": [
+        "test_datetime_format_tokens",
+        "TypeError | 'module' object is not callable",
+        "TypeError | 'module' object is not callable"
+      ],
+      "lines": [
+        "E       TypeError: 'module' object is not callable",
+        "/workspace/evaluation-capsule/public_tests/test_public_api.py:26: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B004"
+    ],
+    "trajectory": {
+      "events": 264,
+      "reads": 6,
+      "edits": 7,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "platformdirs__app_dirs_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "221",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_windows_author_roaming_and_cache_layout"
+      ],
+      "error_hits": [
+        "test_windows_author_roaming_and_cache_layout",
+        "AssertionError | assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'",
+        "AssertionError | assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'"
+      ],
+      "lines": [
+        ">       assert user_data_dir(\"App\", appauthor=\"Vendor\", platform=\"windows\", env=env) == (",
+        "E       AssertionError: assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'",
+        "E         - C:\\Users\\Alice\\AppData\\Local\\Vendor\\App",
+        "E         ?                             ^      ^",
+        "E         + C:\\Users\\Alice\\AppData\\Local/Vendor/App",
+        "E         ?                             ^      ^",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:28: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B005",
+      "B006"
+    ],
+    "trajectory": {
+      "events": 134,
+      "reads": 11,
+      "edits": 7,
+      "repo_reads": 7
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pluggy__hook_wrapper_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 5,
+    "submitted_loc": "755",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_historic_replays_for_late_registration"
+      ],
+      "error_hits": [
+        "test_historic_replays_for_late_registration",
+        "TypeError | HookCaller.call_historic() got multiple values for argument 'result_callback'",
+        "TypeError | HookCaller.call_historic() got multiple values for argument 'result_callback'"
+      ],
+      "lines": [
+        "E       TypeError: HookCaller.call_historic() got multiple values for argument 'result_callback'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:8: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 246,
+      "reads": 16,
+      "edits": 35,
+      "repo_reads": 6
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "poetry_core__dependency_groups_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "201",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_parse_main_and_optional_groups"
+      ],
+      "error_hits": [
+        "test_parse_main_and_optional_groups",
+        "AssertionError | assert 'main' in {}",
+        "AssertionError | assert 'main' in {}"
+      ],
+      "lines": [
+        ">       assert \"main\" in groups",
+        "E       AssertionError: assert 'main' in {}",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:11: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 98,
+      "reads": 1,
+      "edits": 5,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pydantic__field_validator_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 6,
+    "submitted_loc": "1148",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_validation_error_on_after_failure"
+      ],
+      "error_hits": [
+        "test_validation_error_on_after_failure",
+        "TypeError | 'method' object is not subscriptable",
+        "TypeError | 'method' object is not subscriptable"
+      ],
+      "lines": [
+        "raise ValueError(\"must be positive\")",
+        "with pytest.raises(ValidationError) as exc:",
+        ">       assert exc.value.errors[0][\"field\"] == \"age\"",
+        "E       TypeError: 'method' object is not subscriptable",
+        "/workspace/evaluation-capsule/<hidden> TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 259,
+      "reads": 0,
+      "edits": 51,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pygments__lexer_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 13,
+    "submitted_loc": "2126",
+    "required_api_n": 18,
+    "required_present_n": 13,
+    "required_missing_leaves": [
+      "Double",
+      "Function",
+      "Integer",
+      "Single"
+    ],
+    "log": {
+      "error_kinds": [
+        "test_stripall_option_removes_whitespace_tokens"
+      ],
+      "error_hits": [
+        "test_stripall_option_removes_whitespace_tokens"
+      ],
+      "lines": [
+        ">       assert all(ttype is not token.Text for ttype, _ in pairs)",
+        "E       assert False",
+        "E        +  where False = all(<generator object test_stripall_option_removes_whitespace_tokens.<locals>.<genexpr> at 0x787e73556180>)",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B004"
+    ],
+    "trajectory": {
+      "events": 222,
+      "reads": 20,
+      "edits": 12,
+      "repo_reads": 12
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pytest__ini_markers_core__001",
+    "lift_type": "Composite",
+    "hard3": false,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "76",
+    "required_api_n": 8,
+    "required_present_n": 8,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_parse_multiline_markers"
+      ],
+      "error_hits": [
+        "test_parse_multiline_markers",
+        "AssertionError | assert ' web test' == 'web test'",
+        "AssertionError | assert ' web test' == 'web test'"
+      ],
+      "lines": [
+        "assert reg.names() == [\"a1\", \"a2\"]",
+        ">       assert reg.description(\"a1\") == \"web test\"",
+        "E       AssertionError: assert ' web test' == 'web test'",
+        "E         - web test",
+        "E         +  web test",
+        "E         ? +",
+        "/workspace/evaluation-capsule/public_tests/test_public_api.py:13: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 108,
+      "reads": 3,
+      "edits": 9,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "pytest__marker_registry_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "123",
+    "required_api_n": 8,
+    "required_present_n": 8,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_check_unknown_strict_raises"
+      ],
+      "error_hits": [
+        "test_check_unknown_strict_raises"
+      ],
+      "lines": [
+        "E           featurelifted.UnknownMarkerWarning: 'missing' not found in `markers` configuration option",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B003"
+    ],
+    "trajectory": {
+      "events": 155,
+      "reads": 5,
+      "edits": 11,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "python_dateutil__relativedelta_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "algorithm_data_structure",
+    "first_failure_stage": "public_failure",
+    "n_files": 3,
+    "submitted_loc": "551",
+    "required_api_n": 9,
+    "required_present_n": 2,
+    "required_missing_leaves": [
+      "FR",
+      "MO",
+      "SA",
+      "SU",
+      "TH",
+      "TU",
+      "WE"
+    ],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_add_months_to_datetime"
+      ],
+      "error_hits": [
+        "test_add_months_to_datetime",
+        "TypeError | 'module' object is not callable",
+        "TypeError | 'module' object is not callable"
+      ],
+      "lines": [
+        "E       TypeError: 'module' object is not callable",
+        "/workspace/evaluation-capsule/public_tests/test_public_api.py:10: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002"
+    ],
+    "trajectory": {
+      "events": 78,
+      "reads": 5,
+      "edits": 2,
+      "repo_reads": 2
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "python_decouple__config_repository_core__001",
+    "lift_type": "Adapted",
+    "hard3": false,
+    "feature_family": "config_resolve_discover",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "151",
+    "required_api_n": 6,
+    "required_present_n": 6,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "test_env_file_quotes_comments_and_empty"
+      ],
+      "error_hits": [
+        "test_env_file_quotes_comments_and_empty"
+      ],
+      "lines": [
+        ">       assert config(\"NAME\") == \"Ada Lovelace\"",
+        "E       assert \"'Ada Lovelace' # note\" == 'Ada Lovelace'",
+        "E         - Ada Lovelace",
+        "E         + 'Ada Lovelace' # note",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 71,
+      "reads": 5,
+      "edits": 6,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "readme_renderer__content_type_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "serialize_format_render",
+    "first_failure_stage": "public_failure",
+    "n_files": 4,
+    "submitted_loc": "995",
+    "required_api_n": 1,
+    "required_present_n": 1,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_render_markdown_content_type"
+      ],
+      "error_hits": [
+        "test_render_markdown_content_type",
+        "AssertionError | assert 'markdown' in '<h1>Title</h1>\\n'",
+        "AssertionError | assert 'markdown' in '<h1>Title</h1>\\n'"
+      ],
+      "lines": [
+        ">       assert \"markdown\" in html",
+        "E       AssertionError: assert 'markdown' in '<h1>Title</h1>\\n'",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 237,
+      "reads": 37,
+      "edits": 30,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "requests_cache__cache_key_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "cache_retry_policy",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 5,
+    "submitted_loc": "514",
+    "required_api_n": 10,
+    "required_present_n": 8,
+    "required_missing_leaves": [
+      "expiration_seconds",
+      "should_store"
+    ],
+    "log": {
+      "error_kinds": [
+        "KeyError",
+        "test_header_multi_value_normalization_and_redaction"
+      ],
+      "error_hits": [
+        "test_header_multi_value_normalization_and_redaction",
+        "KeyError | 'accept'",
+        "KeyError | 'accept'"
+      ],
+      "lines": [
+        ">       assert headers[\"accept\"] == \"application/json, text/html\"",
+        "E       KeyError: 'accept'",
+        "/workspace/evaluation-capsule/<hidden> KeyError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B005"
+    ],
+    "trajectory": {
+      "events": 183,
+      "reads": 8,
+      "edits": 24,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "responses__request_matcher_core__hard3_001",
+    "lift_type": "Composite",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 1,
+    "submitted_loc": "179",
+    "required_api_n": 9,
+    "required_present_n": 7,
+    "required_missing_leaves": [
+      "_responses",
+      "call_history"
+    ],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_query_and_header_matchers_and_once_behavior"
+      ],
+      "error_hits": [
+        "test_query_and_header_matchers_and_once_behavior",
+        "AssertionError | assert 1 == 2",
+        "AssertionError | assert 1 == 2"
+      ],
+      "lines": [
+        "assert first is not None",
+        "assert second is None",
+        ">       assert len(registry.call_history) == 2",
+        "E       AssertionError: assert 1 == 2",
+        "E        +  where 1 = len([Call(request=<PreparedRequest [GET]>, response=MockResponse(url='http://example.com?a=1', method='GET', status=200, b...cals>.match at 0x7187382f6e80>, <function header_matcher.<locals>.match a",
+        "E        +    where [Call(request=<PreparedRequest [GET]>, response=MockResponse(url='http://example.com?a=1', method='GET', status=200, b...cals>.match at 0x7187382f6e80>, <function header_matcher.<locals>.match at 0x71",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 106,
+      "reads": 18,
+      "edits": 2,
+      "repo_reads": 14
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "scrapy__item_loader_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "public_failure",
+    "n_files": 6,
+    "submitted_loc": "731",
+    "required_api_n": 9,
+    "required_present_n": 8,
+    "required_missing_leaves": [
+      "default_output_processor"
+    ],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_item_loader_applies_processors"
+      ],
+      "error_hits": [
+        "test_item_loader_applies_processors",
+        "TypeError | Mapping.items() missing 1 required positional argument: 'self'",
+        "TypeError | Mapping.items() missing 1 required positional argument: 'self'"
+      ],
+      "lines": [
+        "E           TypeError: Mapping.items() missing 1 required positional argument: 'self'",
+        "submission-runtime/featurelifted/loader.py:51: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 251,
+      "reads": 0,
+      "edits": 12,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "resource_metadata_loading",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "69",
+    "required_api_n": 1,
+    "required_present_n": 1,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_version_from_tag"
+      ],
+      "error_hits": [
+        "test_version_from_tag",
+        "AssertionError | assert '1.2.3+g1234567' == '1.2.3'",
+        "AssertionError | assert '1.2.3+g1234567' == '1.2.3'"
+      ],
+      "lines": [
+        ">       assert version_from_scm(\".\", tag=\"v1.2.3\", distance=0, dirty=False) == \"1.2.3\"",
+        "E       AssertionError: assert '1.2.3+g1234567' == '1.2.3'",
+        "E         - 1.2.3",
+        "E         + 1.2.3+g1234567",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001"
+    ],
+    "trajectory": {
+      "events": 106,
+      "reads": 2,
+      "edits": 7,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "starlette__route_matching_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "registry_plugin_dispatch",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 3,
+    "submitted_loc": "383",
+    "required_api_n": 9,
+    "required_present_n": 9,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "TypeError",
+        "test_mount_prefix_and_url_path_for"
+      ],
+      "error_hits": [
+        "test_mount_prefix_and_url_path_for",
+        "TypeError | Mount.url_path_for() got multiple values for argument 'name'",
+        "TypeError | Mount.url_path_for() got multiple values for argument 'name'"
+      ],
+      "lines": [
+        "assert route.name == \"detail\"",
+        "assert params == {\"name\": \"hello\"}",
+        ">       assert router.url_path_for(\"detail\", name=\"hello\") == \"/api/hello\"",
+        "E               TypeError: Mount.url_path_for() got multiple values for argument 'name'",
+        "submission-runtime/featurelifted/routing.py:352: TypeError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B002",
+      "B003",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 98,
+      "reads": 3,
+      "edits": 15,
+      "repo_reads": 2
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "tenacity__retry_state_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "cache_retry_policy",
+    "first_failure_stage": "hidden_failure",
+    "n_files": 6,
+    "submitted_loc": "928",
+    "required_api_n": 13,
+    "required_present_n": 13,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_before_sleep_observes_retry_state"
+      ],
+      "error_hits": [
+        "test_before_sleep_observes_retry_state",
+        "AssertionError | assert [{'attempt': ...'sleep': 0.5}] == [{'attempt': ...'sleep': 0.5}]",
+        "AssertionError | assert [{'attempt': ...'sleep': 0.5}] == [{'attempt': ...'sleep': 0.5}]"
+      ],
+      "lines": [
+        "assert retrying(lambda: next(values)) == \"ok\"",
+        ">       assert snapshots == [",
+        "E       AssertionError: assert [{'attempt': ...'sleep': 0.5}] == [{'attempt': ...'sleep': 0.5}]",
+        "E         At index 0 diff: {'attempt': 1, 'sleep': 0.5, 'failed': False, 'idle': 0.5} != {'attempt': 1, 'sleep': 0.5, 'failed': False, 'idle': 0.0}",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/<hidden> AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B008"
+    ],
+    "trajectory": {
+      "events": 172,
+      "reads": 12,
+      "edits": 13,
+      "repo_reads": 7
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "tox__factor_expression_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "parse_tokenize_decode",
+    "first_failure_stage": "public_failure",
+    "n_files": 1,
+    "submitted_loc": "214",
+    "required_api_n": 3,
+    "required_present_n": 3,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AssertionError",
+        "test_find_envs_brace_groups"
+      ],
+      "error_hits": [
+        "test_find_envs_brace_groups",
+        "AssertionError | assert set() == {'lint-py', 'test-py'}",
+        "AssertionError | assert set() == {'lint-py', 'test-py'}"
+      ],
+      "lines": [
+        ">       assert set(find_envs(\"{lint,test}-py\")) == {\"lint-py\", \"test-py\"}",
+        "E       AssertionError: assert set() == {'lint-py', 'test-py'}",
+        "E         Extra items in the right set:",
+        "E         'test-py'",
+        "E         'lint-py'",
+        "E         Use -v to get more diff",
+        "/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B003"
+    ],
+    "trajectory": {
+      "events": 129,
+      "reads": 10,
+      "edits": 3,
+      "repo_reads": 6
+    },
+    "isolation": {}
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "typer__command_parser_core__001",
+    "lift_type": "Direct",
+    "hard3": false,
+    "feature_family": "workflow_session_orchestration",
+    "first_failure_stage": "isolation_failure",
+    "n_files": 27,
+    "submitted_loc": "10397",
+    "required_api_n": 2,
+    "required_present_n": 0,
+    "required_missing_leaves": [
+      "CliRunner",
+      "testing"
+    ],
+    "log": {
+      "error_kinds": [],
+      "error_hits": [],
+      "lines": []
+    },
+    "clause_ids": [],
+    "trajectory": {
+      "events": 248,
+      "reads": 5,
+      "edits": 13,
+      "repo_reads": 0
+    },
+    "isolation": {
+      "forbidden_imports_pass": false,
+      "forbidden_dependencies_pass": true,
+      "runtime_import_origin_pass": true,
+      "path_leakage": false,
+      "forbidden_source_import": false
+    }
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "task_id": "yamale__schema_validate_core__hard3_001",
+    "lift_type": "Adapted",
+    "hard3": true,
+    "feature_family": "validate_normalize_construct",
+    "first_failure_stage": "public_failure",
+    "n_files": 14,
+    "submitted_loc": "758",
+    "required_api_n": 4,
+    "required_present_n": 4,
+    "required_missing_leaves": [],
+    "log": {
+      "error_kinds": [
+        "AttributeError",
+        "test_basic_schema_validation"
+      ],
+      "error_hits": [
+        "test_basic_schema_validation",
+        "AttributeError | 'Name' object has no attribute 'func'",
+        "AttributeError | 'Name' object has no attribute 'func'"
+      ],
+      "lines": [
+        "raise ValueError(\"{} is an empty file!\".format(name))",
+        "except SyntaxError as e:",
+        ">           raise SyntaxError(error)",
+        "E           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'",
+        "submission-runtime/featurelifted/schema/schema.py:50: SyntaxError",
+        "raise ValueError(\"{} is an empty file!\".format(name))",
+        "except (TypeError, SyntaxError) as e:",
+        ">           raise SyntaxError(error)",
+        "E           SyntaxError: Schema error in file schema",
+        "E           Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'",
+        "submission-runtime/featurelifted/_core.py:32: SyntaxError",
+        "FAILED <test>"
+      ]
+    },
+    "clause_ids": [
+      "B001",
+      "B004"
+    ],
+    "trajectory": {
+      "events": 153,
+      "reads": 17,
+      "edits": 8,
+      "repo_reads": 0
+    },
+    "isolation": {}
+  }
+]

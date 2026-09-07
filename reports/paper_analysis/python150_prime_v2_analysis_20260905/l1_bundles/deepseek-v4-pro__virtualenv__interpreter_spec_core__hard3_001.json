@@ -1,0 +1,41 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.parse_spec",
+    "function:featurelifted.match_version",
+    "function:featurelifted.discover_paths",
+    "exception:featurelifted.InvalidInterpreterSpec"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`parse_spec` parses version constraints and path globs from interpreter specs."
+    },
+    {
+      "id": "B002",
+      "text": "`match_version` evaluates constraint operators including `~=`."
+    },
+    {
+      "id": "B003",
+      "text": "discover_paths filters candidate paths by spec, including reading an implementation-prefixed version such as python3.11 from the path string when the spec is python>=3.11."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.parse_spec`, `featurelifted.match_version`, `featurelifted.discover_paths`, `featurelifted.InvalidInterpreterSpec` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: virtualenv"
+    }
+  ],
+  "log": ">       assert constraint is None\nE       AssertionError: assert '/usr/bin/python*' is None\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:6\nfrom ._py_spec import (\n    InvalidInterpreterSpec,\n    discover_paths,\n    match_version,\n    parse_spec,\n)\n\n__all__ = [\n    \"InvalidInterpreterSpec\",\n    \"discover_paths\",\n    \"match_version\",\n    \"parse_spec\",\n]\n\n## featurelifted/__init__.py:7\n    InvalidInterpreterSpec,\n    discover_paths,\n    match_version,\n    parse_spec,\n)\n\n__all__ = [\n    \"InvalidInterpreterSpec\",\n    \"discover_paths\",\n    \"match_version\",\n    \"parse_spec\",\n]\n\n## featurelifted/__init__.py:8\n    discover_paths,\n    match_version,\n    parse_spec,\n)\n\n__all__ = [\n    \"InvalidInterpreterSpec\",\n    \"discover_paths\",\n    \"match_version\",\n    \"parse_spec\",\n]\n\n## featurelifted/__init__.py:9\n    match_version,\n    parse_spec,\n)\n\n__all__ = [\n    \"InvalidInterpreterSpec\",\n    \"discover_paths\",\n    \"match_version\",\n    \"parse_spec\",\n]"
+}

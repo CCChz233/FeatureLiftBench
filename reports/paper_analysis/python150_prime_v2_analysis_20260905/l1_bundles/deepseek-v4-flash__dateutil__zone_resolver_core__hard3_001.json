@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "dateutil__zone_resolver_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "resource_metadata_loading",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.ZoneResolver",
+    "method:featurelifted.ZoneResolver.load_zone",
+    "method:featurelifted.ZoneResolver.get",
+    "method:featurelifted.ZoneResolver.register_alias",
+    "function:featurelifted.parse_tzfile",
+    "exception:featurelifted.UnknownZoneError",
+    "exception:featurelifted.InvalidTZFileError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`parse_tzfile` validates tzfile headers and extracts metadata."
+    },
+    {
+      "id": "B002",
+      "text": "Aliases resolve to canonical zone names with cycle detection."
+    },
+    {
+      "id": "B003",
+      "text": "When a zone alias is resolved, ZoneResolver follows aliases to the canonical zone and raises UnknownZoneError for missing names or alias cycles."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.ZoneResolver`, `featurelifted.ZoneResolver.load_zone`, `featurelifted.ZoneResolver.get`, `featurelifted.ZoneResolver.register_alias`, `featurelifted.parse_tzfile`, `featurelifted.UnknownZoneError`, `featurelifted.Inva"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: dateutil"
+    }
+  ],
+  "log": "        :raises UnknownZoneError:\n        :raises InvalidTZFileError:\n        except KeyError:\n>           raise UnknownZoneError(\nE           featurelifted.UnknownZoneError: \"unknown zone: 'US/Eastern'\"\nsubmission-runtime/featurelifted/__init__.py:165: UnknownZoneError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n\nA standalone ``ZoneResolver`` that loads, stores and resolves named time zone\nrecords (tzfile data) together with alias support and cycle detection.\n\nOnly the Python standard library is used.\n\"\"\"\n\nimport struct\n\n__all__ = [\n    \"InvalidTZFileError\",\n    \"TZZone\",\n    \"UnknownZoneError\",\n    \"ZoneResolver\",\n    \"parse_tzfile\",\n]\n\n_TZIF_MAGIC = b\"TZif\"\n_VALID_VERSIONS = (b\"\\x00\", b\"2\", b\"3\", b\"4\")\n\n## featurelifted/__init__.py:6\nA standalone ``ZoneResolver`` that loads, stores and resolves named time zone\nrecords (tzfile data) together with alias support and cycle detection.\n\nOnly the Python standard library is used.\n\"\"\"\n\nimport struct\n\n__all__ = [\n    \"InvalidTZFileError\",\n    \"TZZone\",\n    \"UnknownZoneError\",\n    \"ZoneResolver\",\n    \"parse_tzfile\",\n]\n\n_TZIF_MAGIC = b\"TZif\"\n_VALID_VERSIONS = (b\"\\x00\", b\"2\", b\"3\", b\"4\")\n_HEADER_LEN = 44\n\n## featurelifted/__init__.py:14\n__all__ = [\n    \"InvalidTZFileError\",\n    \"TZZone\",\n    \"UnknownZoneError\",\n    \"ZoneResolver\",\n    \"parse_tzfile\",\n]\n\n_TZIF_MAGIC = b\"TZif\"\n_VALID_VERSIONS = (b\"\\x00\", b\"2\", b\"3\", b\"4\")\n_HEADER_LEN = 44\n_HEADER_COUNTS_KEYS = (\n    \"ttisgmtcnt\",\n    \"ttisstdcnt\",\n    \"leapcnt\",\n    \"timecnt\",\n    \"typecnt\",\n    \"charcnt\",\n)\n\n## featurelifted/__init__.py:16\n    \"TZZone\",\n    \"UnknownZoneError\",\n    \"ZoneResolver\",\n    \"parse_tzfile\",\n]\n\n_TZIF_MAGIC = b\"TZif\"\n_VALID_VERSIONS = (b\"\\x00\", b\"2\", b\"3\", b\"4\")\n_HEADER_LEN = 44\n_HEADER_COUNTS_KEYS = (\n    \"ttisgmtcnt\",\n    \"ttisstdcnt\",\n    \"leapcnt\",\n    \"timecnt\",\n    \"typecnt\",\n    \"charcnt\",\n)\n\n"
+}

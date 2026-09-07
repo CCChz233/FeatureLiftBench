@@ -1,0 +1,53 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "pytest__ini_markers_core__001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.MarkerRegistry",
+    "method:featurelifted.MarkerRegistry.from_ini",
+    "method:featurelifted.MarkerRegistry.names",
+    "method:featurelifted.MarkerRegistry.add_line",
+    "method:featurelifted.MarkerRegistry.description",
+    "method:featurelifted.MarkerRegistry.from_lines",
+    "function:featurelifted.parse_linelist",
+    "function:featurelifted.split_marker_line"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: parse multiline ini markers values into linelist entries. Required observable cases include parse multiline markers; split marker line whitespace."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: append marker lines preserving order. Required observable cases include append marker line; registry module order preserved."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: split marker lines into name and description (strip name; preserve description whitespace). Required observable cases include linelist strips blank lines; split marker line whitespace."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: strip whitespace from linelist entries. Required observable cases include linelist strips blank lines."
+    },
+    {
+      "id": "B005",
+      "text": "The extracted feature must support this observable behavior: MarkerRegistry preserves marker declaration order from ini lines. Required observable cases include append marker line; split marker line whitespace."
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.names`, `featurelifted.MarkerRegistry.add_line`, `featurelifted.MarkerRegistry.description`, `featurelifted.MarkerRegistry.from_l"
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: pytest, _pytest"
+    }
+  ],
+  "log": "        assert reg.names() == [\"a1\", \"a2\"]\n>       assert reg.description(\"a1\") == \"web test\"\nE       AssertionError: assert ' web test' == 'web test'\nE         - web test\nE         +  web test\nE         ? +\n/workspace/evaluation-capsule/public_tests/test_public_api.py:13: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:6\n\n* :func:`parse_linelist` -- turn a multiline ini value (or an already split\n  list of lines) into a list of cleaned-up lines;\n* :func:`split_marker_line` -- split one marker declaration line into its\n  ``(name, description)`` components;\n* :class:`MarkerRegistry` -- an ordered registry accumulating marker\n  declaration lines (e.g. the ones coming from the ``markers`` ini option\n  together with lines appended by plugins), which preserves declaration order.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\n\n__all__ = [\"MarkerRegistry\", \"parse_linelist\", \"split_marker_line\"]\n\n\ndef parse_linelist(value: str | list[str]) -> list[str]:\n    \"\"\"Parse a ``linelist`` ini option value into a list of lines.\n\n## featurelifted/__init__.py:8\n  list of lines) into a list of cleaned-up lines;\n* :func:`split_marker_line` -- split one marker declaration line into its\n  ``(name, description)`` components;\n* :class:`MarkerRegistry` -- an ordered registry accumulating marker\n  declaration lines (e.g. the ones coming from the ``markers`` ini option\n  together with lines appended by plugins), which preserves declaration order.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\n\n__all__ = [\"MarkerRegistry\", \"parse_linelist\", \"split_marker_line\"]\n\n\ndef parse_linelist(value: str | list[str]) -> list[str]:\n    \"\"\"Parse a ``linelist`` ini option value into a list of lines.\n\n    If *value* is a multiline string, it is split at newline boundaries; each\n\n## featurelifted/__init__.py:9\n* :func:`split_marker_line` -- split one marker declaration line into its\n  ``(name, description)`` components;\n* :class:`MarkerRegistry` -- an ordered registry accumulating marker\n  declaration lines (e.g. the ones coming from the ``markers`` ini option\n  together with lines appended by plugins), which preserves declaration order.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\n\n__all__ = [\"MarkerRegistry\", \"parse_linelist\", \"split_marker_line\"]\n\n\ndef parse_linelist(value: str | list[str]) -> list[str]:\n    \"\"\"Parse a ``linelist`` ini option value into a list of lines.\n\n    If *value* is a multiline string, it is split at newline boundaries; each\n    resulting line has its surrounding whitespace stripped and blank lines are\n\n## featurelifted/__init__.py:10\n  ``(name, description)`` components;\n* :class:`MarkerRegistry` -- an ordered registry accumulating marker\n  declaration lines (e.g. the ones coming from the ``markers`` ini option\n  together with lines appended by plugins), which preserves declaration order.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\n\n__all__ = [\"MarkerRegistry\", \"parse_linelist\", \"split_marker_line\"]\n\n\ndef parse_linelist(value: str | list[str]) -> list[str]:\n    \"\"\"Parse a ``linelist`` ini option value into a list of lines.\n\n    If *value* is a multiline string, it is split at newline boundaries; each\n    resulting line has its surrounding whitespace stripped and blank lines are\n    removed.  If *value* is already a list of strings (e.g. read from a TOML"
+}

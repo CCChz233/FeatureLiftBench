@@ -1,0 +1,63 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "pygments__lexer_core__001",
+  "stage": "hidden_failure",
+  "lift_type": "Direct",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.lex",
+    "function:featurelifted.get_lexer_by_name",
+    "class:featurelifted.PythonLexer",
+    "module:featurelifted.token",
+    "attribute:featurelifted.token.Comment",
+    "attribute:featurelifted.token.Keyword",
+    "attribute:featurelifted.token.Literal",
+    "attribute:featurelifted.token.Name",
+    "attribute:featurelifted.token.Number",
+    "attribute:featurelifted.token.Operator",
+    "attribute:featurelifted.token.String",
+    "attribute:featurelifted.token.Text",
+    "attribute:featurelifted.token.Comment.Single",
+    "attribute:featurelifted.token.Literal.String",
+    "attribute:featurelifted.token.Name.Function",
+    "attribute:featurelifted.token.Number.Integer",
+    "attribute:featurelifted.token.String.Double",
+    "attribute:featurelifted.token.Literal.String.Single"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: tokenize Python source with PythonLexer and lex(). Required observable cases include python lexer keywords and names; get lexer by name returns python lexer; triple quoted string and operator tokens."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: resolve lexers by alias with get_lexer_by_name. Required observable cases include get lexer by name returns python lexer; triple quoted string and operator tokens."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: emit Token types for keywords, strings, comments, numbers, operators, and names. Required observable cases include string and comment tokens are distinct; triple quoted string and operator tokens."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: honor lexer options such as stripall and ensurenl. Required observable cases include stripall option removes whitespace tokens."
+    },
+    {
+      "id": "B005",
+      "text": "The extracted feature must support this observable behavior: support modeline and encoding helpers used by lexer lookup. Required observable cases include triple quoted string and operator tokens."
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.lex`, `featurelifted.get_lexer_by_name`, `featurelifted.PythonLexer`, `featurelifted.token`, `featurelifted.token.Comment`, `featurelifted.token.Keyword`, `featurelifted.token.Literal`, `featurelifted.token.Name`, `fe"
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: pygments"
+    }
+  ],
+  "log": ">       assert all(ttype is not token.Text for ttype, _ in pairs)\nE       assert False\nE        +  where False = all(<generator object test_stripall_option_removes_whitespace_tokens.<locals>.<genexpr> at 0x73a530fa0580>)\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:6\n    A standalone, task-scoped subset of Pygments containing the regular\n    expression lexer core and the Python language lexer.\n\"\"\"\n\nfrom featurelifted.lexer import Lexer, RegexLexer\nfrom featurelifted.lexers import get_lexer_by_name\nfrom featurelifted.lexers.python import PythonLexer\nfrom featurelifted import token\n\n__version__ = '2.15.1'\n\n__all__ = ['lex', 'get_lexer_by_name', 'PythonLexer', 'token']\n\n\ndef lex(code, lexer):\n    \"\"\"\n    Lex ``code`` with the ``lexer`` (must be a `Lexer` instance) and\n    return an iterable of ``(tokentype, value)`` tuples.\n    \"\"\"\n\n## featurelifted/__init__.py:9\n\nfrom featurelifted.lexer import Lexer, RegexLexer\nfrom featurelifted.lexers import get_lexer_by_name\nfrom featurelifted.lexers.python import PythonLexer\nfrom featurelifted import token\n\n__version__ = '2.15.1'\n\n__all__ = ['lex', 'get_lexer_by_name', 'PythonLexer', 'token']\n\n\ndef lex(code, lexer):\n    \"\"\"\n    Lex ``code`` with the ``lexer`` (must be a `Lexer` instance) and\n    return an iterable of ``(tokentype, value)`` tuples.\n    \"\"\"\n    try:\n        return lexer.get_tokens(code)\n    except TypeError:\n\n## featurelifted/__init__.py:10\nfrom featurelifted.lexer import Lexer, RegexLexer\nfrom featurelifted.lexers import get_lexer_by_name\nfrom featurelifted.lexers.python import PythonLexer\nfrom featurelifted import token\n\n__version__ = '2.15.1'\n\n__all__ = ['lex', 'get_lexer_by_name', 'PythonLexer', 'token']\n\n\ndef lex(code, lexer):\n    \"\"\"\n    Lex ``code`` with the ``lexer`` (must be a `Lexer` instance) and\n    return an iterable of ``(tokentype, value)`` tuples.\n    \"\"\"\n    try:\n        return lexer.get_tokens(code)\n    except TypeError:\n        # Heuristic to catch a common mistake.\n\n## featurelifted/__init__.py:11\nfrom featurelifted.lexers import get_lexer_by_name\nfrom featurelifted.lexers.python import PythonLexer\nfrom featurelifted import token\n\n__version__ = '2.15.1'\n\n__all__ = ['lex', 'get_lexer_by_name', 'PythonLexer', 'token']\n\n\ndef lex(code, lexer):\n    \"\"\"\n    Lex ``code`` with the ``lexer`` (must be a `Lexer` instance) and\n    return an iterable of ``(tokentype, value)`` tuples.\n    \"\"\"\n    try:\n        return lexer.get_tokens(code)\n    except TypeError:\n        # Heuristic to catch a common mistake.\n        if isinstance(lexer, type) and issubclass(lexer, RegexLexer):"
+}

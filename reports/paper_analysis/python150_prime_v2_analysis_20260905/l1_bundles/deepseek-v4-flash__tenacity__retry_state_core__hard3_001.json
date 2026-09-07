@@ -1,0 +1,70 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "tenacity__retry_state_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "cache_retry_policy",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Retrying",
+    "exception:featurelifted.RetryError",
+    "function:featurelifted.retry_if_exception_type",
+    "function:featurelifted.retry_if_result",
+    "function:featurelifted.stop_after_attempt",
+    "function:featurelifted.wait_fixed",
+    "function:featurelifted.wait_chain",
+    "function:featurelifted.wait_exponential",
+    "class:featurelifted.RetryCallState",
+    "function:featurelifted.stop_after_delay",
+    "function:featurelifted.stop_before_delay",
+    "function:featurelifted.wait_combine",
+    "function:featurelifted.wait_none"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Retrying repeatedly calls the function while the retry predicate requests another attempt and stops when the function succeeds or a stop policy triggers."
+    },
+    {
+      "id": "B002",
+      "text": "Track a `RetryCallState` with `attempt_number`, `outcome`, `idle_for`, `upcoming_sleep`, and `seconds_since_start`."
+    },
+    {
+      "id": "B003",
+      "text": "When retries are exhausted, Retrying calls retry_error_callback if configured, reraises the final exception when requested, or raises RetryError."
+    },
+    {
+      "id": "B004",
+      "text": "retry_if_exception_type retries matching exceptions and retry_if_result retries matching returned results."
+    },
+    {
+      "id": "B005",
+      "text": "Retry predicates composed with | or & apply retry-any or retry-all semantics in operand order."
+    },
+    {
+      "id": "B006",
+      "text": "stop_after_attempt, stop_after_delay, and stop_before_delay stop according to attempt count and elapsed or upcoming delay boundaries."
+    },
+    {
+      "id": "B007",
+      "text": "wait_fixed, wait_none, wait_chain, wait_combine, and wait_exponential compute deterministic upcoming sleep durations; an empty wait_chain raises ValueError."
+    },
+    {
+      "id": "B008",
+      "text": "before_sleep receives the updated retry state before idle_for is incremented, and retry_error_callback receives the exhausted state. At before_sleep, attempt_number is the attempt that just finished and has not yet been incremented for the next attempt."
+    },
+    {
+      "id": "B009",
+      "text": "The package exposes the required task API paths `featurelifted.Retrying`, `featurelifted.RetryError`, `featurelifted.retry_if_exception_type`, `featurelifted.retry_if_result`, `featurelifted.stop_after_attempt`, `featurelifted.wait_fixed`, `featurelifted.wait_chain`, `featurelift"
+    },
+    {
+      "id": "B010",
+      "text": "the submitted package does not import forbidden upstream packages: tenacity"
+    }
+  ],
+  "log": "        assert retrying(lambda: next(values)) == \"ok\"\n>       assert snapshots == [\nE       AssertionError: assert [{'attempt': ...'sleep': 0.5}] == [{'attempt': ...'sleep': 0.5}]\nE         At index 0 diff: {'attempt': 1, 'sleep': 0.5, 'failed': False, 'idle': 0.5} != {'attempt': 1, 'sleep': 0.5, 'failed': False, 'idle': 0.0}\nE         Use -v to get more diff\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:37\n    retry_if_exception_message,\n    retry_if_exception_type,\n    retry_if_not_exception_message,\n    retry_if_not_exception_type,\n    retry_if_not_result,\n    retry_if_result,\n    retry_never,\n    retry_unless_exception_type,\n)\n\n# Import all built-in stop strategies for easier usage.\nfrom .stop import (\n    stop_after_attempt,\n    stop_after_delay,\n    stop_all,\n    stop_any,\n    stop_before_delay,\n    stop_never,\n    stop_when_event_set,\n\n## featurelifted/__init__.py:41\n    retry_if_not_result,\n    retry_if_result,\n    retry_never,\n    retry_unless_exception_type,\n)\n\n# Import all built-in stop strategies for easier usage.\nfrom .stop import (\n    stop_after_attempt,\n    stop_after_delay,\n    stop_all,\n    stop_any,\n    stop_before_delay,\n    stop_never,\n    stop_when_event_set,\n)\n\n# Import all built-in wait strategies for easier usage.\nfrom .wait import (\n\n## featurelifted/__init__.py:48\nfrom .stop import (\n    stop_after_attempt,\n    stop_after_delay,\n    stop_all,\n    stop_any,\n    stop_before_delay,\n    stop_never,\n    stop_when_event_set,\n)\n\n# Import all built-in wait strategies for easier usage.\nfrom .wait import (\n    wait_chain,\n    wait_combine,\n    wait_exception,\n    wait_exponential,\n    wait_exponential_jitter,\n    wait_fixed,\n    wait_incrementing,\n\n## featurelifted/__init__.py:59\nfrom .wait import (\n    wait_chain,\n    wait_combine,\n    wait_exception,\n    wait_exponential,\n    wait_exponential_jitter,\n    wait_fixed,\n    wait_incrementing,\n    wait_none,\n    wait_random,\n    wait_random_exponential,\n)\nfrom .wait import wait_random_exponential as wait_full_jitter\n\n\n@dataclasses.dataclass(slots=True)\nclass IterState:\n    actions: list[t.Callable[[\"RetryCallState\"], t.Any]] = dataclasses.field(\n        default_factory=list"
+}

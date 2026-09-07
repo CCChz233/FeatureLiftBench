@@ -12,9 +12,10 @@ repository is removed. This combination makes dependency closure and
 modularization part of correctness rather than implementation style.
 
 The task is also different from code localization. Finding a relevant symbol
-can be necessary, but the \texttt{requests\_cache} and configuration examples
-show why it is insufficient. Conversely, a behaviorally equivalent rewrite can
-pass even if it copies little upstream code. \flb therefore evaluates delivered
+can be necessary, but the Alembic revision-map and aiohttp parameter cases
+show why it is insufficient: agents inspect the repository and still miss
+declared semantics. Conversely, a behaviorally equivalent rewrite can pass
+even if it copies little upstream code. \flb therefore evaluates delivered
 behavior and artifact independence, not whether the agent followed one
 prescribed extraction strategy.
 
@@ -30,8 +31,10 @@ measure, not a proof of minimality or semantic authenticity.
 The earlier External-50 expansion demonstrates the importance of this
 separation. High pass rates alone suggested that the task was nearly solved,
 while pass-conditioned footprints revealed that many solutions were close to
-whole-repository copying. Hard-50 and its copy-trap tasks retain functional
-difficulty while making broad copying visible.
+whole-repository copying. On freeze~v2 Python-150 the same split appears
+inside the passing set: Pro and Flash are copy-heavy, Luna is not, on a
+large paired intersection. In-suite hard3, not official Hard-50, is the
+difficulty contrast used in the main analysis.
 
 \subsection{Implications for Agent Design}
 

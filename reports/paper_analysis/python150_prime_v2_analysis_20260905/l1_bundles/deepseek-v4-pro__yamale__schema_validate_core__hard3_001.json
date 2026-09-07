@@ -1,0 +1,45 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "yamale__schema_validate_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.make_schema",
+    "function:featurelifted.validate",
+    "class:featurelifted.ValidationResult",
+    "exception:featurelifted.YamaleError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`make_schema` parses one or more YAML documents; later documents provide `include` targets."
+    },
+    {
+      "id": "B002",
+      "text": "Validate maps, lists, primitive types, optional fields, and included schemas."
+    },
+    {
+      "id": "B003",
+      "text": "`strict=True` rejects unexpected keys; non-strict bool validation may accept common string/int aliases."
+    },
+    {
+      "id": "B004",
+      "text": "`validate` returns `ValidationResult` objects and raises `YamaleError` when invalid and `_raise_error=True`."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.make_schema`, `featurelifted.validate`, `featurelifted.ValidationResult`, `featurelifted.YamaleError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: yamale"
+    }
+  ],
+  "log": "E           AttributeError: 'Name' object has no attribute 'func'\nsubmission-runtime/featurelifted/syntax/parser.py:13: AttributeError\n        except AttributeError:\n>           raise SyntaxError(\"Schema expressions must be enclosed by a validator.\")\nE           SyntaxError: Schema expressions must be enclosed by a validator.\nsubmission-runtime/featurelifted/syntax/parser.py:15: SyntaxError\n        except (SyntaxError, NameError, TypeError) as e:\n>           raise SyntaxError(\"Invalid schema expression: '%s'. \" % validator_string + str(e))\nE           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator.\nsubmission-runtime/featurelifted/syntax/parser.py:40: SyntaxError\n            raise ValueError(\"{} is an empty file!\".format(name))\n        except SyntaxError as e:\n>           raise SyntaxError(error)\nE           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'\nsubmission-runtime/featurelifted/schema/schema.py:50: SyntaxError\n            raise ValueError(\"{} is an empty file!\".format(name))\n        except (TypeError, SyntaxError) as e:\n>           raise SyntaxError(error)\nE           SyntaxError: Schema error in file schema\nE           Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'\nsubmission-runtime/featurelifted/yamale.py:24: SyntaxError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:1\nfrom .yamale import make_schema, validate\nfrom .schema.validationresults import ValidationResult\nfrom .yamale_error import YamaleError\n\n__all__ = [\"make_schema\", \"validate\", \"ValidationResult\", \"YamaleError\"]\n\n## featurelifted/__init__.py:2\nfrom .yamale import make_schema, validate\nfrom .schema.validationresults import ValidationResult\nfrom .yamale_error import YamaleError\n\n__all__ = [\"make_schema\", \"validate\", \"ValidationResult\", \"YamaleError\"]\n\n## featurelifted/__init__.py:3\nfrom .schema.validationresults import ValidationResult\nfrom .yamale_error import YamaleError\n\n__all__ = [\"make_schema\", \"validate\", \"ValidationResult\", \"YamaleError\"]\n\n## featurelifted/__init__.py:5\n\n__all__ = [\"make_schema\", \"validate\", \"ValidationResult\", \"YamaleError\"]"
+}

@@ -1,0 +1,45 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "celery__signal_dispatch_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py",
+    "featurelifted/signal.py"
+  ],
+  "n_files": 2,
+  "required_api": [
+    "class:featurelifted.Signal",
+    "method:featurelifted.Signal.connect",
+    "method:featurelifted.Signal.send"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When connect registers a receiver, dispatch invokes it once unless dispatch_uid intentionally deduplicates the registration."
+    },
+    {
+      "id": "B002",
+      "text": "When a receiver is registered for a sender, dispatch invokes it only for matching sender values while sender-agnostic receivers still run."
+    },
+    {
+      "id": "B003",
+      "text": "When a signal is dispatched, the returned list preserves receiver order and pairs each receiver with its response or captured exception."
+    },
+    {
+      "id": "B004",
+      "text": "When a weakly referenced receiver is garbage-collected, later dispatches omit and clean up that dead receiver."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.Signal`, `featurelifted.Signal.connect`, `featurelifted.Signal.send` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: celery"
+    }
+  ],
+  "log": "        assert callable(receiver), 'Signal receivers must be callable'\n>           raise ValueError(\nE           ValueError: Signal receiver must accept keyword arguments.\nsubmission-runtime/featurelifted/signal.py:135: ValueError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nfrom .signal import Signal\n\n__all__ = ('Signal',)\n\n## featurelifted/__init__.py:5\n\n__all__ = ('Signal',)\n\n## featurelifted/signal.py:4\nThis is a task-scoped, standard-library-only subset of the upstream\n``utils.dispatch.signal`` module.  It preserves the public :class:`Signal`\ncontract while dropping the broker/worker/proxy machinery that the rest of\nthe upstream package depends on.\n\"\"\"\nimport inspect\nimport logging\nimport sys\nimport threading\nimport warnings\nimport weakref\nfrom weakref import WeakMethod\n\n__all__ = ('Signal',)\n\nlogger = logging.getLogger(__name__)\n\n\nclass CDeprecationWarning(DeprecationWarning):\n\n## featurelifted/signal.py:16\n\n__all__ = ('Signal',)\n\nlogger = logging.getLogger(__name__)\n\n\nclass CDeprecationWarning(DeprecationWarning):\n    \"\"\"Deprecation warning used by the compatibility API.\"\"\"\n\n\ndef _make_id(target):\n    if isinstance(target, (bytes, str)):\n        # see Issue #2475\n        return target\n    if hasattr(target, '__func__'):\n        return id(target.__func__)\n    return id(target)\n\n"
+}

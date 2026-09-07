@@ -1,0 +1,50 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "starlette__route_matching_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.compile_path",
+    "class:featurelifted.Route",
+    "method:featurelifted.Route.matches",
+    "class:featurelifted.Mount",
+    "class:featurelifted.Router",
+    "method:featurelifted.Router.match",
+    "method:featurelifted.Router.url_path_for",
+    "class:featurelifted.Match",
+    "attribute:featurelifted.Match.NONE"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "compile_path builds a matching regex and parameter convertors, and Route distinguishes full, partial, and non-matches for the request path."
+    },
+    {
+      "id": "B002",
+      "text": "compile_path resolves registered convertors for typed path parameters and rejects unknown convertor names."
+    },
+    {
+      "id": "B003",
+      "text": "`Mount` matches child routes under a path prefix."
+    },
+    {
+      "id": "B004",
+      "text": "When url_path_for is called on Route, Mount, or Router, it substitutes required parameters and raises for missing names or parameters. An unnamed Mount still reverse-resolves named child routes and prefixes the Mount path."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.compile_path`, `featurelifted.Route`, `featurelifted.Route.matches`, `featurelifted.Mount`, `featurelifted.Router`, `featurelifted.Router.match`, `featurelifted.Router.url_path_for`, `featurelifted.Match`, `featurelif"
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: starlette"
+    }
+  ],
+  "log": "        assert route.name == \"detail\"\n        assert params == {\"name\": \"hello\"}\n>       assert router.url_path_for(\"detail\", name=\"hello\") == \"/api/hello\"\nE               TypeError: Mount.url_path_for() got multiple values for argument 'name'\nsubmission-runtime/featurelifted/routing.py:352: TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:12\nfrom featurelifted.routing import (\n    BaseRoute,\n    Match,\n    Mount,\n    NoMatchFound,\n    Route,\n    Router,\n    compile_path,\n    get_name,\n    replace_params,\n)\n\n__all__ = [\n    \"CONVERTOR_TYPES\",\n    \"BaseRoute\",\n    \"Convertor\",\n    \"FloatConvertor\",\n    \"IntegerConvertor\",\n    \"Match\",\n\n## featurelifted/__init__.py:13\n    BaseRoute,\n    Match,\n    Mount,\n    NoMatchFound,\n    Route,\n    Router,\n    compile_path,\n    get_name,\n    replace_params,\n)\n\n__all__ = [\n    \"CONVERTOR_TYPES\",\n    \"BaseRoute\",\n    \"Convertor\",\n    \"FloatConvertor\",\n    \"IntegerConvertor\",\n    \"Match\",\n    \"Mount\",\n\n## featurelifted/__init__.py:14\n    Match,\n    Mount,\n    NoMatchFound,\n    Route,\n    Router,\n    compile_path,\n    get_name,\n    replace_params,\n)\n\n__all__ = [\n    \"CONVERTOR_TYPES\",\n    \"BaseRoute\",\n    \"Convertor\",\n    \"FloatConvertor\",\n    \"IntegerConvertor\",\n    \"Match\",\n    \"Mount\",\n    \"NoMatchFound\",\n\n## featurelifted/__init__.py:15\n    Mount,\n    NoMatchFound,\n    Route,\n    Router,\n    compile_path,\n    get_name,\n    replace_params,\n)\n\n__all__ = [\n    \"CONVERTOR_TYPES\",\n    \"BaseRoute\",\n    \"Convertor\",\n    \"FloatConvertor\",\n    \"IntegerConvertor\",\n    \"Match\",\n    \"Mount\",\n    \"NoMatchFound\",\n    \"PathConvertor\","
+}

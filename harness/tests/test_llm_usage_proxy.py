@@ -289,6 +289,35 @@ class LLMUsageProxyTests(unittest.TestCase):
         finally:
             upstream.close()
 
+    def test_proxy_strips_openai_v1_prefix_on_versioned_provider_bases(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proxy = LLMUsageProxy(
+                LLMUsageProxyConfig(
+                    target_base_url="https://open.bigmodel.cn/api/paas/v4",
+                    api_key="sk-test",
+                    audit_path=root / "context_audit.jsonl",
+                    usage_path=root / "openhands_usage.json",
+                    model="openai/glm-5.3",
+                )
+            )
+            self.assertEqual(
+                proxy._target_url("/v1/chat/completions"),
+                "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+            )
+            deepseek = LLMUsageProxy(
+                LLMUsageProxyConfig(
+                    target_base_url="https://api.deepseek.com/v1",
+                    api_key="sk-test",
+                    audit_path=root / "context_audit.jsonl",
+                    usage_path=root / "openhands_usage.json",
+                )
+            )
+            self.assertEqual(
+                deepseek._target_url("/v1/chat/completions"),
+                "https://api.deepseek.com/v1/chat/completions",
+            )
+
 
 class _FakeUpstreamServer:
     def __init__(self) -> None:

@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "jupyter_server__extension_config_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.ExtensionConfigStore",
+    "method:featurelifted.ExtensionConfigStore.disable",
+    "method:featurelifted.ExtensionConfigStore.enabled",
+    "method:featurelifted.ExtensionConfigStore.get_extensions",
+    "function:featurelifted.merge_extension_configs",
+    "function:featurelifted.filter_enabled_extensions",
+    "function:featurelifted.recursive_update"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When extension config fragments are merged, recursive_update combines nested mappings while later fragments override earlier scalar values."
+    },
+    {
+      "id": "B002",
+      "text": "When ExtensionConfigStore is constructed with a config directory, it auto-loads jupyter_server_config.json plus JSON fragments under jupyter_server_config.d/, later .d fragments override earlier values for the same extension, and enable/disable writes and reloads the correspondin"
+    },
+    {
+      "id": "B003",
+      "text": "When entry-point extensions are filtered, explicitly disabled names are omitted and enabled or unspecified names remain discoverable."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.ExtensionConfigStore`, `featurelifted.ExtensionConfigStore.disable`, `featurelifted.ExtensionConfigStore.enabled`, `featurelifted.ExtensionConfigStore.get_extensions`, `featurelifted.merge_extension_configs`, `feature"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: jupyter_server"
+    }
+  ],
+  "log": ">       assert store.get_extensions() == {\"a\": True, \"b\": False}\nE       AssertionError: assert {'a': True, 'b': True} == {'a': True, 'b': False}\nE         Omitting 1 identical items, use -vv to show\nE         Differing items:\nE         {'b': True} != {'b': False}\nE         Use -v to get more diff\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\nstored in ``jupyter_server_config.json`` files and ``jupyter_server_config.d``\ndirectories, plus a per-directory store that can enable/disable extensions.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom ._config import (\n    ExtensionConfigStore,\n    filter_enabled_extensions,\n    merge_extension_configs,\n    recursive_update,\n)\n\n__all__ = [\n    \"ExtensionConfigStore\",\n    \"filter_enabled_extensions\",\n    \"merge_extension_configs\",\n    \"recursive_update\",\n]\n\n## featurelifted/__init__.py:11\nfrom ._config import (\n    ExtensionConfigStore,\n    filter_enabled_extensions,\n    merge_extension_configs,\n    recursive_update,\n)\n\n__all__ = [\n    \"ExtensionConfigStore\",\n    \"filter_enabled_extensions\",\n    \"merge_extension_configs\",\n    \"recursive_update\",\n]\n\n## featurelifted/__init__.py:12\n    ExtensionConfigStore,\n    filter_enabled_extensions,\n    merge_extension_configs,\n    recursive_update,\n)\n\n__all__ = [\n    \"ExtensionConfigStore\",\n    \"filter_enabled_extensions\",\n    \"merge_extension_configs\",\n    \"recursive_update\",\n]\n\n## featurelifted/__init__.py:13\n    filter_enabled_extensions,\n    merge_extension_configs,\n    recursive_update,\n)\n\n__all__ = [\n    \"ExtensionConfigStore\",\n    \"filter_enabled_extensions\",\n    \"merge_extension_configs\",\n    \"recursive_update\",\n]"
+}

@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "cookiecutter__repo_finder_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.RepoFinder",
+    "method:featurelifted.RepoFinder.find_template",
+    "function:featurelifted.expand_abbreviation",
+    "function:featurelifted.safe_join",
+    "exception:featurelifted.UnsafePathError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When a repository abbreviation is supplied, expand_abbreviation and RepoFinder expand it using configured abbreviations before resolving the template path."
+    },
+    {
+      "id": "B002",
+      "text": "Abbreviations expand short repo prefixes; replay overrides take precedence."
+    },
+    {
+      "id": "B003",
+      "text": "`safe_join` rejects path traversal and absolute segments."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.RepoFinder`, `featurelifted.RepoFinder.find_template`, `featurelifted.expand_abbreviation`, `featurelifted.safe_join`, `featurelifted.UnsafePathError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: cookiecutter"
+    }
+  ],
+  "log": "E           IndexError: Replacement index 1 out of range for positional args tuple\nsubmission-runtime/featurelifted/repository.py:66: IndexError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n\n* :class:`RepoFinder` - resolves a repository spec to a local template.\n* :func:`expand_abbreviation` - expands a configured repository abbreviation.\n* :func:`safe_join` - joins paths while rejecting traversal/absolute parts.\n* :class:`UnsafePathError` - raised by :func:`safe_join` for unsafe paths.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom featurelifted.exceptions import RepositoryNotFound, UnsafePathError\nfrom featurelifted.repository import (\n    RepoFinder,\n    expand_abbreviation,\n    expand_abbreviations,\n    is_repo_url,\n    is_zip_file,\n    repository_has_cookiecutter_json,\n)\nfrom featurelifted.utils import safe_join\n\n## featurelifted/__init__.py:6\n* :class:`RepoFinder` - resolves a repository spec to a local template.\n* :func:`expand_abbreviation` - expands a configured repository abbreviation.\n* :func:`safe_join` - joins paths while rejecting traversal/absolute parts.\n* :class:`UnsafePathError` - raised by :func:`safe_join` for unsafe paths.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom featurelifted.exceptions import RepositoryNotFound, UnsafePathError\nfrom featurelifted.repository import (\n    RepoFinder,\n    expand_abbreviation,\n    expand_abbreviations,\n    is_repo_url,\n    is_zip_file,\n    repository_has_cookiecutter_json,\n)\nfrom featurelifted.utils import safe_join\n\n\n## featurelifted/__init__.py:7\n* :func:`expand_abbreviation` - expands a configured repository abbreviation.\n* :func:`safe_join` - joins paths while rejecting traversal/absolute parts.\n* :class:`UnsafePathError` - raised by :func:`safe_join` for unsafe paths.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom featurelifted.exceptions import RepositoryNotFound, UnsafePathError\nfrom featurelifted.repository import (\n    RepoFinder,\n    expand_abbreviation,\n    expand_abbreviations,\n    is_repo_url,\n    is_zip_file,\n    repository_has_cookiecutter_json,\n)\nfrom featurelifted.utils import safe_join\n\n__all__ = [\n\n## featurelifted/__init__.py:8\n* :func:`safe_join` - joins paths while rejecting traversal/absolute parts.\n* :class:`UnsafePathError` - raised by :func:`safe_join` for unsafe paths.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom featurelifted.exceptions import RepositoryNotFound, UnsafePathError\nfrom featurelifted.repository import (\n    RepoFinder,\n    expand_abbreviation,\n    expand_abbreviations,\n    is_repo_url,\n    is_zip_file,\n    repository_has_cookiecutter_json,\n)\nfrom featurelifted.utils import safe_join\n\n__all__ = [\n    'RepoFinder',"
+}

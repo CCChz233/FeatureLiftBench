@@ -1,8 +1,8 @@
 # FeatureLiftBench FSE LaTeX Draft
 
-> **Status: draft · Last verified: 2026-09-03**
+> **Status: draft · Last verified: 2026-09-06**
 
-This directory contains the ACM `acmart` LaTeX zero draft derived from the
+This directory contains the ACM `acmart` LaTeX draft derived from the
 paper evidence under `docs/paper/`.
 
 ## Build
@@ -13,32 +13,18 @@ From this directory:
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-Clean generated files without removing the PDF:
-
-```bash
-latexmk -c
-```
-
 ## Evidence boundary
 
-- Red `Draft note` text marks claims or metadata that must be filled only from
-  the frozen paper bundle.
-- The freeze~v2 contract-completeness labels are 200/0, not a
-  leaderboard. Freeze ID
-  `6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`.
-  The predecessor freeze was 168/32. The 81/96 Flash slice and
-  132/200 audit headline belong to freeze `474862c2` and must not be retagged
-  onto freeze~v2.
-- `21.5%--72.5%` belongs to the superseded Python-150 + External-50 suite and
-  appears only as historical context.
-- The main table must use eligible Python-200′ runs with attested source,
-  context, dependency, model, agent image, and evaluator image identities.
+- Headline leaderboard: freeze~v2 **Python-150**, Official Main, five
+  OpenHands backends (Pro 115/150 \ldots OSS 36/150).
+- Freeze ID
+  `6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419`,
+  images `python200-prime-212930ea`.
+- Official Hard-50 is appendix-only and is not the difficulty claim.
+- Functional Pass = build ∧ public ∧ hidden ∧ isolation; empty submissions
+  fail; do not use `run.status`.
+- Finding 3 is an assistant L1 close-read on Pro+Flash ($n=63$), not gold.
 
 The Markdown argument draft is
-[../00_manuscript_zero_draft.md](../00_manuscript_zero_draft.md). The structural
-mapping to Harness-Bench is
-[../01_harness_bench_structure_mapping.md](../01_harness_bench_structure_mapping.md).
-Generated numeric tables live in [tables/](tables) and are filled from the
-Python-150 exploratory CSVs plus the Python-200′ received-suite summary. They
-are not the eligible leaderboard.
-
+[../00_manuscript_zero_draft.md](../00_manuscript_zero_draft.md).
+Numeric tables live in [tables/](tables).

@@ -1,0 +1,33 @@
+---
+description: Canonical Python-200′ freeze v2 Main results — do not mix with older runs
+alwaysApply: true
+---
+
+# Canonical freeze v2 Main results
+
+The **only** correct Python-200′ freeze v2 Official Main leaderboard is the
+merged `python200-prime-v2-main-r1` suites (24-task freeze-preflight retries
+already folded back into the same 200). Functional Pass = build ∧ public ∧
+hidden ∧ isolation; empty submissions count as fail.
+
+| Model | Directory | Functional Pass |
+| --- | --- | --- |
+| DeepSeek V4 Flash | `experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1` | **157/200** |
+| GPT-5.6 Luna (OpenLux) | `experiments/python/openhands/gpt-5.6-luna/python200-prime-v2-main-r1` | **144/200** |
+| GLM-5.3-Flash | `experiments/python/openhands/glm-5.3-flash/python200-prime-v2-main-r1` | **98/200** |
+| Qwen3.6-35B | `experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1` | **86/200** |
+| GPT-OSS 120B | `experiments/python/openhands/gpt-oss-120b/python200-prime-v2-main-r1` | **61/200** |
+
+Python-150 headline (same freeze; Pro is `python150-prime-v2-main-r1`):
+Pro **115/150**, Flash **108/150**, Luna **102/150**, GLM-5.3-Flash **68/150**,
+Qwen **63/150**, OSS **36/150**. Finding 3 denominator remains Pro+Flash
+artifact failures (n=63); GLM’s 44 artifact fails are not merged in.
+
+Write-up: `reports/paper_analysis/python200_prime_v2_results_20260905/` and
+`reports/paper_analysis/python150_prime_v2_analysis_20260905/`.
+
+**Never cite as this table:** 132/200 (20260829 v1 audit); Sep-2 Qwen
+`python200-prime-qwen36-35b-a3b-fp8-main-r1`; pre-merge 143/132/80; freeze24-only
+14/24 12/24 6/24 as the model score; Qwen 86/169; GLM `run.status` 59/200;
+Hard-50 49/50 as difficulty proof; abort dirs under `glm-5.3/`. Do not use
+`run.status=passed`.

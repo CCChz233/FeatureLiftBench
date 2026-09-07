@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-09-03**
+> **Status: current · Last verified: 2026-09-05**
 > 本文件是当前规模、release、可用结果和证据缺口的唯一手写事实源。
 
 ## Paper main suite（Python-200'）
@@ -22,7 +22,7 @@ Hard-50 **不得**写入 `benchmark/tasks/`。旧 E50 实体与历史分数保�
 | Unified task root | `benchmark/python200_hard_tasks/` |
 | Unified source registry | `benchmark/sources/python200_hard_registry.json` |
 | Hard-50 packages | `benchmark/hard50/`（无 `reference_solution/`） |
-| Paper table | **v1 freeze 上收到包的审计 headline 为 132/200（66.0%）**；不得改挂到 freeze v2。仅 183 题启动，严格替换集合 84 题，不得写成最终冻结主表。 |
+| Paper table | **唯一正确的 freeze v2 Official Main 是 2026-09-04/05 收完的 `python200-prime-v2-main-r1`（24 题补跑已叠回同一 200）**：DeepSeek **157/200**，Luna **144/200**，Qwen **86/200**，GPT-OSS **61/200**。见 [`reports/paper_analysis/python200_prime_v2_results_20260905/`](../reports/paper_analysis/python200_prime_v2_results_20260905)。132/200 只是 v1 freeze 的 audit headline，不得改挂。 |
 
 权威组合清单：
 [`benchmark/selection/python200_hard_suite.json`](../benchmark/selection/python200_hard_suite.json)。
@@ -267,17 +267,12 @@ registry summary 176 仓 / 200 题。Docker 正式 200' 跑仍必须执行 stric
    漏报抽检 20/20 C1 无未声明成员，不能据此报 Hidden 公平性召回率。
    资格干净的 116 题上，v1 标签切片 **81/96** 仍只属于 freeze `474862c2…`，
    不得写入摘要或最终主表，也不得改挂到 freeze v2。
-1. **Python-200' 已有收到包的审计 headline，尚无合格主表分。** Flash 原始记录为
-   132/200=66.0%，但只有 183 题启动；17 题 freeze-preflight blocked、16 题离线依赖
-   失败、59 题 context violation，去重后的严格替换集合是 84 题。固定子集为
-   95/116。2026-08-30 离线 wheel 已 200/200。84 题替换目录已有 **38/84**
-   `run.json`，停在 `lark__parse_tree_core__001`；本机 `latest` 镜像 digest
-   （agent `cc622920…` / eval `cccf858c…`）对不上论文钉（`0843b663…` /
-   `d1ea357c…`），**不得合并、不得写最终主表**。核对记录
-   [`strict84_replacement_audit_20260902.md`](../reports/paper_analysis/python200_hard_main_20260829/strict84_replacement_audit_20260902.md)。
-   任务集与已发出的 source snapshot 均匹配；分析层与结果层已合并：
-   `artifacts/research_analysis/python200_hard_task_taxonomy.csv`（200 行，
-   `python200_hard_v1`）。旧 150+E50 的 21.5%–72.5% **不是** 新主表。
+1. **Python-200′ freeze v2 Official Main 主表已有唯一正确结果**（2026-09-04/05
+   `python200-prime-v2-main-r1`，24 题 freeze-preflight 补跑已叠回）：DeepSeek
+   **157/200**，Luna **144/200**，Qwen **86/200**，GPT-OSS **61/200**。写进论文只许用这套。
+   20260829 的 132/200 仍只是 **v1 freeze audit headline**（183 题启动 / 84 题替换集合），
+   不得改挂。旧 150+E50 的 21.5%–72.5% **不是** 新主表。权威写回：
+   [`python200_prime_v2_results_20260905`](../reports/paper_analysis/python200_prime_v2_results_20260905)。
 2. RQ6 Public-feedback Flash-12 同日成对已齐：Main 0/12 → PF 4/12。Entrypoint-Hint
    未跑。见 [METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。
 3. Spec-adversarial Hidden-4 已 Kill（Hidden 0→1 = 0/4）。不要扩面。见

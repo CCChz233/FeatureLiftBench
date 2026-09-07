@@ -1,0 +1,38 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "resource_metadata_loading",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.version_from_scm"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "version_from_scm normalizes SCM-style tags into a valid base version and incorporates distance, dirty state, and node information."
+    },
+    {
+      "id": "B002",
+      "text": "When distance from the tag is positive, version_from_scm appends the corresponding development-distance suffix."
+    },
+    {
+      "id": "B003",
+      "text": "When node or dirty information is present, version_from_scm appends a local version segment that includes the node hash and, when dirty=True, a dirty marker. The local segment is not required to use a g prefix or to omit .dirty."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.version_from_scm` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: setuptools_scm"
+    }
+  ],
+  "log": ">       assert version_from_scm(\".\", tag=\"v1.2.3\", distance=0, dirty=False) == \"1.2.3\"\nE       AssertionError: assert '1.2.3+g1234567' == '1.2.3'\nE         - 1.2.3\nE         + 1.2.3+g1234567\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:6\n\n* ``version_from_scm`` builds a PEP 440 style version string from a\n  closest SCM tag together with the distance from that tag, the dirty\n  state of the working tree and the commit node/hash.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\n\n__all__ = [\"version_from_scm\"]\n\n# Matches the default SCM \"tag\" shape used by setuptools-scm: an optional\n# dashed word prefix (e.g. ``release-``), an optional ``v``/``V`` marker and\n# a version core of dotted numbers that may be followed by pre/dev markers.\n_TAG_RE = re.compile(\n    r\"^(?:[\\w-]+-)?(?P<version>[vV]?\\d+(?:\\.\\d+){0,2}[^\\+]*)\"\n)\n\n\n## featurelifted/__init__.py:15\n\n__all__ = [\"version_from_scm\"]\n\n# Matches the default SCM \"tag\" shape used by setuptools-scm: an optional\n# dashed word prefix (e.g. ``release-``), an optional ``v``/``V`` marker and\n# a version core of dotted numbers that may be followed by pre/dev markers.\n_TAG_RE = re.compile(\n    r\"^(?:[\\w-]+-)?(?P<version>[vV]?\\d+(?:\\.\\d+){0,2}[^\\+]*)\"\n)\n\n_NODE_RE = re.compile(r\"^[vV]\\d\")\n\n\ndef _normalize_tag(tag: object) -> str:\n    \"\"\"Turn an SCM-style tag into a plain PEP 440 style base version.\n\n    A leading ``v``/``V`` marker (the PEP 440 \"preceding v character\" as\n    used by SCM tools) is removed and any ``+local`` build metadata carried\n    by the tag is dropped, since node/dirty information is supplied through\n\n## featurelifted/__init__.py:45\n\ndef version_from_scm(\n    root,\n    *,\n    tag: str = \"v1.0.0\",\n    distance: int = 0,\n    dirty: bool = False,\n    node: str = \"g1234567\",\n) -> str:\n    \"\"\"Normalize an SCM tag into a version string.\n\n    The closest tag is normalized into a valid base version.  When the\n    ``distance`` from the tag is positive a ``.dev{<distance>}`` suffix is\n    appended.  When ``node`` and/or ``dirty`` information is available a\n    PEP 440 local-version segment (``+...``) containing the node hash and a\n    ``dirty`` marker is appended.\n\n    :param root: repository root; accepted for API compatibility, the\n        version data is supplied entirely through the keyword arguments."
+}

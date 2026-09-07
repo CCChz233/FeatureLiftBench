@@ -1,0 +1,26 @@
+{
+  "layer": "Protocol \u00a76 process tags, assistant screen of events (terminal/file_editor path)",
+  "pro_flash_artifact_failures_n": 77,
+  "pro_flash_inspected_repo_deep": 77,
+  "pro_flash_scope_not_inspected": 0,
+  "pro_flash_exclusive_tags": {
+    "inspected_and_probed": 65,
+    "stale_verification": 12
+  },
+  "pro_flash_probe_n_zero": 0,
+  "pro_flash_stale_after_edit": 12,
+  "pro_flash_budget_hint": 0,
+  "postsample_n": 45,
+  "postsample_inspected_repo_deep": 45,
+  "postsample_exclusive_tags": {
+    "probe_not_selected": 20,
+    "stale_verification": 9,
+    "inspected_and_probed": 16
+  },
+  "caveats": [
+    "Exclusive process_tag is a screen priority (scope > budget > no-probe > stale > inspected_and_probed), not a gold codebook.",
+    "OpenHands file_editor path /flb/workspace/repo counts as inspect; command==view also carries path.",
+    "Output-side behavior_drift is not rewritten from these tags.",
+    "No budget_exhaustion strings found in commands."
+  ]
+}

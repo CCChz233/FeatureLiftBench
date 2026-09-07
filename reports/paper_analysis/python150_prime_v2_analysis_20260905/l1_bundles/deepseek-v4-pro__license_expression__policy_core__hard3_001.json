@@ -1,0 +1,70 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "license_expression__policy_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Direct",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.LicenseSymbol",
+    "attribute:featurelifted.LicenseSymbol.key",
+    "class:featurelifted.Licensing",
+    "method:featurelifted.Licensing.parse",
+    "method:featurelifted.Licensing.validate",
+    "method:featurelifted.Licensing.license_symbols",
+    "method:featurelifted.Licensing.evaluate_policy",
+    "class:featurelifted.ExpressionInfo",
+    "exception:featurelifted.ExpressionParseError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Parse symbols, `AND`, `OR`, `WITH`, and parentheses."
+    },
+    {
+      "id": "B002",
+      "text": "`AND` binds tighter than `OR`."
+    },
+    {
+      "id": "B003",
+      "text": "Parentheses override precedence."
+    },
+    {
+      "id": "B004",
+      "text": "`WITH` binds a license symbol to an exception symbol."
+    },
+    {
+      "id": "B005",
+      "text": "Aliases normalize to canonical `LicenseSymbol.key` values."
+    },
+    {
+      "id": "B006",
+      "text": "When parse(..., strict=True) is used, exception symbols cannot appear as plain licenses and raise ExpressionParseError; default parse(..., strict=False) does not enforce that check."
+    },
+    {
+      "id": "B007",
+      "text": "When parse(..., strict=True) is used, plain license symbols cannot be used as WITH exceptions and raise ExpressionParseError; default parse(..., strict=False) does not raise for that misuse."
+    },
+    {
+      "id": "B008",
+      "text": "`validate()` returns `ExpressionInfo` with errors and invalid symbols instead of raising for unknown symbols."
+    },
+    {
+      "id": "B009",
+      "text": "`evaluate_policy()` returns a dictionary with `status`, `normalized`, `symbols`, `denied`, `unknown`, and `errors`."
+    },
+    {
+      "id": "B010",
+      "text": "The package exposes the required task API paths `featurelifted.LicenseSymbol`, `featurelifted.LicenseSymbol.key`, `featurelifted.Licensing`, `featurelifted.Licensing.parse`, `featurelifted.Licensing.validate`, `featurelifted.Licensing.license_symbols`, `featurelifted.Licensing.ev"
+    },
+    {
+      "id": "B011",
+      "text": "the submitted package does not import forbidden upstream packages: license_expression, boolean"
+    }
+  ],
+  "log": "        assert info.normalized_expression is None\n        assert info.invalid_symbols == [\"UnknownLicense\"]\n>       assert info.errors == [\"Unknown license symbol: UnknownLicense\"]\nE       AssertionError: assert ['Unknown lic...knownLicense'] == ['Unknown lic...knownLicense']\nE         At index 0 diff: 'Unknown license key(s): UnknownLicense' != 'Unknown license symbol: UnknownLicense'\nE         Use -v to get more diff\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:23\n    \"ExpressionError\",\n    \"ExpressionInfo\",\n    \"ExpressionParseError\",\n    \"Keyword\",\n    \"LicenseExpression\",\n    \"LicenseSymbol\",\n    \"LicenseSymbolLike\",\n    \"LicenseWithExceptionSymbol\",\n    \"Licensing\",\n    \"ParseError\",\n    \"Token\",\n    # token type constants\n    \"TOKEN_AND\",\n    \"TOKEN_LPAR\",\n    \"TOKEN_OR\",\n    \"TOKEN_RPAR\",\n    \"TOKEN_SYMBOL\",\n    \"TOKEN_WITH\",\n    # parse error codes and mapping\n\n## featurelifted/__init__.py:27\n    \"LicenseExpression\",\n    \"LicenseSymbol\",\n    \"LicenseSymbolLike\",\n    \"LicenseWithExceptionSymbol\",\n    \"Licensing\",\n    \"ParseError\",\n    \"Token\",\n    # token type constants\n    \"TOKEN_AND\",\n    \"TOKEN_LPAR\",\n    \"TOKEN_OR\",\n    \"TOKEN_RPAR\",\n    \"TOKEN_SYMBOL\",\n    \"TOKEN_WITH\",\n    # parse error codes and mapping\n    \"PARSE_ERRORS\",\n    \"PARSE_UNKNOWN_TOKEN\",\n    \"PARSE_INVALID_EXPRESSION\",\n    \"PARSE_INVALID_OPERATOR_SEQUENCE\",\n\n## featurelifted/__init__.py:28\n    \"LicenseSymbol\",\n    \"LicenseSymbolLike\",\n    \"LicenseWithExceptionSymbol\",\n    \"Licensing\",\n    \"ParseError\",\n    \"Token\",\n    # token type constants\n    \"TOKEN_AND\",\n    \"TOKEN_LPAR\",\n    \"TOKEN_OR\",\n    \"TOKEN_RPAR\",\n    \"TOKEN_SYMBOL\",\n    \"TOKEN_WITH\",\n    # parse error codes and mapping\n    \"PARSE_ERRORS\",\n    \"PARSE_UNKNOWN_TOKEN\",\n    \"PARSE_INVALID_EXPRESSION\",\n    \"PARSE_INVALID_OPERATOR_SEQUENCE\",\n    \"PARSE_INVALID_NESTING\",\n\n## featurelifted/__init__.py:30\n    \"LicenseWithExceptionSymbol\",\n    \"Licensing\",\n    \"ParseError\",\n    \"Token\",\n    # token type constants\n    \"TOKEN_AND\",\n    \"TOKEN_LPAR\",\n    \"TOKEN_OR\",\n    \"TOKEN_RPAR\",\n    \"TOKEN_SYMBOL\",\n    \"TOKEN_WITH\",\n    # parse error codes and mapping\n    \"PARSE_ERRORS\",\n    \"PARSE_UNKNOWN_TOKEN\",\n    \"PARSE_INVALID_EXPRESSION\",\n    \"PARSE_INVALID_OPERATOR_SEQUENCE\",\n    \"PARSE_INVALID_NESTING\",\n    \"PARSE_UNBALANCED_CLOSING_PARENS\",\n    \"PARSE_INVALID_SYMBOL_SEQUENCE\","
+}

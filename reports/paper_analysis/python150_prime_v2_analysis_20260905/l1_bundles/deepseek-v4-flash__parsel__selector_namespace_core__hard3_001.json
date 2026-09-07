@@ -1,0 +1,47 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "parsel__selector_namespace_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Selector",
+    "method:featurelifted.Selector.css",
+    "method:featurelifted.Selector.xpath",
+    "method:featurelifted.Selector.register_namespace",
+    "method:featurelifted.Selector.remove_namespace",
+    "method:featurelifted.Selector.get",
+    "method:featurelifted.Selector.getall",
+    "class:featurelifted.FakeElement",
+    "function:featurelifted.extract_text",
+    "exception:featurelifted.SelectorSyntaxError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`Selector.css` and `Selector.xpath` select nodes from a lightweight element tree."
+    },
+    {
+      "id": "B002",
+      "text": "`Selector.register_namespace` enables prefixed XPath tag matching."
+    },
+    {
+      "id": "B003",
+      "text": "`extract_text` joins nested text with sensible defaults."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.Selector`, `featurelifted.Selector.css`, `featurelifted.Selector.xpath`, `featurelifted.Selector.register_namespace`, `featurelifted.Selector.remove_namespace`, `featurelifted.Selector.get`, `featurelifted.Selector.ge"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: parsel"
+    }
+  ],
+  "log": ">       assert Selector(root).css(\"#main\").get() == \"hi\"\nE       assert '<p id=\"main\">hi</p>' == 'hi'\nE         - hi\nE         + <p id=\"main\">hi</p>\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nThe public entry points are :class:`Selector`, :class:`SelectorList`,\n:class:`FakeElement`, :func:`extract_text` and\n:class:`SelectorSyntaxError`.\n\"\"\"\n\nfrom ._css import SelectorSyntaxError\nfrom ._fake import FakeElement\nfrom .selector import Selector, SelectorList, extract_text\n\n__all__ = [\n    \"Selector\",\n    \"SelectorList\",\n    \"FakeElement\",\n    \"SelectorSyntaxError\",\n    \"extract_text\",\n]\n\n__version__ = \"1.0.0\"\n\n## featurelifted/__init__.py:4\nThe public entry points are :class:`Selector`, :class:`SelectorList`,\n:class:`FakeElement`, :func:`extract_text` and\n:class:`SelectorSyntaxError`.\n\"\"\"\n\nfrom ._css import SelectorSyntaxError\nfrom ._fake import FakeElement\nfrom .selector import Selector, SelectorList, extract_text\n\n__all__ = [\n    \"Selector\",\n    \"SelectorList\",\n    \"FakeElement\",\n    \"SelectorSyntaxError\",\n    \"extract_text\",\n]\n\n__version__ = \"1.0.0\"\n\n## featurelifted/__init__.py:5\n:class:`FakeElement`, :func:`extract_text` and\n:class:`SelectorSyntaxError`.\n\"\"\"\n\nfrom ._css import SelectorSyntaxError\nfrom ._fake import FakeElement\nfrom .selector import Selector, SelectorList, extract_text\n\n__all__ = [\n    \"Selector\",\n    \"SelectorList\",\n    \"FakeElement\",\n    \"SelectorSyntaxError\",\n    \"extract_text\",\n]\n\n__version__ = \"1.0.0\"\n\n## featurelifted/__init__.py:8\n\nfrom ._css import SelectorSyntaxError\nfrom ._fake import FakeElement\nfrom .selector import Selector, SelectorList, extract_text\n\n__all__ = [\n    \"Selector\",\n    \"SelectorList\",\n    \"FakeElement\",\n    \"SelectorSyntaxError\",\n    \"extract_text\",\n]\n\n__version__ = \"1.0.0\""
+}

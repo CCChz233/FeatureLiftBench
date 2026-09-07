@@ -1,0 +1,40 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "hatch__project_metadata_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "resource_metadata_loading",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.normalize_project_metadata",
+    "function:featurelifted.select_environment",
+    "exception:featurelifted.MetadataValidationError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`normalize_project_metadata` lowercases names, sorts dependencies, and validates classifiers."
+    },
+    {
+      "id": "B002",
+      "text": "`select_environment` resolves environment inheritance and include chains."
+    },
+    {
+      "id": "B003",
+      "text": "Circular inheritance raises `ValueError`; invalid classifiers raise `MetadataValidationError`."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.normalize_project_metadata`, `featurelifted.select_environment`, `featurelifted.MetadataValidationError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: hatch, hatchling"
+    }
+  ],
+  "log": ">       assert normalized[\"name\"] == \"my-package\"\nE       AssertionError: assert 'my package' == 'my-package'\nE         - my-package\nE         ?   ^\nE         + my package\nE         ?   ^\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:12: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n\n- :func:`normalize_project_metadata` normalizes a PEP 621 ``[project]``\n  metadata table (lower-cased/standardized names, sorted dependencies and\n  validated classifiers).\n- :func:`select_environment` resolves a named environment's configuration,\n  following environment ``template`` inheritance chains the way ``hatch``\n  resolves ``tool.hatch.envs`` entries.\n- :class:`MetadataValidationError` is raised when project metadata fails\n  validation.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\nfrom copy import deepcopy\nfrom typing import Any\n\n__all__ = [\"MetadataValidationError\", \"normalize_project_metadata\", \"select_environment\"]\n\n\n## featurelifted/__init__.py:8\n  validated classifiers).\n- :func:`select_environment` resolves a named environment's configuration,\n  following environment ``template`` inheritance chains the way ``hatch``\n  resolves ``tool.hatch.envs`` entries.\n- :class:`MetadataValidationError` is raised when project metadata fails\n  validation.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\nfrom copy import deepcopy\nfrom typing import Any\n\n__all__ = [\"MetadataValidationError\", \"normalize_project_metadata\", \"select_environment\"]\n\n__version__ = \"0.1.0\"\n\n\n\n## featurelifted/__init__.py:11\n  resolves ``tool.hatch.envs`` entries.\n- :class:`MetadataValidationError` is raised when project metadata fails\n  validation.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport re\nfrom copy import deepcopy\nfrom typing import Any\n\n__all__ = [\"MetadataValidationError\", \"normalize_project_metadata\", \"select_environment\"]\n\n__version__ = \"0.1.0\"\n\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when ``project`` metadata cannot be normalized or is invalid.\"\"\"\n\n\n## featurelifted/__init__.py:21\n\n__all__ = [\"MetadataValidationError\", \"normalize_project_metadata\", \"select_environment\"]\n\n__version__ = \"0.1.0\"\n\n\nclass MetadataValidationError(ValueError):\n    \"\"\"Raised when ``project`` metadata cannot be normalized or is invalid.\"\"\"\n\n\n_NAME_RE = re.compile(r\"^([A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?)\")\n\n\ndef normalize_name(name: str) -> str:\n    \"\"\"Normalize a project/extra/dependency name.\n\n    Follows :pep:`503`: lower-case the text and replace any run of ``-``,\n    ``_`` or ``.`` with a single ``-``.\n    \"\"\""
+}

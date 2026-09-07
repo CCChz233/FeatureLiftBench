@@ -10,149 +10,68 @@ as such and are not reported as independent human gold.
 \section{Models, Runtime, and Reproducibility Configuration}
 \label{app:configuration}
 
-\draftnote{Insert the final configuration table: model endpoints, OpenHands
-revision, profiles, prompt hash, budgets, context policy, provider dates,
-hardware, and container digests.}
+Headline evaluation: freeze~v2 Python-150, OpenHands Official Main, one
+attempt per task, 2026-09-04/05. Functional Pass $=$ build $\land$ public
+$\land$ hidden $\land$ isolation. Empty submissions count as failures.
 
-The exploratory Python-150 matrix uses four OpenHands configurations on the
-same 150 task IDs. Interaction-volume diagnostics for that matrix are in
-Table~\ref{tab:python150-cost}. They are not a cost ranking and are not pooled
-across models.
+\begin{itemize}
+  \item Freeze ID:
+        \texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}
+  \item Candidate ID:
+        \texttt{212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254}
+  \item Agent image:
+        \texttt{featureliftbench-agent:python200-prime-212930ea}\\
+        \texttt{sha256:0a05b2e797e1e39ee0630131cfd9e670403ce684cd74c8375ecf7e8d444f7595}
+  \item Evaluator image:
+        \texttt{featureliftbench-eval:python200-prime-212930ea}\\
+        \texttt{sha256:bacb3078db5e9558e9953575b5eb52f247b112dc63b7705ad7c48a7b4d864cae}
+  \item Envelope: 120 steps, 128k context, No-Hint, Public/Hidden tests withheld
+  \item Timeout: 3600s per task
+  \item Pro suite:
+        \texttt{experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1}
+  \item Other backends:
+        \texttt{experiments/python/openhands/<model>/python200-prime-v2-main-r1},
+        restricted to the 150 Python-150 task IDs
+\end{itemize}
 
-\begin{table}[t]
-  \caption{Interaction volume on exploratory frozen Python-150. Completion
-  tokens are medians over assigned tasks.}
-  \label{tab:python150-cost}
-  \centering
-  \resizebox{\columnwidth}{!}{%
-    \input{tables/tab_python150_cost}%
-  }
-\end{table}
-
-\section{Full Results and Sensitivity Tables}
-\label{app:full-results}
-
-Numeric snippets in \texttt{docs/paper/fse26/tables/} are generated from
-\texttt{reports/paper\_analysis/python150\_exploratory\_20260830/tables/} and
-\texttt{reports/paper\_analysis/python200\_hard\_main\_20260829/summary.json}.
-Regenerate with
-\texttt{python3.12 reports/paper\_analysis/python150\_exploratory\_20260830/export\_latex\_tables.py}.
-
-\subsection{Exploratory Python-150}
-
-\begin{table*}[t]
-  \caption{Paired Functional Pass counts on exploratory frozen Python-150.
-  $p$ is an exact McNemar test on discordant tasks.}
-  \label{tab:python150-pairwise}
-  \centering
-  \resizebox{\textwidth}{!}{%
-    \input{tables/tab_python150_pairwise}%
-  }
-\end{table*}
+Paired McNemar tests for the headline matrix are in
+Table~\ref{tab:python150-v2-pairwise}.
 
 \begin{table}[t]
-  \caption{Mean models solved by feature family on exploratory frozen
-  Python-150. Bootstrap intervals are over tasks.}
-  \label{tab:python150-family}
+  \caption{Exact McNemar tests on freeze~v2 Python-150 (discordant tasks).}
+  \label{tab:python150-v2-pairwise}
   \centering
-  \resizebox{\columnwidth}{!}{%
-    \input{tables/tab_python150_family}%
-  }
+  \input{tables/tab_python150_v2_pairwise}
 \end{table}
+
+\section{Official Hard-50}
+\label{app:hard50}
+
+Table~\ref{tab:hard50} reports Functional Pass on the official Hard-50
+expansion and the corresponding 200-task totals. Pro was not run on Hard-50.
+Hard-50 packages have no evaluator-side \texttt{reference\_solution/}, so we
+do not report RRES. These rates are not the paper's difficulty claim.
 
 \begin{table}[t]
-  \caption{Number of tasks solved by $k$ of four models, by lift type.}
-  \label{tab:python150-solve-count}
+  \caption{Official Hard-50 Functional Pass on freeze~v2 Official Main,
+  with Python-150 and 200-task totals. Pro is 150-only.}
+  \label{tab:hard50}
   \centering
-  \resizebox{\columnwidth}{!}{%
-    \input{tables/tab_python150_solve_count}%
-  }
+  \input{tables/tab_hard50_v2}
 \end{table}
 
-\input{tables/tab_python150_task_matrix}
-
-\subsection{Python-200$'$ received package (not a leaderboard)}
-
-The following tables copy the 2026-08-29 received DeepSeek V4 Flash package
-exactly, including infrastructure outcomes. They must not be captioned as the
-final Python-200$'$ leaderboard.
-
-\begin{table}[t]
-  \caption{Received-suite audit headline. Includes freeze blocks and missing
-  wheels.}
-  \label{tab:python200-audit}
-  \centering
-  \input{tables/tab_python200_audit}
-\end{table}
-
-\begin{table}[t]
-  \caption{Eligibility partition of the received Python-200$'$ package.}
-  \label{tab:python200-eligibility}
-  \centering
-  \input{tables/tab_python200_eligibility}
-\end{table}
-
-\begin{table}[t]
-  \caption{Audit failure classes after separating infrastructure from
-  model/output outcomes.}
-  \label{tab:python200-failure-classes}
-  \centering
-  \input{tables/tab_python200_failure_classes}
-\end{table}
-
-\begin{table}[t]
-  \caption{Recorded first outcomes by split in the received package.
-  Hard-50 build failures are offline-dependency infrastructure.}
-  \label{tab:python200-stages-received}
-  \centering
-  \input{tables/tab_python200_stages_received}
-\end{table}
-
-\begin{table}[t]
-  \caption{Lift-type rates in the received package. Infrastructure outcomes
-  are not removed.}
-  \label{tab:python200-lift-candidate}
-  \centering
-  \input{tables/tab_python200_lift_candidate}
-\end{table}
-
-\begin{table}[t]
-  \caption{Pass-conditioned RRES in the received package. Split contrast is
-  infrastructure-confounded.}
-  \label{tab:python200-compactness-candidate}
-  \centering
-  \input{tables/tab_python200_compactness_candidate}
-\end{table}
-
-\begin{table}[t]
-  \caption{Context-window audit slices in the received package.}
-  \label{tab:python200-context}
-  \centering
-  \resizebox{\columnwidth}{!}{%
-    \input{tables/tab_python200_context}%
-  }
-\end{table}
-
-The replacement union, repeated-run results, observable-only Hidden analysis,
-and attested image identities remain pending.
-
-\section{Confirmed Contract-Completeness Violations}
+\section{Contract-Completeness of Freeze~v2}
 \label{app:violators}
 
-Table~\ref{tab:violators} lists the 32 tasks that carried a confirmed
-surface (C1) or entry-point (C2) violation on the predecessor freeze
-\texttt{474862c2}. Those defects were repaired before freeze~v2; they are
-historical findings, not the published 200/0 labels.
+The published freeze~v2 labels are 200/0/0
+(Table~\ref{tab:standard-labels}, Section~\ref{sec:standard-subset}).
+Table~\ref{tab:violators} lists the 32 predecessor-freeze surface or
+entry-point defects that were repaired before freeze~v2; they are historical
+findings, not the published labels. C4 overlap was advisory; six overlapping
+Hidden cases were rewritten before freeze~v2
+(Table~\ref{tab:c4-advisory}).
 
 \input{tables/tab_python200_violators}
-
-\section{C4 Test-Overlap Advisory}
-\label{app:c4}
-
-Normalized Public/Hidden whole-test overlap is advisory pending threshold
-calibration. On the predecessor freeze it did not change the 168/32 labels;
-the six overlapping Hidden cases were rewritten before freeze~v2
-(Table~\ref{tab:c4-advisory}).
 
 \begin{table}[t]
   \caption{C4 test-overlap: predecessor advisory counts versus freeze~v2
@@ -162,58 +81,9 @@ the six overlapping Hidden cases were rewritten before freeze~v2
   \input{tables/tab_python200_c4_advisory}
 \end{table}
 
-\section{Representative FeatureLift Task Cards}
-\label{app:task-cards}
-
-Each task card will report the source repository and revision, public objective,
-expected package, primary entanglement, allowed dependencies, evaluator gates,
-reference footprint, and one audited failure example.
-
 \section{Negative Intervention Registry}
 \label{app:negative-registry}
 
-The intervention registry will report task subsets, dates, exact protocol
-differences, paired outcomes, cost, stopping decisions, and evidence limitations
-for every development intervention summarized in
-Table~\ref{tab:negative}.
-
-\section{Artifact and Reproduction Manifest}
-\label{app:artifact}
-
-The following SHA-256 file digests identify the analysis inputs used in
-Section~\ref{sec:standard-subset} and Tables~\ref{tab:eligibility-slice}--\ref{tab:fixed116-rres}.
-They are not a complete paper-bundle freeze.
-
-\begin{itemize}
-  \item Parent suite JSON:
-        \texttt{b1e18cd459e8ed3c001afe54ec77273a5701eed3e6017a39f2ee067a81602802}
-  \item Analysis-subset JSON:
-        \texttt{958389c4513e5c3b9d00c3ca3ebaf3fd9f3719ed328b46777aee958ba1a6347f}
-  \item Excluded-task JSON:
-        \texttt{4d9384ee565bcbcdbd3946be7fda126b306219d6e4db98e2d22b04fa0165a528}
-  \item Adjudications CSV:
-        \texttt{55f6cce85fddc4f4d6f1619b8b8950c3c87ea1812a48845cd5af0e0fde92b1c7}
-  \item Required agent image:
-        \texttt{sha256:0843b6633d48da91832ce16c0e6ac42baf2f04d7b08cb66061720f176a8f2eea}
-  \item Required evaluator image:
-        \texttt{sha256:d1ea357c125a6f4957e1246f770bd1deb4717448e46e779f62b0351213cad191}
-\end{itemize}
-The incomplete 84-task replacement used local \texttt{latest} images
-\texttt{cc622920\ldots} / \texttt{cccf858c\ldots} and is not mergeable.
-Those image pins belong to the 2026-08-29 received package, not freeze~v2.
-
-Freeze~v2 (paper asset) identities:
-\begin{itemize}
-  \item Freeze ID:
-        \texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}
-  \item Candidate ID:
-        \texttt{212930ea5363f21824afd5454c4da125052ad7a7d7186886e3dddef145811254}
-  \item Agent image:
-        \texttt{sha256:0a05b2e797e1e39ee0630131cfd9e670403ce684cd74c8375ecf7e8d444f7595}
-  \item Evaluator image:
-        \texttt{sha256:bacb3078db5e9558e9953575b5eb52f247b112dc63b7705ad7c48a7b4d864cae}
-\end{itemize}
-
-The remaining paper-bundle fields (OpenHands revision, prompt hash, provider
-dates, and a one-command reconstruction of the eligible 200-task table) stay
-pending until the 84-task replacement is merged under the pinned images.
+The interventions in Table~\ref{tab:negative} differ in subset and date.
+They are diagnostic and are not pooled into an effect size or mixed with
+the freeze~v2 leaderboard.

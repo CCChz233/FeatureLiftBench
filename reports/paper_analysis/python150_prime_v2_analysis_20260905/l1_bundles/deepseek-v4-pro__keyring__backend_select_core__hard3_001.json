@@ -1,0 +1,72 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "keyring__backend_select_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.ChainerBackend",
+    "method:featurelifted.ChainerBackend.get_password",
+    "method:featurelifted.ChainerBackend.set_password",
+    "class:featurelifted.MemoryBackend",
+    "method:featurelifted.MemoryBackend.get_credential",
+    "method:featurelifted.MemoryBackend.get_password",
+    "method:featurelifted.MemoryBackend.set_password",
+    "function:featurelifted.select_backend",
+    "class:featurelifted.Backend",
+    "exception:featurelifted.BackendNotFound",
+    "class:featurelifted.Credential",
+    "class:featurelifted.ErrorBackend",
+    "class:featurelifted.FailBackend",
+    "exception:featurelifted.PasswordDeleteError",
+    "exception:featurelifted.PasswordSetError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Backend implementations expose priority and the declared password and credential operations used by selection and chaining."
+    },
+    {
+      "id": "B002",
+      "text": "MemoryBackend stores deterministic credentials and can discover a stored username when get_credential is called without one."
+    },
+    {
+      "id": "B003",
+      "text": "When no viable backend exists, selection returns FailBackend and its password operations fail through the declared error API."
+    },
+    {
+      "id": "B004",
+      "text": "ErrorBackend raises its configured failure so ChainerBackend fallback paths can be observed."
+    },
+    {
+      "id": "B005",
+      "text": "ChainerBackend sorts viable backends by descending priority, skips backend failures, and returns the first successful password result."
+    },
+    {
+      "id": "B006",
+      "text": "select_backend chooses the highest-priority non-negative viable backend and falls back to FailBackend when none qualifies."
+    },
+    {
+      "id": "B007",
+      "text": "When PYTHON_KEYRING_BACKEND is provided, select_backend matches the requested backend name or class and raises BackendNotFound if it is unavailable."
+    },
+    {
+      "id": "B008",
+      "text": "Credential values and password set/delete failures use the declared Credential, PasswordSetError, and PasswordDeleteError types."
+    },
+    {
+      "id": "B009",
+      "text": "The package exposes the required task API paths `featurelifted.ChainerBackend`, `featurelifted.ChainerBackend.get_password`, `featurelifted.ChainerBackend.set_password`, `featurelifted.MemoryBackend`, `featurelifted.MemoryBackend.get_credential`, `featurelifted.MemoryBackend.get_"
+    },
+    {
+      "id": "B010",
+      "text": "the submitted package does not import forbidden upstream packages: keyring"
+    }
+  ],
+  "log": ">       assert isinstance(select_backend([Low, High]), High)\nE       AssertionError: assert False\nE        +  where False = isinstance(<class 'test_public_contract.High'>, High)\nE        +    where <class 'test_public_contract.High'> = select_backend([<class 'test_public_contract.Low'>, <class 'test_public_contract.High'>])\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:21: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n``keyring``: a base ``Backend`` class, concrete in-memory and error-raising\nbackends, a chaining backend, a fail-safe backend, and a ``select_backend``\nentry point that mirrors the environment-driven and priority-driven selection\nsemantics.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nfrom dataclasses import dataclass, field\nfrom typing import Any\n\n__all__ = [\n    'Backend',\n    'BackendNotFound',\n    'ChainerBackend',\n    'Credential',\n    'ErrorBackend',\n    'FailBackend',\n\n## featurelifted/__init__.py:19\n    'BackendNotFound',\n    'ChainerBackend',\n    'Credential',\n    'ErrorBackend',\n    'FailBackend',\n    'MemoryBackend',\n    'PasswordDeleteError',\n    'PasswordSetError',\n    'select_backend',\n]\n\n\nclass KeyringError(Exception):\n    \"\"\"Base class for all exceptions raised by this package.\"\"\"\n\n\nclass PasswordSetError(KeyringError):\n    \"\"\"Raised when a password cannot be set.\"\"\"\n\n\n## featurelifted/__init__.py:23\n    'FailBackend',\n    'MemoryBackend',\n    'PasswordDeleteError',\n    'PasswordSetError',\n    'select_backend',\n]\n\n\nclass KeyringError(Exception):\n    \"\"\"Base class for all exceptions raised by this package.\"\"\"\n\n\nclass PasswordSetError(KeyringError):\n    \"\"\"Raised when a password cannot be set.\"\"\"\n\n\nclass PasswordDeleteError(KeyringError):\n    \"\"\"Raised when a password cannot be deleted.\"\"\"\n\n\n## featurelifted/__init__.py:26\n    'PasswordSetError',\n    'select_backend',\n]\n\n\nclass KeyringError(Exception):\n    \"\"\"Base class for all exceptions raised by this package.\"\"\"\n\n\nclass PasswordSetError(KeyringError):\n    \"\"\"Raised when a password cannot be set.\"\"\"\n\n\nclass PasswordDeleteError(KeyringError):\n    \"\"\"Raised when a password cannot be deleted.\"\"\"\n\n\nclass BackendNotFound(KeyringError, RuntimeError):\n    \"\"\"Raised when no matching backend can be found.\"\"\""
+}

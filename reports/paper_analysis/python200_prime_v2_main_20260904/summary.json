@@ -1,0 +1,505 @@
+{
+  "cross_model": {
+    "all_fail": 47,
+    "all_pass": 68,
+    "counts": {
+      "D0L0Q0": 47,
+      "D0L1Q0": 7,
+      "D0L1Q1": 3,
+      "D1L0Q0": 12,
+      "D1L0Q1": 9,
+      "D1L1Q0": 54,
+      "D1L1Q1": 68
+    }
+  },
+  "freeze_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+  "labels": {
+    "deepseek_v4_flash": "DeepSeek V4 Flash",
+    "gpt_5_6_luna_openlux": "gpt-5.6-luna (OpenLux)",
+    "qwen3_6_35b": "Qwen3.6-35B-A3B-FP8"
+  },
+  "models": {
+    "deepseek_v4_flash": {
+      "by_entanglement_level": {
+        "high": {
+          "passed": 143,
+          "pct": 71.5,
+          "rate": 0.715,
+          "total": 200,
+          "wilson_95": [
+            0.6488465397039482,
+            0.7730499699538271
+          ]
+        }
+      },
+      "by_lift_type": {
+        "Adapted": {
+          "passed": 71,
+          "pct": 71.0,
+          "rate": 0.71,
+          "total": 100,
+          "wilson_95": [
+            0.6146110882442888,
+            0.7898516425087772
+          ]
+        },
+        "Composite": {
+          "passed": 19,
+          "pct": 59.4,
+          "rate": 0.59375,
+          "total": 32,
+          "wilson_95": [
+            0.42260024875382873,
+            0.7448036515733456
+          ]
+        },
+        "Direct": {
+          "passed": 53,
+          "pct": 77.9,
+          "rate": 0.7794117647058824,
+          "total": 68,
+          "wilson_95": [
+            0.6674326122885067,
+            0.861509876126748
+          ]
+        }
+      },
+      "by_stratum": {
+        "hard50": {
+          "passed": 49,
+          "pct": 98.0,
+          "rate": 0.98,
+          "total": 50,
+          "wilson_95": [
+            0.8950455641036219,
+            0.9964607407283539
+          ]
+        },
+        "python150": {
+          "passed": 94,
+          "pct": 62.7,
+          "rate": 0.6266666666666667,
+          "total": 150,
+          "wilson_95": [
+            0.5470058519845729,
+            0.7000016861088478
+          ]
+        }
+      },
+      "eligible": {
+        "passed": 143,
+        "pct": 81.2,
+        "rate": 0.8125,
+        "total": 176,
+        "wilson_95": [
+          0.7483909809097895,
+          0.8632588617979058
+        ]
+      },
+      "eligible_by_stratum": {
+        "hard50": {
+          "passed": 49,
+          "pct": 98.0,
+          "rate": 0.98,
+          "total": 50,
+          "wilson_95": [
+            0.8950455641036219,
+            0.9964607407283539
+          ]
+        },
+        "python150": {
+          "passed": 94,
+          "pct": 74.6,
+          "rate": 0.746031746031746,
+          "total": 126,
+          "wilson_95": [
+            0.6635293662856476,
+            0.8139760511913658
+          ]
+        }
+      },
+      "failure_stage": {
+        "build": 0,
+        "freeze_preflight_blocked": 24,
+        "hidden": 13,
+        "isolation": 1,
+        "missing_submission": 0,
+        "other": 0,
+        "pass": 143,
+        "public": 19
+      },
+      "failure_stage_share": {
+        "build": 0.0,
+        "freeze_preflight_blocked": 0.12,
+        "hidden": 0.065,
+        "isolation": 0.005,
+        "missing_submission": 0.0,
+        "other": 0.0,
+        "pass": 0.715,
+        "public": 0.095
+      },
+      "n": 200,
+      "overall": {
+        "passed": 143,
+        "pct": 71.5,
+        "rate": 0.715,
+        "total": 200,
+        "wilson_95": [
+          0.6488465397039482,
+          0.7730499699538271
+        ]
+      },
+      "process": {
+        "artifact_fail_stage": {
+          "hidden": 13,
+          "isolation": 1,
+          "public": 19
+        },
+        "artifact_level_failures": 33,
+        "empty_tve": 0,
+        "freeze_preflight_blocked": 24,
+        "missing_submission": 0,
+        "step_limited": 18,
+        "step_limited_but_pass": 12,
+        "tve_returncode_86": 141,
+        "tve_returncode_86_but_pass": 114,
+        "wall_timeout": 0,
+        "wall_timeout_but_pass": 0
+      },
+      "rres_pass_only": {
+        "by_stratum_median": {
+          "hard50": 0.218731,
+          "python150": 1.0
+        },
+        "copied_fraction_median": 0.948949,
+        "median": 0.927288,
+        "n": 143
+      },
+      "strict_run_passed": 17
+    },
+    "gpt_5_6_luna_openlux": {
+      "by_entanglement_level": {
+        "high": {
+          "passed": 132,
+          "pct": 66.0,
+          "rate": 0.66,
+          "total": 200,
+          "wilson_95": [
+            0.5918849552683626,
+            0.7220845402909121
+          ]
+        }
+      },
+      "by_lift_type": {
+        "Adapted": {
+          "passed": 69,
+          "pct": 69.0,
+          "rate": 0.69,
+          "total": 100,
+          "wilson_95": [
+            0.5937394428051057,
+            0.7722030278762395
+          ]
+        },
+        "Composite": {
+          "passed": 16,
+          "pct": 50.0,
+          "rate": 0.5,
+          "total": 32,
+          "wilson_95": [
+            0.33630882869327483,
+            0.6636911713067252
+          ]
+        },
+        "Direct": {
+          "passed": 47,
+          "pct": 69.1,
+          "rate": 0.6911764705882353,
+          "total": 68,
+          "wilson_95": [
+            0.5736318830649045,
+            0.7882761353244803
+          ]
+        }
+      },
+      "by_stratum": {
+        "hard50": {
+          "passed": 42,
+          "pct": 84.0,
+          "rate": 0.84,
+          "total": 50,
+          "wilson_95": [
+            0.7148578393696501,
+            0.916625793219666
+          ]
+        },
+        "python150": {
+          "passed": 90,
+          "pct": 60.0,
+          "rate": 0.6,
+          "total": 150,
+          "wilson_95": [
+            0.52004915848891,
+            0.6749567926374747
+          ]
+        }
+      },
+      "eligible": {
+        "passed": 132,
+        "pct": 75.0,
+        "rate": 0.75,
+        "total": 176,
+        "wilson_95": [
+          0.6811495957232009,
+          0.8081702784429553
+        ]
+      },
+      "eligible_by_stratum": {
+        "hard50": {
+          "passed": 42,
+          "pct": 84.0,
+          "rate": 0.84,
+          "total": 50,
+          "wilson_95": [
+            0.7148578393696501,
+            0.916625793219666
+          ]
+        },
+        "python150": {
+          "passed": 90,
+          "pct": 71.4,
+          "rate": 0.7142857142857143,
+          "total": 126,
+          "wilson_95": [
+            0.6299837099284312,
+            0.7859081052934836
+          ]
+        }
+      },
+      "failure_stage": {
+        "build": 3,
+        "freeze_preflight_blocked": 24,
+        "hidden": 14,
+        "isolation": 0,
+        "missing_submission": 0,
+        "other": 0,
+        "pass": 132,
+        "public": 27
+      },
+      "failure_stage_share": {
+        "build": 0.015,
+        "freeze_preflight_blocked": 0.12,
+        "hidden": 0.07,
+        "isolation": 0.0,
+        "missing_submission": 0.0,
+        "other": 0.0,
+        "pass": 0.66,
+        "public": 0.135
+      },
+      "n": 200,
+      "overall": {
+        "passed": 132,
+        "pct": 66.0,
+        "rate": 0.66,
+        "total": 200,
+        "wilson_95": [
+          0.5918849552683626,
+          0.7220845402909121
+        ]
+      },
+      "process": {
+        "artifact_fail_stage": {
+          "build": 3,
+          "hidden": 14,
+          "public": 27
+        },
+        "artifact_level_failures": 44,
+        "empty_tve": 0,
+        "freeze_preflight_blocked": 24,
+        "missing_submission": 0,
+        "step_limited": 7,
+        "step_limited_but_pass": 7,
+        "tve_returncode_86": 109,
+        "tve_returncode_86_but_pass": 78,
+        "wall_timeout": 0,
+        "wall_timeout_but_pass": 0
+      },
+      "rres_pass_only": {
+        "by_stratum_median": {
+          "hard50": 0.044218,
+          "python150": 0.8367705
+        },
+        "copied_fraction_median": 0.10269600000000001,
+        "median": 0.3230315,
+        "n": 132
+      },
+      "strict_run_passed": 47
+    },
+    "qwen3_6_35b": {
+      "by_entanglement_level": {
+        "high": {
+          "passed": 80,
+          "pct": 40.0,
+          "rate": 0.4,
+          "total": 200,
+          "wilson_95": [
+            0.33460578566807336,
+            0.46916327960737997
+          ]
+        }
+      },
+      "by_lift_type": {
+        "Adapted": {
+          "passed": 38,
+          "pct": 38.0,
+          "rate": 0.38,
+          "total": 100,
+          "wilson_95": [
+            0.29097599252478734,
+            0.47790244704488916
+          ]
+        },
+        "Composite": {
+          "passed": 8,
+          "pct": 25.0,
+          "rate": 0.25,
+          "total": 32,
+          "wilson_95": [
+            0.1325240091850904,
+            0.4210655899424448
+          ]
+        },
+        "Direct": {
+          "passed": 34,
+          "pct": 50.0,
+          "rate": 0.5,
+          "total": 68,
+          "wilson_95": [
+            0.38438064984606757,
+            0.6156193501539324
+          ]
+        }
+      },
+      "by_stratum": {
+        "hard50": {
+          "passed": 23,
+          "pct": 46.0,
+          "rate": 0.46,
+          "total": 50,
+          "wilson_95": [
+            0.3296965219222435,
+            0.5960112860084253
+          ]
+        },
+        "python150": {
+          "passed": 57,
+          "pct": 38.0,
+          "rate": 0.38,
+          "total": 150,
+          "wilson_95": [
+            0.3062372724644591,
+            0.45975558618387935
+          ]
+        }
+      },
+      "eligible": {
+        "passed": 80,
+        "pct": 45.5,
+        "rate": 0.45454545454545453,
+        "total": 176,
+        "wilson_95": [
+          0.3827367566911308,
+          0.5282959934604772
+        ]
+      },
+      "eligible_by_stratum": {
+        "hard50": {
+          "passed": 23,
+          "pct": 46.0,
+          "rate": 0.46,
+          "total": 50,
+          "wilson_95": [
+            0.3296965219222435,
+            0.5960112860084253
+          ]
+        },
+        "python150": {
+          "passed": 57,
+          "pct": 45.2,
+          "rate": 0.4523809523809524,
+          "total": 126,
+          "wilson_95": [
+            0.36816656509433465,
+            0.5394130315230174
+          ]
+        }
+      },
+      "failure_stage": {
+        "build": 5,
+        "freeze_preflight_blocked": 24,
+        "hidden": 23,
+        "isolation": 0,
+        "missing_submission": 28,
+        "other": 0,
+        "pass": 80,
+        "public": 40
+      },
+      "failure_stage_share": {
+        "build": 0.025,
+        "freeze_preflight_blocked": 0.12,
+        "hidden": 0.115,
+        "isolation": 0.0,
+        "missing_submission": 0.14,
+        "other": 0.0,
+        "pass": 0.4,
+        "public": 0.2
+      },
+      "n": 200,
+      "overall": {
+        "passed": 80,
+        "pct": 40.0,
+        "rate": 0.4,
+        "total": 200,
+        "wilson_95": [
+          0.33460578566807336,
+          0.46916327960737997
+        ]
+      },
+      "process": {
+        "artifact_fail_stage": {
+          "build": 5,
+          "hidden": 23,
+          "public": 40
+        },
+        "artifact_level_failures": 68,
+        "empty_tve": 28,
+        "freeze_preflight_blocked": 24,
+        "missing_submission": 28,
+        "step_limited": 17,
+        "step_limited_but_pass": 4,
+        "tve_returncode_86": 110,
+        "tve_returncode_86_but_pass": 43,
+        "wall_timeout": 3,
+        "wall_timeout_but_pass": 1
+      },
+      "rres_pass_only": {
+        "by_stratum_median": {
+          "hard50": 0.103947,
+          "python150": 0.988074
+        },
+        "copied_fraction_median": 0.519248,
+        "median": 0.7276644999999999,
+        "n": 80
+      },
+      "strict_run_passed": 32
+    }
+  },
+  "rres_paired_triple_pass": {
+    "median": {
+      "deepseek_v4_flash": 0.947654,
+      "gpt_5_6_luna_openlux": 0.462401,
+      "qwen3_6_35b": 0.7738025
+    },
+    "n": 68
+  }
+}

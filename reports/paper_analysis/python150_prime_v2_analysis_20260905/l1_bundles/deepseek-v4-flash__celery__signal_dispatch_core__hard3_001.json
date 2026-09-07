@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "celery__signal_dispatch_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Signal",
+    "method:featurelifted.Signal.connect",
+    "method:featurelifted.Signal.send"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When connect registers a receiver, dispatch invokes it once unless dispatch_uid intentionally deduplicates the registration."
+    },
+    {
+      "id": "B002",
+      "text": "When a receiver is registered for a sender, dispatch invokes it only for matching sender values while sender-agnostic receivers still run."
+    },
+    {
+      "id": "B003",
+      "text": "When a signal is dispatched, the returned list preserves receiver order and pairs each receiver with its response or captured exception."
+    },
+    {
+      "id": "B004",
+      "text": "When a weakly referenced receiver is garbage-collected, later dispatches omit and clean up that dead receiver."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.Signal`, `featurelifted.Signal.connect`, `featurelifted.Signal.send` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: celery"
+    }
+  ],
+  "log": "        assert callable(receiver), 'Signal receivers must be callable'\n>           raise ValueError(\nE           ValueError: Signal receiver must accept keyword arguments.\nsubmission-runtime/featurelifted/__init__.py:124: ValueError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:1\n\"\"\"Signal registry and receiver dispatch.\n\nA self-contained implementation of the observer pattern, relying only on the\nPython standard library.\n\"\"\"\n\nimport inspect\nimport sys\nimport threading\nimport weakref\nfrom weakref import WeakMethod\n\n__all__ = ('Signal',)\n\n__version__ = '0.0.1'\n\n\ndef _make_id(target):\n\n## featurelifted/__init__.py:13\n\n__all__ = ('Signal',)\n\n__version__ = '0.0.1'\n\n\ndef _make_id(target):\n    if isinstance(target, (bytes, str)):\n        # see Issue #2475\n        return target\n    if hasattr(target, '__func__'):\n        return id(target.__func__)\n    return id(target)\n\n\ndef _boundmethod_safe_weakref(obj):\n    \"\"\"Get a weakref constructor appropriate for `obj`.\n\n    Bound method objects must be special-cased because they are usually\n\n## featurelifted/__init__.py:49\n\ndef _make_lookup_key(receiver, sender, dispatch_uid):\n    if dispatch_uid:\n        return (dispatch_uid, _make_id(sender))\n    # Retry-wrapped functions use the underlying function for dispatch_uid.\n    elif hasattr(receiver, '_dispatch_uid'):\n        return (receiver._dispatch_uid, _make_id(sender))\n    else:\n        return (_make_id(receiver), _make_id(sender))\n\n\ndef _fun_accepts_kwargs(fun):\n    \"\"\"Return true if the callable accepts arbitrary keyword arguments.\"\"\"\n    code = getattr(fun, '__code__', None)\n    if code is not None:\n        return bool(code.co_flags & inspect.CO_VARKEYWORDS)\n    return any(\n        p for p in inspect.signature(fun).parameters.values()\n        if p.kind == p.VAR_KEYWORD\n\n## featurelifted/__init__.py:51\n    if dispatch_uid:\n        return (dispatch_uid, _make_id(sender))\n    # Retry-wrapped functions use the underlying function for dispatch_uid.\n    elif hasattr(receiver, '_dispatch_uid'):\n        return (receiver._dispatch_uid, _make_id(sender))\n    else:\n        return (_make_id(receiver), _make_id(sender))\n\n\ndef _fun_accepts_kwargs(fun):\n    \"\"\"Return true if the callable accepts arbitrary keyword arguments.\"\"\"\n    code = getattr(fun, '__code__', None)\n    if code is not None:\n        return bool(code.co_flags & inspect.CO_VARKEYWORDS)\n    return any(\n        p for p in inspect.signature(fun).parameters.values()\n        if p.kind == p.VAR_KEYWORD\n    )\n"
+}

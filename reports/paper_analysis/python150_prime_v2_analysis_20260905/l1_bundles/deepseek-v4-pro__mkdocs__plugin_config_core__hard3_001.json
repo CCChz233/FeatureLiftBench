@@ -1,0 +1,43 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "mkdocs__plugin_config_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.PluginConfig",
+    "class:featurelifted.PluginCollection",
+    "method:featurelifted.PluginCollection.load",
+    "attribute:featurelifted.PluginCollection.names",
+    "method:featurelifted.PluginCollection.run_event",
+    "function:featurelifted.validate_plugin_config"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`validate_plugin_config` reports missing, mistyped, and unexpected options."
+    },
+    {
+      "id": "B002",
+      "text": "`PluginCollection.load` skips disabled plugins and registers hooks."
+    },
+    {
+      "id": "B003",
+      "text": "`run_event` invokes hooks in ascending priority order."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.PluginConfig`, `featurelifted.PluginCollection`, `featurelifted.PluginCollection.load`, `featurelifted.PluginCollection.names`, `featurelifted.PluginCollection.run_event`, `featurelifted.validate_plugin_config` with t"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: mkdocs"
+    }
+  ],
+  "log": ">       assert collection.run_event(\"on_config\") == [\"b\", \"a\"]\nE       AssertionError: assert [] == ['b', 'a']\nE         Right contains 2 more items, first extra item: 'b'\nE         Use -v to get more diff\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:15: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:1\n\"\"\"Plugin configuration loading and event dispatch.\n\nA small, self-contained subset of the MkDocs plugin machinery, exposing:\n\n* :class:`PluginConfig` -- a declarative description of one plugin.\n* :func:`validate_plugin_config` -- validates a plugin's options against a schema.\n* :class:`PluginCollection` -- loads enabled plugins and dispatches events to\n  their hooks in ascending priority order.\n\nA plugin is supplied to :meth:`PluginCollection.load` through a *hook registry*:\na mapping of plugin name to a callable (typically the plugin's class, or any\nfactory) that returns a plugin object.  The plugin object exposes its hooks as\nmethods whose names start with ``on_``; the remaining suffix is the event name.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\n\n## featurelifted/__init__.py:5\n\n* :class:`PluginConfig` -- a declarative description of one plugin.\n* :func:`validate_plugin_config` -- validates a plugin's options against a schema.\n* :class:`PluginCollection` -- loads enabled plugins and dispatches events to\n  their hooks in ascending priority order.\n\nA plugin is supplied to :meth:`PluginCollection.load` through a *hook registry*:\na mapping of plugin name to a callable (typically the plugin's class, or any\nfactory) that returns a plugin object.  The plugin object exposes its hooks as\nmethods whose names start with ``on_``; the remaining suffix is the event name.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable\n\n__all__ = [\"PluginConfig\", \"PluginCollection\", \"validate_plugin_config\"]\n\n\n## featurelifted/__init__.py:6\n* :class:`PluginConfig` -- a declarative description of one plugin.\n* :func:`validate_plugin_config` -- validates a plugin's options against a schema.\n* :class:`PluginCollection` -- loads enabled plugins and dispatches events to\n  their hooks in ascending priority order.\n\nA plugin is supplied to :meth:`PluginCollection.load` through a *hook registry*:\na mapping of plugin name to a callable (typically the plugin's class, or any\nfactory) that returns a plugin object.  The plugin object exposes its hooks as\nmethods whose names start with ``on_``; the remaining suffix is the event name.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable\n\n__all__ = [\"PluginConfig\", \"PluginCollection\", \"validate_plugin_config\"]\n\n\n\n## featurelifted/__init__.py:7\n* :func:`validate_plugin_config` -- validates a plugin's options against a schema.\n* :class:`PluginCollection` -- loads enabled plugins and dispatches events to\n  their hooks in ascending priority order.\n\nA plugin is supplied to :meth:`PluginCollection.load` through a *hook registry*:\na mapping of plugin name to a callable (typically the plugin's class, or any\nfactory) that returns a plugin object.  The plugin object exposes its hooks as\nmethods whose names start with ``on_``; the remaining suffix is the event name.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass, field\nfrom typing import Any, Callable\n\n__all__ = [\"PluginConfig\", \"PluginCollection\", \"validate_plugin_config\"]\n\n\n@dataclass"
+}

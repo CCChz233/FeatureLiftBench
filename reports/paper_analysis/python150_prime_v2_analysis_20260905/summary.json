@@ -1,0 +1,3097 @@
+{
+  "scope": "Python-150 only from python200-prime-v2-main-r1",
+  "n": 150,
+  "freeze_campaign": "python200-prime-v2-main-r1",
+  "functional_pass_definition": "build ∧ public ∧ hidden ∧ isolation",
+  "empty_definition": "no files under submission/ (unusable deliverable)",
+  "glm_excluded": false,
+  "eligibility": {
+    "deepseek-v4-pro": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 150,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 150
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    },
+    "deepseek-v4-flash": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 150,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 24,
+        "0b106842710368a4": 126
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    },
+    "gpt-5.6-luna": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 149,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 24,
+        "0b106842710368a4": 126
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    },
+    "glm-5.3-flash": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 115,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 150
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    },
+    "qwen3.6-35b-a3b-fp8": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 125,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 24,
+        "0b106842710368a4": 126
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    },
+    "gpt-oss-120b": {
+      "n_tasks": 150,
+      "has_run_json": 150,
+      "has_result_json": 149,
+      "freeze_prefix_counts": {
+        "6c20ff0307762503": 150
+      },
+      "agent_image_matches_212930ea": 150,
+      "note": "24 freeze-v2 ids (6c20ff03) + 126 predecessor 150 freeze (0b106842) were merged into python200-prime-v2-main-r1; GPT-OSS is 150× freeze v2."
+    }
+  },
+  "leaderboard": [
+    {
+      "passed": 115,
+      "total": 150,
+      "rate": 0.7666666666666667,
+      "wilson_95": [
+        0.6928421847843321,
+        0.827173684886027
+      ],
+      "display": "115/150 (76.7%)",
+      "wilson_display": "69.3–82.7%",
+      "model": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "empty_unusable_submission": 0,
+      "empty_no_result_json": 0,
+      "core100": {
+        "passed": 94,
+        "total": 100,
+        "rate": 0.94,
+        "wilson_95": [
+          0.8752318455410406,
+          0.9722138760368118
+        ],
+        "display": "94/100 (94.0%)",
+        "wilson_display": "87.5–97.2%"
+      },
+      "hard3": {
+        "passed": 21,
+        "total": 50,
+        "rate": 0.42,
+        "wilson_95": [
+          0.2937500335471198,
+          0.5576655823142176
+        ],
+        "display": "21/50 (42.0%)",
+        "wilson_display": "29.4–55.8%"
+      },
+      "pass_but_run_status_not_passed": 2
+    },
+    {
+      "passed": 108,
+      "total": 150,
+      "rate": 0.72,
+      "wilson_95": [
+        0.643343498954437,
+        0.7856695935236092
+      ],
+      "display": "108/150 (72.0%)",
+      "wilson_display": "64.3–78.6%",
+      "model": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash",
+      "empty_unusable_submission": 0,
+      "empty_no_result_json": 0,
+      "core100": {
+        "passed": 90,
+        "total": 100,
+        "rate": 0.9,
+        "wilson_95": [
+          0.8256343384950865,
+          0.9447708629393249
+        ],
+        "display": "90/100 (90.0%)",
+        "wilson_display": "82.6–94.5%"
+      },
+      "hard3": {
+        "passed": 18,
+        "total": 50,
+        "rate": 0.36,
+        "wilson_95": [
+          0.24138749651846741,
+          0.49858983123887307
+        ],
+        "display": "18/50 (36.0%)",
+        "wilson_display": "24.1–49.9%"
+      },
+      "pass_but_run_status_not_passed": 82
+    },
+    {
+      "passed": 102,
+      "total": 150,
+      "rate": 0.68,
+      "wilson_95": [
+        0.6016560026038712,
+        0.7493547094236214
+      ],
+      "display": "102/150 (68.0%)",
+      "wilson_display": "60.2–74.9%",
+      "model": "gpt-5.6-luna",
+      "label": "gpt-5.6-luna (OpenLux)",
+      "empty_unusable_submission": 6,
+      "empty_no_result_json": 1,
+      "core100": {
+        "passed": 82,
+        "total": 100,
+        "rate": 0.82,
+        "wilson_95": [
+          0.7333264161369926,
+          0.8829977450105364
+        ],
+        "display": "82/100 (82.0%)",
+        "wilson_display": "73.3–88.3%"
+      },
+      "hard3": {
+        "passed": 20,
+        "total": 50,
+        "rate": 0.4,
+        "wilson_95": [
+          0.27608389730256544,
+          0.5381856225241064
+        ],
+        "display": "20/50 (40.0%)",
+        "wilson_display": "27.6–53.8%"
+      },
+      "pass_but_run_status_not_passed": 54
+    },
+    {
+      "passed": 68,
+      "total": 150,
+      "rate": 0.4533333333333333,
+      "wilson_95": [
+        0.375824986079277,
+        0.5331722367284102
+      ],
+      "display": "68/150 (45.3%)",
+      "wilson_display": "37.6–53.3%",
+      "model": "glm-5.3-flash",
+      "label": "GLM-5.3-Flash",
+      "empty_unusable_submission": 38,
+      "empty_no_result_json": 35,
+      "core100": {
+        "passed": 62,
+        "total": 100,
+        "rate": 0.62,
+        "wilson_95": [
+          0.5220975529551107,
+          0.7090240074752127
+        ],
+        "display": "62/100 (62.0%)",
+        "wilson_display": "52.2–70.9%"
+      },
+      "hard3": {
+        "passed": 6,
+        "total": 50,
+        "rate": 0.12,
+        "wilson_95": [
+          0.05617600150932274,
+          0.23804817383202992
+        ],
+        "display": "6/50 (12.0%)",
+        "wilson_display": "5.6–23.8%"
+      },
+      "pass_but_run_status_not_passed": 23
+    },
+    {
+      "passed": 63,
+      "total": 150,
+      "rate": 0.42,
+      "wilson_95": [
+        0.3439800445299174,
+        0.5000151945689748
+      ],
+      "display": "63/150 (42.0%)",
+      "wilson_display": "34.4–50.0%",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "label": "Qwen3.6-35B-A3B-FP8",
+      "empty_unusable_submission": 25,
+      "empty_no_result_json": 25,
+      "core100": {
+        "passed": 55,
+        "total": 100,
+        "rate": 0.55,
+        "wilson_95": [
+          0.45244602997442135,
+          0.6438546202048803
+        ],
+        "display": "55/100 (55.0%)",
+        "wilson_display": "45.2–64.4%"
+      },
+      "hard3": {
+        "passed": 8,
+        "total": 50,
+        "rate": 0.16,
+        "wilson_95": [
+          0.08337420678033404,
+          0.2851421606303499
+        ],
+        "display": "8/50 (16.0%)",
+        "wilson_display": "8.3–28.5%"
+      },
+      "pass_but_run_status_not_passed": 25
+    },
+    {
+      "passed": 36,
+      "total": 150,
+      "rate": 0.24,
+      "wilson_95": [
+        0.17869313331595332,
+        0.31429139375544646
+      ],
+      "display": "36/150 (24.0%)",
+      "wilson_display": "17.9–31.4%",
+      "model": "gpt-oss-120b",
+      "label": "GPT-OSS 120B",
+      "empty_unusable_submission": 2,
+      "empty_no_result_json": 1,
+      "core100": {
+        "passed": 25,
+        "total": 100,
+        "rate": 0.25,
+        "wilson_95": [
+          0.17545211362287672,
+          0.34304463548061603
+        ],
+        "display": "25/100 (25.0%)",
+        "wilson_display": "17.5–34.3%"
+      },
+      "hard3": {
+        "passed": 11,
+        "total": 50,
+        "rate": 0.22,
+        "wilson_95": [
+          0.1275391597021442,
+          0.3524154958125367
+        ],
+        "display": "11/50 (22.0%)",
+        "wilson_display": "12.8–35.2%"
+      },
+      "pass_but_run_status_not_passed": 0
+    }
+  ],
+  "funnel": [
+    {
+      "model": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "missing_submission": 0,
+      "build_failure": 0,
+      "public_failure": 25,
+      "hidden_failure": 10,
+      "isolation_failure": 0,
+      "functional_pass": 115,
+      "other": 0
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash",
+      "missing_submission": 0,
+      "build_failure": 0,
+      "public_failure": 26,
+      "hidden_failure": 15,
+      "isolation_failure": 1,
+      "functional_pass": 108,
+      "other": 0
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "label": "gpt-5.6-luna (OpenLux)",
+      "missing_submission": 6,
+      "build_failure": 3,
+      "public_failure": 27,
+      "hidden_failure": 12,
+      "isolation_failure": 0,
+      "functional_pass": 102,
+      "other": 0
+    },
+    {
+      "model": "glm-5.3-flash",
+      "label": "GLM-5.3-Flash",
+      "missing_submission": 38,
+      "build_failure": 3,
+      "public_failure": 31,
+      "hidden_failure": 8,
+      "isolation_failure": 2,
+      "functional_pass": 68,
+      "other": 0
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "label": "Qwen3.6-35B-A3B-FP8",
+      "missing_submission": 25,
+      "build_failure": 6,
+      "public_failure": 35,
+      "hidden_failure": 21,
+      "isolation_failure": 0,
+      "functional_pass": 63,
+      "other": 0
+    },
+    {
+      "model": "gpt-oss-120b",
+      "label": "GPT-OSS 120B",
+      "missing_submission": 2,
+      "build_failure": 18,
+      "public_failure": 70,
+      "hidden_failure": 23,
+      "isolation_failure": 1,
+      "functional_pass": 36,
+      "other": 0
+    }
+  ],
+  "process": [
+    {
+      "model": "deepseek-v4-pro",
+      "empty_unusable": 0,
+      "empty_tve_or_encrypted": 0,
+      "infra_error_json_any": 74,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 0,
+      "timeout_any": 0,
+      "context_violation": 28,
+      "artifact_fail_5_3_denominator": 35,
+      "pass_with_nonpassed_run_status": 2,
+      "api_calls_median": 43.0,
+      "api_calls_p90": 82.1,
+      "assistant_steps_median": 41.5,
+      "duration_seconds_median": 478.495819
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "empty_unusable": 0,
+      "empty_tve_or_encrypted": 0,
+      "infra_error_json_any": 133,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 0,
+      "timeout_any": 0,
+      "context_violation": 69,
+      "artifact_fail_5_3_denominator": 42,
+      "pass_with_nonpassed_run_status": 82,
+      "api_calls_median": 65.0,
+      "api_calls_p90": 119.1,
+      "assistant_steps_median": 63.0,
+      "duration_seconds_median": 469.0483605
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "empty_unusable": 6,
+      "empty_tve_or_encrypted": 5,
+      "infra_error_json_any": 136,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 2,
+      "timeout_any": 0,
+      "context_violation": 0,
+      "artifact_fail_5_3_denominator": 42,
+      "pass_with_nonpassed_run_status": 54,
+      "api_calls_median": 29.0,
+      "api_calls_p90": 72.1,
+      "assistant_steps_median": 35.5,
+      "duration_seconds_median": 480.916649
+    },
+    {
+      "model": "glm-5.3-flash",
+      "empty_unusable": 38,
+      "empty_tve_or_encrypted": 1,
+      "infra_error_json_any": 30,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 0,
+      "timeout_any": 20,
+      "context_violation": 0,
+      "artifact_fail_5_3_denominator": 44,
+      "pass_with_nonpassed_run_status": 23,
+      "api_calls_median": 84.0,
+      "api_calls_p90": 131.0,
+      "assistant_steps_median": 85.5,
+      "duration_seconds_median": 1269.9193344999999
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "empty_unusable": 25,
+      "empty_tve_or_encrypted": 25,
+      "infra_error_json_any": 150,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 0,
+      "timeout_any": 4,
+      "context_violation": 5,
+      "artifact_fail_5_3_denominator": 62,
+      "pass_with_nonpassed_run_status": 25,
+      "api_calls_median": 51.0,
+      "api_calls_p90": 141.69999999999996,
+      "assistant_steps_median": 41.5,
+      "duration_seconds_median": 789.1215030000001
+    },
+    {
+      "model": "gpt-oss-120b",
+      "empty_unusable": 2,
+      "empty_tve_or_encrypted": 2,
+      "infra_error_json_any": 143,
+      "note": "infra_error_json_any includes recovered tool-schema hiccups; only empty_unusable is a process non-delivery for 5.2.1.",
+      "invalid_encrypted_empty": 0,
+      "timeout_any": 1,
+      "context_violation": 0,
+      "artifact_fail_5_3_denominator": 112,
+      "pass_with_nonpassed_run_status": 0,
+      "api_calls_median": 24.0,
+      "api_calls_p90": 73.1,
+      "assistant_steps_median": 19.0,
+      "duration_seconds_median": 97.331098
+    }
+  ],
+  "token_usage": [
+    {
+      "model": "deepseek-v4-pro",
+      "label": "DeepSeek V4 Pro",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 150,
+      "n_usage_unverified": 0,
+      "n_cache_accounting": 150,
+      "total_tokens_median": 2423898.5,
+      "total_tokens_p90": 6351733.6,
+      "total_tokens_sum": 460515725.0,
+      "total_tokens_median_on_pass": 2243501.0,
+      "completion_tokens_median": 32815.0,
+      "incremental_tokens_median": 88019.5,
+      "api_calls_median": 43.0,
+      "api_calls_p90": 82.1,
+      "assistant_steps_median": 41.5,
+      "duration_seconds_median": 478.495819,
+      "duration_seconds_p90": 1063.0001301999996,
+      "note": "total_tokens sums provider usage across API calls; for Pro/Flash this includes cached prompt tokens. incremental_tokens is uncached prompt + completion when cache accounting exists. Luna/GLM providers returned no token usage (usage_unverified); do not impute."
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 150,
+      "n_usage_unverified": 0,
+      "n_cache_accounting": 150,
+      "total_tokens_median": 4225872.5,
+      "total_tokens_p90": 9682604.099999998,
+      "total_tokens_sum": 753424979.0,
+      "total_tokens_median_on_pass": 4005385.5,
+      "completion_tokens_median": 55819.0,
+      "incremental_tokens_median": 123618.5,
+      "api_calls_median": 65.0,
+      "api_calls_p90": 119.1,
+      "assistant_steps_median": 63.0,
+      "duration_seconds_median": 469.0483605,
+      "duration_seconds_p90": 980.4115496,
+      "note": "total_tokens sums provider usage across API calls; for Pro/Flash this includes cached prompt tokens. incremental_tokens is uncached prompt + completion when cache accounting exists. Luna/GLM providers returned no token usage (usage_unverified); do not impute."
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "label": "gpt-5.6-luna (OpenLux)",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 0,
+      "n_usage_unverified": 150,
+      "n_cache_accounting": 0,
+      "total_tokens_median": null,
+      "total_tokens_p90": null,
+      "total_tokens_sum": null,
+      "total_tokens_median_on_pass": null,
+      "completion_tokens_median": null,
+      "incremental_tokens_median": null,
+      "api_calls_median": 29.0,
+      "api_calls_p90": 72.1,
+      "assistant_steps_median": 35.5,
+      "duration_seconds_median": 480.916649,
+      "duration_seconds_p90": 1123.3546539,
+      "note": "Provider responses had no token usage fields (context_audit.usage_unverified). API calls, steps, and duration are recorded; token totals are missing."
+    },
+    {
+      "model": "glm-5.3-flash",
+      "label": "GLM-5.3-Flash",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 0,
+      "n_usage_unverified": 150,
+      "n_cache_accounting": 0,
+      "total_tokens_median": null,
+      "total_tokens_p90": null,
+      "total_tokens_sum": null,
+      "total_tokens_median_on_pass": null,
+      "completion_tokens_median": null,
+      "incremental_tokens_median": null,
+      "api_calls_median": 84.0,
+      "api_calls_p90": 131.0,
+      "assistant_steps_median": 85.5,
+      "duration_seconds_median": 1269.9193344999999,
+      "duration_seconds_p90": 3590.3333354000006,
+      "note": "Provider responses had no token usage fields (context_audit.usage_unverified). API calls, steps, and duration are recorded; token totals are missing."
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "label": "Qwen3.6-35B-A3B-FP8",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 150,
+      "n_usage_unverified": 0,
+      "n_cache_accounting": 0,
+      "total_tokens_median": 1818623.0,
+      "total_tokens_p90": 5521028.1,
+      "total_tokens_sum": 363075549.0,
+      "total_tokens_median_on_pass": 2127880.0,
+      "completion_tokens_median": 30202.5,
+      "incremental_tokens_median": null,
+      "api_calls_median": 51.0,
+      "api_calls_p90": 141.69999999999996,
+      "assistant_steps_median": 41.5,
+      "duration_seconds_median": 789.1215030000001,
+      "duration_seconds_p90": 2430.897391599999,
+      "note": "total_tokens sums provider usage across API calls; for Pro/Flash this includes cached prompt tokens. incremental_tokens is uncached prompt + completion when cache accounting exists. Luna/GLM providers returned no token usage (usage_unverified); do not impute."
+    },
+    {
+      "model": "gpt-oss-120b",
+      "label": "GPT-OSS 120B",
+      "n_tasks": 150,
+      "n_usage_json": 150,
+      "n_tokens_positive": 150,
+      "n_usage_unverified": 0,
+      "n_cache_accounting": 0,
+      "total_tokens_median": 525960.0,
+      "total_tokens_p90": 1877323.4,
+      "total_tokens_sum": 125741248.0,
+      "total_tokens_median_on_pass": 387166.0,
+      "completion_tokens_median": 12905.5,
+      "incremental_tokens_median": null,
+      "api_calls_median": 24.0,
+      "api_calls_p90": 73.1,
+      "assistant_steps_median": 19.0,
+      "duration_seconds_median": 97.331098,
+      "duration_seconds_p90": 261.38749469999993,
+      "note": "total_tokens sums provider usage across API calls; for Pro/Flash this includes cached prompt tokens. incremental_tokens is uncached prompt + completion when cache accounting exists. Luna/GLM providers returned no token usage (usage_unverified); do not impute."
+    }
+  ],
+  "pairwise_mcnemar": [
+    {
+      "n10": 10,
+      "n01": 3,
+      "discordant": 13,
+      "p_exact": 0.09228515625,
+      "a": "deepseek-v4-pro",
+      "b": "deepseek-v4-flash"
+    },
+    {
+      "n10": 18,
+      "n01": 5,
+      "discordant": 23,
+      "p_exact": 0.010622024536132812,
+      "a": "deepseek-v4-pro",
+      "b": "gpt-5.6-luna"
+    },
+    {
+      "n10": 48,
+      "n01": 1,
+      "discordant": 49,
+      "p_exact": 1.7763568394002505e-13,
+      "a": "deepseek-v4-pro",
+      "b": "glm-5.3-flash"
+    },
+    {
+      "n10": 52,
+      "n01": 0,
+      "discordant": 52,
+      "p_exact": 4.440892098500626e-16,
+      "a": "deepseek-v4-pro",
+      "b": "qwen3.6-35b-a3b-fp8"
+    },
+    {
+      "n10": 82,
+      "n01": 3,
+      "discordant": 85,
+      "p_exact": 5.295300088834776e-21,
+      "a": "deepseek-v4-pro",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n10": 16,
+      "n01": 10,
+      "discordant": 26,
+      "p_exact": 0.32693958282470703,
+      "a": "deepseek-v4-flash",
+      "b": "gpt-5.6-luna"
+    },
+    {
+      "n10": 44,
+      "n01": 4,
+      "discordant": 48,
+      "p_exact": 1.5138326148189662e-09,
+      "a": "deepseek-v4-flash",
+      "b": "glm-5.3-flash"
+    },
+    {
+      "n10": 47,
+      "n01": 2,
+      "discordant": 49,
+      "p_exact": 4.355626970209414e-12,
+      "a": "deepseek-v4-flash",
+      "b": "qwen3.6-35b-a3b-fp8"
+    },
+    {
+      "n10": 73,
+      "n01": 1,
+      "discordant": 74,
+      "p_exact": 7.940933880509066e-21,
+      "a": "deepseek-v4-flash",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n10": 43,
+      "n01": 9,
+      "discordant": 52,
+      "p_exact": 2.0377698612961126e-06,
+      "a": "gpt-5.6-luna",
+      "b": "glm-5.3-flash"
+    },
+    {
+      "n10": 45,
+      "n01": 6,
+      "discordant": 51,
+      "p_exact": 1.8323628836469652e-08,
+      "a": "gpt-5.6-luna",
+      "b": "qwen3.6-35b-a3b-fp8"
+    },
+    {
+      "n10": 69,
+      "n01": 3,
+      "discordant": 72,
+      "p_exact": 2.6371947296289014e-17,
+      "a": "gpt-5.6-luna",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n10": 27,
+      "n01": 22,
+      "discordant": 49,
+      "p_exact": 0.5681724128491652,
+      "a": "glm-5.3-flash",
+      "b": "qwen3.6-35b-a3b-fp8"
+    },
+    {
+      "n10": 44,
+      "n01": 12,
+      "discordant": 56,
+      "p_exact": 2.0876568218419767e-05,
+      "a": "glm-5.3-flash",
+      "b": "gpt-oss-120b"
+    },
+    {
+      "n10": 38,
+      "n01": 11,
+      "discordant": 49,
+      "p_exact": 0.00014197068519905542,
+      "a": "qwen3.6-35b-a3b-fp8",
+      "b": "gpt-oss-120b"
+    }
+  ],
+  "solve_count": {
+    "0": 28,
+    "1": 7,
+    "2": 9,
+    "3": 22,
+    "4": 36,
+    "5": 31,
+    "6": 17
+  },
+  "by_lift_type": {
+    "deepseek-v4-pro": [
+      {
+        "passed": 55,
+        "total": 76,
+        "rate": 0.7236842105263158,
+        "wilson_95": [
+          0.6142463460107743,
+          0.8115975764600853
+        ],
+        "display": "55/76 (72.4%)",
+        "wilson_display": "61.4–81.2%",
+        "group": "Adapted",
+        "empty": 0,
+        "n_nonempty": 76
+      },
+      {
+        "passed": 51,
+        "total": 56,
+        "rate": 0.9107142857142857,
+        "wilson_95": [
+          0.8074399861448884,
+          0.9612578515504131
+        ],
+        "display": "51/56 (91.1%)",
+        "wilson_display": "80.7–96.1%",
+        "group": "Direct",
+        "empty": 0,
+        "n_nonempty": 56
+      },
+      {
+        "passed": 9,
+        "total": 18,
+        "rate": 0.5,
+        "wilson_95": [
+          0.29031021505169974,
+          0.7096897849483003
+        ],
+        "display": "9/18 (50.0%)",
+        "wilson_display": "29.0–71.0%",
+        "group": "Composite",
+        "empty": 0,
+        "n_nonempty": 18
+      }
+    ],
+    "deepseek-v4-flash": [
+      {
+        "passed": 51,
+        "total": 76,
+        "rate": 0.6710526315789473,
+        "wilson_95": [
+          0.5594380888358765,
+          0.7662072636418396
+        ],
+        "display": "51/76 (67.1%)",
+        "wilson_display": "55.9–76.6%",
+        "group": "Adapted",
+        "empty": 0,
+        "n_nonempty": 76
+      },
+      {
+        "passed": 50,
+        "total": 56,
+        "rate": 0.8928571428571429,
+        "wilson_95": [
+          0.7853155482892853,
+          0.9499606442888293
+        ],
+        "display": "50/56 (89.3%)",
+        "wilson_display": "78.5–95.0%",
+        "group": "Direct",
+        "empty": 0,
+        "n_nonempty": 56
+      },
+      {
+        "passed": 7,
+        "total": 18,
+        "rate": 0.3888888888888889,
+        "wilson_95": [
+          0.2030524657216362,
+          0.613809583977621
+        ],
+        "display": "7/18 (38.9%)",
+        "wilson_display": "20.3–61.4%",
+        "group": "Composite",
+        "empty": 0,
+        "n_nonempty": 18
+      }
+    ],
+    "gpt-5.6-luna": [
+      {
+        "passed": 50,
+        "total": 76,
+        "rate": 0.6578947368421053,
+        "wilson_95": [
+          0.5459589781543774,
+          0.7546367318250531
+        ],
+        "display": "50/76 (65.8%)",
+        "wilson_display": "54.6–75.5%",
+        "group": "Adapted",
+        "empty": 2,
+        "n_nonempty": 74
+      },
+      {
+        "passed": 45,
+        "total": 56,
+        "rate": 0.8035714285714286,
+        "wilson_95": [
+          0.681553923735416,
+          0.8866140432567635
+        ],
+        "display": "45/56 (80.4%)",
+        "wilson_display": "68.2–88.7%",
+        "group": "Direct",
+        "empty": 2,
+        "n_nonempty": 54
+      },
+      {
+        "passed": 7,
+        "total": 18,
+        "rate": 0.3888888888888889,
+        "wilson_95": [
+          0.2030524657216362,
+          0.613809583977621
+        ],
+        "display": "7/18 (38.9%)",
+        "wilson_display": "20.3–61.4%",
+        "group": "Composite",
+        "empty": 2,
+        "n_nonempty": 16
+      }
+    ],
+    "glm-5.3-flash": [
+      {
+        "passed": 24,
+        "total": 76,
+        "rate": 0.3157894736842105,
+        "wilson_95": [
+          0.22230854157063415,
+          0.42699646345336384
+        ],
+        "display": "24/76 (31.6%)",
+        "wilson_display": "22.2–42.7%",
+        "group": "Adapted",
+        "empty": 27,
+        "n_nonempty": 49
+      },
+      {
+        "passed": 40,
+        "total": 56,
+        "rate": 0.7142857142857143,
+        "wilson_95": [
+          0.5852474928448334,
+          0.8158122485614109
+        ],
+        "display": "40/56 (71.4%)",
+        "wilson_display": "58.5–81.6%",
+        "group": "Direct",
+        "empty": 8,
+        "n_nonempty": 48
+      },
+      {
+        "passed": 4,
+        "total": 18,
+        "rate": 0.2222222222222222,
+        "wilson_95": [
+          0.09000928108601694,
+          0.45214584316212625
+        ],
+        "display": "4/18 (22.2%)",
+        "wilson_display": "9.0–45.2%",
+        "group": "Composite",
+        "empty": 3,
+        "n_nonempty": 15
+      }
+    ],
+    "qwen3.6-35b-a3b-fp8": [
+      {
+        "passed": 27,
+        "total": 76,
+        "rate": 0.35526315789473684,
+        "wilson_95": [
+          0.2570177876603489,
+          0.4674361448585067
+        ],
+        "display": "27/76 (35.5%)",
+        "wilson_display": "25.7–46.7%",
+        "group": "Adapted",
+        "empty": 16,
+        "n_nonempty": 60
+      },
+      {
+        "passed": 31,
+        "total": 56,
+        "rate": 0.5535714285714286,
+        "wilson_95": [
+          0.4241321478993947,
+          0.6761327874521665
+        ],
+        "display": "31/56 (55.4%)",
+        "wilson_display": "42.4–67.6%",
+        "group": "Direct",
+        "empty": 8,
+        "n_nonempty": 48
+      },
+      {
+        "passed": 5,
+        "total": 18,
+        "rate": 0.2777777777777778,
+        "wilson_95": [
+          0.12499753379553993,
+          0.5087265656029746
+        ],
+        "display": "5/18 (27.8%)",
+        "wilson_display": "12.5–50.9%",
+        "group": "Composite",
+        "empty": 1,
+        "n_nonempty": 17
+      }
+    ],
+    "gpt-oss-120b": [
+      {
+        "passed": 16,
+        "total": 76,
+        "rate": 0.21052631578947367,
+        "wilson_95": [
+          0.1339514670987436,
+          0.31495639793896757
+        ],
+        "display": "16/76 (21.1%)",
+        "wilson_display": "13.4–31.5%",
+        "group": "Adapted",
+        "empty": 2,
+        "n_nonempty": 74
+      },
+      {
+        "passed": 16,
+        "total": 56,
+        "rate": 0.2857142857142857,
+        "wilson_95": [
+          0.18418775143858906,
+          0.4147525071551667
+        ],
+        "display": "16/56 (28.6%)",
+        "wilson_display": "18.4–41.5%",
+        "group": "Direct",
+        "empty": 0,
+        "n_nonempty": 56
+      },
+      {
+        "passed": 4,
+        "total": 18,
+        "rate": 0.2222222222222222,
+        "wilson_95": [
+          0.09000928108601694,
+          0.45214584316212625
+        ],
+        "display": "4/18 (22.2%)",
+        "wilson_display": "9.0–45.2%",
+        "group": "Composite",
+        "empty": 0,
+        "n_nonempty": 18
+      }
+    ]
+  },
+  "by_construction": {
+    "deepseek-v4-pro": [
+      {
+        "passed": 94,
+        "total": 100,
+        "rate": 0.94,
+        "wilson_95": [
+          0.8752318455410406,
+          0.9722138760368118
+        ],
+        "display": "94/100 (94.0%)",
+        "wilson_display": "87.5–97.2%",
+        "group": "core100",
+        "empty": 0,
+        "n_nonempty": 100
+      },
+      {
+        "passed": 21,
+        "total": 50,
+        "rate": 0.42,
+        "wilson_95": [
+          0.2937500335471198,
+          0.5576655823142176
+        ],
+        "display": "21/50 (42.0%)",
+        "wilson_display": "29.4–55.8%",
+        "group": "hard50",
+        "empty": 0,
+        "n_nonempty": 50
+      }
+    ],
+    "deepseek-v4-flash": [
+      {
+        "passed": 90,
+        "total": 100,
+        "rate": 0.9,
+        "wilson_95": [
+          0.8256343384950865,
+          0.9447708629393249
+        ],
+        "display": "90/100 (90.0%)",
+        "wilson_display": "82.6–94.5%",
+        "group": "core100",
+        "empty": 0,
+        "n_nonempty": 100
+      },
+      {
+        "passed": 18,
+        "total": 50,
+        "rate": 0.36,
+        "wilson_95": [
+          0.24138749651846741,
+          0.49858983123887307
+        ],
+        "display": "18/50 (36.0%)",
+        "wilson_display": "24.1–49.9%",
+        "group": "hard50",
+        "empty": 0,
+        "n_nonempty": 50
+      }
+    ],
+    "gpt-5.6-luna": [
+      {
+        "passed": 82,
+        "total": 100,
+        "rate": 0.82,
+        "wilson_95": [
+          0.7333264161369926,
+          0.8829977450105364
+        ],
+        "display": "82/100 (82.0%)",
+        "wilson_display": "73.3–88.3%",
+        "group": "core100",
+        "empty": 4,
+        "n_nonempty": 96
+      },
+      {
+        "passed": 20,
+        "total": 50,
+        "rate": 0.4,
+        "wilson_95": [
+          0.27608389730256544,
+          0.5381856225241064
+        ],
+        "display": "20/50 (40.0%)",
+        "wilson_display": "27.6–53.8%",
+        "group": "hard50",
+        "empty": 2,
+        "n_nonempty": 48
+      }
+    ],
+    "glm-5.3-flash": [
+      {
+        "passed": 62,
+        "total": 100,
+        "rate": 0.62,
+        "wilson_95": [
+          0.5220975529551107,
+          0.7090240074752127
+        ],
+        "display": "62/100 (62.0%)",
+        "wilson_display": "52.2–70.9%",
+        "group": "core100",
+        "empty": 21,
+        "n_nonempty": 79
+      },
+      {
+        "passed": 6,
+        "total": 50,
+        "rate": 0.12,
+        "wilson_95": [
+          0.05617600150932274,
+          0.23804817383202992
+        ],
+        "display": "6/50 (12.0%)",
+        "wilson_display": "5.6–23.8%",
+        "group": "hard50",
+        "empty": 17,
+        "n_nonempty": 33
+      }
+    ],
+    "qwen3.6-35b-a3b-fp8": [
+      {
+        "passed": 55,
+        "total": 100,
+        "rate": 0.55,
+        "wilson_95": [
+          0.45244602997442135,
+          0.6438546202048803
+        ],
+        "display": "55/100 (55.0%)",
+        "wilson_display": "45.2–64.4%",
+        "group": "core100",
+        "empty": 15,
+        "n_nonempty": 85
+      },
+      {
+        "passed": 8,
+        "total": 50,
+        "rate": 0.16,
+        "wilson_95": [
+          0.08337420678033404,
+          0.2851421606303499
+        ],
+        "display": "8/50 (16.0%)",
+        "wilson_display": "8.3–28.5%",
+        "group": "hard50",
+        "empty": 10,
+        "n_nonempty": 40
+      }
+    ],
+    "gpt-oss-120b": [
+      {
+        "passed": 25,
+        "total": 100,
+        "rate": 0.25,
+        "wilson_95": [
+          0.17545211362287672,
+          0.34304463548061603
+        ],
+        "display": "25/100 (25.0%)",
+        "wilson_display": "17.5–34.3%",
+        "group": "core100",
+        "empty": 0,
+        "n_nonempty": 100
+      },
+      {
+        "passed": 11,
+        "total": 50,
+        "rate": 0.22,
+        "wilson_95": [
+          0.1275391597021442,
+          0.3524154958125367
+        ],
+        "display": "11/50 (22.0%)",
+        "wilson_display": "12.8–35.2%",
+        "group": "hard50",
+        "empty": 2,
+        "n_nonempty": 48
+      }
+    ]
+  },
+  "by_entanglement_primary": {
+    "deepseek-v4-pro": [
+      {
+        "passed": 41,
+        "total": 45,
+        "rate": 0.9111111111111111,
+        "wilson_95": [
+          0.7926642466571064,
+          0.9648888832736299
+        ],
+        "display": "41/45 (91.1%)",
+        "wilson_display": "79.3–96.5%",
+        "group": "parser_state_coupling",
+        "empty": 0,
+        "n_nonempty": 45
+      },
+      {
+        "passed": 31,
+        "total": 43,
+        "rate": 0.7209302325581395,
+        "wilson_95": [
+          0.5730897131812113,
+          0.8325338621376251
+        ],
+        "display": "31/43 (72.1%)",
+        "wilson_display": "57.3–83.3%",
+        "group": "data_model_coupling",
+        "empty": 0,
+        "n_nonempty": 43
+      },
+      {
+        "passed": 18,
+        "total": 28,
+        "rate": 0.6428571428571429,
+        "wilson_95": [
+          0.4583030651442781,
+          0.7929417049226233
+        ],
+        "display": "18/28 (64.3%)",
+        "wilson_display": "45.8–79.3%",
+        "group": "framework_coupling",
+        "empty": 0,
+        "n_nonempty": 28
+      },
+      {
+        "passed": 12,
+        "total": 16,
+        "rate": 0.75,
+        "wilson_95": [
+          0.5050168346449122,
+          0.8981793250878696
+        ],
+        "display": "12/16 (75.0%)",
+        "wilson_display": "50.5–89.8%",
+        "group": "config_environment_coupling",
+        "empty": 0,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 12,
+        "total": 15,
+        "rate": 0.8,
+        "wilson_95": [
+          0.5481455128483065,
+          0.9295245065301844
+        ],
+        "display": "12/15 (80.0%)",
+        "wilson_display": "54.8–93.0%",
+        "group": "resource_coupling",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 1,
+        "total": 3,
+        "rate": 0.3333333333333333,
+        "wilson_95": [
+          0.06149194472039621,
+          0.7923403991979522
+        ],
+        "display": "1/3 (33.3%)",
+        "wilson_display": "6.1–79.2%",
+        "group": "third_party_dependency_coupling",
+        "empty": 0,
+        "n_nonempty": 3
+      }
+    ],
+    "deepseek-v4-flash": [
+      {
+        "passed": 39,
+        "total": 45,
+        "rate": 0.8666666666666667,
+        "wilson_95": [
+          0.7382269817382293,
+          0.9374285125243192
+        ],
+        "display": "39/45 (86.7%)",
+        "wilson_display": "73.8–93.7%",
+        "group": "parser_state_coupling",
+        "empty": 0,
+        "n_nonempty": 45
+      },
+      {
+        "passed": 29,
+        "total": 43,
+        "rate": 0.6744186046511628,
+        "wilson_95": [
+          0.5251621096752948,
+          0.7950670287343129
+        ],
+        "display": "29/43 (67.4%)",
+        "wilson_display": "52.5–79.5%",
+        "group": "data_model_coupling",
+        "empty": 0,
+        "n_nonempty": 43
+      },
+      {
+        "passed": 16,
+        "total": 28,
+        "rate": 0.5714285714285714,
+        "wilson_95": [
+          0.3907078562746876,
+          0.734914528758763
+        ],
+        "display": "16/28 (57.1%)",
+        "wilson_display": "39.1–73.5%",
+        "group": "framework_coupling",
+        "empty": 0,
+        "n_nonempty": 28
+      },
+      {
+        "passed": 12,
+        "total": 16,
+        "rate": 0.75,
+        "wilson_95": [
+          0.5050168346449122,
+          0.8981793250878696
+        ],
+        "display": "12/16 (75.0%)",
+        "wilson_display": "50.5–89.8%",
+        "group": "config_environment_coupling",
+        "empty": 0,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 11,
+        "total": 15,
+        "rate": 0.7333333333333333,
+        "wilson_95": [
+          0.4804956594401943,
+          0.8910254667430761
+        ],
+        "display": "11/15 (73.3%)",
+        "wilson_display": "48.0–89.1%",
+        "group": "resource_coupling",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 1,
+        "total": 3,
+        "rate": 0.3333333333333333,
+        "wilson_95": [
+          0.06149194472039621,
+          0.7923403991979522
+        ],
+        "display": "1/3 (33.3%)",
+        "wilson_display": "6.1–79.2%",
+        "group": "third_party_dependency_coupling",
+        "empty": 0,
+        "n_nonempty": 3
+      }
+    ],
+    "gpt-5.6-luna": [
+      {
+        "passed": 35,
+        "total": 45,
+        "rate": 0.7777777777777778,
+        "wilson_95": [
+          0.6373070782524372,
+          0.8745531446737361
+        ],
+        "display": "35/45 (77.8%)",
+        "wilson_display": "63.7–87.5%",
+        "group": "parser_state_coupling",
+        "empty": 2,
+        "n_nonempty": 43
+      },
+      {
+        "passed": 30,
+        "total": 43,
+        "rate": 0.6976744186046512,
+        "wilson_95": [
+          0.5489463582227039,
+          0.8139799986415182
+        ],
+        "display": "30/43 (69.8%)",
+        "wilson_display": "54.9–81.4%",
+        "group": "data_model_coupling",
+        "empty": 1,
+        "n_nonempty": 42
+      },
+      {
+        "passed": 15,
+        "total": 28,
+        "rate": 0.5357142857142857,
+        "wilson_95": [
+          0.358126892344679,
+          0.7046843001720462
+        ],
+        "display": "15/28 (53.6%)",
+        "wilson_display": "35.8–70.5%",
+        "group": "framework_coupling",
+        "empty": 1,
+        "n_nonempty": 27
+      },
+      {
+        "passed": 13,
+        "total": 16,
+        "rate": 0.8125,
+        "wilson_95": [
+          0.5699111903802586,
+          0.9340840092857187
+        ],
+        "display": "13/16 (81.2%)",
+        "wilson_display": "57.0–93.4%",
+        "group": "config_environment_coupling",
+        "empty": 0,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 7,
+        "total": 15,
+        "rate": 0.4666666666666667,
+        "wilson_95": [
+          0.24809535365737387,
+          0.698830199745016
+        ],
+        "display": "7/15 (46.7%)",
+        "wilson_display": "24.8–69.9%",
+        "group": "resource_coupling",
+        "empty": 2,
+        "n_nonempty": 13
+      },
+      {
+        "passed": 2,
+        "total": 3,
+        "rate": 0.6666666666666666,
+        "wilson_95": [
+          0.2076596008020477,
+          0.9385080552796037
+        ],
+        "display": "2/3 (66.7%)",
+        "wilson_display": "20.8–93.9%",
+        "group": "third_party_dependency_coupling",
+        "empty": 0,
+        "n_nonempty": 3
+      }
+    ],
+    "glm-5.3-flash": [
+      {
+        "passed": 29,
+        "total": 45,
+        "rate": 0.6444444444444445,
+        "wilson_95": [
+          0.4983581419637687,
+          0.7678091739578413
+        ],
+        "display": "29/45 (64.4%)",
+        "wilson_display": "49.8–76.8%",
+        "group": "parser_state_coupling",
+        "empty": 11,
+        "n_nonempty": 34
+      },
+      {
+        "passed": 19,
+        "total": 43,
+        "rate": 0.4418604651162791,
+        "wilson_95": [
+          0.30433309839170514,
+          0.5889238554717591
+        ],
+        "display": "19/43 (44.2%)",
+        "wilson_display": "30.4–58.9%",
+        "group": "data_model_coupling",
+        "empty": 13,
+        "n_nonempty": 30
+      },
+      {
+        "passed": 10,
+        "total": 28,
+        "rate": 0.35714285714285715,
+        "wilson_95": [
+          0.2070582950773768,
+          0.5416969348557219
+        ],
+        "display": "10/28 (35.7%)",
+        "wilson_display": "20.7–54.2%",
+        "group": "framework_coupling",
+        "empty": 8,
+        "n_nonempty": 20
+      },
+      {
+        "passed": 5,
+        "total": 16,
+        "rate": 0.3125,
+        "wilson_95": [
+          0.14164643854782039,
+          0.5559564416525933
+        ],
+        "display": "5/16 (31.2%)",
+        "wilson_display": "14.2–55.6%",
+        "group": "config_environment_coupling",
+        "empty": 5,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 4,
+        "total": 15,
+        "rate": 0.26666666666666666,
+        "wilson_95": [
+          0.10897453325692374,
+          0.5195043405598057
+        ],
+        "display": "4/15 (26.7%)",
+        "wilson_display": "10.9–52.0%",
+        "group": "resource_coupling",
+        "empty": 1,
+        "n_nonempty": 14
+      },
+      {
+        "passed": 1,
+        "total": 3,
+        "rate": 0.3333333333333333,
+        "wilson_95": [
+          0.06149194472039621,
+          0.7923403991979522
+        ],
+        "display": "1/3 (33.3%)",
+        "wilson_display": "6.1–79.2%",
+        "group": "third_party_dependency_coupling",
+        "empty": 0,
+        "n_nonempty": 3
+      }
+    ],
+    "qwen3.6-35b-a3b-fp8": [
+      {
+        "passed": 24,
+        "total": 45,
+        "rate": 0.5333333333333333,
+        "wilson_95": [
+          0.3907745474012537,
+          0.670648679349887
+        ],
+        "display": "24/45 (53.3%)",
+        "wilson_display": "39.1–67.1%",
+        "group": "parser_state_coupling",
+        "empty": 6,
+        "n_nonempty": 39
+      },
+      {
+        "passed": 15,
+        "total": 43,
+        "rate": 0.3488372093023256,
+        "wilson_95": [
+          0.22418589997352706,
+          0.49828218007147956
+        ],
+        "display": "15/43 (34.9%)",
+        "wilson_display": "22.4–49.8%",
+        "group": "data_model_coupling",
+        "empty": 9,
+        "n_nonempty": 34
+      },
+      {
+        "passed": 13,
+        "total": 28,
+        "rate": 0.4642857142857143,
+        "wilson_95": [
+          0.2953156998279538,
+          0.6418731076553209
+        ],
+        "display": "13/28 (46.4%)",
+        "wilson_display": "29.5–64.2%",
+        "group": "framework_coupling",
+        "empty": 3,
+        "n_nonempty": 25
+      },
+      {
+        "passed": 5,
+        "total": 16,
+        "rate": 0.3125,
+        "wilson_95": [
+          0.14164643854782039,
+          0.5559564416525933
+        ],
+        "display": "5/16 (31.2%)",
+        "wilson_display": "14.2–55.6%",
+        "group": "config_environment_coupling",
+        "empty": 4,
+        "n_nonempty": 12
+      },
+      {
+        "passed": 6,
+        "total": 15,
+        "rate": 0.4,
+        "wilson_95": [
+          0.1982449614134158,
+          0.6425316987937539
+        ],
+        "display": "6/15 (40.0%)",
+        "wilson_display": "19.8–64.3%",
+        "group": "resource_coupling",
+        "empty": 2,
+        "n_nonempty": 13
+      },
+      {
+        "passed": 0,
+        "total": 3,
+        "rate": 0.0,
+        "wilson_95": [
+          5.551115123125783e-17,
+          0.5614970317550454
+        ],
+        "display": "0/3 (0.0%)",
+        "wilson_display": "0.0–56.1%",
+        "group": "third_party_dependency_coupling",
+        "empty": 1,
+        "n_nonempty": 2
+      }
+    ],
+    "gpt-oss-120b": [
+      {
+        "passed": 13,
+        "total": 45,
+        "rate": 0.28888888888888886,
+        "wilson_95": [
+          0.1773008248284927,
+          0.43368540574761577
+        ],
+        "display": "13/45 (28.9%)",
+        "wilson_display": "17.7–43.4%",
+        "group": "parser_state_coupling",
+        "empty": 0,
+        "n_nonempty": 45
+      },
+      {
+        "passed": 10,
+        "total": 43,
+        "rate": 0.23255813953488372,
+        "wilson_95": [
+          0.1315367847938448,
+          0.37744520297809003
+        ],
+        "display": "10/43 (23.3%)",
+        "wilson_display": "13.2–37.7%",
+        "group": "data_model_coupling",
+        "empty": 2,
+        "n_nonempty": 41
+      },
+      {
+        "passed": 7,
+        "total": 28,
+        "rate": 0.25,
+        "wilson_95": [
+          0.12676494919293316,
+          0.4335567031899896
+        ],
+        "display": "7/28 (25.0%)",
+        "wilson_display": "12.7–43.4%",
+        "group": "framework_coupling",
+        "empty": 0,
+        "n_nonempty": 28
+      },
+      {
+        "passed": 2,
+        "total": 16,
+        "rate": 0.125,
+        "wilson_95": [
+          0.03497748774324047,
+          0.36022827265758695
+        ],
+        "display": "2/16 (12.5%)",
+        "wilson_display": "3.5–36.0%",
+        "group": "config_environment_coupling",
+        "empty": 0,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 4,
+        "total": 15,
+        "rate": 0.26666666666666666,
+        "wilson_95": [
+          0.10897453325692374,
+          0.5195043405598057
+        ],
+        "display": "4/15 (26.7%)",
+        "wilson_display": "10.9–52.0%",
+        "group": "resource_coupling",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 0,
+        "total": 3,
+        "rate": 0.0,
+        "wilson_95": [
+          5.551115123125783e-17,
+          0.5614970317550454
+        ],
+        "display": "0/3 (0.0%)",
+        "wilson_display": "0.0–56.1%",
+        "group": "third_party_dependency_coupling",
+        "empty": 0,
+        "n_nonempty": 3
+      }
+    ]
+  },
+  "by_feature_family": {
+    "deepseek-v4-pro": [
+      {
+        "passed": 26,
+        "total": 31,
+        "rate": 0.8387096774193549,
+        "wilson_95": [
+          0.6736564604120674,
+          0.9290737555663471
+        ],
+        "display": "26/31 (83.9%)",
+        "wilson_display": "67.4–92.9%",
+        "group": "parse_tokenize_decode",
+        "empty": 0,
+        "n_nonempty": 31
+      },
+      {
+        "passed": 11,
+        "total": 22,
+        "rate": 0.5,
+        "wilson_95": [
+          0.3072210627372502,
+          0.6927789372627497
+        ],
+        "display": "11/22 (50.0%)",
+        "wilson_display": "30.7–69.3%",
+        "group": "registry_plugin_dispatch",
+        "empty": 0,
+        "n_nonempty": 22
+      },
+      {
+        "passed": 18,
+        "total": 19,
+        "rate": 0.9473684210526315,
+        "wilson_95": [
+          0.753612688331012,
+          0.9906480059376995
+        ],
+        "display": "18/19 (94.7%)",
+        "wilson_display": "75.4–99.1%",
+        "group": "serialize_format_render",
+        "empty": 0,
+        "n_nonempty": 19
+      },
+      {
+        "passed": 13,
+        "total": 18,
+        "rate": 0.7222222222222222,
+        "wilson_95": [
+          0.4912734343970254,
+          0.8750024662044601
+        ],
+        "display": "13/18 (72.2%)",
+        "wilson_display": "49.1–87.5%",
+        "group": "config_resolve_discover",
+        "empty": 0,
+        "n_nonempty": 18
+      },
+      {
+        "passed": 11,
+        "total": 15,
+        "rate": 0.7333333333333333,
+        "wilson_95": [
+          0.4804956594401943,
+          0.8910254667430761
+        ],
+        "display": "11/15 (73.3%)",
+        "wilson_display": "48.0–89.1%",
+        "group": "validate_normalize_construct",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 9,
+        "total": 12,
+        "rate": 0.75,
+        "wilson_95": [
+          0.46769466506643426,
+          0.9110583316059453
+        ],
+        "display": "9/12 (75.0%)",
+        "wilson_display": "46.8–91.1%",
+        "group": "resource_metadata_loading",
+        "empty": 0,
+        "n_nonempty": 12
+      },
+      {
+        "passed": 9,
+        "total": 11,
+        "rate": 0.8181818181818182,
+        "wilson_95": [
+          0.523019438039156,
+          0.9486323102539149
+        ],
+        "display": "9/11 (81.8%)",
+        "wilson_display": "52.3–94.9%",
+        "group": "algorithm_data_structure",
+        "empty": 0,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 9,
+        "total": 9,
+        "rate": 1.0,
+        "wilson_95": [
+          0.7008549515804559,
+          1.0
+        ],
+        "display": "9/9 (100.0%)",
+        "wilson_display": "70.1–100.0%",
+        "group": "protocol_state_transition",
+        "empty": 0,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 6,
+        "total": 8,
+        "rate": 0.75,
+        "wilson_95": [
+          0.40927543031016883,
+          0.9285207872478909
+        ],
+        "display": "6/8 (75.0%)",
+        "wilson_display": "40.9–92.9%",
+        "group": "cache_retry_policy",
+        "empty": 0,
+        "n_nonempty": 8
+      },
+      {
+        "passed": 3,
+        "total": 5,
+        "rate": 0.6,
+        "wilson_95": [
+          0.2307242812760128,
+          0.882379225767352
+        ],
+        "display": "3/5 (60.0%)",
+        "wilson_display": "23.1–88.2%",
+        "group": "workflow_session_orchestration",
+        "empty": 0,
+        "n_nonempty": 5
+      }
+    ],
+    "deepseek-v4-flash": [
+      {
+        "passed": 26,
+        "total": 31,
+        "rate": 0.8387096774193549,
+        "wilson_95": [
+          0.6736564604120674,
+          0.9290737555663471
+        ],
+        "display": "26/31 (83.9%)",
+        "wilson_display": "67.4–92.9%",
+        "group": "parse_tokenize_decode",
+        "empty": 0,
+        "n_nonempty": 31
+      },
+      {
+        "passed": 10,
+        "total": 22,
+        "rate": 0.45454545454545453,
+        "wilson_95": [
+          0.2692029418081331,
+          0.6534020467926505
+        ],
+        "display": "10/22 (45.5%)",
+        "wilson_display": "26.9–65.3%",
+        "group": "registry_plugin_dispatch",
+        "empty": 0,
+        "n_nonempty": 22
+      },
+      {
+        "passed": 18,
+        "total": 19,
+        "rate": 0.9473684210526315,
+        "wilson_95": [
+          0.753612688331012,
+          0.9906480059376995
+        ],
+        "display": "18/19 (94.7%)",
+        "wilson_display": "75.4–99.1%",
+        "group": "serialize_format_render",
+        "empty": 0,
+        "n_nonempty": 19
+      },
+      {
+        "passed": 13,
+        "total": 18,
+        "rate": 0.7222222222222222,
+        "wilson_95": [
+          0.4912734343970254,
+          0.8750024662044601
+        ],
+        "display": "13/18 (72.2%)",
+        "wilson_display": "49.1–87.5%",
+        "group": "config_resolve_discover",
+        "empty": 0,
+        "n_nonempty": 18
+      },
+      {
+        "passed": 10,
+        "total": 15,
+        "rate": 0.6666666666666666,
+        "wilson_95": [
+          0.41713547738519774,
+          0.8482367556028526
+        ],
+        "display": "10/15 (66.7%)",
+        "wilson_display": "41.7–84.8%",
+        "group": "validate_normalize_construct",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 7,
+        "total": 12,
+        "rate": 0.5833333333333334,
+        "wilson_95": [
+          0.31951131254954973,
+          0.8067396863412435
+        ],
+        "display": "7/12 (58.3%)",
+        "wilson_display": "32.0–80.7%",
+        "group": "resource_metadata_loading",
+        "empty": 0,
+        "n_nonempty": 12
+      },
+      {
+        "passed": 7,
+        "total": 11,
+        "rate": 0.6363636363636364,
+        "wilson_95": [
+          0.35380117450784887,
+          0.8483352890463243
+        ],
+        "display": "7/11 (63.6%)",
+        "wilson_display": "35.4–84.8%",
+        "group": "algorithm_data_structure",
+        "empty": 0,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 9,
+        "total": 9,
+        "rate": 1.0,
+        "wilson_95": [
+          0.7008549515804559,
+          1.0
+        ],
+        "display": "9/9 (100.0%)",
+        "wilson_display": "70.1–100.0%",
+        "group": "protocol_state_transition",
+        "empty": 0,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 6,
+        "total": 8,
+        "rate": 0.75,
+        "wilson_95": [
+          0.40927543031016883,
+          0.9285207872478909
+        ],
+        "display": "6/8 (75.0%)",
+        "wilson_display": "40.9–92.9%",
+        "group": "cache_retry_policy",
+        "empty": 0,
+        "n_nonempty": 8
+      },
+      {
+        "passed": 2,
+        "total": 5,
+        "rate": 0.4,
+        "wilson_95": [
+          0.11762077423264783,
+          0.769275718723987
+        ],
+        "display": "2/5 (40.0%)",
+        "wilson_display": "11.8–76.9%",
+        "group": "workflow_session_orchestration",
+        "empty": 0,
+        "n_nonempty": 5
+      }
+    ],
+    "gpt-5.6-luna": [
+      {
+        "passed": 21,
+        "total": 31,
+        "rate": 0.6774193548387096,
+        "wilson_95": [
+          0.5014100930808565,
+          0.8143057343364082
+        ],
+        "display": "21/31 (67.7%)",
+        "wilson_display": "50.1–81.4%",
+        "group": "parse_tokenize_decode",
+        "empty": 2,
+        "n_nonempty": 29
+      },
+      {
+        "passed": 8,
+        "total": 22,
+        "rate": 0.36363636363636365,
+        "wilson_95": [
+          0.19733204670366125,
+          0.5704829190986899
+        ],
+        "display": "8/22 (36.4%)",
+        "wilson_display": "19.7–57.0%",
+        "group": "registry_plugin_dispatch",
+        "empty": 1,
+        "n_nonempty": 21
+      },
+      {
+        "passed": 17,
+        "total": 19,
+        "rate": 0.8947368421052632,
+        "wilson_95": [
+          0.6860591728889099,
+          0.9706414397011299
+        ],
+        "display": "17/19 (89.5%)",
+        "wilson_display": "68.6–97.1%",
+        "group": "serialize_format_render",
+        "empty": 0,
+        "n_nonempty": 19
+      },
+      {
+        "passed": 13,
+        "total": 18,
+        "rate": 0.7222222222222222,
+        "wilson_95": [
+          0.4912734343970254,
+          0.8750024662044601
+        ],
+        "display": "13/18 (72.2%)",
+        "wilson_display": "49.1–87.5%",
+        "group": "config_resolve_discover",
+        "empty": 1,
+        "n_nonempty": 17
+      },
+      {
+        "passed": 12,
+        "total": 15,
+        "rate": 0.8,
+        "wilson_95": [
+          0.5481455128483065,
+          0.9295245065301844
+        ],
+        "display": "12/15 (80.0%)",
+        "wilson_display": "54.8–93.0%",
+        "group": "validate_normalize_construct",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 6,
+        "total": 12,
+        "rate": 0.5,
+        "wilson_95": [
+          0.2537815976337061,
+          0.7462184023662939
+        ],
+        "display": "6/12 (50.0%)",
+        "wilson_display": "25.4–74.6%",
+        "group": "resource_metadata_loading",
+        "empty": 1,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 8,
+        "total": 11,
+        "rate": 0.7272727272727273,
+        "wilson_95": [
+          0.43435469882387084,
+          0.902539407099751
+        ],
+        "display": "8/11 (72.7%)",
+        "wilson_display": "43.4–90.3%",
+        "group": "algorithm_data_structure",
+        "empty": 1,
+        "n_nonempty": 10
+      },
+      {
+        "passed": 7,
+        "total": 9,
+        "rate": 0.7777777777777778,
+        "wilson_95": [
+          0.45258896910698887,
+          0.9367748928821533
+        ],
+        "display": "7/9 (77.8%)",
+        "wilson_display": "45.3–93.7%",
+        "group": "protocol_state_transition",
+        "empty": 0,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 7,
+        "total": 8,
+        "rate": 0.875,
+        "wilson_95": [
+          0.5291118177871464,
+          0.9775825085499433
+        ],
+        "display": "7/8 (87.5%)",
+        "wilson_display": "52.9–97.8%",
+        "group": "cache_retry_policy",
+        "empty": 0,
+        "n_nonempty": 8
+      },
+      {
+        "passed": 3,
+        "total": 5,
+        "rate": 0.6,
+        "wilson_95": [
+          0.2307242812760128,
+          0.882379225767352
+        ],
+        "display": "3/5 (60.0%)",
+        "wilson_display": "23.1–88.2%",
+        "group": "workflow_session_orchestration",
+        "empty": 0,
+        "n_nonempty": 5
+      }
+    ],
+    "glm-5.3-flash": [
+      {
+        "passed": 18,
+        "total": 31,
+        "rate": 0.5806451612903226,
+        "wilson_95": [
+          0.4076626249536972,
+          0.7358445693268778
+        ],
+        "display": "18/31 (58.1%)",
+        "wilson_display": "40.8–73.6%",
+        "group": "parse_tokenize_decode",
+        "empty": 8,
+        "n_nonempty": 23
+      },
+      {
+        "passed": 6,
+        "total": 22,
+        "rate": 0.2727272727272727,
+        "wilson_95": [
+          0.13150760287989469,
+          0.4815173401240238
+        ],
+        "display": "6/22 (27.3%)",
+        "wilson_display": "13.2–48.2%",
+        "group": "registry_plugin_dispatch",
+        "empty": 5,
+        "n_nonempty": 17
+      },
+      {
+        "passed": 13,
+        "total": 19,
+        "rate": 0.6842105263157895,
+        "wilson_95": [
+          0.46010407675327475,
+          0.8463562091220773
+        ],
+        "display": "13/19 (68.4%)",
+        "wilson_display": "46.0–84.6%",
+        "group": "serialize_format_render",
+        "empty": 3,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 7,
+        "total": 18,
+        "rate": 0.3888888888888889,
+        "wilson_95": [
+          0.2030524657216362,
+          0.613809583977621
+        ],
+        "display": "7/18 (38.9%)",
+        "wilson_display": "20.3–61.4%",
+        "group": "config_resolve_discover",
+        "empty": 4,
+        "n_nonempty": 14
+      },
+      {
+        "passed": 8,
+        "total": 15,
+        "rate": 0.5333333333333333,
+        "wilson_95": [
+          0.30116980025498397,
+          0.7519046463426261
+        ],
+        "display": "8/15 (53.3%)",
+        "wilson_display": "30.1–75.2%",
+        "group": "validate_normalize_construct",
+        "empty": 5,
+        "n_nonempty": 10
+      },
+      {
+        "passed": 1,
+        "total": 12,
+        "rate": 0.08333333333333333,
+        "wilson_95": [
+          0.014865094404917095,
+          0.35387991114111694
+        ],
+        "display": "1/12 (8.3%)",
+        "wilson_display": "1.5–35.4%",
+        "group": "resource_metadata_loading",
+        "empty": 3,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 5,
+        "total": 11,
+        "rate": 0.45454545454545453,
+        "wilson_95": [
+          0.21271271622459764,
+          0.719908462590678
+        ],
+        "display": "5/11 (45.5%)",
+        "wilson_display": "21.3–72.0%",
+        "group": "algorithm_data_structure",
+        "empty": 3,
+        "n_nonempty": 8
+      },
+      {
+        "passed": 5,
+        "total": 9,
+        "rate": 0.5555555555555556,
+        "wilson_95": [
+          0.26665129349549305,
+          0.8112214789023355
+        ],
+        "display": "5/9 (55.6%)",
+        "wilson_display": "26.7–81.1%",
+        "group": "protocol_state_transition",
+        "empty": 4,
+        "n_nonempty": 5
+      },
+      {
+        "passed": 3,
+        "total": 8,
+        "rate": 0.375,
+        "wilson_95": [
+          0.13684428582359742,
+          0.6942576053973727
+        ],
+        "display": "3/8 (37.5%)",
+        "wilson_display": "13.7–69.4%",
+        "group": "cache_retry_policy",
+        "empty": 2,
+        "n_nonempty": 6
+      },
+      {
+        "passed": 2,
+        "total": 5,
+        "rate": 0.4,
+        "wilson_95": [
+          0.11762077423264783,
+          0.769275718723987
+        ],
+        "display": "2/5 (40.0%)",
+        "wilson_display": "11.8–76.9%",
+        "group": "workflow_session_orchestration",
+        "empty": 1,
+        "n_nonempty": 4
+      }
+    ],
+    "qwen3.6-35b-a3b-fp8": [
+      {
+        "passed": 15,
+        "total": 31,
+        "rate": 0.4838709677419355,
+        "wilson_95": [
+          0.31970251562417307,
+          0.651596045519712
+        ],
+        "display": "15/31 (48.4%)",
+        "wilson_display": "32.0–65.2%",
+        "group": "parse_tokenize_decode",
+        "empty": 6,
+        "n_nonempty": 25
+      },
+      {
+        "passed": 8,
+        "total": 22,
+        "rate": 0.36363636363636365,
+        "wilson_95": [
+          0.19733204670366125,
+          0.5704829190986899
+        ],
+        "display": "8/22 (36.4%)",
+        "wilson_display": "19.7–57.0%",
+        "group": "registry_plugin_dispatch",
+        "empty": 2,
+        "n_nonempty": 20
+      },
+      {
+        "passed": 11,
+        "total": 19,
+        "rate": 0.5789473684210527,
+        "wilson_95": [
+          0.3627590353425504,
+          0.7685810871754576
+        ],
+        "display": "11/19 (57.9%)",
+        "wilson_display": "36.3–76.9%",
+        "group": "serialize_format_render",
+        "empty": 3,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 8,
+        "total": 18,
+        "rate": 0.4444444444444444,
+        "wilson_95": [
+          0.24559518127005633,
+          0.6628358435795723
+        ],
+        "display": "8/18 (44.4%)",
+        "wilson_display": "24.6–66.3%",
+        "group": "config_resolve_discover",
+        "empty": 2,
+        "n_nonempty": 16
+      },
+      {
+        "passed": 2,
+        "total": 15,
+        "rate": 0.13333333333333333,
+        "wilson_95": [
+          0.03736125910306537,
+          0.37881982832322364
+        ],
+        "display": "2/15 (13.3%)",
+        "wilson_display": "3.7–37.9%",
+        "group": "validate_normalize_construct",
+        "empty": 6,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 4,
+        "total": 12,
+        "rate": 0.3333333333333333,
+        "wilson_95": [
+          0.13812009109121315,
+          0.6093779111272004
+        ],
+        "display": "4/12 (33.3%)",
+        "wilson_display": "13.8–60.9%",
+        "group": "resource_metadata_loading",
+        "empty": 1,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 4,
+        "total": 11,
+        "rate": 0.36363636363636365,
+        "wilson_95": [
+          0.15166471095367573,
+          0.6461988254921511
+        ],
+        "display": "4/11 (36.4%)",
+        "wilson_display": "15.2–64.6%",
+        "group": "algorithm_data_structure",
+        "empty": 2,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 6,
+        "total": 9,
+        "rate": 0.6666666666666666,
+        "wilson_95": [
+          0.3542021355803963,
+          0.879416181613089
+        ],
+        "display": "6/9 (66.7%)",
+        "wilson_display": "35.4–87.9%",
+        "group": "protocol_state_transition",
+        "empty": 0,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 4,
+        "total": 8,
+        "rate": 0.5,
+        "wilson_95": [
+          0.21521606221387757,
+          0.7847839377861224
+        ],
+        "display": "4/8 (50.0%)",
+        "wilson_display": "21.5–78.5%",
+        "group": "cache_retry_policy",
+        "empty": 2,
+        "n_nonempty": 6
+      },
+      {
+        "passed": 1,
+        "total": 5,
+        "rate": 0.2,
+        "wilson_95": [
+          0.03622410863243014,
+          0.6244653702374747
+        ],
+        "display": "1/5 (20.0%)",
+        "wilson_display": "3.6–62.4%",
+        "group": "workflow_session_orchestration",
+        "empty": 1,
+        "n_nonempty": 4
+      }
+    ],
+    "gpt-oss-120b": [
+      {
+        "passed": 7,
+        "total": 31,
+        "rate": 0.22580645161290322,
+        "wilson_95": [
+          0.11395135561262493,
+          0.3981241838334205
+        ],
+        "display": "7/31 (22.6%)",
+        "wilson_display": "11.4–39.8%",
+        "group": "parse_tokenize_decode",
+        "empty": 0,
+        "n_nonempty": 31
+      },
+      {
+        "passed": 3,
+        "total": 22,
+        "rate": 0.13636363636363635,
+        "wilson_95": [
+          0.04749003714055253,
+          0.33334987166571717
+        ],
+        "display": "3/22 (13.6%)",
+        "wilson_display": "4.7–33.3%",
+        "group": "registry_plugin_dispatch",
+        "empty": 0,
+        "n_nonempty": 22
+      },
+      {
+        "passed": 6,
+        "total": 19,
+        "rate": 0.3157894736842105,
+        "wilson_95": [
+          0.1536437908779228,
+          0.5398959232467253
+        ],
+        "display": "6/19 (31.6%)",
+        "wilson_display": "15.4–54.0%",
+        "group": "serialize_format_render",
+        "empty": 0,
+        "n_nonempty": 19
+      },
+      {
+        "passed": 4,
+        "total": 18,
+        "rate": 0.2222222222222222,
+        "wilson_95": [
+          0.09000928108601694,
+          0.45214584316212625
+        ],
+        "display": "4/18 (22.2%)",
+        "wilson_display": "9.0–45.2%",
+        "group": "config_resolve_discover",
+        "empty": 0,
+        "n_nonempty": 18
+      },
+      {
+        "passed": 3,
+        "total": 15,
+        "rate": 0.2,
+        "wilson_95": [
+          0.07047549346981563,
+          0.45185448715169363
+        ],
+        "display": "3/15 (20.0%)",
+        "wilson_display": "7.0–45.2%",
+        "group": "validate_normalize_construct",
+        "empty": 0,
+        "n_nonempty": 15
+      },
+      {
+        "passed": 2,
+        "total": 12,
+        "rate": 0.16666666666666666,
+        "wilson_95": [
+          0.04696514218385378,
+          0.4480308622529734
+        ],
+        "display": "2/12 (16.7%)",
+        "wilson_display": "4.7–44.8%",
+        "group": "resource_metadata_loading",
+        "empty": 1,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 2,
+        "total": 11,
+        "rate": 0.18181818181818182,
+        "wilson_95": [
+          0.05136768974608513,
+          0.4769805619608442
+        ],
+        "display": "2/11 (18.2%)",
+        "wilson_display": "5.1–47.7%",
+        "group": "algorithm_data_structure",
+        "empty": 0,
+        "n_nonempty": 11
+      },
+      {
+        "passed": 3,
+        "total": 9,
+        "rate": 0.3333333333333333,
+        "wilson_95": [
+          0.1205838183869109,
+          0.6457978644196036
+        ],
+        "display": "3/9 (33.3%)",
+        "wilson_display": "12.1–64.6%",
+        "group": "protocol_state_transition",
+        "empty": 0,
+        "n_nonempty": 9
+      },
+      {
+        "passed": 4,
+        "total": 8,
+        "rate": 0.5,
+        "wilson_95": [
+          0.21521606221387757,
+          0.7847839377861224
+        ],
+        "display": "4/8 (50.0%)",
+        "wilson_display": "21.5–78.5%",
+        "group": "cache_retry_policy",
+        "empty": 1,
+        "n_nonempty": 7
+      },
+      {
+        "passed": 2,
+        "total": 5,
+        "rate": 0.4,
+        "wilson_95": [
+          0.11762077423264783,
+          0.769275718723987
+        ],
+        "display": "2/5 (40.0%)",
+        "wilson_display": "11.8–76.9%",
+        "group": "workflow_session_orchestration",
+        "empty": 0,
+        "n_nonempty": 5
+      }
+    ]
+  },
+  "entanglement_level_is_uniform_high": true,
+  "lift_type_chi2_deepseek": {
+    "chi2": 18.99188281550437,
+    "df": 2,
+    "n": 150,
+    "expected": [
+      [
+        40.32,
+        15.68
+      ],
+      [
+        54.72,
+        21.28
+      ],
+      [
+        12.96,
+        5.04
+      ]
+    ],
+    "levels": [
+      "Direct",
+      "Adapted",
+      "Composite"
+    ]
+  },
+  "lift_type_chi2_pro": {
+    "chi2": 14.435739971045628,
+    "df": 2,
+    "n": 150,
+    "expected": [
+      [
+        42.93333333333333,
+        13.066666666666666
+      ],
+      [
+        58.266666666666666,
+        17.733333333333334
+      ],
+      [
+        13.8,
+        4.2
+      ]
+    ],
+    "levels": [
+      "Direct",
+      "Adapted",
+      "Composite"
+    ]
+  },
+  "lift_type_chi2_glm": {
+    "chi2": 25.068769484687326,
+    "df": 2,
+    "n": 150,
+    "expected": [
+      [
+        25.386666666666667,
+        30.613333333333333
+      ],
+      [
+        34.45333333333333,
+        41.54666666666667
+      ],
+      [
+        8.16,
+        9.84
+      ]
+    ],
+    "levels": [
+      "Direct",
+      "Adapted",
+      "Composite"
+    ]
+  },
+  "hard3_chi2_deepseek": {
+    "chi2": 48.21428571428571,
+    "df": 1,
+    "n": 150,
+    "expected": [
+      [
+        72.0,
+        28.0
+      ],
+      [
+        36.0,
+        14.0
+      ]
+    ],
+    "levels": [
+      "core100",
+      "hard3"
+    ]
+  },
+  "hard3_chi2_pro": {
+    "chi2": 50.38509316770187,
+    "df": 1,
+    "n": 150,
+    "expected": [
+      [
+        76.66666666666667,
+        23.333333333333332
+      ],
+      [
+        38.333333333333336,
+        11.666666666666666
+      ]
+    ],
+    "levels": [
+      "core100",
+      "hard3"
+    ]
+  },
+  "hard3_chi2_glm": {
+    "chi2": 33.62625538020086,
+    "df": 1,
+    "n": 150,
+    "expected": [
+      [
+        45.333333333333336,
+        54.666666666666664
+      ],
+      [
+        22.666666666666668,
+        27.333333333333332
+      ]
+    ],
+    "levels": [
+      "core100",
+      "hard3"
+    ]
+  },
+  "compactness_among_passes": [
+    {
+      "model": "deepseek-v4-pro",
+      "n_pass": 115,
+      "n_with_rres": 115,
+      "rres_median": 0.992997,
+      "rres_p25": 0.7689779999999999,
+      "rres_p75": 1.2897895,
+      "copied_fraction_median": 0.957283,
+      "compactness_class": {
+        "copy_heavy_pass": 108,
+        "compact_pass": 4,
+        "functional_mixed_footprint": 3
+      },
+      "copy_heavy_pass": 108,
+      "compact_pass": 4,
+      "functional_mixed_footprint": 3
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "n_pass": 108,
+      "n_with_rres": 108,
+      "rres_median": 0.9983505,
+      "rres_p25": 0.892728,
+      "rres_p75": 1.2213209999999999,
+      "copied_fraction_median": 0.9682885,
+      "compactness_class": {
+        "copy_heavy_pass": 105,
+        "compact_pass": 1,
+        "functional_mixed_footprint": 2
+      },
+      "copy_heavy_pass": 105,
+      "compact_pass": 1,
+      "functional_mixed_footprint": 2
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "n_pass": 102,
+      "n_with_rres": 102,
+      "rres_median": 0.814788,
+      "rres_p25": 0.31016375,
+      "rres_p75": 1.00202325,
+      "copied_fraction_median": 0.164133,
+      "compactness_class": {
+        "copy_heavy_pass": 54,
+        "compact_pass": 37,
+        "functional_mixed_footprint": 11
+      },
+      "copy_heavy_pass": 54,
+      "compact_pass": 37,
+      "functional_mixed_footprint": 11
+    },
+    {
+      "model": "glm-5.3-flash",
+      "n_pass": 68,
+      "n_with_rres": 68,
+      "rres_median": 1.0127345,
+      "rres_p25": 0.91741275,
+      "rres_p75": 1.1575335,
+      "copied_fraction_median": 0.9468650000000001,
+      "compactness_class": {
+        "copy_heavy_pass": 64,
+        "functional_mixed_footprint": 4
+      },
+      "copy_heavy_pass": 64,
+      "compact_pass": 0,
+      "functional_mixed_footprint": 4
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "n_pass": 63,
+      "n_with_rres": 63,
+      "rres_median": 0.97472,
+      "rres_p25": 0.6502125000000001,
+      "rres_p75": 1.2281279999999999,
+      "copied_fraction_median": 0.757188,
+      "compactness_class": {
+        "copy_heavy_pass": 43,
+        "compact_pass": 9,
+        "functional_mixed_footprint": 11
+      },
+      "copy_heavy_pass": 43,
+      "compact_pass": 9,
+      "functional_mixed_footprint": 11
+    },
+    {
+      "model": "gpt-oss-120b",
+      "n_pass": 36,
+      "n_with_rres": 36,
+      "rres_median": 0.9834229999999999,
+      "rres_p25": 0.2917445,
+      "rres_p75": 1.648257,
+      "copied_fraction_median": 0.17967850000000002,
+      "compactness_class": {
+        "copy_heavy_pass": 18,
+        "compact_pass": 12,
+        "functional_mixed_footprint": 6
+      },
+      "copy_heavy_pass": 18,
+      "compact_pass": 12,
+      "functional_mixed_footprint": 6
+    }
+  ],
+  "paired_compactness": {
+    "all6": {
+      "n": 17,
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "rres_median": 0.835772,
+          "copied_fraction_median": 0.960289,
+          "copy_heavy_pass": 16,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 0
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "rres_median": 0.946667,
+          "copied_fraction_median": 0.977444,
+          "copy_heavy_pass": 16,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 0
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.671111,
+          "copied_fraction_median": 0.508711,
+          "copy_heavy_pass": 6,
+          "compact_pass": 6,
+          "functional_mixed_footprint": 5
+        },
+        {
+          "model": "glm-5.3-flash",
+          "rres_median": 0.965323,
+          "copied_fraction_median": 0.88764,
+          "copy_heavy_pass": 15,
+          "compact_pass": 0,
+          "functional_mixed_footprint": 2
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "rres_median": 0.768889,
+          "copied_fraction_median": 0.667683,
+          "copy_heavy_pass": 9,
+          "compact_pass": 5,
+          "functional_mixed_footprint": 3
+        },
+        {
+          "model": "gpt-oss-120b",
+          "rres_median": 0.822222,
+          "copied_fraction_median": 0.4829,
+          "copy_heavy_pass": 6,
+          "compact_pass": 6,
+          "functional_mixed_footprint": 5
+        }
+      ]
+    },
+    "all5_without_glm": {
+      "n": 24,
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "rres_median": 0.9964985,
+          "copied_fraction_median": 0.937548,
+          "copy_heavy_pass": 23,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 0
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "rres_median": 0.994158,
+          "copied_fraction_median": 0.9682885,
+          "copy_heavy_pass": 22,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 1
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.6793055,
+          "copied_fraction_median": 0.369288,
+          "copy_heavy_pass": 10,
+          "compact_pass": 8,
+          "functional_mixed_footprint": 6
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "rres_median": 0.935276,
+          "copied_fraction_median": 0.5913250000000001,
+          "copy_heavy_pass": 14,
+          "compact_pass": 5,
+          "functional_mixed_footprint": 5
+        },
+        {
+          "model": "gpt-oss-120b",
+          "rres_median": 0.8331664999999999,
+          "copied_fraction_median": 0.42090950000000005,
+          "copy_heavy_pass": 10,
+          "compact_pass": 8,
+          "functional_mixed_footprint": 6
+        }
+      ]
+    },
+    "pro_flash": {
+      "n": 105,
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "rres_median": 0.992644,
+          "copied_fraction_median": 0.967655,
+          "copy_heavy_pass": 100,
+          "compact_pass": 3,
+          "functional_mixed_footprint": 2
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "rres_median": 0.996124,
+          "copied_fraction_median": 0.96997,
+          "copy_heavy_pass": 102,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 2
+        }
+      ]
+    },
+    "pro_luna": {
+      "n": 97,
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "rres_median": 0.992644,
+          "copied_fraction_median": 0.96558,
+          "copy_heavy_pass": 90,
+          "compact_pass": 4,
+          "functional_mixed_footprint": 3
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.69746,
+          "copied_fraction_median": 0.191283,
+          "copy_heavy_pass": 50,
+          "compact_pass": 37,
+          "functional_mixed_footprint": 10
+        }
+      ]
+    },
+    "deepseek_luna": {
+      "n": 92,
+      "models": [
+        {
+          "model": "deepseek-v4-flash",
+          "rres_median": 0.9992995,
+          "copied_fraction_median": 0.9697465000000001,
+          "copy_heavy_pass": 89,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 2
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.7129274999999999,
+          "copied_fraction_median": 0.2036415,
+          "copy_heavy_pass": 48,
+          "compact_pass": 34,
+          "functional_mixed_footprint": 10
+        }
+      ]
+    },
+    "pro_flash_luna": {
+      "n": 90,
+      "models": [
+        {
+          "model": "deepseek-v4-pro",
+          "rres_median": 0.9928205,
+          "copied_fraction_median": 0.9677495,
+          "copy_heavy_pass": 85,
+          "compact_pass": 3,
+          "functional_mixed_footprint": 2
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "rres_median": 0.9983505,
+          "copied_fraction_median": 0.9710445,
+          "copy_heavy_pass": 87,
+          "compact_pass": 1,
+          "functional_mixed_footprint": 2
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.69248,
+          "copied_fraction_median": 0.23853600000000003,
+          "copy_heavy_pass": 46,
+          "compact_pass": 34,
+          "functional_mixed_footprint": 10
+        }
+      ]
+    },
+    "glm_qwen": {
+      "n": 41,
+      "models": [
+        {
+          "model": "glm-5.3-flash",
+          "rres_median": 1.007953,
+          "copied_fraction_median": 0.931553,
+          "copy_heavy_pass": 38,
+          "compact_pass": 0,
+          "functional_mixed_footprint": 3
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "rres_median": 0.941176,
+          "copied_fraction_median": 0.8624,
+          "copy_heavy_pass": 28,
+          "compact_pass": 6,
+          "functional_mixed_footprint": 7
+        }
+      ]
+    },
+    "glm_luna": {
+      "n": 59,
+      "models": [
+        {
+          "model": "glm-5.3-flash",
+          "rres_median": 1.035508,
+          "copied_fraction_median": 0.937546,
+          "copy_heavy_pass": 55,
+          "compact_pass": 0,
+          "functional_mixed_footprint": 4
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "rres_median": 0.671111,
+          "copied_fraction_median": 0.275,
+          "copy_heavy_pass": 27,
+          "compact_pass": 25,
+          "functional_mixed_footprint": 7
+        }
+      ]
+    }
+  },
+  "section_5_3": {
+    "semantic_labels_assigned": false,
+    "reason": "Protocol forbids inferring primary semantic cause from evaluator last line; annotation CSV not produced in this pass.",
+    "denominators": {
+      "deepseek-v4-pro": 35,
+      "deepseek-v4-flash": 42,
+      "gpt-5.6-luna": 42,
+      "glm-5.3-flash": 44,
+      "qwen3.6-35b-a3b-fp8": 62,
+      "gpt-oss-120b": 112
+    },
+    "empty_excluded_from_5_3": {
+      "deepseek-v4-pro": 0,
+      "deepseek-v4-flash": 0,
+      "gpt-5.6-luna": 6,
+      "glm-5.3-flash": 38,
+      "qwen3.6-35b-a3b-fp8": 25,
+      "gpt-oss-120b": 2
+    }
+  },
+  "case_study_seeds": {
+    "qwen_empty_tve_example": "babel__plural_core__001",
+    "deepseek_public_example": "alembic__revision_map_core__hard3_001",
+    "deepseek_hidden_example": "aiohttp__url_params_core__hard3_001",
+    "deepseek_isolation_example": "typer__command_parser_core__001",
+    "pro_public_example": "alembic__revision_map_core__hard3_001",
+    "pro_hidden_example": "aiohttp__url_params_core__hard3_001",
+    "deepseek_highest_rres_pass": [
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "rres": 18.411765,
+        "copied_fraction": 0.916933
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "rres": 9.555556,
+        "copied_fraction": 0.837209
+      },
+      {
+        "task_id": "apscheduler__cron_trigger_core__hard3_001",
+        "rres": 8.983051,
+        "copied_fraction": 0.573585
+      },
+      {
+        "task_id": "itsdangerous__timed_serializer_core__001",
+        "rres": 8.769231,
+        "copied_fraction": 0.391813
+      },
+      {
+        "task_id": "transitions__state_machine_core__hard3_001",
+        "rres": 6.816,
+        "copied_fraction": 0.181925
+      }
+    ],
+    "luna_lowest_rres_pass": [
+      {
+        "task_id": "bleach__sanitize_core__001",
+        "rres": 0.024044,
+        "copied_fraction": 0.048485
+      },
+      {
+        "task_id": "networkx__dag_topo_core__001",
+        "rres": 0.034768,
+        "copied_fraction": 0.113757
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "rres": 0.045007,
+        "copied_fraction": 0.075294
+      },
+      {
+        "task_id": "typer__command_parser_core__001",
+        "rres": 0.045894,
+        "copied_fraction": 0.009242
+      },
+      {
+        "task_id": "passlib__hash_context_core__001",
+        "rres": 0.047391,
+        "copied_fraction": 0.0
+      }
+    ]
+  }
+}

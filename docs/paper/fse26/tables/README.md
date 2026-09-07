@@ -1,29 +1,29 @@
 # Generated analysis tables for the FSE draft
 
-> **Status: derived · Last regenerated: 2026-09-02**
->
-> **Not the Python-200′ leaderboard.** Regenerated from exploratory CSVs.
+> **Status: derived · Last regenerated: 2026-09-06**
 
-## Regenerate
+Headline numbers come from
+`reports/paper_analysis/python150_prime_v2_analysis_20260905/`.
+Official Hard-50 totals come from
+`reports/paper_analysis/python200_prime_v2_results_20260905/`.
 
-From the repository root, with a Python that has `pandas`:
-
-```bash
-cd reports/paper_analysis/python150_exploratory_20260830
-python3.12 export_latex_tables.py
-```
-
-Sources:
-
-- `reports/paper_analysis/python150_exploratory_20260830/tables/*.csv`
-- `reports/paper_analysis/python200_hard_main_20260829/summary.json`
-
-## Contents
+## Headline (use these)
 
 | File | Role |
 | --- | --- |
-| `tab_python150_*.tex` | Frozen Python-150 four-model exploratory matrix |
-| `tab_python200_*.tex` | 2026-08-29 received package, eligibility-blocked |
-| `tab_python200_standard_labels.tex` | freeze v2 contract labels **200/0**; not a leaderboard |
-| `tab_python200_eligibility_slice.tex` / `tab_python200_fixed116_*.tex` / `tab_python200_violators.tex` | predecessor freeze `474862c2` labels × 2026-08-29 received package; 81/96 stays here |
-| `tab_python200_c4_advisory.tex` | predecessor advisory overlaps vs freeze v2 C4 = 0 |
+| `tab_python150_v2_main.tex` | Python-150 Functional Pass |
+| `tab_python150_v2_funnel.tex` | Mutually exclusive first outcomes |
+| `tab_python150_v2_process.tex` | Empty submissions |
+| `tab_python150_v2_mechanism.tex` | Pro+Flash L1 causes ($n=63$) |
+| `tab_python150_v2_postsample.tex` | Luna/Qwen/OSS L1 sample |
+| `tab_python150_v2_construction.tex` | Core-100 vs in-suite hard3 |
+| `tab_python150_v2_lift.tex` | Lift type |
+| `tab_python150_v2_compactness.tex` | Pass-conditioned RRES/copy |
+| `tab_python150_v2_pairwise.tex` | McNemar |
+| `tab_hard50_v2.tex` | Official Hard-50 appendix |
+
+## Historical (not the leaderboard)
+
+`tab_python150_*.tex` without `_v2_` and `tab_python200_*` except
+`tab_python200_standard_labels.tex` / violators / C4 are predecessor or
+exploratory artifacts. Do not caption them as freeze~v2 Main.

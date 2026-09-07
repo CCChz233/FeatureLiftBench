@@ -1,0 +1,85 @@
+% Auto-generated from python150_paper_analysis_final/build.py
+% Python-150 freeze v2. Functional Pass = build /\ public /\ hidden /\ isolation.
+
+% Table 1 — Main capability
+\begin{tabular}{lrrrrr}
+\hline
+Model & Pass & 95\% CI & Core-100 & hard3 & Empty \\
+\hline
+Pro & 115/150 (76.7\%) & 69.3–82.7\% & 94/100 (94.0\%) & 21/50 (42.0\%) & 0 \\
+Flash & 108/150 (72.0\%) & 64.3–78.6\% & 90/100 (90.0\%) & 18/50 (36.0\%) & 0 \\
+Luna & 102/150 (68.0\%) & 60.2–74.9\% & 82/100 (82.0\%) & 20/50 (40.0\%) & 6 \\
+GLM & 68/150 (45.3\%) & 37.6–53.3\% & 62/100 (62.0\%) & 6/50 (12.0\%) & 38 \\
+Qwen & 63/150 (42.0\%) & 34.4–50.0\% & 55/100 (55.0\%) & 8/50 (16.0\%) & 25 \\
+OSS & 36/150 (24.0\%) & 17.9–31.4\% & 25/100 (25.0\%) & 11/50 (22.0\%) & 2 \\
+\hline
+\end{tabular}
+
+% Pass-conditioned compactness
+\begin{tabular}{lrrrrrrr}
+\hline
+Model & $n$ & Mean RRES & Median RRES & IQR RRES & Mean copy & Median copy & IQR copy \\
+\hline
+Pro & 115 & 1.781 & 0.993 & [0.769, 1.290] & 0.777 & 0.957 & [0.716, 0.987] \\
+Flash & 108 & 1.730 & 0.998 & [0.893, 1.221] & 0.810 & 0.968 & [0.839, 0.990] \\
+Luna & 102 & 0.953 & 0.815 & [0.310, 1.002] & 0.415 & 0.164 & [0.048, 0.967] \\
+GLM & 68 & 2.473 & 1.013 & [0.917, 1.158] & 0.843 & 0.947 & [0.811, 0.979] \\
+Qwen & 63 & 1.556 & 0.975 & [0.650, 1.228] & 0.645 & 0.757 & [0.326, 0.972] \\
+OSS & 36 & 1.176 & 0.983 & [0.292, 1.648] & 0.305 & 0.180 & [0.007, 0.530] \\
+\hline
+\end{tabular}
+
+% Figure 2 companion — difficulty spectrum
+\begin{tabular}{lrrr}
+\hline
+Solved & Core-100 & hard3 & Total \\
+\hline
+0/6 & 6 & 22 & 28 \\
+1/6 & 0 & 7 & 7 \\
+2/6 & 4 & 5 & 9 \\
+3/6 & 17 & 5 & 22 \\
+4/6 & 31 & 5 & 36 \\
+5/6 & 27 & 4 & 31 \\
+6/6 & 15 & 2 & 17 \\
+\hline
+\end{tabular}
+
+% Lift-type inventory (confounder)
+\begin{tabular}{lrrrr}
+\hline
+Split & Direct & Adapted & Composite & Total \\
+\hline
+Core-100 & 53 & 44 & 3 & 100 \\
+hard3 & 3 & 32 & 15 & 50 \\
+\hline
+\end{tabular}
+
+% Independent gates (non-exclusive, delivered packages)
+\begin{tabular}{lrrrrrr}
+\hline
+Model & Usable & Build fail & Public fail & Hidden fail & Isolation fail & Isolation residual \\
+\hline
+Pro & 150 & 0 & 25 & 29 & 0 & 0 \\
+Flash & 150 & 0 & 26 & 36 & 1 & 1 \\
+Luna & 144 & 3 & 30 & 35 & 3 & 0 \\
+GLM & 112 & 3 & 34 & 38 & 5 & 2 \\
+Qwen & 125 & 6 & 41 & 58 & 8 & 0 \\
+OSS & 148 & 18 & 88 & 100 & 22 & 1 \\
+\hline
+\end{tabular}
+
+% Paired compactness Pro vs Luna
+\begin{tabular}{lrr}
+\hline
+ & Pro & Luna \\
+\hline
+$n$ jointly passing & \multicolumn{2}{c}{97} \\
+Median copy fraction & 0.966 & 0.191 \\
+Median paired difference (Pro$-$Luna) & \multicolumn{2}{c}{0.213} \\
+Wilcoxon $p$ & \multicolumn{2}{c}{1.2e-13} \\
+Rank-biserial $r$ & \multicolumn{2}{c}{0.881} \\
+\hline
+\end{tabular}
+
+% Logistic strong3: Composite OR=0.65, p=0.554; hard3 OR=0.09
+% Flash vs Luna n=92, Wilcoxon p=4.2e-13

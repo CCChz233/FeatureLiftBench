@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "cookiecutter__repo_finder_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.RepoFinder",
+    "method:featurelifted.RepoFinder.find_template",
+    "function:featurelifted.expand_abbreviation",
+    "function:featurelifted.safe_join",
+    "exception:featurelifted.UnsafePathError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When a repository abbreviation is supplied, expand_abbreviation and RepoFinder expand it using configured abbreviations before resolving the template path."
+    },
+    {
+      "id": "B002",
+      "text": "Abbreviations expand short repo prefixes; replay overrides take precedence."
+    },
+    {
+      "id": "B003",
+      "text": "`safe_join` rejects path traversal and absolute segments."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.RepoFinder`, `featurelifted.RepoFinder.find_template`, `featurelifted.expand_abbreviation`, `featurelifted.safe_join`, `featurelifted.UnsafePathError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: cookiecutter"
+    }
+  ],
+  "log": "E           IndexError: Replacement index 1 out of range for positional args tuple\nsubmission-runtime/featurelifted/__init__.py:63: IndexError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nThis module provides a small, self-contained ``RepoFinder`` API together with\nthe abbreviation-expansion and safe path-joining helpers needed to locate a\ntemplate directory from a repository specification.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nfrom typing import Any\n\n\nclass UnsafePathError(Exception):\n    \"\"\"Raised when a path would escape its base directory or is absolute.\"\"\"\n\n\ndef safe_join(base: str, *parts: str) -> str:\n    \"\"\"Join ``parts`` onto ``base`` while rejecting unsafe path segments.\n\n\n## featurelifted/__init__.py:14\n\nclass UnsafePathError(Exception):\n    \"\"\"Raised when a path would escape its base directory or is absolute.\"\"\"\n\n\ndef safe_join(base: str, *parts: str) -> str:\n    \"\"\"Join ``parts`` onto ``base`` while rejecting unsafe path segments.\n\n    Absolute segments and any combination of segments that resolves outside of\n    ``base`` are rejected with :class:`UnsafePathError`.\n    \"\"\"\n    base = os.fspath(base)\n\n    for part in parts:\n        part = os.fspath(part)\n        if os.path.isabs(part):\n            raise UnsafePathError(\n                f\"Absolute path segments are not allowed: {part!r}\"\n            )\n\n## featurelifted/__init__.py:18\n\ndef safe_join(base: str, *parts: str) -> str:\n    \"\"\"Join ``parts`` onto ``base`` while rejecting unsafe path segments.\n\n    Absolute segments and any combination of segments that resolves outside of\n    ``base`` are rejected with :class:`UnsafePathError`.\n    \"\"\"\n    base = os.fspath(base)\n\n    for part in parts:\n        part = os.fspath(part)\n        if os.path.isabs(part):\n            raise UnsafePathError(\n                f\"Absolute path segments are not allowed: {part!r}\"\n            )\n\n    joined = os.path.join(base, *parts)\n\n    base_abs = os.path.abspath(base)\n\n## featurelifted/__init__.py:22\n    Absolute segments and any combination of segments that resolves outside of\n    ``base`` are rejected with :class:`UnsafePathError`.\n    \"\"\"\n    base = os.fspath(base)\n\n    for part in parts:\n        part = os.fspath(part)\n        if os.path.isabs(part):\n            raise UnsafePathError(\n                f\"Absolute path segments are not allowed: {part!r}\"\n            )\n\n    joined = os.path.join(base, *parts)\n\n    base_abs = os.path.abspath(base)\n    joined_abs = os.path.abspath(joined)\n    try:\n        stays_within_base = os.path.commonpath([base_abs, joined_abs]) == base_abs\n    except ValueError:"
+}

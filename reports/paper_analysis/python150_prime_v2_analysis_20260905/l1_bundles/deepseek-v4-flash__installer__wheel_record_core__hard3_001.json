@@ -1,0 +1,40 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "installer__wheel_record_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "resource_metadata_loading",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.parse_wheel_record",
+    "function:featurelifted.find_dist_info",
+    "function:featurelifted.script_name"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`parse_wheel_record` parses CSV RECORD rows into `(path, digest, size)` tuples."
+    },
+    {
+      "id": "B002",
+      "text": "`find_dist_info` locates a unique `.dist-info` directory among archive names."
+    },
+    {
+      "id": "B003",
+      "text": "`script_name` derives console script names from entry point targets."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.parse_wheel_record`, `featurelifted.find_dist_info`, `featurelifted.script_name` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: installer"
+    }
+  ],
+  "log": ">       with pytest.raises(ValueError):\nE       Failed: DID NOT RAISE <class 'ValueError'>\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n\n- :func:`parse_wheel_record` -- parse the contents of a :pep:`376` ``RECORD`` file.\n- :func:`find_dist_info` -- locate the unique ``.dist-info`` directory in a wheel.\n- :func:`script_name` -- derive the console-script name from an entry point line.\n\nThe implementation is self contained and uses only the Python standard library.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport io\n\n__all__ = [\n    \"parse_wheel_record\",\n    \"find_dist_info\",\n    \"script_name\",\n]\n\n\n## featurelifted/__init__.py:6\n- :func:`parse_wheel_record` -- parse the contents of a :pep:`376` ``RECORD`` file.\n- :func:`find_dist_info` -- locate the unique ``.dist-info`` directory in a wheel.\n- :func:`script_name` -- derive the console-script name from an entry point line.\n\nThe implementation is self contained and uses only the Python standard library.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport io\n\n__all__ = [\n    \"parse_wheel_record\",\n    \"find_dist_info\",\n    \"script_name\",\n]\n\n__version__ = \"0.0.0\"\n\n## featurelifted/__init__.py:7\n- :func:`find_dist_info` -- locate the unique ``.dist-info`` directory in a wheel.\n- :func:`script_name` -- derive the console-script name from an entry point line.\n\nThe implementation is self contained and uses only the Python standard library.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport csv\nimport io\n\n__all__ = [\n    \"parse_wheel_record\",\n    \"find_dist_info\",\n    \"script_name\",\n]\n\n__version__ = \"0.0.0\"\n\n\n## featurelifted/__init__.py:18\n__all__ = [\n    \"parse_wheel_record\",\n    \"find_dist_info\",\n    \"script_name\",\n]\n\n__version__ = \"0.0.0\"\n\n\ndef parse_wheel_record(content: str) -> list[tuple[str, str | None, int | None]]:\n    \"\"\"Parse the contents of a :pep:`376` ``RECORD`` file.\n\n    Each CSV row in the record is parsed into a ``(path, digest, size)`` tuple:\n\n    - ``path`` is the file's path, with any Windows path separators (``\\\\``)\n      normalized to ``/``.\n    - ``digest`` is the hash column (e.g. ``\"sha256=...\"``) when present, else\n      ``None``.\n    - ``size`` is the file's size in bytes when present, else ``None``."
+}

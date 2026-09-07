@@ -1,0 +1,50 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "responses__request_matcher_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.MockResponseRegistry",
+    "attribute:featurelifted.MockResponseRegistry._responses",
+    "method:featurelifted.MockResponseRegistry.add",
+    "attribute:featurelifted.MockResponseRegistry.call_history",
+    "method:featurelifted.MockResponseRegistry.find",
+    "method:featurelifted.MockResponseRegistry.reset",
+    "class:featurelifted.MockResponse",
+    "function:featurelifted.query_string_matcher",
+    "function:featurelifted.header_matcher"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Register `MockResponse` objects and find the first matching `PreparedRequest`."
+    },
+    {
+      "id": "B002",
+      "text": "Support `query_string_matcher` and `header_matcher` helper matchers."
+    },
+    {
+      "id": "B003",
+      "text": "`once=True` responses are removed after the first successful match."
+    },
+    {
+      "id": "B004",
+      "text": "`reset()` clears registered responses and call history."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.MockResponseRegistry`, `featurelifted.MockResponseRegistry._responses`, `featurelifted.MockResponseRegistry.add`, `featurelifted.MockResponseRegistry.call_history`, `featurelifted.MockResponseRegistry.find`, `featurel"
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: responses"
+    }
+  ],
+  "log": "        assert first is not None\n        assert second is None\n>       assert len(registry.call_history) == 2\nE       AssertionError: assert 1 == 2\nE        +  where 1 = len([Call(request=<PreparedRequest [GET]>, response=MockResponse(url='http://example.com?a=1', method='GET', status=200, b...cals>.match at 0x7187382f6e80>, <function header_matcher.<locals>.match at 0x7187382f6de0>], \nE        +    where [Call(request=<PreparedRequest [GET]>, response=MockResponse(url='http://example.com?a=1', method='GET', status=200, b...cals>.match at 0x7187382f6e80>, <function header_matcher.<locals>.match at 0x7187382f6de0>], call_c\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nThis module provides an in-memory registry of :class:`MockResponse` objects that\ncan be used to find the first registered response matching a prepared request,\nplus the ``query_string_matcher`` and ``header_matcher`` helpers.\n\nIt performs no network access, socket patching, or HTTP adapter interception.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom collections import namedtuple\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Callable\nfrom typing import Dict\nfrom typing import List\nfrom typing import Optional\nfrom typing import Tuple\n\n## featurelifted/__init__.py:4\nThis module provides an in-memory registry of :class:`MockResponse` objects that\ncan be used to find the first registered response matching a prepared request,\nplus the ``query_string_matcher`` and ``header_matcher`` helpers.\n\nIt performs no network access, socket patching, or HTTP adapter interception.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom collections import namedtuple\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Callable\nfrom typing import Dict\nfrom typing import List\nfrom typing import Optional\nfrom typing import Tuple\nfrom typing import TYPE_CHECKING\n\n## featurelifted/__init__.py:5\ncan be used to find the first registered response matching a prepared request,\nplus the ``query_string_matcher`` and ``header_matcher`` helpers.\n\nIt performs no network access, socket patching, or HTTP adapter interception.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom collections import namedtuple\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Callable\nfrom typing import Dict\nfrom typing import List\nfrom typing import Optional\nfrom typing import Tuple\nfrom typing import TYPE_CHECKING\nfrom urllib.parse import parse_qsl\n\n## featurelifted/__init__.py:29\n__all__ = [\n    \"MockResponse\",\n    \"MockResponseRegistry\",\n    \"query_string_matcher\",\n    \"header_matcher\",\n]\n\n# A recorded call inside the registry.\nCall = namedtuple(\"Call\", [\"request\", \"response\"])\n\n_Reason = str\n_Matcher = Callable[[\"PreparedRequest\"], Tuple[bool, _Reason]]\n\n\ndef _stringify(value: Any) -> str:\n    \"\"\"Stringify scalar query values the way ``requests`` encodes them.\"\"\"\n    if value is None:\n        return \"\"\n    if isinstance(value, bool):"
+}

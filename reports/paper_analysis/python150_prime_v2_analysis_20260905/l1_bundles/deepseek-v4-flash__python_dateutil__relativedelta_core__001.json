@@ -1,0 +1,58 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "python_dateutil__relativedelta_core__001",
+  "stage": "public_failure",
+  "lift_type": "Direct",
+  "feature_family": "algorithm_data_structure",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "module:featurelifted.relativedelta",
+    "constant:featurelifted.MO",
+    "constant:featurelifted.TU",
+    "constant:featurelifted.WE",
+    "constant:featurelifted.TH",
+    "constant:featurelifted.FR",
+    "constant:featurelifted.SA",
+    "constant:featurelifted.SU",
+    "attribute:featurelifted.MO.weekday"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: relativedelta construction with relative and absolute fields. Required observable cases include absolute day replacement; subtract relativedelta."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: datetime/date addition and subtraction with month/year rollover. Required observable cases include add months to datetime; relativedelta diff months; last friday of month; yearday sets month day; non integer years month"
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: weekday nth helpers MO..SU with setpos semantics. Required observable cases include weekday constant identity; weekday nth first monday."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: normalized() for fractional day/hour cascading. Required observable cases include add days and hours; absolute day replacement; normalized fractional days."
+    },
+    {
+      "id": "B005",
+      "text": "The extracted feature must support this observable behavior: relativedelta(dt1, dt2) difference mode. Required observable cases include relativedelta diff months; subtract relativedelta."
+    },
+    {
+      "id": "B006",
+      "text": "The extracted feature must support this observable behavior: yearday/nlyearday and leapdays adjustments. Required observable cases include yearday sets month day; leapdays post february."
+    },
+    {
+      "id": "B007",
+      "text": "The package exposes the required task API paths `featurelifted.relativedelta`, `featurelifted.MO`, `featurelifted.TU`, `featurelifted.WE`, `featurelifted.TH`, `featurelifted.FR`, `featurelifted.SA`, `featurelifted.SU`, `featurelifted.MO.weekday` with the kinds and callable signat"
+    },
+    {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: dateutil"
+    }
+  ],
+  "log": "E       TypeError: 'module' object is not callable\n/workspace/evaluation-capsule/public_tests/test_public_api.py:10: TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:2\n\"\"\"\nfeaturelifted: task-scoped relativedelta arithmetic core.\n\nProvides the ``relativedelta`` module and the MO..SU weekday helpers,\nwith the standard weekday-nth arithmetic semantics.\n\"\"\"\nfrom . import relativedelta\nfrom .relativedelta import MO, TU, WE, TH, FR, SA, SU\n\n__all__ = [\"relativedelta\", \"MO\", \"TU\", \"WE\", \"TH\", \"FR\", \"SA\", \"SU\"]\n\n## featurelifted/__init__.py:4\n\nProvides the ``relativedelta`` module and the MO..SU weekday helpers,\nwith the standard weekday-nth arithmetic semantics.\n\"\"\"\nfrom . import relativedelta\nfrom .relativedelta import MO, TU, WE, TH, FR, SA, SU\n\n__all__ = [\"relativedelta\", \"MO\", \"TU\", \"WE\", \"TH\", \"FR\", \"SA\", \"SU\"]\n\n## featurelifted/__init__.py:7\n\"\"\"\nfrom . import relativedelta\nfrom .relativedelta import MO, TU, WE, TH, FR, SA, SU\n\n__all__ = [\"relativedelta\", \"MO\", \"TU\", \"WE\", \"TH\", \"FR\", \"SA\", \"SU\"]\n\n## featurelifted/__init__.py:8\nfrom . import relativedelta\nfrom .relativedelta import MO, TU, WE, TH, FR, SA, SU\n\n__all__ = [\"relativedelta\", \"MO\", \"TU\", \"WE\", \"TH\", \"FR\", \"SA\", \"SU\"]"
+}

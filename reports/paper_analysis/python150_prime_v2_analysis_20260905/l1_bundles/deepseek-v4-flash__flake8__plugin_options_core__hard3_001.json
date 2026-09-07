@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "flake8__plugin_options_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.OptionManager",
+    "class:featurelifted.PluginSpec",
+    "function:featurelifted.classify_plugins",
+    "function:featurelifted.apply_select_ignore",
+    "class:featurelifted.OptionSpec"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Register per-plugin options in `OptionManager`."
+    },
+    {
+      "id": "B002",
+      "text": "Classify plugins into tree, logical_line, and physical_line checker groups."
+    },
+    {
+      "id": "B003",
+      "text": "`apply_select_ignore` enables plugins whose codes intersect `select` and not `ignore`; when `select` is empty, ignore disables matching plugins."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.OptionManager`, `featurelifted.PluginSpec`, `featurelifted.classify_plugins`, `featurelifted.apply_select_ignore`, `featurelifted.OptionSpec` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: flake8"
+    }
+  ],
+  "log": ">       assert manager.options[\"max_line_length\"].default == 79\nE       TypeError: list indices must be integers or slices, not str\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:9: TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:6\n\n- plugins (:class:`PluginSpec`) may declare per-plugin options\n  (:class:`OptionSpec`) which can be registered with an :class:`OptionManager`;\n- plugins are classified into ``tree``, ``logical_line`` and\n  ``physical_line`` checker groups by :func:`classify_plugins`;\n- :func:`apply_select_ignore` keeps only plugins whose codes are enabled by a\n  ``select``/``ignore`` configuration.\n\"\"\"\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Iterable\n\n__all__ = (\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n\n## featurelifted/__init__.py:7\n- plugins (:class:`PluginSpec`) may declare per-plugin options\n  (:class:`OptionSpec`) which can be registered with an :class:`OptionManager`;\n- plugins are classified into ``tree``, ``logical_line`` and\n  ``physical_line`` checker groups by :func:`classify_plugins`;\n- :func:`apply_select_ignore` keeps only plugins whose codes are enabled by a\n  ``select``/``ignore`` configuration.\n\"\"\"\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Iterable\n\n__all__ = (\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n\n## featurelifted/__init__.py:9\n- plugins are classified into ``tree``, ``logical_line`` and\n  ``physical_line`` checker groups by :func:`classify_plugins`;\n- :func:`apply_select_ignore` keeps only plugins whose codes are enabled by a\n  ``select``/``ignore`` configuration.\n\"\"\"\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Iterable\n\n__all__ = (\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n\n## featurelifted/__init__.py:10\n  ``physical_line`` checker groups by :func:`classify_plugins`;\n- :func:`apply_select_ignore` keeps only plugins whose codes are enabled by a\n  ``select``/``ignore`` configuration.\n\"\"\"\nfrom __future__ import annotations\n\nfrom dataclasses import dataclass\nfrom dataclasses import field\nfrom typing import Any\nfrom typing import Iterable\n\n__all__ = (\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n)"
+}

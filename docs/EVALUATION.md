@@ -57,8 +57,11 @@ Contract Closure 的旧 **Lite V1 协议**（checker / stop / repair）是已退
 当前 cost arm **V1 = Main + 2M token cap**，见 [METHOD_V1.md](METHOD_V1.md)。
 Rescue+、Adaptive Budget V2、Test-First Lift、TD-Cognition、Exec/Self-Contract、
 CGCC-lite、FCEC 和 PDR 是历史方法研究，**停止扩样本**，见
-[archive/methods/](archive/methods/README.md)。不要在 Core-12 / Distill-24 上继续
-叠脚手架。正式信息消融是上表 Public-Feedback / Entrypoint-Hint 等臂。
+[archive/methods/](archive/methods/README.md)。**Obligation-Guided Feature Lifting**
+是未跑的 screening 臂（公开合同 ledger，无自测、无 finish 闸门），只允许
+pilot-30；规范见 [METHOD_OBLIGATION_GUIDED.md](METHOD_OBLIGATION_GUIDED.md)。
+不要在 Core-12 / Distill-24 上继续叠脚手架。正式信息消融是上表 Public-Feedback /
+Entrypoint-Hint 等臂。
 
 RQ6 只跑 **Public-feedback**，且只在 Flash-12 同日成对切片上。规范见
 [METHOD_RQ6_PUBLIC_FEEDBACK.md](archive/methods/METHOD_RQ6_PUBLIC_FEEDBACK.md)。读出是

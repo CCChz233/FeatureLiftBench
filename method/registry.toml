@@ -367,3 +367,25 @@ run_agent_flags = [
 
 [methods.cgvl.profiles]
 openhands = "openhands_deepseek_v4_flash_cgvl"
+
+[methods.obligation_guided]
+aliases = ["obligation_guided", "obligation-guided", "ogfl"]
+status = "screening"
+paper_table = false
+spec = "harness/config/methods/obligation_guided.json"
+docs = "docs/METHOD_OBLIGATION_GUIDED.md"
+description = "Screening: frozen public-contract ledger with repo and implementation evidence. No self-tests, no finish intercept. Pilot-30 only; not a paper table arm."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "full_repository",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+  "--obligation-guided",
+]
+
+[methods.obligation_guided.profiles]
+openhands = "openhands_deepseek_v4_flash_obligation_guided"

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 import urllib.error
@@ -22,6 +23,7 @@ from .openhands_usage import openhands_context_limits
 PROXY_DISABLE_ENV = "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY"
 TOTAL_TOKEN_LIMIT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"
 TOOL_ALIAS_COMPAT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOOL_ALIAS_COMPAT"
+_VERSIONED_API_PATH = re.compile(r"/v\d+$")
 
 
 @dataclass(frozen=True)
@@ -217,7 +219,9 @@ class LLMUsageProxy:
         parsed = urlsplit(base)
         base_path = parsed.path.rstrip("/")
         path = request_path
-        if base_path.endswith("/v1") and path.startswith("/v1/"):
+        # LiteLLM talks to the proxy as OpenAI (/v1/...). If the provider base
+        # already has a version suffix (/v1, /v4, ...), drop the extra /v1.
+        if _VERSIONED_API_PATH.search(base_path) and path.startswith("/v1/"):
             path = path[len("/v1") :]
         if not path.startswith("/"):
             path = "/" + path

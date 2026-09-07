@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "aiohttp__url_params_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.build_url",
+    "function:featurelifted.normalize_headers",
+    "class:featurelifted.CIMultiDict",
+    "method:featurelifted.CIMultiDict.getall",
+    "method:featurelifted.CIMultiDict.__getitem__",
+    "method:featurelifted.CIMultiDict.__setitem__",
+    "exception:featurelifted.InvalidHeaderName"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`build_url` merges query parameters into a base URL."
+    },
+    {
+      "id": "B002",
+      "text": "`normalize_headers` returns a case-insensitive `CIMultiDict`."
+    },
+    {
+      "id": "B003",
+      "text": "Invalid header names raise `InvalidHeaderName`."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.build_url`, `featurelifted.normalize_headers`, `featurelifted.CIMultiDict`, `featurelifted.CIMultiDict.getall`, `featurelifted.CIMultiDict.__getitem__`, `featurelifted.CIMultiDict.__setitem__`, `featurelifted.InvalidH"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: aiohttp"
+    }
+  ],
+  "log": "E       Failed: DID NOT RAISE <class 'featurelifted.InvalidHeaderName'>\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:18\n__all__ = (\n    \"build_url\",\n    \"normalize_headers\",\n    \"CIMultiDict\",\n    \"InvalidHeaderName\",\n)\n\n\n# RFC 9110 ``token`` production (used for HTTP header names).\n#   token = 1*tchar\n#   tchar = \"!\" / \"#\" / \"$\" / \"%\" / \"&\" / \"'\" / \"*\" / \"+\" / \"-\" / \".\" /\n#           \"^\" / \"_\" / \"`\" / \"|\" / \"~\" / DIGIT / ALPHA\n_TOKEN_RE = re.compile(r\"[0-9A-Za-z!#$%&'*+\\-.^_`|~]+\")\n\n\nclass InvalidHeaderName(ValueError):\n    \"\"\"Raised when an HTTP header name is not a valid RFC token.\"\"\"\n\n    def __init__(self, name: object = None) -> None:\n\n## featurelifted/__init__.py:19\n    \"build_url\",\n    \"normalize_headers\",\n    \"CIMultiDict\",\n    \"InvalidHeaderName\",\n)\n\n\n# RFC 9110 ``token`` production (used for HTTP header names).\n#   token = 1*tchar\n#   tchar = \"!\" / \"#\" / \"$\" / \"%\" / \"&\" / \"'\" / \"*\" / \"+\" / \"-\" / \".\" /\n#           \"^\" / \"_\" / \"`\" / \"|\" / \"~\" / DIGIT / ALPHA\n_TOKEN_RE = re.compile(r\"[0-9A-Za-z!#$%&'*+\\-.^_`|~]+\")\n\n\nclass InvalidHeaderName(ValueError):\n    \"\"\"Raised when an HTTP header name is not a valid RFC token.\"\"\"\n\n    def __init__(self, name: object = None) -> None:\n        self.name = name\n\n## featurelifted/__init__.py:20\n    \"normalize_headers\",\n    \"CIMultiDict\",\n    \"InvalidHeaderName\",\n)\n\n\n# RFC 9110 ``token`` production (used for HTTP header names).\n#   token = 1*tchar\n#   tchar = \"!\" / \"#\" / \"$\" / \"%\" / \"&\" / \"'\" / \"*\" / \"+\" / \"-\" / \".\" /\n#           \"^\" / \"_\" / \"`\" / \"|\" / \"~\" / DIGIT / ALPHA\n_TOKEN_RE = re.compile(r\"[0-9A-Za-z!#$%&'*+\\-.^_`|~]+\")\n\n\nclass InvalidHeaderName(ValueError):\n    \"\"\"Raised when an HTTP header name is not a valid RFC token.\"\"\"\n\n    def __init__(self, name: object = None) -> None:\n        self.name = name\n        super().__init__(f\"Invalid HTTP header name: {name!r}\")\n\n## featurelifted/__init__.py:21\n    \"CIMultiDict\",\n    \"InvalidHeaderName\",\n)\n\n\n# RFC 9110 ``token`` production (used for HTTP header names).\n#   token = 1*tchar\n#   tchar = \"!\" / \"#\" / \"$\" / \"%\" / \"&\" / \"'\" / \"*\" / \"+\" / \"-\" / \".\" /\n#           \"^\" / \"_\" / \"`\" / \"|\" / \"~\" / DIGIT / ALPHA\n_TOKEN_RE = re.compile(r\"[0-9A-Za-z!#$%&'*+\\-.^_`|~]+\")\n\n\nclass InvalidHeaderName(ValueError):\n    \"\"\"Raised when an HTTP header name is not a valid RFC token.\"\"\"\n\n    def __init__(self, name: object = None) -> None:\n        self.name = name\n        super().__init__(f\"Invalid HTTP header name: {name!r}\")\n"
+}

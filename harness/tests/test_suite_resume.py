@@ -139,6 +139,7 @@ class SuiteResumeTests(unittest.TestCase):
                 agent_config_summary={},
                 worker_count=1,
                 retry_rate_limit=1,
+                retry_transient_api=3,
                 retry_only_statuses=frozenset({"missing_submission", "failed", "not_evaluated"}),
                 extra_agent_passes=0,
                 max_task_attempts=None,

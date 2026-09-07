@@ -1,0 +1,44 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "tox__factor_expression_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "parse_tokenize_decode",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.expand_factors",
+    "function:featurelifted.find_envs",
+    "function:featurelifted.filter_for_env"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`find_envs` discovers environment names from brace factor expressions."
+    },
+    {
+      "id": "B002",
+      "text": "When factor expressions contain negation, filter_for_env accepts an environment only when positive factors match and negated factors do not."
+    },
+    {
+      "id": "B003",
+      "text": "find_envs expands brace and factor expressions into the deterministic set of environment names they describe."
+    },
+    {
+      "id": "B004",
+      "text": "`filter_for_env` keeps lines whose factor expressions match `env_name` and/or `env_factors`."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.expand_factors`, `featurelifted.find_envs`, `featurelifted.filter_for_env` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: tox"
+    }
+  ],
+  "log": ">       assert set(find_envs(\"{lint,test}-py\")) == {\"lint-py\", \"test-py\"}\nE       AssertionError: assert set() == {'lint-py', 'test-py'}\nE         Extra items in the right set:\nE         'test-py'\nE         'lint-py'\nE         Use -v to get more diff\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:6: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:56\n\ndef filter_for_env(value: str, env_name: str | None = None, env_factors: set[str] | None = None) -> str:\n    \"\"\"Keep only the lines of ``value`` whose factor expressions match the given environment.\"\"\"\n    factor_set = set()\n    if env_name is not None:\n        factor_set.update(chain.from_iterable((i for i, _ in a) for a in find_factor_groups(env_name)))\n    if env_factors is not None:\n        factor_set.update(env_factors)\n    current = set(factor_set)\n    current.add(sys.platform)\n    parts = sysconfig.get_platform().rsplit(\"-\", 1)\n    if len(parts) > 1:\n        machine_isa = normalize_isa(parts[-1])\n        # Add machine ISA implicitly only when the env name does not already contain\n        # an architecture factor; when it does the explicit ISA takes precedence and\n        # adding the machine ISA would cause cross-architecture conflicts.\n        if not (factor_set & KNOWN_ARCHITECTURES) and not any(normalize_isa(f) == machine_isa for f in factor_set):\n            current.add(machine_isa)\n    overall: list[str] = []\n\n## featurelifted/__init__.py:76\n    pending_skip = False\n    for factors, content in expand_factors(value):\n        if factors is None:\n            if pending_skip and not active_continuation and not content.endswith(\"\\\\\"):\n                pending_skip = False\n                continue\n            if content:\n                overall.append(content)\n            active_continuation = content.endswith(\"\\\\\") if content else active_continuation\n            pending_skip = False\n        else:\n            matched = any(all((a_name in current) ^ negate for a_name, negate in group) for group in factors)\n            if matched:\n                overall.append(content)\n                active_continuation = content.endswith(\"\\\\\")\n                pending_skip = False\n            else:\n                pending_skip = content.endswith(\"\\\\\")\n    return \"\\n\".join(overall)\n\n## featurelifted/__init__.py:96\n\ndef find_envs(value: str) -> list[str]:\n    \"\"\"Return the environment names described by the factor expressions in ``value``.\"\"\"\n    seen: set[str] = set()\n    result: list[str] = []\n    for factors, _ in expand_factors(value):\n        if factors is not None:\n            for group in factors:\n                env = explode_factor(group)\n                if env not in seen:\n                    result.append(env)\n                    seen.add(env)\n    return result\n\n\ndef extend_factors(value: str) -> Iterator[str]:\n    for group in find_factor_groups(value):\n        yield explode_factor(group)\n\n\n## featurelifted/__init__.py:100\n    result: list[str] = []\n    for factors, _ in expand_factors(value):\n        if factors is not None:\n            for group in factors:\n                env = explode_factor(group)\n                if env not in seen:\n                    result.append(env)\n                    seen.add(env)\n    return result\n\n\ndef extend_factors(value: str) -> Iterator[str]:\n    for group in find_factor_groups(value):\n        yield explode_factor(group)\n\n\ndef explode_factor(group: list[tuple[str, bool]]) -> str:\n    return \"-\".join([name for name, _ in group])\n"
+}

@@ -1,0 +1,1859 @@
+{
+  "n": 132,
+  "rows": [
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "first_public_test": "test_merge_revision_removes_branch_heads",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "is_branch_point",
+        "is_merge_point",
+        "revisions",
+        "revmap"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'NoneType' object has no attribute 'is_branch_point'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "first_public_test": "test_specific_minute_and_hour",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "datetime",
+        "nxt",
+        "start",
+        "trigger"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert datetime.datetime(2026, 9, 4, 9, 15) == datetime.datetime(2024, 1, 1, 9, 15)\nE        +  where datetime.datetime(2024, 1, 1, 9, 15) = datetime(2024, 1, 1, 9, 15)"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "first_public_test": "test_default_build_system_when_missing",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "table"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'\nE         - setuptools.build_meta\nE         + setuptools.build_meta:__legacy__\nE         ?                      +++++++++++"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "first_public_test": "test_signal_send_invokes_receiver",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "append",
+        "seen",
+        "sig"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert [] == [1]\nE         Right contains one more item: 1\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "click__lazy_command_core__hard3_001",
+      "first_public_test": "test_lazy_command_invoke",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "args",
+        "collection",
+        "invoke",
+        "make_echo"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AttributeError: 'LazyCommandCollection' object has no attribute 'invoke'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "croniter__cron_parse_core__001",
+      "first_public_test": "test_weekday_field_parses",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "BASE",
+        "datetime",
+        "get_next",
+        "itr"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert datetime.datetime(2024, 1, 16, 9, 0) == datetime.datetime(2024, 1, 22, 9, 0)\nE        +  where datetime.datetime(2024, 1, 16, 9, 0) = <bound method croniter.get_next of <featurelifted.croniter.croniter object at 0x72362dc18d90>>(datetime)\nE        +    where <bound method croniter.get_next of <featurelifted.croniter.croniter object at 0x72362dc18d90>> = <featurelifted.croniter.croni"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "decorator__signature_preserving_core__001",
+      "first_public_test": "test_metadata_signature_and_call_order",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "__doc__",
+        "__name__",
+        "a",
+        "add",
+        "append",
+        "args",
+        "b",
+        "caller",
+        "calls",
+        "func",
+        "inspect",
+        "kwargs",
+        "signature"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]\nE         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "email_validator__validate_core__001",
+      "first_public_test": "",
+      "error_types": "ImportError;SyntaxError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E   ImportError: cannot import name '_idna' from 'featurelifted' (unknown location)"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "filelock__reentrant_lock_core__001",
+      "first_public_test": "test_context_and_reentrant_release",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "exists",
+        "lock",
+        "path"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert (not False and not True)\nE        +  where False = <featurelifted.FileLock object at 0x7939413cba10>.is_locked\nE        +  and   True = <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')>()\nE        +    where <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reent"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "first_public_test": "test_option_manager_registers_plugin_options",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "default",
+        "manager",
+        "options",
+        "plugin",
+        "register_options"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'OptionManager' object has no attribute 'register_options'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "flask__route_dispatch_core__001",
+      "first_public_test": "test_static_and_typed_routes",
+      "error_types": "TypeError",
+      "extra_names": [
+        "app",
+        "user_id"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           TypeError: route handler must return a string, bytes, tuple, or Response"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "fs__url_opener_core__hard3_001",
+      "first_public_test": "test_parse_fs_url_and_open",
+      "error_types": "TypeError",
+      "extra_names": [
+        "fs",
+        "params",
+        "path",
+        "registry",
+        "scheme",
+        "subpath"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: 'NoneType' object is not callable"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "first_public_test": "test_normalize_project_metadata",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "normalized",
+        "project"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AssertionError: assert 'my package' == 'my-package'\nE         - my-package\nE         ?   ^\nE         + my package\nE         ?   ^"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "jinja2__extensions_core__001",
+      "first_public_test": "",
+      "error_types": "ImportError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E   ImportError: cannot import name 'Environment' from 'featurelifted' (unknown location)"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "first_public_test": "test_data_path_adds_requested_subdir",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "env",
+        "paths"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['/usr/share/...yter/kernels'] == ['/usr/local/...yter/kernels']\nE         At index 0 diff: '/usr/share/jupyter/kernels' != '/usr/local/share/jupyter/kernels'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "license_expression__policy_core__hard3_001",
+      "first_public_test": "test_alias_normalization_and_precedence_rendering",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "licensing",
+        "make_licensing",
+        "parsed",
+        "render",
+        "symbol"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: '_BinaryNode' object has no attribute 'render'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "first_public_test": "test_plugin_collection_runs_event_by_priority",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "collection",
+        "hooks"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [] == ['b', 'a']\nE         Right contains 2 more items, first extra item: 'b'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "first_public_test": "test_multidict_duplicate_keys_and_getall",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "md"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert 1 == 2"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "first_public_test": "test_css_id_selector",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "root"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert '<p id=\"main\">hi</p>' == 'hi'\nE         - hi\nE         + <p id=\"main\">hi</p>"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "first_public_test": "test_historic_replays_for_late_registration",
+      "error_types": "TypeError",
+      "extra_names": [
+        "append",
+        "call_historic",
+        "hook",
+        "seen",
+        "value"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       TypeError: HookCaller.call_historic() got multiple values for argument 'result_callback'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "first_public_test": "test_parse_main_and_optional_groups",
+      "error_types": "TypeError",
+      "extra_names": [
+        "groups",
+        "name",
+        "optional",
+        "project"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           TypeError: dependencies for group 'main' must be a list"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "pytest__ini_markers_core__001",
+      "first_public_test": "test_parse_multiline_markers",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "lines",
+        "raw",
+        "reg"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AssertionError: assert ' web test' == 'web test'\nE         - web test\nE         +  web test\nE         ? +"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "first_public_test": "test_render_markdown_content_type",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "html",
+        "warnings"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       assert 'markdown' in '<h1 id=\"user-content-title\">Title</h1>\\n'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "first_public_test": "test_item_loader_applies_processors",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Product",
+        "item",
+        "loader"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E   AttributeError: 'list' object has no attribute 'strip'"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "first_public_test": "test_version_from_tag",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '1.2.3+g1234567' == '1.2.3'\nE         - 1.2.3\nE         + 1.2.3+g1234567"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "first_public_test": "test_find_envs_brace_groups",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert set() == {'lint-py', 'test-py'}\nE         Extra items in the right set:\nE         'test-py'\nE         'lint-py'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "first_public_test": "test_basic_schema_validation",
+      "error_types": "TypeError;NameError;ValueError;SyntaxError",
+      "extra_names": [
+        "isValid",
+        "results",
+        "schema"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E               SyntaxError: Schema expressions must be enclosed by a validator.\nE           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator.\nE           SyntaxError: Invalid schema expression: 'str'. Schema expressions must be enclosed by a validator. at node 'name'\nE           SyntaxError: Schema error in file schema\nE           Invalid schema ex"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "first_public_test": "test_merge_revision_removes_branch_heads",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "is_branch_point",
+        "is_merge_point",
+        "revisions",
+        "revmap"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'NoneType' object has no attribute 'is_branch_point'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "first_public_test": "test_specific_minute_and_hour",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "datetime",
+        "nxt",
+        "start",
+        "trigger"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert datetime.datetime(2024, 1, 1, 9, 15, tzinfo=datetime.timezone.utc) == datetime.datetime(2024, 1, 1, 9, 15)\nE        +  where datetime.datetime(2024, 1, 1, 9, 15) = datetime(2024, 1, 1, 9, 15)"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "arrow__parse_format_core__001",
+      "first_public_test": "test_get_iso_datetime",
+      "error_types": "ValueError",
+      "extra_names": [
+        "a",
+        "hour",
+        "minute"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.parser.ParserError: Could not match input '2020-01-15 12:30:00' to any of the following formats: YYYY-MM-DD HH:mm:ss ZZ, YYYY-M-DD HH:mm:ss ZZ, YYYY-M-D HH:mm:ss ZZ, YYYY/MM/DD HH:mm:ss ZZ, YYYY/M/DD HH:mm:ss ZZ, YYYY/M/D HH:mm:ss ZZ, YYYY.MM.DD HH:mm:ss ZZ, YYYY.M.DD HH:mm:ss ZZ, YYYY.M.D HH:mm:ss ZZ, YYYYMMDD HH:mm:ss ZZ, YYYY-DDDD HH:mm:ss ZZ, YYYYDDDD HH:mm:ss ZZ, YYY"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "first_public_test": "test_default_build_system_when_missing",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "table"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'\nE         - setuptools.build_meta\nE         + setuptools.build_meta:__legacy__\nE         ?                      +++++++++++"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "first_public_test": "test_signal_send_invokes_receiver",
+      "error_types": "ValueError",
+      "extra_names": [
+        "append",
+        "seen",
+        "sig"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           ValueError: Signal receiver must accept keyword arguments."
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "click__lazy_command_core__hard3_001",
+      "first_public_test": "test_lazy_command_invoke",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "args",
+        "collection",
+        "invoke",
+        "make_echo"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AttributeError: 'LazyCommandCollection' object has no attribute 'invoke'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "click__option_parser__001",
+      "first_public_test": "test_command_options_arguments_and_choice_errors",
+      "error_types": "AssertionError;TypeError",
+      "extra_names": [
+        "Choice",
+        "argument",
+        "bad",
+        "cli",
+        "click",
+        "command",
+        "count",
+        "echo",
+        "exit_code",
+        "mode",
+        "name",
+        "option",
+        "output",
+        "result",
+        "runner",
+        "strip"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert 1 == 0\nE        +  where 1 = <Result TypeError(\"OptionParser.add_option() got an unexpected keyword argument 'action'\")>.exit_code"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "configobj__roundtrip_config_core__001",
+      "first_public_test": "test_write_roundtrip_keys",
+      "error_types": "TypeError",
+      "extra_names": [
+        "again",
+        "conf",
+        "join",
+        "splitlines",
+        "text"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           TypeError: expected str, bytes or os.PathLike object, not NoneType"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "first_public_test": "test_find_template_with_abbreviation",
+      "error_types": "IndexError",
+      "extra_names": [
+        "finder",
+        "result"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           IndexError: Replacement index 1 out of range for positional args tuple"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "coverage__report_core__001",
+      "first_public_test": "test_xml_file_emits_line_elements",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "_FakeCoverage",
+        "_FakeFileReporter",
+        "analysis",
+        "config",
+        "createDocument",
+        "dom",
+        "elements",
+        "getAttribute",
+        "getDOMImplementation",
+        "getElementsByTagName",
+        "impl",
+        "line_numbers",
+        "minidom",
+        "node",
+        "package",
+        "reporter",
+        "xclass",
+        "xml"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: '_FakeCoverage' object has no attribute 'skip_empty'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "coverage__source_selection_core__001",
+      "first_public_test": "test_source_selector_honors_source_tree",
+      "error_types": "",
+      "extra_names": [
+        "inside",
+        "mkdir",
+        "outside",
+        "pkg",
+        "selector",
+        "src",
+        "write_text"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           PermissionError: forbidden upstream import: coverage"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "first_public_test": "test_load_zone_caches",
+      "error_types": "",
+      "extra_names": [
+        "TZIF",
+        "name",
+        "resolver",
+        "zone"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.exceptions.InvalidTZFileError: tzfile data must be bytes"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "decorator__signature_preserving_core__001",
+      "first_public_test": "test_metadata_signature_and_call_order",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "__doc__",
+        "__name__",
+        "a",
+        "add",
+        "append",
+        "args",
+        "b",
+        "caller",
+        "calls",
+        "func",
+        "inspect",
+        "kwargs",
+        "signature"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]\nE         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})\nE         Use -v to get more diff"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "dynaconf__settings_merge_core__001",
+      "first_public_test": "test_dynaconf_toml_and_env_override",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "TemporaryDirectory",
+        "environ",
+        "fh",
+        "join",
+        "os",
+        "path",
+        "settings",
+        "td",
+        "tempfile",
+        "write"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           AssertionError: assert None == 'localhost'\nE            +  where None = <featurelifted.core.Dynaconf object at 0x7ddd17555fd0>.HOST"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "faker__provider_core__001",
+      "first_public_test": "test_en_us_person_address_and_phone_are_seeded",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "fake",
+        "isdigit",
+        "name",
+        "phone",
+        "startswith"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Faker' object has no attribute 'name'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "first_public_test": "test_option_manager_registers_plugin_options",
+      "error_types": "TypeError",
+      "extra_names": [
+        "default",
+        "manager",
+        "options",
+        "plugin",
+        "register_options"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: OptionManager.register_options() missing 1 required positional argument: 'options'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "flask__route_dispatch_core__001",
+      "first_public_test": "test_static_and_typed_routes",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "app",
+        "user_id"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert <Response 200 [b'hello'] == <Response 200 [b'hello']\nE        +  where <Response 200 [b'hello'] = <bound method App.dispatch of <featurelifted.app.App object at 0x7216e1ec29d0>>('/hello')\nE        +    where <bound method App.dispatch of <featurelifted.app.App object at 0x7216e1ec29d0>> = <featurelifted.app.App object at 0x7216e1ec29d0>.dispatch\nE        +  and   <Re"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "fs__url_opener_core__hard3_001",
+      "first_public_test": "test_parse_fs_url_and_open",
+      "error_types": "ValueError",
+      "extra_names": [
+        "fs",
+        "params",
+        "path",
+        "registry",
+        "scheme",
+        "subpath"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           ValueError: factory must be a callable, not None. Provide a factory or explicitly register None only for protocols you intentionally want to disable."
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "first_public_test": "test_normalize_project_metadata",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "normalized",
+        "project"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AssertionError: assert 'my package' == 'my-package'\nE         - my-package\nE         ?   ^\nE         + my package\nE         ?   ^"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "jinja2__lexer_parser_core__001",
+      "first_public_test": "test_parse_variable_output",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "body",
+        "env",
+        "name",
+        "node",
+        "output",
+        "tree"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Template' object has no attribute 'body'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "first_public_test": "test_data_path_adds_requested_subdir",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "env",
+        "paths"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['/usr/share/...yter/kernels'] == ['/usr/local/...yter/kernels']\nE         At index 0 diff: '/usr/share/jupyter/kernels' != '/usr/local/share/jupyter/kernels'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "license_expression__policy_core__hard3_001",
+      "first_public_test": "test_policy_allows_known_allowed_symbols",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "licensing",
+        "make_licensing",
+        "result"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'approved' == 'allowed'\nE         - allowed\nE         + approved"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "mako__lexer_expression_core__001",
+      "first_public_test": "test_parse_control_line",
+      "error_types": "",
+      "extra_names": [
+        "isend",
+        "keyword",
+        "node",
+        "nodes",
+        "text"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.exceptions.CompileException: Fragment 'endif' is not a partial control statement at line: 3 char: 1"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "first_public_test": "test_plugin_collection_runs_event_by_priority",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "collection",
+        "hooks"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [] == ['b', 'a']\nE         Right contains 2 more items, first extra item: 'b'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "first_public_test": "test_multidict_duplicate_keys_and_getall",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "md"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert 1 == 2"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "pendulum__parse_format_core__001",
+      "first_public_test": "test_parse_iso_datetime_zulu",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "result",
+        "second",
+        "timezone_name"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'DateTime' object has no attribute 'timezone_name'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "first_public_test": "test_parse_main_and_optional_groups",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "groups",
+        "name",
+        "optional",
+        "project"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'main' in {}"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "pygments__formatter_core__001",
+      "first_public_test": "test_html_formatter_wraps_tokens",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "StringIO",
+        "formatter",
+        "getvalue",
+        "html",
+        "lexer",
+        "output"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: module 'featurelifted.styles.default' has no attribute '__all__'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "first_public_test": "test_item_loader_applies_processors",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Product",
+        "item",
+        "loader"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E               AttributeError: type object 'Product' has no attribute '_values'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "first_public_test": "test_version_from_tag",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '1.2.3+g1234567' == '1.2.3'\nE         - 1.2.3\nE         + 1.2.3+g1234567"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "sphinx__extension_registry_core__hard3_001",
+      "first_public_test": "test_load_extension_registers_metadata",
+      "error_types": "TypeError",
+      "extra_names": [
+        "app",
+        "metadata",
+        "object",
+        "registry",
+        "setup",
+        "version"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           TypeError: test_load_extension_registers_metadata.<locals>.setup() takes 1 positional argument but 2 were given\nE           featurelifted.ExtensionError: extension 'demo' setup failed: test_load_extension_registers_metadata.<locals>.setup() takes 1 positional argument but 2 were given"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "tabulate__table_format_core__001",
+      "first_public_test": "test_tabulate_formats_registry",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 5 >= 30\nE        +  where 5 = len(['grid', 'latex_booktabs', 'pipe', 'plain', 'simple'])"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "typer__command_parser_core__001",
+      "first_public_test": "test_typed_options_and_arguments",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "Typer",
+        "app",
+        "command",
+        "count",
+        "echo",
+        "exit_code",
+        "formal",
+        "name",
+        "output",
+        "prefix",
+        "result",
+        "runner",
+        "strip",
+        "typer"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '' == 'Greetings Ada Greetings Ada'\nE         - Greetings Ada Greetings Ada"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "websockets__handshake_parse_core__001",
+      "first_public_test": "test_parse_websocket_request_basic",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "_drive_request_parse",
+        "data",
+        "path",
+        "request"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'StreamReader' object has no attribute 'read_line'"
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "yarl__url_model_core__001",
+      "first_public_test": "test_basic_parse_components",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "fragment",
+        "host",
+        "path",
+        "port",
+        "query",
+        "scheme",
+        "url"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['1'] == '1'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "first_public_test": "test_merge_revision_removes_branch_heads",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "is_branch_point",
+        "is_merge_point",
+        "revisions",
+        "revmap"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['base', 'merge'] == ['merge']\nE         At index 0 diff: 'base' != 'merge'\nE         Left contains one more item: 'merge'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "arrow__parse_format_core__001",
+      "first_public_test": "test_get_iso_datetime",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "a",
+        "hour",
+        "minute"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Arrow' object has no attribute 'hour'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "astroid__nodes_core__001",
+      "first_public_test": "test_parse_function_and_class",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "as_string",
+        "body",
+        "cls",
+        "fn",
+        "module",
+        "name",
+        "returns"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'FunctionDef' object has no attribute 'returns'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "attrs__validators_core__001",
+      "first_public_test": "test_instance_of_rejects_wrong_type",
+      "error_types": "TypeError",
+      "extra_names": [
+        "TypeError",
+        "User"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       Failed: DID NOT RAISE <class 'TypeError'>"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "bleach__sanitize_core__001",
+      "first_public_test": "test_clean_strips_script",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "dirty"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '<b>ok</b>&lt...t;/script&gt;' == '<b>ok</b>&lt...t;/script&gt;'\nE         - <b>ok</b>&lt;script&gt;alert(1)&lt;/script&gt;\nE         ?                    ^^^^\nE         + <b>ok</b>&lt;script>alert(1)&lt;/script&gt;\nE         ?                    ^"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "build__pyproject_backend_core__hard3_001",
+      "first_public_test": "test_default_build_system_when_missing",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "table"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'setuptools.b...ta:__legacy__' == 'setuptools.build_meta'\nE         - setuptools.build_meta\nE         + setuptools.build_meta:__legacy__\nE         ?                      +++++++++++"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "cattrs__structure_core__001",
+      "first_public_test": "test_attrs_roundtrip",
+      "error_types": "TypeError",
+      "extra_names": [
+        "Point",
+        "converter",
+        "inst",
+        "payload"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: isinstance() arg 2 must be a type, a tuple of types, or a union"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "first_public_test": "test_signal_send_invokes_receiver",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "append",
+        "seen",
+        "sig"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert [] == [1]\nE         Right contains one more item: 1\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "cerberus__schema_validate_core__001",
+      "first_public_test": "test_required_field_rejects_missing",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "validator"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'name' in {('name',): ['required']}\nE        +  where {('name',): ['required']} = <featurelifted.Validator object at 0x79ee2f130a10>.errors"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "click__lazy_command_core__hard3_001",
+      "first_public_test": "test_lazy_command_invoke",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "args",
+        "collection",
+        "invoke",
+        "make_echo"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AttributeError: 'LazyCommandCollection' object has no attribute 'invoke'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "click__option_parser__001",
+      "first_public_test": "test_command_options_arguments_and_choice_errors",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Choice",
+        "argument",
+        "bad",
+        "cli",
+        "click",
+        "command",
+        "count",
+        "echo",
+        "exit_code",
+        "mode",
+        "name",
+        "option",
+        "output",
+        "result",
+        "runner",
+        "strip"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: module 'featurelifted' has no attribute 'command'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "configobj__roundtrip_config_core__001",
+      "first_public_test": "test_parse_sections_and_values",
+      "error_types": "TypeError",
+      "extra_names": [
+        "cfg",
+        "conf",
+        "dedent",
+        "splitlines"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           TypeError: Invalid infile argument"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "first_public_test": "test_find_template_with_abbreviation",
+      "error_types": "IndexError",
+      "extra_names": [
+        "finder",
+        "result"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           IndexError: Replacement index 1 out of range for positional args tuple"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "coverage__report_core__001",
+      "first_public_test": "test_xml_file_emits_line_elements",
+      "error_types": "KeyError",
+      "extra_names": [
+        "_FakeCoverage",
+        "_FakeFileReporter",
+        "analysis",
+        "config",
+        "createDocument",
+        "dom",
+        "elements",
+        "getAttribute",
+        "getDOMImplementation",
+        "getElementsByTagName",
+        "impl",
+        "line_numbers",
+        "minidom",
+        "node",
+        "package",
+        "reporter",
+        "xclass",
+        "xml"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       KeyError: 'src.pkg'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "croniter__cron_parse_core__001",
+      "first_public_test": "test_weekday_field_parses",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "BASE",
+        "datetime",
+        "get_next",
+        "itr"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert datetime.datetime(2024, 1, 16, 9, 0) == datetime.datetime(2024, 1, 22, 9, 0)\nE        +  where datetime.datetime(2024, 1, 16, 9, 0) = <bound method croniter.get_next of <featurelifted.croniter.croniter object at 0x7a112071ba90>>(datetime)\nE        +    where <bound method croniter.get_next of <featurelifted.croniter.croniter object at 0x7a112071ba90>> = <featurelifted.croniter.croni"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "dataclasses_json__serde_core__001",
+      "first_public_test": "test_field_name_override",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "AliasPerson",
+        "dataclass",
+        "field",
+        "from_dict",
+        "given_name",
+        "inst",
+        "to_dict"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert {'given_name': 'Bob'} == {'givenName': 'Bob'}\nE         Left contains 1 more item:\nE         {'given_name': 'Bob'}\nE         Right contains 1 more item:\nE         {'givenName': 'Bob'}\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "decorator__signature_preserving_core__001",
+      "first_public_test": "test_metadata_signature_and_call_order",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "__doc__",
+        "__name__",
+        "a",
+        "add",
+        "append",
+        "args",
+        "b",
+        "caller",
+        "calls",
+        "func",
+        "inspect",
+        "kwargs",
+        "signature"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [((2, 3), {})] == [((2,), {'b': 3})]\nE         At index 0 diff: ((2, 3), {}) != ((2,), {'b': 3})\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "deepdiff__deep_compare_core__001",
+      "first_public_test": "test_shallow_dict_diff",
+      "error_types": "TypeError",
+      "extra_names": [
+        "d1",
+        "d2",
+        "diff"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: 'DeepDiff' object is not subscriptable"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "dynaconf__settings_merge_core__001",
+      "first_public_test": "test_dynaconf_toml_and_env_override",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "TemporaryDirectory",
+        "environ",
+        "fh",
+        "join",
+        "os",
+        "path",
+        "settings",
+        "td",
+        "tempfile",
+        "write"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           AssertionError: assert 5432 == 8080\nE            +  where 5432 = Dynaconf({'HOST': 'localhost', 'PORT': 5432}).PORT"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "faker__provider_core__001",
+      "first_public_test": "test_en_us_person_address_and_phone_are_seeded",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "fake",
+        "isdigit",
+        "name",
+        "phone",
+        "startswith"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Faker' object has no attribute 'name'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "filelock__reentrant_lock_core__001",
+      "first_public_test": "test_context_and_reentrant_release",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "exists",
+        "lock",
+        "path"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert (not False and not True)\nE        +  where False = <featurelifted.FileLock object at 0x79d0e1ce6590>.is_locked\nE        +  and   True = <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reentrant_rel0/demo.lock')>()\nE        +    where <bound method Path.exists of PosixPath('/tmp/pytest-of-unknown/pytest-0/test_context_and_reent"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "first_public_test": "test_option_manager_registers_plugin_options",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "default",
+        "manager",
+        "options",
+        "plugin",
+        "register_options"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'OptionManager' object has no attribute 'register_options'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "fs__url_opener_core__hard3_001",
+      "first_public_test": "test_parse_fs_url_and_open",
+      "error_types": "TypeError",
+      "extra_names": [
+        "fs",
+        "params",
+        "path",
+        "registry",
+        "scheme",
+        "subpath"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: 'NoneType' object is not callable"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "first_public_test": "test_simple_file_url",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "options",
+        "path",
+        "protocol",
+        "registry"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert <DummyFileSystem protocol='file' options={}> == 'file'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "first_public_test": "test_glom_path_and_t",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "target"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert T[('call', ({'user': {'name': 'Ada'}},))] is {'user': {'name': 'Ada'}}\nE        +  where T[('call', ({'user': {'name': 'Ada'}},))] = glom({'user': {'name': 'Ada'}}, T)"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "httpx__request_model_core__001",
+      "first_public_test": "",
+      "error_types": "ImportError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E   ImportError: cannot import name 'Cookies' from 'featurelifted' (unknown location)"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "first_public_test": "test_entry_point_value_parsing_and_selection",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "ep",
+        "matches",
+        "selected"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'EntryPoint' object has no attribute 'matches'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "intervaltree__interval_tree_core__001",
+      "first_public_test": "test_add_and_point_query",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "add",
+        "addi",
+        "overlaps",
+        "tree"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'IntervalTree' object has no attribute 'overlaps'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "isort__settings_resolver_core__hard3_001",
+      "first_public_test": "test_profile_and_pyproject_merge",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "profile",
+        "pyproject",
+        "settings",
+        "write_text"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert 79 == 88\nE        +  where 79 = <featurelifted.Settings object at 0x7839124dcb50>.line_length"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "jinja2__filters_tests_core__001",
+      "first_public_test": "test_capitalize_filter_in_template",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "env",
+        "render",
+        "tmpl"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '<Undefined n...ne hint=None>' == 'Hello'\nE         - Hello\nE         + <Undefined name=None hint=None>"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "jinja2__lexer_parser_core__001",
+      "first_public_test": "test_parse_variable_output",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "body",
+        "env",
+        "name",
+        "node",
+        "output",
+        "tree"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Template' object has no attribute 'body'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "json5__parse_core__001",
+      "first_public_test": "",
+      "error_types": "",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": ""
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "first_public_test": "test_data_path_adds_requested_subdir",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "env",
+        "paths"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '/usr/share/jupyter/kernels' == '/xdg/data/jupyter/kernels'\nE         - /xdg/data/jupyter/kernels\nE         + /usr/share/jupyter/kernels"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "first_public_test": "test_recursive_update_and_enable",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "enable",
+        "store",
+        "target"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'ExtensionConfigStore' object has no attribute 'enable'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "first_public_test": "test_select_highest_priority_backend",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "High",
+        "Low"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert False\nE        +  where False = isinstance(<class 'test_public_contract.High'>, High)\nE        +    where <class 'test_public_contract.High'> = select_backend([<class 'test_public_contract.Low'>, <class 'test_public_contract.High'>])"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "lark__visitor_transform_core__001",
+      "first_public_test": "test_transformer_evaluates_expression",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "CALC_GRAMMAR",
+        "CalcTransformer",
+        "parser",
+        "tree",
+        "value"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert Tree('start', [Tree('NUMBER', ['1']), Tree('NUMBER', ['+']), Tree('NUMBER', ['2']), Tree('NUMBER', ['*']), Tree('NUMBER', ['3'])]) == 7"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "license_expression__policy_core__hard3_001",
+      "first_public_test": "test_alias_normalization_and_precedence_rendering",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "licensing",
+        "make_licensing",
+        "parsed",
+        "render",
+        "symbol"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: '_Node' object has no attribute 'render'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "marshmallow__schema_core__001",
+      "first_public_test": "test_load_dump_nested_schema",
+      "error_types": "",
+      "extra_names": [
+        "UserSchema",
+        "dump",
+        "dumped",
+        "loaded",
+        "schema"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.exceptions.ValidationError: Field may not be null."
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "first_public_test": "test_plugin_collection_runs_event_by_priority",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "collection",
+        "hooks"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [] == ['b', 'a']\nE         Right contains 2 more items, first extra item: 'b'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "first_public_test": "test_multidict_duplicate_keys_and_getall",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "md"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'MultiDict' object has no attribute 'getall'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "networkx__dag_topo_core__001",
+      "first_public_test": "test_topological_sort_linear_dag",
+      "error_types": "TypeError",
+      "extra_names": [
+        "graph"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E               TypeError: featurelifted.graph.Graph.add_node() argument after ** must be a mapping, not str"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "parse__format_parser_core__001",
+      "first_public_test": "test_named_and_typed_fields",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "fixed",
+        "named",
+        "result"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ('Ada', 37) == ()\nE         Left contains 2 more items, first extra item: 'Ada'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "first_public_test": "test_css_id_selector",
+      "error_types": "SyntaxError",
+      "extra_names": [
+        "root"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.SelectorSyntaxError: Unsupported CSS selector: '#main'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "parso__python_parse_core__001",
+      "first_public_test": "test_parse_simple_expr",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "children",
+        "expr",
+        "get_code",
+        "module",
+        "strip"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Module' object has no attribute 'children'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pendulum__parse_format_core__001",
+      "first_public_test": "test_parse_iso_datetime_zulu",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "result",
+        "second",
+        "timezone_name"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'DateTime' object has no attribute 'timezone_name'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "first_public_test": "test_linux_defaults_append_app_and_version",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '/home/alice/...e/demo/demo/2' == '/home/alice/.../share/demo/2'\nE         - /home/alice/.local/share/demo/2\nE         + /home/alice/.local/share/demo/demo/2\nE         ?                               +++++"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "first_public_test": "test_historic_replays_for_late_registration",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "append",
+        "call_historic",
+        "hook",
+        "seen",
+        "value"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AttributeError: 'HookCaller' object has no attribute 'call_historic'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "first_public_test": "test_parse_main_and_optional_groups",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "groups",
+        "name",
+        "optional",
+        "project"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'main' in {}"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "first_public_test": "test_after_validator_strips",
+      "error_types": "",
+      "extra_names": [
+        "User",
+        "name",
+        "user"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           featurelifted.ValidationError: [{'field': 'name', 'error': 'User.strip_name() takes 1 positional argument but 2 were given'}]"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pydantic_settings__env_source_core__001",
+      "first_public_test": "",
+      "error_types": "ImportError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E   ImportError: cannot import name 'Field' from 'pydantic' (/tmp/featureliftbench-eval-0jda4aeb/submission-runtime/pydantic/__init__.py)"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pydantic_v1__validation_error_core__001",
+      "first_public_test": "test_field_validator_runs",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "Product",
+        "product",
+        "sku"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert 'ab12' == 'AB12'\nE         - AB12\nE         + ab12"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pygments__lexer_core__001",
+      "first_public_test": "test_python_lexer_keywords_and_names",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "_",
+        "kinds",
+        "lexer",
+        "ttype"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert <_Token Token.Name.Function> in [<_Token Token.Keyword>, <_Token Token.Name>, <_Token Token.Operator>, <_Token Token.Name>, <_Token Token.Operator>, <_Token Token.Operator>, ...]\nE        +  where <_Token Token.Name.Function> = <_Token Token.Name>.Function\nE        +    where <_Token Token.Name> = token.Name"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pytest__fixture_resolve_core__001",
+      "first_public_test": "test_resolve_closure_adds_fixture_dependencies",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "arg2defs",
+        "closure",
+        "registry"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['db'] == ['db', 'conn']\nE         Right contains one more item: 'conn'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "pytest__ini_markers_core__001",
+      "first_public_test": "test_parse_multiline_markers",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "lines",
+        "raw",
+        "reg"
+      ],
+      "known_public_defect_task": true,
+      "excerpt": "E       AssertionError: assert ' web test' == 'web test'\nE         - web test\nE         +  web test\nE         ? +"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "python_dateutil__rrule_core__001",
+      "first_public_test": "test_weekly_byweekday_filter",
+      "error_types": "TypeError;ValueError",
+      "extra_names": [
+        "datetime",
+        "rule",
+        "start"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: 'Weekday' object is not iterable"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "redis__resp_parser_core__001",
+      "first_public_test": "test_resp2_simple_and_bulk_replies",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "_FakeConnection",
+        "on_connect",
+        "parser",
+        "read_response"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: '_RESP2Parser' object has no attribute 'on_connect'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "referencing__json_schema_refs_core__001",
+      "first_public_test": "",
+      "error_types": "ImportError;ModuleNotFoundError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E   ModuleNotFoundError: No module named 'featurelifted.jsonschema'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "first_public_test": "test_query_order_normalized",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Request",
+        "headers"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Request' object has no attribute 'get'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "first_public_test": "test_registry_finds_matching_response",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "PreparedRequest",
+        "body",
+        "prepare",
+        "reasons",
+        "registry",
+        "request",
+        "response"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       assert None is not None"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "ruamel_yaml__roundtrip_core__001",
+      "first_public_test": "test_roundtrip_basic_mapping",
+      "error_types": "TypeError",
+      "extra_names": [
+        "StringIO",
+        "data",
+        "dump",
+        "getvalue",
+        "load",
+        "stream",
+        "strip",
+        "text",
+        "yaml"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       TypeError: '_YAMLSentinel' object is not callable"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "first_public_test": "test_item_loader_applies_processors",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Product",
+        "item",
+        "loader"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E   AttributeError: 'list' object has no attribute 'strip'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "first_public_test": "test_version_from_tag",
+      "error_types": "AssertionError",
+      "extra_names": [],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert '1.2.3+g1234567' == '1.2.3'\nE         - 1.2.3\nE         + 1.2.3+g1234567"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "first_public_test": "test_bisect_and_count",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "count",
+        "slt"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'SortedList' object has no attribute 'count'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "sqlparse__format_filters_core__001",
+      "first_public_test": "test_format_supports_common_options",
+      "error_types": "",
+      "extra_names": [
+        "formatted"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           PermissionError: blocked evaluation capability: subprocess.Popen"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "sqlparse__parse_split_core__001",
+      "first_public_test": "test_parse_returns_statement_tokens",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "T",
+        "flatten",
+        "flattened",
+        "get_type",
+        "is_whitespace",
+        "statement",
+        "token",
+        "ttype",
+        "value"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: 'Statement' object has no attribute 'get_type'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "first_public_test": "test_router_matches_route",
+      "error_types": "AttributeError;ValueError",
+      "extra_names": [
+        "name",
+        "params",
+        "route",
+        "router"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E           ValueError: Routed paths must start with \"/\""
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "first_public_test": "test_extension_manager_loads_matching_namespace",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "Plugin",
+        "entry_point_target",
+        "eps",
+        "manager",
+        "plugin"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert [] == ['alpha']\nE         Right contains one more item: 'alpha'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "typer__command_parser_core__001",
+      "first_public_test": "test_typed_options_and_arguments",
+      "error_types": "AttributeError",
+      "extra_names": [
+        "Typer",
+        "app",
+        "command",
+        "count",
+        "echo",
+        "exit_code",
+        "formal",
+        "name",
+        "output",
+        "prefix",
+        "result",
+        "runner",
+        "strip",
+        "typer"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AttributeError: module 'featurelifted' has no attribute 'Typer'"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "first_public_test": "test_discover_paths_by_glob",
+      "error_types": "AssertionError",
+      "extra_names": [
+        "candidates",
+        "constraint",
+        "globs"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E       AssertionError: assert ['/usr/bin/py...usr/bin/node'] == ['/usr/bin/python3.11']\nE         Left contains one more item: '/usr/bin/node'\nE         Use -v to get more diff"
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "werkzeug__routing_core__001",
+      "first_public_test": "test_match_and_build_simple_rules",
+      "error_types": "",
+      "extra_names": [
+        "adapter",
+        "build",
+        "mapping",
+        "match"
+      ],
+      "known_public_defect_task": false,
+      "excerpt": "E               featurelifted.routing.exceptions.RequestRedirect: http://example.com/users/42/"
+    }
+  ]
+}

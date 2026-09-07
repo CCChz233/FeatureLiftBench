@@ -115,6 +115,17 @@ reports/paper_analysis/*
 !reports/paper_analysis/python150_exploratory_20260830/**
 reports/paper_analysis/python150_exploratory_20260830/__pycache__/
 reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite
+!reports/paper_analysis/python150_prime_v2_analysis_20260905/
+!reports/paper_analysis/python150_prime_v2_analysis_20260905/**
+!reports/paper_analysis/python150_paper_analysis_final/
+!reports/paper_analysis/python150_paper_analysis_final/**
+!reports/paper_analysis/python200_prime_v2_results_20260905/
+!reports/paper_analysis/python200_prime_v2_results_20260905/**
+!reports/paper_analysis/python200_prime_v2_main_20260904/
+!reports/paper_analysis/python200_prime_v2_main_20260904/**
+!reports/paper_analysis/qwen36_freeze_v2_final_20260905/
+!reports/paper_analysis/qwen36_freeze_v2_final_20260905/**
+reports/paper_analysis/**/__pycache__/
 !reports/token_efficiency_20260720/
 !reports/token_efficiency_20260720/**
 !reports/failure_attribution_20260720/
@@ -236,6 +247,9 @@ logs/
 
 # Local result tarballs at repo root.
 /*.tar.gz
+
+# Completed-run dumps; too large for Git.
+artifacts/bundles/
 
 # Runnable bundles are rebuilt locally; only checksums are tracked.
 benchmark/*.tar.gz

@@ -57,7 +57,8 @@ The paper suite, Python-200$'$, contains 200 tasks from 176 repositories
 (Table~\ref{tab:suite}). It emphasizes Python libraries, developer tools, and
 framework components. One source repository may support multiple distinct
 tasks in the baseline split. Every task pins its upstream revision and records
-source identity in a canonical registry.
+source identity in a canonical registry. Headline scores use the frozen
+Python-150 split; official Hard-50 is appendix-only.
 
 \begin{table}[t]
   \caption{Composition of the Python-200$'$ paper suite.}
@@ -67,10 +68,10 @@ source identity in a canonical registry.
     \toprule
     \textbf{Split} & \textbf{Tasks} & \textbf{Repositories} & \textbf{Role} \\
     \midrule
-    Frozen Python-150 & 150 & 127 & Baseline set \\
-    Hard-50 & 50 & 50 & Calibrated expansion \\
+    Frozen Python-150 & 150 & 127 & Headline evaluation \\
+    Hard-50 & 50 & 50 & Appendix split \\
     \midrule
-    Python-200$'$ & 200 & 176 & Main paper suite \\
+    Python-200$'$ & 200 & 176 & Released suite \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -87,12 +88,14 @@ Composite. These labels support sampling and analysis; they are not shown to
 the agent and do not affect Functional Pass.
 
 The combined suite contains 68 Direct, 100 Adapted, and 32 Composite tasks.
-The Hard-50 expansion increases coverage of registry/plugin dispatch, workflow
-and session orchestration, configuration discovery, validation boundaries,
-deep parsing, and direct tooling copy traps. It was calibrated with a strong
-model at 29/50 functional passes, within a predeclared 40--65\% target band.
-This is benchmark-design evidence, not a substitute for the final main-table
-evaluation.
+Python-150 itself is 56 Direct, 76 Adapted, and 18 Composite. The Hard-50
+expansion increases coverage of registry/plugin dispatch, workflow and session
+orchestration, configuration discovery, validation boundaries, deep parsing,
+and direct tooling copy traps. Construction-time Flash calibration on Hard-50
+was 29/50 functional passes, inside a predeclared 40--65\% band. That figure
+is design evidence. Freeze~v2 Official Main on the same 50 IDs is reported in
+Appendix~\ref{app:hard50} and is not the headline difficulty result; in-suite
+hard3 on Python-150 is.
 
 An earlier External-50 expansion is retained as a side split rather than part
 of Python-200$'$. Strong-model pass rates of 90--94\% and pass-conditioned

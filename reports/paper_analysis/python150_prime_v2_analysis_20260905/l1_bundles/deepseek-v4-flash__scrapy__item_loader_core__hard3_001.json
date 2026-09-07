@@ -1,0 +1,62 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "scrapy__item_loader_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Item",
+    "class:featurelifted.Field",
+    "class:featurelifted.ItemLoader",
+    "method:featurelifted.ItemLoader.__init__",
+    "method:featurelifted.ItemLoader.add_value",
+    "method:featurelifted.ItemLoader.load_item",
+    "attribute:featurelifted.ItemLoader.default_output_processor",
+    "function:featurelifted.Compose",
+    "function:featurelifted.TakeFirst"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When an Item declares Field metadata with input or output processors, those processors are attached to the field definition."
+    },
+    {
+      "id": "B002",
+      "text": "When ItemLoader.add_value runs input processors and load_item runs output processors, the resulting item values reflect the processor pipeline."
+    },
+    {
+      "id": "B003",
+      "text": "When a nested ItemLoader is created with parent=..., it inherits the parent default processor types."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.Item`, `featurelifted.Field`, `featurelifted.ItemLoader`, `featurelifted.ItemLoader.__init__`, `featurelifted.ItemLoader.add_value`, `featurelifted.ItemLoader.load_item`, `featurelifted.ItemLoader.default_output_proce"
+    },
+    {
+      "id": "B005",
+      "text": "The submitted package does not import forbidden upstream packages: scrapy."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    }
+  ],
+  "log": "E           TypeError: Mapping.items() missing 1 required positional argument: 'self'\nsubmission-runtime/featurelifted/loader.py:51: TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\n\nThis package provides ``Item``/``Field`` containers together with an\n``ItemLoader`` abstraction (and the built-in item processors) used to populate\nitems by applying input and output processors declared on items or loaders.\n\"\"\"\n\nfrom featurelifted.item import Field, Item\nfrom featurelifted.loader import ItemLoader\nfrom featurelifted.processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n\n## featurelifted/__init__.py:5\nThis package provides ``Item``/``Field`` containers together with an\n``ItemLoader`` abstraction (and the built-in item processors) used to populate\nitems by applying input and output processors declared on items or loaders.\n\"\"\"\n\nfrom featurelifted.item import Field, Item\nfrom featurelifted.loader import ItemLoader\nfrom featurelifted.processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]\n\n## featurelifted/__init__.py:9\n\nfrom featurelifted.item import Field, Item\nfrom featurelifted.loader import ItemLoader\nfrom featurelifted.processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]\n\n## featurelifted/__init__.py:10\nfrom featurelifted.item import Field, Item\nfrom featurelifted.loader import ItemLoader\nfrom featurelifted.processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]"
+}

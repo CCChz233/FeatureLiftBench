@@ -1,0 +1,40 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "pydantic__field_validator_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.field_validator",
+    "class:featurelifted.BaseModel",
+    "exception:featurelifted.ValidationError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`@field_validator` registers before/after validators on model classes."
+    },
+    {
+      "id": "B002",
+      "text": "Before validators transform incoming values; after validators run on initialized attributes."
+    },
+    {
+      "id": "B003",
+      "text": "ValidationError carries structured field errors as an errors list of dicts, and errors[0][\"field\"] names the failing field."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.field_validator`, `featurelifted.BaseModel`, `featurelifted.ValidationError` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: pydantic"
+    }
+  ],
+  "log": "                    raise ValueError(\"must be positive\")\n        with pytest.raises(ValidationError) as exc:\n>       assert exc.value.errors[0][\"field\"] == \"age\"\nE       TypeError: 'method' object is not subscriptable\n/workspace/evaluation-capsule/<hidden> TypeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\nThis package exposes a small, self-contained implementation of the\n``@field_validator`` (before/after) workflow built around a pydantic-v2-style\n``BaseModel``.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom ._errors import PydanticError, PydanticRuntimeError, PydanticUserError, ValidationError\nfrom .fields import ConfigDict, Field, FieldInfo\nfrom .functional_validators import ValidationInfo, field_validator\nfrom .main import BaseModel, ModelMetaclass\n\n__all__ = [\n    'BaseModel',\n    'ConfigDict',\n    'Field',\n    'FieldInfo',\n    'ModelMetaclass',\n    'PydanticError',\n\n## featurelifted/__init__.py:5\n``@field_validator`` (before/after) workflow built around a pydantic-v2-style\n``BaseModel``.\n\"\"\"\n\nfrom __future__ import annotations\n\nfrom ._errors import PydanticError, PydanticRuntimeError, PydanticUserError, ValidationError\nfrom .fields import ConfigDict, Field, FieldInfo\nfrom .functional_validators import ValidationInfo, field_validator\nfrom .main import BaseModel, ModelMetaclass\n\n__all__ = [\n    'BaseModel',\n    'ConfigDict',\n    'Field',\n    'FieldInfo',\n    'ModelMetaclass',\n    'PydanticError',\n    'PydanticRuntimeError',\n\n## featurelifted/__init__.py:10\n\nfrom ._errors import PydanticError, PydanticRuntimeError, PydanticUserError, ValidationError\nfrom .fields import ConfigDict, Field, FieldInfo\nfrom .functional_validators import ValidationInfo, field_validator\nfrom .main import BaseModel, ModelMetaclass\n\n__all__ = [\n    'BaseModel',\n    'ConfigDict',\n    'Field',\n    'FieldInfo',\n    'ModelMetaclass',\n    'PydanticError',\n    'PydanticRuntimeError',\n    'PydanticUserError',\n    'ValidationError',\n    'ValidationInfo',\n    'field_validator',\n]\n\n## featurelifted/__init__.py:12\nfrom .fields import ConfigDict, Field, FieldInfo\nfrom .functional_validators import ValidationInfo, field_validator\nfrom .main import BaseModel, ModelMetaclass\n\n__all__ = [\n    'BaseModel',\n    'ConfigDict',\n    'Field',\n    'FieldInfo',\n    'ModelMetaclass',\n    'PydanticError',\n    'PydanticRuntimeError',\n    'PydanticUserError',\n    'ValidationError',\n    'ValidationInfo',\n    'field_validator',\n]\n\n__version__ = '2.0.0'"
+}

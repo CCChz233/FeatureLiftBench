@@ -5,6 +5,8 @@
 Current prose draft: [00_manuscript_zero_draft.md](00_manuscript_zero_draft.md).
 Harness-Bench structural comparison and the recommended seven-section spine:
 [01_harness_bench_structure_mapping.md](01_harness_bench_structure_mapping.md).
+Experimental Analysis / Results & Analysis 章节写法与分母：
+[08_experimental_analysis_chapter.md](08_experimental_analysis_chapter.md)。
 
 ## Working title
 
@@ -32,15 +34,7 @@ repository, but no source-location hints or benchmark tests before submission.
    public/hidden mapping、No-Hint leak gates。
 4. **Evaluation**：Functional Pass@1 separated from reference-relative
    compactness and process cost。
-5. **Empirical study**：论文主表是 Python-200'（150+Hard-50）的跨模型 Main，
-   **尚未跑**。已有的 21.5%–72.5% 是旧 150+E50。DeepSeek 旧 200 上的 Main vs
-   已退役 Lite V1、Qwen3.6-35B V1=Main+2M、以及 \(T^\*\) 成本切片
-   （[03_results_token_utility.md](03_results_token_utility.md)）仍是机制证据，
-   换套件后数字要重标。脚手架方法已停，负结果作 RQ4，**不要**单列 Active
-   Dynamic Exploration 为核心贡献。RQ6 Public-feedback 是 Main 的信息消融，
-   Flash-12 同日成对已齐（Main 0/12 → 4/12）；数字不进主表。DeepSeek Harness /
-   Codex 是可选 runtime 附录，见
-   [METHOD_AGENT_RUNTIME.md](../METHOD_AGENT_RUNTIME.md)。
+5. **Empirical study**：headline 是 freeze v2 Python-150 Official Main（Pro 115/150 … OSS 36/150）。官方 Hard-50 进附录。RQ6 / \(T^\*\) 是非主表诊断。
 
 ## Research questions
 
@@ -110,17 +104,14 @@ described candidly before paper submission.
 Do not populate with historical mixed-snapshot numbers as the main table.
 Required v3 tables:
 
-1. cross-model Python-200' Functional Pass@1（含 150 / Hard-50 分解；**未出**）；
-   旧 150+E50 表只作 superseded 对照；
+1. cross-model freeze v2 Python-150 Functional Pass@1（Core-100 / hard3；**已出**）；
+   官方 Hard-50 只进附录；
 2. correctness funnel（互斥首败）；
-3. compactness among functional passes（拆 150 / Hard-50；报 copy 比例；E50 旁路）；
-4. tokens/steps/latency（只做同模型方法对比）；
-5. \(T^\*/T_{\mathrm{total}}\) on gold passing trajectories, by model and
-   lift type（[03_results_token_utility.md](03_results_token_utility.md)；
-   不是 last-write fraction，不是停机规则）；
-6. repository/domain/entanglement/task-footprint slices；
-7. paired information ablations（RQ6 Public-feedback Flash-12 已齐。稿
-   [04_results_rq6.md](04_results_rq6.md)；不进主表）。
+3. compactness among functional passes（Python-150；Hard-50 无 reference 不报 RRES）；
+4. tokens/steps/latency（只做同模型方法对比；freeze v2 成本表未重标）；
+5. \(T^\*/T_{\mathrm{total}}\) 仅作历史诊断（旧 150+E50）；
+6. in-suite construction / lift type slices（entanglement 全 high，测不了）；
+7. paired information ablations（RQ6 Public-feedback Flash-12 已齐，不进主表）。
 
 Do not put Core-12 / Rescue+ / V2 / TFL / DeepSeek Harness / Codex runtime
 rates in the main tables. Historical scaffolding negative results belong in

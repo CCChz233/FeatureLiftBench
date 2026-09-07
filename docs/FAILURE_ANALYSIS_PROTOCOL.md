@@ -205,6 +205,8 @@ adjudicated
 
 ## 8. 实际执行流程
 
+完整操作清单、质量档（L0/L1/L2）和 Finding 3 闸门见 [FAILURE_ANALYSIS_SOP.md](FAILURE_ANALYSIS_SOP.md)。本节保留协议层步骤摘要。
+
 ### A. 自动阶段
 
 1. 校验 suite、任务选择、冻结和 source identity；
@@ -289,11 +291,12 @@ Hidden-only 失败进入论文前，至少确认：
 
 ## 12. 当前仓库中的实现
 
+- 操作 SOP（怎么跑一轮 5.3）：[FAILURE_ANALYSIS_SOP.md](FAILURE_ANALYSIS_SOP.md)
 - 机械 gate 与候选审计：`harness/scripts/analyze_python200_hard_main.py`、`harness/scripts/audit_python200_hard_candidate.py`；
 - 通用语义分类汇总：`harness/scripts/analyze_failure_taxonomy.py`；
-- 当前 Python-200′ 标注：`reports/paper_analysis/python200_hard_main_20260829/failure_root_cause_annotations.csv`；
-- 当前逐任务输出：`reports/paper_analysis/python200_hard_main_20260829/failure_analysis.csv`；
-- 当前分析报告：`reports/paper_analysis/python200_hard_main_20260829/failure_analysis.md`；
+- 标注 skill：`.agents/skills/featureliftbench-annotate-failures/`
+- Python-150 freeze v2 分析目录：`reports/paper_analysis/python150_prime_v2_analysis_20260905/`（截至 2026-09-06：Pro+Flash L1 普查 + Luna/Qwen/OSS 分层后抽，不是 L2 金标）
+- 历史 v1 标注（不可当 freeze v2 主输入）：`reports/paper_analysis/python200_hard_main_20260829/`
 - 历史 550-run 审计：`reports/failure_attribution_20260720/`。
 
-对未来 suite 的建议流程：先运行 suite 分析和 evidence audit，复制当前 annotation CSV 的列结构完成第一轮标注，再用 `analyze_failure_taxonomy.py` 校验唯一性、标签合法性、覆盖率和汇总算术。
+对未来 suite 的建议流程：按 [FAILURE_ANALYSIS_SOP.md](FAILURE_ANALYSIS_SOP.md) 执行。先机械漏斗与 L0 公开测试 vs `required_api` 扫描，再 L1 逐条精读提交与首败日志，最后用 `analyze_failure_taxonomy.py` 或 SOP 附带校验脚本检查标签合法性。不要把 L0 证据包摘要当成 L1 完成。

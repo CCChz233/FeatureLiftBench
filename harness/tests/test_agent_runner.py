@@ -23,7 +23,9 @@ from featureliftbench.agent_runner import _collect_agent_usage
 from featureliftbench.agent_runner import _is_rate_limit_failure
 from featureliftbench.agent_runner import _merge_suite_runs
 from featureliftbench.agent_runner import _progress
+from featureliftbench.agent_runner import _run_suite_task_with_retries
 from featureliftbench.agent_runner import _sum_agent_usage
+from featureliftbench.agent_runner import _transient_retry_reason
 from featureliftbench.agent_runner import build_task_prompt
 from featureliftbench.agent_runner import discover_task_dirs
 from featureliftbench.agent_runner import load_skipped_runs
@@ -189,6 +191,105 @@ class AgentRunnerTests(unittest.TestCase):
         }
 
         self.assertTrue(_is_rate_limit_failure(result))
+
+    def test_transient_retry_reason_detects_encrypted_empty_submission(self) -> None:
+        result = {
+            "status": "missing_submission",
+            "submission": {"exists": False},
+            "agent": {
+                "usage": {
+                    "exit_status": "invalid_encrypted_content",
+                    "infrastructure_error": {
+                        "failure_class": "invalid_encrypted_content",
+                        "retryable": True,
+                    },
+                }
+            },
+            "errors": ["agent did not create any files under workspace/submission"],
+        }
+
+        self.assertEqual(_transient_retry_reason(result), "invalid_encrypted_content")
+
+    def test_transient_retry_reason_skips_model_failure_with_package(self) -> None:
+        result = {
+            "status": "failed",
+            "submission": {"exists": True},
+            "agent": {
+                "usage": {
+                    "infrastructure_error": {
+                        "failure_class": "tool_validation_error",
+                        "retryable": True,
+                    }
+                }
+            },
+        }
+
+        self.assertIsNone(_transient_retry_reason(result))
+
+    def test_suite_task_retries_encrypted_empty_then_keeps_recovered_run(self) -> None:
+        task_dir = Path("/tmp/fake-task")
+        run_output = Path("/tmp/fake-output")
+        first = {
+            "task_id": "sample_task",
+            "status": "missing_submission",
+            "submission": {"exists": False},
+            "agent": {
+                "usage": {
+                    "infrastructure_error": {
+                        "failure_class": "invalid_encrypted_content",
+                        "retryable": True,
+                    }
+                }
+            },
+            "errors": ["agent did not create any files under workspace/submission"],
+        }
+        second = {
+            "task_id": "sample_task",
+            "status": "failed",
+            "submission": {"exists": True},
+            "agent": {"usage": {"available": True}},
+            "run_json": str(run_output / "run.json"),
+        }
+        config = AgentRunConfig(agent="command", command="echo", timeout_seconds=120)
+
+        with (
+            mock.patch(
+                "featureliftbench.agent_runner.run_agent_on_task",
+                side_effect=[first, second],
+            ) as run_task,
+            mock.patch("featureliftbench.agent_runner.time.sleep") as sleep,
+            mock.patch(
+                "featureliftbench.agent_runner._preserve_transient_attempt_agent"
+            ),
+            mock.patch(
+                "featureliftbench.agent_runner._record_transient_retries",
+                side_effect=lambda result, run_output, attempts, reasons: {
+                    **result,
+                    "transient_retries": {
+                        "attempts": attempts,
+                        "reasons": reasons,
+                        "recovered": True,
+                    },
+                },
+            ),
+        ):
+            result = _run_suite_task_with_retries(
+                task_dir=task_dir,
+                run_output=run_output,
+                config=config,
+                agent_config_summary=None,
+                retry_rate_limit=1,
+                retry_transient_api=3,
+            )
+
+        self.assertEqual(run_task.call_count, 2)
+        sleep.assert_called_once()
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(result["submission"]["exists"])
+        self.assertEqual(
+            result["transient_retries"]["reasons"],
+            ["invalid_encrypted_content"],
+        )
 
     def test_prepare_agent_workspace_redacts_hidden_material(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -2361,6 +2462,116 @@ class AgentRunnerTests(unittest.TestCase):
                 usage["infrastructure_error"]["failure_class"],
                 "tool_validation_error",
             )
+            self.assertTrue(failure["retryable"])
+            self.assertTrue(failure["promoted_to_process_failure"])
+
+    def test_openhands_runner_records_invalid_encrypted_content(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import json\n"
+                "print(json.dumps({\n"
+                "    'id': 'event-enc',\n"
+                "    'kind': 'ConversationErrorEvent',\n"
+                "    'code': 'LLMBadRequestError',\n"
+                "    'detail': 'The encrypted content for item *** could not be verified. "
+                "Reason: Encrypted content could not be decrypted or parsed.',\n"
+                "}))\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0"},
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="openai/gpt-5.6-luna",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            failure = json.loads(
+                (agent_output / "openhands_infrastructure_error.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(code, openhands_runner.OPENHANDS_INFRASTRUCTURE_ERROR_RETURN_CODE)
+            self.assertEqual(usage["exit_status"], "invalid_encrypted_content")
+            self.assertEqual(failure["failure_class"], "invalid_encrypted_content")
+            self.assertTrue(failure["retryable"])
+            self.assertTrue(failure["promoted_to_process_failure"])
+
+    def test_openhands_runner_keeps_zero_exit_when_tool_validation_recovers(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            workspace = root / "workspace"
+            agent_output = root / "agent"
+            workspace.mkdir()
+            task_file = workspace / "TASK.md"
+            task_file.write_text("Extract the useful behavior.\n", encoding="utf-8")
+            submission = workspace / "submission" / "featurelifted"
+            submission.mkdir(parents=True)
+            (submission / "__init__.py").write_text("", encoding="utf-8")
+            fake_openhands = root / "fake_openhands.py"
+            fake_openhands.write_text(
+                "import json\n"
+                "print(json.dumps({\n"
+                "    'id': 'event-1',\n"
+                "    'kind': 'AgentErrorEvent',\n"
+                "    'tool_name': 'terminal',\n"
+                "    'error': \"Error validating tool 'terminal': Failed to provide security_risk field\",\n"
+                "}))\n",
+                encoding="utf-8",
+            )
+            command_template = "{python} " + shlex.quote(str(fake_openhands))
+
+            with mock.patch.dict(
+                os.environ,
+                {"FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY": "0"},
+                clear=False,
+            ):
+                code = openhands_runner.run(
+                    openhands_runner.OpenHandsRunnerConfig(
+                        workspace_dir=workspace,
+                        task_file=task_file,
+                        submission_dir=workspace / "submission",
+                        agent_output_dir=agent_output,
+                        model="deepseek/deepseek-v4-flash",
+                        openhands_command=command_template,
+                        timeout_seconds=30,
+                    )
+                )
+
+            usage = json.loads((agent_output / "usage.json").read_text(encoding="utf-8"))
+            failure = json.loads(
+                (agent_output / "openhands_infrastructure_error.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(code, 0)
+            self.assertEqual(usage["exit_status"], "passed")
+            self.assertEqual(
+                usage["infrastructure_error"]["failure_class"],
+                "tool_validation_error",
+            )
+            self.assertFalse(failure["promoted_to_process_failure"])
             self.assertTrue(failure["retryable"])
 
     def test_openhands_runner_kills_command_when_log_limit_is_exceeded(self) -> None:

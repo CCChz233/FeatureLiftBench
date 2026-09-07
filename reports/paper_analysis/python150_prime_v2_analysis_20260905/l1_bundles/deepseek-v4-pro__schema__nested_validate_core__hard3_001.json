@@ -1,0 +1,45 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "schema__nested_validate_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Schema",
+    "method:featurelifted.Schema.validate",
+    "class:featurelifted.Optional",
+    "class:featurelifted.Or",
+    "method:featurelifted.Or.validate",
+    "class:featurelifted.And",
+    "method:featurelifted.And.validate",
+    "exception:featurelifted.SchemaError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`Schema` validates nested dicts with type and literal rules."
+    },
+    {
+      "id": "B002",
+      "text": "`Optional` supplies defaults for missing keys."
+    },
+    {
+      "id": "B003",
+      "text": "Or accepts the first validating alternative, while And applies each validator in sequence. A callable And step transforms the value, so And(str, lambda s: s.upper()).validate(\"hi\") returns \"HI\", and SchemaError is reported when composition fails."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.Schema`, `featurelifted.Schema.validate`, `featurelifted.Optional`, `featurelifted.Or`, `featurelifted.Or.validate`, `featurelifted.And`, `featurelifted.And.validate`, `featurelifted.SchemaError` with the kinds and ca"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: schema"
+    }
+  ],
+  "log": "        assert validator.validate(\"x\") == \"x\"\n>       assert And(str, lambda s: s.upper()).validate(\"hi\") == \"HI\"\nE       AssertionError: assert 'hi' == 'HI'\nE         - HI\nE         + hi\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\nThis module exposes the schema, optional, or, and combinators together with\nthe ``SchemaError`` exception.  It is self-contained and does not import the\nupstream ``schema`` package.\n\"\"\"\n\nimport inspect\nfrom contextlib import ExitStack\nfrom typing import (\n    Any,\n    Callable,\n    Dict,\n    Generic,\n    Iterable,\n    List,\n    Sequence,\n    Set,\n    Sized,\n    Tuple,\n    Type,\n\n## featurelifted/__init__.py:27\n__all__ = [\n    \"Schema\",\n    \"And\",\n    \"Or\",\n    \"Optional\",\n    \"SchemaError\",\n]\n\n\nclass SchemaError(Exception):\n    \"\"\"Error during Schema validation.\"\"\"\n\n    def __init__(\n        self,\n        autos: Union[Sequence[Union[str, None]], None],\n        errors: Union[List, str, None] = None,\n    ) -> None:\n        self.autos = autos if isinstance(autos, List) else [autos]\n        self.errors = errors if isinstance(errors, List) else [errors]\n\n## featurelifted/__init__.py:28\n    \"Schema\",\n    \"And\",\n    \"Or\",\n    \"Optional\",\n    \"SchemaError\",\n]\n\n\nclass SchemaError(Exception):\n    \"\"\"Error during Schema validation.\"\"\"\n\n    def __init__(\n        self,\n        autos: Union[Sequence[Union[str, None]], None],\n        errors: Union[List, str, None] = None,\n    ) -> None:\n        self.autos = autos if isinstance(autos, List) else [autos]\n        self.errors = errors if isinstance(errors, List) else [errors]\n        Exception.__init__(self, self.code)\n\n## featurelifted/__init__.py:29\n    \"And\",\n    \"Or\",\n    \"Optional\",\n    \"SchemaError\",\n]\n\n\nclass SchemaError(Exception):\n    \"\"\"Error during Schema validation.\"\"\"\n\n    def __init__(\n        self,\n        autos: Union[Sequence[Union[str, None]], None],\n        errors: Union[List, str, None] = None,\n    ) -> None:\n        self.autos = autos if isinstance(autos, List) else [autos]\n        self.errors = errors if isinstance(errors, List) else [errors]\n        Exception.__init__(self, self.code)\n"
+}

@@ -1,9 +1,9 @@
 # FeatureLiftBench: Evaluating Repository-Level Feature Extraction by Code Agents
 
-> **Status: draft · Last verified: 2026-09-02**  
-> **Manuscript stage:** zero draft for structure and argument review.  
-> **Not submission-ready.** The final Python-200′ leaderboard, cross-model matrix, Hidden-contract sensitivity analysis, image attestations, and bibliography are still pending. Bracketed `TBD` items must be replaced only from the frozen paper bundle.  
-> **Evidence rule:** historical Python-200 results use the superseded Python-150 + External-50 suite and are labeled accordingly. The received 132/200 candidate is an audit headline, not a main result.
+> **Status: draft · Last verified: 2026-09-06**  
+> **Manuscript stage:** argument draft aligned with `fse26/` LaTeX.  
+> **Headline:** freeze v2 Python-150 Official Main (Pro 115/150 … OSS 36/150).  
+> Official Hard-50 is appendix-only. Functional Pass = build ∧ public ∧ hidden ∧ isolation.
 
 ## Abstract
 
@@ -11,7 +11,7 @@ Extracting a reusable feature from an existing repository is different from fixi
 
 We introduce **FeatureLiftBench**, a benchmark for repository-level, behavior-preserving feature extraction by code agents. Its main Python suite contains 200 tasks drawn from 176 pinned open-source repositories. Under the Full-Repository / No-Hint protocol, an agent receives the complete repository and a complete public behavioral contract, but no source-location hints, benchmark tests, Hidden tests, or reference implementation. Submissions are evaluated with deterministic Dockerized checks for buildability, public behavior, deeper Hidden behavior, and independence from the source repository. We separately measure the compactness of functionally passing packages relative to frozen reference solutions.
 
-Under a frozen OpenHands execution protocol, current agents exhibit **[TBD: final eligible cross-model capability range]** on Python-200′. Failure-stage and trajectory analyses show that many agents can identify and reuse relevant code while still omitting required exports, exception semantics, state transitions, resources, or preservation details. We call this recurring symptom **contract-closure failure**: the generated package appears locally plausible but does not fully satisfy the observable behavioral contract. Controlled information experiments further show that executable Public feedback can repair Public failures without generally eliminating Hidden failures, while additional self-testing, repair, checkpointing, and budget-control scaffolds do not produce a stable improvement over the strongest legal Main protocol in the evaluated settings. FeatureLiftBench provides a reproducible basis for measuring repository-level feature extraction and for diagnosing how code agents turn repository evidence into independent, behavior-complete artifacts.
+Under a frozen OpenHands Official Main protocol, current agents achieve **36/150 (24.0%) to 115/150 (76.7%)** Functional Pass on freeze v2 Python-150. The strongest backend still fails 35 tasks, and 28 tasks are unsolved by all five models. Failures concentrate at Public and Hidden behavior. On the two strongest models, artifact-level failures are dominated by incomplete contract recovery rather than missing packages. Compactness is a second dimension: Pro and Flash passes are copy-heavy, while Luna often copies less on the same tasks. FeatureLiftBench provides a reproducible basis for measuring repository-level feature extraction and for diagnosing how code agents turn repository evidence into independent, behavior-complete artifacts.
 
 ## 1. Introduction
 
@@ -31,7 +31,7 @@ We introduce **FeatureLiftBench**, a benchmark that evaluates these obligations 
 
 FeatureLiftBench separates two quality dimensions. **Functional Pass** measures whether the submission satisfies build, Public, Hidden, and isolation gates. **Reference-Relative Extraction Size (RRES)** measures the normalized footprint of a functionally passing package relative to a frozen feasible reference. Correctness and compactness are not combined into one score: a broad vendoring solution may preserve behavior but fail to demonstrate a compact extraction, while a small package may simply be incomplete.
 
-The main Python-200′ suite combines a frozen 150-task baseline with a separately calibrated Hard-50 split, for 200 tasks from 176 repositories. The Hard-50 split increases coverage of plugin registries, lifecycle and session behavior, multi-source configuration, validation boundaries, deep parsing, and direct copy-trap tasks. An earlier External-50 expansion is retained only as an easy, copy-heavy side split: strong-agent pass rates of 90–94% and pass-conditioned footprints near whole-repository copying showed that it was unsuitable for the paper's main difficulty claim.
+The released Python-200′ suite combines a frozen 150-task baseline with a separately constructed Hard-50 expansion, for 200 tasks from 176 repositories. The headline empirical study is freeze v2 Official Main on Python-150 with five model backends. Official Hard-50 is reported in the appendix.
 
 Our empirical study is organized around three questions. First, how often do current code agents produce independent, behavior-complete feature packages, and how does performance vary across model backends? Second, when agents pass, how compact are their extractions and which task properties are associated with success and cost? Third, where do unsuccessful trajectories lose alignment with the public contract, and which legal information or process interventions change those failures?
 
@@ -176,44 +176,43 @@ The Official Main experiment fixes the external task and execution conditions an
 
 Each main-table cell uses one attempt per task. We report Wilson 95% confidence intervals for aggregate pass rates and exact task-level outcomes for paired comparisons. Because one attempt does not estimate repeated-run stochastic variance, seed sensitivity is evaluated separately on a stratified subset or stated as a limitation.
 
-**TBD(PAPER BUNDLE):** insert exact OpenHands revision, model profiles, prompt hash, action budget, context envelope, agent/evaluator image digests, hardware/provider description, timeout, and run dates.
+**Setup (freeze v2).** OpenHands Official Main, 120 steps, 128k envelope, images `python200-prime-212930ea`, freeze `6c20ff03…`, runs 2026-09-04/05. Pro on `python150-prime-v2-main-r1`; other backends sliced from `python200-prime-v2-main-r1`. GLM excluded.
 
 ### 4.2 Functional Capability
 
-Table 1 is the intended paper main table. It must be populated only after the clean Python-200′ runs pass freeze, dependency, context, provenance, and image-identity checks.
+Headline: freeze v2 Python-150 Functional Pass@1. Core-100 / hard3 is the in-suite construction split, not official Hard-50.
 
-| Model backend | Python-150 | Hard-50 | Python-200′ | Wilson 95% CI |
-| --- | ---: | ---: | ---: | ---: |
-| DeepSeek V4 Flash | TBD | TBD | TBD | TBD |
-| Medium-capability model | TBD | TBD | TBD | TBD |
-| Additional model(s) | TBD | TBD | TBD | TBD |
+| Model backend | Pass | Rate | Wilson 95% | Core-100 | hard3 | Empty |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DeepSeek V4 Pro | 115/150 | 76.7% | 69.3–82.7 | 94/100 | 21/50 | 0 |
+| DeepSeek V4 Flash | 108/150 | 72.0% | 64.3–78.6 | 90/100 | 18/50 | 0 |
+| gpt-5.6-luna (OpenLux) | 102/150 | 68.0% | 60.2–74.9 | 82/100 | 20/50 | 6 |
+| Qwen3.6-35B | 63/150 | 42.0% | 34.4–50.0 | 55/100 | 8/50 | 25 |
+| GPT-OSS 120B | 36/150 | 24.0% | 17.9–31.4 | 25/100 | 11/50 | 2 |
 
-**Current evidence boundary.** A received DeepSeek V4 Flash package records 132/200 functional passes, but only 183 tasks launched. Seventeen baseline tasks were blocked before launch by a freeze-spec mismatch, 16 Hard-50 tasks encountered unavailable offline dependencies before behavioral evaluation, and 59 attempted runs violated the declared context allowance. The union of eligibility-affected tasks contains 84 tasks. Therefore, 132/200 is a received-suite audit headline, not a leaderboard result, and is excluded from the abstract and final main table.
+The suite is not saturated (Pro fails 35; 28 tasks unsolved by all five). Pro vs Flash McNemar 10/3, p≈0.092 — do not claim Pro is significantly stronger than Flash. Do not rewrite Qwen as 63/125.
 
-**Historical capability context.** On the superseded Python-150 + External-50 suite, five OpenHands Main configurations span 43/200 (21.5%) to 145/200 (72.5%) Functional Pass. This shows a model capability gradient under a shared protocol, but External-50 is substantially easier and copy-heavy. These rates may appear only as historical context, not as the Python-200′ main result.
+**Finding 1.** Current coding agents exhibit substantial but incomplete feature-lifting capability on frozen Python-150, with large performance differences across model backends.
 
 ### 4.3 Failure Stages
 
-For every eligible main-table run, we report mutually exclusive first-failure counts. This prevents a missing dependency or preflight rejection from being interpreted as model behavior. The final table will use the following structure:
+| Model | Pass | Missing | Build | Public | Hidden | Isolation |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DeepSeek V4 Pro | 115 | 0 | 0 | 25 | 10 | 0 |
+| DeepSeek V4 Flash | 108 | 0 | 0 | 26 | 15 | 1 |
+| gpt-5.6-luna (OpenLux) | 102 | 6 | 3 | 27 | 12 | 0 |
+| Qwen3.6-35B | 63 | 25 | 6 | 35 | 21 | 0 |
+| GPT-OSS 120B | 36 | 2 | 18 | 70 | 23 | 1 |
 
-| Model | Pass | Missing | Build | Public | Hidden | Isolation | Infrastructure excluded |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| DeepSeek V4 Flash | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
-| Medium-capability model | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
+**Finding 2.** Functional failures concentrate primarily at the behavioral gates.
 
-Historical results suggest different failure depths across capability levels. On the superseded suite, DeepSeek V4 Flash API records 144 passes, 5 missing submissions, 2 build failures, 27 Public failures, 22 Hidden-only failures, and no isolation-first failures. Weaker models fail more often at the Public stage. This pattern motivates, but does not replace, the clean Python-200′ comparison.
+Qwen's 25 empty rows are process non-delivery. Luna has 6 empty rows. Empty submissions are excluded from the mechanism census.
 
 ### 4.4 Compactness and Task Dependence
 
-Compactness is reported only among functionally passing tasks and is always split by construction cohort. The final analysis will report median and interquartile RRES, copied-code fraction, submission files, and dependency footprint for Python-150, Hard-50, and designated copy-trap tasks.
+Pass-conditioned only. Pro/Flash median copy ≈0.96–0.97; Luna 0.16. On 97 paired Pro∩Luna passes, copy is 0.97 vs 0.19. Official Hard-50 has no `reference_solution/`, so no RRES there. Difficulty contrast is in-suite hard3 (Pro 94/100 vs 21/50).
 
-| Model / split | Functional passes with RRES | Median RRES | IQR | Copy-heavy passes |
-| --- | ---: | ---: | ---: | ---: |
-| DeepSeek / Python-150 | TBD | TBD | TBD | TBD |
-| DeepSeek / Hard-50 | TBD | TBD | TBD | TBD |
-| Additional models | TBD | TBD | TBD | TBD |
-
-We will additionally report descriptive slices by Direct, Adapted, and Composite lift type, and by primary entanglement. These analyses are observational. Small subgroups, maintainer/AI-assisted labels, and correlations between task design variables preclude causal interpretation.
+**Finding 5.** Correctness and compactness are distinct.
 
 ## 5. Analysis
 
@@ -236,15 +235,11 @@ Semantic coding provenance and disagreement must be disclosed. Independent human
 
 ### 5.2 Contract-Closure Failure
 
-We use **contract-closure failure** to describe a recurring symptom in which an agent identifies or reconstructs the broad target capability but fails to satisfy the complete observable contract of the independent package. The term connects the public specification, transitive feature closure, and evaluator outcome. It does not mean that Hidden tests introduce private requirements: every valid Hidden check must map to a public requirement.
+L1 close-read of Pro+Flash artifact failures ($n=63$; assistant first pass, not gold): behavior drift 54, contract/API completion 7, packaging 2, localization 0. Every remaining failure inspected `repo/`. Closure classes are 61/63. A stratified Luna/Qwen/OSS sample ($n=32$ coded) is not pooled; Luna is in the same direction, Qwen/OSS add packaging and missing helpers.
 
-Three task dossiers illustrate the phenomenon:
+**Finding 3.** On the Pro+Flash artifact-fail slice, failures are dominated by incomplete recovery of the required behavioral contract rather than by missing packages or uninspected source trees.
 
-1. **Timed signing (`itsdangerous`).** An agent can implement `dumps`/`loads` round trips and tamper detection while returning the wrong exception semantics at an expiration boundary. The missing behavior is not cryptographic syntax but the declared distinction between `SignatureExpired` and a generic signature error.
-2. **Configuration preservation (`configobj`).** Multiple agents can parse and rewrite configuration values while failing to preserve comments or honor `configspec` validation. The primary path works, but round-trip and validation obligations remain open.
-3. **Cache-key extraction (`requests_cache`).** Agents locate and copy the relevant cache-key implementation yet omit a required `normalize_body` export. Repository localization and broad code reuse therefore do not guarantee API closure.
-
-These cases support a narrower conclusion than “localization is solved.” Current agents can often locate and reuse relevant implementation evidence, but contract closure remains a substantial failure surface. A stronger localization claim requires independent trajectory-level localization labels.
+Cases: Qwen `babel` empty package (process); Pro/Flash `alembic` `get_revision('base')` shadows a revision id (Public drift); `aiohttp` missing invalid-name raise (Hidden completion); Flash `typer` isolation; `blinker` copy-heavy pass (RRES 9.0 / 18.4 / 4.6).
 
 ### 5.3 Public Feedback Separates Two Information Layers
 
@@ -257,7 +252,7 @@ To test whether Main failures are caused simply by the absence of executable fee
 
 All six selected Public-failure tasks flip the Public gate from 0 to 1. However, three of those tasks remain Hidden failures, and four of five paired tasks that already passed Public retain their Hidden failure. Only two tasks flip Hidden from 0 to 1. The result shows that withholding executable Public tests is a real bottleneck, but Public feedback is not a general Hidden oracle. We therefore treat Public and Hidden as two evaluation depths of the same published contract whose outcomes can move separately.
 
-This ablation is not a replacement agent method and does not enter the Python-200′ leaderboard. It diagnoses the information boundary of Official Main.
+This ablation is not freeze v2 Main and does not enter the Python-150 leaderboard. It diagnoses the information boundary of Official Main.
 
 ### 5.4 Functional Sufficiency Often Precedes Agent Termination
 
@@ -286,13 +281,13 @@ These results are heterogeneous in task subset and development date, so they are
 
 Feature lifting asks a different question from issue repair. A repair agent succeeds inside the original repository and can rely on its package layout, resources, and test harness. A feature-lifting agent must infer which parts of that environment are semantically necessary and reconstruct them behind a new package boundary. It must satisfy an output contract after the original repository is removed. This combination makes dependency closure and modularization part of correctness rather than implementation style.
 
-The task is also different from code localization. Finding a relevant symbol can be necessary, but the `requests_cache` and configuration examples show why it is insufficient. Conversely, a behaviorally equivalent rewrite can pass even if it copies little upstream code. FeatureLiftBench therefore evaluates the delivered behavior and independence of an artifact, not whether the agent followed one prescribed extraction strategy.
+The task is also different from code localization. Finding a relevant symbol can be necessary, but the Alembic revision-map and aiohttp parameter cases show why it is insufficient. Conversely, a behaviorally equivalent rewrite can pass even if it copies little upstream code. FeatureLiftBench therefore evaluates the delivered behavior and independence of an artifact, not whether the agent followed one prescribed extraction strategy.
 
 ### 6.2 Correctness and Compactness Should Remain Separate
 
 A broad vendoring solution may preserve behavior but offer little reusable modularization. A very small package may omit rare behavior. Combining these dimensions into one scalar would obscure both failure modes and make tradeoffs difficult to interpret. FeatureLiftBench instead treats Functional Pass as the eligibility gate for compactness analysis. RRES is then a descriptive reference-relative measure, not a proof of minimality or semantic authenticity.
 
-The earlier External-50 expansion demonstrates the importance of this separation. High pass rates alone suggested that the task was nearly solved, while pass-conditioned footprints revealed that many solutions were close to whole-repository copying. Hard-50 and its copy-trap tasks are designed to retain functional difficulty while making broad copying visible.
+The earlier External-50 expansion demonstrates the importance of this separation. High pass rates alone suggested that the task was nearly solved, while pass-conditioned footprints revealed that many solutions were close to whole-repository copying. On freeze v2 Python-150 the same split appears inside the passing set: Pro and Flash are copy-heavy, Luna is not. In-suite hard3, not official Hard-50, is the difficulty contrast.
 
 ### 6.3 Implications for Agent Design
 

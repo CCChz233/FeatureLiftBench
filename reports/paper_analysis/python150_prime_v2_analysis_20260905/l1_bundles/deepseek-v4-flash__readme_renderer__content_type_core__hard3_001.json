@@ -1,0 +1,41 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "readme_renderer__content_type_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "serialize_format_render",
+  "files": [
+    "featurelifted/__init__.py",
+    "featurelifted/markdown.py",
+    "featurelifted/rst.py",
+    "featurelifted/txt.py"
+  ],
+  "n_files": 4,
+  "required_api": [
+    "function:featurelifted.render_readme"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`render_readme(content, content_type)` selects plain, markdown, or reST renderers."
+    },
+    {
+      "id": "B002",
+      "text": "Unknown media types fall back to plain text with warnings."
+    },
+    {
+      "id": "B003",
+      "text": "Unsupported charset parameters produce warnings."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.render_readme` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: readme_renderer"
+    }
+  ],
+  "log": ">       assert \"markdown\" in html\nE       AssertionError: assert 'markdown' in '<h1>Title</h1>\\n'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n``readme_renderer``.  Its single public entry point is\n:func:`render_readme`, which selects the appropriate renderer for a\ndescription's content type and returns ``(html, warnings)``.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport io\nimport re\n\nfrom . import markdown\nfrom . import rst\nfrom . import txt\n\n__all__ = [\"render_readme\"]\n\n__version__ = \"45.0\"\n\n_MEDIA_TYPE_RE = re.compile(r\"^\\s*([^;\\s]+)\")\n\n## featurelifted/__init__.py:18\n\n__all__ = [\"render_readme\"]\n\n__version__ = \"45.0\"\n\n_MEDIA_TYPE_RE = re.compile(r\"^\\s*([^;\\s]+)\")\n_CHARSET_RE = re.compile(\n    r\"\"\"charset\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)'|([^;\\s]+))\"\"\", re.IGNORECASE\n)\n\n#: charsets considered equivalent to the default ``utf-8`` handling.\n_SUPPORTED_CHARSETS = frozenset({\"utf-8\", \"utf8\"})\n\n\ndef _split_content_type(content_type: str) -> tuple[str, str | None]:\n    \"\"\"Return ``(media_type, charset)`` from a header-style content type.\"\"\"\n    content_type = content_type.strip()\n    m = _MEDIA_TYPE_RE.match(content_type)\n    media_type = m.group(1).lower() if m else content_type.lower()\n\n## featurelifted/__init__.py:41\n\ndef render_readme(content: str, content_type: str) -> tuple[str, list[str]]:\n    \"\"\"Render *content* according to *content_type*.\n\n    Mirrors ``readme_renderer``: ``text/plain``, ``text/x-rst`` and\n    ``text/markdown`` descriptions are rendered by the corresponding\n    renderer, and anything else falls back to plain text.  Rendering\n    problems, unknown media types and unsupported ``charset`` parameters\n    are collected into the returned ``warnings`` list.\n\n    Returns:\n        A ``(html, warnings)`` pair.  ``html`` is always a string (the empty\n        string when nothing could be rendered) and ``warnings`` is a list of\n        human readable messages, one per line.\n    \"\"\"\n    media_type, charset = _split_content_type(content_type)\n\n    # A content type that is not a readable text flavour cannot be rendered;\n    # fall back to plain text and let the caller know."
+}

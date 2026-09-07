@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "click__lazy_command_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.LazyCommandCollection",
+    "method:featurelifted.LazyCommandCollection.get_command",
+    "method:featurelifted.LazyCommandCollection.resolve",
+    "class:featurelifted.Command",
+    "exception:featurelifted.UsageError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When a command name is requested, LazyCommandCollection loads only the source that supplies that command and caches the resolved command."
+    },
+    {
+      "id": "B002",
+      "text": "When a context is created, collection defaults and envvar settings are propagated to command resolution without eagerly loading unrelated commands."
+    },
+    {
+      "id": "B003",
+      "text": "When resolve receives argv, it returns the resolved Context, Command, and remaining arguments and raises UsageError for unknown commands."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.LazyCommandCollection`, `featurelifted.LazyCommandCollection.get_command`, `featurelifted.LazyCommandCollection.resolve`, `featurelifted.Command`, `featurelifted.UsageError` with the kinds and callable signatures list"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: click"
+    }
+  ],
+  "log": ">       assert collection.invoke([\"echo\", \"hi\"]) == [\"hi\"]\nE       AssertionError: assert None == ['hi']\nE        +  where None = <bound method Command.invoke of <LazyCommandCollection ['echo']>>(['echo', 'hi'])\nE        +    where <bound method Command.invoke of <LazyCommandCollection ['echo']>> = <LazyCommandCollection ['echo']>.invoke\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:10: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nThe public surface relevant to the ``LazyCommandCollection`` feature is:\n\n* :class:`LazyCommandCollection`\n* :class:`Command`\n* :class:`UsageError`\n\nA small number of supporting names (:class:`Context`, :class:`Group`,\n:class:`ClickException`, ...) are exported as well so that code using the\nfeature can create and inspect contexts without importing anything else.\n\"\"\"\n\nfrom ._exceptions import Abort as Abort\nfrom ._exceptions import ClickException as ClickException\nfrom ._exceptions import Exit as Exit\nfrom ._exceptions import NoSuchCommand as NoSuchCommand\nfrom ._exceptions import UsageError as UsageError\nfrom .core import Command as Command\nfrom .core import Context as Context\n\n## featurelifted/__init__.py:5\n\n* :class:`LazyCommandCollection`\n* :class:`Command`\n* :class:`UsageError`\n\nA small number of supporting names (:class:`Context`, :class:`Group`,\n:class:`ClickException`, ...) are exported as well so that code using the\nfeature can create and inspect contexts without importing anything else.\n\"\"\"\n\nfrom ._exceptions import Abort as Abort\nfrom ._exceptions import ClickException as ClickException\nfrom ._exceptions import Exit as Exit\nfrom ._exceptions import NoSuchCommand as NoSuchCommand\nfrom ._exceptions import UsageError as UsageError\nfrom .core import Command as Command\nfrom .core import Context as Context\nfrom .core import Group as Group\nfrom .core import LazyCommandCollection as LazyCommandCollection\n\n## featurelifted/__init__.py:6\n* :class:`LazyCommandCollection`\n* :class:`Command`\n* :class:`UsageError`\n\nA small number of supporting names (:class:`Context`, :class:`Group`,\n:class:`ClickException`, ...) are exported as well so that code using the\nfeature can create and inspect contexts without importing anything else.\n\"\"\"\n\nfrom ._exceptions import Abort as Abort\nfrom ._exceptions import ClickException as ClickException\nfrom ._exceptions import Exit as Exit\nfrom ._exceptions import NoSuchCommand as NoSuchCommand\nfrom ._exceptions import UsageError as UsageError\nfrom .core import Command as Command\nfrom .core import Context as Context\nfrom .core import Group as Group\nfrom .core import LazyCommandCollection as LazyCommandCollection\n\n\n## featurelifted/__init__.py:7\n* :class:`Command`\n* :class:`UsageError`\n\nA small number of supporting names (:class:`Context`, :class:`Group`,\n:class:`ClickException`, ...) are exported as well so that code using the\nfeature can create and inspect contexts without importing anything else.\n\"\"\"\n\nfrom ._exceptions import Abort as Abort\nfrom ._exceptions import ClickException as ClickException\nfrom ._exceptions import Exit as Exit\nfrom ._exceptions import NoSuchCommand as NoSuchCommand\nfrom ._exceptions import UsageError as UsageError\nfrom .core import Command as Command\nfrom .core import Context as Context\nfrom .core import Group as Group\nfrom .core import LazyCommandCollection as LazyCommandCollection\n\n__version__ = \"0.1.0\""
+}

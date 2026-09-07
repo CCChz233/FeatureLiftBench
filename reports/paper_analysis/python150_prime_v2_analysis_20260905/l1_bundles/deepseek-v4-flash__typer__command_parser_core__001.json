@@ -1,0 +1,54 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "typer__command_parser_core__001",
+  "stage": "isolation_failure",
+  "lift_type": "Direct",
+  "feature_family": "workflow_session_orchestration",
+  "files": [
+    "featurelifted/__init__.py",
+    "featurelifted/_click/__init__.py",
+    "featurelifted/_click/_compat.py",
+    "featurelifted/_click/_termui_impl.py",
+    "featurelifted/_click/_textwrap.py",
+    "featurelifted/_click/_winconsole.py",
+    "featurelifted/_click/core.py"
+  ],
+  "n_files": 7,
+  "required_api": [
+    "module:featurelifted.testing",
+    "class:featurelifted.testing.CliRunner",
+    "method:featurelifted.testing.CliRunner.invoke"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: build commands from type-annotated functions. Required observable cases include subcommands and optional path."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: parse options, arguments, defaults, and choices. Required observable cases include typed options and arguments; subcommands and optional path."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: invoke Typer apps through CliRunner. Required observable cases include typed options and arguments; subcommands and optional path; choice validation."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: nested subcommands and context passing. Required observable cases include subcommands and optional path."
+    },
+    {
+      "id": "B005",
+      "text": "The extracted feature must support this observable behavior: usage errors for invalid parameters. Required observable cases include subcommands and optional path."
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.testing`, `featurelifted.testing.CliRunner`, `featurelifted.testing.CliRunner.invoke` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: typer, click"
+    }
+  ],
+  "log": "{\n  \"forbidden_dependencies_pass\": true,\n  \"forbidden_imports_pass\": false,\n  \"forbidden_runtime_capabilities_pass\": true,\n  \"mount_allowlist_pass\": true,\n  \"pass\": false,\n  \"runtime_audit_pass\": true,\n  \"runtime_import_origin_pass\": true,\n  \"submission_location_pass\": true\n}",
+  "submission_snip": "## featurelifted/_click/core.py:326\n        #: should use a :func:`result_callback`.\n        self.invoked_subcommand: t.Optional[str] = None\n\n        if terminal_width is None and parent is not None:\n            terminal_width = parent.terminal_width\n\n        #: The width of the terminal (None is autodetection).\n        self.terminal_width: t.Optional[int] = terminal_width\n\n        if max_content_width is None and parent is not None:\n            max_content_width = parent.max_content_width\n\n        #: The maximum width of formatted content (None implies a sensible\n        #: default which is 80 for most things).\n        self.max_content_width: t.Optional[int] = max_content_width\n\n        if allow_extra_args is None:\n            allow_extra_args = command.allow_extra_args\n\n\n## featurelifted/_click/core.py:473\n        it to the current thread local (see :func:`get_current_context`).\n        The default behavior of this is to invoke the cleanup functions which\n        can be disabled by setting `cleanup` to `False`.  The cleanup\n        functions are typically used for things such as closing file handles.\n\n        If the cleanup is intended the context object can also be directly\n        used as a context manager.\n\n        Example usage::\n\n            with ctx.scope():\n                assert get_current_context() is ctx\n\n        This is equivalent::\n\n            with ctx:\n                assert get_current_context() is ctx\n\n        .. versionadded:: 5.0\n\n## featurelifted/_click/core.py:715\n    @t.overload\n    def invoke(\n        __self,  # noqa: B902\n        __callback: \"t.Callable[..., V]\",\n        *args: t.Any,\n        **kwargs: t.Any,\n    ) -> V:\n        ...\n\n    @t.overload\n    def invoke(\n        __self,  # noqa: B902\n        __callback: \"Command\",\n        *args: t.Any,\n        **kwargs: t.Any,\n    ) -> t.Any:\n        ...\n\n    def invoke(\n\n## featurelifted/_click/core.py:724\n    @t.overload\n    def invoke(\n        __self,  # noqa: B902\n        __callback: \"Command\",\n        *args: t.Any,\n        **kwargs: t.Any,\n    ) -> t.Any:\n        ...\n\n    def invoke(\n        __self,  # noqa: B902\n        __callback: t.Union[\"Command\", \"t.Callable[..., V]\"],\n        *args: t.Any,\n        **kwargs: t.Any,\n    ) -> t.Union[t.Any, V]:\n        \"\"\"Invokes a command callback in exactly the way it expects.  There\n        are two ways to invoke this method:\n\n        1.  the first argument can be a callback and all other arguments and"
+}

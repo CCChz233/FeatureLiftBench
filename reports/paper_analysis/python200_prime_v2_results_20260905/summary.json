@@ -1,0 +1,696 @@
+{
+  "schema_version": "featureliftbench.python200_prime_v2_results.v1",
+  "generated_at": "2026-09-05T00:39:21Z",
+  "freeze_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+  "candidate": "212930ea",
+  "protocol": "OpenHands Official Main, Full-Repository / No-Hint",
+  "images": {
+    "agent": "featureliftbench-agent:python200-prime-212930ea",
+    "eval": "featureliftbench-eval:python200-prime-212930ea"
+  },
+  "rule": "Functional Pass = build ∧ public ∧ hidden ∧ isolation. Empty submissions count as Functional Fail. Mixed-freeze 200-task headlines are not freeze v2.",
+  "main_table_full_200": [
+    {
+      "id": "gpt-oss-120b",
+      "label": "GPT-OSS 120B",
+      "profile": "openhands_gpt_oss_120b_paper",
+      "role": "full_200_v2",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/gpt-oss-120b/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 200,
+        "old150": 0,
+        "none": 0
+      },
+      "completed_runs": 200,
+      "cite_as_v2_200": true,
+      "all_runs": {
+        "n": 200,
+        "functional_passed": 61,
+        "functional_pass_rate": 0.305,
+        "empty": 1,
+        "wilson95": [
+          0.2454,
+          0.372
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 200,
+        "functional_passed": 61,
+        "functional_pass_rate": 0.305,
+        "empty": 1,
+        "wilson95": [
+          0.2454,
+          0.372
+        ]
+      },
+      "freeze24_24": {
+        "n": 24,
+        "functional_passed": 4,
+        "functional_pass_rate": 0.166667,
+        "empty": 1,
+        "wilson95": [
+          0.0668,
+          0.3585
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 25,
+        "functional_pass_rate": 0.5,
+        "empty": 0,
+        "wilson95": [
+          0.3664,
+          0.6336
+        ]
+      },
+      "python150_among_completed": {
+        "n": 150,
+        "functional_passed": 36,
+        "functional_pass_rate": 0.24,
+        "empty": 1,
+        "wilson95": [
+          0.1787,
+          0.3143
+        ]
+      },
+      "first_fail": {
+        "public_tests": 91,
+        "pass": 61,
+        "build": 18,
+        "hidden_tests": 28,
+        "isolation": 1,
+        "empty": 1
+      },
+      "empty_ids": [
+        "hatch__project_metadata_core__hard3_001"
+      ]
+    }
+  ],
+  "in_progress_full_200": [
+    {
+      "id": "glm-5.3-flash",
+      "label": "GLM-5.3-Flash",
+      "profile": "openhands_glm_5_3_flash_paper",
+      "role": "full_200_v2_in_progress",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/glm-5.3-flash/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 74,
+        "old150": 0,
+        "none": 0
+      },
+      "completed_runs": 74,
+      "cite_as_v2_200": false,
+      "all_runs": {
+        "n": 74,
+        "functional_passed": 45,
+        "functional_pass_rate": 0.608108,
+        "empty": 10,
+        "wilson95": [
+          0.4942,
+          0.7114
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 74,
+        "functional_passed": 45,
+        "functional_pass_rate": 0.608108,
+        "empty": 10,
+        "wilson95": [
+          0.4942,
+          0.7114
+        ]
+      },
+      "freeze24_24": {
+        "n": 6,
+        "functional_passed": 2,
+        "functional_pass_rate": 0.333333,
+        "empty": 0,
+        "wilson95": [
+          0.0968,
+          0.7
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 30,
+        "functional_pass_rate": 0.6,
+        "empty": 7,
+        "wilson95": [
+          0.4618,
+          0.7239
+        ]
+      },
+      "python150_among_completed": {
+        "n": 24,
+        "functional_passed": 15,
+        "functional_pass_rate": 0.625,
+        "empty": 3,
+        "wilson95": [
+          0.4271,
+          0.7884
+        ]
+      },
+      "first_fail": {
+        "isolation": 1,
+        "public_tests": 14,
+        "pass": 45,
+        "empty": 10,
+        "hidden_tests": 2,
+        "build": 2
+      },
+      "empty_ids": [
+        "alembic__revision_map_core__hard3_001",
+        "apscheduler__cron_trigger_core__hard3_001",
+        "astroid__nodes_core__001",
+        "falcon__responder_routing_core__001",
+        "hydra_core__compose_initialize_core__001",
+        "pandera__dataframe_schema_core__001",
+        "pylint__config_find_core__001",
+        "quart__blueprint_dispatch_core__001",
+        "redbaron__fst_mutate_core__001",
+        "spiffworkflow__bpmn_engine_core__001"
+      ]
+    }
+  ],
+  "freeze24_comparable_slice": {
+    "n": 24,
+    "task_ids": [
+      "aiohttp__url_params_core__hard3_001",
+      "build__pyproject_backend_core__hard3_001",
+      "cachetools__cache_eviction_core__001",
+      "click__lazy_command_core__hard3_001",
+      "configobj__roundtrip_config_core__001",
+      "cookiecutter__repo_finder_core__hard3_001",
+      "dateutil__zone_resolver_core__hard3_001",
+      "deepdiff__deep_compare_core__001",
+      "diskcache__eviction_policy_core__hard3_001",
+      "fs__url_opener_core__hard3_001",
+      "hatch__project_metadata_core__hard3_001",
+      "importlib_metadata__entry_points_core__001",
+      "installer__wheel_record_core__hard3_001",
+      "intervaltree__interval_tree_core__001",
+      "jsonpointer__resolve_core__001",
+      "multidict__multidict_mutation_core__hard3_001",
+      "packaging__requirement_marker_specifier__001",
+      "python_frontmatter__roundtrip_core__001",
+      "readme_renderer__content_type_core__hard3_001",
+      "setuptools_scm__version_normalize_core__hard3_001",
+      "sortedcontainers__sorted_list_core__001",
+      "stevedore__extension_manager_core__hard3_001",
+      "virtualenv__interpreter_spec_core__hard3_001",
+      "websockets__handshake_parse_core__001"
+    ],
+    "note": "The 24 Python-150 tasks that DS/Luna/Qwen originally failed freeze-preflight; rewritten on freeze v2. Only honest v2 number for those three models.",
+    "models": [
+      {
+        "id": "deepseek-v4-flash",
+        "label": "DeepSeek V4 Flash",
+        "n": 24,
+        "functional_passed": 14,
+        "functional_pass_rate": 0.583333,
+        "empty": 0,
+        "wilson95": [
+          0.3883,
+          0.7553
+        ],
+        "empty_ids": []
+      },
+      {
+        "id": "gpt-5.6-luna",
+        "label": "GPT-5.6 Luna (OpenLux)",
+        "n": 24,
+        "functional_passed": 12,
+        "functional_pass_rate": 0.5,
+        "empty": 1,
+        "wilson95": [
+          0.3143,
+          0.6857
+        ],
+        "empty_ids": [
+          "cookiecutter__repo_finder_core__hard3_001"
+        ]
+      },
+      {
+        "id": "qwen3.6-35b-a3b-fp8",
+        "label": "Qwen3.6-35B-A3B-FP8",
+        "n": 24,
+        "functional_passed": 6,
+        "functional_pass_rate": 0.25,
+        "empty": 3,
+        "wilson95": [
+          0.12,
+          0.449
+        ],
+        "empty_ids": [
+          "importlib_metadata__entry_points_core__001",
+          "intervaltree__interval_tree_core__001",
+          "virtualenv__interpreter_spec_core__hard3_001"
+        ]
+      },
+      {
+        "id": "gpt-oss-120b",
+        "label": "GPT-OSS 120B",
+        "n": 24,
+        "functional_passed": 4,
+        "functional_pass_rate": 0.166667,
+        "empty": 1,
+        "wilson95": [
+          0.0668,
+          0.3585
+        ],
+        "empty_ids": [
+          "hatch__project_metadata_core__hard3_001"
+        ]
+      },
+      {
+        "id": "glm-5.3-flash",
+        "label": "GLM-5.3-Flash",
+        "n": 6,
+        "functional_passed": 2,
+        "functional_pass_rate": 0.333333,
+        "empty": 0,
+        "wilson95": [
+          0.0968,
+          0.7
+        ],
+        "empty_ids": [
+          "alembic__revision_map_core__hard3_001",
+          "apscheduler__cron_trigger_core__hard3_001",
+          "astroid__nodes_core__001",
+          "falcon__responder_routing_core__001",
+          "hydra_core__compose_initialize_core__001",
+          "pandera__dataframe_schema_core__001",
+          "pylint__config_find_core__001",
+          "quart__blueprint_dispatch_core__001",
+          "redbaron__fst_mutate_core__001",
+          "spiffworkflow__bpmn_engine_core__001"
+        ]
+      }
+    ]
+  },
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "label": "DeepSeek V4 Flash",
+      "profile": "openhands_deepseek_v4_flash_main",
+      "role": "freeze24_slice_only",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 24,
+        "old150": 126,
+        "none": 50
+      },
+      "completed_runs": 200,
+      "cite_as_v2_200": false,
+      "all_runs": {
+        "n": 200,
+        "functional_passed": 157,
+        "functional_pass_rate": 0.785,
+        "empty": 0,
+        "wilson95": [
+          0.723,
+          0.8363
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 24,
+        "functional_passed": 14,
+        "functional_pass_rate": 0.583333,
+        "empty": 0,
+        "wilson95": [
+          0.3883,
+          0.7553
+        ]
+      },
+      "freeze24_24": {
+        "n": 24,
+        "functional_passed": 14,
+        "functional_pass_rate": 0.583333,
+        "empty": 0,
+        "wilson95": [
+          0.3883,
+          0.7553
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 49,
+        "functional_pass_rate": 0.98,
+        "empty": 0,
+        "wilson95": [
+          0.895,
+          0.9965
+        ]
+      },
+      "python150_among_completed": {
+        "n": 150,
+        "functional_passed": 108,
+        "functional_pass_rate": 0.72,
+        "empty": 0,
+        "wilson95": [
+          0.6433,
+          0.7857
+        ]
+      },
+      "first_fail": {
+        "pass": 14,
+        "public_tests": 7,
+        "hidden_tests": 3
+      },
+      "empty_ids": []
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "label": "GPT-5.6 Luna (OpenLux)",
+      "profile": "openhands_gpt_5_6_luna_paper",
+      "role": "freeze24_slice_only",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/gpt-5.6-luna/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 24,
+        "old150": 126,
+        "none": 50
+      },
+      "completed_runs": 200,
+      "cite_as_v2_200": false,
+      "all_runs": {
+        "n": 200,
+        "functional_passed": 144,
+        "functional_pass_rate": 0.72,
+        "empty": 1,
+        "wilson95": [
+          0.6541,
+          0.7776
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 24,
+        "functional_passed": 12,
+        "functional_pass_rate": 0.5,
+        "empty": 1,
+        "wilson95": [
+          0.3143,
+          0.6857
+        ]
+      },
+      "freeze24_24": {
+        "n": 24,
+        "functional_passed": 12,
+        "functional_pass_rate": 0.5,
+        "empty": 1,
+        "wilson95": [
+          0.3143,
+          0.6857
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 42,
+        "functional_pass_rate": 0.84,
+        "empty": 0,
+        "wilson95": [
+          0.7149,
+          0.9166
+        ]
+      },
+      "python150_among_completed": {
+        "n": 150,
+        "functional_passed": 102,
+        "functional_pass_rate": 0.68,
+        "empty": 1,
+        "wilson95": [
+          0.6017,
+          0.7494
+        ]
+      },
+      "first_fail": {
+        "pass": 12,
+        "public_tests": 9,
+        "empty": 1,
+        "hidden_tests": 2
+      },
+      "empty_ids": [
+        "cookiecutter__repo_finder_core__hard3_001"
+      ]
+    },
+    {
+      "id": "qwen3.6-35b-a3b-fp8",
+      "label": "Qwen3.6-35B-A3B-FP8",
+      "profile": "openhands_qwen3_6_35b_a3b_fp8_paper",
+      "role": "freeze24_slice_only",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 24,
+        "old150": 126,
+        "none": 50
+      },
+      "completed_runs": 200,
+      "cite_as_v2_200": false,
+      "all_runs": {
+        "n": 200,
+        "functional_passed": 86,
+        "functional_pass_rate": 0.43,
+        "empty": 31,
+        "wilson95": [
+          0.3633,
+          0.4993
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 24,
+        "functional_passed": 6,
+        "functional_pass_rate": 0.25,
+        "empty": 3,
+        "wilson95": [
+          0.12,
+          0.449
+        ]
+      },
+      "freeze24_24": {
+        "n": 24,
+        "functional_passed": 6,
+        "functional_pass_rate": 0.25,
+        "empty": 3,
+        "wilson95": [
+          0.12,
+          0.449
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 23,
+        "functional_pass_rate": 0.46,
+        "empty": 6,
+        "wilson95": [
+          0.3297,
+          0.596
+        ]
+      },
+      "python150_among_completed": {
+        "n": 150,
+        "functional_passed": 63,
+        "functional_pass_rate": 0.42,
+        "empty": 25,
+        "wilson95": [
+          0.344,
+          0.5
+        ]
+      },
+      "first_fail": {
+        "public_tests": 10,
+        "pass": 6,
+        "build": 2,
+        "hidden_tests": 3,
+        "empty": 3
+      },
+      "empty_ids": [
+        "importlib_metadata__entry_points_core__001",
+        "intervaltree__interval_tree_core__001",
+        "virtualenv__interpreter_spec_core__hard3_001"
+      ]
+    },
+    {
+      "id": "gpt-oss-120b",
+      "label": "GPT-OSS 120B",
+      "profile": "openhands_gpt_oss_120b_paper",
+      "role": "full_200_v2",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/gpt-oss-120b/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 200,
+        "old150": 0,
+        "none": 0
+      },
+      "completed_runs": 200,
+      "cite_as_v2_200": true,
+      "all_runs": {
+        "n": 200,
+        "functional_passed": 61,
+        "functional_pass_rate": 0.305,
+        "empty": 1,
+        "wilson95": [
+          0.2454,
+          0.372
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 200,
+        "functional_passed": 61,
+        "functional_pass_rate": 0.305,
+        "empty": 1,
+        "wilson95": [
+          0.2454,
+          0.372
+        ]
+      },
+      "freeze24_24": {
+        "n": 24,
+        "functional_passed": 4,
+        "functional_pass_rate": 0.166667,
+        "empty": 1,
+        "wilson95": [
+          0.0668,
+          0.3585
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 25,
+        "functional_pass_rate": 0.5,
+        "empty": 0,
+        "wilson95": [
+          0.3664,
+          0.6336
+        ]
+      },
+      "python150_among_completed": {
+        "n": 150,
+        "functional_passed": 36,
+        "functional_pass_rate": 0.24,
+        "empty": 1,
+        "wilson95": [
+          0.1787,
+          0.3143
+        ]
+      },
+      "first_fail": {
+        "public_tests": 91,
+        "pass": 61,
+        "build": 18,
+        "hidden_tests": 28,
+        "isolation": 1,
+        "empty": 1
+      },
+      "empty_ids": [
+        "hatch__project_metadata_core__hard3_001"
+      ]
+    },
+    {
+      "id": "glm-5.3-flash",
+      "label": "GLM-5.3-Flash",
+      "profile": "openhands_glm_5_3_flash_paper",
+      "role": "full_200_v2_in_progress",
+      "suite_dir": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/glm-5.3-flash/python200-prime-v2-main-r1",
+      "freeze_counts": {
+        "v2": 74,
+        "old150": 0,
+        "none": 0
+      },
+      "completed_runs": 74,
+      "cite_as_v2_200": false,
+      "all_runs": {
+        "n": 74,
+        "functional_passed": 45,
+        "functional_pass_rate": 0.608108,
+        "empty": 10,
+        "wilson95": [
+          0.4942,
+          0.7114
+        ]
+      },
+      "freeze_v2_id_runs": {
+        "n": 74,
+        "functional_passed": 45,
+        "functional_pass_rate": 0.608108,
+        "empty": 10,
+        "wilson95": [
+          0.4942,
+          0.7114
+        ]
+      },
+      "freeze24_24": {
+        "n": 6,
+        "functional_passed": 2,
+        "functional_pass_rate": 0.333333,
+        "empty": 0,
+        "wilson95": [
+          0.0968,
+          0.7
+        ]
+      },
+      "hard50_among_completed": {
+        "n": 50,
+        "functional_passed": 30,
+        "functional_pass_rate": 0.6,
+        "empty": 7,
+        "wilson95": [
+          0.4618,
+          0.7239
+        ]
+      },
+      "python150_among_completed": {
+        "n": 24,
+        "functional_passed": 15,
+        "functional_pass_rate": 0.625,
+        "empty": 3,
+        "wilson95": [
+          0.4271,
+          0.7884
+        ]
+      },
+      "first_fail": {
+        "isolation": 1,
+        "public_tests": 14,
+        "pass": 45,
+        "empty": 10,
+        "hidden_tests": 2,
+        "build": 2
+      },
+      "empty_ids": [
+        "alembic__revision_map_core__hard3_001",
+        "apscheduler__cron_trigger_core__hard3_001",
+        "astroid__nodes_core__001",
+        "falcon__responder_routing_core__001",
+        "hydra_core__compose_initialize_core__001",
+        "pandera__dataframe_schema_core__001",
+        "pylint__config_find_core__001",
+        "quart__blueprint_dispatch_core__001",
+        "redbaron__fst_mutate_core__001",
+        "spiffworkflow__bpmn_engine_core__001"
+      ]
+    }
+  ],
+  "do_not_cite_as_freeze_v2": [
+    {
+      "model": "DeepSeek V4 Flash",
+      "mixed_200_fg": "157/200",
+      "reason": "24×v2 + 126×old Python-150 freeze + 50×Hard-50 with no freeze_id",
+      "use_instead": "freeze24 slice 14/24"
+    },
+    {
+      "model": "GPT-5.6 Luna (OpenLux)",
+      "mixed_200_fg": "144/200",
+      "reason": "24×v2 + 126×old Python-150 freeze + 50×Hard-50 with no freeze_id",
+      "use_instead": "freeze24 slice 12/24"
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-FP8",
+      "mixed_200_fg": "86/200",
+      "reason": "24×v2 + 126×old Python-150 freeze + 50×Hard-50 with no freeze_id",
+      "use_instead": "freeze24 slice 6/24"
+    }
+  ],
+  "slice_suites": {
+    "deepseek-v4-flash": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/suite.freeze_v2_final.json",
+    "gpt-5.6-luna": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/gpt-5.6-luna/python200-prime-v2-main-r1/suite.freeze_v2_final.json",
+    "qwen3.6-35b-a3b-fp8": "/home/chaihongzheng/workspace/FeatureLiftBench/experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1/suite.freeze_v2_final.json"
+  }
+}

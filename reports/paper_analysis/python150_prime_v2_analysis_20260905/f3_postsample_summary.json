@@ -1,0 +1,67 @@
+{
+  "schema_version": "featureliftbench.failure_analysis.v1",
+  "split": "python150",
+  "kind": "stratified_postsample",
+  "seed": "python150-postsample-v1",
+  "models": [
+    "gpt-5.6-luna",
+    "qwen3.6-35b-a3b-fp8",
+    "gpt-oss-120b"
+  ],
+  "review_status": "assistant_first_pass",
+  "independent_human_review": false,
+  "n_annotated": 45,
+  "n_valid_agent": 32,
+  "n_benchmark_invalid_candidate": 13,
+  "defect_task_ids": [
+    "click__lazy_command_core__hard3_001",
+    "flake8__plugin_options_core__hard3_001",
+    "hatch__project_metadata_core__hard3_001",
+    "pluggy__hook_wrapper_core__hard3_001",
+    "pytest__ini_markers_core__001",
+    "readme_renderer__content_type_core__hard3_001",
+    "setuptools_scm__version_normalize_core__hard3_001"
+  ],
+  "root_cause_valid_agent": {
+    "behavior_drift": 14,
+    "contract_api_completion": 9,
+    "dependency_closure": 4,
+    "packaging_modularization": 5
+  },
+  "root_cause_valid_agent_by_model": {
+    "gpt-5.6-luna": {
+      "behavior_drift": 4,
+      "contract_api_completion": 4
+    },
+    "gpt-oss-120b": {
+      "behavior_drift": 3,
+      "contract_api_completion": 5,
+      "dependency_closure": 1,
+      "packaging_modularization": 4
+    },
+    "qwen3.6-35b-a3b-fp8": {
+      "behavior_drift": 7,
+      "dependency_closure": 3,
+      "packaging_modularization": 1
+    }
+  },
+  "valid_by_first_failure_stage": {
+    "build_failure": 9,
+    "hidden_failure": 9,
+    "isolation_failure": 1,
+    "public_failure": 13
+  },
+  "closure_n": 27,
+  "localization_n": 0,
+  "packaging_n": 5,
+  "unknown_n": 0,
+  "dependency_closure_n": 4,
+  "close_read_tier": "L1",
+  "caveats": [
+    "Stratified sample of Luna/Qwen/OSS artifact failures, not a census. Do not merge into the Pro+Flash 67 denominator.",
+    "Known public-clause defects were included when those tasks artifact-failed; readme/build failures are agent causes, not the markdown-marker defect.",
+    "flake8 register_options and setuptools_scm default-node vs public 1.2.3 were recoded as defects after Luna close-read; also applied to the Pro+Flash census.",
+    "Qwen pytest Hidden-only is the same B003 vs public-strip clash and is excluded.",
+    "L1 assistant_first_pass; not L2."
+  ]
+}

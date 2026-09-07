@@ -13,6 +13,10 @@ FREEZE_ENV = "FEATURELIFTBENCH_BENCHMARK_FREEZE"
 DEFAULT_FREEZE = Path(
     "artifacts/research_analysis/v3/current_benchmark_freeze.json"
 )
+PYTHON200_PRIME_FREEZE = Path(
+    "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json"
+)
+ALLOWED_TASK_COUNTS = frozenset({150, 200})
 
 
 def project_root() -> Path:
@@ -26,6 +30,32 @@ def benchmark_freeze_path() -> Path:
     return (project_root() / DEFAULT_FREEZE).resolve()
 
 
+def python200_prime_freeze_path() -> Path:
+    return (project_root() / PYTHON200_PRIME_FREEZE).resolve()
+
+
+def _is_passing_main_freeze(payload: dict[str, Any]) -> bool:
+    if payload.get("policy_id") != POLICY_ID:
+        return False
+    if payload.get("gate_pass") is not True:
+        return False
+    try:
+        task_count = int(payload.get("task_count"))
+    except (TypeError, ValueError):
+        return False
+    return task_count in ALLOWED_TASK_COUNTS
+
+
+def _freeze_environment(payload: dict[str, Any]) -> dict[str, Any]:
+    environment = payload.get("environment")
+    if not isinstance(environment, dict):
+        environment = {}
+    images = payload.get("images")
+    if "images" not in environment and isinstance(images, dict):
+        return {**environment, "images": images}
+    return environment
+
+
 def benchmark_freeze_provenance(
     task_id: str,
     *,
@@ -35,18 +65,15 @@ def benchmark_freeze_provenance(
     if not path.is_file():
         if require:
             raise ValueError(
-                "Python Main requires a passing v3 benchmark freeze; "
-                "run scripts/build_v3_benchmark_freeze.py"
+                "Python Main requires a passing benchmark freeze; "
+                "set FEATURELIFTBENCH_BENCHMARK_FREEZE to the Python-200' "
+                "manifest or run scripts/build_v3_benchmark_freeze.py"
             )
         return None
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, dict):
         raise ValueError(f"benchmark freeze must be a JSON object: {path}")
-    if (
-        payload.get("policy_id") != POLICY_ID
-        or payload.get("gate_pass") is not True
-        or payload.get("task_count") != 150
-    ):
+    if not _is_passing_main_freeze(payload):
         raise ValueError(f"benchmark freeze is not a passing v3 freeze: {path}")
     tasks = payload.get("tasks")
     task = tasks.get(task_id) if isinstance(tasks, dict) else None
@@ -54,9 +81,6 @@ def benchmark_freeze_provenance(
         if require:
             raise ValueError(f"{task_id}: task is absent from active v3 freeze")
         return None
-    environment = payload.get("environment")
-    if not isinstance(environment, dict):
-        environment = {}
     return {
         "policy_id": payload.get("policy_id"),
         "freeze_id": payload.get("freeze_id"),
@@ -68,6 +92,7 @@ def benchmark_freeze_provenance(
         "source_snapshot_id": task.get("source_snapshot_id"),
         "source_tree_sha256": task.get("source_tree_sha256"),
         "source_archive_sha256": task.get("source_archive_sha256"),
+        "stratum": task.get("stratum"),
         "primary_metric": payload.get("primary_metric"),
-        "environment": environment,
+        "environment": _freeze_environment(payload),
     }

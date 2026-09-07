@@ -70,25 +70,24 @@ observable behavior without retaining a runtime dependency on the source
 repository. Existing code-agent benchmarks do not isolate this combination of
 repository understanding, behavioral preservation, modularization, and
 compactness. We introduce \flb, a benchmark for repository-level,
-behavior-preserving feature extraction by code agents. Its main Python suite
-contains 200 tasks drawn from 176 pinned open-source repositories. Under the
-Full-Repository / No-Hint protocol, an agent receives the complete repository
-and a complete public behavioral contract, but no source-location hints,
-benchmark tests, Hidden tests, or reference implementation. Deterministic
-Dockerized checks evaluate buildability, Public behavior, deeper Hidden
-behavior, and independence from the source repository. We separately measure
-the compactness of functionally passing packages relative to evaluator-side
-feasible references. Under a frozen OpenHands execution protocol, current
-agents achieve \draftnote{insert the final eligible Python-200-prime
-cross-model range}. Artifact and trajectory analyses identify recurring
-contract-closure failures, in which plausible packages omit required exports,
-exception semantics, state transitions, resources, or preservation details.
-Controlled information experiments further show that executable Public
-feedback can repair Public failures without generally eliminating Hidden
-failures, while evaluated self-testing, repair, checkpointing, and budget
-scaffolds do not stably outperform the strongest legal Main protocol. \flb
-provides a reproducible basis for measuring how code agents turn repository
-evidence into independent, behavior-complete artifacts.
+behavior-preserving feature extraction by code agents. The released Python
+suite contains 200 tasks from 176 pinned repositories; the headline
+leaderboard is the frozen Python-150 split. Under the Full-Repository /
+No-Hint protocol, an agent receives the complete repository and a complete
+public behavioral contract, but no source-location hints, benchmark tests,
+Hidden tests, or reference implementation. Deterministic Dockerized checks
+evaluate buildability, Public behavior, deeper Hidden behavior, and
+independence from the source repository. Compactness of passing packages is
+measured separately. On five OpenHands backends, Functional Pass ranges from
+36/150 (24.0\%) to 115/150 (76.7\%). The strongest model still leaves 35
+tasks unsolved, and 28 tasks are unsolved by every backend. Failures
+concentrate at Public and Hidden behavior rather than at packaging. On the
+two strongest models, artifact-level failures are dominated by incomplete
+contract recovery rather than by missing packages or uninspected source
+trees. Passing Pro and Flash packages are copy-heavy, while Luna often
+copies less on the same tasks. \flb provides a reproducible basis for
+measuring how code agents turn repository evidence into independent,
+behavior-complete artifacts.
 \end{abstract}
 
 \begin{CCSXML}

@@ -134,6 +134,17 @@ class CatalogTests(unittest.TestCase):
             "openhands_deepseek_v4_flash_cgvl",
         )
 
+    def test_obligation_guided_is_screening_not_paper_table(self) -> None:
+        method = get_method(self.catalog, "ogfl")
+        self.assertEqual(method.id, "obligation_guided")
+        self.assertFalse(method.paper_table)
+        self.assertEqual(method.status, "screening")
+        self.assertIn("--obligation-guided", method.run_agent_flags)
+        self.assertEqual(
+            method.profiles["openhands"],
+            "openhands_deepseek_v4_flash_obligation_guided",
+        )
+
     def test_unknown_method_errors(self) -> None:
         with self.assertRaises(CatalogError):
             get_method(self.catalog, "not-a-method")

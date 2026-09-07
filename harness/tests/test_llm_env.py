@@ -25,6 +25,22 @@ class LlmEnvTests(unittest.TestCase):
             "Qwen3-Coder-30B-A3B-Instruct",
         )
 
+    def test_normalize_openai_prefix_on_remote_compat_base(self) -> None:
+        self.assertEqual(
+            normalize_api_model_name(
+                "openai/glm-5.3",
+                "https://open.bigmodel.cn/api/paas/v4",
+            ),
+            "glm-5.3",
+        )
+        self.assertEqual(
+            normalize_api_model_name(
+                "openai/glm-5.3-flash",
+                "https://open.bigmodel.cn/api/paas/v4",
+            ),
+            "glm-5.3-flash",
+        )
+
     def test_apply_openhands_llm_env_maps_values(self) -> None:
         env = apply_openhands_llm_env(
             {

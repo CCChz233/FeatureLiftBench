@@ -80,6 +80,10 @@ class AblationOptionsTests(unittest.TestCase):
             "spec_adversarial_self_test",
         )
         self.assertEqual(
+            AblationOptions(obligation_guided=True).ablation_arm,
+            "obligation_guided",
+        )
+        self.assertEqual(
             AblationOptions(cgvl=True).ablation_arm,
             "cgvl",
         )
@@ -136,6 +140,11 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(
                 spec_adversarial_self_test=True,
                 test_first_lift=True,
+            )
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            AblationOptions(
+                obligation_guided=True,
+                spec_adversarial_self_test=True,
             )
         with self.assertRaisesRegex(ValueError, "mutually exclusive"):
             AblationOptions(

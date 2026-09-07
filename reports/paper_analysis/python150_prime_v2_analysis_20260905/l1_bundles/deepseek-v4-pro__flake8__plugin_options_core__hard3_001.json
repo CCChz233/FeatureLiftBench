@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "flake8__plugin_options_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.OptionManager",
+    "class:featurelifted.PluginSpec",
+    "function:featurelifted.classify_plugins",
+    "function:featurelifted.apply_select_ignore",
+    "class:featurelifted.OptionSpec"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "Register per-plugin options in `OptionManager`."
+    },
+    {
+      "id": "B002",
+      "text": "Classify plugins into tree, logical_line, and physical_line checker groups."
+    },
+    {
+      "id": "B003",
+      "text": "`apply_select_ignore` enables plugins whose codes intersect `select` and not `ignore`; when `select` is empty, ignore disables matching plugins."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.OptionManager`, `featurelifted.PluginSpec`, `featurelifted.classify_plugins`, `featurelifted.apply_select_ignore`, `featurelifted.OptionSpec` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: flake8"
+    }
+  ],
+  "log": "E       AttributeError: 'OptionManager' object has no attribute 'register_options'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:8: AttributeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\n\nfrom .manager import OptionManager\nfrom .plugins import apply_select_ignore, classify_plugins\nfrom .specs import Checkers, OptionSpec, Plugins, PluginSpec\n\n__all__ = [\n    \"Checkers\",\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n]\n\n## featurelifted/__init__.py:5\nfrom .manager import OptionManager\nfrom .plugins import apply_select_ignore, classify_plugins\nfrom .specs import Checkers, OptionSpec, Plugins, PluginSpec\n\n__all__ = [\n    \"Checkers\",\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n]\n\n## featurelifted/__init__.py:6\nfrom .plugins import apply_select_ignore, classify_plugins\nfrom .specs import Checkers, OptionSpec, Plugins, PluginSpec\n\n__all__ = [\n    \"Checkers\",\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n]\n\n## featurelifted/__init__.py:10\n    \"Checkers\",\n    \"OptionManager\",\n    \"OptionSpec\",\n    \"PluginSpec\",\n    \"Plugins\",\n    \"apply_select_ignore\",\n    \"classify_plugins\",\n]"
+}

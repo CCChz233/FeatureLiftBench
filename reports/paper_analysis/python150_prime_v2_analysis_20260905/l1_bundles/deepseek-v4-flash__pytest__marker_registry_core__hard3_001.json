@@ -1,0 +1,45 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "pytest__marker_registry_core__hard3_001",
+  "stage": "hidden_failure",
+  "lift_type": "Composite",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.MarkerRegistry",
+    "method:featurelifted.MarkerRegistry.from_ini",
+    "method:featurelifted.MarkerRegistry.check_unknown",
+    "method:featurelifted.MarkerRegistry.get",
+    "method:featurelifted.MarkerRegistry.merge_plugin_markers",
+    "method:featurelifted.MarkerRegistry.register",
+    "class:featurelifted.Marker",
+    "exception:featurelifted.UnknownMarkerWarning"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`MarkerRegistry.from_ini` parses marker lines from ini configuration."
+    },
+    {
+      "id": "B002",
+      "text": "`merge_plugin_markers` adds plugin-provided markers without overwriting existing ones."
+    },
+    {
+      "id": "B003",
+      "text": "`check_unknown` warns or raises for unregistered markers."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.MarkerRegistry`, `featurelifted.MarkerRegistry.from_ini`, `featurelifted.MarkerRegistry.check_unknown`, `featurelifted.MarkerRegistry.get`, `featurelifted.MarkerRegistry.merge_plugin_markers`, `featurelifted.MarkerReg"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: pytest, _pytest"
+    }
+  ],
+  "log": "E           featurelifted.UnknownMarkerWarning: 'missing' not found in `markers` configuration option\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:5\n\n* :class:`Marker` -- a registered marker with its documentation.\n* :class:`MarkerRegistry` -- a registry managing marker registration,\n  ini parsing, plugin merging and unknown-marker checking.\n* :class:`UnknownMarkerWarning` -- warning category used for unknown marks.\n\nThis module is self-contained: it uses only the Python standard library and\nnever imports the upstream ``pytest``/``_pytest`` packages.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\nimport warnings\n\n__all__ = [\"Marker\", \"MarkerRegistry\", \"UnknownMarkerWarning\"]\n\n\nclass UnknownMarkerWarning(UserWarning):\n\n## featurelifted/__init__.py:6\n* :class:`Marker` -- a registered marker with its documentation.\n* :class:`MarkerRegistry` -- a registry managing marker registration,\n  ini parsing, plugin merging and unknown-marker checking.\n* :class:`UnknownMarkerWarning` -- warning category used for unknown marks.\n\nThis module is self-contained: it uses only the Python standard library and\nnever imports the upstream ``pytest``/``_pytest`` packages.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\nimport warnings\n\n__all__ = [\"Marker\", \"MarkerRegistry\", \"UnknownMarkerWarning\"]\n\n\nclass UnknownMarkerWarning(UserWarning):\n    \"\"\"Warning emitted when a marker that was not registered is referenced.\n\n## featurelifted/__init__.py:8\n  ini parsing, plugin merging and unknown-marker checking.\n* :class:`UnknownMarkerWarning` -- warning category used for unknown marks.\n\nThis module is self-contained: it uses only the Python standard library and\nnever imports the upstream ``pytest``/``_pytest`` packages.\n\"\"\"\n\nfrom __future__ import annotations\n\nimport dataclasses\nimport warnings\n\n__all__ = [\"Marker\", \"MarkerRegistry\", \"UnknownMarkerWarning\"]\n\n\nclass UnknownMarkerWarning(UserWarning):\n    \"\"\"Warning emitted when a marker that was not registered is referenced.\n\n    In strict mode the registry raises this warning as an error instead of\n\n## featurelifted/__init__.py:19\n\n__all__ = [\"Marker\", \"MarkerRegistry\", \"UnknownMarkerWarning\"]\n\n\nclass UnknownMarkerWarning(UserWarning):\n    \"\"\"Warning emitted when a marker that was not registered is referenced.\n\n    In strict mode the registry raises this warning as an error instead of\n    emitting it through the :mod:`warnings` machinery.\n    \"\"\"\n\n\ndef _split_marker_line(line: str) -> tuple[str, str] | None:\n    \"\"\"Split one ``markers`` ini line into ``(name, description)``.\n\n    Marker lines are formatted as ``name: description``.  The description is\n    optional and everything before the first ``:`` (minus a trailing\n    ``(arguments...)`` usage hint) is the marker name, mirroring how pytest\n    derives mark names from ini marker lines::"
+}

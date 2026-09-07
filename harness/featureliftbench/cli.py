@@ -475,6 +475,21 @@ def main(argv: list[str] | None = None) -> int:
         help="Disable the spec-adversarial self-test arm (default)",
     )
     contract_closure_gate.add_argument(
+        "--obligation-guided",
+        dest="obligation_guided",
+        action="store_true",
+        help=(
+            "Obligation-Guided Feature Lifting: frozen public-contract ledger "
+            "with repo and implementation evidence; no tests, no finish intercept"
+        ),
+    )
+    contract_closure_gate.add_argument(
+        "--no-obligation-guided",
+        dest="obligation_guided",
+        action="store_false",
+        help="Disable Obligation-Guided Feature Lifting (default)",
+    )
+    contract_closure_gate.add_argument(
         "--cgvl",
         dest="cgvl",
         action="store_true",
@@ -500,6 +515,7 @@ def main(argv: list[str] | None = None) -> int:
         adaptive_budget_v2=None,
         pre_submit_contract_audit=None,
         spec_adversarial_self_test=None,
+        obligation_guided=None,
         cgvl=None,
     )
     run_agent_parser.add_argument(
@@ -584,7 +600,19 @@ def main(argv: list[str] | None = None) -> int:
         default=1,
         help=(
             "when a task fails due to API rate limiting, retry up to this many total attempts "
-            "(waits ~65s between tries to clear TPM windows; default: 1)"
+            "(waits ~65s between tries to clear TPM windows; default: 1). "
+            "Empty-submission protocol flakes also consult --retry-transient-api."
+        ),
+    )
+    run_agent_parser.add_argument(
+        "--retry-transient-api",
+        type=int,
+        default=3,
+        help=(
+            "when a task ends with an empty submission because of a retryable API/protocol "
+            "error (OpenLux invalid_encrypted_content, rate limit, or promoted OpenHands "
+            "tool validation), retry up to this many total attempts. Does not retry model "
+            "failures that already produced a package. Default: 3"
         ),
     )
     run_agent_parser.add_argument(
@@ -963,6 +991,7 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             adaptive_budget_v2=args.adaptive_budget_v2,
             pre_submit_contract_audit=args.pre_submit_contract_audit,
             spec_adversarial_self_test=args.spec_adversarial_self_test,
+            obligation_guided=args.obligation_guided,
             cgvl=args.cgvl,
         )
         resume_dir, resume_mode = _resolve_resume_args(args)
@@ -984,6 +1013,7 @@ def _cmd_run_agent(args: argparse.Namespace) -> int:
             task_ids=args.task_ids or None,
             skip_completed_dir=args.skip_completed,
             retry_rate_limit=args.retry_rate_limit,
+            retry_transient_api=args.retry_transient_api,
             resume_dir=resume_dir,
             resume_mode=resume_mode,
             retry_only_statuses=retry_only_statuses,

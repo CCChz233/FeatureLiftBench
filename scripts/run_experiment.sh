@@ -199,6 +199,21 @@ if [[ ! -f "${SOURCE_REGISTRY}" ]]; then
 fi
 export FEATURELIFTBENCH_SOURCE_REGISTRY="${SOURCE_REGISTRY}"
 
+# Paper Python-200' (and Hard-50) must record freeze v2 in run.json.
+# Leave FEATURELIFTBENCH_BENCHMARK_FREEZE unset for Python-150 / other suites.
+# Do not override a caller-supplied path. Running Qwen/Luna processes keep
+# whatever they started with.
+if [[ -z "${FEATURELIFTBENCH_BENCHMARK_FREEZE:-}" ]]; then
+  case "${BENCHMARK:-${SUITE:-}}" in
+    python200_hard|hard50)
+      _p200_freeze="${FLB_ROOT}/artifacts/research_analysis/python200_prime/current_benchmark_freeze.json"
+      if [[ -f "${_p200_freeze}" ]]; then
+        export FEATURELIFTBENCH_BENCHMARK_FREEZE="${_p200_freeze}"
+      fi
+      ;;
+  esac
+fi
+
 if [[ ! -d "${TASKS_ROOT}" ]]; then
   echo "tasks root not found (relative to repo): ${TASKS_ROOT}" >&2
   exit 2

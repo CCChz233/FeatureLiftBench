@@ -1,0 +1,46 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "bleach__sanitize_core__001",
+  "stage": "hidden_failure",
+  "lift_type": "Adapted",
+  "feature_family": "validate_normalize_construct",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.clean",
+    "class:featurelifted.Cleaner",
+    "constant:featurelifted.ALLOWED_TAGS",
+    "constant:featurelifted.ALLOWED_ATTRIBUTES",
+    "constant:featurelifted.ALLOWED_PROTOCOLS"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "The extracted feature must support this observable behavior: XSS tag stripping. Required observable cases include clean escapes unknown tags; javascript href stripped."
+    },
+    {
+      "id": "B002",
+      "text": "The extracted feature must support this observable behavior: allowed attributes and protocols. Required observable cases include clean allows safe link; strip mode removes tag."
+    },
+    {
+      "id": "B003",
+      "text": "The extracted feature must support this observable behavior: strip and strip_comments modes. Required observable cases include clean strips script; strip disallowed script; strip mode removes tag; strip comments removed."
+    },
+    {
+      "id": "B004",
+      "text": "The extracted feature must support this observable behavior: callable attribute filters. Required observable cases include custom attributes callable."
+    },
+    {
+      "id": "B005",
+      "text": "The package exposes the required task API paths `featurelifted.clean`, `featurelifted.Cleaner`, `featurelifted.ALLOWED_TAGS`, `featurelifted.ALLOWED_ATTRIBUTES`, `featurelifted.ALLOWED_PROTOCOLS` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B006",
+      "text": "the submitted package does not import forbidden upstream packages: bleach"
+    }
+  ],
+  "log": ">           assert not import_pattern.search(text)\nE           assert not <re.Match object; span=(1409, 1429), match='\\n        from bleach'>\nE            +  where <re.Match object; span=(1409, 1429), match='\\n        from bleach'> = <built-in method search of re.Pattern object at 0x7979137372a0>('from itertools import chain\\nimport re\\nimport warnings\\n\\nfrom ._vendor.parse impo\nE            +    where <built-in method search of re.Pattern object at 0x7979137372a0> = re.compile('^\\\\s*(?:from bleach|import bleach)\\\\b', re.MULTILINE).search\n/workspace/evaluation-capsule/<hidden> AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\"\"\"\nfeaturelifted.clean -- an HTML-sanitizing clean core.\n\nThis is a standalone extraction of the ``bleach.clean`` / ``bleach.Cleaner``\nfeature (the safelist-based HTML sanitizer).  It depends only on the Python\nstandard library plus the html5lib parser bundled under\n:mod:`featurelifted._vendor`.\n\"\"\"\n\nfrom .sanitizer import (\n    ALLOWED_ATTRIBUTES,\n    ALLOWED_PROTOCOLS,\n    ALLOWED_STYLES,\n    ALLOWED_TAGS,\n    Cleaner,\n)\n\n__releasedate__ = \"20210825\"\n__version__ = \"4.1.0\"\n\n## featurelifted/__init__.py:5\n\nThis is a standalone extraction of the ``bleach.clean`` / ``bleach.Cleaner``\nfeature (the safelist-based HTML sanitizer).  It depends only on the Python\nstandard library plus the html5lib parser bundled under\n:mod:`featurelifted._vendor`.\n\"\"\"\n\nfrom .sanitizer import (\n    ALLOWED_ATTRIBUTES,\n    ALLOWED_PROTOCOLS,\n    ALLOWED_STYLES,\n    ALLOWED_TAGS,\n    Cleaner,\n)\n\n__releasedate__ = \"20210825\"\n__version__ = \"4.1.0\"\n\n\n\n## featurelifted/__init__.py:12\nfrom .sanitizer import (\n    ALLOWED_ATTRIBUTES,\n    ALLOWED_PROTOCOLS,\n    ALLOWED_STYLES,\n    ALLOWED_TAGS,\n    Cleaner,\n)\n\n__releasedate__ = \"20210825\"\n__version__ = \"4.1.0\"\n\n\ndef clean(\n    text,\n    tags=ALLOWED_TAGS,\n    attributes=ALLOWED_ATTRIBUTES,\n    styles=ALLOWED_STYLES,\n    protocols=ALLOWED_PROTOCOLS,\n    strip=False,\n\n## featurelifted/__init__.py:13\n    ALLOWED_ATTRIBUTES,\n    ALLOWED_PROTOCOLS,\n    ALLOWED_STYLES,\n    ALLOWED_TAGS,\n    Cleaner,\n)\n\n__releasedate__ = \"20210825\"\n__version__ = \"4.1.0\"\n\n\ndef clean(\n    text,\n    tags=ALLOWED_TAGS,\n    attributes=ALLOWED_ATTRIBUTES,\n    styles=ALLOWED_STYLES,\n    protocols=ALLOWED_PROTOCOLS,\n    strip=False,\n    strip_comments=True,"
+}

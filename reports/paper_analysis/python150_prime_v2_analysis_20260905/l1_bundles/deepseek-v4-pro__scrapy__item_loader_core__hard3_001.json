@@ -1,0 +1,62 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "scrapy__item_loader_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.Item",
+    "class:featurelifted.Field",
+    "class:featurelifted.ItemLoader",
+    "method:featurelifted.ItemLoader.__init__",
+    "method:featurelifted.ItemLoader.add_value",
+    "method:featurelifted.ItemLoader.load_item",
+    "attribute:featurelifted.ItemLoader.default_output_processor",
+    "function:featurelifted.Compose",
+    "function:featurelifted.TakeFirst"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When an Item declares Field metadata with input or output processors, those processors are attached to the field definition."
+    },
+    {
+      "id": "B002",
+      "text": "When ItemLoader.add_value runs input processors and load_item runs output processors, the resulting item values reflect the processor pipeline."
+    },
+    {
+      "id": "B003",
+      "text": "When a nested ItemLoader is created with parent=..., it inherits the parent default processor types."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.Item`, `featurelifted.Field`, `featurelifted.ItemLoader`, `featurelifted.ItemLoader.__init__`, `featurelifted.ItemLoader.add_value`, `featurelifted.ItemLoader.load_item`, `featurelifted.ItemLoader.default_output_proce"
+    },
+    {
+      "id": "B005",
+      "text": "The submitted package does not import forbidden upstream packages: scrapy."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    },
+    {
+      "id": "B006",
+      "text": "When add_value is called for an undefined field name, ItemLoader raises KeyError."
+    }
+  ],
+  "log": "E   AttributeError: 'list' object has no attribute 'strip'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:7: AttributeError\n>           raise ValueError(\n                f\"Error with input processor {_proc.__class__.__name__}:\"\nE           ValueError: Error with input processor function: field='price' value=['9'] error='AttributeError: 'list' object has no attribute 'strip''\nsubmission-runtime/featurelifted/loader.py:222: ValueError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nfrom .item import Field, Item, ItemMeta\nfrom .loader import ItemLoader\nfrom .processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"ItemMeta\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]\n\n## featurelifted/__init__.py:4\nfrom .item import Field, Item, ItemMeta\nfrom .loader import ItemLoader\nfrom .processors import Compose, Identity, Join, MapCompose, TakeFirst\n\n__all__ = [\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"ItemMeta\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]\n\n## featurelifted/__init__.py:9\n    \"Compose\",\n    \"Field\",\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"ItemMeta\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]\n\n## featurelifted/__init__.py:11\n    \"Identity\",\n    \"Item\",\n    \"ItemLoader\",\n    \"ItemMeta\",\n    \"Join\",\n    \"MapCompose\",\n    \"TakeFirst\",\n]"
+}

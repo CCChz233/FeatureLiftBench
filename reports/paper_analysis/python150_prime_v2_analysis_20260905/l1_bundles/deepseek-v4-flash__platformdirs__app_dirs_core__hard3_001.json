@@ -1,0 +1,52 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "platformdirs__app_dirs_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.user_cache_dir",
+    "function:featurelifted.user_config_dir",
+    "function:featurelifted.user_data_dir"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "`XDG_DATA_HOME`, `XDG_CONFIG_HOME`, and `XDG_CACHE_HOME` override defaults when they are non-blank."
+    },
+    {
+      "id": "B002",
+      "text": "Defaults are `~/.local/share`, `~/.config`, and `~/.cache`."
+    },
+    {
+      "id": "B003",
+      "text": "On macOS, data and config paths default to Library/Application Support and cache paths default to Library/Caches under home."
+    },
+    {
+      "id": "B004",
+      "text": "On macOS, non-blank XDG directory overrides take precedence over the Library defaults."
+    },
+    {
+      "id": "B005",
+      "text": "Data/config use `LOCALAPPDATA` by default and `APPDATA` when `roaming=True`."
+    },
+    {
+      "id": "B006",
+      "text": "On Windows, appauthor, appauthor=False, version, roaming, and cache opinion options determine the exact appended path segments."
+    },
+    {
+      "id": "B007",
+      "text": "The package exposes the required task API paths `featurelifted.user_cache_dir`, `featurelifted.user_config_dir`, `featurelifted.user_data_dir` with the kinds and callable signatures listed in this contract."
+    },
+    {
+      "id": "B008",
+      "text": "the submitted package does not import forbidden upstream packages: platformdirs"
+    }
+  ],
+  "log": ">       assert user_data_dir(\"App\", appauthor=\"Vendor\", platform=\"windows\", env=env) == (\nE       AssertionError: assert 'C:\\\\Users\\\\A...al/Vendor/App' == 'C:\\\\Users\\\\A...\\\\Vendor\\\\App'\nE         - C:\\Users\\Alice\\AppData\\Local\\Vendor\\App\nE         ?                             ^      ^\nE         + C:\\Users\\Alice\\AppData\\Local/Vendor/App\nE         ?                             ^      ^\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:28: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:4\nThis package provides a self-contained, dependency-free implementation of the\n``user_data_dir``, ``user_config_dir`` and ``user_cache_dir`` helpers for the\nUnix/Linux (XDG), macOS (Library) and Windows (AppData) platforms.\n\nUnlike the upstream package, the platform under which the paths are resolved is\nselected explicitly through the ``platform`` argument so results are\ndeterministic and testable from any host OS.  Environment variables are read\nfrom the optional ``env`` mapping (defaulting to ``os.environ``) and the home\ndirectory used by the default paths can be overridden with ``home``.\n\n\"\"\"\n\nfrom __future__ import annotations\n\nimport os\nfrom collections.abc import Mapping\nfrom typing import Final\n\nEnv = Mapping[str, str] | None\n\n## featurelifted/__init__.py:26\n    \"Env\",\n    \"user_cache_dir\",\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\n_WINDOWS_BASE_ENV: Final = \"LOCALAPPDATA\"\n_WINDOWS_ROAMING_BASE_ENV: Final = \"APPDATA\"\n\n\ndef _getenv(key: str, env: Env | None) -> str | None:\n    \"\"\"Look up ``key`` in ``env`` or, when ``env`` is ``None``, in the process environment.\"\"\"\n    if env is None:\n        return os.environ.get(key)\n    return env.get(key)\n\n\ndef _home(env: Env | None, home: str | None) -> str:\n    \"\"\"Determine the effective home directory for ``~``-style default paths.\"\"\"\n\n## featurelifted/__init__.py:27\n    \"user_cache_dir\",\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\n_WINDOWS_BASE_ENV: Final = \"LOCALAPPDATA\"\n_WINDOWS_ROAMING_BASE_ENV: Final = \"APPDATA\"\n\n\ndef _getenv(key: str, env: Env | None) -> str | None:\n    \"\"\"Look up ``key`` in ``env`` or, when ``env`` is ``None``, in the process environment.\"\"\"\n    if env is None:\n        return os.environ.get(key)\n    return env.get(key)\n\n\ndef _home(env: Env | None, home: str | None) -> str:\n    \"\"\"Determine the effective home directory for ``~``-style default paths.\"\"\"\n    if home is not None:\n\n## featurelifted/__init__.py:28\n    \"user_config_dir\",\n    \"user_data_dir\",\n]\n\n_WINDOWS_BASE_ENV: Final = \"LOCALAPPDATA\"\n_WINDOWS_ROAMING_BASE_ENV: Final = \"APPDATA\"\n\n\ndef _getenv(key: str, env: Env | None) -> str | None:\n    \"\"\"Look up ``key`` in ``env`` or, when ``env`` is ``None``, in the process environment.\"\"\"\n    if env is None:\n        return os.environ.get(key)\n    return env.get(key)\n\n\ndef _home(env: Env | None, home: str | None) -> str:\n    \"\"\"Determine the effective home directory for ``~``-style default paths.\"\"\"\n    if home is not None:\n        return home"
+}

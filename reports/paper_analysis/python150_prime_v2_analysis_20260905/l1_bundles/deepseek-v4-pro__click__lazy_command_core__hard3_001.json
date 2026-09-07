@@ -1,0 +1,42 @@
+{
+  "model": "deepseek-v4-pro",
+  "task_id": "click__lazy_command_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "registry_plugin_dispatch",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "class:featurelifted.LazyCommandCollection",
+    "method:featurelifted.LazyCommandCollection.get_command",
+    "method:featurelifted.LazyCommandCollection.resolve",
+    "class:featurelifted.Command",
+    "exception:featurelifted.UsageError"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When a command name is requested, LazyCommandCollection loads only the source that supplies that command and caches the resolved command."
+    },
+    {
+      "id": "B002",
+      "text": "When a context is created, collection defaults and envvar settings are propagated to command resolution without eagerly loading unrelated commands."
+    },
+    {
+      "id": "B003",
+      "text": "When resolve receives argv, it returns the resolved Context, Command, and remaining arguments and raises UsageError for unknown commands."
+    },
+    {
+      "id": "B004",
+      "text": "The package exposes the required task API paths `featurelifted.LazyCommandCollection`, `featurelifted.LazyCommandCollection.get_command`, `featurelifted.LazyCommandCollection.resolve`, `featurelifted.Command`, `featurelifted.UsageError` with the kinds and callable signatures list"
+    },
+    {
+      "id": "B005",
+      "text": "the submitted package does not import forbidden upstream packages: click"
+    }
+  ],
+  "log": ">       assert collection.invoke([\"echo\", \"hi\"]) == [\"hi\"]\nE       AttributeError: 'LazyCommandCollection' object has no attribute 'invoke'\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:10: AttributeError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:3\n\nfrom .core import Command\nfrom .core import Context\nfrom .core import LazyCommandCollection\nfrom .core import UsageError\n\n__all__ = [\n    \"Command\",\n    \"Context\",\n    \"LazyCommandCollection\",\n    \"UsageError\",\n]\n\n## featurelifted/__init__.py:5\nfrom .core import Context\nfrom .core import LazyCommandCollection\nfrom .core import UsageError\n\n__all__ = [\n    \"Command\",\n    \"Context\",\n    \"LazyCommandCollection\",\n    \"UsageError\",\n]\n\n## featurelifted/__init__.py:6\nfrom .core import LazyCommandCollection\nfrom .core import UsageError\n\n__all__ = [\n    \"Command\",\n    \"Context\",\n    \"LazyCommandCollection\",\n    \"UsageError\",\n]\n\n## featurelifted/__init__.py:9\n__all__ = [\n    \"Command\",\n    \"Context\",\n    \"LazyCommandCollection\",\n    \"UsageError\",\n]"
+}

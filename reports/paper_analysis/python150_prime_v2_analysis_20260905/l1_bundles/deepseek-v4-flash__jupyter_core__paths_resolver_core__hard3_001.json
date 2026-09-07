@@ -1,0 +1,50 @@
+{
+  "model": "deepseek-v4-flash",
+  "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+  "stage": "public_failure",
+  "lift_type": "Adapted",
+  "feature_family": "config_resolve_discover",
+  "files": [
+    "featurelifted/__init__.py"
+  ],
+  "n_files": 1,
+  "required_api": [
+    "function:featurelifted.jupyter_config_dir",
+    "function:featurelifted.jupyter_config_path",
+    "function:featurelifted.jupyter_data_dir",
+    "function:featurelifted.jupyter_path",
+    "function:featurelifted.jupyter_runtime_dir"
+  ],
+  "clauses": [
+    {
+      "id": "B001",
+      "text": "When JUPYTER_CONFIG_PATH or JUPYTER_PATH is set, its entries are ordered ahead of the applicable default search paths."
+    },
+    {
+      "id": "B002",
+      "text": "When JUPYTER_CONFIG_DIR, JUPYTER_DATA_DIR, or JUPYTER_RUNTIME_DIR is set, the corresponding resolver returns that explicit directory."
+    },
+    {
+      "id": "B003",
+      "text": "Without overrides, the path resolvers return deterministic Linux, macOS, and Windows user and system defaults for the selected platform."
+    },
+    {
+      "id": "B004",
+      "text": "When JUPYTER_NO_CONFIG is enabled, normal user and environment config paths are suppressed according to isolated-config behavior."
+    },
+    {
+      "id": "B005",
+      "text": "When JUPYTER_PREFER_ENV_PATH changes preference, environment-level paths move before or after user paths without dropping either group."
+    },
+    {
+      "id": "B006",
+      "text": "The package exposes the required task API paths `featurelifted.jupyter_config_dir`, `featurelifted.jupyter_config_path`, `featurelifted.jupyter_data_dir`, `featurelifted.jupyter_path`, `featurelifted.jupyter_runtime_dir` with the kinds and callable signatures listed in this contr"
+    },
+    {
+      "id": "B007",
+      "text": "the submitted package does not import forbidden upstream packages: jupyter_core, platformdirs"
+    }
+  ],
+  "log": "        assert jupyter_data_dir(env={}, home=\"/Users/alice\", platform=\"darwin\") == \"/Users/alice/Library/Jupyter\"\n>       assert jupyter_data_dir(env={\"APPDATA\": r\"C:\\Users\\Alice\\AppData\\Roaming\"}, home=r\"C:\\Users\\Alice\", platform=\"win32\") == r\"C:\\Users\\Alice\\AppData\\Roaming\\jupyter\"\nE       AssertionError: assert '/tmp/feature...aming/jupyter' == 'C:\\\\Users\\\\A...ming\\\\jupyter'\nE         - C:\\Users\\Alice\\AppData\\Roaming\\jupyter\nE         + /tmp/featureliftbench-eval-p0hmlmkd/C:\\Users\\Alice\\AppData\\Roaming/jupyter\n/workspace/evaluation-capsule/public_tests/test_public_contract.py:24: AssertionError\nFAILED <node>",
+  "submission_snip": "## featurelifted/__init__.py:74\n\ndef jupyter_config_dir(\n    env: Mapping[str, str] | None = None,\n    home: str | None = None,\n    platform: str = \"linux\",\n) -> str:\n    \"\"\"Get the Jupyter config directory for the given platform and user.\n\n    Returns JUPYTER_CONFIG_DIR if defined, otherwise the appropriate\n    directory for the platform.\n    \"\"\"\n    if env is None:\n        env = os.environ\n\n    if env.get(\"JUPYTER_NO_CONFIG\"):\n        return _mkdtemp_once(\"jupyter-clean-cfg\")\n\n    if env.get(\"JUPYTER_CONFIG_DIR\"):\n        return env[\"JUPYTER_CONFIG_DIR\"]\n\n## featurelifted/__init__.py:96\n\ndef jupyter_data_dir(\n    env: Mapping[str, str] | None = None,\n    home: str | None = None,\n    platform: str = \"linux\",\n) -> str:\n    \"\"\"Get the config directory for Jupyter data files.\n\n    These are non-transient, non-configuration files.\n\n    Returns JUPYTER_DATA_DIR if defined, else a platform-appropriate path.\n    \"\"\"\n    if env is None:\n        env = os.environ\n\n    if env.get(\"JUPYTER_DATA_DIR\"):\n        return env[\"JUPYTER_DATA_DIR\"]\n\n    home_dir = _home_dir(home)\n\n## featurelifted/__init__.py:121\n            return str(Path(appdata, \"jupyter\").resolve())\n        return pjoin(jupyter_config_dir(env=env, home=home, platform=platform), \"data\")\n    # Linux, non-OS X Unix, AIX, etc.\n    xdg = env.get(\"XDG_DATA_HOME\", None)\n    if not xdg:\n        xdg = pjoin(home_dir, \".local\", \"share\")\n    return pjoin(xdg, \"jupyter\")\n\n\ndef jupyter_runtime_dir(\n    env: Mapping[str, str] | None = None,\n    home: str | None = None,\n    platform: str = \"linux\",\n) -> str:\n    \"\"\"Return the runtime dir for transient jupyter files.\n\n    Returns JUPYTER_RUNTIME_DIR if defined.\n    \"\"\"\n    if env is None:\n\n## featurelifted/__init__.py:129\n\ndef jupyter_runtime_dir(\n    env: Mapping[str, str] | None = None,\n    home: str | None = None,\n    platform: str = \"linux\",\n) -> str:\n    \"\"\"Return the runtime dir for transient jupyter files.\n\n    Returns JUPYTER_RUNTIME_DIR if defined.\n    \"\"\"\n    if env is None:\n        env = os.environ\n\n    if env.get(\"JUPYTER_RUNTIME_DIR\"):\n        return env[\"JUPYTER_RUNTIME_DIR\"]\n\n    return pjoin(jupyter_data_dir(env=env, home=home, platform=platform), \"runtime\")\n\n"
+}

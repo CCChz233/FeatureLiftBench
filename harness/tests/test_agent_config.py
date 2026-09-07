@@ -617,6 +617,11 @@ class AgentConfigTests(unittest.TestCase):
                 "token",
                 "pre_submit_contract_audit",
             ),
+            (
+                "openhands_deepseek_v4_flash_obligation_guided",
+                "token",
+                "obligation_guided",
+            ),
         ):
             loaded = load_agent_run_config(
                 base_config=AgentRunConfig(agent="openhands"),

@@ -1,0 +1,99 @@
+{
+  "scope": "Existing local records and public task content; no new executions or archive verification.",
+  "strata": {
+    "python150": {
+      "tasks": 150,
+      "repositories": 126,
+      "snapshots": 132
+    },
+    "hard50": {
+      "tasks": 50,
+      "repositories": 50,
+      "snapshots": 50
+    },
+    "complete": {
+      "tasks": 200,
+      "repositories": 176,
+      "snapshots": 182
+    }
+  },
+  "candidate_recorded_gates": {
+    "hidden_contract_candidate_unresolved": 0,
+    "reference_solutions": {
+      "hard50_reference_solution": 50,
+      "python150_oracle": 150
+    },
+    "source_archives_verified": 182,
+    "source_mapping": 200,
+    "task_validation": 200
+  },
+  "oracle_recorded_summary": {
+    "expected_runs": 600,
+    "passed_runs": 600,
+    "repetitions": 3,
+    "stable_tasks": 200,
+    "task_count": 200
+  },
+  "repair_llm_review_tasks": 38,
+  "repair_maintainer_proxy_adjudication_tasks": 6,
+  "independent_human_review": false,
+  "current_public_spec_and_statement_matches": 200,
+  "frozen_reference_registry_matches": 200,
+  "historical_feature_families": {
+    "validate_normalize_construct": 22,
+    "algorithm_data_structure": 11,
+    "workflow_session_orchestration": 14,
+    "registry_plugin_dispatch": 38,
+    "protocol_state_transition": 11,
+    "parse_tokenize_decode": 37,
+    "cache_retry_policy": 8,
+    "config_resolve_discover": 26,
+    "resource_metadata_loading": 14,
+    "serialize_format_render": 19
+  },
+  "historical_label_status": {
+    "labeled": 150,
+    "planned_ledger": 50
+  },
+  "taxonomy_commit_match_count": 156,
+  "limitations": [
+    "Historical taxonomy is joined by task ID, not revalidated against every current source snapshot.",
+    "Hard-50 lift labels have planned_ledger status, not completed annotation status.",
+    "Public-content matches do not certify complete task trees or semantic fairness.",
+    "Recorded oracle runs do not certify equivalence to every retained agent runtime."
+  ],
+  "source_files": [
+    {
+      "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
+    },
+    {
+      "path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "sha256": "5c40b3174afee35a11c44a98bb7e3f3c48b2638ebb316bf2a5903f3d20d3a5fc"
+    },
+    {
+      "path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "sha256": "3ddca7fed5b7b8eec6153b846c94bb6493cc974fafb7ac56067a502fc75053ac"
+    },
+    {
+      "path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "sha256": "f85e7d778c5c1c9ab618273e3eb08fa7361766b6d8886426a2a1b1f1835cf3e3"
+    },
+    {
+      "path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "sha256": "40f62ca1effaa3b7e6178e4b8bd68c8692420cbc34079ff9ac21a0fba4fa03aa"
+    },
+    {
+      "path": "benchmark/references/python200_prime_compactness.json",
+      "sha256": "aeb5b8fdf1f9a7247001076349d5310eee47ea392c2048f709c03ddbb16233e9"
+    },
+    {
+      "path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "sha256": "d60c96f861476d6166f1b1cde8bd53a08fdcbd852bf8451a7e2cc3c7aa77c296"
+    },
+    {
+      "path": "benchmark/selection/hard50_expansion_20260827.json",
+      "sha256": "0ab03465066e668a1d2ec3ba63ccb8cf0f27c851fad25af83127e91cbc6ffb79"
+    }
+  ]
+}

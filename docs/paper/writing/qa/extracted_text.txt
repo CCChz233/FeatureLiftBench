@@ -1,0 +1,1760 @@
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+FeatureLiftBench: Benchmarking Behavior-Preserving
+Feature Lifting from Real Repositories
+ANONYMOUS AUTHOR(S)
+Reusing an existing software capability requires more than finding its main implementation. Helpers, state,
+exception behavior, and resources must remain consistent when the capability moves behind a new package
+boundary. We introduce FeatureLiftBench, a benchmark that evaluates this process as feature lifting: an
+agent receives a pinned source repository and a public behavioral contract, then constructs a standalone
+artifact that is evaluated without access to the source project. The frozen release contains 200 Python tasks.
+Our main study reports existing OpenHands campaigns for six model backends on 150 common task IDs,
+with source-location hints and benchmark tests withheld. We disclose backend-specific context handling and
+retained results with two freeze identities. Functional pass rates range from 24.0% to 76.7%. Failures concentrate
+at behavioral evaluation: only four of 829 delivered artifacts pass the Build, Public, and Hidden gates but fail
+the separate Isolation gate. The in-suite hard3 construction group is associated with lower success even after
+controlling for model backend and lift type. Correctness and extraction footprint also differ: on 97 tasks passed
+by both DeepSeek V4 Pro and GPT-5.6 Luna, median reference-relative size is 0.993 and 0.697, respectively. We
+separate these measured outcomes from exploratory AI-assisted failure interpretation, disclose contract defects
+flagged during analysis, and report a sensitivity view over existing results. FeatureLiftBench provides an
+operational setting for studying both preservation of required behavior and the construction of independently
+executable reusable artifacts.
+CCS Concepts: • Software and its engineering → Software testing and debugging ; Software verification
+and validation.
+Additional Key Words and Phrases: coding agents, software reuse, feature extraction, behavioral preservation,
+benchmark
+1 Introduction
+A useful capability often exists inside a system whose surrounding dependencies are unnecessary
+for a new application. A developer may want a parser without its command-line frontend, a
+configuration resolver without its host framework, or a plugin registry without the rest of a service.
+Moving that capability requires deciding what must cross the new boundary. Copying an entry
+function can omit transitive helpers, shared state, exception classes, or resource files; copying
+a large part of the project can preserve behavior while retaining a substantial implementation
+footprint. The engineering objective is therefore twofold: preserve the requested behavior and
+construct a usable independent artifact.
+Coding agents can search repositories, inspect tests and documentation, edit multiple files, and
+execute validation commands. These tools make feature extraction a plausible application, but
+familiar benchmark scores do not directly measure the complete operation. SWE-bench evaluates
+issue resolution within an existing project [Jimenez et al. 2024]; HumanEval evaluates code gener-
+ated from function specifications [Chen et al. 2021]. Feature location studies which source entities
+implement a concern [Dit et al. 2013]. Software transplantation already investigates extracting and
+adapting functionality for reuse [Barr et al. 2015]. Our contribution builds on this reuse objective
+by defining a controlled, executable evaluation for repository-level coding agents.
+We call the task behavior-preserving feature lifting . The agent is given the complete source
+repository, including the original implementation, together with a contract describing the required
+output behavior. It produces a new featurelifted package, which is evaluated in a source-free
+2026. ACM XXXX-XXXX/2026/9-ART
+https://doi.org/
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+2 Anon.
+environment. The distinguishing boundary is the conjunction of source-backed behavior recovery
+and independent execution of the delivered artifact. Neither a file location nor a patch that relies on
+the original project is sufficient. A behaviorally equivalent rewrite is permitted; copying a particular
+implementation is not required.
+FeatureLiftBench operationalizes this task with pinned Python repositories, explicit API
+and behavior clauses, protected evaluation, and separate extraction-size metrics. Under the Full-
+Repository / No-Hint Main protocol, the agent can inspect upstream code, tests, documentation,
+and resources, but cannot see benchmark tests, source-entrypoint hints, evaluator internals, or
+reference solutions. The evaluator records four gates: Build, Public, Hidden, and Isolation. The
+Public and Hidden names distinguish evaluator test groups; both groups are withheld during Main.
+A functional pass requires all four gates. After evaluation, trusted static analysis measures the
+submitted footprint relative to a frozen feasible reference and estimates direct source copying.
+The release contains 200 tasks from 176 canonical source repositories. The main study uses
+the common Python-150 subset evaluated by six backends in OpenHands. It includes an existing
+100-task construction group and a 50-task hard3 group; the additional 50 tasks in the release are a
+separate extension. This distinction matters because these two 50-task groups have different roles.
+We report the extension separately and do not use it to support the main difficulty analysis.
+The study asks four questions. RQ1: How often do the evaluated model–harness configurations
+produce functionally passing artifacts? RQ2: Where do submissions fail in the evaluator? RQ3:
+How does observed difficulty vary across tasks and construction groups?RQ4: On common passing
+tasks, how do extraction size and direct copying differ across backends?
+The results show substantial but incomplete success. Pass rates span 24.0%–76.7%, and strong
+backends fail primarily on required behavior after producing a loadable package. The hard3 group
+remains associated with lower success in an analysis controlling for backend and lift type. Mean-
+while, functionally passing artifacts can have markedly different footprints on the same tasks. An
+exploratory close-read of strong-backend failures suggests incomplete behavioral-contract recovery
+as one recurring explanation. We keep this interpretation distinct from the measured gate outcomes:
+the labels are AI-assisted, and the analysis also flagged potential benchmark defects.
+The paper makes three contributions:
+• A feature-lifting task and benchmark. We define an executable source-to-artifact task
+and assemble a frozen 200-task Python release with explicit output contracts and pinned
+source identities.
+• An evaluation protocol. We specify the agent’s information boundary, source-free func-
+tional evaluation, and pass-conditioned footprint measurement, with auditable task, image,
+and result records.
+• An empirical characterization. We analyze six backends on 150 common tasks, separating
+capability, evaluator failures, construction-group associations, paired extraction statistics,
+and exploratory failure evidence.
+2 The FeatureLiftBench Benchmark
+2.1 Task Formulation and a Running Example
+A task consists of a pinned repository𝑅, a public contract𝑆, an initial workspace𝑊 , and a protected
+evaluator 𝐽 . A model backend 𝑀 acting through an agent harness 𝐻 produces a submission 𝐴:
+𝐴 = Run(𝑀, 𝐻, 𝑅, 𝑆,𝑊 ). (1)
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+FeatureLiftBench: Behavior-Preserving Feature Lifting 3
+Task example and source-to-artifact boundary
+Figure placeholder — artwork to be added
+Intact Blinker repository + public contract → agent → new package.
+Show dispatch, weak-receiver lifetime, and namespace identity as obligations.
+Only the artifact enters source-free evaluation.
+Fig. 1. Feature lifting on the signal-registry task. The complete donor repository supplies implementation
+evidence; the new package must preserve the declared behavior without runtime access to that repository.
+Both benchmark test groups and reference solutions are withheld from the agent in Main.
+The public contract lists the required API surface, behavior clauses, constraints, and exclusions.
+Source identity records establish which upstream snapshot defines the behavior being lifted. The
+agent can inspect that snapshot but must place the result inside the designated submission directory.
+The contract determines the scope of preservation. A task may require a selected configuration
+operation or registry behavior without requiring the entire upstream project. APIs, return values,
+exceptions, mutation, ordering, or resources are obligations when specified by the task. Direct
+extraction, adapted code, and reimplementation are legal strategies. This permits multiple passing
+artifacts and avoids grading against a single required source slice.
+The functional score is
+𝐹 (𝐴) = 𝐵(𝐴) ∧ 𝑇public(𝐴) ∧ 𝑇hidden(𝐴) ∧ 𝐼 (𝐴), (2)
+where 𝐵 is the evaluator’s package loading/build gate,𝑇 denotes the two behavioral test groups,
+and 𝐼 denotes its explicit isolation checks. The tests execute in an environment without the source
+repository. Consequently, a dependency on a missing source path can fail during loading or
+behavioral tests, before the separate Isolation gate becomes the first failing gate. Gate names must
+not be interpreted as independent semantic failure causes.
+Running example: a signal registry. The Blinker task asks for Signal, Namespace, and ANY under
+the new featurelifted namespace. The public contract requires sender-specific dispatch, receiver
+responses, cleanup of weak receivers after garbage collection, stable signal identity within a
+namespace, and scoped connection/disconnection. It excludes asynchronous receivers and the
+upstream global named-signal singleton. A plausible dispatcher can therefore remain incomplete
+even if its main connect and send methods work: receiver lifetime and namespace identity are also
+part of the requested behavior. The final artifact may retain upstream code or reimplement these
+obligations, but may not import blinker or read the donor tree at runtime. Figure 1 summarizes
+this source-to-artifact boundary using only the public task contract.
+2.2 Task Construction and Source Provenance
+Construction links repository provenance, a public specification, protected behavioral checks, and
+executable reference evidence. Candidate capabilities come from Python libraries, developer tools,
+and framework components. The selection targets capabilities that can be given a bounded contract
+and evaluated offline. It is a curated collection, rather than a random sample of repositories or a
+measure of the frequency of extraction requests in practice.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+4 Anon.
+Benchmark construction and validation evidence
+Figure placeholder — artwork to be added
+Pinned source → bounded public contract → protected tests/reference → mechanical checks and oracle
+replay → release.
+Mark agent-visible and evaluator-only assets; attach only documented counts.
+Fig. 2. Construction and evidence boundaries. The release records 200 task checks, 200 source mappings,
+and 600 passing reference executions. Repair-scope review covers 38 tasks. These checks establish recorded
+feasibility and consistency; they do not constitute a complete independent semantic audit.
+For each task, structured metadata records required APIs, behavioral clauses, dependency infor-
+mation, and source provenance. The human-readable task statement is rendered from the public
+specification. Evaluator-side records associate tests with contract clauses, while the source registry
+records immutable revisions and archive digests. These records allow changes in a task statement,
+evaluator, or source snapshot to be distinguished from changes in an agent submission.
+2.3 Validation Evidence and Quality Boundaries
+The freeze v2 repair process addressed undeclared API members, incorrect source entrypoint
+metadata, and identical Public/Hidden test bodies. The repair scope covered 38 distinct tasks.
+The records describe AI-assisted review and maintainer adjudication of that repair scope; they
+do not constitute independent human validation of every task. The frozen release records 200
+successful task checks, 200 source mappings, and three passing oracle executions per task, for
+600/600 executions with stable fingerprints (Table 1). This establishes executable feasibility and
+repeatability for the recorded references, rather than completeness or fairness of every behavioral
+requirement.
+We distinguish a validation rule from a completed semantic audit. A protected expectation should
+be licensed by the public contract and supported by upstream evidence. Mechanical API, entrypoint,
+hash, overlap, and execution checks test parts of this relation; they cannot establish semantic
+entailment. The release has not undergone a complete independent human audit of hidden-test
+fairness. Later failure inspection flagged seven potential contract/evaluator defects, which we
+disclose and use in a post hoc sensitivity analysis (Section 5.1). We do not silently repair the frozen
+tests or reinterpret their recorded outcomes.
+2.4 Dataset Composition
+Figure 2 distinguishes construction from completed validation. The 200-task release consists of
+Python-150 and an additional 50-task extension called Hard-50 in the artifact. The main six-backend
+comparison uses Python-150: all six have results on these task IDs, and all passing submissions
+have the reference-relative measurements used in this paper. Five backends also have 200-task
+results; Pro was evaluated on the 150-task subset. The 200-task functional table is provided in
+Appendix B, rather than combining unequal model coverage into the main table.
+Within Python-150, Core-100 and hard3-50 are construction groups. The hard3-50 group belongs
+to Python-150; it is not the additional Hard-50 extension. We retain these historical group names
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+FeatureLiftBench: Behavior-Preserving Feature Lifting 5
+Table 1. Dataset composition and recorded validation coverage. hard3 is inside Python-150; the additional
+Hard-50 extension is separate.
+Construction group Direct Adapted Composite Tasks
+Core-100 53 44 3 100
+hard3-50 3 32 15 50
+Python-150 56 76 18 150
+Release stratum Tasks Canonical repositories
+Python-150 150 126
+Additional Hard-50 50 50
+Complete release 200 176
+Validation evidence Coverage Scope
+Task/specification checks 200/200 Recorded mechanical checks
+Source mappings 200/200 Pinned source identities
+Oracle executions 600/600 Three passing runs per task
+Stable oracle fingerprints 200/200 Recorded repeatability
+Repair-scope review 38 tasks AI-assisted, maintainer-adjudicated
+No complete independent semantic audit is established by these counts.
+for reproducibility and test their empirical relationship to performance without treating them as
+universal categories of software difficulty.
+Each task also has a lift-type label. Direct denotes a target that can largely retain its upstream
+structure; Adapted denotes interface or boundary changes; Composite denotes behavior assembled
+from multiple source regions or abstractions. Table 1 shows their distribution. Feature-family and
+entanglement labels provide additional descriptive metadata. They are hidden from the agent and
+do not affect scoring. All headline tasks have the same high entanglement-level label, so that label
+cannot support an empirical difficulty contrast here. Canonical repository IDs in the freeze identify
+126 repositories in Python-150 and 50 in the extension, with no overlap, for 176 in the complete
+release. Repository aliases are normalized before counting.
+3 Evaluation Protocol and Experimental Setup
+3.1 Information Boundary and Agent Configurations
+We evaluate DeepSeek V4 Pro, DeepSeek V4 Flash, GPT-5.6 Luna served through OpenLux, GLM-
+5.3-Flash, Qwen3.6-35B-A3B-FP8, and GPT-OSS 120B. Below, we abbreviate them as Pro, Flash,
+Luna, GLM, Qwen, and OSS. The agent image records OpenHands CLI 1.16.0. The common protocol
+supplies the complete pinned repository, withholds benchmark tests and source-location hints,
+and uses the standard task prompt. Agents can inspect upstream tests and create their own probes.
+Public feedback and source-hint ablations are not pooled into this study.
+The configured envelope is 120 steps, 131,072 context tokens with 8,192 reserved, and a 3,600-
+second task timeout. Main does not impose the separate two-million token cap used by the historical
+cost arm. Runtime statistics such as recorded assistant messages are not necessarily identical
+to the configured action budget. The evaluated object is a backend embedded in its recorded
+OpenHands/provider profile, not a base model independent of tool calling, serving, and recovery.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+6 Anon.
+Table 2. Recorded configurations and Python-150 run provenance. Counts refer to retained run-freeze IDs,
+not just the release label.
+Backend Condenser Trigger / target v2 Prior
+Pro token 122,880 / 61,440 150 0
+Flash token 122,880 / 61,440 24 126
+Luna default Unspecified 24 126
+GLM default Unspecified 150 0
+Qwen default Unspecified 24 126
+OSS default Unspecified 150 0
+Common envelope: OpenHands CLI 1.16.0; 120 steps; 131,072 context tokens with 8,192 reserved; 3,600 s timeout; native
+tool calling; no Main token cap. Evaluator: Python 3.11.14, Linux/amd64. Token condenser: keep first four events; maximum
+1,000,000 events. Default does not specify token thresholds in these records. v2 = 6c20ff03. . . ; Prior = 0b106842. . . .
+All rows report image tag suffix 212930ea.
+Context handling is not identical across backends. Pro and Flash use the token condenser
+with a 122,880-token trigger and a 61,440-token target; Luna, GLM, Qwen, and OSS record the
+default condenser without explicit token thresholds. Table 2 reports these settings and the result
+provenance.
+3.2 Functional Evaluation and Extraction Metrics
+Only the collected submission enters the evaluator capsule. The original repository is absent from
+the runtime import path, evaluation uses the frozen dependency environment, and the container
+disables networking. The frozen image records Linux/amd64 and Python 3.11.14, with a read-only
+root filesystem and dropped capabilities. Agent and evaluator image identities are recorded in the
+freeze manifest.
+Build resolves and loads the submitted package according to the evaluator’s installation/path-
+loading policy. In this release, a direct package directory can be loaded through PYTHONPATH; an
+editable-install failure can also use a path fallback. Thus a Build pass demonstrates usability under
+the frozen evaluator policy, not that a wheel or clean package-manager installation has been
+independently validated. Public tests exercise primary contract behavior, and Hidden tests cover
+additional cases and combinations intended to follow the same public contract. Isolation checks
+include forbidden source imports and protected-path restrictions. All four outcomes are required
+by Equation 2.
+We report two complementary views. An exclusive first-outcome classification uses Missing,
+Build, Public, Hidden, then Isolation, with Pass for a fully successful artifact. A non-exclusive view
+counts failed gate flags among delivered artifacts; these counts can overlap. A failed flag can reflect
+a preceding loading failure and is not necessarily evidence that all tests in that group executed.
+Isolation residual denotes artifacts that pass Build, Public, and Hidden but fail Isolation. This is a
+measured residual category, not the prevalence of all source-dependency mistakes.
+Extraction measurements. For a passing artifact 𝐴 and a frozen feasible reference 𝐴ref, Reference-
+Relative Extraction Size is
+RRES(𝐴) = PythonLOC(𝐴)
+PythonLOC(𝐴ref ) . (3)
+The evaluator uses its Python source-line counting convention consistently for both artifacts. An
+RRES of one means equal counted size, not equal code or optimality. The reference demonstrates
+one feasible implementation; it is not a proof of a minimum semantic closure.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+FeatureLiftBench: Behavior-Preserving Feature Lifting 7
+The copied-code diagnostic estimates the fraction of submitted lines matched to source code
+in runs of at least three normalized non-empty, non-comment Python lines. It can miss rewritten
+equivalents and count shared idioms. It is neither a licensing judgment nor a direct measure of
+maintainability. These metrics are computed in a trusted read-only stage after functional evaluation;
+the metrics stage does not execute the submitted code.
+Footprint summaries are conditioned on functional success. Because different backends pass
+different tasks, unpaired medians are descriptive only. Comparisons between backends use their
+same-task common passing set. Low RRES or low detected copying cannot compensate for a
+functional failure, and neither is folded into the primary pass score.
+3.3 Result Assembly and Statistical Protocol
+The analysis retains one collected outcome per model–task cell, yielding 900 cells over 150 common
+task IDs. Empty submissions remain failures, including tool-validation and early-exit events. Run
+status is separate from evaluator correctness. The campaign includes preflight replacements and
+runner-level transient recovery, whose records are retained. We report the final collected functional
+outcome under that policy; this is not a repeated-run estimate or a claim that every task used
+exactly one uninterrupted process invocation.
+Merged campaign provenance. The release specification has freeze identity6c20ff03. . . , but the
+result matrix retains 522 rows with that identity and 378 with predecessor identity 0b106842. . . .
+Pro, GLM, and OSS each contribute 150 v2 rows; Flash, Luna, and Qwen each contribute 24 v2 rows
+and 126 predecessor rows (Table 2). All rows report the evaluator image tag ending in 212930ea.
+Agreement of image tags does not establish equivalence of task contracts or agent-visible inputs. The
+offline checks used here verify result counts and recorded gate outcomes, not per-task equivalence
+across these freeze identities. Accordingly, the main table is a descriptive comparison of the retained
+campaigns on common task IDs, and the statistical comparisons below are conditional on that
+assembled record. They do not isolate the effect of changing only the model backend. Appendix F
+identifies the relevant evidence files.
+We report Wilson 95% intervals for functional pass proportions and selected two-sided exact
+McNemar tests for paired model outcomes. Reported 𝑝-values are unadjusted exploratory com-
+parisons; they do not establish a total ordering of backends. To study difficulty, we fit pass/fail
+against backend, construction group, and lift type, with standard errors clustered by task. The
+model estimates associations within this curated collection, not causal effects of construction. For
+paired copying we report Wilcoxon signed-rank tests and matched-pairs rank-biserial effect sizes.
+One retained observation per cell does not estimate stochastic run-to-run variance. Multiple
+tasks from a repository can also share behavior and failures; task-level intervals and standard errors
+do not model every repository-level dependence. The scores below retain the frozen task set. The
+separately labeled known-defect sensitivity view is post hoc and uses only existing outcomes.
+4 Benchmark Results
+4.1 RQ1: Overall Functional Capability
+Table 3 reports results for all 150 assigned tasks per backend. Pro has the highest observed pass rate
+at 115/150 (76.7%), followed by Flash at 108/150 (72.0%) and Luna at 102/150 (68.0%). GLM, Qwen,
+and OSS pass 68, 63, and 36 tasks, respectively. The observed range is 52.7 percentage points. These
+scores include unsuccessful delivery, rather than conditioning the denominator on whether the
+agent produced a package.
+The point estimates do not support every adjacent ranking. Pro succeeds alone on ten tasks
+relative to Flash, while Flash succeeds alone on three; the exact McNemar 𝑝-value is 0.0923. GLM
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+8 Anon.
+Table 3. Functional outcomes in the assembled Python-150 campaigns. Rates and Wilson intervals are
+percentages. Empty submissions remain failures; provenance and profile differences are disclosed in Table 2.
+Backend Pass / 150 Rate [95% CI] Core / 100 hard3 / 50 Empty
+Pro 115 76.7 [69.3, 82.7] 94 21 0
+Flash 108 72.0 [64.3, 78.6] 90 18 0
+Luna 102 68.0 [60.2, 74.9] 82 20 6
+GLM 68 45.3 [37.6, 53.3] 62 6 38
+Qwen 63 42.0 [34.4, 50.0] 55 8 25
+OSS 36 24.0 [17.9, 31.4] 25 11 2
+versus Qwen has 27 versus 22 exclusive passes (𝑝 = 0.5682). Pro versus Luna has 18 versus five
+exclusive passes (𝑝 = 0.0106, unadjusted). We therefore describe the observed range and paired
+differences rather than asserting that each successive backend is better.
+The strongest configuration still fails 35 frozen tasks. Twenty-eight tasks are passed by none of
+the six backends, while 17 are passed by all six. Potential contract defects contribute to these raw
+counts; Section 5.1 shows the corresponding exclusion sensitivity. The main result is substantial
+but incomplete success under the recorded model–harness conditions, rather than a defect-free
+estimate of all software-reuse capability.
+4.2 RQ2: Where Do Submissions Fail?
+Figure 3 summarizes the failure outcomes. The exclusive counts in Appendix Table 6 separate failed
+delivery from failures of the collected artifact. Pro and Flash produce a package for every task and
+have no Build-first failures. Of their 77 combined failures, 76 first fail at Public or Hidden and one
+at Isolation. Weaker configurations add both delivery and loading failures. Qwen has 25 empty
+submissions; GLM has 38. These remain functional failures but are not semantic diagnoses of code
+that was never delivered.
+The non-exclusive view provides a different perspective (Appendix Table 7). Among 829 delivered
+artifacts, 244 (29.4%) have a failed Public flag and 296 (35.7%) a failed Hidden flag, compared with 39
+(4.7%) failed Isolation flags. Only four artifacts pass the other three gates and fail solely at Isolation.
+This supports a narrow operational finding: the separate Isolation gate rarely determines the final
+result once the other gates pass. It does not show that source independence is easy or that packaging
+mistakes are absent; source-free execution can expose those mistakes earlier.
+4.3 RQ3: How Does Task Difficulty Vary?
+Figure 4 shows the number of evaluated backends passing each task. Twenty-two of the 28 all-fail
+tasks belong to hard3. Pro drops from 94/100 on Core to 21/50 on hard3; Flash drops from 90/100 to
+18/50, and Luna from 82/100 to 20/50. GLM and Qwen show the same direction. OSS is near 25%
+in both groups (25/100 versus 11/50), so the contrast is not uniform across all levels of observed
+capability.
+Lift type and construction group are strongly associated: 53 of 56 Direct tasks belong to Core,
+while 15 of 18 Composite tasks belong to hard3. A raw Direct–Adapted–Composite success gradient
+therefore cannot be attributed to lift type alone. In the six-backend logistic analysis, hard3 is
+associated with lower success (odds ratio 0.149, 𝑝 = 1.07 × 10−7). Composite versus Direct is not
+distinguishable at conventional thresholds after adjustment (odds ratio 0.655,𝑝 = 0.486). Restricting
+to Pro, Flash, and Luna gives the same qualitative pattern: hard3 odds ratio 0.092, while Composite
+has odds ratio 0.654 and 𝑝 = 0.554.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+FeatureLiftBench: Behavior-Preserving Feature Lifting 9
+Evaluator failures: exclusive outcomes and overlapping flags
+Figure placeholder — artwork to be added
+(a) Stacked first-outcome bars, 150 tasks per backend.
+(b) Failed gate flags among delivered artifacts, with denominators shown.
+Distinguish 39 Isolation flags from the four Isolation residuals.
+Fig. 3. Where submitted artifacts fail. First outcomes are mutually exclusive; failed gate flags can overlap
+and use the 829 delivered artifacts as their pooled denominator. Only four artifacts pass Build, Public, and
+Hidden but fail Isolation. Exact values appear in Tables 6 and 7.
+Task difficulty across the six recorded configurations
+Figure placeholder — artwork to be added
+(a) Counts of tasks passed by 0–6 backends, split into Core and hard3.
+(b) Core/hard3 pass rates for each backend.
+Use the full 150-task view; annotate the separate seven-task exclusion.
+Fig. 4. Solve-frequency spectrum and construction-group performance on Python-150. The zero-pass group
+contains six Core and 22 hard3 tasks; the six-pass group contains 15 Core and two hard3 tasks. These are
+observed campaign outcomes, not independently calibrated difficulty labels. Tables 8 and 3 supply the values.
+These results support the construction group as a useful empirical stratifier within Python-150.
+They do not establish that the group label causes difficulty, or that lift type has no effect in a
+larger, differently balanced sample. The small Composite group and its concentration in hard3 limit
+separation of these factors. We do not infer difficulty from the additional Hard-50 extension or
+from the uniformly high entanglement-level label.
+4.4 RQ4: How Compact Are Common Successes?
+Appendix Table 9 describes the passing artifacts. Pro and Flash have median RRES near one and
+median detected copy fractions above 0.95. Luna has median RRES 0.815 and median copy fraction
+0.164. These medians involve different passing sets and cannot alone establish a paired difference.
+They also conceal substantial within-backend variation: Luna’s copy-fraction interquartile range is
+[0.048, 0.967], while Pro’s is [0.716, 0.987].
+On the 97 tasks passed by both Pro and Luna, median RRES is 0.993 versus 0.697, and median
+copy fraction is 0.966 versus 0.191 (Figure 5). Pro has higher detected copying on 76 tasks, Luna
+on 18, with three ties. The paired Wilcoxon test on copy fractions yields 𝑝 = 1.18 × 10−13 and
+matched-pairs rank-biserial effect size𝑟 = 0.881. The Flash–Luna comparison on 92 common passes
+has median RRES 0.999 versus 0.713 and copy fraction 0.970 versus 0.204 ( 𝑝 = 4.24 × 10−13 for
+copying, 𝑟 = 0.885).
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+10 Anon.
+Paired extraction footprint on common successes
+Figure placeholder — artwork to be added
+Two matched-task panels: reference-relative size and detected copy fraction.
+Primary pair: Pro/Luna, 97 common passing tasks.
+Show paired values and median summaries; keep the two metrics separate.
+Fig. 5. Pro and Luna on their 97 common passing tasks. Median RRES is 0.993 versus 0.697; median detected
+copy fraction is 0.966 versus 0.191. Pairing controls task membership within the retained campaigns. Copying
+and size describe different artifact properties. Table 10 gives the paired summaries.
+Functional success thus coexists with systematic differences in artifact size and source overlap
+even after fixing the task. A high copy fraction can describe a faithful small extraction, and a low
+fraction can describe a large rewrite; the two measures should remain distinct. These results do
+not establish that Luna is globally better, that copying is undesirable, or that smaller artifacts are
+easier to maintain. They show why a pass score alone does not characterize the delivered reusable
+artifact.
+5 Diagnostic Analysis and Discussion
+5.1 Contract Defects and Sensitivity
+Failure inspection flagged seven tasks for potential disagreement between the public contract
+and evaluator expectations. The issues include omitted API members and conflicting expectations
+about whitespace, literal markers, or default version formatting. The artifact labels these cases
+benchmark_invalid_candidate; the review is AI-assisted rather than an independent human
+adjudication. Their identities and the exclusion calculation are recorded in Appendix D.
+The main tables retain all 150 tasks and their recorded outcomes. The mechanism analysis
+instead removes 14 affected Pro/Flash failure rows, leaving 63 rows from the original 77. These
+are different denominators for different questions. To expose the effect of the flagged tasks on
+measured capability, we also remove all seven task IDs from every backend’s existing results. This
+post hoc task-level exclusion does not depend on whether a particular backend passed a flagged
+task. It produces a 143-task sensitivity view, not a new frozen suite or an estimate corrected for all
+possible defects.
+All six configurations fail all seven flagged tasks in the existing record. Exclusion therefore leaves
+every numerator unchanged while reducing the denominator to 143: Pro becomes 115/143 (80.4%),
+Flash 108/143 (75.5%), and Luna 102/143 (71.3%). The count of tasks passed by none of the six drops
+from 28 to 21, of which 16 are hard3. The observed pass-count ordering is unchanged, but the
+absolute rates and the size of the all-fail group are affected. Because the flags were found through
+failure inspection and are provisional, these values quantify the influence of the identified tasks;
+they neither certify the remaining tasks nor replace the 150-task campaign results.
+5.2 Exploratory Evidence on Behavioral-Contract Recovery
+The existing close-read examines the public contract, first-failure evidence, and submitted code
+for every Pro/Flash artifact failure, with trajectory inspection to check source access. After the
+defect-row exclusion, the common symptoms are behavioral drift and incomplete API obligations.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+FeatureLiftBench: Behavior-Preserving Feature Lifting 11
+Table 4. Post hoc exclusion of the same seven provisionally flagged tasks for every backend. This sensitivity
+view does not replace the main task set.
+Backend Main pass Rate (%) Exclusion pass Rate (%)
+Pro 115/150 76.7 115/143 80.4
+Flash 108/150 72.0 108/143 75.5
+Luna 102/150 68.0 102/143 71.3
+GLM 68/150 45.3 68/143 47.6
+Qwen 63/150 42.0 63/143 44.1
+OSS 36/150 24.0 36/143 25.2
+All configurations fail all seven flagged tasks. Numerators therefore remain unchanged; only the denominator changes from
+150 to 143. Task flags are AI-assisted and non-exhaustive.
+We use contract-closure gap as a descriptive term for a delivered artifact that omits or changes
+required observable behavior despite implementing a substantial part of the target. A Hidden
+failure alone is insufficient for this label: the failed expectation must first be supported by the public
+contract.
+For example, in an Alembic revision-map task, both backends expose the requested lookup API
+but resolve a literal revision identifier as a symbolic base marker. The failure concerns precedence
+between two interpretations, rather than an absent top-level function. An aiohttp task similarly
+contains validation logic while leaving a required exceptional path incomplete. These examples
+illustrate how apparent implementation coverage can coexist with a missing behavioral obligation;
+they do not disclose protected test assertions.
+Every retained Pro/Flash failure has recorded repository inspection. This rules out a narrow
+explanation that the agent never inspected source files. It does not establish that all relevant
+implementation regions were located or understood. The coding therefore concerns observable
+artifact symptoms, not a causal decomposition of search, reasoning, and editing. The analysis
+remains an assistant first pass, without independent human agreement measurements. Appendix E
+provides provisional counts and a separate stratified sample from Luna, Qwen, and OSS; neither is
+presented as a validated cross-model root-cause distribution.
+5.3 Implications for Feature-Lifting Agents
+A boundary-sensitive evaluation of software reuse. The benchmark makes the output boundary
+part of correctness. The upstream project provides implementation evidence, but the submitted
+artifact must work without that project. This links the long-standing reuse and transplantation
+problem to the capabilities of interactive coding agents. The contribution is the task collection and
+measurement protocol, rather than a claim that software extraction is a newly discovered activity.
+From visible APIs to complete behavior. Strong backends frequently produce loadable packages
+while missing required behavior. The exploratory cases suggest that tracking API presence alone
+can overstate implementation completeness: a branch, default, state transition, or exception can
+remain incorrect behind an otherwise plausible interface. A useful direction is to connect each
+public obligation to repository evidence and implementation evidence. The present study motivates
+that direction but does not demonstrate that an obligation ledger, additional reflection, or a repair
+loop improves the benchmark score.
+Preserve multiple dimensions of extraction quality. A correct artifact can be large relative to
+its reference, while a small artifact can fail required behavior. Common-success comparisons
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+12 Anon.
+isolate footprint differences from differing task success sets, but still do not measure downstream
+maintenance effort. Reporting correctness, relative size, and detected copying separately avoids
+rewarding an incomplete implementation for being small or penalizing faithful reuse solely for
+retaining source lines.
+Benchmark validation is an ongoing evidence problem. Stable reference execution and mechanically
+consistent metadata are necessary checks, but do not establish that every evaluator expectation
+follows the task statement. The later defect flags make that limitation concrete. Freezing the recorded
+results, disclosing suspect tasks, and labeling exclusion sensitivity allows readers to assess their
+influence without changing the benchmark retrospectively. Future releases can repair adjudicated
+defects under a new identity; the current results retain their recorded run identities.
+6 Threats to Validity
+Construct validity. Finite behavioral tests cannot prove equivalence to every behavior of an
+upstream feature. The output contract deliberately covers a bounded capability, and passing should
+be interpreted within that scope. Contract/evaluator disagreements can misclassify agents; the seven
+flagged tasks and sensitivity analysis expose known concerns without certifying the remaining
+tasks. Build allows path loading and therefore does not prove wheel validity or clean installability.
+Isolation is also an operational check: dependency mistakes may surface at other gates, and the
+environment’s available packages can mask undeclared dependencies.
+Internal validity. Outcomes depend on source materialization, dependency locks, agent/evaluator
+images, prompt and context handling, model endpoints, and recovery logic. The release records
+identities for these components. The retained campaigns contain two run-freeze identities, and
+per-task input equivalence is not established here. Pro/Flash also use different condenser settings
+from the other backends. These factors limit attribution of score differences to model capability
+alone. Information ablations are excluded. In addition, provider behavior and model-specific tool-
+call compatibility remain part of the measured system. One final collected outcome per task does
+not remove effects of preflight replacement or transient recovery. Reproduction must preserve the
+recorded campaign policy as well as the visible task specification.
+External and statistical validity. The task set emphasizes Python libraries and developer tooling.
+It does not establish results for other languages, interactive applications, distributed services, or
+industrial migration workloads. Popular source projects may have appeared in training data; source
+availability is intentional, while training contamination is not measured. Construction-group and
+lift-type associations are specific to a curated, imbalanced collection. A single outcome per cell does
+not estimate sampling variation across repeated runs. Reported task-level intervals and exploratory
+tests also do not fully account for shared repository origins or multiple comparisons.
+Annotation and footprint validity. Failure and defect labels are AI-assisted and have no indepen-
+dent human L2 validation. Their scope is a strong-backend census and a separate stratified sample,
+not a representative six-backend causal taxonomy. Repository access is not proof of successful
+localization. RRES depends on the feasible reference and line-counting convention, and direct-copy
+detection is a syntactic proxy. Neither metric establishes minimality, maintainability, or semantic
+superiority. The post hoc defect exclusion is derived from observed failures and is not an exhaustive
+fairness audit.
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+FeatureLiftBench: Behavior-Preserving Feature Lifting 13
+7 Related Work
+7.1 Slicing, Feature Location, and Software Reuse
+Feature lifting builds on longstanding research into recovering reusable behavior from existing
+software. Program slicing uses data and control dependencies to retain behavior with respect to a
+specified slicing criterion [Weiser 1984]. Feature-location techniques identify the source entities
+associated with a requested capability; the taxonomy of Dit et al. organizes the evidence and
+techniques used for this task [Dit et al. 2013]. Multi-dimensional separation of concerns addresses
+decompositions in which concerns overlap rather than align with a single module hierarchy [Tarr
+et al. 1999]. These perspectives explain why a feature can cross file and package boundaries and
+why locating an entry point does not by itself establish a complete extraction.
+Automated software transplantation is a particularly close antecedent. Barr et al. combine
+program analysis, lightweight annotations, testing, and search to extract functionality from a donor
+and adapt it for a different host [Barr et al. 2015]. Their work already makes preservation during
+extraction and integration an executable objective. FeatureLiftBench carries this reuse objective
+into the evaluation of general-purpose repository agents: the agent receives a behavioral contract
+and an intact donor repository, determines the supporting implementation without source-location
+hints, and delivers a standalone package. It does not receive a destination application’s integration
+site. We evaluate finite behavioral obligations and source independence, without claiming to
+establish semantic equivalence or compute a minimal program slice.
+7.2 Executable Coding and Feature-Development Benchmarks
+HumanEval measures functional correctness for code synthesized from docstrings [Chen et al. 2021].
+SWE-bench moves evaluation into real repositories, requiring changes that resolve existing GitHub
+issues [Jimenez et al. 2024]. SWE-Bench Pro emphasizes longer-horizon engineering tasks and
+analyzes observed agent failures [Deng et al. 2025]. More recent benchmarks directly address feature
+development. FeatBench uses natural-language requirements without code hints to evaluate feature
+implementation in existing repositories [Chen et al. 2026]. FeatureBench derives tasks through
+test-driven dependency tracing and evaluates both incremental implementation in a repository and
+construction of functionality from scratch [Zhou et al. 2026]. Thus, producing a callable module or
+implementing a repository-derived feature is already represented in prior evaluation settings.
+The distinguishing experimental condition in FeatureLiftBench is access to the complete
+existing implementation as evidence, coupled with a requirement to preserve its declared behavior
+across a new package boundary. The final artifact must remain functional when access to the
+donor repository is removed. This condition makes decisions about transitive helpers, resources,
+state, and runtime dependencies part of the evaluated behavior. Our Full-Repository / No-Hint
+protocol withholds source-location hints while specifying the required output API, so it should
+not be equated with withholding all interface information. The benchmark additionally reports
+extraction footprint on successful artifacts; reference-relative size is a descriptive measure, not a
+certificate of minimality or maintainability.
+7.3 Agent Runtimes and Evaluation Scope
+SWE-agent demonstrates that the agent–computer interface affects how effectively language
+models navigate repositories, edit code, and execute tests [Yang et al. 2024]. OpenHands provides an
+extensible platform for agents that use code execution, command-line interaction, and other tools
+in sandboxed environments [Wang et al. 2025]. Terminal-Bench extends executable evaluation to
+diverse command-line workflows, with task-specific environments and tests [Merrill et al. 2026]; its
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+14 Anon.
+scope is broader than repository repair. OSWorld couples task-specific initial states with execution-
+based evaluation for desktop workflows [Xie et al . 2024]. These environments show why task
+definition, environment reproducibility, and evaluator validity merit separate description. Harness-
+Bench studies variation across model–harness configurations under shared task environments and
+budgets [Yao et al. 2026].
+These studies motivate treating the execution configuration as part of the measured system.
+We hold the Main information boundary fixed, disclose recorded OpenHands profiles and mixed
+run provenance, and interpret each result as a model–harness outcome. The contribution is a task
+definition, curated benchmark, and analysis of delivered artifacts under that protocol. It is not a
+new agent runtime, and the reported model ordering is not assumed to transfer unchanged to other
+tool interfaces or execution policies.
+8 Conclusion
+FeatureLiftBench evaluates whether a coding agent can recover a declared capability from a real
+repository and deliver an artifact that works without the source project. The frozen release contains
+200 tasks; a common 150-task subset supports the six-backend study. Across the retained OpenHands
+Main campaigns, functional pass rates span 24.0%–76.7%. Behavioral evaluation accounts for most
+strong-backend failures, and the hard3 construction group is associated with lower success. Common
+passing tasks also reveal distinct extraction footprints and source overlap. These results support
+evaluating behavior preservation and artifact construction as separate dimensions of repository-
+level software reuse. Mixed run provenance, exploratory failure evidence, and task-defect sensitivity
+qualify the interpretation rather than replacing the frozen measured outcomes.
+References
+Earl T. Barr, Mark Harman, Yue Jia, Alexandru Marginean, and Justyna Petke. 2015. Automated Software Transplantation. In
+Proceedings of the 2015 International Symposium on Software Testing and Analysis . Association for Computing Machinery,
+257–269. doi:10.1145/2771783.2771796
+Haorui Chen, Chengze Li, and Jia Li. 2026. FeatBench: Towards More Realistic Evaluation of Feature-level Code Generation.
+arXiv:2509.22237 [cs.CL] https://arxiv.org/abs/2509.22237v2 Version 2, revised February 18, 2026.
+Mark Chen, Jerry Tworek, Heewoo Jun, et al. 2021. Evaluating Large Language Models Trained on Code. arXiv:2107.03374
+https://arxiv.org/abs/2107.03374
+Xiang Deng, Jeff Da, Edwin Pan, Yannis Yiming He, Charles Ide, Kanak Garg, Niklas Lauffer, Andrew Park, Nitin Pasari,
+Chetan Rane, Karmini Sampath, Maya Krishnan, Srivatsa Kundurthy, Sean Hendryx, Zifan Wang, Vijay Bharadwaj, Jeff
+Holm, Raja Aluri, Chen Bo Calvin Zhang, Noah Jacobson, Bing Liu, and Brad Kenstler. 2025. SWE-Bench Pro: Can AI
+Agents Solve Long-Horizon Software Engineering Tasks? arXiv:2509.16941 https://arxiv.org/abs/2509.16941v2 Version 2.
+Bogdan Dit, Meghan Revelle, Malcom Gethers, and Denys Poshyvanyk. 2013. Feature Location in Source Code: A Taxonomy
+and Survey. Journal of Software: Evolution and Process 25, 1 (2013), 53–95. doi:10.1002/smr.567
+Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik Narasimhan. 2024. SWE-
+bench: Can Language Models Resolve Real-World GitHub Issues?. In Proceedings of the Twelfth International Conference
+on Learning Representations. https://openreview.net/forum?id=VTF8yNQM66
+Mike A. Merrill, Alexander G. Shaw, Nicholas Carlini, et al. 2026. Terminal-Bench: Benchmarking Agents on Hard, Realistic
+Tasks in Command Line Interfaces. arXiv:2601.11868 https://arxiv.org/abs/2601.11868
+Peri Tarr, Harold Ossher, William Harrison, and Stanley M. Sutton Jr. 1999. N Degrees of Separation: Multi-Dimensional
+Separation of Concerns. In Proceedings of the 21st International Conference on Software Engineering . 107–119. doi:10.1145/
+302405.302457
+Xingyao Wang, Boxuan Li, Yufan Song, Frank F. Xu, Xiangru Tang, Mingchen Zhuge, Jiayi Pan, Yueqi Song, Bowen Li,
+Jaskirat Singh, Hoang H. Tran, Fuqiang Li, Ren Ma, Mingzhang Zheng, Bill Qian, Yanjun Shao, Niklas Muennighoff,
+Yizhe Zhang, Binyuan Hui, Junyang Lin, Robert Brennan, Hao Peng, Heng Ji, and Graham Neubig. 2025. OpenHands: An
+Open Platform for AI Software Developers as Generalist Agents. In The Thirteenth International Conference on Learning
+Representations. https://arxiv.org/abs/2407.16741
+Mark Weiser. 1984. Program Slicing. IEEE Transactions on Software Engineering SE-10, 4 (1984), 352–357. doi:10.1109/TSE.
+1984.5010248
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+FeatureLiftBench: Behavior-Preserving Feature Lifting 15
+Tianbao Xie, Danyang Zhang, Jixuan Chen, Xiaochuan Li, Siheng Zhao, Ruisheng Cao, Toh Jing Hua, Zhoujun Cheng,
+Dongchan Shin, Fangyu Lei, Yitao Liu, Yiheng Xu, Shuyan Zhou, Silvio Savarese, Caiming Xiong, Victor Zhong, and
+Tao Yu. 2024. OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments. In
+Advances in Neural Information Processing Systems . https://arxiv.org/abs/2404.07972
+John Yang, Carlos E. Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik Narasimhan, and Ofir Press. 2024.
+SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. In Advances in Neural Information
+Processing Systems, Vol. 37. https://arxiv.org/abs/2405.15793
+Yilun Yao, Xinyu Tan, Chao-Hsuan Liu, Yaoming Li, Zhengyang Wang, Wenhan Yu, Zhewen Tan, Yuxuan Tian, Guangxiang
+Zhao, Lin Sun, Xiangzheng Zhang, and Tong Yang. 2026. Harness-Bench: Measuring Harness Effects across Models in
+Realistic Agent Workflows. arXiv:2605.27922 https://arxiv.org/abs/2605.27922
+Qixing Zhou, Jiacheng Zhang, Haiyang Wang, Rui Hao, Jiahe Wang, Minghao Han, Yuxue Yang, Shuzhe Wu, Feiyang Pan,
+Lue Fan, Dandan Tu, and Zhaoxiang Zhang. 2026. FeatureBench: Benchmarking Agentic Coding for Complex Feature
+Development. In The Fourteenth International Conference on Learning Representations . https://arxiv.org/abs/2602.10975
+A Task Provenance and Validation Scope
+The freeze binds each task to its public specification hash, generated task hash, source repository
+ID, resolved commit, source-tree and archive digests, task-tree digest, and reference-tree digest.
+Canonical IDs are the counting unit for repository totals. The 150 main tasks and the 50 additional
+tasks come from disjoint sets of 126 and 50 repositories. Oracle replay records three successful
+executions for each task with stable fingerprints. The 38-task repair scope is documented separately
+from the full release checks.
+The intended fairness relation is that evaluator expectations refine the public contract and have
+support in the pinned source behavior. Schema checks and reference execution provide only partial
+evidence for this relation. The current record does not support a claim that a Validator-Agent or
+independent human reviewer has semantically audited every task. The seven later defect flags
+illustrate why passing mechanical checks cannot substitute for that audit.
+B Supplementary Release Results
+Table 5 reports the five available assembled 200-task campaigns, including their Python-150 and
+additional Hard-50 strata. The preflight-replacement tasks are already included in these totals.
+Pro has no corresponding 200-task campaign in this record. The additional Hard-50 group is not
+the hard3 group inside the main 150 tasks. Flash’s 49/50 on this extension also illustrates why
+the historical group name should not be read as a universal empirical difficulty label. We use the
+extension for release transparency, not for a six-backend difficulty or compactness comparison. The
+same run-provenance limitation applies: a release task identity is not a claim that every retained
+execution was newly performed under that freeze.
+Table 5. Supplementary functional outcomes in five assembled 200-task campaigns. The run-provenance
+caveat also applies here.
+Backend Python-150 Additional Hard-50 Combined
+Flash 108/150 49/50 157/200 (78.5%)
+Luna 102/150 42/50 144/200 (72.0%)
+GLM 68/150 30/50 98/200 (49.0%)
+Qwen 63/150 23/50 86/200 (43.0%)
+OSS 36/150 25/50 61/200 (30.5%)
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+16 Anon.
+Table 6. Mutually exclusive first outcomes; every row sums to 150.
+Backend Pass Missing Build Public Hidden Isolation
+Pro 115 0 0 25 10 0
+Flash 108 0 0 26 15 1
+Luna 102 6 3 27 12 0
+GLM 68 38 3 31 8 2
+Qwen 63 25 6 35 21 0
+OSS 36 2 18 70 23 1
+Table 7. Non-exclusive failed gate flags among delivered artifacts. Counts can overlap.
+Backend Delivered Build Public Hidden Isolation Residual
+Pro 150 0 25 29 0 0
+Flash 150 0 26 36 1 1
+Luna 144 3 30 35 3 0
+GLM 112 3 34 38 5 2
+Qwen 125 6 41 58 8 0
+OSS 148 18 88 100 22 1
+Total 829 30 244 296 39 4
+Residual requires Build, Public, and Hidden to pass while Isolation fails.
+Table 8. Tasks by number of passing backends in the six retained campaigns.
+Passing backends Core hard3 Total
+0 6 22 28
+1 0 7 7
+2 4 5 9
+3 17 5 22
+4 31 5 36
+5 27 4 31
+6 15 2 17
+Total 100 50 150
+C Additional Quantitative Results
+The tables below preserve the exact values behind the planned result figures. First-outcome rows
+sum to 150. Non-exclusive gate counts use delivered artifacts and may overlap. Footprint summaries
+use passing artifacts only. Statistical tests describe the assembled campaigns and inherit their
+provenance limitations.
+The logistic specification is
+logit Pr(𝐹𝑚𝑡 = 1) = 𝛼 + 𝛾𝑚 + 𝛽ℎ ⊮[𝑡 ∈ hard3] + 𝛽𝑎 ⊮[𝑡 ∈ Adapted] + 𝛽𝑐 ⊮[𝑡 ∈ Composite]. (4)
+Flash, Core, and Direct are the reference categories. Standard errors are clustered by task. The
+all-six fit has 900 observations; the Pro/Flash/Luna fit has 450. Table 11 reports construction/lift
+coefficients from the existing fits. Backend coefficients and additional fit output are retained in the
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+FeatureLiftBench: Behavior-Preserving Feature Lifting 17
+Table 9. Descriptive footprint on each backend’s passing artifacts. Rows use different task sets.
+Backend Passes Mean RRES Median RRES Median copy
+Pro 115 1.781 0.993 0.957
+Flash 108 1.730 0.998 0.968
+Luna 102 0.953 0.815 0.164
+GLM 68 2.473 1.013 0.947
+Qwen 63 1.556 0.975 0.757
+OSS 36 1.176 0.983 0.180
+Table 10. Paired medians on common passing tasks; values follow the backend order in the first column.
+Pair Tasks RRES medians Copy medians
+Pro / Luna 97 0.993 / 0.697 0.966 / 0.191
+Flash / Luna 92 0.999 / 0.713 0.970 / 0.204
+Copy-fraction Wilcoxon tests: Pro/Luna 𝑝 = 1.18 × 10−13, rank-biserial 𝑟 = 0.881 (76 higher Pro, 18 higher Luna, three ties);
+Flash/Luna 𝑝 = 4.24 × 10−13, 𝑟 = 0.885 (75/14/three). These test results concern copying, not RRES.
+Table 11. Construction and lift-type associations from the saved logistic fits. Backend covariates are included;
+standard errors are clustered by task.
+Fit Contrast Odds ratio SE (log odds) 𝑝
+All six Adapted vs. Direct 0.673 0.267 0.139
+All six Composite vs. Direct 0.655 0.607 0.486
+All six hard3 vs. Core 0.149 0.358 1.07 × 10−7
+Pro/Flash/Luna Adapted vs. Direct 0.889 0.451 0.793
+Pro/Flash/Luna Composite vs. Direct 0.654 0.718 0.554
+Pro/Flash/Luna hard3 vs. Core 0.092 0.459 1.95 × 10−7
+analysis CSV. These regressions cannot remove unmeasured protocol or provenance differences by
+conditioning on backend labels.
+D Flagged Task Identities and Sensitivity
+The existing first-pass defect summary identifies the following task IDs:
+• click__lazy_command_core__hard3_001;
+• flake8__plugin_options_core__hard3_001;
+• hatch__project_metadata_core__hard3_001;
+• pluggy__hook_wrapper_core__hard3_001;
+• pytest__ini_markers_core__001;
+• readme_renderer__content_type_core__hard3_001; and
+• setuptools_scm__version_normalize_core__hard3_001.
+The sensitivity script removes these same IDs for every backend and recomputes counts from
+the existing 900-row result matrix. It validates key uniqueness, common task membership, and
+agreement with the recorded evaluator gates. Exclusion does not assert that every failure on these
+tasks has the same cause: one backend may fail earlier for an unrelated dependency problem. These
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+18 Anon.
+Table 12. Provisional AI-assisted L1 symptoms on Pro/Flash artifact failures. These are not independently
+validated root-cause proportions.
+Symptom Pro Flash Total
+Behavioral drift 26 28 54
+Contract/API completion 2 5 7
+Packaging/modularization 0 2 2
+Total 28 35 63
+task flags are provisional and were discovered through failure analysis, which limits any claim that
+the remaining subset is free of defects.
+E Provisional Failure Coding
+Table 12 records the existing AI-assisted L1 coding after removing 14 suspected defect rows from
+77 Pro/Flash artifact failures. No empty submissions enter this denominator. The analysis contains
+63 rows: 28 Pro and 35 Flash. The 54 drift and seven API-completion rows motivate the qualitative
+contract-closure discussion. These counts are an auditable first-pass coding result, not independently
+validated root-cause proportions.
+A separate stratified sample reviews 45 artifact failures from Luna, Qwen, and OSS. Thirteen rows
+are excluded as suspected task defects, leaving 32: 14 drift, nine API-completion, four dependency-
+closure, and five packaging/modularization cases. These counts are not pooled with the Pro/Flash
+census because the sampling and backend scope differ. GLM’s artifact failures were not included in
+this semantic sample. Zero primary localization labels in these inspections do not establish that
+localization is solved.
+F Artifact Identity and Reproduction
+The active release is freeze v2 with candidate prefix 212930ea. Its full freeze identity is
+6c20ff0307762503a73cbb9ff32e9992c6446
+e4b17483a68373027be58cbf419
+The predecessor ID retained by part of the campaign is
+0b106842710368a497b49b7f6714e0dfea
+54778d1fb2dae38c93ea449b339542
+The machine-readable manifest retains the unbroken identifier, task-specific specification and
+source hashes, and agent/evaluator image digests. The evaluator image is featureliftbench-
+eval:python200-prime-212930ea; the agent image uses the corresponding agent tag. The freeze
+records Python 3.11.14 and OpenHands CLI 1.16.0.
+The main quantitative input is the existing python150_prime_v2_analysis_20260905/task_
+results.csv analysis matrix. The final analysis package retains summary tables, paired-task
+records, statistical outputs, and figures. Raw campaign directories retain per-task submissions,
+evaluator results, run metadata, trajectories, and usage records. The paper revision adds offline table
+assembly and known-defect sensitivity calculations; it does not alter task definitions or original
+result files.
+Upstream snapshots retain their original licenses. The distribution separates source acquisition,
+evaluator-side assets, and submitted artifacts, whose licensing obligations must be respected indi-
+vidually. The local evidence bundle supports the results in this draft; a public archival identifier and
+finalized distribution metadata are not established here. Development pilots, alternative information
+, Vol. 1, No. 1, Article . Publication date: September 2026.
+
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+FeatureLiftBench: Behavior-Preserving Feature Lifting 19
+arms, and unrun method proposals are outside the main evidence set. The retained predecessor
+executions are explicitly counted in Table 2; they are not relabeled as v2 runs.
+F.1 Delivery and Interaction Records
+Process evidence helps interpret failed delivery. Qwen’s 25 empty Python-150 submissions are asso-
+ciated with tool-validation failures involving required tool-call fields. GLM’s 38 empty submissions
+are predominantly early terminations without a package; only one is tagged as a tool-validation
+event. These are different model–harness outcomes and should not be pooled into behavioral failure
+categories. Conversely, 82 Flash passing artifacts have runner status other than passed, illustrating
+why workflow status cannot replace evaluation.
+Provider token accounting is incomplete and heterogeneous. Luna and GLM lack verified token
+totals for this analysis. Pro and Flash expose cache accounting, allowing an incremental measure
+of uncached prompt plus completion tokens; their overall medians are approximately 88.0k and
+123.6k. Qwen and OSS have provider total-token counts without the same cache breakdown. We
+therefore do not rank all six backends by token cost.
+Within Pro and Flash, hard3 is associated with more interaction and lower success. Median
+incremental tokens rise from 81.5k to 118.3k for Pro and from 108.3k to 202.9k for Flash between
+Core and hard3. This is an observational association: difficult tasks may induce longer attempts.
+It does not show that additional budget is ineffective, or that a different stopping policy would
+improve performance.
+F.2 Offline Reproduction of Paper Tables
+The paper’s table updater reads the saved result matrix, freeze manifest, statistical summaries,
+annotations, and run metadata. It checks task/model key uniqueness, denominator consistency,
+paired-set membership, and numeric agreement before writing the marked table blocks in the
+LaTeX source. The known-defect script additionally checks the 838 existing raw evaluator files;
+the other 62 cells have no evaluator result and are retained as failures. This is offline analysis of
+saved artifacts, not a new evaluation campaign. The companion README records input paths and
+commands. All five main-text figures are intentionally reserved for author-supplied artwork in this
+draft; their captions and appendix data specify the intended content.
+, Vol. 1, No. 1, Article . Publication date: September 2026.

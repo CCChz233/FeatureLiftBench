@@ -1,0 +1,379 @@
+{
+  "analysis_status": "post_hoc_non_exhaustive_known_defect_exclusion_not_official_leaderboard",
+  "interpretation": "The excluded IDs were selected from observed failures by assistant-first-pass review; this view does not certify all remaining tasks, correct frozen outcomes, or measure performance on a newly validated benchmark.",
+  "metric": "Functional Pass = usable submission and Build and Public and Hidden and Isolation; empty submissions remain failures.",
+  "campaign_freeze_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+  "observed_run_freeze_counts": {
+    "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419": 522,
+    "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542": 378
+  },
+  "freeze_caveat": "The existing merged campaign retains 126 predecessor-freeze records for each of Flash, Luna, and Qwen, alongside 24 v2 records each; Pro, GLM, and OSS have 150 v2 records each. All CSV records report evaluator image python200-prime-212930ea. This script verifies counts and raw gates, not equivalence of predecessor and v2 task contracts.",
+  "sources": [
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/failure_root_cause_annotations.csv",
+      "sha256": "6f87b65ceea63f2706faf48b3e814536846e06c4a8e6959bbd09058f3e672a38"
+    }
+  ],
+  "qa": {
+    "rows": 900,
+    "unique_task_model_keys": 900,
+    "tasks": 150,
+    "models": 6,
+    "raw_result_files_checked": 838,
+    "raw_result_files_absent": 62,
+    "gate_mismatches": 0,
+    "passing_compactness_mismatches": 0,
+    "defect_annotation_rows": 14,
+    "checks": "Assertions enforce key uniqueness, complete 150 x 6 matrix, recorded campaign freeze composition and evaluator image, exact seven known IDs, gate agreement with existing raw JSON, and pass-conditioned compactness agreement."
+  },
+  "by_model": [
+    {
+      "model": "deepseek-v4-pro",
+      "frozen_150": {
+        "n": 150,
+        "pass": 115,
+        "fail": 35,
+        "pass_rate": 0.7666666666666667,
+        "empty": 0
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 0
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 115,
+        "fail": 28,
+        "pass_rate": 0.8041958041958042,
+        "empty": 0
+      }
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "frozen_150": {
+        "n": 150,
+        "pass": 108,
+        "fail": 42,
+        "pass_rate": 0.72,
+        "empty": 0
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 0
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 108,
+        "fail": 35,
+        "pass_rate": 0.7552447552447552,
+        "empty": 0
+      }
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "frozen_150": {
+        "n": 150,
+        "pass": 102,
+        "fail": 48,
+        "pass_rate": 0.68,
+        "empty": 6
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 0
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 102,
+        "fail": 41,
+        "pass_rate": 0.7132867132867133,
+        "empty": 6
+      }
+    },
+    {
+      "model": "glm-5.3-flash",
+      "frozen_150": {
+        "n": 150,
+        "pass": 68,
+        "fail": 82,
+        "pass_rate": 0.4533333333333333,
+        "empty": 38
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 3
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 68,
+        "fail": 75,
+        "pass_rate": 0.4755244755244755,
+        "empty": 35
+      }
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "frozen_150": {
+        "n": 150,
+        "pass": 63,
+        "fail": 87,
+        "pass_rate": 0.42,
+        "empty": 25
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 1
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 63,
+        "fail": 80,
+        "pass_rate": 0.4405594405594406,
+        "empty": 24
+      }
+    },
+    {
+      "model": "gpt-oss-120b",
+      "frozen_150": {
+        "n": 150,
+        "pass": 36,
+        "fail": 114,
+        "pass_rate": 0.24,
+        "empty": 2
+      },
+      "excluded_7": {
+        "n": 7,
+        "pass": 0,
+        "fail": 7,
+        "pass_rate": 0.0,
+        "empty": 1
+      },
+      "post_hoc_143": {
+        "n": 143,
+        "pass": 36,
+        "fail": 107,
+        "pass_rate": 0.2517482517482518,
+        "empty": 1
+      }
+    }
+  ],
+  "excluded_tasks": [
+    {
+      "task_id": "click__lazy_command_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "public_failure",
+        "qwen3.6-35b-a3b-fp8": "public_failure",
+        "gpt-oss-120b": "public_failure"
+      },
+      "flag_reason": "Public test calls LazyCommandCollection.invoke, which is absent from required_api and from B003/B004 (get_command/resolve only)."
+    },
+    {
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "missing_submission",
+        "qwen3.6-35b-a3b-fp8": "public_failure",
+        "gpt-oss-120b": "public_failure"
+      },
+      "flag_reason": "Public test calls OptionManager.register_options and options[dest]; required_api lists OptionManager with no members, and B001 only says to register options."
+    },
+    {
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "public_failure",
+        "qwen3.6-35b-a3b-fp8": "public_failure",
+        "gpt-oss-120b": "missing_submission"
+      },
+      "flag_reason": "B001 requires lowercasing names; the public test additionally requires space-to-hyphen canonicalization (my package vs my-package)."
+    },
+    {
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "public_failure",
+        "qwen3.6-35b-a3b-fp8": "missing_submission",
+        "gpt-oss-120b": "public_failure"
+      },
+      "flag_reason": "Public test calls HookCaller.call_historic; required_api only lists add_hookimpl, call_extra, and get_hookimpls."
+    },
+    {
+      "task_id": "pytest__ini_markers_core__001",
+      "hard3": false,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "missing_submission",
+        "qwen3.6-35b-a3b-fp8": "hidden_failure",
+        "gpt-oss-120b": "public_failure"
+      },
+      "flag_reason": "B003 requires preserving description whitespace after the colon; the public test requires the description to be stripped."
+    },
+    {
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "public_failure",
+        "qwen3.6-35b-a3b-fp8": "build_failure",
+        "gpt-oss-120b": "build_failure"
+      },
+      "flag_reason": "B001 only requires selecting a markdown renderer; the public test asserts the literal substring markdown appears in HTML for a heading that already rendered as h1."
+    },
+    {
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "hard3": true,
+      "functional_pass_by_model": {
+        "deepseek-v4-pro": false,
+        "deepseek-v4-flash": false,
+        "gpt-5.6-luna": false,
+        "glm-5.3-flash": false,
+        "qwen3.6-35b-a3b-fp8": false,
+        "gpt-oss-120b": false
+      },
+      "first_failure_stage_by_model": {
+        "deepseek-v4-pro": "public_failure",
+        "deepseek-v4-flash": "public_failure",
+        "gpt-5.6-luna": "public_failure",
+        "glm-5.3-flash": "missing_submission",
+        "qwen3.6-35b-a3b-fp8": "public_failure",
+        "gpt-oss-120b": "public_failure"
+      },
+      "flag_reason": "required_api defaults node to g1234567 and B003 requires a local segment when node is present; the public test omits node and asserts a clean 1.2.3."
+    }
+  ],
+  "unsolved_by_all_six": {
+    "frozen_150": {
+      "n": 28,
+      "hard3": 22
+    },
+    "post_hoc_143": {
+      "n": 21,
+      "hard3": 16
+    },
+    "remaining_task_ids": [
+      "alembic__revision_map_core__hard3_001",
+      "build__pyproject_backend_core__hard3_001",
+      "celery__signal_dispatch_core__hard3_001",
+      "cookiecutter__repo_finder_core__hard3_001",
+      "decorator__signature_preserving_core__001",
+      "filelock__reentrant_lock_core__001",
+      "flask__route_dispatch_core__001",
+      "jupyter_core__paths_resolver_core__hard3_001",
+      "keyring__backend_select_core__hard3_001",
+      "license_expression__policy_core__hard3_001",
+      "mkdocs__plugin_config_core__hard3_001",
+      "multidict__multidict_mutation_core__hard3_001",
+      "parsel__selector_namespace_core__hard3_001",
+      "poetry_core__dependency_groups_core__hard3_001",
+      "pygments__lexer_core__001",
+      "pytest__marker_registry_core__hard3_001",
+      "python_decouple__config_repository_core__001",
+      "requests_cache__cache_key_core__hard3_001",
+      "scrapy__item_loader_core__hard3_001",
+      "starlette__route_matching_core__hard3_001",
+      "yamale__schema_validate_core__hard3_001"
+    ]
+  },
+  "frozen_gate_audit": {
+    "delivered_artifacts": 829,
+    "independent_failures": {
+      "build_pass": 30,
+      "public_pass": 244,
+      "hidden_pass": 296,
+      "isolation_pass": 39
+    },
+    "isolation_only_after_other_gates": 4,
+    "first_failure_counts": {
+      "hidden_failure": 89,
+      "public_failure": 214,
+      "functional_pass": 492,
+      "isolation_failure": 4,
+      "missing_submission": 71,
+      "build_failure": 30
+    }
+  }
+}

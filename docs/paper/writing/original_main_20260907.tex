@@ -1,0 +1,1495 @@
+%% =====================================================================
+%% FeatureLiftBench -- full paper draft
+%% ACM acmart / anonymous review version
+%%
+%% IMPORTANT:
+%%   1) Keep anonymous mode for double-anonymous review.
+%%   2) Replace every \draftnote{...} before submission.
+%%   3) Headline Python-150 results are populated from the frozen final analysis.
+%% =====================================================================
+
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
+
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage{xspace}
+
+\newcommand{\flb}{\textsc{FeatureLiftBench}\xspace}
+\newcommand{\rres}{\textsc{RRES}\xspace}
+\newcommand{\mainprotocol}{\textsc{Main}\xspace}
+\newcommand{\validatoragent}{\textsc{Validator-Agent}\xspace}
+\newcommand{\draftnote}[1]{\textcolor{red}{[TODO: #1]}}
+
+
+%% =====================================================================
+%% FROZEN EXPERIMENTAL RECORD -- Python-150 freeze v2 (2026-09-04/05)
+%% =====================================================================
+%% SOURCE OF TRUTH FOR ALL NUMBERS BELOW:
+%%   reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv
+%% REPRODUCTION:
+%%   .venv/bin/python reports/paper_analysis/python150_paper_analysis_final/build.py
+%% ACTIVE FREEZE ID:
+%%   6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419
+%% PROTOCOL:
+%%   OpenHands Official Main; one attempt/task; 120 steps; 128k context;
+%%   Full-Repository / No-Hint; timeout 3600s; empty submission = failure;
+%%   Functional = Build AND Public AND Hidden AND Isolation; run.status is NOT score.
+%% RELEASE / HEADLINE SPLITS:
+%%   Released Python suite: 200 tasks / 176 repos.
+%%   Headline frozen Python-150: 150 tasks / 127 repos.
+%%   Core-100 + hard3-50 are the in-suite construction split.
+%%   Official additional 50-task release split is appendix-only and is NOT the
+%%   paper's main difficulty claim.
+%% MODELS (headline Python-150):
+%%   Pro   = DeepSeek V4 Pro
+%%   Flash = DeepSeek V4 Flash
+%%   Luna  = GPT-5.6 Luna (OpenLux)
+%%   GLM   = GLM-5.3-Flash
+%%   Qwen  = Qwen3.6-35B
+%%   OSS   = GPT-OSS 120B
+%%
+%% MAIN FUNCTIONAL PASS TABLE:
+%%   Pro   115/150 = 76.7%, Wilson 69.3--82.7%; Core 94/100; hard3 21/50; empty 0
+%%   Flash 108/150 = 72.0%, Wilson 64.3--78.6%; Core 90/100; hard3 18/50; empty 0
+%%   Luna  102/150 = 68.0%, Wilson 60.2--74.9%; Core 82/100; hard3 20/50; empty 6
+%%   GLM    68/150 = 45.3%, Wilson 37.6--53.3%; Core 62/100; hard3  6/50; empty 38
+%%   Qwen   63/150 = 42.0%, Wilson 34.4--50.0%; Core 55/100; hard3  8/50; empty 25
+%%   OSS    36/150 = 24.0%, Wilson 17.9--31.4%; Core 25/100; hard3 11/50; empty 2
+%%   Unsolved by all six = 28/150; of these, hard3 = 22.
+%%
+%% EXACT McNEMAR (two-sided exact binomial):
+%%   Pro vs Flash: Pro-only 10, Flash-only 3, p=0.09229  [DO NOT claim significant]
+%%   Pro vs Luna : Pro-only 18, Luna-only  5, p=0.01062
+%%   GLM vs Qwen : GLM-only 27, Qwen-only 22, p=0.5682   [DO NOT claim GLM > Qwen]
+%%
+%% MUTUALLY EXCLUSIVE FIRST OUTCOME [Pass, Missing, Build, Public, Hidden, Isolation]:
+%%   Pro   [115, 0,  0, 25, 10, 0]
+%%   Flash [108, 0,  0, 26, 15, 1]
+%%   Luna  [102, 6,  3, 27, 12, 0]
+%%   GLM   [ 68,38,  3, 31,  8, 2]
+%%   Qwen  [ 63,25,  6, 35, 21, 0]
+%%   OSS   [ 36, 2, 18, 70, 23, 1]
+%%
+%% NON-EXCLUSIVE GATES ON DELIVERED PACKAGES
+%% [has_package, build_fail, public_fail, hidden_fail, isolation_fail,
+%%  isolation_given_build, isolation_residual]:
+%%   Pro   [150, 0,25, 29, 0,0,0]
+%%   Flash [150, 0,26, 36, 1,1,1]
+%%   Luna  [144, 3,30, 35, 3,0,0]
+%%   GLM   [112, 3,34, 38, 5,2,2]
+%%   Qwen  [125, 6,41, 58, 8,2,0]
+%%   OSS   [148,18,88,100,22,4,1]
+%%   Raw Isolation failures total = 39; binding Isolation residual total = 4.
+%%   Safe claim: Independence is rarely the binding constraint; preserving
+%%   complete behavior is the dominant residual challenge.
+%%
+%% EMPIRICAL SOLVE-FREQUENCY SPECTRUM [Core, hard3, total]:
+%%   0/6 [ 6,22,28]
+%%   1/6 [ 0, 7, 7]
+%%   2/6 [ 4, 5, 9]
+%%   3/6 [17, 5,22]
+%%   4/6 [31, 5,36]
+%%   5/6 [27, 4,31]
+%%   6/6 [15, 2,17]
+%%
+%% LIFT TYPE x SPLIT COUNTS:
+%%   Core-100: Direct 53, Adapted 44, Composite 3
+%%   hard3-50: Direct 3, Adapted 32, Composite 15
+%%   Therefore raw Direct>Adapted>Composite is confounded.
+%% LOGISTIC: passed ~ model + hard3 + lift_type, cluster SE by task_id
+%%   all6: hard3 OR=0.149, p=1.073e-07; Composite OR=0.655, p=0.4858
+%%   strong3: hard3 OR=0.092, p=1.945e-07; Composite OR=0.654, p=0.5535
+%%   five-no-GLM: hard3 OR=0.151, p=1.456e-06; Composite OR=0.731, p=0.6236
+%%   Safe claim: hard3 is the robust difficulty axis; lift type is descriptive only.
+%%
+%% PASS-CONDITIONED COMPACTNESS (UNPAIRED; descriptive survivor sets only):
+%%   Pro   n=115, median RRES=0.993, median copy=0.957
+%%   Flash n=108, median RRES=0.998, median copy=0.968
+%%   Luna  n=102, median RRES=0.815, median copy=0.164
+%%   GLM   n= 68, median RRES=1.013, median copy=0.947
+%%   Qwen  n= 63, median RRES=0.975, median copy=0.757
+%%   OSS   n= 36, median RRES=0.983, median copy=0.180
+%% PAIRED COMPACTNESS (same-task common passes):
+%%   Pro vs Luna: n=97; median copy 0.966 vs 0.191; Pro>Luna 76,
+%%                Luna>Pro 18, ties 3; Wilcoxon p=1.18e-13;
+%%                matched-pairs rank-biserial r=0.881;
+%%                median RRES 0.993 vs 0.697.
+%%   Flash vs Luna: n=92; median copy 0.970 vs 0.204; Flash>Luna 75,
+%%                  Luna>Flash 14, ties 3; Wilcoxon p=4.24e-13;
+%%                  matched-pairs rank-biserial r=0.885;
+%%                  median RRES 0.999 vs 0.713.
+%%   Safe claim: comparable functional success can conceal systematically different
+%%   extraction strategies. DO NOT claim lower copying makes Luna globally "better".
+%%
+%% SEMANTIC L1 (AI-assisted assistant-first-pass; NOT human gold):
+%%   Valid Pro+Flash artifact-failure rows n=63 (Pro 28, Flash 35), after task-defect
+%%   rows are excluded from this semantic denominator.
+%%   behavior_drift             54 = Pro 26 + Flash 28
+%%   contract_api_completion     7 = Pro  2 + Flash  5
+%%   packaging_modularization    2 = Pro  0 + Flash  2
+%%   closure-class total        61/63 (drift + API completion)
+%%   localization label = 0 in this L1 slice; DO NOT generalize to "localization solved".
+%%
+%% PROCESS / TOKEN SECONDARY DIAGNOSTICS:
+%%   Empty submissions: Pro 0, Flash 0, Luna 6, GLM 38, Qwen 25, OSS 2.
+%%   Qwen empties are tool-validation/security events; process != semantic failure.
+%%   Token accounting differs by provider; DO NOT rank all six by token use.
+%%   Comparable incremental accounting:
+%%     Pro overall median=88,020; P90=225,314; steps median=41.5; P90=80.1
+%%     Flash overall median=123,618; P90=269,526; steps median=63.0; P90=116.2
+%%     Pro Core vs hard3 median tokens = 81,509 vs 118,318 (p=9.72e-06)
+%%     Flash Core vs hard3 median tokens = 108,258 vs 202,895
+%%   Safe secondary claim: hard3 elicits more interaction from Pro/Flash while pass
+%%   rates still fall sharply; additional interaction alone does not remove hard-tail gap.
+%%
+%% CRITICAL NON-CLAIMS:
+%%   - DO NOT report Qwen as 63/125 or GLM as 68/112; empty submissions are failures.
+%%   - DO NOT claim Pro significantly outperforms Flash (p=0.09229).
+%%   - DO NOT claim GLM significantly outperforms Qwen (p=0.5682).
+%%   - DO NOT claim Direct>Adapted>Composite as an independent difficulty finding.
+%%   - DO NOT infer contract closure from Hidden failure alone.
+%%   - DO NOT treat semantic L1 as human-gold annotation.
+%%   - DO NOT mix official extra 50-task release split into headline Python-150 claims.
+%% =====================================================================
+
+%% Central macros for headline numbers used repeatedly in prose.
+\newcommand{\HeadlineTasks}{150\xspace}
+\newcommand{\HeadlineRepos}{127\xspace}
+\newcommand{\ReleaseTasks}{200\xspace}
+\newcommand{\ReleaseRepos}{176\xspace}
+\newcommand{\BestPassRate}{76.7\%\xspace}
+\newcommand{\WorstPassRate}{24.0\%\xspace}
+\newcommand{\AllUnsolved}{28\xspace}
+\newcommand{\AllUnsolvedHard}{22\xspace}
+\newcommand{\IsolationResidualN}{4\xspace}
+\newcommand{\SemanticLNN}{63\xspace}
+\newcommand{\ClosureLNN}{61\xspace}
+\newcommand{\ProLunaCommonN}{97\xspace}
+\newcommand{\ProLunaCopyPro}{0.966\xspace}
+\newcommand{\ProLunaCopyLuna}{0.191\xspace}
+\newcommand{\ProLunaWilcoxon}{1.18\times10^{-13}}
+\newcommand{\ProLunaRBC}{0.881\xspace}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape\color{gray},
+  breaklines=true,
+  frame=single,
+}
+
+%% Conference metadata: keep or replace according to the actual target venue.
+\setcopyright{acmlicensed}
+\copyrightyear{2026}
+\acmYear{2026}
+\acmConference[FSE '26]{ACM International Conference on the Foundations of Software Engineering}{July 5--9, 2026}{Montreal, Canada}
+%% \acmSubmissionID{...}
+
+\begin{document}
+
+\title{FeatureLiftBench: Benchmarking Behavior-Preserving Feature Lifting in Repository-Level Code Agents}
+
+\author{Anonymous Author(s)}
+
+\begin{abstract}
+Extracting an existing capability from a mature software repository is different
+from repairing that repository in place or implementing a new feature from a
+standalone specification. An agent must identify relevant implementation evidence,
+recover the APIs, dependencies, state, resources, and edge semantics required for
+behavioral completeness, and reconstruct the capability behind a new package
+boundary without retaining a runtime dependency on the source project. We
+introduce \flb, a benchmark for repository-level, behavior-preserving feature
+lifting. The released Python suite contains \ReleaseTasks tasks from \ReleaseRepos pinned repositories;
+our headline study uses a frozen \HeadlineTasks-task split under a Full-Repository / No-Hint
+protocol. Agents receive the complete repository and a public behavioral contract,
+but no source-location hints, benchmark tests, protected evaluator, or reference
+implementation. A submission passes only if it builds, satisfies Public and Hidden
+behavior derived from the same contract, and remains functional after access to
+the source repository is removed. Across six OpenHands model--harness
+configurations, Functional Pass@1 ranges from \WorstPassRate to \BestPassRate, and the strongest
+configuration still fails 35 of 150 tasks. Failure analysis shows that independence
+is rarely the final binding constraint: only \IsolationResidualN delivered artifacts across the
+full matrix pass Build, Public, and Hidden but fail Isolation. On the two strongest
+backends, an AI-assisted close-read of artifact failures is dominated by incomplete
+recovery of required observable behavior, which we characterize as a
+\emph{contract-closure gap}. Functional success also hides sharply different
+extraction strategies: on \ProLunaCommonN tasks passed by both DeepSeek V4 Pro and GPT-5.6 Luna,
+median copied-code fraction is \ProLunaCopyPro versus \ProLunaCopyLuna (paired Wilcoxon
+$p=\ProLunaWilcoxon$). These results show that feature lifting requires evaluating
+not only whether an agent produces a correct artifact, but also where behavioral
+closure fails and how the successful artifact is constructed.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>10011007.10011074.10011099.10011102</concept_id>
+  <concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>10011007.10011074.10011111.10011113</concept_id>
+  <concept_desc>Software and its engineering~Software verification and validation</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+\ccsdesc[300]{Software and its engineering~Software verification and validation}
+
+\keywords{code agents, repository-level software engineering, benchmark, feature extraction, program modularization, behavioral validation}
+
+\maketitle
+
+%% =====================================================================
+\section{Introduction}
+%% =====================================================================
+
+Software maintenance frequently requires engineers to extract an existing
+capability from a larger system. A parser may need to become a reusable library,
+a configuration resolver may need to move into another service, or a plugin
+registry may need to be separated from the framework that originally hosted it.
+Such work appears in modernization, dependency reduction, service decomposition,
+legacy migration, and software reuse. Although the desired capability already
+exists, extraction is not a mechanical copy operation. Its behavior may depend
+on helper functions, exception hierarchies, stateful registries, packaged
+resources, configuration defaults, and third-party libraries distributed across
+the repository. Copying the most obvious implementation region can therefore
+produce an artifact that succeeds on a happy path while silently changing edge
+semantics or retaining hidden dependencies on the source project.
+
+Repository-level code agents appear well suited to this setting. They can search
+large workspaces, inspect call sites and tests, edit multiple files, execute
+commands, and package new artifacts. Yet common evaluation paradigms ask
+different questions. Issue-resolution benchmarks evaluate whether an agent can
+repair a repository until its tests pass~\cite{jimenez2024swebench}; code-generation
+benchmarks evaluate synthesis from a specification~\cite{chen2021codex}; and
+feature-location research evaluates whether relevant implementation regions can
+be found~\cite{dit2013featurelocation}. None of these settings directly asks
+whether an agent can recover an existing capability from an entangled repository,
+preserve its declared behavior, and make the result execute independently of the
+source project.
+
+We call this capability \emph{repository-level behavior-preserving feature
+lifting}. Feature lifting combines three obligations:
+\begin{enumerate}
+  \item \textbf{Locate:} identify repository evidence relevant to the requested
+        capability;
+  \item \textbf{Close:} recover the APIs, helpers, dependencies, state,
+        resources, and edge semantics needed for behavioral completeness; and
+  \item \textbf{Isolate:} package the recovered capability so that it executes
+        independently of the source repository.
+\end{enumerate}
+This decomposition is an explanatory model, not a causal factorization. A failed
+artifact does not by itself reveal which obligation failed; semantic attribution
+requires evaluator, artifact, and when available trajectory evidence.
+
+We introduce \flb, a benchmark for this setting. Each task provides a complete
+repository pinned to an immutable source revision together with a public
+behavioral contract. Under the Full-Repository / No-Hint protocol, the agent may
+inspect the entire repository but receives no source-location hints, benchmark
+tests, protected evaluator, or reference implementation. It must produce a
+standalone \texttt{featurelifted} package. The evaluator checks installation and
+imports, primary Public behavior, deeper Hidden behavior derived from the same
+public contract, and independence after the original source repository becomes
+unavailable.
+
+A benchmark of this kind is only useful if its evaluation obligations are
+traceable to information legitimately available to the agent. We therefore pair
+construction with a provenance-aware validation pipeline. For each task, Public
+and Hidden behavioral cases are linked to public contract clauses and source
+repository evidence. An LLM-assisted \validatoragent scales semantic inspection
+by identifying missing provenance, ambiguous requirements, underdetermined
+behavior, and evaluator inconsistencies. The agent is not the correctness oracle:
+final task retention additionally requires deterministic execution, feasible
+reference behavior, source isolation, freeze checks, and targeted human review.
+
+The released Python suite contains \ReleaseTasks tasks from \ReleaseRepos pinned repositories. Our
+headline empirical study uses a frozen Python-150 split from \HeadlineRepos repositories;
+the additional 50-task release split is reported separately in the appendix.
+Tasks span Direct, Adapted, and Composite lifts across parsing, configuration,
+validation, resource handling, registries, protocols, algorithms, and workflow
+behavior. Functional correctness and extraction compactness are evaluated
+separately.
+\emph{Functional Pass@1} requires all correctness gates to pass, whereas
+\emph{Reference-Relative Extraction Size} (\rres) describes the footprint of
+functionally passing artifacts relative to an evaluator-side feasible reference.
+This separation prevents broad vendoring and incomplete minimal implementations
+from being conflated in a single score.
+
+Our empirical study asks four research questions:
+\begin{description}
+  \item[RQ1 --- Capability.] How well can current coding agents perform
+        repository-level feature lifting under a fixed model--harness protocol?
+  \item[RQ2 --- Failure.] At which evaluation gates do agents fail, and which
+        constraints remain binding for strong systems?
+  \item[RQ3 --- Difficulty.] How is empirical task difficulty distributed, and
+        which benchmark construction factors remain associated with success after
+        controlling for model backend?
+  \item[RQ4 --- Extraction quality.] Among functionally successful artifacts, how
+        do extraction footprint and copied-code behavior differ across agents on
+        the same tasks?
+\end{description}
+
+The results reveal a consistent picture. Current systems span a wide capability
+range (24.0\%--76.7\% Functional Pass@1) without saturating the benchmark. Strong
+backends almost never fail to emit or build a package; their remaining errors are
+concentrated at behavioral evaluation. Across the full six-model matrix, only four
+delivered artifacts pass Build, Public, and Hidden but fail Isolation, indicating
+that independence is rarely the final binding constraint. A close-read of the
+Pro+Flash artifact-failure slice further suggests that the residual strong-model
+gap is dominated by incomplete recovery of the required behavioral contract.
+Finally, functional success alone does not characterize extraction behavior:
+DeepSeek V4 Pro and GPT-5.6 Luna have much closer pass rates than their radically
+different copied-code fractions on their common passing tasks.
+
+This paper makes three contributions:
+\begin{itemize}
+  \item \textbf{Task and benchmark.} We formalize repository-level,
+        behavior-preserving feature lifting and construct \flb, a 200-task Python
+        benchmark from 176 pinned real-world repositories with standalone
+        artifact requirements and deterministic evaluation.
+  \item \textbf{Construction and validation methodology.} We develop a
+        provenance-aware pipeline that connects source evidence, public contracts,
+        protected evaluation cases, feasible references, and isolation checks.
+        \validatoragent provides scalable semantic auditing while deterministic
+        checks and targeted human review safeguard final task validity.
+  \item \textbf{Empirical findings.} We benchmark six model backends under a fixed
+        OpenHands execution protocol and characterize capability, binding failure
+        constraints, structured task difficulty, contract-closure symptoms, and
+        pass-conditioned extraction behavior.
+\end{itemize}
+
+%% =====================================================================
+\section{Related Work}
+\label{sec:related-work}
+%% =====================================================================
+
+\subsection{Repository-Level Software-Engineering Benchmarks}
+
+Executable software-engineering benchmarks have established the importance of
+real repositories, tool use, sandboxed execution, and test-based verification.
+SWE-bench asks models or agents to resolve real GitHub issues in existing
+repositories~\cite{jimenez2024swebench}. SWE-agent demonstrates that the agent--computer
+interface itself can materially affect repository-level performance~\cite{yang2024sweagent}.
+Terminal-oriented benchmarks extend executable evaluation to broader command-line
+workflows~\cite{merrill2026terminalbench}. These benchmarks typically retain the
+original repository as the execution target: success is defined by modifying or
+repairing that workspace. \flb instead treats the source repository as evidence
+from which a new artifact must be reconstructed. Passing requires that the lifted
+package continue to work after the source project is no longer available.
+
+Recent work also emphasizes that executable-agent scores depend on the combined
+model--harness configuration rather than on the base model alone. We adopt this
+reporting discipline by fixing the OpenHands runtime, prompt, context policy, and
+budget in the official \mainprotocol leaderboard and varying only the model
+backend. Runtime comparisons, if reported, remain separate from model scores.
+\draftnote{Complete the related-work review with the final set of recent
+repository-level agent benchmarks and primary-source citations.}
+
+\subsection{Feature Development and Repository-Level Generation}
+
+Repository-level feature development asks an agent to add requested behavior to
+an existing codebase. It therefore shares with feature lifting the need to
+understand distributed repository context and to produce multi-file software
+changes. The output boundary is nevertheless different. Feature-development
+systems typically extend the original project, whereas feature lifting must
+recover behavior that already exists and reconstruct it behind a new independent
+package boundary. The source repository may guide the implementation, but it is
+not part of the final runtime environment. This distinction makes dependency,
+resource, and package-boundary closure part of correctness rather than merely
+implementation style.
+\draftnote{Add direct comparison and citations for the most relevant recent
+feature-development / repository-generation benchmarks.}
+
+\subsection{Code Generation, Repository Understanding, and Localization}
+
+Code-generation benchmarks evaluate whether a model can synthesize a function or
+program from natural-language or executable specifications~\cite{chen2021codex}.
+Feature-location research instead studies how developers and tools identify files,
+entities, or regions relevant to a concern; Dit et~al. survey classical feature
+location and its evidence sources~\cite{dit2013featurelocation}. Feature lifting
+requires both inference and artifact construction but is reducible to neither.
+Locating the correct implementation is insufficient when transitive behavior,
+resources, or public APIs are omitted. Conversely, a behaviorally equivalent
+rewrite may succeed even when it copies little upstream code.
+
+\subsection{Program Slicing, Modularization, and Software Extraction}
+
+Feature lifting is related to program slicing~\cite{weiser1984slicing},
+multi-dimensional separation of concerns~\cite{tarr1999degrees}, refactoring,
+dependency analysis, and library extraction. Classical slicing methods typically
+assume a program representation and an explicit slicing criterion. \flb instead
+evaluates an autonomous agent given a natural-language behavioral contract and a
+complete repository, and grades the delivered independent artifact by observable
+behavior. The benchmark does not claim to compute a minimal semantic slice. Its
+frozen references are feasible comparison points, and \rres is a compactness proxy
+rather than an optimality certificate.
+
+\begin{table*}[t]
+  \caption{Conceptual positioning of FeatureLiftBench relative to common
+  repository-level evaluation settings.}
+  \label{tab:positioning}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.20\textwidth}p{0.25\textwidth}p{0.25\textwidth}X@{}}
+    \toprule
+    \textbf{Setting} & \textbf{Input} & \textbf{Output} & \textbf{Primary objective} \\
+    \midrule
+    Issue repair & Repository + issue / failing behavior & Modified source repository & Repair existing project \\
+    Feature addition & Repository + new requirement & Modified source repository & Add new behavior \\
+    Code generation & Specification & New implementation & Synthesize requested behavior \\
+    Localization & Repository + query / concern & Files, symbols, or regions & Find relevant implementation \\
+    \textbf{Feature lifting} & \textbf{Repository + public contract} & \textbf{Independent artifact} & \textbf{Preserve and isolate existing capability} \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+%% =====================================================================
+\section{The FeatureLiftBench Benchmark}
+\label{sec:benchmark}
+%% =====================================================================
+
+\subsection{Task Definition}
+\label{sec:task-definition}
+
+A task consists of a pinned source repository $R$, a public behavioral contract
+$S$, an initial workspace $W$, and a protected evaluator $J$. Given
+$(R,S,W)$, a model backend $M$ embedded in a fixed agent harness $H$ produces a
+package $P$:
+\begin{equation}
+  P = \operatorname{Run}(M,H,R,S,W).
+  \label{eq:run}
+\end{equation}
+The official protocol requires the delivered artifact to live under the
+submission package boundary and to execute without importing or otherwise
+accessing the source project at runtime.
+
+The evaluator assigns gate-level outcomes:
+\begin{equation}
+  \operatorname{Functional}(P)
+  = B(P) \land P_{\mathrm{pub}}(P)
+    \land H_{\mathrm{hid}}(P) \land I(P),
+  \label{eq:functional}
+\end{equation}
+where $B$ checks build and importability, $P_{\mathrm{pub}}$ checks primary
+observable behavior, $H_{\mathrm{hid}}$ checks deeper combinations and boundary
+behavior from the same published contract, and $I$ checks independence from the
+source repository. A valid Hidden check must map to a requirement that is
+observable from the public contract; an unmapped private requirement is a task
+defect rather than a model failure.
+
+The task deliberately permits multiple implementation strategies. Extraction,
+adaptation, and behaviorally equivalent reimplementation are legal. The benchmark
+does not reward reproducing a particular source slice. Instead, it evaluates
+whether the delivered artifact satisfies the public contract after the source
+project is removed.
+
+\begin{figure}[t]
+  \centering
+  \fbox{%
+    \parbox{0.92\linewidth}{\centering
+      Pinned repository + public contract\\[2pt]
+      $\downarrow$\\[2pt]
+      Full-Repository / No-Hint agent execution\\[2pt]
+      $\downarrow$\\[2pt]
+      Standalone \texttt{featurelifted} package + trajectory\\[2pt]
+      $\downarrow$\\[2pt]
+      Build $\rightarrow$ Public $\rightarrow$ Hidden $\rightarrow$ Isolation\\[2pt]
+      $\downarrow$\\[2pt]
+      Functional Pass + pass-conditioned compactness}}
+  \caption{FeatureLiftBench evaluation pipeline. Protected tests, evaluator code,
+  and evaluator-side references are never exposed during agent execution.}
+  \Description{A pipeline from a pinned repository and public contract through
+  agent execution and a standalone package to build, public, hidden, and isolation
+  evaluation, followed by functional and compactness reporting.}
+  \label{fig:evaluation-pipeline}
+\end{figure}
+
+\subsection{Benchmark Construction Pipeline}
+\label{sec:construction}
+
+The benchmark is constructed as a sequence of explicit transformations and
+validation gates rather than by asking an LLM to invent a task end to end.
+Programmatic checks establish repository identity and executable behavior; LLMs
+assist with semantic candidate discovery, contract drafting, and validation; and
+human review is reserved for ambiguous or high-risk cases. Figure~\ref{fig:construction-pipeline}
+shows the high-level process.
+
+\begin{figure}[t]
+  \centering
+  \fbox{%
+    \parbox{0.92\linewidth}{\centering
+      Real-world repository selection\\
+      $\downarrow$\\
+      Feature candidate discovery\\
+      $\downarrow$\\
+      Feature boundary and required-API construction\\
+      $\downarrow$\\
+      Public behavioral contract\\
+      $\downarrow$\\
+      Feasible reference + Public/Hidden evaluator\\
+      $\downarrow$\\
+      \validatoragent provenance and ambiguity audit\\
+      $\downarrow$\\
+      Deterministic build, behavior, isolation, and freeze validation\\
+      $\downarrow$\\
+      Final benchmark instance}}
+  \caption{High-level benchmark construction and validation pipeline. LLM
+  assistance is used for semantic work, but executable checks and provenance
+  constraints determine benchmark eligibility.}
+  \Description{A benchmark construction pipeline from repositories through feature
+  discovery, contracts, references and tests, validator-agent auditing, and final
+  deterministic validation.}
+  \label{fig:construction-pipeline}
+\end{figure}
+
+\paragraph{Repository selection and freezing.}
+Candidate repositories are acquired at fixed revisions. Each retained task records
+its source identity, revision, and digest in a canonical registry. The paper suite
+is evaluated only against frozen materializations identified by the active suite
+manifest. Source mismatch is treated as an infrastructure or eligibility defect,
+not a model outcome.
+
+\paragraph{Feature candidate discovery.}
+Candidate capabilities are selected when they correspond to a plausible reuse or
+modularization target and expose behavior that can be evaluated independently.
+Candidate discovery can use repository structure, symbols, documentation, tests,
+resources, and LLM-assisted semantic inspection. A candidate is rejected when the
+target is trivial, inseparable from the complete application boundary, dependent
+on unavailable infrastructure, or not deterministically testable offline.
+
+\paragraph{Boundary and contract construction.}
+For each retained candidate, construction records the required package surface,
+behavioral obligations, allowed dependencies, and any preservation requirements.
+The public contract describes observable behavior rather than revealing a source
+location or a reference extraction. Contracts are designed to support multiple
+behaviorally valid implementations while making evaluator obligations recoverable
+from the information given to the agent.
+
+\paragraph{Reference and evaluator construction.}
+Each task includes an evaluator-side feasible implementation or extraction used to
+establish solvability and to provide a compactness reference. Public cases cover
+primary contract behavior; Hidden cases stress deeper combinations, boundary
+conditions, exception behavior, state transitions, and preservation requirements
+from the same contract. References and evaluators are never exposed during model
+execution.
+
+\paragraph{Deterministic validation.}
+A candidate enters the suite only if the reference installs and passes all
+behavioral and isolation checks in the frozen offline environment. Integrity
+checks reject tasks that can receive credit through forbidden source imports,
+protected-test access, path leakage, undeclared dependency channels, or evaluator
+bypass. \draftnote{Insert the exact automated construction-gate counts from the
+frozen benchmark manifest.}
+
+\begin{table*}[t]
+  \caption{Roles of automation, LLM assistance, and human review in benchmark
+  construction. The exact implementation details should match the released
+  construction pipeline.}
+  \label{tab:construction-roles}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.27\textwidth}p{0.18\textwidth}p{0.18\textwidth}X@{}}
+    \toprule
+    \textbf{Stage} & \textbf{Programmatic} & \textbf{LLM-assisted} & \textbf{Human role} \\
+    \midrule
+    Repository freeze & Yes & No & Review acquisition exceptions \\
+    Candidate discovery & Partial & Yes & Review uncertain candidates \\
+    Contract drafting & Partial & Yes & Resolve ambiguity / scope \\
+    Evaluator construction & Yes & Optional & Review high-risk cases \\
+    Reference validation & Yes & No & Inspect failures \\
+    Contract provenance audit & Yes & Yes (\validatoragent) & Adjudicate flagged cases \\
+    Isolation and integrity & Yes & No & Inspect exceptional failures \\
+    Final eligibility & Yes & Supporting & Targeted adjudication \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+\subsection{Contract Provenance and Validator-Agent}
+\label{sec:validator}
+
+Construct validity is especially important for Hidden evaluation. If a protected
+test requires behavior that is neither stated nor reasonably implied by the public
+contract, the benchmark measures access to private information rather than feature
+lifting. We therefore represent validation as a provenance relation among protected
+evaluation obligations, contract clauses, and source evidence.
+
+For a Hidden behavioral case $h_i$, the validator seeks a mapping
+\begin{equation}
+  h_i \rightarrow s_j \rightarrow e_k,
+  \label{eq:provenance}
+\end{equation}
+where $s_j$ is the public contract clause that licenses the check and $e_k$ is
+repository evidence establishing that the behavior belongs to the source
+capability. The source-evidence link does not require the agent to copy the source
+implementation; it establishes that the benchmark is preserving an existing
+feature rather than inventing a new private requirement.
+
+\validatoragent receives the task's pinned repository, public contract, required
+API metadata, and evaluator-side behavioral descriptions available to the
+validation pipeline. It produces structured audit records rather than a binary
+correctness verdict. The audit covers at least the following dimensions:
+\begin{enumerate}
+  \item \textbf{Requirement provenance:} whether each protected behavioral
+        obligation maps to an explicit or defensible public contract clause;
+  \item \textbf{Source provenance:} whether the public obligation corresponds to
+        behavior supported by the pinned source repository;
+  \item \textbf{Ambiguity:} whether multiple materially different interpretations
+        of the public requirement would be reasonable;
+  \item \textbf{Underdetermination:} whether repository evidence and the public
+        contract are insufficient to determine the protected expectation;
+  \item \textbf{Evaluator consistency:} whether Public, Hidden, reference, and
+        isolation requirements conflict or imply incompatible behavior; and
+  \item \textbf{Boundary integrity:} whether a task can pass through protected
+        information access or forbidden source dependencies.
+\end{enumerate}
+
+The validator is deliberately not the final benchmark oracle. LLM judgments can
+be unstable and can share model-family biases with evaluated systems. Validator
+outputs therefore serve as scalable evidence collection and triage. Flagged cases
+are resolved by deterministic execution and, when semantic adjudication is still
+required, targeted human review. We report validator provenance, unknown or
+unresolved rates, and the exact retention policy rather than presenting AI-assisted
+labels as independent human gold.
+
+\draftnote{Before submission, replace this paragraph with the exact frozen
+validator protocol: model(s), prompt/version hash, number of independent passes,
+label schema, automatic rejection rules, human-review rule, and aggregate
+Explicit/Recoverable/Ambiguous/Underdetermined counts.}
+
+\subsection{Suite Composition and Taxonomy}
+\label{sec:suite}
+
+The released suite, Python-200$'$, contains 200 tasks from 176 pinned
+repositories (Table~\ref{tab:suite}); the frozen Python-150 split is the headline
+evaluation set. It emphasizes Python libraries, developer
+tools, and framework components. One source repository may support multiple
+distinct tasks when the requested capabilities and evaluation boundaries are
+separable.
+
+\begin{table}[t]
+  \caption{Composition of the Python-200$'$ paper suite.}
+  \label{tab:suite}
+  \centering
+  \begin{tabular}{lrrl}
+    \toprule
+    \textbf{Split} & \textbf{Tasks} & \textbf{Repositories} & \textbf{Role} \\
+    \midrule
+    Frozen Python-150 & 150 & 127 & Headline evaluation \\
+    Additional-50 & 50 & 50 & Appendix/release extension \\
+    \midrule
+    Python-200$'$ & 200 & 176 & Released suite \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Tasks are organized along three descriptive axes. \emph{Feature family} records
+the requested behavior, including parsing, serialization, configuration,
+validation, resource handling, registry behavior, caching, protocols, algorithms,
+and workflows. \emph{Primary entanglement} records the dominant mechanism that
+makes independent extraction difficult: data-model, parser-state, framework,
+configuration/environment, resource, legacy, or third-party entanglement.
+\emph{Lift type} characterizes the relationship between the requested artifact
+and the source implementation:
+\begin{itemize}
+  \item \textbf{Direct:} the target can largely be transferred while preserving
+        its original structure;
+  \item \textbf{Adapted:} the target requires boundary adaptation, dependency
+        replacement, or interface reshaping; and
+  \item \textbf{Composite:} the target behavior must be reconstructed from
+        multiple source regions or interacting abstractions.
+\end{itemize}
+These labels support sampling and analysis; they are not shown to the agent and do
+not affect Functional Pass.
+
+The combined suite contains 68 Direct, 100 Adapted, and 32 Composite tasks. On
+the headline Python-150 split, lift type is treated as a descriptive structural
+taxonomy rather than an independent difficulty axis: Direct and Composite are
+strongly confounded with the in-suite construction split, and the apparent raw
+Direct--Adapted--Composite gradient disappears after controlling for that split.
+The additional 50-task release extension broadens repository and behavior
+coverage but is not used as the paper's main difficulty claim. \draftnote{Verify the final taxonomy
+counts and repository count against the frozen paper manifest.}
+
+An earlier easy expansion exhibited ceiling behavior and copy-heavy solutions.
+We retain that result only as benchmark-development evidence motivating stronger
+copy resistance and task diversity; it does not contribute to the main
+Python-200$'$ leaderboard. Detailed development history is deferred to the
+appendix or artifact documentation.
+
+\subsection{Full-Repository / No-Hint Protocol}
+\label{sec:protocol}
+
+The official \mainprotocol protocol controls external task and execution
+conditions while varying the model backend. The agent receives the complete
+source tree and public behavioral contract. It may inspect repository files, run
+shell commands, write code, install only permitted dependencies available in the
+frozen environment, and execute legal self-tests. It does not receive source
+entrypoint hints, benchmark Public tests, Hidden tests, evaluator source, or the
+feasible reference.
+
+\begin{table*}[t]
+  \caption{Controlled and varying factors in the official \mainprotocol evaluation.}
+  \label{tab:factors}
+  \centering
+  \begin{tabularx}{\textwidth}{@{}p{0.34\textwidth}X@{}}
+    \toprule
+    \textbf{Factor} & \textbf{Official Main treatment} \\
+    \midrule
+    Task contract and repository snapshot & Fixed per task \\
+    Initial workspace and source registry & Fixed per task \\
+    Agent runtime & Fixed to OpenHands \mainprotocol \\
+    Prompt and tool interface & Fixed \\
+    Action/step budget and context envelope & Fixed \\
+    Evaluator and Docker image & Fixed and digest-attested \\
+    Model backend & Varied in the main matrix \\
+    Public benchmark tests & Withheld in Main \\
+    Source-location hint & Withheld in Main \\
+    Evaluator, reference, and Hidden tests & Never exposed \\
+    \bottomrule
+  \end{tabularx}
+\end{table*}
+
+Each task attempt produces four evidence layers: (1) the final artifact, (2) the
+agent trajectory and process status, (3) token, step, latency, context, and
+resource statistics, and (4) deterministic evaluator outcomes. The evaluator
+result is authoritative for Functional Pass. Agent completion status is reported
+separately because a run can terminate after leaving a passing artifact or declare
+completion while its artifact still fails.
+
+\subsection{Metrics}
+\label{sec:metrics}
+
+\paragraph{Functional Pass@1.}
+A task receives one functional point only if all gates in
+Equation~\ref{eq:functional} pass. For diagnosis, functional failures receive one
+exclusive first-failure stage:
+\begin{equation}
+  \text{missing} \rightarrow \text{build} \rightarrow \text{public}
+  \rightarrow \text{hidden} \rightarrow \text{isolation}.
+\end{equation}
+Infrastructure failures and evidence-availability defects are excluded or reported
+separately according to the frozen eligibility policy.
+
+\paragraph{Reference-Relative Extraction Size.}
+For a functionally passing submission $P$ with evaluator-side feasible reference
+$P_{\mathrm{ref}}$, we report
+\begin{equation}
+  \operatorname{RRES}(P)
+  = \frac{\operatorname{normalized\_size}(P)}
+         {\operatorname{normalized\_size}(P_{\mathrm{ref}})}.
+  \label{eq:rres}
+\end{equation}
+\rres is accompanied by copied-code, file-count, and dependency-footprint
+statistics where available. It is reported only on functional passes. Cross-model
+compactness comparisons additionally report same-task subsets because survivor
+sets can differ substantially.
+
+\paragraph{Process diagnostics.}
+Tokens, steps, latency, completion status, and empty submissions are reported as
+secondary diagnostics rather than correctness metrics. Token accounting differs
+across providers, so cross-provider token rankings are avoided; same-accounting
+comparisons are reported only where they are meaningful.
+
+%% =====================================================================
+\section{Experimental Setup}
+\label{sec:experimental-setup}
+
+\subsection{Models and Agent Runtime}
+
+The headline study evaluates six model backends on the same frozen Python-150 task
+IDs using OpenHands Official Main. The task contract, repository snapshot, initial
+workspace, prompt, tool interface, context envelope, step budget, timeout, agent
+image, evaluator image, and scoring rule are fixed; only the model backend varies.
+Each task is attempted once. Functional Pass is determined by the final collected
+artifact and deterministic evaluator rather than by runner completion status.
+
+\begin{table}[t]
+  \caption{Model backends in the frozen Python-150 evaluation.}
+  \label{tab:models}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Backend} & \textbf{Serving / profile} \\
+    \midrule
+    DeepSeek V4 Pro & API backend \\
+    DeepSeek V4 Flash & API backend \\
+    GPT-5.6 Luna & OpenLux \\
+    GLM-5.3-Flash & API backend \\
+    Qwen3.6-35B-A3B-FP8 & self-hosted \\
+    GPT-OSS 120B & self-hosted / served backend \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Execution and Evaluation Environment}
+
+The active freeze is identified by task-manifest digest
+\texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}.
+Runs use a 120-step envelope, 128k context, Full-Repository / No-Hint prompting,
+and a 3600-second task timeout. Evaluation occurs in a Dockerized offline
+environment with digest-attested agent and evaluator images. The evaluator installs
+the collected package, applies Build, Public, Hidden, and Isolation checks, and
+records gate-level outcomes. Empty submissions count as failures. Runner
+\texttt{status} is not used as the score.
+
+\subsection{Statistical Protocol}
+
+For Functional Pass@1 we report Wilson 95\% confidence intervals. Pairwise model
+comparisons use exact McNemar tests over the same 150 task IDs. The task-difficulty
+analysis uses descriptive solve-frequency distributions and a logistic model of
+pass/fail with model backend, the in-suite \texttt{hard3} construction split, and
+lift type as predictors, with standard errors clustered by task. Pass-conditioned
+copy-fraction comparisons are restricted to same-task intersections and use paired
+Wilcoxon signed-rank tests with matched-pairs rank-biserial effect sizes. Because
+each main cell contains one attempt, the results characterize Pass@1 under this
+fixed model--harness configuration and do not estimate run-to-run stochastic
+variance.
+
+\section{Benchmark Results}
+\label{sec:results}
+
+\subsection{RQ1: Overall Feature-Lifting Capability}
+\label{sec:rq1}
+
+Table~\ref{tab:main} summarizes the overall FeatureLiftBench results
+along three complementary dimensions: functional correctness,
+extraction quality, and interaction efficiency.
+
+Functional Pass@1 varies substantially across the six evaluated
+model--harness configurations, from 24.0\% to 76.7\%.
+DeepSeek V4 Pro achieves the highest observed pass rate
+(115/150, 76.7\%), followed by DeepSeek V4 Flash
+(108/150, 72.0\%) and GPT-5.6 Luna (102/150, 68.0\%).
+Even the strongest configuration fails 35 of the 150 tasks,
+indicating that the benchmark remains far from saturated.
+
+The ranking by functional correctness does not translate directly
+into a ranking by extraction characteristics.
+Among functionally successful artifacts, Pro and Flash have median
+copy fractions of 0.957 and 0.968, respectively, whereas Luna has a
+median copy fraction of 0.164.
+The corresponding mean copy fractions are 0.777, 0.810, and 0.415.
+Similarly, the mean RRES values can be substantially larger than their
+medians---for example, Pro has mean RRES 1.781 but median RRES 0.993---
+revealing a right-tailed distribution in which a minority of successful
+artifacts are substantially larger than the feasible reference.
+
+These pass-conditioned aggregate statistics should not be interpreted
+as direct paired model comparisons because different models succeed on
+different task subsets. We therefore perform same-task paired
+compactness analyses in Section~\ref{sec:rq4}.
+
+% ============================================================
+% Main FeatureLiftBench leaderboard
+% ============================================================
+\begin{table*}[t]
+  \caption{
+    Overall results on the frozen FeatureLiftBench Python-150 suite.
+    Functional Pass@1 is computed over all 150 tasks.
+    RRES and copy fraction are computed only over functionally passing
+    artifacts. Steps and tokens are measured over all 150 runs.
+    Lower RRES and copy fraction indicate more compact and less
+    source-copy-heavy extractions, respectively, but should not be
+    interpreted as semantic superiority by themselves.
+  }
+  \label{tab:main}
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{3.6pt}
+  \resizebox{\textwidth}{!}{
+  \begin{tabular}{l
+                  c
+                  ccc
+                  ccc
+                  cc
+                  cc}
+    \toprule
+    & \multicolumn{1}{c}{\textbf{Correctness}}
+    & \multicolumn{3}{c}{\textbf{Extraction Size}}
+    & \multicolumn{3}{c}{\textbf{Source Copying}}
+    & \multicolumn{2}{c}{\textbf{Steps}}
+    & \multicolumn{2}{c}{\textbf{Tokens}} \\
+    \cmidrule(lr){2-2}
+    \cmidrule(lr){3-5}
+    \cmidrule(lr){6-8}
+    \cmidrule(lr){9-10}
+    \cmidrule(lr){11-12}
+
+    \textbf{Model}
+    & \textbf{Pass@1 $\uparrow$}
+    & \textbf{Mean RRES}
+    & \textbf{Median RRES}
+    & \textbf{IQR RRES}
+    & \textbf{Mean Copy}
+    & \textbf{Median Copy}
+    & \textbf{IQR Copy}
+    & \textbf{Median}
+    & \textbf{P90}
+    & \textbf{Median}
+    & \textbf{P90} \\
+    \midrule
+
+    DeepSeek V4 Pro
+    & \textbf{115/150 (76.7\%)}
+    & 1.781
+    & 0.993
+    & [0.769, 1.290]
+    & 0.777
+    & 0.957
+    & [0.716, 0.987]
+    & 41.5
+    & 80.1
+    & 88,020$^{\dagger}$
+    & 225,314$^{\dagger}$ \\
+
+    DeepSeek V4 Flash
+    & 108/150 (72.0\%)
+    & 1.730
+    & 0.998
+    & [0.893, 1.221]
+    & 0.810
+    & 0.968
+    & [0.839, 0.990]
+    & 63.0
+    & 116.2
+    & 123,618$^{\dagger}$
+    & 269,526$^{\dagger}$ \\
+
+    GPT-5.6 Luna
+    & 102/150 (68.0\%)
+    & 0.953
+    & 0.815
+    & [0.310, 1.002]
+    & 0.415
+    & 0.164
+    & [0.048, 0.967]
+    & 35.5
+    & 74.4
+    & -- 
+    & -- \\
+
+    GLM-5.3-Flash
+    & 68/150 (45.3\%)
+    & 2.473
+    & 1.013
+    & [0.917, 1.158]
+    & 0.843
+    & 0.947
+    & [0.811, 0.979]
+    & 85.5
+    & 127.0
+    & --
+    & -- \\
+
+    Qwen3.6-35B
+    & 63/150 (42.0\%)
+    & 1.556
+    & 0.975
+    & [0.650, 1.228]
+    & 0.645
+    & 0.757
+    & [0.326, 0.972]
+    & 41.5
+    & 106.6
+    & 1,818,620$^{\ddagger}$
+    & 5,521,030$^{\ddagger}$ \\
+
+    GPT-OSS 120B
+    & 36/150 (24.0\%)
+    & 1.176
+    & 0.983
+    & [0.292, 1.648]
+    & 0.305
+    & 0.180
+    & [0.007, 0.530]
+    & 19.0
+    & 61.1
+    & 525,960$^{\ddagger}$
+    & 1,877,320$^{\ddagger}$ \\
+
+    \bottomrule
+  \end{tabular}
+  }
+
+  \vspace{2pt}
+  \begin{minipage}{0.99\textwidth}
+    \footnotesize
+    \textit{Notes.}
+    RRES and copy statistics are conditioned on Functional Pass, with
+    $n=115,108,102,68,63,36$ for Pro, Flash, Luna, GLM, Qwen, and OSS,
+    respectively.
+    $^{\dagger}$ Pro and Flash report incremental tokens
+    (uncached prompt tokens + completion tokens).
+    $^{\ddagger}$ Qwen and GPT-OSS report provider-reported
+    \texttt{total\_tokens}.
+    Luna and GLM runs do not contain a reliable token field.
+    Token values from different accounting schemes are therefore not
+    directly comparable.
+  \end{minipage}
+\end{table*}
+
+\paragraph{Finding 1.}
+Current coding agents exhibit substantial but incomplete feature-lifting capability:
+the benchmark separates model--harness configurations over a 52.7-point range and
+is not saturated by the strongest evaluated backend.
+
+\subsection{RQ2: Where Do Feature-Lifting Agents Fail?}
+\label{sec:rq2}
+
+Table~\ref{tab:independent-gates} decomposes functional failures across
+the four evaluator gates. Unlike a first-failure analysis, these gate
+outcomes are non-mutually-exclusive: an artifact may simultaneously
+violate multiple behavioral or isolation requirements.
+
+Failures concentrate primarily in the behavioral gates.
+Across the 829 delivered artifacts, 244 (29.4\%) fail at least one
+Public check and 296 (35.7\%) fail at least one Hidden check.
+By comparison, 39 artifacts (4.7\%) fail the raw Isolation check.
+
+More importantly, most Isolation failures are not themselves the
+binding reason for functional failure. Only four artifacts across all
+six backends pass Build, Public, and Hidden while failing Isolation.
+Thus, although source independence is an explicit requirement of
+FeatureLiftBench, it is rarely the final constraint preventing a
+delivered artifact from passing.
+
+\textbf{Finding 2.}
+\emph{Feature-lifting failures are dominated by behavioral correctness
+rather than package isolation. Across 829 delivered artifacts, only
+4 (0.5\%) satisfy all behavioral gates but fail solely because of the
+Isolation requirement.}
+
+\begin{table}[t]
+  \caption{
+    Empirical task-difficulty spectrum on frozen FeatureLiftBench
+    Python-150. Difficulty is characterized by the number of the six
+    evaluated backends that solve each task, rather than by a
+    predefined task label.
+  }
+  \label{tab:difficulty-spectrum}
+  \centering
+  \small
+  \setlength{\tabcolsep}{7pt}
+
+  \begin{tabular}{crrr}
+    \toprule
+    \textbf{Solved by}
+    & \textbf{Tasks}
+    & \textbf{Share}
+    & \textbf{Cumulative $\leq k$} \\
+    \midrule
+
+    0/6 & 28 & 18.7\% & 28  (18.7\%) \\
+    1/6 &  7 &  4.7\% & 35  (23.3\%) \\
+    2/6 &  9 &  6.0\% & 44  (29.3\%) \\
+    3/6 & 22 & 14.7\% & 66  (44.0\%) \\
+    4/6 & 36 & 24.0\% & 102 (68.0\%) \\
+    5/6 & 31 & 20.7\% & 133 (88.7\%) \\
+    6/6 & 17 & 11.3\% & 150 (100.0\%) \\
+
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Finding 2.}
+Functional failures concentrate at behavioral gates. Independence is rarely the
+binding constraint after Build, Public, and Hidden behavior are satisfied.
+
+\subsection{RQ3: Empirical Task Difficulty}
+
+Task-level solve frequency reveals a broad empirical difficulty spectrum rather
+than a uniformly easy or uniformly impossible suite. Twenty-eight tasks are solved
+by none of the six backends, whereas 17 are solved by all six. The hard tail is
+strongly concentrated in the in-suite \texttt{hard3} split: 22 of the 28 all-fail
+tasks are \texttt{hard3}.
+
+\begin{table}[t]
+  \caption{Empirical solve-frequency spectrum on Python-150.}
+  \label{tab:difficulty-spectrum}
+  \centering
+  \begin{tabular}{rrrr}
+    \toprule
+    \textbf{Solved by} & \textbf{Core-100} & \textbf{hard3-50} & \textbf{Total} \\
+    \midrule
+    0/6 & 6 & 22 & 28 \\
+    1/6 & 0 & 7 & 7 \\
+    2/6 & 4 & 5 & 9 \\
+    3/6 & 17 & 5 & 22 \\
+    4/6 & 31 & 5 & 36 \\
+    5/6 & 27 & 4 & 31 \\
+    6/6 & 15 & 2 & 17 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The Core--hard3 contrast is large for every backend except GPT-OSS: Pro drops from
+94\% to 42\%, Flash from 90\% to 36\%, Luna from 82\% to 40\%, GLM from 62\%
+to 12\%, and Qwen from 55\% to 16\%. A raw analysis also appears to show a
+Direct--Adapted--Composite gradient. However, lift type is strongly confounded with
+construction split: 53/56 Direct tasks are Core, while 15/18 Composite tasks are
+\texttt{hard3}. In a logistic model controlling for backend and \texttt{hard3},
+Composite is not significantly different from Direct (OR$=0.65$, $p=0.554$),
+whereas \texttt{hard3} remains strongly associated with lower success. We therefore
+treat lift type as descriptive taxonomy rather than an independent difficulty
+finding.
+
+\paragraph{Finding 3.}
+The robust difficulty axis in Python-150 is the in-suite \texttt{hard3}
+construction split; the apparent lift-type gradient is confounded with split
+composition.
+
+\subsection{RQ4: Extraction Quality on Common Successes}
+
+Correctness and compactness are evaluated separately because each model passes a
+different subset of tasks. Table~\ref{tab:compactness} first reports descriptive
+pass-conditioned summaries. The key comparison is paired: among 97 tasks passed by
+both Pro and Luna, median copied-code fraction is 0.966 for Pro and 0.191 for Luna;
+Pro copies more on 76 tasks, Luna on 18, with three ties. The paired Wilcoxon test is
+highly significant ($p=1.18\times10^{-13}$) with a large matched-pairs
+rank-biserial effect ($r=0.881$). Flash versus Luna shows the same pattern on 92
+common passes ($p=4.24\times10^{-13}$, $r=0.885$).
+
+\begin{table*}[t]
+  \caption{Pass-conditioned extraction statistics on Python-150. Unpaired medians
+  are descriptive because survivor sets differ; statistical comparison uses
+  same-task intersections.}
+  \label{tab:compactness}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Backend} & \textbf{$n$ pass} & \textbf{Median RRES} & \textbf{Median copy fraction} \\
+    \midrule
+    DeepSeek V4 Pro & 115 & 0.993 & 0.957 \\
+    DeepSeek V4 Flash & 108 & 0.998 & 0.968 \\
+    GPT-5.6 Luna & 102 & 0.815 & 0.164 \\
+    GLM-5.3-Flash & 68 & 1.013 & 0.947 \\
+    Qwen3.6-35B & 63 & 0.975 & 0.757 \\
+    GPT-OSS 120B & 36 & 0.983 & 0.180 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\paragraph{Finding 4.}
+Comparable functional success can conceal systematically different extraction
+strategies. Functional Pass alone is therefore insufficient to characterize the
+artifacts produced by feature-lifting agents.
+
+\section{Diagnostic Analysis}
+\label{sec:analysis}
+
+\subsection{From Behavioral Failure to Contract Closure}
+
+Gate outcomes identify where an artifact fails, not why. We therefore perform an
+AI-assisted L1 close-read of all valid artifact-level failures from the two
+strongest backends (Pro and Flash; $n=63$ after excluding task-defect rows). The
+analysis uses the public contract, first-failure evaluator evidence, submitted
+package, and trajectory evidence when needed. It is an assistant first pass rather
+than independent human gold and is interpreted as diagnostic evidence.
+
+\begin{table}[t]
+  \caption{Primary L1 symptom on Pro+Flash artifact-level failures ($n=63$).}
+  \label{tab:semantic}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Primary symptom} & \textbf{Total} & \textbf{Pro} & \textbf{Flash} \\
+    \midrule
+    Behavioral drift & 54 & 26 & 28 \\
+    Contract/API completion & 7 & 2 & 5 \\
+    Packaging/modularization & 2 & 0 & 2 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Sixty-one of 63 coded rows fall into behavioral drift or contract/API completion.
+In this slice, the typical failure is therefore not the absence of a package but a
+package whose observable behavior remains incomplete. We call this recurring
+residue the \emph{contract-closure gap}. The term is deliberately narrower than
+``Hidden failure'': a closure label requires evidence that the violated obligation
+is licensed by the public contract and that the delivered artifact omits or changes
+it.
+
+\subsection{Representative Cases}
+
+\paragraph{Alembic revision maps.}
+Both Pro and Flash implement \texttt{get\_revision}, but treat the input
+\texttt{base} as the symbolic base of the map, shadowing a revision whose literal
+identifier is also \texttt{base}. The relevant API is present; the boundary
+semantics are wrong.
+
+\paragraph{aiohttp URL parameters.}
+The submitted artifact contains exception and token checks, yet a required
+invalid-name path still fails to raise. Repository inspection and broad
+implementation coverage therefore coexist with an open contract branch.
+
+\paragraph{Copy-heavy successful extraction.}
+On \texttt{blinker\_\_signal\_registry\_core\_\_001}, multiple backends pass
+all functional gates with substantially different reference-relative footprints.
+The case illustrates why a functional pass is an eligibility condition for, rather
+than a substitute for, extraction-quality analysis.
+
+\subsection{Secondary Process and Cost Diagnostics}
+
+Process failures are reported separately from artifact-level failures. Qwen's 25
+empty submissions are tool-validation/security events; GLM has 38 empty
+submissions; Pro and Flash have none. These outcomes are retained as failures in the
+fixed model--harness score but are not reinterpreted as semantic contract failures.
+Token accounting is not comparable across all providers. Within Pro and Flash,
+where the same incremental accounting is available, \texttt{hard3} tasks consume
+more tokens than Core while achieving much lower pass rates (Pro median 81.5k vs
+118.3k; Flash 108.3k vs 202.9k). This secondary evidence indicates that additional
+interaction alone does not eliminate the hard-tail gap.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Feature Lifting Is a Distinct Agent Capability}
+
+Feature lifting differs from issue repair because the source repository is evidence
+rather than the final execution target. An agent must determine which parts of the
+source environment are semantically necessary, reconstruct them behind a new
+package boundary, and satisfy an output contract after the original repository is
+removed. It also differs from localization: finding or copying relevant code can be
+necessary while remaining insufficient for complete observable behavior.
+
+\subsection{The Residual Strong-Model Gap Is Behavioral}
+
+The gate analysis and L1 close-read point in the same direction. Strong backends
+rarely fail to emit or build a package, and Isolation is seldom the final binding
+constraint once behavioral gates pass. Their remaining artifact failures are
+instead dominated by missing API obligations or behavioral drift. This motivates
+agent designs that track contract obligations and their supporting repository
+evidence explicitly, rather than treating additional search, reflection, or test
+iterations as sufficient by themselves.
+
+\subsection{Correctness and Extraction Quality Are Different Dimensions}
+
+A broad vendoring solution can preserve behavior while offering little compact
+modularization; a compact package can be incomplete. The strong paired difference
+between Pro and Luna shows that even similar functional capability can arise from
+systematically different extraction strategies. We therefore keep Functional Pass
+and RRES/copy statistics separate rather than combining them into a single scalar
+leaderboard.
+
+\subsection{What the Difficulty Analysis Does and Does Not Show}
+
+The in-suite \texttt{hard3} split defines a robust empirical hard tail across
+medium and strong backends. By contrast, the raw Direct--Adapted--Composite pattern
+is confounded with construction split and does not survive the controlled logistic
+analysis. We therefore avoid interpreting lift type as a causal or independent
+difficulty factor. More generally, task-level taxonomies describe this curated
+suite; they are not population estimates over software repositories.
+
+\subsection{Scope of the Claims}
+
+All main scores characterize model backends embedded in the fixed OpenHands
+Official Main configuration. They are not measurements of base models independent
+of runtime, tool interface, prompt, context policy, provider behavior, or recovery
+logic. Process events such as tool validation can therefore affect the official
+model--harness score and are reported separately from semantic artifact analysis.
+
+\section{Threats to Validity and Responsible Release}
+\label{sec:threats}
+%% =====================================================================
+
+\paragraph{Construct validity.}
+Functional Pass is a deterministic but finite operationalization of behavioral
+completeness. Public and Hidden cases are mapped to one published contract, but
+finite tests cannot prove semantic equivalence. A Hidden requirement that is not
+licensed by the public contract is a task defect, not an agent failure. We address
+this risk through provenance records, \validatoragent auditing, deterministic
+reference checks, and targeted human adjudication. We additionally report
+sensitivity views that exclude unresolved or conservative audit cases when
+appropriate. \rres, copied-code fraction, file count, and dependency footprint are
+proxies and can miss semantic copying or penalize legitimate alternative designs.
+
+\paragraph{Internal validity.}
+Results depend on source materialization, dependency locks, prompt and context
+policy, agent/evaluator images, model endpoints, and runner state. We therefore
+separate infrastructure defects from model outcomes and require source,
+dependency, context, provenance, and image attestations for the paper bundle.
+Development pilots performed under non-identical conditions are not pooled into a
+single causal estimate.
+
+\paragraph{External validity.}
+Python-200$'$ is a maintainer- and AI-assisted selection of Python libraries,
+tooling, and framework components. It is not a random sample of software
+repositories and does not establish performance on GUI applications, large product
+systems, GPU software, distributed services, or non-Python ecosystems. Popular
+upstream projects may also appear in model training data. Repository diversity
+does not guarantee balanced behavior or entanglement mechanisms.
+
+\paragraph{Statistical conclusion validity.}
+The main leaderboard uses one attempt per task. This design measures Pass@1 under
+a fixed harness but does not estimate stochastic run-to-run variance. We report
+Wilson confidence intervals and exact paired task outcomes where appropriate, but
+these do not replace repeated-run sensitivity. Model APIs and serving stacks can
+change despite stable model names; exact run dates and profiles are recorded.
+
+\paragraph{Annotation and validator validity.}
+Task taxonomy, provenance records, and semantic failure labels include AI-assisted
+curation. LLM-assisted validation can be inconsistent, can share biases with the
+models being evaluated, and cannot substitute for an executable oracle. We
+therefore disclose validator model and prompt provenance, retain unknown or
+unresolved outcomes, and report human inter-rater agreement only when raters are
+genuinely independent humans.
+
+\paragraph{Runtime dependence.}
+Official Main fixes OpenHands. Scores may change under another agent runtime, tool
+interface, context policy, or recovery strategy. Runtime comparisons are reported
+separately unless evaluated under a controlled paired protocol.
+
+\paragraph{Licensing and release.}
+Upstream repositories retain heterogeneous licenses. Release packaging, source
+acquisition, evaluator-side references, and generated submissions must preserve
+applicable license obligations. Large source and result archives may be distributed
+through checksummed acquisition instructions rather than committed directly.
+Protected evaluation assets should be released in a form that preserves benchmark
+integrity while supporting independent reproduction of aggregate results.
+
+%% =====================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We introduced \flb, a benchmark for repository-level, behavior-preserving feature
+lifting. The released Python suite contains 200 tasks from 176 pinned repositories,
+and our headline frozen Python-150 evaluation compares six model backends under a
+fixed Full-Repository / No-Hint OpenHands protocol. Functional Pass separates
+Build, Public, Hidden, and Isolation correctness from pass-conditioned extraction
+footprint.
+
+Current systems span 24.0\%--76.7\% Functional Pass@1 and do not saturate the
+benchmark. Strong backends predominantly fail at behavioral evaluation rather than
+package construction, while only four delivered artifacts in the full six-model
+matrix pass Build, Public, and Hidden but fail Isolation. An AI-assisted close-read
+of Pro+Flash artifact failures further points to a contract-closure gap dominated
+by missing API obligations and behavioral drift. Finally, common-success analysis
+shows that similar functional capability can conceal radically different extraction
+strategies. Together, these results motivate code agents that reason explicitly
+about behavioral obligations and support evaluation that distinguishes correctness
+from how the reusable artifact is constructed.
+
+
+%% =====================================================================
+%% Optional appendix. Keep only material that is fully frozen and auditable.
+%% =====================================================================
+\appendix
+
+\section{Artifact and Reproducibility Checklist}
+\label{app:reproducibility}
+
+The released paper bundle should include, at minimum, the following immutable
+metadata for each official run:
+\begin{itemize}
+  \item task identifier, source repository revision, and source digest;
+  \item public contract version and task manifest digest;
+  \item evaluator and container image digests;
+  \item model/provider profile, run date, runtime revision, and prompt hash;
+  \item context envelope, action/step budget, timeout, and dependency policy;
+  \item final package tree, deterministic evaluator output, and trajectory;
+  \item token, step, latency, completion, and infrastructure status; and
+  \item validator provenance and any human-adjudication record associated with
+        task eligibility.
+\end{itemize}
+
+
+\section{Frozen Main Quantitative Record}
+\label{app:frozen-record}
+
+For auditability, the source file also contains a non-rendered frozen experimental
+record with the exact denominators, paired-test counts, gate counts, difficulty
+spectrum, compactness statistics, semantic-L1 denominator, and non-claims used by
+the manuscript. The headline freeze is Python-150 under OpenHands Official Main
+(one attempt per task; 120 steps; 128k context; Full-Repository / No-Hint). Empty
+submissions are functional failures, and runner \texttt{status} is not the score.
+The active task-manifest digest is
+\texttt{6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419}.
+
+\begin{table*}[t]
+  \caption{Non-exclusive gate failures on delivered Python-150 packages. A row can
+  fail multiple gates. Isolation residual means Build, Public, and Hidden pass but
+  Isolation fails.}
+  \label{tab:all-gates}
+  \centering
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    \textbf{Backend} & \textbf{Has pkg.} & \textbf{Build fail} & \textbf{Public fail}
+      & \textbf{Hidden fail} & \textbf{Isolation fail} & \textbf{Iso. given Build}
+      & \textbf{Iso. residual} \\
+    \midrule
+    DeepSeek V4 Pro   & 150 & 0  & 25 & 29  & 0  & 0 & 0 \\
+    DeepSeek V4 Flash & 150 & 0  & 26 & 36  & 1  & 1 & 1 \\
+    GPT-5.6 Luna      & 144 & 3  & 30 & 35  & 3  & 0 & 0 \\
+    GLM-5.3-Flash     & 112 & 3  & 34 & 38  & 5  & 2 & 2 \\
+    Qwen3.6-35B       & 125 & 6  & 41 & 58  & 8  & 2 & 0 \\
+    GPT-OSS 120B      & 148 & 18 & 88 & 100 & 22 & 4 & 1 \\
+    \midrule
+    Total & 829 & 30 & 244 & 296 & 39 & 9 & 4 \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
+\begin{table}[t]
+  \caption{Selected exact paired statistics used in the main text.}
+  \label{tab:frozen-paired}
+  \centering
+  \begin{tabular}{lrrr}
+    \toprule
+    \textbf{Comparison} & \textbf{A-only} & \textbf{B-only} & \textbf{$p$} \\
+    \midrule
+    Pro vs Flash & 10 & 3 & 0.09229 \\
+    Pro vs Luna  & 18 & 5 & 0.01062 \\
+    GLM vs Qwen  & 27 & 22 & 0.5682 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Secondary and Development-Time Diagnostics}
+\label{app:secondary}
+
+Public-feedback, earliest-sufficiency, context-compression, repair-loop, and other
+development-time experiments are not part of the frozen Python-150 main comparison.
+They should be reported only with their original task subsets, evaluator versions,
+model backends, and information interfaces. We do not pool them into the main
+leaderboard or present them as methods that improve FeatureLiftBench.
+
+Token and step summaries are likewise secondary because provider accounting is not
+uniform. Same-accounting comparisons for Pro and Flash may be reported to document
+that the \texttt{hard3} slice consumes more interaction while remaining markedly
+harder.
+
+\section{Validator-Agent Audit Schema}
+\label{app:validator-schema}
+
+For reproducibility, the final artifact should document the structured output
+schema used by \validatoragent. A recommended task-level record contains:
+\begin{itemize}
+  \item the protected behavioral case or assertion identifier;
+  \item mapped public contract clause(s);
+  \item mapped source evidence and file/symbol provenance;
+  \item validation class (e.g., explicit, recoverable, ambiguous,
+        underdetermined, or unresolved);
+  \item evaluator-consistency and boundary-integrity flags;
+  \item validator rationale and confidence metadata;
+  \item deterministic validation outcomes; and
+  \item final human/adjudication disposition when required.
+\end{itemize}
+The submitted paper should report only classes and rules actually implemented in
+the frozen benchmark pipeline.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\end{document}

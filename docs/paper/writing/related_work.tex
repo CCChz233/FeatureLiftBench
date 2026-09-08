@@ -1,0 +1,75 @@
+% Suggested replacement for the Related Work section; primary-source audit:
+% docs/paper/writing/sources.md. Approximately 580 prose words.
+\section{Related Work}
+\label{sec:related-work}
+
+\subsection{Slicing, Feature Location, and Software Reuse}
+
+Feature lifting builds on longstanding research into recovering reusable behavior
+from existing software. Program slicing uses data and control dependencies to
+retain behavior with respect to a specified slicing
+criterion~\cite{weiser1984slicing}. Feature-location techniques identify the source
+entities associated with a requested capability; the taxonomy of Dit et~al.
+organizes the evidence and techniques used for this
+task~\cite{dit2013featurelocation}. Multi-dimensional separation of concerns
+addresses decompositions in which concerns overlap rather than align with a
+single module hierarchy~\cite{tarr1999degrees}. These perspectives explain why a
+feature can cross file and package boundaries and why locating an entry point
+does not by itself establish a complete extraction.
+
+Automated software transplantation is a particularly close antecedent. Barr
+et~al. combine program analysis, lightweight annotations, testing, and search to
+extract functionality from a donor and adapt it for a different
+host~\cite{barr2015transplantation}. Their work already makes preservation during
+extraction and integration an executable objective. \flb carries this reuse
+objective into the evaluation of general-purpose repository agents: the agent
+receives a behavioral contract and an intact donor repository, determines the
+supporting implementation without source-location hints, and delivers a standalone
+package. It does not receive a destination application's integration site. We
+evaluate finite behavioral obligations and source independence, without claiming
+to establish semantic equivalence or compute a minimal program slice.
+
+\subsection{Executable Coding and Feature-Development Benchmarks}
+
+HumanEval measures functional correctness for code synthesized from
+docstrings~\cite{chen2021codex}. SWE-bench moves evaluation into real repositories,
+requiring changes that resolve existing GitHub
+issues~\cite{jimenez2024swebench}. More recent benchmarks directly address feature
+development. FeatBench uses natural-language requirements without code hints to
+evaluate feature implementation in existing
+repositories~\cite{chen2026featbench}. FeatureBench derives tasks through
+test-driven dependency tracing and evaluates both incremental implementation in a
+repository and construction of functionality from
+scratch~\cite{zhou2026featurebench}. Thus, producing a callable module or
+implementing a repository-derived feature is already represented in prior
+evaluation settings.
+
+The distinguishing experimental condition in \flb is access to the complete
+existing implementation as evidence, coupled with a requirement to preserve its
+declared behavior across a new package boundary. The final artifact must remain
+functional when access to the donor repository is removed. This condition makes
+decisions about transitive helpers, resources, state, and runtime dependencies
+part of the evaluated behavior. Our Full-Repository / No-Hint protocol withholds
+source-location hints while specifying the required output API, so it should not
+be equated with withholding all interface information. The benchmark additionally
+reports extraction footprint on successful artifacts; reference-relative size is
+a descriptive measure, not a certificate of minimality or maintainability.
+
+\subsection{Agent Runtimes and Evaluation Scope}
+
+SWE-agent demonstrates that the agent--computer interface affects how effectively
+language models navigate repositories, edit code, and execute
+tests~\cite{yang2024sweagent}. OpenHands provides an extensible platform for agents
+that use code execution, command-line interaction, and other tools in sandboxed
+environments~\cite{wang2025openhands}. Terminal-Bench extends executable
+evaluation to diverse command-line workflows, with task-specific environments and
+tests~\cite{merrill2026terminalbench}; its scope is broader than repository repair.
+Harness-Bench studies variation across model--harness configurations under shared
+task environments and budgets~\cite{yao2026harnessbench}.
+
+These studies motivate treating the execution configuration as part of the
+measured system. We use a fixed OpenHands protocol for the main comparison and
+interpret each result as a model--harness outcome. The contribution is a task
+definition, curated benchmark, and analysis of delivered artifacts under that
+protocol. It is not a new agent runtime, and the reported model ordering is not
+assumed to transfer unchanged to other tool interfaces or execution policies.

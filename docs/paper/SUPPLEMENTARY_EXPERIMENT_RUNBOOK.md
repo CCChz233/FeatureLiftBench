@@ -5,7 +5,7 @@
 
 ## 1. 先跑什么
 
-**第一阶段：40 题 × DeepSeek V4 Flash × 2 个条件，共 80 次正式 agent 运行。**
+**第一阶段：40 题 × GPT-5.6 Luna × 2 个条件，共 80 次正式 agent 运行。**
 
 - Full Source：完整 source repository + public behavioral contract。
 - Contract Only：同一 public behavioral contract，移除仓库实现证据。
@@ -16,7 +16,7 @@
 
 这批是**补充对照实验**。论文仍然是 200 题 benchmark、150 题六配置主比较、另外 50 题五配置扩展。不要用这 40 题替换主比较，也不要把新的 Full 分数覆盖到原主表。
 
-本文选 Flash 作为第一阶段的固定配置，以便先完成一个完整的强模型对照；Pro 为第二个独立配置。不是声称 Flash 在所有条件下最优。
+按作者选择，第一阶段使用 GPT-5.6 Luna；第二模型建议保留 DeepSeek V4 Pro。两个模型是这组补充对照的合理规模，不必扩展到主表全部六个模型。两模型均完成时为 40 题 × 2 模型 × 2 条件 = 160 次正式运行；结论限于所测模型与样本，不保证统计显著或跨模型普遍成立。
 
 ## 2. 研究问题与可得结论
 
@@ -87,9 +87,10 @@ source-free 是 **evaluator 环境**约束；本实验还要额外保证 No-sour
 
 ### 固定预算
 
-使用当前 example profile 的对应 Main 配置作为起点，并核对服务器本地 profile：
+Luna 沿用已有主实验配置作为起点；Pro 使用对应 Main 配置，并核对服务器本地 profile：
 
-- OpenHands；Flash profile：`openhands_deepseek_v4_flash_main`；Pro profile：`openhands_deepseek_v4_pro_main`。
+- OpenHands；Luna profile：`openhands_gpt_5_6_luna_paper`；Pro profile：`openhands_deepseek_v4_pro_main`。
+- 已保存 Luna 主实验记录的 model 为 `openai/gpt-5.6-luna`。当前 `agents.example.toml` 未包含上述 Luna profile；服务器须从已有 Luna 主实验配置保留/恢复，并核对工具兼容、provider 和压缩设置，不能直接把 Flash profile 改名视为相同配置。这里的 Luna 指现有 API 模型配置，运行仍使用 OpenHands。
 - 120 steps；context window 131072；reserved output 8192；逐题 agent timeout 3600 秒。
 - token condenser，保留设置一致；不额外增加 2M 总 token cap。
 - 每个模型–任务–条件一个正式 attempt；不对失败追加 repair pass。
@@ -189,8 +190,8 @@ API 经隔离网关可达的 Docker network 由服务器配置后指定：`FEATU
 export FLB_TASK_ID='TASK_ID_FROM_THE_FIXED_LIST'
 export FLB_SOURCE_CONTEXT='full_repository'  # 第二臂改为 contract_only
 export FLB_RUN_ID='source-ablation-40-r1'
-export FLB_PROFILE='openhands_deepseek_v4_flash_main'
-export FLB_MODEL_DIR='deepseek-v4-flash'
+export FLB_PROFILE='openhands_gpt_5_6_luna_paper'
+export FLB_MODEL_DIR='gpt-5.6-luna'
 
 python -B -m featureliftbench.cli run-agent \
   "benchmark/tasks/$FLB_TASK_ID" \
@@ -230,8 +231,8 @@ CLI 退出码 1 可能只是功能失败，不能自动认为实验系统崩溃�
 
 | 范围 | agent 次数 | evaluator 次数（通常至少） |
 | --- | ---: | ---: |
-| Flash smoke：3 题 × 两臂 | 6 | 6 |
-| Flash 正式：40 题 × 两臂 | 80 | 80 |
+| Luna smoke：3 题 × 两臂 | 6 | 6 |
+| Luna 正式：40 题 × 两臂 | 80 | 80 |
 | 可选 Pro 正式 | +80 | +80 |
 | 可选机械 baseline | 0 | +40 |
 
@@ -298,7 +299,7 @@ python -B -m featureliftbench.cli eval \
 
 | Model | N pairs | Full pass | Contract-only pass | Δ (percentage points) | Full-only | No-source-only | 95% paired CI |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| DeepSeek V4 Flash | 40 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 |
+| GPT-5.6 Luna | 40 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 |
 | DeepSeek V4 Pro（可选） | 40 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 | 待运行 |
 
 令 b 为 Full 成功且 No-source 失败的任务数，c 为相反情况；则 Δ = 100 × (b − c) / 40。另保留 both-pass、both-fail，四类之和必须为 40。
@@ -334,4 +335,4 @@ python -B -m featureliftbench.cli eval \
 - [ ] 可选第二模型与机械 baseline 按预先决定的预算执行。
 - [ ] 回传运行登记、汇总与原始目录；不覆盖原主实验和论文表格。
 
-**当前可直接完成的是服务器数据准备和清单核对。正式运行前，先按第 5 节补齐 No-source 的输入隔离，再依次 smoke → Flash 两臂 → 配对分析；机械 baseline 第二阶段做。**
+**当前可直接完成的是服务器数据准备和清单核对。正式运行前，先按第 5 节补齐 No-source 的输入隔离，再依次 smoke → Luna 两臂 → 配对分析；机械 baseline 第二阶段做。**

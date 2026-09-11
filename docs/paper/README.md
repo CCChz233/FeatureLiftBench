@@ -20,6 +20,8 @@
 
 具体材料：[论文大纲](PAPER_OUTLINE.md) · [写作脚本与证据](writing/README.md) · [图片与绘图脚本](figures/README.md)。
 
+补充实验：[Source ablation 与机械提取 baseline 服务器指南](SUPPLEMENTARY_EXPERIMENT_RUNBOOK.md)。已固定 40 题与 3 个独立 smoke 题；Contract-only 仍需按指南实现，不代表已经运行或得到新结果。
+
 从项目根目录执行：
 
 ```powershell

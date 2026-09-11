@@ -25,6 +25,7 @@
 | 需要 | 文档 |
 | --- | --- |
 | 本地跑实验 | [RUN.md](../RUN.md) |
+| 论文补充实验：Source ablation / 机械提取 | [设计与服务器执行指南](paper/SUPPLEMENTARY_EXPERIMENT_RUNBOOK.md) |
 | 服务器跑 Python-200′ | [SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md) |
 | 可选 DeepSeek Harness / Codex | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
 | 脚本哪些能用 | [scripts/README.md](../scripts/README.md) |

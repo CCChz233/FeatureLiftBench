@@ -1,0 +1,73 @@
+{
+  "revision": "comprehensive_table_controlled_rq3_author_final_scope_20260909",
+  "status": "static_checks_passed_with_image_equivalence_limitation",
+  "main_sections": 8,
+  "main_tables": 3,
+  "appendix_tables": 4,
+  "generated_data_tables": 6,
+  "authored_literature_tables": 1,
+  "generated_text_blocks": 2,
+  "figure_placeholders": 0,
+  "included_figures": [
+    "figures/fig01_feature_lifting.pdf",
+    "figures/fig02_construction_validation.pdf",
+    "figures/figA_task_coverage.pdf",
+    "figures/figB_functional_results.pdf",
+    "figures/figC_paired_footprint.pdf"
+  ],
+  "cited_keys": 14,
+  "unresolved_cross_references": [],
+  "unresolved_citations": [],
+  "environments_and_braces_balanced": true,
+  "compiled": false,
+  "rendered": false,
+  "new_experiments": false,
+  "table_scripts_check_passed": true,
+  "author_review_scope": "Full review of all retained benchmark tasks, per latest author statement",
+  "preserved_figures": [
+    "fig01_feature_lifting",
+    "fig02_construction_validation",
+    "figC_paired_footprint"
+  ],
+  "modified_figures": [
+    "figA_task_coverage",
+    "figB_functional_results"
+  ],
+  "main_scope": {
+    "release_tasks": 200,
+    "repositories": 176,
+    "snapshots": 182,
+    "common_tasks": 150,
+    "common_configurations": 6,
+    "extended_tasks": 50,
+    "extended_configurations": 5
+  },
+  "remaining_limitations": [
+    "Oracle and campaign config IDs differ; filesystem/dependency equivalence not established.",
+    "Figure 1 preserved per author instruction; its existing Basic/Extended labels were not redrawn.",
+    "LaTeX page layout not compiled or inspected."
+  ],
+  "chktex": "Only literal code-quote warnings after suppressing standard spacing/dash checks; local regex-engine warning.",
+  "files": [
+    {
+      "path": "docs/paper/main.tex",
+      "sha256": "afebe3b5abe1b6e9c93386319e5a99b96e1fb8b9ceb6c859b67bebab8ef872b0"
+    },
+    {
+      "path": "docs/paper/references.bib",
+      "sha256": "217af9b34a55dd2fc07462629d397778c3c7fd77c498a7d3805239cf45e15802"
+    },
+    {
+      "path": "docs/paper/writing/comprehensive_table.py",
+      "sha256": "510c1a8abd00b70156e9ad92ab5f1cc70f99b9bd62323163f328c6e6c28c0ad2"
+    },
+    {
+      "path": "docs/paper/writing/controlled_difficulty_evidence.json",
+      "sha256": "a4ce2aa6e4cafb5e86998dcda753072db3cdd031e7e74154276c80152af669ba"
+    },
+    {
+      "path": "docs/paper/writing/author_review_statement.json",
+      "sha256": "f6436122d688217bbaaca90af08cd6f0f59f27345b23472dd2a12900683a59ec"
+    }
+  ]
+}

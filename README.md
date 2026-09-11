@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-> **Documentation status: current · Last verified: 2026-09-02**
+> **Documentation status: current · Last verified: 2026-09-11**
 
 FeatureLiftBench evaluates whether a coding agent can extract and reconstruct a
 coherent feature from a real upstream repository under a controlled information
@@ -11,10 +11,17 @@ package in an isolated Docker capsule.
 Current release status, freeze identifiers, task counts, and available results
 are maintained only in [docs/STATUS.md](docs/STATUS.md).
 
+The paper describes **200 tasks from 176 repositories (182 snapshots)**. Its
+primary comparison uses the same **150 tasks across six configurations**; five
+configurations also cover the remaining 50 tasks. For the current writing phase,
+start with [the paper workflow](docs/paper/WORKFLOW.md) and
+`python -B scripts/paper.py check`. Stored directory names are internal identifiers.
+
 ## Start Here
 
 | Goal | Entry |
 | --- | --- |
+| Write the paper, update tables, or package Overleaf | [Paper workflow](docs/paper/WORKFLOW.md) |
 | Understand the benchmark | [Design](docs/BENCHMARK_DESIGN.md) |
 | Check readiness and current results | [Status](docs/STATUS.md) |
 | Current V1 method (Main + 2M cap) | [V1](docs/METHOD_V1.md) |
@@ -48,7 +55,7 @@ Experiments are **benchmark × agent × method**. List ids with
 
 | Path | Role |
 | --- | --- |
-| [`benchmark/`](benchmark/README.md) | Task packages and named suites. Paper root is `python200_hard_tasks/` (150 + Hard-50), not `python200_tasks/` |
+| [`benchmark/`](benchmark/README.md) | Task packages and named suites. The current 200-task storage root is `python200_hard_tasks/`; this internal name does not define a paper difficulty tier |
 | `agent/` | Public catalog of coding runtimes (`--agent`). Adapters stay in `harness/` |
 | `method/` | Public catalog of protocols / information arms (`--method` / `--arm`) |
 | [`scripts/`](scripts/README.md) | Maintainer entrypoints. Root only has thin forwarders `run_benchmark.sh` / `run_experiment.sh` plus `setup.sh` |
@@ -82,8 +89,8 @@ Do not commit `.env` or `harness/config/agents.toml`.
 
 ## Result Boundary
 
-The primary metrics are evaluator `Functional Pass@1` and pass-conditioned
-Reference-Relative Extraction Size (RRES). Agent completion status is not a
+The paper reports evaluator `Functional Pass@1`, pass-conditioned artifact
+diagnostics (RRES and Copy), and execution-effort statistics. Agent completion status is not a
 correctness score. Official Main uses OpenHands. DeepSeek Harness and Codex are
 the same CLI level after `./setup.sh`, but remain a runtime ablation and must
 not be merged into the OpenHands Python-200 table. Results are comparable only

@@ -1,9 +1,13 @@
 # FeatureLiftBench scripts
 
-> **Status: current · Last verified: 2026-09-02**
+> **Status: current · Last verified: 2026-09-11**
 
-日常只认这些入口。论文 Main：`--benchmark python200_hard`。不要用
-`./harness/scripts/archive/run_python200_paper.sh` 写新主表。
+当前写作从 `python -B scripts/paper.py check` 开始，见
+[论文工作流](../docs/paper/WORKFLOW.md)。`paper.py` 的 `tables`、`figures`、
+`package` 分别更新表格、绘制统计图、打包 LaTeX；均不运行实验或编译论文。
+
+下列评测工具保留内部 catalog 键 `--benchmark python200_hard`。
+不要用 `./harness/scripts/archive/run_python200_paper.sh` 写新主表。
 
 评测与 catalog 用 `python3.12`。
 
@@ -11,6 +15,7 @@
 
 | 脚本 | 用途 |
 | --- | --- |
+| `scripts/paper.py` | 当前论文的 check / tables / figures / package 入口 |
 | `scripts/run_benchmark.sh` | 稳定入口：benchmark × agent × method |
 | `scripts/run_experiment.sh` | 上面那个入口调用的实现 |
 | `featureliftbench` CLI | 安装 `harness/` 后的等价入口 |

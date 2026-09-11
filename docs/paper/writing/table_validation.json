@@ -1,31 +1,69 @@
 {
-  "status": "verified_with_input_audit_and_environment_annotation_caveats",
+  "status": "verified_current_paper_tables",
   "rows": 900,
   "tasks": 150,
   "models": 6,
   "run_profiles_checked": 900,
-  "main_tables": 5,
-  "main_generated_data_tables": 4,
+  "main_tables": 3,
+  "main_generated_data_tables": 2,
   "main_authored_literature_tables": 1,
-  "appendix_tables": 8,
-  "figure_placeholders": 5,
-  "input_audit": {
-    "aligned_initial_prompts": 900,
-    "aligned_recorded_capsules": 838,
-    "oracle_runtime_image_identity_unreconciled": true
-  },
-  "run_freeze_counts": {
-    "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419": 522,
-    "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542": 378
-  },
+  "appendix_tables": 4,
+  "figure_placeholders": 0,
+  "generated_text_blocks": 2,
+  "main_table_order": [
+    "main",
+    "paired",
+    "positioning"
+  ],
+  "structure_table_updater": "writing/update_structure_results.py",
+  "table_revision": "paper_workflow_cleanup_20260911",
+  "detailed_profiles": [
+    {
+      "backend": "Pro",
+      "condenser": "token",
+      "trigger_target": "122,880 / 61,440",
+      "outcomes": 150
+    },
+    {
+      "backend": "Flash",
+      "condenser": "token",
+      "trigger_target": "122,880 / 61,440",
+      "outcomes": 150
+    },
+    {
+      "backend": "Luna",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 150
+    },
+    {
+      "backend": "GLM",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 150
+    },
+    {
+      "backend": "Qwen",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 150
+    },
+    {
+      "backend": "OSS",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 150
+    }
+  ],
+  "scope": "Current numeric tables and recorded run profiles; historical audits remain separate artifacts.",
   "sources": [
+    {
+      "path": "docs/paper/paper_sources.json",
+      "sha256": "d6af24e9a04ec8f29e58322f36da4e89fede69f439e0cb070a47fd6a5aafe00a"
+    },
     {
       "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
       "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
-    },
-    {
-      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/failure_root_cause_annotations.csv",
-      "sha256": "6f87b65ceea63f2706faf48b3e814536846e06c4a8e6959bbd09058f3e672a38"
     },
     {
       "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
@@ -38,18 +76,6 @@
     {
       "path": "reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv",
       "sha256": "0d05968c81a3319ca53d5272b7652963bc955a9cbb4ba29457c8f8dfc383d2e8"
-    },
-    {
-      "path": "reports/paper_analysis/python150_paper_analysis_final/csv/logistic_params.csv",
-      "sha256": "a41a34a9c914221ac389256936d0bc5c3cbdaafb9dd12bdf1fbd76dccc2f4d3b"
-    },
-    {
-      "path": "reports/paper_analysis/python150_offline_audit_20260908/cross_version_summary.json",
-      "sha256": "3d544e986ff0e284938a0a169cba7f2730a04c297dcda35b99c4cb9f7ca4c22d"
-    },
-    {
-      "path": "reports/paper_analysis/python150_offline_audit_20260908/defect_review.json",
-      "sha256": "03ffcc02c4bb098c85a1c888f665bad5123f8064638cac6d16ce314124b72d8d"
     },
     {
       "path": "docs/paper/writing/chapter2_evidence.json",

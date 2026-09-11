@@ -1,0 +1,57 @@
+{
+  "status": "passed_current_paper_workflow_checks",
+  "scope": {
+    "benchmark_tasks": 200,
+    "repositories": 176,
+    "snapshots": 182,
+    "common_tasks": 150,
+    "configurations": 6,
+    "outcomes": 900,
+    "extension_tasks": 50,
+    "main_passes": {
+      "Pro": 115,
+      "Flash": 108,
+      "Luna": 102,
+      "GLM": 68,
+      "Qwen": 63,
+      "OSS": 36
+    }
+  },
+  "table_checks": "five generated tables plus two text blocks and the appendix structure table match the unchanged main.tex",
+  "figure_import_check": "900 result rows, six groups, model order and full names unchanged",
+  "changed_python_files_syntax_checked": [
+    "scripts/paper.py",
+    "docs/paper/paper_inputs.py",
+    "docs/paper/writing/update_tables.py",
+    "docs/paper/writing/update_structure_results.py",
+    "docs/paper/figures/scripts/figure_data.py",
+    "docs/paper/figures/scripts/paper_style.py",
+    "docs/paper/figures/scripts/redraw_data.py"
+  ],
+  "changed_documentation_links_checked": 101,
+  "protected_files_unchanged_sha256": {
+    "docs/paper/main.tex": "3140cddd0f3637933d21924fc282dae335744162d65ccfa0274b9b52b741a2e0",
+    "docs/paper/references.bib": "217af9b34a55dd2fc07462629d397778c3c7fd77c498a7d3805239cf45e15802",
+    "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1",
+    "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6",
+    "docs/paper/figures/fig01_motivation.png": "10c9b1d1fc817ca5908ea2154a7b909df5a8370c13f888cd06824c23b2603ce7",
+    "docs/paper/figures/fig02_construction_validation.png": "86566a0b8a88255807f2dbc96c3cd12a759131f723590edaee0639361916c3ea",
+    "docs/paper/figures/figA_task_coverage.pdf": "a0ce8d3f7907ffdfd095923b1659f07fe0c46142345ca85b58b09c99ec294068",
+    "docs/paper/figures/figB_functional_results.pdf": "d5e9bbbd79d65f2c76fa399a25c5b930e93ba419b1f06400bcb8a7106be48a83",
+    "docs/paper/figures/figC_paired_footprint.pdf": "6e6a248402de44ebbc6d504d9810f6e4400b9a19b9afd89957b59626a6700a81",
+    "docs/paper/figures/data/figA_task_coverage.json": "bb5f48b5e5771aa013002735b531e15241b6f70ce95d5c32598e3e1b96ed53d4",
+    "docs/paper/figures/data/figB_functional_results.json": "13f53b87b2c08d2c83a278e15de97dda9602d947ac0b599e8438f8985bb78af6",
+    "docs/paper/figures/data/figC_paired_footprint.json": "9d279870cc786038bb149454dd2ba1d42825a3b15b124676fdc347abb09fff39"
+  },
+  "historical_documentation_snapshots": 8,
+  "whole_repository_docs_check": {
+    "passed": false,
+    "broken_relative_links": 23,
+    "missing_project_status": 36,
+    "unreachable_current_docs": 0,
+    "note": "Remaining failures are in pre-existing documents outside the ten updated navigation pages; current navigation links pass."
+  },
+  "new_experiments": false,
+  "latex_compiled": false,
+  "figures_redrawn": false
+}

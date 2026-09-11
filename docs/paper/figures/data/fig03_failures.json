@@ -1,0 +1,122 @@
+{
+  "first_stage_keys": [
+    "functional_pass",
+    "missing_submission",
+    "build_failure",
+    "public_failure",
+    "hidden_failure",
+    "isolation_failure"
+  ],
+  "first_outcomes": [
+    {
+      "backend": "Pro",
+      "assigned": 150,
+      "counts": [
+        115,
+        0,
+        0,
+        25,
+        10,
+        0
+      ]
+    },
+    {
+      "backend": "Flash",
+      "assigned": 150,
+      "counts": [
+        108,
+        0,
+        0,
+        26,
+        15,
+        1
+      ]
+    },
+    {
+      "backend": "Luna",
+      "assigned": 150,
+      "counts": [
+        102,
+        6,
+        3,
+        27,
+        12,
+        0
+      ]
+    },
+    {
+      "backend": "GLM",
+      "assigned": 150,
+      "counts": [
+        68,
+        38,
+        3,
+        31,
+        8,
+        2
+      ]
+    },
+    {
+      "backend": "Qwen",
+      "assigned": 150,
+      "counts": [
+        63,
+        25,
+        6,
+        35,
+        21,
+        0
+      ]
+    },
+    {
+      "backend": "OSS",
+      "assigned": 150,
+      "counts": [
+        36,
+        2,
+        18,
+        70,
+        23,
+        1
+      ]
+    }
+  ],
+  "delivered": 829,
+  "isolation_residual": 4,
+  "gate_flags": [
+    {
+      "gate": "Build",
+      "failed": 30,
+      "denominator": 829,
+      "percent": 3.6188178528347406
+    },
+    {
+      "gate": "Public",
+      "failed": 244,
+      "denominator": 829,
+      "percent": 29.433051869722558
+    },
+    {
+      "gate": "Hidden",
+      "failed": 296,
+      "denominator": 829,
+      "percent": 35.70566948130278
+    },
+    {
+      "gate": "Isolation",
+      "failed": 39,
+      "denominator": 829,
+      "percent": 4.704463208685163
+    }
+  ],
+  "sources": [
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+      "sha256": "c651d163e15c4bb18faf41816511b51d7ebaac0f72b5b292fa403ebbfda89a8e"
+    }
+  ]
+}

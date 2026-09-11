@@ -1,5 +1,9 @@
 # Related-work source audit
 
+For the current bibliography metadata and version choices, see
+[BIBLIOGRAPHY_REVIEW.md](BIBLIOGRAPHY_REVIEW.md) (2026-09-08). The older source
+notes below are retained as review history.
+
 ## 2026-09-08 narrative and comparison-table integration
 
 The current `../main.tex` now includes a rewritten introduction and a seven-row

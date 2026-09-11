@@ -1,0 +1,262 @@
+{
+  "scope": "Four selected saved artifacts; static contract/code/log close-read, no execution.",
+  "evidence_tier": "L1 assistant close-read",
+  "independent_human_review": false,
+  "new_experiments": false,
+  "historical_annotations_modified": false,
+  "case_selection": "Purposive input-boundary and call-path illustrations; no prevalence or process-cause claim.",
+  "cases": [
+    {
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "run_freeze_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+      "run_directory": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001",
+      "build_pass": true,
+      "isolation_pass": true,
+      "first_failure_stage": "public_failure",
+      "historical_label": "behavior_drift",
+      "historical_clause_ids": "B002;B003",
+      "writing_clause_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "public_clauses": [
+        {
+          "id": "B001",
+          "text": "`parse_project_dependencies` builds `DependencyGroup` objects from PEP 621 project metadata."
+        },
+        {
+          "id": "B002",
+          "text": "resolve_group resolves a group's dependencies including transitive include-group references. parse_project_dependencies reads dependency-groups as mappings whose dependencies field is a list of requirement strings and whose include-group field is a list of group names."
+        },
+        {
+          "id": "B003",
+          "text": "Circular includes raise `ValueError`."
+        }
+      ],
+      "implementation": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/submission/featurelifted/__init__.py",
+      "functions": [
+        {
+          "name": "parse_project_dependencies",
+          "start": 136,
+          "end": 151
+        },
+        {
+          "name": "resolve_group",
+          "start": 154,
+          "end": 179
+        }
+      ]
+    },
+    {
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "run_freeze_id": "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542",
+      "run_directory": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001",
+      "build_pass": true,
+      "isolation_pass": true,
+      "first_failure_stage": "public_failure",
+      "historical_label": "behavior_drift",
+      "historical_clause_ids": "B002;B003",
+      "writing_clause_ids": [
+        "B001",
+        "B002",
+        "B003"
+      ],
+      "public_clauses": [
+        {
+          "id": "B001",
+          "text": "`parse_project_dependencies` builds `DependencyGroup` objects from PEP 621 project metadata."
+        },
+        {
+          "id": "B002",
+          "text": "resolve_group resolves a group's dependencies including transitive include-group references. parse_project_dependencies reads dependency-groups as mappings whose dependencies field is a list of requirement strings and whose include-group field is a list of group names."
+        },
+        {
+          "id": "B003",
+          "text": "Circular includes raise `ValueError`."
+        }
+      ],
+      "implementation": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/submission/featurelifted/__init__.py",
+      "functions": [
+        {
+          "name": "parse_project_dependencies",
+          "start": 185,
+          "end": 209
+        },
+        {
+          "name": "resolve_group",
+          "start": 223,
+          "end": 255
+        }
+      ]
+    },
+    {
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "run_freeze_id": "6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+      "run_directory": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/tox__factor_expression_core__hard3_001",
+      "build_pass": true,
+      "isolation_pass": true,
+      "first_failure_stage": "public_failure",
+      "historical_label": "behavior_drift",
+      "historical_clause_ids": "B001;B003",
+      "writing_clause_ids": [
+        "B001",
+        "B003"
+      ],
+      "public_clauses": [
+        {
+          "id": "B001",
+          "text": "`find_envs` discovers environment names from brace factor expressions."
+        },
+        {
+          "id": "B003",
+          "text": "find_envs expands brace and factor expressions into the deterministic set of environment names they describe."
+        }
+      ],
+      "implementation": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/tox__factor_expression_core__hard3_001/submission/featurelifted/__init__.py",
+      "functions": [
+        {
+          "name": "find_envs",
+          "start": 102,
+          "end": 113
+        },
+        {
+          "name": "expand_factors",
+          "start": 125,
+          "end": 148
+        },
+        {
+          "name": "find_factor_groups",
+          "start": 151,
+          "end": 159
+        },
+        {
+          "name": "expand_env_with_negation",
+          "start": 176,
+          "end": 206
+        }
+      ]
+    },
+    {
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "run_freeze_id": "0b106842710368a497b49b7f6714e0dfea54778d1fb2dae38c93ea449b339542",
+      "run_directory": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/tox__factor_expression_core__hard3_001",
+      "build_pass": true,
+      "isolation_pass": true,
+      "first_failure_stage": "public_failure",
+      "historical_label": "behavior_drift",
+      "historical_clause_ids": "B001;B003",
+      "writing_clause_ids": [
+        "B001",
+        "B003"
+      ],
+      "public_clauses": [
+        {
+          "id": "B001",
+          "text": "`find_envs` discovers environment names from brace factor expressions."
+        },
+        {
+          "id": "B003",
+          "text": "find_envs expands brace and factor expressions into the deterministic set of environment names they describe."
+        }
+      ],
+      "implementation": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/tox__factor_expression_core__hard3_001/submission/featurelifted/__init__.py",
+      "functions": [
+        {
+          "name": "find_envs",
+          "start": 96,
+          "end": 107
+        },
+        {
+          "name": "expand_factors",
+          "start": 119,
+          "end": 138
+        },
+        {
+          "name": "find_factor_groups",
+          "start": 141,
+          "end": 145
+        },
+        {
+          "name": "expand_env_with_negation",
+          "start": 162,
+          "end": 192
+        }
+      ]
+    }
+  ],
+  "source_files": [
+    {
+      "path": "benchmark/tasks/poetry_core__dependency_groups_core__hard3_001/metadata.json",
+      "sha256": "7dff63d4ae2dd7b692131cfdfa5bf88d94d243c6d7fa37ecf7b97b88a7a6270f"
+    },
+    {
+      "path": "benchmark/tasks/tox__factor_expression_core__hard3_001/metadata.json",
+      "sha256": "bcc3e55c5be9afad892c050f4e4bbab276aff9f4736ebbf18984da2de0a930a8"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/eval/logs/public.stdout",
+      "sha256": "6998b8006f123fcb2bfe045470c68eab13bffc0cc5290c2adb5deee4d5d7d55f"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/eval/result.json",
+      "sha256": "a7faf4f02886aa5e23ea98d7af47e413d7904c7940b5923df4fca022ada94f6c"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/submission/featurelifted/__init__.py",
+      "sha256": "e101ed7618f63b8ac4d900bad734bdacb14c80782a22a2c130873b36bec88cea"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/tox__factor_expression_core__hard3_001/eval/logs/public.stdout",
+      "sha256": "02e41028c22f9497f532359d0e946d22066d5da271627a22ae6a1523762fb2be"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/tox__factor_expression_core__hard3_001/eval/result.json",
+      "sha256": "e6c82753f4cc58a06973e743671ecce7eb0abbdccf9f32aaf7cd6f4f53222fda"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1/tox__factor_expression_core__hard3_001/submission/featurelifted/__init__.py",
+      "sha256": "197bd453f9c66a31fbb442fb814210d9fdbaf003b7e29ad74a6ac9d546c073af"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/eval/logs/public.stdout",
+      "sha256": "6998b8006f123fcb2bfe045470c68eab13bffc0cc5290c2adb5deee4d5d7d55f"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/eval/result.json",
+      "sha256": "866c8b022fe23ec16cc8bdd25f321997e13a077ce0a177b54f4addd3e03efb24"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/poetry_core__dependency_groups_core__hard3_001/submission/featurelifted/__init__.py",
+      "sha256": "f1348ed9d8cb2f3f2ba26d3d5d4953cea2fdeb8f47d5b309807c0b31af8294bf"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/tox__factor_expression_core__hard3_001/eval/logs/public.stdout",
+      "sha256": "02e41028c22f9497f532359d0e946d22066d5da271627a22ae6a1523762fb2be"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/tox__factor_expression_core__hard3_001/eval/result.json",
+      "sha256": "0d8784e24a23051855a3a190fc2171a11844b9d906771e8088a507ba95d4e45a"
+    },
+    {
+      "path": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1/tox__factor_expression_core__hard3_001/submission/featurelifted/__init__.py",
+      "sha256": "9d0ae36c4a33b2ddeb7f88f581d8f0be747add6e0fc87b892cc11f3929f4c7d4"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/failure_root_cause_annotations.csv",
+      "sha256": "6f87b65ceea63f2706faf48b3e814536846e06c4a8e6959bbd09058f3e672a38"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    }
+  ]
+}

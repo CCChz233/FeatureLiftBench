@@ -1,38 +1,48 @@
 {
-  "revision": "chapter2_construction_validation_composition_20260908",
+  "revision": "final_benchmark_scope_20260911",
   "status": "static_checks_passed",
   "main_sections": 8,
-  "generated_data_tables": 12,
-  "authored_literature_tables": 1,
-  "figure_placeholders": 5,
+  "main_tables": 3,
+  "appendix_tables": 4,
+  "included_figures": [
+    "figures/fig01_motivation.png",
+    "figures/fig02_construction_validation.png",
+    "figures/figA_task_coverage.pdf",
+    "figures/figB_functional_results.pdf",
+    "figures/figC_paired_footprint.pdf"
+  ],
   "cited_keys": 14,
-  "abstract_whitespace_word_count": 211,
   "unresolved_cross_references": [],
   "unresolved_citations": [],
+  "environments_and_braces_balanced": true,
+  "compiled": false,
   "rendered": false,
   "new_experiments": false,
-  "files": [
-    {
-      "path": "docs/paper/main.tex",
-      "sha256": "d493c7dc186bca9c13ce16fbe4fc680d09a81ab1b9ca3b9397799be06e5178d6"
-    },
-    {
-      "path": "docs/paper/references.bib",
-      "sha256": "2dea5bdbb28ae095ab1be773a3d687350702503192745efad7e2e12a2a03b0e9"
-    },
-    {
-      "path": "docs/paper/writing/sources.md",
-      "sha256": "f0ab793d6d7e3253ad6b88174c29ea0b2b2da519ca7290a9294d4084e651413e"
-    },
-    {
-      "path": "docs/paper/writing/chapter2_evidence.json",
-      "sha256": "4c0a15a8ce193abcbbf3d9b5badb5986f0e69a54b02efd8185c5b439253298b3"
-    },
-    {
-      "path": "docs/paper/writing/chapter2_task_inventory.json",
-      "sha256": "154ee0ec1c13c74b0815292b1e1f758a8b414bfb51e5df98667b38179ef13248"
-    }
-  ],
-  "environments_and_braces_balanced": true,
-  "chapter2_inventory_tasks": 200
+  "table_scripts_check_passed": true,
+  "protected_content_unchanged": {
+    "tables": 7,
+    "figures": 5,
+    "numeric_text": 2
+  },
+  "unchanged_source_and_asset_hashes": {
+    "docs/paper/references.bib": "217af9b34a55dd2fc07462629d397778c3c7fd77c498a7d3805239cf45e15802",
+    "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1",
+    "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6",
+    "docs/paper/figures/fig01_motivation.png": "10c9b1d1fc817ca5908ea2154a7b909df5a8370c13f888cd06824c23b2603ce7",
+    "docs/paper/figures/fig02_construction_validation.png": "86566a0b8a88255807f2dbc96c3cd12a759131f723590edaee0639361916c3ea",
+    "docs/paper/figures/figA_task_coverage.pdf": "a0ce8d3f7907ffdfd095923b1659f07fe0c46142345ca85b58b09c99ec294068",
+    "docs/paper/figures/figB_functional_results.pdf": "d5e9bbbd79d65f2c76fa399a25c5b930e93ba419b1f06400bcb8a7106be48a83",
+    "docs/paper/figures/figC_paired_footprint.pdf": "6e6a248402de44ebbc6d504d9810f6e4400b9a19b9afd89957b59626a6700a81",
+    "docs/paper/figures/data/figA_task_coverage.json": "bb5f48b5e5771aa013002735b531e15241b6f70ce95d5c32598e3e1b96ed53d4",
+    "docs/paper/figures/data/figB_functional_results.json": "13f53b87b2c08d2c83a278e15de97dda9602d947ac0b599e8438f8985bb78af6",
+    "docs/paper/figures/data/figC_paired_footprint.json": "9d279870cc786038bb149454dd2ba1d42825a3b15b124676fdc347abb09fff39"
+  },
+  "main_tex_sha256": "f7089f093791247541c87b5f3a375807277d2d8ba1e5b3ccae243623008c0168",
+  "approximate_english_word_counts_including_latex_commands": {
+    "before": 11738,
+    "after": 11044,
+    "removed": 694
+  },
+  "scope": "200 tasks; common 150 tasks x six configurations; remaining 50 x five configurations",
+  "interpretation": "Historical engineering identifiers and local reconciliation narrative removed from manuscript; original artifacts preserved. No new environment-equivalence claim or experimental validation is introduced."
 }

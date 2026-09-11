@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "benchmark": {
+    "name": "FeatureLiftBench",
+    "tasks": 200,
+    "repositories": 176,
+    "snapshots": 182
+  },
+  "comparison": {"tasks": 150, "configurations": 6, "outcomes": 900},
+  "extension": {"tasks": 50, "configurations": 5},
+  "inputs": {
+    "release_manifest": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+    "task_inventory": "docs/paper/writing/chapter2_task_inventory.json",
+    "task_evidence": "docs/paper/writing/chapter2_evidence.json",
+    "main_results": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+    "paired_statistics": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+    "main_summary": "reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv",
+    "lift_taxonomy": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+    "mechanism_taxonomy": "artifacts/research_analysis/python150_task_taxonomy.csv",
+    "coverage_data": "docs/paper/figures/data/figA_task_coverage.json"
+  },
+  "models": [
+    {"id": "deepseek-v4-pro", "short": "Pro", "display": "DeepSeek V4 Pro", "main_passes": 115, "extension_passes": null, "run_directory": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1"},
+    {"id": "deepseek-v4-flash", "short": "Flash", "display": "DeepSeek V4 Flash", "main_passes": 108, "extension_passes": 49, "run_directory": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1"},
+    {"id": "gpt-5.6-luna", "short": "Luna", "display": "GPT-5.6 Luna", "main_passes": 102, "extension_passes": 42, "run_directory": "experiments/python/openhands/gpt-5.6-luna/python200-prime-v2-main-r1"},
+    {"id": "glm-5.3-flash", "short": "GLM", "display": "GLM-5.3-Flash", "main_passes": 68, "extension_passes": 30, "run_directory": "experiments/python/openhands/glm-5.3-flash/python200-prime-v2-main-r1"},
+    {"id": "qwen3.6-35b-a3b-fp8", "short": "Qwen", "display": "Qwen3.6-35B-A3B-FP8", "main_passes": 63, "extension_passes": 23, "run_directory": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1"},
+    {"id": "gpt-oss-120b", "short": "OSS", "display": "GPT-OSS 120B", "main_passes": 36, "extension_passes": 25, "run_directory": "experiments/python/openhands/gpt-oss-120b/python200-prime-v2-main-r1"}
+  ],
+  "paper_files": [
+    "main.tex", "references.bib", "acmart.cls", "ACM-Reference-Format.bst", "acm-jdslogo.png",
+    "figures/fig01_motivation.png", "figures/fig02_construction_validation.png",
+    "figures/figA_task_coverage.pdf", "figures/figB_functional_results.pdf", "figures/figC_paired_footprint.pdf"
+  ],
+  "notes": [
+    "Paths preserve existing storage names. Python-150, hard50, prime and v2 in paths are internal identifiers, not paper-facing benchmark names or difficulty tiers.",
+    "This file selects existing final evidence for writing. It does not create another benchmark release, rerun experiments, or rewrite historical run metadata.",
+    "Recorded pass counts are regression expectations; table values are computed from task-level results."
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-11",
+  "status": "passed",
+  "release_tasks": 200,
+  "mechanism_tasks": 150,
+  "source_checks": {
+    "task_identity_join": 200,
+    "public_specs_match_freeze": 200,
+    "task_statements_match_freeze": 200,
+    "original_mechanism_labels_match_metadata": 200,
+    "family_count_sum": 200,
+    "lift_count_sum": 200,
+    "mechanism_scope": 150,
+    "missing_mechanism_rows_not_zero_filled": 50,
+    "historical_source_identity_string_mismatches": 44,
+    "semantic_reaudit_by_this_plot_script": false
+  },
+  "family_counts": {
+    "registry_plugin_dispatch": 38,
+    "parse_tokenize_decode": 37,
+    "config_resolve_discover": 26,
+    "validate_normalize_construct": 22,
+    "serialize_format_render": 19,
+    "workflow_session_orchestration": 14,
+    "resource_metadata_loading": 14,
+    "algorithm_data_structure": 11,
+    "protocol_state_transition": 11,
+    "cache_retry_policy": 8
+  },
+  "release_lift_counts": {
+    "Adapted": 100,
+    "Direct": 68,
+    "Composite": 32
+  },
+  "mechanism_missing_rows_preserved": 50,
+  "unchanged_figures": {
+    "docs\\paper\\figures\\fig01_motivation.png": true,
+    "docs\\paper\\figures\\fig02_construction_validation.png": true,
+    "docs\\paper\\figures\\figB_functional_results.pdf": true,
+    "docs\\paper\\figures\\figC_paired_footprint.pdf": true
+  },
+  "generated_result_blocks_unchanged": 7,
+  "latex_references_and_environments_valid": true,
+  "latex_graphics": [
+    "figures/fig01_motivation.png",
+    "figures/fig02_construction_validation.png",
+    "figures/figA_task_coverage.pdf",
+    "figures/figB_functional_results.pdf",
+    "figures/figC_paired_footprint.pdf"
+  ],
+  "pdf_pages": 1,
+  "pdf_page_points": [
+    518.4,
+    267.84
+  ],
+  "png_pixels": [
+    2160,
+    1116
+  ],
+  "pdf_sha256": "a0ce8d3f7907ffdfd095923b1659f07fe0c46142345ca85b58b09c99ec294068",
+  "overleaf_files": [
+    "main.tex",
+    "references.bib",
+    "acmart.cls",
+    "ACM-Reference-Format.bst",
+    "acm-jdslogo.png",
+    "figures/fig01_motivation.png",
+    "figures/fig02_construction_validation.png",
+    "figures/figA_task_coverage.pdf",
+    "figures/figB_functional_results.pdf",
+    "figures/figC_paired_footprint.pdf"
+  ],
+  "overleaf_matches_workspace": true,
+  "new_experiments": false,
+  "latex_compiled": false,
+  "paper_rendered": false,
+  "standalone_figure_rendered": true,
+  "pdf_visual_review": "Final PDF rendered with Poppler and inspected: labels, bar totals, heatmap values, legends, and panel denominators are legible without clipping.",
+  "main_tex_sha256": "5e25e6dcaebd2e6937a1457ebcabc3022825b90b022861b00b9fe69484ee4054",
+  "final_selection": {
+    "date": "2026-09-11",
+    "layout": "Stacked functional-family bars by lift type + entanglement heatmap",
+    "paper_asset": "figures/figA_task_coverage.pdf",
+    "round_variant": "preview only",
+    "latex_and_overleaf_asset_verified": true
+  }
+}

@@ -1,56 +1,35 @@
-# Paper writing working materials
+# Paper writing materials
 
-> **Documentation status: reference · Last verified: 2026-09-08**
+> **Status: current · Last verified: 2026-09-11**
 
-The current writing plan is [PAPER_OUTLINE.md](../PAPER_OUTLINE.md).
-The user approved proceeding directly to LaTeX with populated data tables and
-figure placeholders. The current editable draft is `../main.tex`, which follows
-the eight-section outline. `manuscript.tex` is an earlier intermediate, retained
-only as assembly history. Edit `../main.tex` for all further prose revisions.
+Edit [main.tex](../main.tex) and [references.bib](../references.bib). The outline is [PAPER_OUTLINE.md](../PAPER_OUTLINE.md). All five figures are present; older placeholder notes are historical.
 
-`original_main_20260907.tex` and `original_references_20260907.bib` preserve the
-user's starting files. `related_work.tex`, `verified_references.bib`, and
-`sources.md` preserve related-work source material and verification notes.
+The current data selection is [paper_sources.json](../paper_sources.json). Shared paths, model order and labels come from [paper_inputs.py](../paper_inputs.py). Start with [WORKFLOW.md](../WORKFLOW.md).
 
-`update_tables.py` regenerates the 12 marked table blocks from saved evidence;
-`--check` verifies agreement without modifying the paper. It also audits all
-900 retained run profiles. `table_validation.json` records input hashes and QA.
-The current manuscript additionally contains one authored related-work table
-(`tab:positioning`), giving 13 tables in total. The updater preserves that table.
-`assemble_initial_draft.py` is the historical one-time assembler; do not rerun it
-after editing the paper, because it overwrites the prose from the intermediate.
+## Active code
 
-`known_defect_sensitivity.py` and its JSON output summarize existing results
-after excluding seven task IDs flagged by the existing first-pass analysis.
-They do not run agents or alter frozen results. Their original provenance caveat
-describes the earlier audit scope; the historical JSON is preserved.
+| File | Role |
+| --- | --- |
+| `update_tables.py` | Five numeric tables and two numeric text blocks; preserves other prose |
+| `comprehensive_table.py` | Correctness, artifact and efficiency panels in the main table |
+| `update_structure_results.py` | Appendix structure table from the common 150 tasks |
+| `chapter2_evidence.py` | Rebuilds saved construction evidence and the 200-task index; run only when intentionally refreshing those derived files |
 
-The [2026-09-08 offline audit](../../../reports/paper_analysis/python150_offline_audit_20260908/README.md)
-adds per-task input alignment: 900 initial prompts, recorded source identities
-and locks align with v2, and all 838 saved functional-capsule digests match.
-Runtime image IDs remain unreconciled with the release/oracle manifest; the
-full local task-tree check also has 25 exceptions. The paper states these limits.
-The separate 14-artifact defect recheck supports six candidates and leaves the
-pytest accessor policy ambiguous. It adds a 144-task sensitivity beside the
-original 143-task view without overwriting old annotations. All semantic review
-remains L1, not independent human L2.
+The standard entrypoint is `python -B scripts/paper.py check` from the project root. It checks the 200-task benchmark and 150-task common comparison against the current tables. Use `tables` to update generated blocks. Neither command runs models, task code, or LaTeX.
 
-The table updater checks the audit's source hashes before using its alignment
-claim and records the new audit files in `table_validation.json`. Do not rerun
-the historical assembler. The current workflow edits LaTeX only and does not
-compile or render the document.
+The table generator checks task membership, duplicate cells, functional gates, denominators, paired values and recorded run profiles. Historical sensitivity analysis and historical environment reconciliation are separate records, not prerequisites for producing current numeric tables.
 
-The subsequent narrative revision follows the user's priority to complete the
-outline before further detail audits. It rewrites the abstract, introduction,
-contributions and conclusion, adds section transitions, and expands related work
-around source evidence, output boundaries and evaluation targets. It retains the
-five figure placeholders and all existing numeric results. Primary-source checks
-for the literature comparison are appended to `sources.md`.
+## Current supporting material
 
-Chapter 2 now expands task construction, validation layers, and dataset coverage.
-`CHAPTER2_EVIDENCE.md` maps its claims to local sources.
-`chapter2_evidence.py` generates a complete 200-task JSON index and aggregate
-evidence without running evaluations. It keeps current frozen identities separate
-from historical taxonomy, including 44 source-commit mismatches and the extension's
-planned lift-label status. The dataset table adds snapshot counts and distinguishes
-38 LLM-reviewed repairs from six maintainer-proxy adjudications.
+- `chapter2_task_inventory.json` and `chapter2_evidence.json`: task identities and construction evidence. The repair-round fields in the latter do not describe the later author review.
+- `author_review_statement.json`: author's confirmation of review of all 200 retained tasks.
+- `chapter5_case_evidence.json` and [case discussion notes](CHAPTER5_CASE_EVIDENCE.md): selected saved-artifact illustrations.
+- `controlled_difficulty_evidence.json`: construction-cohort analysis.
+- `structure_results.json`: category denominators and outcome counts.
+- [BIBLIOGRAPHY_REVIEW.md](BIBLIOGRAPHY_REVIEW.md): current bibliography decisions.
+
+## Historical code and notes
+
+`assemble_initial_draft.py` is a one-time historical assembler that overwrites prose; it is not part of the current workflow. `manuscript.tex`, original draft copies, older repair/sensitivity scripts, image-identity checks and dated revision notes remain for traceability. Their statements describe their dates and scopes, not automatically the current paper.
+
+No task definitions or raw results are changed by this cleanup. Earlier README text is preserved in the [documentation snapshot](../../archive/snapshots/paper_workflow_20260911/README.md).

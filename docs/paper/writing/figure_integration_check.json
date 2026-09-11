@@ -1,0 +1,84 @@
+{
+  "scope": "Static LaTeX/asset checks only; no experiments, LaTeX compilation, or page rendering.",
+  "main_sha256_before": "7737961ff3fce21f31735a7f8f957fefc05272f5874300bc4cf76b7654279947",
+  "main_sha256_after": "7cdb898f86dc6788e40ad5ede21ac67a1a104aea0b78284af0eb3ec8529d0e1f",
+  "figures": [
+    {
+      "number": 1,
+      "label": "fig:pipeline",
+      "asset": "figures/fig01_motivation.png"
+    },
+    {
+      "number": 2,
+      "label": "fig:construction",
+      "asset": "figures/fig02_construction_validation.png"
+    },
+    {
+      "number": 3,
+      "label": "fig:coverage",
+      "asset": "figures/figA_task_coverage.pdf"
+    },
+    {
+      "number": 4,
+      "label": "fig:failures",
+      "asset": "figures/figB_functional_results.pdf"
+    },
+    {
+      "number": 5,
+      "label": "fig:paired-copy",
+      "asset": "figures/figC_paired_footprint.pdf"
+    }
+  ],
+  "selected_assets": [
+    {
+      "source": "E:\\FeatureLiftBench\\docs\\paper\\figures\\design_references\\fig1_generic_motivation_v1.png",
+      "paper_asset": "figures/fig01_motivation.png",
+      "sha256": "10c9b1d1fc817ca5908ea2154a7b909df5a8370c13f888cd06824c23b2603ce7",
+      "pixels": [
+        1774,
+        887
+      ],
+      "mode": "RGB"
+    },
+    {
+      "source": "C:\\Users\\CHZ\\Desktop\\图片\\fig2.png",
+      "paper_asset": "figures/fig02_construction_validation.png",
+      "sha256": "86566a0b8a88255807f2dbc96c3cd12a759131f723590edaee0639361916c3ea",
+      "pixels": [
+        4183,
+        1746
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "checks": {
+    "image_paths_exist": true,
+    "figure_order_correct": true,
+    "captions_and_accessibility_descriptions_present": true,
+    "undefined_cross_references": [],
+    "duplicate_labels": [],
+    "environment_nesting_balanced": true,
+    "braces_balanced": true,
+    "generated_data_blocks_unchanged": true,
+    "generated_data_block_count": 7,
+    "selected_images_copied_without_pixel_changes": true,
+    "obsolete_figure_references_removed": true,
+    "overleaf_archive_members_match_workspace": true
+  },
+  "overleaf_archive": {
+    "path": "E:\\FeatureLiftBench\\docs\\paper\\featureliftbench_overleaf.zip",
+    "sha256": "ac154f1e6f8c2a12f7e9c87c9cc54824414dc2e11839624849e17f5c9bf2fb3d",
+    "files": [
+      "main.tex",
+      "references.bib",
+      "acmart.cls",
+      "ACM-Reference-Format.bst",
+      "acm-jdslogo.png",
+      "figures/fig01_motivation.png",
+      "figures/fig02_construction_validation.png",
+      "figures/figA_task_coverage.pdf",
+      "figures/figB_functional_results.pdf",
+      "figures/figC_paired_footprint.pdf"
+    ]
+  }
+}

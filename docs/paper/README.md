@@ -1,66 +1,50 @@
-# FeatureLiftBench — LaTeX 论文工作稿
+# FeatureLiftBench 论文工作稿
 
-> **Status: current LaTeX draft · Last updated: 2026-09-08 · Target: FSE**
+> **Status: current · Last verified: 2026-09-11**
 
-本目录是根据已确定大纲撰写的 **ACM `acmart` 单文件英文论文工作稿**。
-当前包括八章正文、附录、4 张正文数据表、1 张相关工作对照表、8 张附录数据表，以及 5 个待替换的图占位框。
-本次只整理已有材料和结果，没有运行模型或 benchmark 实验。
-当前按用户要求只修改 LaTeX 源文件，未编译或渲染。
+目标：FSE。正文入口：[main.tex](main.tex)，文献：[references.bib](references.bib)。当前有八章正文、附录、七张表和五张正式图片。
 
-本轮按“先补齐内容”的方向重写摘要、引言、贡献和结论，并补充章节衔接及相关工作。论文主线固定为：完整源实现可见时，agent 能否将规定行为交付为独立包；共同通过的产物，其规模和直接复制程度又有何不同。新增 `tab:positioning` 对照任务输入、交付物与评测对象；FeatureBench 的 L1/L2 分开列示，软件移植研究作为近邻工作讨论。相关工作核对记录见 `writing/sources.md`。
+## 当前口径
 
-| 文件 | 作用 |
-|------|------|
-| `PAPER_OUTLINE.md` | 当前工作大纲：论文主线、章节、5 张正文图与 4 张表的设计和证据边界 |
-| `main.tex` | 论文主文件（标题、摘要、正文、附录） |
-| `references.bib` | BibTeX 参考文献 |
-| `writing/update_tables.py` | 从既有 CSV、JSON 和运行记录生成标记内的 LaTeX 表格 |
-| `writing/table_validation.json` | 表格来源、文件哈希及离线核对记录 |
-| `acmart.cls` / `ACM-Reference-Format.bst` / `acm-jdslogo.png` | ACM 编译依赖 |
+- FeatureLiftBench：200 个 Python 任务、176 个仓库、182 个快照。
+- 主比较：六配置在相同 150 题上比较；扩展评测：五配置额外覆盖 50 题。
+- 核心问题：完整源码可见时，目标能力能否跨越新软件包边界并保持行为？
+- 作者已确认完成全部 200 个保留任务的复核，AI 辅助。
+- Functional pass 为正确性结果；RRES / Copy 为产物诊断；Steps / Tokens 为效率统计。
+- 正文统一 source repository、Public / Hidden；两组 evaluator tests 均不向智能体开放。
+- RQ3 使用通过频次与构建批次控制分析；lift type 不作为独立难度刻度。
 
-## 编译
+## 代码与数据入口
 
-```bash
-cd docs/paper
-latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+先看 [WORKFLOW.md](WORKFLOW.md)。当前输入路径、模型全名和顺序集中在 [paper_sources.json](paper_sources.json)，由 [paper_inputs.py](paper_inputs.py) 读取。旧文件夹名称只作存储标识。
+
+具体材料：[论文大纲](PAPER_OUTLINE.md) · [写作脚本与证据](writing/README.md) · [图片与绘图脚本](figures/README.md)。
+
+从项目根目录执行：
+
+```powershell
+python -B scripts/paper.py check
+python -B scripts/paper.py tables
+python -B scripts/paper.py figures
+python -B scripts/paper.py package
 ```
 
-Overleaf：上传本目录全部文件，编译器选 **pdfLaTeX**，入口 `main.tex`。
+依次为只读核对、更新数值表格、绘制 Fig. 3–5、打包 Overleaf。绘图可使用本机 `D:/Anaconda3/python.exe`。这些入口不启动实验或编译论文。普通写作直接编辑 main.tex，不运行历史组装器。
 
-## 数字边界
+## 定稿图与 Overleaf
 
-主结果输入为 `reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv`。
-主分母固定为 150 题 × 6 配置；空提交计为失败。七个疑似任务缺陷的剔除结果单列为 143 题的事后敏感性视图。
+| 图 | 正文文件 |
+| --- | --- |
+| Fig. 1 通用 motivation / 任务示意 | `figures/fig01_motivation.png` |
+| Fig. 2 构建与验证 | `figures/fig02_construction_validation.png` |
+| Fig. 3 任务组成 | `figures/figA_task_coverage.pdf` |
+| Fig. 4 功能结果与通过频次 | `figures/figB_functional_results.pdf` |
+| Fig. 5 共同成功产物差异 | `figures/figC_paired_footprint.pdf` |
 
-2026-09-08 的[本地复核报告](../../reports/paper_analysis/python150_offline_audit_20260908/README.md)补充了逐题证据：126 题在两个 freeze 间未改动，另外 24 题与替换集合完全一致；900 份初始提示词及 838 份已有功能评测 capsule 与 v2 对齐。522 条 v2、378 条前序 run ID 均按原值保留。仍有运行镜像 ID 与 release/oracle 清单不同、25 个本地完整任务树未完全复原等限制，见报告和论文附录；不能将结果解释为完全统一条件下的纯模型排名。
+打包命令包含 `main.tex`、`references.bib`、上述五图及 `acmart.cls`、`ACM-Reference-Format.bst`、`acm-jdslogo.png`。输出为 `featureliftbench_overleaf.zip`；修改正文后需重新打包。Overleaf 中保留 figures/ 层级，路径下划线直接写 `_`。
 
-七题的 14 个 Pro/Flash 产物已经重新阅读：六题支持保留缺陷候选，pytest 一题仍属 accessor 空白策略歧义。正文保留原 143 题敏感性表，附录补充仅剔除六题的 144 题视图。失败语义标注仍为 AI 辅助 L1，不能当作独立人工验证的因果比例。
+代码整理后，正文已于 2026-09-11 按最终 200/150/50 范围同步修订：评测协议说明共同任务与评分规则，Threats 保留实际配置与统计限制，附录介绍当前数据与复现入口。开发批次、旧标识和本地目录核对过程不再作为当前实验问题展开。定稿图片与数值表格保持原样，上传包随正文更新。
 
-从项目根目录更新或核对表格：
+修改前正文及大纲见 [LaTeX 快照](../archive/snapshots/paper_final_scope_20260911/README.md)；旧入口文档见 [工作流快照](../archive/snapshots/paper_workflow_20260911/README.md)。
 
-```bash
-python docs/paper/writing/update_tables.py
-python docs/paper/writing/update_tables.py --check
-python docs/paper/writing/known_defect_sensitivity.py
-```
-
-更新器只改 `BEGIN/END GENERATED TABLE` 标记之间的内容，保留手工正文修改。
-相关工作对照表为手写 LaTeX，不由实验数据更新器生成；总计 13 张表，其中 12 张为数据表。
-
-## 替换五张图
-
-在 `main.tex` 中找到 `figureplaceholder` 的五处调用，用相应的 `includegraphics` 替换，保留外层 `figure`、`caption`、`Description` 和 `label`。图注已写好，框内给出了作图提示。
-
-1. `fig:pipeline`：Blinker 示例、源仓库与独立产物边界。
-2. `fig:construction`：任务构建、数据可见性与实际验证覆盖。
-3. `fig:failures`：首次失败阶段与非互斥 gate flags。
-4. `fig:difficulty`：0–6 个配置通过的题目分布与 Core/hard3 对照。
-5. `fig:paired-copy`：Pro/Luna 在 97 个共同通过任务上的 RRES 和复制比例。
-
-统计图应从已有数据作图；正文图注与附录表给出了分母和指标定义。原稿与原参考文献保存在 `writing/original_*_20260907.*`。
-
-## 审稿模式
-
-`main.tex` 使用 `\documentclass[acmsmall,screen,review,anonymous,nonacm]{acmart}`。
-当前保留匿名和行号；`nonacm` 用于工作稿，避免显示尚未确定的出版信息。
-投稿时按目标会议要求配置模板和出版元数据。
+当前使用 `acmsmall,screen,review,anonymous,nonacm` 工作稿选项；正式投稿模板与元数据另行对齐目标 track。

@@ -1,10 +1,14 @@
 # FeatureLiftBench 论文大纲与图表方案
 
-> **Documentation status: current · Last verified: 2026-09-08**
-> 工作大纲 v1：基于原始论文阅读和本地 benchmark / 实验材料形成的写作建议。
-> 大纲已用于 `main.tex` 英文正文撰写；数据表已填充，五张图保留占位框，不启动新实验。
-> 2026-09-08 内容补写：重写摘要、引言、三项贡献和结论，补齐章节衔接，扩展三组相关工作并新增任务接口对照表。当前正文为 5 张图占位 + 4 张数据表 + 1 张文献对照表；下文原 5+4 预算指数据图表。
-> 版本与缺陷说明以当天离线复核及 `main.tex` 为准：主集输入已对齐，六个缺陷候选有支持证据、pytest 一题仍有歧义，附录补充 144 题敏感性。当前优先补齐论文内容，暂不扩大实验或细节审计。
+> **Documentation status: current · Last verified: 2026-09-11**
+>
+> 当前实现以 [main.tex](main.tex) 为准，数据与代码入口见 [WORKFLOW.md](WORKFLOW.md)。Benchmark 为 200 题、176 个仓库、182 个快照；主比较为相同 150 题上的六配置结果，五配置额外覆盖其余 50 题。
+>
+> 当前正文采用八章结构、七张表和五张定稿图。Fig. 1 为通用 motivation，Fig. 2 为构建与验证，Fig. 3 为任务组成，Fig. 4 为功能结果和通过频次，Fig. 5 为共同成功产物差异。RQ3 使用通过频次与构建批次控制分析，分类表放在附录。
+>
+> 2026-09-11 已按最终实验范围重写评测协议、内部有效性和复现附录，开发历史不再作为当前实验问题展开。正文保留实际配置、评分规则与统计限制。此前大纲全文见 [历史快照](../archive/snapshots/paper_final_scope_20260911/README.md)。
+>
+> 下文保留早期结构论证和文献阅读笔记，供理解设计选择；其中旧图号、占位安排和阶段性状态不覆盖上述当前实现。
 
 ## 1. 先确定我们要讲的故事
 
@@ -78,7 +82,7 @@
 4. Benchmark Results
    4.1 RQ1: Overall Functional Capability
    4.2 RQ2: Where Do Submissions Fail?
-   4.3 RQ3: How Does Task Difficulty Vary?
+   4.3 RQ3: How Does Success Vary across Tasks?
    4.4 RQ4: How Compact Are Common Successes?
 
 5. Diagnostic Analysis and Discussion
@@ -92,7 +96,7 @@
 
 Appendices
 A. Full Task Inventory, Provenance and Validation Records
-B. Additional Hard-50 and Full Python-200 Results
+B. Supplementary Release Results
 C. Complete Gate, Paired and Statistical Results
 D. Provisional Failure Annotations and Cases
 E. Run Identity, Profiles, Recovery and Reproduction
@@ -123,9 +127,14 @@ E. Run Identity, Profiles, Recovery and Reproduction
 
 **2.3 验证证据。** 依次回答：源身份是否固定、参考实现是否可执行、测试是否来自公开义务、是否控制了源仓库访问。分别列出“已通过的机械/执行检查”和“尚不能声称完成的语义公平性审查”。现有记录支持 200 task checks、200 source mappings、oracle 600/600 与 200 stable tasks；不能据此推出每条隐藏期望都合理。
 
-**2.4 构成。** 先说明 200 题发布集与 150 题正文共同集，再说明内部 Core-100 / hard3-50。Direct/Adapted/Composite 仅作结构分类。交代为什么正文选择 150：六配置共同覆盖，并有正文所用的参考相对产物统计；额外 Hard-50 的五配置结果完整留在附录，不隐去扩展集结果。
+**2.4 构成。** 用覆盖范围解释 200 个发布任务与 150 个共同评测任务。后者六配置均有结果，并具备所需产物统计；其余 50 题的五配置结果放附录。功能类别说明覆盖面，任务结构则分两维介绍：
 
-**配置图表：Fig. 2、Table 1。** Construction 描述如何产出题包，Protocol 描述如何评价 agent，两者不要重复画成同一流水线。
+- **提取任务的性质（单标签）：** Direct、Adapted、Composite，分别说明与上游主体能力的行为对应、显式转换和多能力组合；保留 56/76/18 的段落统计与案例。
+- **缠绕机制（多标签）：** 代码依赖、数据与状态、框架机制、环境与资源。解释独立提取时需要处理的依赖，用 Blinker 说明 Direct 也可能涉及多个缠绕机制。
+
+附录记录原有十个机制标签到四类的映射及按任务去重的规则。这是对已有标签的展示归并，不宣称完成新一轮语义标注，不据实验目录名称划分难度，也不把机制标签直接当成失败原因或新增分组性能结论。
+
+**构建图：Fig. 2；构成统计用段落说明。** Construction 描述如何产出题包，Protocol 描述如何评价 agent，两者不要重复画成同一流水线。
 
 ### 3. Protocol and Setup：这些分数究竟测量了什么？
 
@@ -133,24 +142,24 @@ E. Run Identity, Profiles, Recovery and Reproduction
 
 **3.2 评测和指标。** 主分数是 `Build ∧ Public ∧ Hidden ∧ Isolation`，空卷计失败。说明 Build 的实际 loading/install fallback；Isolation residual 是 gate 层面的操作化统计。RRES 与 detected copy fraction 只分析通过包；模型差异使用共同通过题。不要把复制比例当成质量总分。
 
-**3.3 结果组装和统计。** 解释每个 model–task cell 最终结果如何纳入、preflight 补跑和 recovery 如何处理，以及 freeze 继承。Wilson CI、成对 McNemar、按 task 聚类的 logistic 和 common-pass 对比写在这里。单次结果不估计重复运行方差；未调整的探索性 p 值不支持完整模型排序。
+**3.3 结果组装和统计。** 解释结果纳入、preflight/recovery 与 freeze 继承。报告 Wilson CI、成对 McNemar、总体通过频次和 common-pass 产物比较。单次结果不估计重复运行方差；未调整的探索性 p 值不支持完整模型排序。
 
-**配置图表：Table 2。** 精确哈希和全套 profile 留附录，正文保留足以评估可比性的信息。
+**实验设置用段落说明。** 取消重复设置表；精确哈希和全套 profile 留附录，正文保留足以评估可比性的信息。
 
 ### 4. Results：四个问题，各回答一次
 
 | 小节 | 要回答的问题 | 核心证据 | 可写的结论 | 图表 |
 | --- | --- | --- | --- | --- |
-| 4.1 Capability | 当前配置完成多少任务？ | 六配置 150 题 through-gate counts、Wilson CI、selected paired outcomes | 记录中有较大的性能范围，且现有配置未全部解决该集合 | Table 3；不再画一张相同的排行榜 |
+| 4.1 Capability | 当前配置完成多少任务？ | 六配置 150 题 through-gate counts、Wilson CI、selected paired outcomes | 记录中有较大的性能范围，且现有配置未全部解决该集合 | 功能主结果表；不再画一张相同的排行榜 |
 | 4.2 Failure stages | 已交包或未交包的任务在哪里失败？ | 首败阶段；有包样本的非互斥 gate flags | 强配置失败主要落在行为测试；单独 Isolation gate 的最终残余较少 | Fig. 3 |
-| 4.3 Difficulty | 失败集中于哪些任务？ | 六家 solve-frequency、Core/hard3 分层、控制 lift type 的分析 | hard3 是本集合有用的经验分层；原始 lift-type 梯度存在混杂 | Fig. 4 |
-| 4.4 Extraction footprint | 同样通过的任务，交付物有何差别？ | Pro–Luna 共过 97 题；Flash–Luna 共过 92 题；paired RRES/copy | 功能通过与抽取规模是不同维度；同题成功产物仍可有明显差异 | Fig. 5 |
+| 4.3 Task variation | 不同任务的成功覆盖有何差异？ | 各题被 0–6 个配置通过的总体分布 | 28 题无人通过、17 题全部通过、105 题表现混合；这不是固有难度标签 | Fig. 4 |
+| 4.4 Extraction footprint | 同样通过的任务，交付物有何差别？ | Pro–Luna 共过 97 题；Flash–Luna 共过 92 题；paired RRES/copy | 功能通过与抽取规模是不同维度；同题成功产物仍可有明显差异 | 配对产物表 + Fig. 5 |
 
 每节按“先回答 → 给证据 → 解释适用范围”组织。不要重复正文中的全部表格数字，不把 gate 阶段叫作语义根因。
 
 ### 5. Diagnostics and Discussion：能从失败中理解什么？
 
-**5.1 先交代缺陷和分母。** 正文主表保留原 150；七个任务被既有 AI 初审标记为潜在 contract/evaluator defects。将同一七题从所有配置中排除，给出 post hoc 143 题敏感性。既有离线汇总显示分子均不变，最强 115/143=80.4%，六家全败从 28 降至 21。它不是经过重新验证的新 leaderboard，也不证明剩余题无缺陷。使用 Table 4。
+**5.1 先交代缺陷和分母。** 正文主表保留原 150；七个任务被既有 AI 初审标记为潜在 contract/evaluator defects。将同一七题从所有配置中排除，给出 post hoc 143 题敏感性。既有离线汇总显示分子均不变，最强 115/143=80.4%，六家全败从 28 降至 21。它不是经过重新验证的新 leaderboard，也不证明剩余题无缺陷。六配置敏感性结果用附录短段落呈现，正文保留主要影响和引用。
 
 **5.2 再做探索性解释。** Pro/Flash 有包失败 77 条，剔除 14 个相关行后为 63 条。展示一两个由公开契约支持的实例，解释“接口看起来在，但异常、默认值或状态行为仍未恢复”。Contract closure 在此是工作假说/症状描述。L1 归因计数放附录并标为 assistant first pass，不制作主文全六模型根因饼图。读过仓库不能证明定位充分。
 
@@ -181,21 +190,20 @@ E. Run Identity, Profiles, Recovery and Reproduction
 
 回到 feature lifting 这一任务、可执行 benchmark 和关键经验发现。结尾强调正确性和产物 footprint 的区分。不新增方法承诺，不把探索性 contract-closure 比例升级为已证明机制。
 
-## 4. 正文图表总计划：5 张图 + 4 张表
+## 4. 正文图表计划与接入状态
 
-**数量以论证需要为准；这里的 5+4 是本稿工作预算，不是会议规定。** 两张概念/流程图，三张定量图。若最终版面紧张，先缩减 Fig. 2 或把 Table 2 的细节移附录，不牺牲运行边界、主表分母和已知缺陷披露。
+**当前正文有四张图占位、一张已接入的配对产物差值图和三张表。** 新版 A/B/C 已生成，图 C 已覆盖六个配置并替换原图 5；A/B 尚未接入。旧图 1–2 仍不制作，后续正文编号随最终图组合调整。下表保留原图的对应关系，最新绘制规格见 `figures/CHART_CONTRACTS.md`。
 
 | 编号 | 内容 | 位置 | 读者看完应理解 | 当前状态 |
 | --- | --- | --- | --- | --- |
 | Fig. 1 | 一道真实 feature-lifting 任务与产物边界 | Introduction / 2.1 | 我们要求 agent 交付什么，为什么跨边界会丢行为 | 需新画矢量图 |
 | Fig. 2 | 题包构建、验证证据与可见性分层 | 2.2–2.3 | 数据怎么来；检查能保证什么 | 需新画矢量图 |
 | Fig. 3 | 首败构成 + Isolation residual 的明确分母 | 4.2 | 失败集中在哪里，过程失败与交付物失败有何不同 | 已有统计与漏斗图，可重排 |
-| Fig. 4 | 0/6–6/6 solve spectrum + Core/hard3 paired proportions | 4.3 | 经验难度分布及构建分组的关联 | 已有 spectrum；另一 panel 可由现有数据生成 |
+| Fig. 4 | 0/6–6/6 总体通过频次 | 4.3 | 在同一任务集合内展示观测差异 | 已生成单面板图 |
 | Fig. 5 | 同题通过的 RRES 与 copy 配对分布 | 4.4 | 正确性相同不代表抽取 footprint 相同 | 已有 paired-copy 图，补上 paired RRES |
-| Table 1 | 数据集构成 + 验证覆盖两个 panel | §2 | 200/150/两种50的关系；实际验证证据 | 冻结记录可生成 |
-| Table 2 | 共同设置和 backend-specific profile 差异 | §3 | 分数的可比条件和限制 | suite/profile 有记录 |
-| Table 3 | 六配置主结果：Pass、CI、Core/hard3、空卷 | 4.1 | 能力规模与主要分层 | 已有 main_table |
-| Table 4 | 同七题排除前后对比 | 5.1 | 结果如何受已标记问题影响 | 已有离线敏感性 JSON |
+| Table 1 | 六配置总体通过数（率）及 Wilson CI | 4.1 | 能力规模与估计区间 | 已填入 |
+| Table 2 | 同题 RRES/Copy 中位数、差值和方向计数 | 4.4 | 同样通过后的产物差异 | 已填入 |
+| Table 3 | 文献任务接口对照 | §7 | 输入、交付物、验证对象的区别 | 已填入 |
 
 ### Fig. 1：优先画，先让人理解任务
 
@@ -232,7 +240,7 @@ Pinned source → Feature scope → Public API / behavior clauses → Tests + re
 Agent-visible: source + public contract       Evaluator-only: benchmark tests + oracle/reference
 ```
 
-- 上层表示构建的产物，下层表示可核查记录。Oracle 600/600 等数量可放 Table 1，图中避免密密麻麻的数字。
+- 上层表示构建的产物，下层表示可核查记录。Oracle 600/600 等数量保留在验证段落，图中避免密密麻麻的数字。
 - 明确：公开契约到测试的映射是需审查的关系，不是“语义公平性已证明”的绿勾。
 - 不加入全量 Validator-Agent / 双人审核 / adversarial audit 节点，除非本项目有对应已完成记录。
 - 图注区分机械通过与语义审查，语义限制用一行中性说明即可。
@@ -255,33 +263,27 @@ Agent-visible: source + public contract       Evaluator-only: benchmark tests + 
 
 > First outcomes over all assigned tasks (left) and non-exclusive gate flags among delivered artifacts (right). Isolation residual denotes a failure of the separate Isolation gate after Build, Public, and Hidden pass; it does not count every source-dependency error.
 
-### Fig. 4：经验难度与构建标签分开
+### Fig. 4：总体任务通过频次
 
-**Panel A：solve-frequency spectrum。** 横轴 0/6…6/6，纵轴 task count，每个柱按 Core/hard3 堆叠；保留统一蓝/橙颜色。标注 0/6 共28题、其中hard3 22题；图注指向七题敏感性，不能将全部28题当作已验证的真实难题。
+单面板柱图：横轴为通过的配置数 0–6，纵轴为任务数。七个计数为 28、7、9、22、36、31、17，合计 150。使用单色，不按实验批次或临时标签堆叠。28 题全部失败、17 题全部成功，其余 105 题表现混合。
 
-**Panel B：六模型 Core vs hard3 的点线图。** 每个模型一行，两个点连接，只表示同一配置在两个任务组的成功比例，标明 n=100/50；不把连接线当成逐题配对。OSS的落差较小也要保留。
+这张图描述六个已评测配置上的观测结果；不把未通过任务一律解释成有效难题，保留七题敏感性的引用。依赖临时分组的比较和回归退出论文，既有分析文件保留。
 
-控制 lift type 的 logistic 结果放正文一句和附录表；图里不再塞森林图。不得用 Direct→Adapted→Composite 的漂亮单调图暗示已证明独立难度效应。
-
-数据源：[task_difficulty.csv](../../reports/paper_analysis/python150_paper_analysis_final/csv/task_difficulty.csv)、[main_table.csv](../../reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv)。已有底稿：[task_difficulty_spectrum.png](../../reports/paper_analysis/python150_paper_analysis_final/fig/fig_task_difficulty_spectrum.png)。
+数据源为既有逐任务结果，绘图脚本是 `figures/scripts/fig04_difficulty.py`。
 
 建议图注：
 
-> Observed solve frequency across six evaluated configurations and success rates within the two Python-150 construction groups. These are empirical outcomes on a curated task set; the additional Hard-50 release extension is not included.
+> Observed solve frequency on 150 FeatureLiftBench tasks. Bars count tasks passed by 0–6 configurations. These campaign outcomes do not define fixed difficulty tiers.
 
-### Fig. 5：本论文的特色结果，优先保留
+### Fig. 5：共同成功任务的产物差异
 
-**Panel A：共同通过题上的 paired RRES。** Pro作x轴、Luna作y轴，n=97，画对角线。若采用log轴，先验证所有值为正；若含零，不默默删除或用任意epsilon。标出两侧中位数0.993/0.697。
+当前正文已接入 `figures/output/figC_paired_footprint.pdf`，保留 `fig:paired-copy` 标签。它以本次通过任务最多的 Pro 为参照，覆盖 Flash、Luna、GLM、Qwen、OSS，五组共同通过任务数分别为 105、97、67、63、33。
 
-**Panel B：同一97题的 copied fraction。** 可用 paired scatter + 小型ECDF，选择一种主要图形即可；中位数0.966/0.191。注明copy是detected normalized-line overlap。
+两个面板分别展示逐题 RRES 和 Copy 差值，统一定义为“对应配置 − Pro”。蓝点是任务，菱形为中位数，横线为第 25–75 百分位区间。RRES 采用对称对数坐标（±0.1 内线性）保留长尾和零值；Copy 保持线性坐标。各行配对集合不同，不能据跨行差异建立统一任务集上的 footprint 排名。
 
-Flash–Luna n=92作为正文一句复核方向，完整图放附录。图注区分RRES与copy的p值，不能将copy的Wilcoxon结果标到RRES上。
+这张图支持“功能通过后，产物大小与源码重叠仍不同，且两者不能互相替代”。正文保留 Pro/Luna 与 Flash/Luna 的精确配对表，并用 Pro/Qwen 的大小与复制方向对比说明两项指标的区别。该图不增加显著性结论或可维护性主张。
 
-数据源：[paired_copy_pro_luna.csv](../../reports/paper_analysis/python150_paper_analysis_final/csv/paired_copy_pro_luna.csv)、[task_results.csv](../../reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv)、[stats.json](../../reports/paper_analysis/python150_paper_analysis_final/json/stats.json)。已有底稿：[paired_copy.png](../../reports/paper_analysis/python150_paper_analysis_final/fig/fig_paired_copy.png)。
-
-建议图注：
-
-> Extraction measurements for Pro and Luna on the same 97 passing tasks. Reference-relative size and detected source overlap describe different properties of successful artifacts; neither is a substitute for functional correctness or a direct measure of maintainability.
+原 Pro/Luna 散点保留为旧版输出。新版复现入口：`figures/scripts/redraw_figures.py`，数据：`figures/data/figC_paired_footprint.json`；不运行新实验或编译论文。
 
 ### 暂不放正文的图
 
@@ -309,10 +311,10 @@ Flash–Luna n=92作为正文一句复核方向，完整图放附录。图注区
 | 项目 | 本轮看到的事实 | 写作处理 |
 | --- | --- | --- |
 | 150题仓库数 | 按freeze内canonical `source_repo_id`去重为126；按source名称去重会得到127，dateutil / python-dateutil是别名 | 正文写150题/126个canonical仓库；200题为176。同步旧稿的127 |
-| 配置是否只有模型不同 | Pro/Flash记录token condenser；其余四家记录default模式 | 共有名义资源信封，但不是完整context policy都相同；Table 2明确披露 |
+| 配置是否只有模型不同 | Pro/Flash记录token condenser；其余四家记录default模式 | 共有名义资源信封，但不是完整context policy都相同；实验设置段落明确披露 |
 | run freeze身份 | 现有900行中522为v2 ID，378保留前任ID；Flash/Luna/Qwen各有126条前任记录 | 查既有继承/补跑台账及逐题内容等价证据。未核清前称“合并campaign记录”，不宣称900次全是统一v2新运行。现有数值表是已记录结果，跨配置严格可比结论须受此限定 |
 | 独立可安装性 | 冻结evaluator允许package path/PYTHONPATH加载和fallback | 任务目标可称独立包；结果称满足当前loading/build策略，不能声称全部wheel或干净安装验证 |
-| 7个题缺陷 | 标签是AI初审的invalid candidate，非独立人工最终裁定 | 主表不暗改；Table 4同题排除，说明选择由失败分析得到，非穷尽 |
+| 7个题缺陷 | 标签是AI初审的invalid candidate，非独立人工最终裁定 | 主表不暗改；敏感性段落对所有配置排除同一组题，说明选择由失败分析得到，非穷尽 |
 | 全量语义验证 | 600/600 Oracle支持可行性；没有全量独立human L2审查 | Fig. 2区分执行证据与语义可信性；去掉“全量Validator-Agent已审完” |
 | 主结论强度 | Pro–Flash p≈.092、GLM–Qwen p≈.568；Composite all6 p≈.486 | 不作相邻显著排序，不把strong3 p≈.554误写成all6结果 |
 
@@ -326,10 +328,10 @@ Flash–Luna n=92作为正文一句复核方向，完整图放附录。图注区
 
 1. 先画 Fig. 1 的简单草图：读者能否一句话说明我们测什么。
 2. 再画 Fig. 2：流程上的每个框都能对应真实产物或已完成检查。
-3. 将 Table 3 与 Fig. 5 做成第一批结果图表：功能成绩和产物差异是论文最重要的两个观察。
-4. 完成 Fig. 3、Fig. 4 和 Table 4：补足解释与敏感性。
+3. 将功能主结果表与 Fig. 5 做成第一批结果图表：功能成绩和产物差异是论文最重要的两个观察。
+4. 完成 Fig. 3、Fig. 4：补足失败与难度解释；敏感性用文字报告。
 5. 按这些图表写 Benchmark、Protocol、Results，最后回写 Introduction、Abstract、Conclusion。
 
-**图形实现约定：** 流程图用可编辑SVG/TikZ；数据图用可复现脚本输出矢量PDF和预览PNG，不使用生成式图像制作科学图表。统一模型顺序和Core/hard3颜色，保证缩到实际栏宽仍可读。所有图保存数据路径、分母、计算规则；每张图注说明适用样本。
+**图形实现约定：** 流程图用可编辑SVG/TikZ；数据图用可复现脚本输出矢量PDF和预览PNG，不使用生成式图像制作科学图表。统一模型顺序及指标配色，保证缩到实际栏宽仍可读。所有图保存数据路径、分母、计算规则；每张图注说明适用样本。
 
 大纲完成的判断标准是：每个章节都回答一个必要问题，每个主要结论都对应证据，每张正文图都推动故事。下一阶段按这一大纲制作草图和段落，不再沿旧稿中的历史版本和方法探索展开。

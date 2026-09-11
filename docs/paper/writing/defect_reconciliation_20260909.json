@@ -1,0 +1,142 @@
+{
+  "scope": "Seven flags against the saved 200-task release; static contract/test review, no executions",
+  "author_latest_statement": "All benchmark tasks reviewed; no problems remain (current conversation)",
+  "decision": "Keep 200 release / 150 common tasks as instructed; do not exclude seven tasks",
+  "assistant_review": "Six contract/test mismatches reproduced by reading; pytest accessor policy remains underspecified",
+  "final_author_dispositions_linked": false,
+  "tasks": [
+    {
+      "task_id": "click__lazy_command_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "The declared collection interface requires get_command(name) and resolve(argv), but does not specify invoke(argv).",
+      "observed_requirement": "The public evaluation calls collection.invoke(argv); Pro has no collection invoke method and Flash returns None through an inherited method.",
+      "alternative_interpretation": "A user may expect a command collection to be invocable. That expectation does not specify the adapted argv signature or return behavior, and full CLI runner behavior is excluded.",
+      "required_resolution": "Declare the intended collection invocation signature and behavior, or restrict evaluation to the declared resolution interface.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/click__lazy_command_core__hard3_001/metadata.json",
+        "sha256": "e04db418b5b3f9f243ef13f5dc3a11ebe8701846aaa3df575dde163208ce3f41"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/click__lazy_command_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "e0a7626d0d9455ac021f2cdf92fb5d86d949e21897626fc3e07a2289488e23b2"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "B001 requires registration of per-plugin options, but the public API lists OptionManager without a register_options member or an options mapping contract.",
+      "observed_requirement": "Pro fails on the register_options member; Flash passes that call but fails when its options list is indexed as a mapping.",
+      "alternative_interpretation": "Registration is explicitly in scope, so some registration operation is necessary. The issue is the exact unannounced member and storage interface, not absence of the broad capability.",
+      "required_resolution": "Specify how PluginSpec is registered and whether callers may access options by key; avoid testing an undeclared internal representation.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/flake8__plugin_options_core__hard3_001/metadata.json",
+        "sha256": "394182906e2adf2d610e1f441626ef262128f89830d9c05e1d69098bfc6e078e"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/flake8__plugin_options_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "1f1976e94030cfab75df6934fcb744eefd8ec09f6110f3a7970f5c8ee4b7e96d"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "The metadata contract requires lowercasing names but does not prescribe replacing internal spaces with hyphens.",
+      "observed_requirement": "Both submitted normalizers lowercase the project name but preserve an internal space; the public evaluation demands a hyphen instead.",
+      "alternative_interpretation": "Upstream does contain a non-strict normalization policy that replaces spaces. The task does not select it for this adapted metadata interface, so the issue is an unspecified policy rather than absence of all supporting upstream code.",
+      "required_resolution": "Select and state the intended normalization policy, including treatment of internal whitespace and invalid names.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/hatch__project_metadata_core__hard3_001/metadata.json",
+        "sha256": "4ff2b3a57be02a19294573bfd87abe759f1256db0a691d408af39bc28d02da46"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/hatch__project_metadata_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "487685a1834288863a3e6e3646b445328f43758565a27d8a465b28dc8901350e"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "The declared HookCaller members do not specify a kwargs-first call_historic signature.",
+      "observed_requirement": "Both public logs report multiple values for result_callback when evaluation passes a mapping positionally and result_callback by keyword.",
+      "alternative_interpretation": "The constructor includes historic behavior, which may imply support for historic calls. It does not imply a reversed argument order relative to upstream.",
+      "required_resolution": "Use the upstream-compatible keyword call, or explicitly declare and justify an adapted kwargs-first interface.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/pluggy__hook_wrapper_core__hard3_001/metadata.json",
+        "sha256": "ac06accf8dbec25bf66ddf5d542abc0ab80c40b7e52755d88816b9b513e2f10e"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/pluggy__hook_wrapper_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "ebc884c1e7d87619f3967df30b028d8969ec49f295a4519d29ced8fa54d9f1de"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "pytest__ini_markers_core__001",
+      "assistant_verdict": "fix_required",
+      "reason": "B003 explicitly preserves description whitespace when splitting a marker line. MarkerRegistry.description is declared, but a separate whitespace policy for this accessor is not stated.",
+      "observed_requirement": "Both public logs fail because registry descriptions retain a leading space while evaluation expects it trimmed.",
+      "alternative_interpretation": "A whitespace-preserving split function and a trimming registry accessor can coexist without logical contradiction. Because B003 may apply narrowly to split_marker_line, this is unresolved accessor-policy ambiguity, not a proven direct contradiction.",
+      "required_resolution": "Human adjudication should state whether B003 also governs MarkerRegistry.description; retain the flag provisionally and show sensitivity both with and without excluding this task.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/pytest__ini_markers_core__001/metadata.json",
+        "sha256": "40767503c819ed66e6645ef7d50eae0a32c8fc8163e6317521de6b58fa273061"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/pytest__ini_markers_core__001/public_tests/test_public_api.py",
+          "sha256": "ae56e749468e318c51eedb58196d4c3cfbde13fbb986057ee7c6dd3817bc5d5b"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "The contract requires renderer selection for plain text, Markdown and reST; it does not require renderer names to occur literally in the rendered HTML.",
+      "observed_requirement": "Both public logs show rendered heading HTML rejected because the expected literal renderer marker is absent.",
+      "alternative_interpretation": "A marker can test dispatch in a stub renderer, but neither the contract nor the supplied source instructs the agent to implement a stub-marker output convention.",
+      "required_resolution": "Verify renderer selection through declared observable rendering semantics, or explicitly specify an output format if a marker is intended.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/readme_renderer__content_type_core__hard3_001/metadata.json",
+        "sha256": "830c8e85c3d9c532375eb4ac87e958bebbc0beb994d468289e8624f3608d8c65"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/readme_renderer__content_type_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "a9592e96fb1a0b0bf78ecd66dcd41043946b7d9aaa7ec924828e6818687c30ba"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    },
+    {
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "assistant_verdict": "fix_required",
+      "reason": "The signature supplies a nonempty node by default; B003 requires a local version segment when node or dirty information is present.",
+      "observed_requirement": "Both public logs show a clean tagged version with the default node appended, while evaluation expects the base version without that local segment.",
+      "alternative_interpretation": "The expected base-only version is consistent with upstream exact-tag formatting. It conflicts with the task-specific unconditional node-present rule and nonempty default, so upstream alone does not resolve the public contract.",
+      "required_resolution": "Align the public default and B003 with the intended exact-tag policy, then change the contract or expectations in a future version with a new identity.",
+      "contract_evidence": {
+        "path": "benchmark/tasks/setuptools_scm__version_normalize_core__hard3_001/metadata.json",
+        "sha256": "1c1494f40d611186013cd77761f4dd17bc4cac7c1fe457cc0f676b4cdad29a3a"
+      },
+      "test_evidence": [
+        {
+          "path": "benchmark/tasks/setuptools_scm__version_normalize_core__hard3_001/public_tests/test_public_contract.py",
+          "sha256": "50065272febf9d8e09d848e15909ea19a4f7238850835e20ff75f817fb3b6ac1"
+        }
+      ],
+      "author_current_status": "accepted by general full-review statement; specific rationale/version not linked"
+    }
+  ]
+}

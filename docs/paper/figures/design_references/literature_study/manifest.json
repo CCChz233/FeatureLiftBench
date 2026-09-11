@@ -1,0 +1,93 @@
+[
+  {
+    "key": "coffe_fse2025",
+    "url": "https://arxiv.org/pdf/2502.02827",
+    "sha256": "fdff7258295ecb8a438c5468d8eb9723dd89a2a32a0bfc51dd93b2364d26cb98",
+    "figure1_page": 4,
+    "caption_hits": [
+      {
+        "page": 4,
+        "caption": "Fig. 1. Examples for function-level and file-level code generation.\n\n     • We conduct extensive experiments to evaluate the quality of COFFE, the effectiveness of\n       STGen, and the ability of current LLMs to generate efficient code.\n\n\n2    Problem Definition\nCurrently, there are three types of code generation tasks: function-level, file-level, and repo-level\ncode generation. We mainly focus on the first two types of code generation since repo-level code\ngeneration involves different modules"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "classeval_icse2024",
+    "url": "https://mingwei-liu.github.io/assets/pdf/ICSE2024ClassEval-V2.pdf",
+    "sha256": "966058b47537c087792462f65513fb131bf27d6f449b2d050e23102c15018c24",
+    "figure1_page": 3,
+    "caption_hits": [
+      {
+        "page": 3,
+        "caption": "Figure 1: Examples in Existing Benchmarks\nally shape a rather simple code generation scenario, which\nmainly evaluate the capability of LLMs in generating one                                           tasks, which ask LLMs to generate a class of multiple interdepen-\nsingle code unit (a function or a statement) in a rather stan-                                     dent methods based on a given natural language description.\ndalone way. In particular, existing benchmarks typically focus\non function-"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "ds1000_icml2023",
+    "url": "https://proceedings.mlr.press/v202/lai23b/lai23b.pdf",
+    "sha256": "9e011827fd147c6fedc3776e3a54669cc0537af985b01c90ddee40b0a3c89ac4",
+    "figure1_page": 2,
+    "caption_hits": [
+      {
+        "page": 2,
+        "caption": "Figure 1: An example problem in DS-1000. The model needs to fill in the code into “[insert]” in the prompt on the left; the\ncode will then be executed to pass the multi-criteria automatic evaluation, which includes the test cases and the surface-form\nconstraints; a reference solution is provided at the bottom left.\n\nthat implements functionality they specify with input-output                         Figure 1 shows an example DS-1000 problem, its reference\nexamples (Figure 1). These problems bett"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "evalplus_neurips2023",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/43e9d647ccd3e4b7b5baab53f0368686-Paper-Conference.pdf",
+    "sha256": "d093684d4fad09ee372bd5195c2f040819b518549915033d9d5289be9a7b53ad",
+    "figure1_page": 2,
+    "caption_hits": [
+      {
+        "page": 2,
+        "caption": "Figure 1: Exemplary wrong code synthesized by ChatGPT for H UMAN E VAL #58.\n\n\nperform code generation by autoregressively predicting the next token given previous context, in\nthe form of function signature and docstring that denote the desired program functionality. The\ngenerated code snippet is then combined with the context to form a complete function that aligns\nwith the user intent. Leveraging both natural language understanding and generative power, LLMs\nhave demonstrated impressive perform"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "osworld_neurips2024",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/5d413e48f84dc61244b6be550f1cd8f5-Paper-Datasets_and_Benchmarks_Track.pdf",
+    "sha256": "cabfb4bd4f45440946e7f1fbabe9a8c1751c9d17f62ec24101e62b8adf49f33f",
+    "figure1_page": 2,
+    "caption_hits": [
+      {
+        "page": 2,
+        "caption": "Figure 1: OSW ORLD is a first-of-its-kind scalable real computer env for multimodal agents, support-\ning task setup, execution-based evaluation, and interactive learning across systems. It is a unified\nenvironment for evaluating open-ended computer tasks that involve arbitrary apps. Using OSW ORLD,\nwe create a benchmark of 369 real-world tasks with reproducible setup and evaluation scripts.\n\nTo address this gap, we introduce OSW ORLD, the first-of-its-kind scalable, real computer environ-\nment f"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "swebench_iclr2024",
+    "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/edac78c3e300629acfe6cbe9ca88fb84-Paper-Conference.pdf",
+    "sha256": "9ba69855bdfb8896129c697a66c18564bd996885eb19d155083ab8e387733953",
+    "figure1_page": 1,
+    "caption_hits": [
+      {
+        "page": 1,
+        "caption": "Figure 1: SWE-bench sources task instances from real-world Python repositories by connecting\nGitHub issues to merged pull request solutions that resolve related tests. Provided with the issue\ntext and a codebase snapshot, models generate a patch that is evaluated against real tests.\n\nBuilding a good benchmark is difficult since tasks must be challenging enough to stump existing\nmodels, but model predictions must also be easy to verify (Martı́nez-Plumed et al., 2021). Coding\n      ∗\n          Equ"
+      }
+    ],
+    "status": "ok"
+  },
+  {
+    "key": "repobench_iclr2024",
+    "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/d191ba4c8923ed8fd8935b7c98658b5f-Paper-Conference.pdf",
+    "sha256": "2d22c7452e74999ddb6d2a96c30066e2a4d76109699ddfecfb986f3ee90b348c",
+    "figure1_page": 4,
+    "caption_hits": [
+      {
+        "page": 4,
+        "caption": "Figure 1: Construction of a prompt for repository-level cross-file code completion. The commented\n cross-file context (path + snippet), parsed from import statements using tree-sitter, is con-\ncatenated with the in-file context (path + import statements + preceding lines), which cropped to\na maximum of 30 lines in RepoBench to form the input prompt, with the objective is to predict\nthe next line . Note that for clarity, certain lines of code are omitted in this figure, which is an\nabbreviated an"
+      }
+    ],
+    "status": "ok"
+  }
+]

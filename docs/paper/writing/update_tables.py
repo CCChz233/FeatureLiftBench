@@ -1,55 +1,46 @@
-"""Rebuild marked LaTeX tables from saved evidence, without running experiments.
+"""Rebuild marked LaTeX tables and compact result text from saved evidence.
 
 Run `python docs/paper/writing/update_tables.py` to update tables only.
 Run with --check to verify that the editable paper's tables match the evidence.
-Prose outside BEGIN/END GENERATED TABLE markers is never changed.
+Prose outside BEGIN/END GENERATED TABLE or TEXT markers is never changed.
 """
 from __future__ import annotations
 import argparse
-from collections import Counter, defaultdict
+from collections import Counter
 import hashlib
 import json
 import math
 from pathlib import Path
 import re
 from statistics import median
+import sys
+from comprehensive_table import comprehensive_table
 
-from known_defect_sensitivity import RESULTS, ANNOTATIONS, ROOT, FREEZE, PREDECESSOR_FREEZE, MODELS, EXCLUDED_IDS, boolean, read_csv
-
-PAPER = Path(__file__).resolve().parents[1]
-FINAL = ROOT / 'reports/paper_analysis/python150_paper_analysis_final'
-FREEZE_PATH = ROOT / 'artifacts/research_analysis/python200_prime/current_benchmark_freeze.json'
-STATS_PATH = FINAL / 'json/stats.json'
-AUDIT = ROOT / 'reports/paper_analysis/python150_offline_audit_20260908'
-CROSS_AUDIT_PATH = AUDIT / 'cross_version_summary.json'
-DEFECT_AUDIT_PATH = AUDIT / 'defect_review.json'
-CHAPTER2_PATH = PAPER / 'writing/chapter2_evidence.json'
-SHORT = dict(zip(MODELS, ['Pro', 'Flash', 'Luna', 'GLM', 'Qwen', 'OSS']))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from paper_inputs import (RESULTS, ROOT, PAPER, FREEZE_PATH, STATS_PATH,
+                          CHAPTER2_PATH, MANIFEST_PATH, MODELS, SHORT,
+                          boolean, read_csv, read_json, input_path, run_directory)
 
 
-def read_json(path):
-    return json.loads(path.read_text(encoding='utf-8-sig'))
-
-
-def table(label, caption, columns, headers, rows, note=''):
+def table(label, caption, columns, headers, rows, note='', *, flexible=False):
     out = [r'\begin{table}[tbp]', rf' \caption{{{caption}}}', rf' \label{{tab:{label}}}',
            r' \centering\small', r' \setlength{\tabcolsep}{4pt}',
-           rf' \begin{{tabular}}{{@{{}}{columns}@{{}}}}', r' \toprule',
+           r' \renewcommand{\arraystretch}{1.12}',
+           (rf' \begin{{tabularx}}{{\linewidth}}{{@{{}}{columns}@{{}}}}' if flexible else rf' \begin{{tabular}}{{@{{}}{columns}@{{}}}}'), r' \toprule',
            ' ' + ' & '.join(headers) + r' \\', r' \midrule']
     out.extend(' '+(' & '.join(map(str, row))+r' \\' if isinstance(row, list) else row) for row in rows)
-    out += [r' \bottomrule', r' \end{tabular}']
+    out += [r' \bottomrule', r' \end{tabularx}' if flexible else r' \end{tabular}']
     if note:
         out += [r' \par\smallskip\begin{minipage}{\linewidth}\footnotesize', ' '+note, r' \end{minipage}']
     return '\n'.join(out + [r'\end{table}'])
 
 
-def wilson(p, n):
-    z = 1.959963984540054
-    a = p/n
-    d = 1+z*z/n
-    c = (a+z*z/(2*n))/d
-    h = z*math.sqrt(a*(1-a)/n+z*z/(4*n*n))/d
-    return c-h, c+h
+def quantile(values, q):
+    """Linear interpolation, matching the saved analysis's quantile convention."""
+    values = sorted(values)
+    at = q * (len(values) - 1)
+    lo, hi = math.floor(at), math.ceil(at)
+    return values[lo] * (hi-at) + values[hi] * (at-lo) if lo != hi else values[lo]
 
 
 def main():
@@ -59,8 +50,6 @@ def main():
     rows = read_csv(RESULTS)
     f = read_json(FREEZE_PATH)
     stats = read_json(STATS_PATH)
-    cross_audit = read_json(CROSS_AUDIT_PATH)
-    defect_audit = read_json(DEFECT_AUDIT_PATH)
     chapter2 = read_json(CHAPTER2_PATH)
     for source in chapter2['source_files']:
         assert hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'], source['path']
@@ -71,21 +60,9 @@ def main():
     }
     assert chapter2['repair_llm_review_tasks'] == 38
     assert chapter2['repair_maintainer_proxy_adjudication_tasks'] == 6
-    # The content-alignment caption is conditional on the separate offline audit.
-    assert cross_audit['release_freeze'] == FREEZE
-    assert cross_audit['changed_task_count'] == 24
-    assert all(cross_audit['replacement_exactly_covers_changes'].values())
-    assert cross_audit['row_checks']['agent_prompt_matches_rendered_v2']['true'] == 900
-    assert cross_audit['row_checks']['recorded_capsule_matches_local_v2']['true'] == 838
-    assert defect_audit['verdict_counts'] == {'supported_candidate': 6, 'ambiguous_candidate': 1}
-    assert {c['task_id'] for c in defect_audit['cases']} == set(EXCLUDED_IDS)
-    for audit in [cross_audit, defect_audit]:
-        for source in audit['source_files']:
-            assert hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'], source['path']
     groups = {m: [r for r in rows if r['model']==m] for m in MODELS}
     assert len(rows)==900 and len({(r['model'], r['task_id']) for r in rows})==900
     assert all(len(v)==150 for v in groups.values())
-    assert Counter(r['freeze_id'] for r in rows)=={FREEZE:522,PREDECESSOR_FREEZE:378}
     tasks = {r['task_id']:r for r in groups[MODELS[0]]}
     assert all({r['task_id'] for r in v}==set(tasks) for v in groups.values())
     assert len(f['tasks'])==200
@@ -98,47 +75,16 @@ def main():
     g = f['gates']
     assert g['task_validation']==200 and g['source_mapping']==200 and g['oracle_runs']=='600/600' and g['oracle_stable_tasks']=='200/200'
     out = {}
-    composition=[]
-    for hard, title in [(False,'Core-100'),(True,'hard3-50')]:
-        rr=[r for r in tasks.values() if boolean(r['hard3'])==hard]
-        composition.append([title,*[sum(r['lift_type']==k for r in rr) for k in ['Direct','Adapted','Composite']],len(rr)])
-    composition += [r'\midrule',['Python-150',56,76,18,150]]
-    first=table('dataset', 'Dataset composition and recorded validation coverage. hard3 is inside Python-150; the additional Hard-50 extension is separate.', 'lrrrr', ['Construction group','Direct','Adapted','Composite','Tasks'],composition)
-    at=first.index(r' \end{tabular}')+len(r' \end{tabular}')
-    panels=r'''
- \par\medskip
- \begin{tabular}{@{}lrrr@{}}
- \toprule
- Release stratum & Tasks & Repositories & Snapshots \\
- \midrule
- Python-150 & 150 & 126 & 132 \\
- Additional Hard-50 & 50 & 50 & 50 \\
- Complete release & 200 & 176 & 182 \\
- \bottomrule
- \end{tabular}
- \par\medskip
- \begin{tabularx}{\linewidth}{@{}lrX@{}}
- \toprule
- Validation evidence & Coverage & Scope \\
- \midrule
- Task/specification checks & 200/200 & Recorded mechanical checks \\
- Source mappings & 200/200 & Pinned source identities \\
- Oracle executions & 600/600 & Three passing runs per task \\
- Stable oracle fingerprints & 200/200 & Recorded repeatability \\
- Repair-scope LLM review & 38 tasks & Recorded repair scope \\
- Maintainer-proxy adjudication & 6 tasks & Coding-agent scope judgments \\
- \bottomrule
- \end{tabularx}
- \par\smallskip\begin{minipage}{\linewidth}\footnotesize
- No complete independent semantic audit is established by these counts.
- \end{minipage}'''
-    out['dataset']=first[:at]+panels+first[at:]
+    lift_counts=Counter(r['lift_type'] for r in tasks.values())
+    assert lift_counts=={'Direct':56,'Adapted':76,'Composite':18}
+    out['dataset']=('Among the 150 evaluated tasks, '+str(lift_counts['Direct'])+' are Direct, '
+        +str(lift_counts['Adapted'])+' Adapted, and '+str(lift_counts['Composite'])+' Composite. '
+        'These labels describe the requested transformation, not difficulty tiers.')
     config_rows=[]
     for m in MODELS:
         modes=Counter()
         for r in groups[m]:
-            suite='python150-prime-v2-main-r1' if m==MODELS[0] else 'python200-prime-v2-main-r1'
-            p=ROOT/'experiments/python/openhands'/m/suite/r['task_id']/'run.json'
+            p=run_directory(m)/r['task_id']/'run.json'
             run=read_json(p)
             c=run['agent_config']
             assert c['context_window_tokens']==131072 and c['reserved_output_tokens']==8192
@@ -149,22 +95,14 @@ def main():
                 assert c['openhands_condenser_max_events']==1000000 and c['openhands_condenser_keep_first']==4
         expected='token' if m in MODELS[:2] else 'default'
         assert modes=={expected:150},(m,modes)
-        fc=Counter(r['freeze_id'] for r in groups[m])
-        config_rows.append([SHORT[m],expected,'122,880 / 61,440' if expected=='token' else 'Unspecified',fc[FREEZE],fc[PREDECESSOR_FREEZE]])
-    out['config']=table('config','Recorded configurations and Python-150 run provenance. Counts refer to retained run-freeze IDs, not just the release label.','llcrr',['Backend','Condenser','Trigger / target','v2','Prior'],config_rows,
-        r'Common envelope: OpenHands CLI 1.16.0; 120 steps; 131,072 context tokens with 8,192 reserved; 3,600 s timeout; native tool calling; no Main token cap. Evaluator: Python 3.11.14, Linux/amd64. Token condenser: keep first four events; maximum 1,000,000 events. Default does not specify token thresholds in these records. v2 = \texttt{6c20ff03\ldots}; Prior = \texttt{0b106842\ldots}. All rows report image tag suffix \texttt{212930ea}.')
-    mainrows=[];sen=[];funnel=[];gates=[];compact=[]
-    old={r['label']:r for r in read_csv(FINAL/'csv/main_table.csv')}
+        config_rows.append([SHORT[m],expected,'122,880 / 61,440' if expected=='token' else 'Unspecified',len(groups[m])])
+    funnel=[];gates=[]
+    old={r['label']:r for r in read_csv(input_path('main_summary'))}
     stage=['functional_pass','missing_submission','build_failure','public_failure','hidden_failure','isolation_failure']
     for m,rr in groups.items():
         label=SHORT[m];passed=[r for r in rr if boolean(r['functional_pass'])]
         n=len(passed);empty=sum(not boolean(r['usable_submission']) for r in rr)
-        ci=wilson(n,150)
-        core=sum(not boolean(r['hard3']) for r in passed);hard=n-core
         assert int(old[label]['n_pass'])==n and int(old[label]['empty'])==empty
-        mainrows.append([label,n,f'{100*n/150:.1f} [{100*ci[0]:.1f}, {100*ci[1]:.1f}]',core,hard,empty])
-        assert all(not boolean(r['functional_pass']) for r in rr if r['task_id'] in EXCLUDED_IDS)
-        sen.append([label,f'{n}/150',f'{100*n/150:.1f}',f'{n}/143',f'{100*n/143:.1f}'])
         stages=Counter(r['first_failure_stage'] for r in rr)
         assert set(stages)<=set(stage),(label,stages)
         funnel.append([label,*[stages[k] for k in stage]])
@@ -174,18 +112,23 @@ def main():
         gates.append([label,len(delivered),*flags,residual])
         vals=[sum(float(r['rres']) for r in passed)/n,median(float(r['rres']) for r in passed),median(float(r['copied_fraction']) for r in passed)]
         assert all(abs(v-float(old[label][k]))<0.00051 for v,k in zip(vals,['rres_mean','rres_median','copy_median']))
-        compact.append([label,n,*[f'{v:.3f}' for v in vals]])
-    out['main']=table('main',r'Functional outcomes on the content-aligned Python-150 task inputs. Rates and Wilson intervals are percentages. Empty submissions remain failures; retained run identities and profile differences are disclosed in Table~\ref{tab:config}.','lrrrrr',['Backend','Pass / 150',r'Rate [95\% CI]','Core / 100','hard3 / 50','Empty'],mainrows)
-    out['sensitivity']=table('sensitivity','Post hoc exclusion of the same seven provisionally flagged tasks for every backend. This sensitivity view does not replace the main task set.','lrrrr',['Backend','Main pass',r'Rate (\%)','Exclusion pass',r'Rate (\%)'],sen,
-        'All configurations fail all seven flagged tasks. Numerators therefore remain unchanged; only the denominator changes from 150 to 143. Task flags are AI-assisted and non-exhaustive.')
-    out['funnel']=table('funnel','Mutually exclusive first outcomes; every row sums to 150.','lrrrrrr',['Backend','Pass','Missing','Build','Public','Hidden','Isolation'],funnel)
+        for field,prefix in [('rres','rres'),('copied_fraction','copy')]:
+            vv=[float(r[field]) for r in passed]
+            q1,q3=quantile(vv,.25),quantile(vv,.75)
+            assert abs(q1-float(old[label][prefix+'_q1']))<.00051
+            assert abs(q3-float(old[label][prefix+'_q3']))<.00051
+    out['main']=comprehensive_table(groups, MODELS, SHORT)
+    out['funnel']=table('funnel','Mutually exclusive first outcomes; every row sums to 150.','lrrrrrr',['Backend','Pass','Missing','Build','Public','Hidden','Isolation'],funnel,
+        r'Missing means no usable submission. Remaining failures are assigned to the first failed gate in Build--Public--Hidden--Isolation order; gate columns count failures, not passes.')
     totals=['Total',*[sum(r[i] for r in gates) for i in range(1,7)]]
-    out['gates']=table('independent-gates','Non-exclusive failed gate flags among delivered artifacts. Counts can overlap.','lrrrrrr',['Backend','Delivered','Build','Public','Hidden','Isolation','Residual'],gates+[r'\midrule',totals], 'Residual requires Build, Public, and Hidden to pass while Isolation fails.')
-    out['compactness']=table('compactness',"Descriptive footprint on each backend's passing artifacts. Rows use different task sets.",'lrrrr',['Backend','Passes','Mean RRES','Median RRES','Median copy'],compact)
-    bins=Counter((sum(boolean(r['functional_pass']) for r in rows if r['task_id']==t),boolean(v['hard3'])) for t,v in tasks.items())
-    diffrows=[[i,bins[i,False],bins[i,True],bins[i,False]+bins[i,True]] for i in range(7)]
-    assert [r[3] for r in diffrows]==[v['total'] for v in stats['spectrum6']['bins']]
-    out['difficulty']=table('difficulty','Tasks by number of passing backends in the six retained campaigns.','rrrr',['Passing backends','Core','hard3','Total'],diffrows+[r'\midrule',['Total',100,50,150]])
+    out['gates']=table('independent-gates','Non-exclusive failed gate flags among delivered artifacts. Counts can overlap.','lrrrrrr',['Backend','Delivered','Build','Public','Hidden','Isolation','Residual'],gates+[r'\midrule',totals],
+        'Delivered gives each row\'s denominator. A failed flag may follow an earlier loading failure and does not imply that the corresponding tests executed. Residual requires Build, Public, and Hidden to pass while Isolation fails.')
+    bins=Counter(sum(boolean(r['functional_pass']) for r in rows if r['task_id']==t) for t in tasks)
+    assert [bins[i] for i in range(7)]==[v['total'] for v in stats['spectrum6']['bins']]
+    spectrum=[[i,bins[i],f'{100*bins[i]/150:.1f}'] for i in range(7)]
+    out['difficulty']=table('difficulty','Observed solve frequency across six configurations.','rrr',
+        ['Passing configurations','Tasks',r'Share (\%)'],spectrum,
+        'All 150 evaluated tasks are included. Counts reflect the recorded outcomes and do not define fixed difficulty tiers.')
     pairs=[]
     for key in ['paired_pro_luna','paired_flash_luna']:
         st=stats[key];aa={r['task_id']:r for r in groups[st['a']] if boolean(r['functional_pass'])};bb={r['task_id']:r for r in groups[st['b']] if boolean(r['functional_pass'])}
@@ -193,20 +136,24 @@ def main():
         for d,suffix in [(aa,'a'),(bb,'b')]:
             assert abs(median(float(d[t]['rres']) for t in common)-st['rres_median_'+suffix])<1e-6
             assert abs(median(float(d[t]['copied_fraction']) for t in common)-st['median_'+suffix])<1e-6
-        pair=st['label_a']+' / '+st['label_b']
-        pairs.append([pair,st['n'],f"{st['rres_median_a']:.3f} / {st['rres_median_b']:.3f}",f"{st['median_a']:.3f} / {st['median_b']:.3f}"])
-    out['paired']=table('paired','Paired medians on common passing tasks; values follow the backend order in the first column.','lrcc',['Pair','Tasks','RRES medians','Copy medians'],pairs,
-        r'Copy-fraction Wilcoxon tests: Pro/Luna $p=1.18\times10^{-13}$, rank-biserial $r=0.881$ (76 higher Pro, 18 higher Luna, three ties); Flash/Luna $p=4.24\times10^{-13}$, $r=0.885$ (75/14/three). These test results concern copying, not RRES.')
-    lr=[]
-    for r in read_csv(FINAL/'csv/logistic_params.csv'):
-        if r['fit'] not in ['all6','strong3'] or r['term']=='Intercept' or r['term'].startswith('C(model)'):continue
-        term='hard3 vs. Core' if r['term']=='hard3' else ('Adapted vs. Direct' if 'Adapted' in r['term'] else 'Composite vs. Direct')
-        p=float(r['p']);ptext=f'{p:.3f}' if p>=.001 else rf'${p/10**math.floor(math.log10(p)):.2f}\times10^{{{math.floor(math.log10(p))}}}$'
-        lr.append(['All six' if r['fit']=='all6' else 'Pro/Flash/Luna',term,f"{float(r['or']):.3f}",f"{float(r['std_err']):.3f}",ptext])
-    out['logistic']=table('logistic','Construction and lift-type associations from the saved logistic fits. Backend covariates are included; standard errors are clustered by task.','llrrr',['Fit','Contrast','Odds ratio','SE (log odds)','$p$'],lr)
+        if pairs:pairs.append(r'\midrule')
+        pair=rf'$A$: {SHORT[st["a"]]}; $B$: {SHORT[st["b"]]} ({st["n"]} common passing tasks)'
+        pairs.append(r'\multicolumn{7}{@{}l}{'+pair+r'} \\')
+        for field,title in [('rres','RRES'),('copied_fraction','Copy')]:
+            av=[float(aa[t][field]) for t in sorted(common)]
+            bv=[float(bb[t][field]) for t in sorted(common)]
+            delta=[a-b for a,b in zip(av,bv)]
+            higher=sum(d>0 for d in delta); lower=sum(d<0 for d in delta); ties=sum(d==0 for d in delta)
+            assert higher+lower+ties==st['n']
+            if field=='copied_fraction':
+                assert (higher,lower,ties)==(st['n_a_greater'],st['n_b_greater'],st['n_tie'])
+                assert abs(median(delta)-st['median_diff'])<1e-6
+            pairs.append([title,f'{median(av):.3f}',f'{median(bv):.3f}',f'{median(delta):+.3f}',higher,lower,ties])
+    out['paired']=table('paired','Matched-task footprint: typical values and consistency of the difference.','lrrrrrr',['Metric','Median $A$','Median $B$',r'Median $\Delta$',r'$\Delta>0$',r'$\Delta<0$',r'$\Delta=0$'],pairs,
+        r'$\Delta=A-B$ is computed per task before taking its median. The last three columns count tasks with positive, negative, or zero differences. RRES is artifact/reference Python LOC; Copy is the detected source-overlap fraction. Higher values do not imply better quality.')
     ext=[]
     for m in MODELS[1:]:
-        base=ROOT/'experiments/python/openhands'/m/'python200-prime-v2-main-r1'
+        base=run_directory(m)
         counts=Counter()
         for t,v in f['tasks'].items():
             path=base/t/'eval/result.json'
@@ -216,27 +163,22 @@ def main():
         n=counts['python150'];h=counts['hard50'];assert n==sum(boolean(r['functional_pass']) for r in groups[m])
         ext.append([SHORT[m],f'{n}/150',f'{h}/50',f'{n+h}/200 ({(n+h)/2:.1f}\\%)'])
     assert [int(r[3].split('/')[0]) for r in ext]==[157,144,98,86,61]
-    out['extension']=table('extension','Supplementary functional outcomes in five assembled 200-task campaigns. The additional Hard-50 is outside the Python-150 input audit.','lrrr',['Backend','Python-150','Additional Hard-50','Combined'],ext)
-    annotations=read_csv(ANNOTATIONS)
-    kept=[r for r in annotations if r['task_id'] not in EXCLUDED_IDS]
-    assert len(annotations)==77 and len(kept)==63
-    # Preserve the existing first-pass taxonomy, without relabeling any row.
-    ca=Counter((r['model'],r['root_cause_primary']) for r in kept)
-    cats=[('Behavioral drift','behavior_drift'),('Contract/API completion','contract_api_completion'),('Packaging/modularization','packaging_modularization')]
-    # Taxonomy values are checked against the actual export below.
-    print('Retained annotation categories:',dict(Counter(r['root_cause_primary'] for r in kept)))
-    ar=[]
-    for title,key in cats:
-        a=ca[MODELS[0],key];b=ca[MODELS[1],key];ar.append([title,a,b,a+b])
-    assert sum(r[3] for r in ar)==63,ca
-    out['semantic']=table('semantic','Provisional AI-assisted L1 symptoms on Pro/Flash artifact failures. These are not independently validated root-cause proportions.','lrrr',['Symptom','Pro','Flash','Total'],ar+[r'\midrule',['Total',28,35,63]])
+    out['extension']=('On the remaining 50 release tasks, the passing counts are '
+        +', '.join(r[0]+' '+r[2] for r in ext[:-1])+', and '+ext[-1][0]+' '+ext[-1][2]+'. '
+        r'These supplement the 150-task counts in Table~\ref{tab:main}; '
+        'the saved campaigns retain the full 200-task results.')
     tex=(PAPER/'main.tex').read_text(encoding='utf-8')
     for key,val in out.items():
-        pattern=r'(% BEGIN GENERATED TABLE: '+re.escape(key)+r'\n).*?(% END GENERATED TABLE: '+re.escape(key)+')'
+        kind='TEXT' if key in ['dataset','extension'] else 'TABLE'
+        pattern=r'(% BEGIN GENERATED '+kind+': '+re.escape(key)+r'\n).*?(% END GENERATED '+kind+': '+re.escape(key)+')'
         tex,n=re.subn(pattern,lambda m:m[1]+val+'\n'+m[2],tex,flags=re.S)
         assert n==1,(key,n)
-    # Four generated data tables plus one authored related-work comparison.
-    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[0]))==5
+    # Two main data tables, one literature comparison, and four appendix
+    # tables (the appendix structure table uses its own updater).
+    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[0]))==3
+    assert tex.count(r'\label{tab:structure}')==1
+    assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)',tex.split(r'\appendix')[0])==['main','paired']
+    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[1]))==4
     assert tex.count(r'\label{tab:positioning}')==1
     assert tex.count(r'\begin{figure}')==5
     before=(PAPER/'main.tex').read_text(encoding='utf-8')
@@ -244,12 +186,16 @@ def main():
         assert tex==before,'Generated tables differ: rerun without --check.'
     else:
         (PAPER/'main.tex').write_text(tex,encoding='utf-8')
-    sources=[RESULTS,ANNOTATIONS,FREEZE_PATH,STATS_PATH,FINAL/'csv/main_table.csv',FINAL/'csv/logistic_params.csv',CROSS_AUDIT_PATH,DEFECT_AUDIT_PATH,CHAPTER2_PATH]
-    qa={'status':'verified_with_input_audit_and_environment_annotation_caveats','rows':900,'tasks':150,'models':6,'run_profiles_checked':900,'main_tables':5,'main_generated_data_tables':4,'main_authored_literature_tables':1,'appendix_tables':8,'figure_placeholders':5,
-        'input_audit':{'aligned_initial_prompts':900,'aligned_recorded_capsules':838,'oracle_runtime_image_identity_unreconciled':True},
-        'run_freeze_counts':dict(Counter(r['freeze_id'] for r in rows)), 'sources':[{'path':p.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sources]}
+    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]
+    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':900,'main_tables':3,'main_generated_data_tables':2,'main_authored_literature_tables':1,'appendix_tables':4,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':2,
+        'main_table_order':['main','paired','positioning'],
+        'structure_table_updater':'writing/update_structure_results.py',
+        'table_revision':'paper_workflow_cleanup_20260911',
+        'detailed_profiles':[dict(zip(['backend','condenser','trigger_target','outcomes'],r)) for r in config_rows],
+        'scope':'Current numeric tables and recorded run profiles; historical audits remain separate artifacts.',
+        'sources':[{'path':p.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sources]}
     if not args.check:(PAPER/'writing/table_validation.json').write_text(json.dumps(qa,indent=2)+'\n',encoding='utf-8')
-    print(('Checked' if args.check else 'Updated')+f' {len(out)} tables; 900 result/profile records; no agent evaluations.')
+    print(('Checked' if args.check else 'Updated')+' 5 tables and 2 text blocks; 900 result/profile records; no agent evaluations.')
 
 
 if __name__=='__main__':main()

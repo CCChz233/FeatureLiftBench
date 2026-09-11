@@ -1,0 +1,3443 @@
+{
+  "reference_backend": "Pro",
+  "reference_selection": "Most functional passes among the six evaluated configurations",
+  "delta_definition": "Compared configuration minus Pro, computed within each task",
+  "pairing_scope": "Each row uses that pair's common passing tasks; membership differs between rows",
+  "comparisons": [
+    {
+      "backend": "Flash",
+      "common_passing_tasks": 105,
+      "points": [
+        {
+          "task_id": "apscheduler__cron_trigger_core__hard3_001",
+          "pro_rres": 7.59322,
+          "compared_rres": 8.983051,
+          "delta_rres": 1.389831,
+          "pro_copy": 0.573661,
+          "compared_copy": 0.573585,
+          "delta_copy": -7.599999999996498e-05
+        },
+        {
+          "task_id": "arrow__parse_format_core__001",
+          "pro_rres": 0.686354,
+          "compared_rres": 0.898846,
+          "delta_rres": 0.21249200000000001,
+          "pro_copy": 0.913452,
+          "compared_copy": 0.988293,
+          "delta_copy": 0.07484099999999994
+        },
+        {
+          "task_id": "astroid__nodes_core__001",
+          "pro_rres": 1.403068,
+          "compared_rres": 1.068676,
+          "delta_rres": -0.334392,
+          "pro_copy": 0.955751,
+          "compared_copy": 0.963382,
+          "delta_copy": 0.007630999999999943
+        },
+        {
+          "task_id": "attrs__validators_core__001",
+          "pro_rres": 0.884291,
+          "compared_rres": 0.98493,
+          "delta_rres": 0.10063899999999992,
+          "pro_copy": 0.995667,
+          "compared_copy": 0.997147,
+          "delta_copy": 0.0014800000000000368
+        },
+        {
+          "task_id": "babel__plural_core__001",
+          "pro_rres": 0.58529,
+          "compared_rres": 0.991965,
+          "delta_rres": 0.406675,
+          "pro_copy": 0.920803,
+          "compared_copy": 0.980685,
+          "delta_copy": 0.05988199999999999
+        },
+        {
+          "task_id": "bidict__bidirectional_map_core__001",
+          "pro_rres": 1.008539,
+          "compared_rres": 0.998102,
+          "delta_rres": -0.01043700000000003,
+          "pro_copy": 0.988711,
+          "compared_copy": 0.989544,
+          "delta_copy": 0.0008329999999999727
+        },
+        {
+          "task_id": "blinker__signal_registry_core__001",
+          "pro_rres": 9.0,
+          "compared_rres": 18.411765,
+          "delta_rres": 9.411764999999999,
+          "pro_copy": 0.578431,
+          "compared_copy": 0.916933,
+          "delta_copy": 0.33850199999999997
+        },
+        {
+          "task_id": "boltons__iterutils_core__001",
+          "pro_rres": 0.370968,
+          "compared_rres": 0.549194,
+          "delta_rres": 0.17822599999999994,
+          "pro_copy": 0.586957,
+          "compared_copy": 0.941263,
+          "delta_copy": 0.354306
+        },
+        {
+          "task_id": "cachetools__cache_eviction_core__001",
+          "pro_rres": 0.759815,
+          "compared_rres": 0.767898,
+          "delta_rres": 0.008082999999999951,
+          "pro_copy": 0.978723,
+          "compared_copy": 0.977444,
+          "delta_copy": -0.0012790000000000301
+        },
+        {
+          "task_id": "cattrs__structure_core__001",
+          "pro_rres": 1.004701,
+          "compared_rres": 1.009402,
+          "delta_rres": 0.004700999999999844,
+          "pro_copy": 0.996992,
+          "compared_copy": 0.995675,
+          "delta_copy": -0.0013170000000000126
+        },
+        {
+          "task_id": "cerberus__schema_validate_core__001",
+          "pro_rres": 0.90549,
+          "compared_rres": 1.001961,
+          "delta_rres": 0.09647100000000008,
+          "pro_copy": 0.98874,
+          "compared_copy": 0.960078,
+          "delta_copy": -0.028661999999999965
+        },
+        {
+          "task_id": "chameleon__template_compile_core__001",
+          "pro_rres": 0.949022,
+          "compared_rres": 0.951763,
+          "delta_rres": 0.0027409999999999934,
+          "pro_copy": 0.967655,
+          "compared_copy": 0.965252,
+          "delta_copy": -0.002403000000000044
+        },
+        {
+          "task_id": "click__option_parser__001",
+          "pro_rres": 0.96694,
+          "compared_rres": 1.00013,
+          "delta_rres": 0.03318999999999994,
+          "pro_copy": 0.998923,
+          "compared_copy": 0.998829,
+          "delta_copy": -9.40000000000385e-05
+        },
+        {
+          "task_id": "configobj__roundtrip_config_core__001",
+          "pro_rres": 0.99041,
+          "compared_rres": 0.991071,
+          "delta_rres": 0.0006610000000000227,
+          "pro_copy": 0.999332,
+          "compared_copy": 0.998665,
+          "delta_copy": -0.0006669999999999732
+        },
+        {
+          "task_id": "coverage__config_merge_core__001",
+          "pro_rres": 0.70991,
+          "compared_rres": 0.803604,
+          "delta_rres": 0.09369399999999994,
+          "pro_copy": 0.927665,
+          "compared_copy": 0.873318,
+          "delta_copy": -0.05434699999999992
+        },
+        {
+          "task_id": "coverage__glob_matcher_core__001",
+          "pro_rres": 0.179342,
+          "compared_rres": 0.221339,
+          "delta_rres": 0.04199700000000001,
+          "pro_copy": 0.829114,
+          "compared_copy": 0.641026,
+          "delta_copy": -0.18808800000000003
+        },
+        {
+          "task_id": "coverage__path_remap_core__001",
+          "pro_rres": 0.328036,
+          "compared_rres": 0.406356,
+          "delta_rres": 0.07832,
+          "pro_copy": 0.944637,
+          "compared_copy": 0.930168,
+          "delta_copy": -0.014468999999999954
+        },
+        {
+          "task_id": "coverage__report_core__001",
+          "pro_rres": 0.271663,
+          "compared_rres": 0.495316,
+          "delta_rres": 0.223653,
+          "pro_copy": 0.755747,
+          "compared_copy": 0.839243,
+          "delta_copy": 0.08349600000000001
+        },
+        {
+          "task_id": "coverage__source_selection_core__001",
+          "pro_rres": 0.250862,
+          "compared_rres": 0.265155,
+          "delta_rres": 0.014293,
+          "pro_copy": 0.801572,
+          "compared_copy": 0.836431,
+          "delta_copy": 0.034859000000000084
+        },
+        {
+          "task_id": "croniter__cron_parse_core__001",
+          "pro_rres": 0.877124,
+          "compared_rres": 0.926797,
+          "delta_rres": 0.04967299999999997,
+          "pro_copy": 0.940387,
+          "compared_copy": 0.961918,
+          "delta_copy": 0.021531000000000078
+        },
+        {
+          "task_id": "dataclasses_json__serde_core__001",
+          "pro_rres": 0.868836,
+          "compared_rres": 0.894477,
+          "delta_rres": 0.025640999999999914,
+          "pro_copy": 0.945516,
+          "compared_copy": 0.93495,
+          "delta_copy": -0.010566000000000075
+        },
+        {
+          "task_id": "deepdiff__deep_compare_core__001",
+          "pro_rres": 0.880439,
+          "compared_rres": 0.887481,
+          "delta_rres": 0.007041999999999993,
+          "pro_copy": 0.976488,
+          "compared_copy": 0.96636,
+          "delta_copy": -0.010128000000000026
+        },
+        {
+          "task_id": "diskcache__eviction_policy_core__hard3_001",
+          "pro_rres": 1.125,
+          "compared_rres": 1.2375,
+          "delta_rres": 0.11250000000000004,
+          "pro_copy": 0.0,
+          "compared_copy": 0.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "distlib__wheel_metadata_core__hard3_001",
+          "pro_rres": 3.133333,
+          "compared_rres": 2.633333,
+          "delta_rres": -0.5,
+          "pro_copy": 0.042553,
+          "compared_copy": 0.037975,
+          "delta_copy": -0.004577999999999999
+        },
+        {
+          "task_id": "dynaconf__settings_merge_core__001",
+          "pro_rres": 0.301403,
+          "compared_rres": 2.141413,
+          "delta_rres": 1.84001,
+          "pro_copy": 0.920936,
+          "compared_copy": 0.992825,
+          "delta_copy": 0.07188899999999998
+        },
+        {
+          "task_id": "email_validator__validate_core__001",
+          "pro_rres": 0.972141,
+          "compared_rres": 0.967742,
+          "delta_rres": -0.004399000000000042,
+          "pro_copy": 0.99095,
+          "compared_copy": 0.990909,
+          "delta_copy": -4.099999999995774e-05
+        },
+        {
+          "task_id": "environs__typed_env_core__001",
+          "pro_rres": 0.694087,
+          "compared_rres": 0.989717,
+          "delta_rres": 0.29562999999999995,
+          "pro_copy": 0.909259,
+          "compared_copy": 0.980519,
+          "delta_copy": 0.07125999999999999
+        },
+        {
+          "task_id": "faker__provider_core__001",
+          "pro_rres": 0.313846,
+          "compared_rres": 0.431371,
+          "delta_rres": 0.11752499999999999,
+          "pro_copy": 0.993606,
+          "compared_copy": 0.995968,
+          "delta_copy": 0.0023619999999999752
+        },
+        {
+          "task_id": "fs__url_opener_core__hard3_001",
+          "pro_rres": 1.717647,
+          "compared_rres": 2.482353,
+          "delta_rres": 0.7647059999999999,
+          "pro_copy": 0.178082,
+          "compared_copy": 0.0,
+          "delta_copy": -0.178082
+        },
+        {
+          "task_id": "fsspec__url_chain_core__hard3_001",
+          "pro_rres": 4.314607,
+          "compared_rres": 5.696629,
+          "delta_rres": 1.382022,
+          "pro_copy": 0.085938,
+          "compared_copy": 0.027613,
+          "delta_copy": -0.058325
+        },
+        {
+          "task_id": "h11__message_parse_core__001",
+          "pro_rres": 1.000681,
+          "compared_rres": 1.003404,
+          "delta_rres": 0.002723000000000031,
+          "pro_copy": 0.997279,
+          "compared_copy": 0.995251,
+          "delta_copy": -0.0020280000000000298
+        },
+        {
+          "task_id": "h2__frame_parse_core__001",
+          "pro_rres": 0.958534,
+          "compared_rres": 0.960463,
+          "delta_rres": 0.0019289999999999585,
+          "pro_copy": 0.2666,
+          "compared_copy": 0.27008,
+          "delta_copy": 0.003479999999999983
+        },
+        {
+          "task_id": "httpx__request_model_core__001",
+          "pro_rres": 1.442722,
+          "compared_rres": 1.0323,
+          "delta_rres": -0.41042200000000006,
+          "pro_copy": 0.975224,
+          "compared_copy": 0.960367,
+          "delta_copy": -0.014857000000000009
+        },
+        {
+          "task_id": "humanize__naturaltime_core__001",
+          "pro_rres": 0.426102,
+          "compared_rres": 0.440795,
+          "delta_rres": 0.014693000000000012,
+          "pro_copy": 0.914807,
+          "compared_copy": 0.941176,
+          "delta_copy": 0.026368999999999976
+        },
+        {
+          "task_id": "importlib_metadata__entry_points_core__001",
+          "pro_rres": 0.157797,
+          "compared_rres": 0.254332,
+          "delta_rres": 0.09653500000000001,
+          "pro_copy": 0.862745,
+          "compared_copy": 0.812652,
+          "delta_copy": -0.05009299999999994
+        },
+        {
+          "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+          "pro_rres": 1.06135,
+          "compared_rres": 2.656442,
+          "delta_rres": 1.5950920000000002,
+          "pro_copy": 0.034682,
+          "compared_copy": 0.143187,
+          "delta_copy": 0.10850500000000002
+        },
+        {
+          "task_id": "intervaltree__interval_tree_core__001",
+          "pro_rres": 1.018296,
+          "compared_rres": 1.007433,
+          "delta_rres": -0.010863000000000067,
+          "pro_copy": 0.979225,
+          "compared_copy": 1.0,
+          "delta_copy": 0.020774999999999988
+        },
+        {
+          "task_id": "isodate__duration_parse_core__001",
+          "pro_rres": 0.572102,
+          "compared_rres": 0.723845,
+          "delta_rres": 0.15174299999999996,
+          "pro_copy": 0.904448,
+          "compared_copy": 0.865885,
+          "delta_copy": -0.038563000000000014
+        },
+        {
+          "task_id": "isort__settings_resolver_core__hard3_001",
+          "pro_rres": 1.698529,
+          "compared_rres": 2.257353,
+          "delta_rres": 0.5588240000000002,
+          "pro_copy": 0.24026,
+          "compared_copy": 0.364821,
+          "delta_copy": 0.124561
+        },
+        {
+          "task_id": "itsdangerous__timed_serializer_core__001",
+          "pro_rres": 6.512821,
+          "compared_rres": 8.769231,
+          "delta_rres": 2.25641,
+          "pro_copy": 0.271654,
+          "compared_copy": 0.391813,
+          "delta_copy": 0.12015900000000002
+        },
+        {
+          "task_id": "jinja2__compile_render_core__001",
+          "pro_rres": 1.242468,
+          "compared_rres": 1.026207,
+          "delta_rres": -0.21626099999999981,
+          "pro_copy": 0.989995,
+          "compared_copy": 0.995744,
+          "delta_copy": 0.005749000000000004
+        },
+        {
+          "task_id": "jinja2__extensions_core__001",
+          "pro_rres": 1.155007,
+          "compared_rres": 0.968978,
+          "delta_rres": -0.1860289999999999,
+          "pro_copy": 0.999189,
+          "compared_copy": 0.994306,
+          "delta_copy": -0.004882999999999971
+        },
+        {
+          "task_id": "jinja2__filters_tests_core__001",
+          "pro_rres": 1.242944,
+          "compared_rres": 1.020161,
+          "delta_rres": -0.22278299999999995,
+          "pro_copy": 0.986843,
+          "compared_copy": 0.986715,
+          "delta_copy": -0.000128000000000017
+        },
+        {
+          "task_id": "jinja2__lexer_parser_core__001",
+          "pro_rres": 0.802646,
+          "compared_rres": 0.843468,
+          "delta_rres": 0.040822000000000025,
+          "pro_copy": 0.94879,
+          "compared_copy": 0.955941,
+          "delta_copy": 0.0071510000000000185
+        },
+        {
+          "task_id": "jinja2__loader_inheritance_core__001",
+          "pro_rres": 1.174839,
+          "compared_rres": 1.004554,
+          "delta_rres": -0.17028500000000002,
+          "pro_copy": 0.995854,
+          "compared_copy": 0.98735,
+          "delta_copy": -0.008504000000000067
+        },
+        {
+          "task_id": "json5__parse_core__001",
+          "pro_rres": 1.059545,
+          "compared_rres": 1.064799,
+          "delta_rres": 0.005254000000000092,
+          "pro_copy": 0.995868,
+          "compared_copy": 0.993421,
+          "delta_copy": -0.002446999999999977
+        },
+        {
+          "task_id": "jsonpath_ng__expression_eval_core__001",
+          "pro_rres": 2.914849,
+          "compared_rres": 2.915552,
+          "delta_rres": 0.0007030000000001202,
+          "pro_copy": 0.996137,
+          "compared_copy": 0.995897,
+          "delta_copy": -0.00024000000000001798
+        },
+        {
+          "task_id": "jsonpointer__resolve_core__001",
+          "pro_rres": 0.777778,
+          "compared_rres": 0.946667,
+          "delta_rres": 0.16888900000000007,
+          "pro_copy": 0.828571,
+          "compared_copy": 1.0,
+          "delta_copy": 0.17142900000000005
+        },
+        {
+          "task_id": "jsonschema__validator_core__001",
+          "pro_rres": 0.890511,
+          "compared_rres": 0.927288,
+          "delta_rres": 0.03677699999999995,
+          "pro_copy": 0.967844,
+          "compared_copy": 0.989706,
+          "delta_copy": 0.021861999999999937
+        },
+        {
+          "task_id": "lark__grammar_loader_core__001",
+          "pro_rres": 0.921085,
+          "compared_rres": 0.937829,
+          "delta_rres": 0.01674399999999998,
+          "pro_copy": 0.998822,
+          "compared_copy": 0.998182,
+          "delta_copy": -0.0006399999999999739
+        },
+        {
+          "task_id": "lark__parse_tree_core__001",
+          "pro_rres": 1.003452,
+          "compared_rres": 0.798412,
+          "delta_rres": -0.20504,
+          "pro_copy": 0.997764,
+          "compared_copy": 0.99546,
+          "delta_copy": -0.0023039999999999727
+        },
+        {
+          "task_id": "lark__visitor_transform_core__001",
+          "pro_rres": 0.991964,
+          "compared_rres": 0.991964,
+          "delta_rres": 0.0,
+          "pro_copy": 0.99865,
+          "compared_copy": 0.998987,
+          "delta_copy": 0.0003369999999999207
+        },
+        {
+          "task_id": "mako__lexer_expression_core__001",
+          "pro_rres": 0.691589,
+          "compared_rres": 0.71711,
+          "delta_rres": 0.025521000000000016,
+          "pro_copy": 0.977131,
+          "compared_copy": 0.980451,
+          "delta_copy": 0.0033199999999999896
+        },
+        {
+          "task_id": "markdown__extensions_core__001",
+          "pro_rres": 1.080908,
+          "compared_rres": 1.084106,
+          "delta_rres": 0.003198000000000034,
+          "pro_copy": 0.99497,
+          "compared_copy": 0.993215,
+          "delta_copy": -0.001755000000000062
+        },
+        {
+          "task_id": "markdown_it__commonmark_render__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.0,
+          "delta_rres": 0.0,
+          "pro_copy": 0.998187,
+          "compared_copy": 0.998187,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "marshmallow__schema_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.0,
+          "delta_rres": 0.0,
+          "pro_copy": 0.965955,
+          "compared_copy": 0.990346,
+          "delta_copy": 0.02439099999999994
+        },
+        {
+          "task_id": "msgpack__pack_unpack_core__001",
+          "pro_rres": 0.976447,
+          "compared_rres": 0.980373,
+          "delta_rres": 0.003926000000000096,
+          "pro_copy": 1.0,
+          "compared_copy": 0.96997,
+          "delta_copy": -0.03003
+        },
+        {
+          "task_id": "networkx__dag_topo_core__001",
+          "pro_rres": 0.114422,
+          "compared_rres": 0.435798,
+          "delta_rres": 0.321376,
+          "pro_copy": 0.406752,
+          "compared_copy": 0.957999,
+          "delta_copy": 0.551247
+        },
+        {
+          "task_id": "packaging__requirement_marker_specifier__001",
+          "pro_rres": 0.58387,
+          "compared_rres": 0.587243,
+          "delta_rres": 0.0033729999999999594,
+          "pro_copy": 0.984244,
+          "compared_copy": 0.980157,
+          "delta_copy": -0.004087000000000063
+        },
+        {
+          "task_id": "parse__format_parser_core__001",
+          "pro_rres": 8.444444,
+          "compared_rres": 9.555556,
+          "delta_rres": 1.1111119999999985,
+          "pro_copy": 0.855263,
+          "compared_copy": 0.837209,
+          "delta_copy": -0.018054000000000014
+        },
+        {
+          "task_id": "parso__python_parse_core__001",
+          "pro_rres": 1.006434,
+          "compared_rres": 1.005547,
+          "delta_rres": -0.0008870000000000822,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.981686,
+          "delta_copy": -0.0013390000000000901
+        },
+        {
+          "task_id": "passlib__hash_context_core__001",
+          "pro_rres": 1.907812,
+          "compared_rres": 1.981699,
+          "delta_rres": 0.07388700000000004,
+          "pro_copy": 0.956833,
+          "compared_copy": 0.978429,
+          "delta_copy": 0.02159599999999995
+        },
+        {
+          "task_id": "pathvalidate__sanitize_core__001",
+          "pro_rres": 1.0125,
+          "compared_rres": 1.009868,
+          "delta_rres": -0.0026319999999999677,
+          "pro_copy": 0.997401,
+          "compared_copy": 0.997394,
+          "delta_copy": -6.999999999979245e-06
+        },
+        {
+          "task_id": "phonenumbers__parse_format_core__001",
+          "pro_rres": 1.005836,
+          "compared_rres": 1.095711,
+          "delta_rres": 0.08987500000000015,
+          "pro_copy": 0.985205,
+          "compared_copy": 0.98775,
+          "delta_copy": 0.0025450000000000195
+        },
+        {
+          "task_id": "pluggy__hook_call_order__001",
+          "pro_rres": 0.992997,
+          "compared_rres": 0.998599,
+          "delta_rres": 0.005601999999999996,
+          "pro_copy": 0.997179,
+          "compared_copy": 0.990182,
+          "delta_copy": -0.006997000000000031
+        },
+        {
+          "task_id": "pluggy__hook_specs_core__001",
+          "pro_rres": 0.932773,
+          "compared_rres": 0.931373,
+          "delta_rres": -0.0013999999999999568,
+          "pro_copy": 0.995495,
+          "compared_copy": 0.995489,
+          "delta_copy": -6.000000000061512e-06
+        },
+        {
+          "task_id": "pydantic_settings__env_source_core__001",
+          "pro_rres": 0.760178,
+          "compared_rres": 0.990519,
+          "delta_rres": 0.23034100000000002,
+          "pro_copy": 0.969919,
+          "compared_copy": 0.942005,
+          "delta_copy": -0.027913999999999994
+        },
+        {
+          "task_id": "pydantic_v1__validation_error_core__001",
+          "pro_rres": 1.083685,
+          "compared_rres": 1.552894,
+          "delta_rres": 0.469209,
+          "pro_copy": 0.981006,
+          "compared_copy": 0.980552,
+          "delta_copy": -0.00045400000000006546
+        },
+        {
+          "task_id": "pygments__formatter_core__001",
+          "pro_rres": 1.336635,
+          "compared_rres": 1.358249,
+          "delta_rres": 0.021614000000000022,
+          "pro_copy": 0.957283,
+          "compared_copy": 0.980507,
+          "delta_copy": 0.023224000000000022
+        },
+        {
+          "task_id": "pyramid__configurator_action_core__hard3_001",
+          "pro_rres": 3.627907,
+          "compared_rres": 4.162791,
+          "delta_rres": 0.5348840000000004,
+          "pro_copy": 0.141026,
+          "compared_copy": 0.0,
+          "delta_copy": -0.141026
+        },
+        {
+          "task_id": "pytest__fixture_resolve_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.944882,
+          "delta_rres": 0.944882,
+          "pro_copy": 0.165354,
+          "compared_copy": 0.097166,
+          "delta_copy": -0.068188
+        },
+        {
+          "task_id": "pytest__mark_expression_core__001",
+          "pro_rres": 1.041353,
+          "compared_rres": 1.078947,
+          "delta_rres": 0.03759400000000013,
+          "pro_copy": 0.960289,
+          "compared_copy": 0.923345,
+          "delta_copy": -0.03694399999999998
+        },
+        {
+          "task_id": "pytest__skipif_eval_core__001",
+          "pro_rres": 1.530864,
+          "compared_rres": 0.962963,
+          "delta_rres": -0.567901,
+          "pro_copy": 0.451613,
+          "compared_copy": 0.333333,
+          "delta_copy": -0.11828
+        },
+        {
+          "task_id": "python_box__config_box_core__001",
+          "pro_rres": 0.737849,
+          "compared_rres": 0.857371,
+          "delta_rres": 0.11952200000000002,
+          "pro_copy": 0.975162,
+          "compared_copy": 0.972119,
+          "delta_copy": -0.003043000000000018
+        },
+        {
+          "task_id": "python_dateutil__rrule_core__001",
+          "pro_rres": 0.991798,
+          "compared_rres": 1.053628,
+          "delta_rres": 0.06183000000000005,
+          "pro_copy": 0.951018,
+          "compared_copy": 0.907784,
+          "delta_copy": -0.043233999999999995
+        },
+        {
+          "task_id": "python_dotenv__env_parse_core__001",
+          "pro_rres": 0.835772,
+          "compared_rres": 0.835772,
+          "delta_rres": 0.0,
+          "pro_copy": 0.992218,
+          "compared_copy": 0.994163,
+          "delta_copy": 0.0019449999999999745
+        },
+        {
+          "task_id": "python_frontmatter__roundtrip_core__001",
+          "pro_rres": 0.608527,
+          "compared_rres": 0.637597,
+          "delta_rres": 0.02906999999999993,
+          "pro_copy": 0.88535,
+          "compared_copy": 0.820669,
+          "delta_copy": -0.06468099999999999
+        },
+        {
+          "task_id": "python_multipart__form_parse_core__001",
+          "pro_rres": 1.162562,
+          "compared_rres": 1.215928,
+          "delta_rres": 0.0533659999999998,
+          "pro_copy": 0.983051,
+          "compared_copy": 0.986496,
+          "delta_copy": 0.0034450000000000314
+        },
+        {
+          "task_id": "pyyaml__safe_load_dump__001",
+          "pro_rres": 0.920899,
+          "compared_rres": 0.849663,
+          "delta_rres": -0.07123600000000008,
+          "pro_copy": 0.990727,
+          "compared_copy": 0.993917,
+          "delta_copy": 0.003190000000000026
+        },
+        {
+          "task_id": "redis__resp_parser_core__001",
+          "pro_rres": 1.753071,
+          "compared_rres": 0.869779,
+          "delta_rres": -0.8832920000000001,
+          "pro_copy": 0.969867,
+          "compared_copy": 0.946328,
+          "delta_copy": -0.023539000000000088
+        },
+        {
+          "task_id": "referencing__json_schema_refs_core__001",
+          "pro_rres": 1.026128,
+          "compared_rres": 0.981789,
+          "delta_rres": -0.044338999999999906,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.983871,
+          "delta_copy": 0.0008460000000000134
+        },
+        {
+          "task_id": "returns__result_pipeline_core__hard3_001",
+          "pro_rres": 2.5,
+          "compared_rres": 2.423077,
+          "delta_rres": -0.07692299999999985,
+          "pro_copy": 0.038462,
+          "compared_copy": 0.119048,
+          "delta_copy": 0.08058599999999999
+        },
+        {
+          "task_id": "rfc3986__uri_parse_core__001",
+          "pro_rres": 0.639041,
+          "compared_rres": 0.793809,
+          "delta_rres": 0.15476800000000002,
+          "pro_copy": 0.978125,
+          "compared_copy": 0.988679,
+          "delta_copy": 0.010553999999999952
+        },
+        {
+          "task_id": "rich__markup_parse_core__001",
+          "pro_rres": 0.267573,
+          "compared_rres": 0.391085,
+          "delta_rres": 0.12351200000000001,
+          "pro_copy": 0.955837,
+          "compared_copy": 0.993668,
+          "delta_copy": 0.03783099999999995
+        },
+        {
+          "task_id": "ruamel_yaml__roundtrip_core__001",
+          "pro_rres": 1.003156,
+          "compared_rres": 1.004384,
+          "delta_rres": 0.0012280000000000069,
+          "pro_copy": 0.977277,
+          "compared_copy": 0.975122,
+          "delta_copy": -0.002154999999999907
+        },
+        {
+          "task_id": "sortedcontainers__sorted_list_core__001",
+          "pro_rres": 0.921617,
+          "compared_rres": 0.924917,
+          "delta_rres": 0.0032999999999999696,
+          "pro_copy": 0.986571,
+          "compared_copy": 0.966102,
+          "delta_copy": -0.02046899999999996
+        },
+        {
+          "task_id": "sphinx__extension_registry_core__hard3_001",
+          "pro_rres": 3.9,
+          "compared_rres": 5.933333,
+          "delta_rres": 2.0333330000000003,
+          "pro_copy": 0.179487,
+          "compared_copy": 0.129213,
+          "delta_copy": -0.05027400000000001
+        },
+        {
+          "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+          "pro_rres": 2.112903,
+          "compared_rres": 3.193548,
+          "delta_rres": 1.0806449999999996,
+          "pro_copy": 0.022901,
+          "compared_copy": 0.0,
+          "delta_copy": -0.022901
+        },
+        {
+          "task_id": "sqlparse__format_filters_core__001",
+          "pro_rres": 1.002768,
+          "compared_rres": 1.003806,
+          "delta_rres": 0.0010379999999998724,
+          "pro_copy": 0.979986,
+          "compared_copy": 0.978283,
+          "delta_copy": -0.00170300000000001
+        },
+        {
+          "task_id": "sqlparse__parse_format_core__001",
+          "pro_rres": 1.012741,
+          "compared_rres": 1.008953,
+          "delta_rres": -0.0037879999999999026,
+          "pro_copy": 0.978579,
+          "compared_copy": 0.980887,
+          "delta_copy": 0.0023079999999999767
+        },
+        {
+          "task_id": "sqlparse__parse_split_core__001",
+          "pro_rres": 0.962947,
+          "compared_rres": 0.963388,
+          "delta_rres": 0.0004410000000000247,
+          "pro_copy": 0.982135,
+          "compared_copy": 0.983516,
+          "delta_copy": 0.0013809999999999656
+        },
+        {
+          "task_id": "sqlparse__token_tree_core__001",
+          "pro_rres": 0.95977,
+          "compared_rres": 0.936782,
+          "delta_rres": -0.02298800000000001,
+          "pro_copy": 0.979272,
+          "compared_copy": 0.983011,
+          "delta_copy": 0.003738999999999937
+        },
+        {
+          "task_id": "stevedore__extension_manager_core__hard3_001",
+          "pro_rres": 1.766234,
+          "compared_rres": 2.679654,
+          "delta_rres": 0.9134200000000001,
+          "pro_copy": 0.401961,
+          "compared_copy": 0.463651,
+          "delta_copy": 0.06168999999999997
+        },
+        {
+          "task_id": "tabulate__table_format_core__001",
+          "pro_rres": 0.992644,
+          "compared_rres": 0.992644,
+          "delta_rres": 0.0,
+          "pro_copy": 1.0,
+          "compared_copy": 1.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "tomlkit__roundtrip_document__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.0,
+          "delta_rres": 0.0,
+          "pro_copy": 0.969523,
+          "compared_copy": 0.969523,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "trafaret__validation_rules_core__hard3_001",
+          "pro_rres": 2.352941,
+          "compared_rres": 4.376471,
+          "delta_rres": 2.0235299999999996,
+          "pro_copy": 0.015,
+          "compared_copy": 0.112903,
+          "delta_copy": 0.097903
+        },
+        {
+          "task_id": "transitions__state_machine_core__hard3_001",
+          "pro_rres": 4.52,
+          "compared_rres": 6.816,
+          "delta_rres": 2.2960000000000003,
+          "pro_copy": 0.348673,
+          "compared_copy": 0.181925,
+          "delta_copy": -0.166748
+        },
+        {
+          "task_id": "urllib3__retry_backoff_core__001",
+          "pro_rres": 0.628086,
+          "compared_rres": 1.027778,
+          "delta_rres": 0.39969200000000005,
+          "pro_copy": 0.899263,
+          "compared_copy": 0.948949,
+          "delta_copy": 0.04968600000000001
+        },
+        {
+          "task_id": "voluptuous__schema_validate_core__001",
+          "pro_rres": 0.583333,
+          "compared_rres": 1.038226,
+          "delta_rres": 0.4548930000000001,
+          "pro_copy": 0.897772,
+          "compared_copy": 0.958027,
+          "delta_copy": 0.06025499999999995
+        },
+        {
+          "task_id": "websockets__handshake_parse_core__001",
+          "pro_rres": 0.990323,
+          "compared_rres": 0.983065,
+          "delta_rres": -0.007257999999999987,
+          "pro_copy": 0.925081,
+          "compared_copy": 0.943396,
+          "delta_copy": 0.01831499999999997
+        },
+        {
+          "task_id": "werkzeug__routing_core__001",
+          "pro_rres": 0.239819,
+          "compared_rres": 0.279005,
+          "delta_rres": 0.039186,
+          "pro_copy": 0.91283,
+          "compared_copy": 0.935452,
+          "delta_copy": 0.02262199999999992
+        },
+        {
+          "task_id": "wheel__metadata_normalize_core__hard3_001",
+          "pro_rres": 2.302326,
+          "compared_rres": 2.744186,
+          "delta_rres": 0.44186000000000014,
+          "pro_copy": 0.454545,
+          "compared_copy": 0.211864,
+          "delta_copy": -0.24268099999999998
+        },
+        {
+          "task_id": "wsproto__frame_parse_core__001",
+          "pro_rres": 0.479017,
+          "compared_rres": 0.528147,
+          "delta_rres": 0.04913000000000001,
+          "pro_copy": 0.987179,
+          "compared_copy": 0.967054,
+          "delta_copy": -0.02012500000000006
+        },
+        {
+          "task_id": "xmltodict__xml_parse_core__001",
+          "pro_rres": 0.607774,
+          "compared_rres": 0.641343,
+          "delta_rres": 0.03356899999999996,
+          "pro_copy": 0.718023,
+          "compared_copy": 0.884298,
+          "delta_copy": 0.16627500000000006
+        },
+        {
+          "task_id": "yarl__url_model_core__001",
+          "pro_rres": 0.996124,
+          "compared_rres": 0.996124,
+          "delta_rres": 0.0,
+          "pro_copy": 0.995553,
+          "compared_copy": 0.995553,
+          "delta_copy": 0.0
+        }
+      ],
+      "summaries": {
+        "rres": {
+          "median": 0.02906999999999993,
+          "q1": 0.0,
+          "q3": 0.17822599999999994,
+          "min": -0.8832920000000001,
+          "max": 9.411764999999999,
+          "positive": 76,
+          "negative": 22,
+          "ties": 7
+        },
+        "copy": {
+          "median": -6.000000000061512e-06,
+          "q1": -0.010128000000000026,
+          "q3": 0.021531000000000078,
+          "min": -0.24268099999999998,
+          "max": 0.551247,
+          "positive": 47,
+          "negative": 53,
+          "ties": 5
+        }
+      }
+    },
+    {
+      "backend": "Luna",
+      "common_passing_tasks": 97,
+      "points": [
+        {
+          "task_id": "attrs__validators_core__001",
+          "pro_rres": 0.884291,
+          "compared_rres": 0.095785,
+          "delta_rres": -0.788506,
+          "pro_copy": 0.995667,
+          "compared_copy": 0.149333,
+          "delta_copy": -0.8463339999999999
+        },
+        {
+          "task_id": "babel__plural_core__001",
+          "pro_rres": 0.58529,
+          "compared_rres": 0.413473,
+          "delta_rres": -0.171817,
+          "pro_copy": 0.920803,
+          "compared_copy": 0.783259,
+          "delta_copy": -0.137544
+        },
+        {
+          "task_id": "bidict__bidirectional_map_core__001",
+          "pro_rres": 1.008539,
+          "compared_rres": 0.291271,
+          "delta_rres": -0.717268,
+          "pro_copy": 0.988711,
+          "compared_copy": 0.084691,
+          "delta_copy": -0.90402
+        },
+        {
+          "task_id": "bleach__sanitize_core__001",
+          "pro_rres": 0.933479,
+          "compared_rres": 0.024044,
+          "delta_rres": -0.909435,
+          "pro_copy": 0.99399,
+          "compared_copy": 0.048485,
+          "delta_copy": -0.945505
+        },
+        {
+          "task_id": "blinker__signal_registry_core__001",
+          "pro_rres": 9.0,
+          "compared_rres": 4.617647,
+          "delta_rres": -4.382353,
+          "pro_copy": 0.578431,
+          "compared_copy": 0.11465,
+          "delta_copy": -0.463781
+        },
+        {
+          "task_id": "boltons__iterutils_core__001",
+          "pro_rres": 0.370968,
+          "compared_rres": 0.289516,
+          "delta_rres": -0.08145200000000002,
+          "pro_copy": 0.586957,
+          "compared_copy": 0.158774,
+          "delta_copy": -0.428183
+        },
+        {
+          "task_id": "cachetools__cache_eviction_core__001",
+          "pro_rres": 0.759815,
+          "compared_rres": 0.69746,
+          "delta_rres": -0.06235500000000005,
+          "pro_copy": 0.978723,
+          "compared_copy": 0.746689,
+          "delta_copy": -0.23203399999999996
+        },
+        {
+          "task_id": "cattrs__structure_core__001",
+          "pro_rres": 1.004701,
+          "compared_rres": 0.188381,
+          "delta_rres": -0.81632,
+          "pro_copy": 0.996992,
+          "compared_copy": 0.074866,
+          "delta_copy": -0.922126
+        },
+        {
+          "task_id": "chameleon__template_compile_core__001",
+          "pro_rres": 0.949022,
+          "compared_rres": 0.9556,
+          "delta_rres": 0.006577999999999973,
+          "pro_copy": 0.967655,
+          "compared_copy": 0.963671,
+          "delta_copy": -0.0039839999999999876
+        },
+        {
+          "task_id": "click__option_parser__001",
+          "pro_rres": 0.96694,
+          "compared_rres": 0.83444,
+          "delta_rres": -0.13250000000000006,
+          "pro_copy": 0.998923,
+          "compared_copy": 0.999532,
+          "delta_copy": 0.0006089999999999707
+        },
+        {
+          "task_id": "configobj__roundtrip_config_core__001",
+          "pro_rres": 0.99041,
+          "compared_rres": 0.990741,
+          "delta_rres": 0.0003309999999999702,
+          "pro_copy": 0.999332,
+          "compared_copy": 0.999332,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "coverage__config_merge_core__001",
+          "pro_rres": 0.70991,
+          "compared_rres": 0.241441,
+          "delta_rres": -0.468469,
+          "pro_copy": 0.927665,
+          "compared_copy": 0.149254,
+          "delta_copy": -0.778411
+        },
+        {
+          "task_id": "coverage__glob_matcher_core__001",
+          "pro_rres": 0.179342,
+          "compared_rres": 0.121453,
+          "delta_rres": -0.057888999999999996,
+          "pro_copy": 0.829114,
+          "compared_copy": 0.140187,
+          "delta_copy": -0.6889270000000001
+        },
+        {
+          "task_id": "coverage__report_core__001",
+          "pro_rres": 0.271663,
+          "compared_rres": 0.14637,
+          "delta_rres": -0.125293,
+          "pro_copy": 0.755747,
+          "compared_copy": 0.216,
+          "delta_copy": -0.539747
+        },
+        {
+          "task_id": "coverage__source_selection_core__001",
+          "pro_rres": 0.250862,
+          "compared_rres": 0.103992,
+          "delta_rres": -0.14686999999999997,
+          "pro_copy": 0.801572,
+          "compared_copy": 0.037915,
+          "delta_copy": -0.7636569999999999
+        },
+        {
+          "task_id": "dataclasses_json__serde_core__001",
+          "pro_rres": 0.868836,
+          "compared_rres": 0.335306,
+          "delta_rres": -0.5335300000000001,
+          "pro_copy": 0.945516,
+          "compared_copy": 0.041176,
+          "delta_copy": -0.90434
+        },
+        {
+          "task_id": "diskcache__eviction_policy_core__hard3_001",
+          "pro_rres": 1.125,
+          "compared_rres": 0.6875,
+          "delta_rres": -0.4375,
+          "pro_copy": 0.0,
+          "compared_copy": 0.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "distlib__wheel_metadata_core__hard3_001",
+          "pro_rres": 3.133333,
+          "compared_rres": 2.9,
+          "delta_rres": -0.233333,
+          "pro_copy": 0.042553,
+          "compared_copy": 0.045977,
+          "delta_copy": 0.0034239999999999965
+        },
+        {
+          "task_id": "dynaconf__settings_merge_core__001",
+          "pro_rres": 0.301403,
+          "compared_rres": 0.047895,
+          "delta_rres": -0.25350799999999996,
+          "pro_copy": 0.920936,
+          "compared_copy": 0.067103,
+          "delta_copy": -0.853833
+        },
+        {
+          "task_id": "environs__typed_env_core__001",
+          "pro_rres": 0.694087,
+          "compared_rres": 0.395887,
+          "delta_rres": -0.2982,
+          "pro_copy": 0.909259,
+          "compared_copy": 0.142857,
+          "delta_copy": -0.766402
+        },
+        {
+          "task_id": "faker__provider_core__001",
+          "pro_rres": 0.313846,
+          "compared_rres": 0.240602,
+          "delta_rres": -0.073244,
+          "pro_copy": 0.993606,
+          "compared_copy": 0.934668,
+          "delta_copy": -0.058937999999999935
+        },
+        {
+          "task_id": "fsspec__url_chain_core__hard3_001",
+          "pro_rres": 4.314607,
+          "compared_rres": 1.966292,
+          "delta_rres": -2.3483149999999995,
+          "pro_copy": 0.085938,
+          "compared_copy": 0.0,
+          "delta_copy": -0.085938
+        },
+        {
+          "task_id": "glom__spec_eval_core__hard3_001",
+          "pro_rres": 41.588235,
+          "compared_rres": 3.901961,
+          "delta_rres": -37.686274,
+          "pro_copy": 0.95521,
+          "compared_copy": 0.0,
+          "delta_copy": -0.95521
+        },
+        {
+          "task_id": "h11__message_parse_core__001",
+          "pro_rres": 1.000681,
+          "compared_rres": 0.998639,
+          "delta_rres": -0.0020419999999998772,
+          "pro_copy": 0.997279,
+          "compared_copy": 0.994547,
+          "delta_copy": -0.0027320000000000677
+        },
+        {
+          "task_id": "h2__frame_parse_core__001",
+          "pro_rres": 0.958534,
+          "compared_rres": 0.815815,
+          "delta_rres": -0.14271900000000004,
+          "pro_copy": 0.2666,
+          "compared_copy": 0.122931,
+          "delta_copy": -0.143669
+        },
+        {
+          "task_id": "httpx__request_model_core__001",
+          "pro_rres": 1.442722,
+          "compared_rres": 0.223945,
+          "delta_rres": -1.218777,
+          "pro_copy": 0.975224,
+          "compared_copy": 0.044231,
+          "delta_copy": -0.930993
+        },
+        {
+          "task_id": "humanize__naturaltime_core__001",
+          "pro_rres": 0.426102,
+          "compared_rres": 0.248055,
+          "delta_rres": -0.17804699999999998,
+          "pro_copy": 0.914807,
+          "compared_copy": 0.508711,
+          "delta_copy": -0.406096
+        },
+        {
+          "task_id": "importlib_metadata__entry_points_core__001",
+          "pro_rres": 0.157797,
+          "compared_rres": 0.097772,
+          "delta_rres": -0.060024999999999995,
+          "pro_copy": 0.862745,
+          "compared_copy": 0.474684,
+          "delta_copy": -0.388061
+        },
+        {
+          "task_id": "intervaltree__interval_tree_core__001",
+          "pro_rres": 1.018296,
+          "compared_rres": 1.002287,
+          "delta_rres": -0.016009000000000162,
+          "pro_copy": 0.979225,
+          "compared_copy": 0.994866,
+          "delta_copy": 0.015641000000000016
+        },
+        {
+          "task_id": "isodate__duration_parse_core__001",
+          "pro_rres": 0.572102,
+          "compared_rres": 0.558907,
+          "delta_rres": -0.013194999999999957,
+          "pro_copy": 0.904448,
+          "compared_copy": 0.733558,
+          "delta_copy": -0.17089
+        },
+        {
+          "task_id": "isort__settings_resolver_core__hard3_001",
+          "pro_rres": 1.698529,
+          "compared_rres": 1.305147,
+          "delta_rres": -0.3933819999999999,
+          "pro_copy": 0.24026,
+          "compared_copy": 0.022535,
+          "delta_copy": -0.217725
+        },
+        {
+          "task_id": "itsdangerous__timed_serializer_core__001",
+          "pro_rres": 6.512821,
+          "compared_rres": 3.871795,
+          "delta_rres": -2.6410259999999997,
+          "pro_copy": 0.271654,
+          "compared_copy": 0.086093,
+          "delta_copy": -0.185561
+        },
+        {
+          "task_id": "jinja2__compile_render_core__001",
+          "pro_rres": 1.242468,
+          "compared_rres": 1.001232,
+          "delta_rres": -0.241236,
+          "pro_copy": 0.989995,
+          "compared_copy": 0.994072,
+          "delta_copy": 0.004076999999999997
+        },
+        {
+          "task_id": "jinja2__filters_tests_core__001",
+          "pro_rres": 1.242944,
+          "compared_rres": 0.99888,
+          "delta_rres": -0.24406400000000006,
+          "pro_copy": 0.986843,
+          "compared_copy": 0.995403,
+          "delta_copy": 0.008560000000000012
+        },
+        {
+          "task_id": "jinja2__lexer_parser_core__001",
+          "pro_rres": 0.802646,
+          "compared_rres": 0.309966,
+          "delta_rres": -0.49267999999999995,
+          "pro_copy": 0.94879,
+          "compared_copy": 0.263397,
+          "delta_copy": -0.685393
+        },
+        {
+          "task_id": "jinja2__loader_inheritance_core__001",
+          "pro_rres": 1.174839,
+          "compared_rres": 0.045007,
+          "delta_rres": -1.129832,
+          "pro_copy": 0.995854,
+          "compared_copy": 0.075294,
+          "delta_copy": -0.92056
+        },
+        {
+          "task_id": "json5__parse_core__001",
+          "pro_rres": 1.059545,
+          "compared_rres": 1.049912,
+          "delta_rres": -0.009633000000000003,
+          "pro_copy": 0.995868,
+          "compared_copy": 0.996664,
+          "delta_copy": 0.0007960000000000189
+        },
+        {
+          "task_id": "jsonpath_ng__expression_eval_core__001",
+          "pro_rres": 2.914849,
+          "compared_rres": 0.389163,
+          "delta_rres": -2.525686,
+          "pro_copy": 0.996137,
+          "compared_copy": 0.086799,
+          "delta_copy": -0.9093380000000001
+        },
+        {
+          "task_id": "jsonpointer__resolve_core__001",
+          "pro_rres": 0.777778,
+          "compared_rres": 0.671111,
+          "delta_rres": -0.10666699999999996,
+          "pro_copy": 0.828571,
+          "compared_copy": 0.463576,
+          "delta_copy": -0.36499499999999996
+        },
+        {
+          "task_id": "jsonschema__validator_core__001",
+          "pro_rres": 0.890511,
+          "compared_rres": 0.157215,
+          "delta_rres": -0.7332960000000001,
+          "pro_copy": 0.967844,
+          "compared_copy": 0.057143,
+          "delta_copy": -0.910701
+        },
+        {
+          "task_id": "lark__grammar_loader_core__001",
+          "pro_rres": 0.921085,
+          "compared_rres": 0.91845,
+          "delta_rres": -0.002635000000000054,
+          "pro_copy": 0.998822,
+          "compared_copy": 0.997806,
+          "delta_copy": -0.0010160000000000169
+        },
+        {
+          "task_id": "lark__visitor_transform_core__001",
+          "pro_rres": 0.991964,
+          "compared_rres": 0.991964,
+          "delta_rres": 0.0,
+          "pro_copy": 0.99865,
+          "compared_copy": 0.99865,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "mako__lexer_expression_core__001",
+          "pro_rres": 0.691589,
+          "compared_rres": 0.308411,
+          "delta_rres": -0.383178,
+          "pro_copy": 0.977131,
+          "compared_copy": 0.261072,
+          "delta_copy": -0.716059
+        },
+        {
+          "task_id": "markdown__extensions_core__001",
+          "pro_rres": 1.080908,
+          "compared_rres": 1.069396,
+          "delta_rres": -0.011511999999999967,
+          "pro_copy": 0.99497,
+          "compared_copy": 0.995215,
+          "delta_copy": 0.0002449999999999397
+        },
+        {
+          "task_id": "markdown_it__commonmark_render__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.000907,
+          "delta_rres": 0.0009069999999999911,
+          "pro_copy": 0.998187,
+          "compared_copy": 0.997283,
+          "delta_copy": -0.0009040000000000159
+        },
+        {
+          "task_id": "marshmallow__schema_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 0.986535,
+          "delta_rres": -0.01346499999999995,
+          "pro_copy": 0.965955,
+          "compared_copy": 0.967551,
+          "delta_copy": 0.0015960000000000418
+        },
+        {
+          "task_id": "msgpack__pack_unpack_core__001",
+          "pro_rres": 0.976447,
+          "compared_rres": 0.957802,
+          "delta_rres": -0.01864499999999991,
+          "pro_copy": 1.0,
+          "compared_copy": 0.98873,
+          "delta_copy": -0.011270000000000002
+        },
+        {
+          "task_id": "networkx__dag_topo_core__001",
+          "pro_rres": 0.114422,
+          "compared_rres": 0.034768,
+          "delta_rres": -0.079654,
+          "pro_copy": 0.406752,
+          "compared_copy": 0.113757,
+          "delta_copy": -0.292995
+        },
+        {
+          "task_id": "packaging__requirement_marker_specifier__001",
+          "pro_rres": 0.58387,
+          "compared_rres": 0.580803,
+          "delta_rres": -0.003067000000000042,
+          "pro_copy": 0.984244,
+          "compared_copy": 0.975185,
+          "delta_copy": -0.00905900000000004
+        },
+        {
+          "task_id": "parse__format_parser_core__001",
+          "pro_rres": 8.444444,
+          "compared_rres": 5.644444,
+          "delta_rres": -2.8000000000000007,
+          "pro_copy": 0.855263,
+          "compared_copy": 0.023622,
+          "delta_copy": -0.831641
+        },
+        {
+          "task_id": "parso__python_parse_core__001",
+          "pro_rres": 1.006434,
+          "compared_rres": 0.923009,
+          "delta_rres": -0.08342500000000008,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.967788,
+          "delta_copy": -0.015237000000000056
+        },
+        {
+          "task_id": "passlib__hash_context_core__001",
+          "pro_rres": 1.907812,
+          "compared_rres": 0.047391,
+          "delta_rres": -1.860421,
+          "pro_copy": 0.956833,
+          "compared_copy": 0.0,
+          "delta_copy": -0.956833
+        },
+        {
+          "task_id": "pathvalidate__sanitize_core__001",
+          "pro_rres": 1.0125,
+          "compared_rres": 0.356579,
+          "delta_rres": -0.655921,
+          "pro_copy": 0.997401,
+          "compared_copy": 0.04797,
+          "delta_copy": -0.949431
+        },
+        {
+          "task_id": "pendulum__parse_format_core__001",
+          "pro_rres": 0.429059,
+          "compared_rres": 0.153336,
+          "delta_rres": -0.27572300000000005,
+          "pro_copy": 0.714754,
+          "compared_copy": 0.145478,
+          "delta_copy": -0.569276
+        },
+        {
+          "task_id": "phonenumbers__parse_format_core__001",
+          "pro_rres": 1.005836,
+          "compared_rres": 0.101838,
+          "delta_rres": -0.903998,
+          "pro_copy": 0.985205,
+          "compared_copy": 0.054441,
+          "delta_copy": -0.930764
+        },
+        {
+          "task_id": "pluggy__hook_call_order__001",
+          "pro_rres": 0.992997,
+          "compared_rres": 0.578431,
+          "delta_rres": -0.414566,
+          "pro_copy": 0.997179,
+          "compared_copy": 0.191283,
+          "delta_copy": -0.8058960000000001
+        },
+        {
+          "task_id": "pydantic__field_validator_core__hard3_001",
+          "pro_rres": 8.0,
+          "compared_rres": 2.935897,
+          "delta_rres": -5.064102999999999,
+          "pro_copy": 0.012821,
+          "compared_copy": 0.0,
+          "delta_copy": -0.012821
+        },
+        {
+          "task_id": "pydantic_settings__env_source_core__001",
+          "pro_rres": 0.760178,
+          "compared_rres": 0.196319,
+          "delta_rres": -0.563859,
+          "pro_copy": 0.969919,
+          "compared_copy": 0.099432,
+          "delta_copy": -0.870487
+        },
+        {
+          "task_id": "pydantic_v1__validation_error_core__001",
+          "pro_rres": 1.083685,
+          "compared_rres": 0.069681,
+          "delta_rres": -1.014004,
+          "pro_copy": 0.981006,
+          "compared_copy": 0.0,
+          "delta_copy": -0.981006
+        },
+        {
+          "task_id": "pygments__formatter_core__001",
+          "pro_rres": 1.336635,
+          "compared_rres": 0.813761,
+          "delta_rres": -0.5228740000000001,
+          "pro_copy": 0.957283,
+          "compared_copy": 0.971226,
+          "delta_copy": 0.013943000000000039
+        },
+        {
+          "task_id": "pyramid__configurator_action_core__hard3_001",
+          "pro_rres": 3.627907,
+          "compared_rres": 2.395349,
+          "delta_rres": -1.232558,
+          "pro_copy": 0.141026,
+          "compared_copy": 0.0,
+          "delta_copy": -0.141026
+        },
+        {
+          "task_id": "pytest__fixture_resolve_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.283465,
+          "delta_rres": 0.2834650000000001,
+          "pro_copy": 0.165354,
+          "compared_copy": 0.018405,
+          "delta_copy": -0.146949
+        },
+        {
+          "task_id": "pytest__mark_expression_core__001",
+          "pro_rres": 1.041353,
+          "compared_rres": 0.909774,
+          "delta_rres": -0.131579,
+          "pro_copy": 0.960289,
+          "compared_copy": 0.876033,
+          "delta_copy": -0.084256
+        },
+        {
+          "task_id": "pytest__skipif_eval_core__001",
+          "pro_rres": 1.530864,
+          "compared_rres": 0.728395,
+          "delta_rres": -0.802469,
+          "pro_copy": 0.451613,
+          "compared_copy": 0.169492,
+          "delta_copy": -0.28212099999999996
+        },
+        {
+          "task_id": "python_box__config_box_core__001",
+          "pro_rres": 0.737849,
+          "compared_rres": 0.310757,
+          "delta_rres": -0.42709199999999997,
+          "pro_copy": 0.975162,
+          "compared_copy": 0.087179,
+          "delta_copy": -0.887983
+        },
+        {
+          "task_id": "python_dateutil__relativedelta_core__001",
+          "pro_rres": 0.978723,
+          "compared_rres": 0.984043,
+          "delta_rres": 0.005319999999999991,
+          "pro_copy": 0.96558,
+          "compared_copy": 0.972973,
+          "delta_copy": 0.007392999999999983
+        },
+        {
+          "task_id": "python_dateutil__rrule_core__001",
+          "pro_rres": 0.991798,
+          "compared_rres": 0.998738,
+          "delta_rres": 0.006940000000000057,
+          "pro_copy": 0.951018,
+          "compared_copy": 0.950726,
+          "delta_copy": -0.00029200000000007
+        },
+        {
+          "task_id": "python_dotenv__env_parse_core__001",
+          "pro_rres": 0.835772,
+          "compared_rres": 0.455285,
+          "delta_rres": -0.38048699999999996,
+          "pro_copy": 0.992218,
+          "compared_copy": 0.275,
+          "delta_copy": -0.717218
+        },
+        {
+          "task_id": "python_frontmatter__roundtrip_core__001",
+          "pro_rres": 0.608527,
+          "compared_rres": 0.420543,
+          "delta_rres": -0.18798400000000004,
+          "pro_copy": 0.88535,
+          "compared_copy": 0.599078,
+          "delta_copy": -0.28627199999999997
+        },
+        {
+          "task_id": "python_multipart__form_parse_core__001",
+          "pro_rres": 1.162562,
+          "compared_rres": 0.995074,
+          "delta_rres": -0.16748800000000008,
+          "pro_copy": 0.983051,
+          "compared_copy": 0.95132,
+          "delta_copy": -0.031730999999999954
+        },
+        {
+          "task_id": "pyyaml__safe_load_dump__001",
+          "pro_rres": 0.920899,
+          "compared_rres": 0.839101,
+          "delta_rres": -0.08179800000000004,
+          "pro_copy": 0.990727,
+          "compared_copy": 0.983128,
+          "delta_copy": -0.007599000000000022
+        },
+        {
+          "task_id": "redis__resp_parser_core__001",
+          "pro_rres": 1.753071,
+          "compared_rres": 0.506143,
+          "delta_rres": -1.246928,
+          "pro_copy": 0.969867,
+          "compared_copy": 0.383495,
+          "delta_copy": -0.5863720000000001
+        },
+        {
+          "task_id": "referencing__json_schema_refs_core__001",
+          "pro_rres": 1.026128,
+          "compared_rres": 0.469517,
+          "delta_rres": -0.556611,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.158516,
+          "delta_copy": -0.824509
+        },
+        {
+          "task_id": "returns__result_pipeline_core__hard3_001",
+          "pro_rres": 2.5,
+          "compared_rres": 2.173077,
+          "delta_rres": -0.32692299999999985,
+          "pro_copy": 0.038462,
+          "compared_copy": 0.0,
+          "delta_copy": -0.038462
+        },
+        {
+          "task_id": "rfc3986__uri_parse_core__001",
+          "pro_rres": 0.639041,
+          "compared_rres": 0.487269,
+          "delta_rres": -0.15177199999999996,
+          "pro_copy": 0.978125,
+          "compared_copy": 0.085041,
+          "delta_copy": -0.893084
+        },
+        {
+          "task_id": "ruamel_yaml__roundtrip_core__001",
+          "pro_rres": 1.003156,
+          "compared_rres": 1.000526,
+          "delta_rres": -0.00262999999999991,
+          "pro_copy": 0.977277,
+          "compared_copy": 0.977567,
+          "delta_copy": 0.00029000000000001247
+        },
+        {
+          "task_id": "sortedcontainers__sorted_list_core__001",
+          "pro_rres": 0.921617,
+          "compared_rres": 0.316007,
+          "delta_rres": -0.60561,
+          "pro_copy": 0.986571,
+          "compared_copy": 0.143603,
+          "delta_copy": -0.8429679999999999
+        },
+        {
+          "task_id": "sphinx__extension_registry_core__hard3_001",
+          "pro_rres": 3.9,
+          "compared_rres": 1.9,
+          "delta_rres": -2.0,
+          "pro_copy": 0.179487,
+          "compared_copy": 0.0,
+          "delta_copy": -0.179487
+        },
+        {
+          "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+          "pro_rres": 2.112903,
+          "compared_rres": 2.112903,
+          "delta_rres": 0.0,
+          "pro_copy": 0.022901,
+          "compared_copy": 0.0,
+          "delta_copy": -0.022901
+        },
+        {
+          "task_id": "sqlparse__parse_format_core__001",
+          "pro_rres": 1.012741,
+          "compared_rres": 1.009986,
+          "delta_rres": -0.002754999999999841,
+          "pro_copy": 0.978579,
+          "compared_copy": 0.979884,
+          "delta_copy": 0.0013050000000000006
+        },
+        {
+          "task_id": "sqlparse__parse_split_core__001",
+          "pro_rres": 0.962947,
+          "compared_rres": 0.954124,
+          "delta_rres": -0.008823000000000025,
+          "pro_copy": 0.982135,
+          "compared_copy": 0.981507,
+          "delta_copy": -0.0006279999999999619
+        },
+        {
+          "task_id": "sqlparse__token_tree_core__001",
+          "pro_rres": 0.95977,
+          "compared_rres": 0.874447,
+          "delta_rres": -0.08532300000000004,
+          "pro_copy": 0.979272,
+          "compared_copy": 0.987867,
+          "delta_copy": 0.00859500000000002
+        },
+        {
+          "task_id": "stevedore__extension_manager_core__hard3_001",
+          "pro_rres": 1.766234,
+          "compared_rres": 1.168831,
+          "delta_rres": -0.5974030000000001,
+          "pro_copy": 0.401961,
+          "compared_copy": 0.188889,
+          "delta_copy": -0.213072
+        },
+        {
+          "task_id": "tabulate__table_format_core__001",
+          "pro_rres": 0.992644,
+          "compared_rres": 0.997404,
+          "delta_rres": 0.0047599999999999865,
+          "pro_copy": 1.0,
+          "compared_copy": 0.989154,
+          "delta_copy": -0.010846000000000022
+        },
+        {
+          "task_id": "tenacity__retry_state_core__hard3_001",
+          "pro_rres": 1.425993,
+          "compared_rres": 1.314079,
+          "delta_rres": -0.11191400000000007,
+          "pro_copy": 0.387342,
+          "compared_copy": 0.21978,
+          "delta_copy": -0.16756200000000002
+        },
+        {
+          "task_id": "tomlkit__roundtrip_document__001",
+          "pro_rres": 1.0,
+          "compared_rres": 0.993154,
+          "delta_rres": -0.006846000000000019,
+          "pro_copy": 0.969523,
+          "compared_copy": 0.970425,
+          "delta_copy": 0.0009019999999999584
+        },
+        {
+          "task_id": "trafaret__validation_rules_core__hard3_001",
+          "pro_rres": 2.352941,
+          "compared_rres": 3.047059,
+          "delta_rres": 0.694118,
+          "pro_copy": 0.015,
+          "compared_copy": 0.015444,
+          "delta_copy": 0.00044399999999999995
+        },
+        {
+          "task_id": "transitions__state_machine_core__hard3_001",
+          "pro_rres": 4.52,
+          "compared_rres": 2.248,
+          "delta_rres": -2.2719999999999994,
+          "pro_copy": 0.348673,
+          "compared_copy": 0.010676,
+          "delta_copy": -0.337997
+        },
+        {
+          "task_id": "typer__command_parser_core__001",
+          "pro_rres": 0.922718,
+          "compared_rres": 0.045894,
+          "delta_rres": -0.876824,
+          "pro_copy": 0.300542,
+          "compared_copy": 0.009242,
+          "delta_copy": -0.2913
+        },
+        {
+          "task_id": "urllib3__retry_backoff_core__001",
+          "pro_rres": 0.628086,
+          "compared_rres": 0.50463,
+          "delta_rres": -0.12345600000000001,
+          "pro_copy": 0.899263,
+          "compared_copy": 0.727829,
+          "delta_copy": -0.1714340000000001
+        },
+        {
+          "task_id": "voluptuous__schema_validate_core__001",
+          "pro_rres": 0.583333,
+          "compared_rres": 0.355505,
+          "delta_rres": -0.22782799999999997,
+          "pro_copy": 0.897772,
+          "compared_copy": 0.070968,
+          "delta_copy": -0.826804
+        },
+        {
+          "task_id": "websockets__handshake_parse_core__001",
+          "pro_rres": 0.990323,
+          "compared_rres": 0.41371,
+          "delta_rres": -0.5766129999999999,
+          "pro_copy": 0.925081,
+          "compared_copy": 0.444444,
+          "delta_copy": -0.48063700000000004
+        },
+        {
+          "task_id": "werkzeug__routing_core__001",
+          "pro_rres": 0.239819,
+          "compared_rres": 0.197104,
+          "delta_rres": -0.042715,
+          "pro_copy": 0.91283,
+          "compared_copy": 0.95225,
+          "delta_copy": 0.03942000000000001
+        },
+        {
+          "task_id": "wheel__metadata_normalize_core__hard3_001",
+          "pro_rres": 2.302326,
+          "compared_rres": 1.55814,
+          "delta_rres": -0.7441859999999998,
+          "pro_copy": 0.454545,
+          "compared_copy": 0.044776,
+          "delta_copy": -0.409769
+        },
+        {
+          "task_id": "wsproto__frame_parse_core__001",
+          "pro_rres": 0.479017,
+          "compared_rres": 0.474923,
+          "delta_rres": -0.004094000000000042,
+          "pro_copy": 0.987179,
+          "compared_copy": 0.991379,
+          "delta_copy": 0.0041999999999999815
+        },
+        {
+          "task_id": "xmltodict__xml_parse_core__001",
+          "pro_rres": 0.607774,
+          "compared_rres": 0.620141,
+          "delta_rres": 0.012367000000000017,
+          "pro_copy": 0.718023,
+          "compared_copy": 0.358974,
+          "delta_copy": -0.35904899999999995
+        },
+        {
+          "task_id": "yarl__url_model_core__001",
+          "pro_rres": 0.996124,
+          "compared_rres": 1.0,
+          "delta_rres": 0.0038759999999999906,
+          "pro_copy": 0.995553,
+          "compared_copy": 0.999446,
+          "delta_copy": 0.0038929999999999243
+        }
+      ],
+      "summaries": {
+        "rres": {
+          "median": -0.18798400000000004,
+          "q1": -0.655921,
+          "q3": -0.016009000000000162,
+          "min": -37.686274,
+          "max": 0.694118,
+          "positive": 10,
+          "negative": 85,
+          "ties": 2
+        },
+        "copy": {
+          "median": -0.213072,
+          "q1": -0.766402,
+          "q3": -0.0010160000000000169,
+          "min": -0.981006,
+          "max": 0.03942000000000001,
+          "positive": 18,
+          "negative": 76,
+          "ties": 3
+        }
+      }
+    },
+    {
+      "backend": "GLM",
+      "common_passing_tasks": 67,
+      "points": [
+        {
+          "task_id": "attrs__validators_core__001",
+          "pro_rres": 0.884291,
+          "compared_rres": 1.067433,
+          "delta_rres": 0.18314200000000003,
+          "pro_copy": 0.995667,
+          "compared_copy": 0.983489,
+          "delta_copy": -0.012178000000000022
+        },
+        {
+          "task_id": "babel__plural_core__001",
+          "pro_rres": 0.58529,
+          "compared_rres": 0.728059,
+          "delta_rres": 0.14276900000000003,
+          "pro_copy": 0.920803,
+          "compared_copy": 0.968591,
+          "delta_copy": 0.04778799999999994
+        },
+        {
+          "task_id": "bidict__bidirectional_map_core__001",
+          "pro_rres": 1.008539,
+          "compared_rres": 2.036053,
+          "delta_rres": 1.0275139999999998,
+          "pro_copy": 0.988711,
+          "compared_copy": 0.513048,
+          "delta_copy": -0.47566300000000006
+        },
+        {
+          "task_id": "bleach__sanitize_core__001",
+          "pro_rres": 0.933479,
+          "compared_rres": 0.945719,
+          "delta_rres": 0.012240000000000029,
+          "pro_copy": 0.99399,
+          "compared_copy": 0.980354,
+          "delta_copy": -0.013636000000000092
+        },
+        {
+          "task_id": "blinker__signal_registry_core__001",
+          "pro_rres": 9.0,
+          "compared_rres": 36.176471,
+          "delta_rres": 27.176471,
+          "pro_copy": 0.578431,
+          "compared_copy": 0.72439,
+          "delta_copy": 0.14595899999999995
+        },
+        {
+          "task_id": "boltons__iterutils_core__001",
+          "pro_rres": 0.370968,
+          "compared_rres": 0.965323,
+          "delta_rres": 0.594355,
+          "pro_copy": 0.586957,
+          "compared_copy": 0.802005,
+          "delta_copy": 0.21504800000000002
+        },
+        {
+          "task_id": "cachetools__cache_eviction_core__001",
+          "pro_rres": 0.759815,
+          "compared_rres": 0.762125,
+          "delta_rres": 0.0023100000000000342,
+          "pro_copy": 0.978723,
+          "compared_copy": 0.975758,
+          "delta_copy": -0.0029649999999999954
+        },
+        {
+          "task_id": "cattrs__structure_core__001",
+          "pro_rres": 1.004701,
+          "compared_rres": 0.835124,
+          "delta_rres": -0.1695770000000001,
+          "pro_copy": 0.996992,
+          "compared_copy": 0.983112,
+          "delta_copy": -0.013880000000000003
+        },
+        {
+          "task_id": "cerberus__schema_validate_core__001",
+          "pro_rres": 0.90549,
+          "compared_rres": 0.994902,
+          "delta_rres": 0.08941199999999994,
+          "pro_copy": 0.98874,
+          "compared_copy": 0.951912,
+          "delta_copy": -0.03682799999999997
+        },
+        {
+          "task_id": "chameleon__template_compile_core__001",
+          "pro_rres": 0.949022,
+          "compared_rres": 1.162434,
+          "delta_rres": 0.21341199999999994,
+          "pro_copy": 0.967655,
+          "compared_copy": 0.954417,
+          "delta_copy": -0.013238000000000083
+        },
+        {
+          "task_id": "click__option_parser__001",
+          "pro_rres": 0.96694,
+          "compared_rres": 0.887284,
+          "delta_rres": -0.07965600000000006,
+          "pro_copy": 0.998923,
+          "compared_copy": 0.999707,
+          "delta_copy": 0.0007840000000000069
+        },
+        {
+          "task_id": "configobj__roundtrip_config_core__001",
+          "pro_rres": 0.99041,
+          "compared_rres": 1.006614,
+          "delta_rres": 0.016203999999999885,
+          "pro_copy": 0.999332,
+          "compared_copy": 0.988502,
+          "delta_copy": -0.010830000000000006
+        },
+        {
+          "task_id": "coverage__config_merge_core__001",
+          "pro_rres": 0.70991,
+          "compared_rres": 1.391892,
+          "delta_rres": 0.6819819999999999,
+          "pro_copy": 0.927665,
+          "compared_copy": 0.623301,
+          "delta_copy": -0.30436399999999997
+        },
+        {
+          "task_id": "coverage__glob_matcher_core__001",
+          "pro_rres": 0.179342,
+          "compared_rres": 0.6958,
+          "delta_rres": 0.516458,
+          "pro_copy": 0.829114,
+          "compared_copy": 0.750408,
+          "delta_copy": -0.07870600000000005
+        },
+        {
+          "task_id": "coverage__path_remap_core__001",
+          "pro_rres": 0.328036,
+          "compared_rres": 0.402951,
+          "delta_rres": 0.07491500000000001,
+          "pro_copy": 0.944637,
+          "compared_copy": 0.861972,
+          "delta_copy": -0.08266499999999999
+        },
+        {
+          "task_id": "croniter__cron_parse_core__001",
+          "pro_rres": 0.877124,
+          "compared_rres": 0.92549,
+          "delta_rres": 0.04836600000000002,
+          "pro_copy": 0.940387,
+          "compared_copy": 0.950565,
+          "delta_copy": 0.01017800000000002
+        },
+        {
+          "task_id": "dataclasses_json__serde_core__001",
+          "pro_rres": 0.868836,
+          "compared_rres": 1.508876,
+          "delta_rres": 0.64004,
+          "pro_copy": 0.945516,
+          "compared_copy": 0.692157,
+          "delta_copy": -0.253359
+        },
+        {
+          "task_id": "diskcache__eviction_policy_core__hard3_001",
+          "pro_rres": 1.125,
+          "compared_rres": 5.5,
+          "delta_rres": 4.375,
+          "pro_copy": 0.0,
+          "compared_copy": 0.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "email_validator__validate_core__001",
+          "pro_rres": 0.972141,
+          "compared_rres": 0.978006,
+          "delta_rres": 0.005865000000000009,
+          "pro_copy": 0.99095,
+          "compared_copy": 0.97901,
+          "delta_copy": -0.01193999999999995
+        },
+        {
+          "task_id": "h11__message_parse_core__001",
+          "pro_rres": 1.000681,
+          "compared_rres": 1.001361,
+          "delta_rres": 0.0006800000000000139,
+          "pro_copy": 0.997279,
+          "compared_copy": 0.996601,
+          "delta_copy": -0.0006780000000000674
+        },
+        {
+          "task_id": "h2__frame_parse_core__001",
+          "pro_rres": 0.958534,
+          "compared_rres": 0.923819,
+          "delta_rres": -0.03471500000000005,
+          "pro_copy": 0.2666,
+          "compared_copy": 0.222338,
+          "delta_copy": -0.044261999999999996
+        },
+        {
+          "task_id": "httpx__request_model_core__001",
+          "pro_rres": 1.442722,
+          "compared_rres": 1.1559,
+          "delta_rres": -0.28682200000000013,
+          "pro_copy": 0.975224,
+          "compared_copy": 0.928838,
+          "delta_copy": -0.04638599999999993
+        },
+        {
+          "task_id": "humanize__naturaltime_core__001",
+          "pro_rres": 0.426102,
+          "compared_rres": 0.615385,
+          "delta_rres": 0.18928299999999998,
+          "pro_copy": 0.914807,
+          "compared_copy": 0.88764,
+          "delta_copy": -0.027167000000000052
+        },
+        {
+          "task_id": "importlib_metadata__entry_points_core__001",
+          "pro_rres": 0.157797,
+          "compared_rres": 0.619431,
+          "delta_rres": 0.461634,
+          "pro_copy": 0.862745,
+          "compared_copy": 0.451548,
+          "delta_copy": -0.411197
+        },
+        {
+          "task_id": "intervaltree__interval_tree_core__001",
+          "pro_rres": 1.018296,
+          "compared_rres": 1.01315,
+          "delta_rres": -0.005146000000000095,
+          "pro_copy": 0.979225,
+          "compared_copy": 0.981377,
+          "delta_copy": 0.0021520000000000428
+        },
+        {
+          "task_id": "isodate__duration_parse_core__001",
+          "pro_rres": 0.572102,
+          "compared_rres": 0.852969,
+          "delta_rres": 0.280867,
+          "pro_copy": 0.904448,
+          "compared_copy": 0.898343,
+          "delta_copy": -0.006105000000000027
+        },
+        {
+          "task_id": "jinja2__compile_render_core__001",
+          "pro_rres": 1.242468,
+          "compared_rres": 1.012319,
+          "delta_rres": -0.23014899999999994,
+          "pro_copy": 0.989995,
+          "compared_copy": 0.994247,
+          "delta_copy": 0.0042520000000000335
+        },
+        {
+          "task_id": "jinja2__extensions_core__001",
+          "pro_rres": 1.155007,
+          "compared_rres": 1.066105,
+          "delta_rres": -0.08890199999999981,
+          "pro_copy": 0.999189,
+          "compared_copy": 0.990528,
+          "delta_copy": -0.00866100000000003
+        },
+        {
+          "task_id": "jinja2__filters_tests_core__001",
+          "pro_rres": 1.242944,
+          "compared_rres": 1.007953,
+          "delta_rres": -0.23499099999999995,
+          "pro_copy": 0.986843,
+          "compared_copy": 0.996777,
+          "delta_copy": 0.009933999999999998
+        },
+        {
+          "task_id": "json5__parse_core__001",
+          "pro_rres": 1.059545,
+          "compared_rres": 1.074431,
+          "delta_rres": 0.014885999999999955,
+          "pro_copy": 0.995868,
+          "compared_copy": 0.97392,
+          "delta_copy": -0.021947999999999968
+        },
+        {
+          "task_id": "jsonpath_ng__expression_eval_core__001",
+          "pro_rres": 2.914849,
+          "compared_rres": 2.915552,
+          "delta_rres": 0.0007030000000001202,
+          "pro_copy": 0.996137,
+          "compared_copy": 0.995897,
+          "delta_copy": -0.00024000000000001798
+        },
+        {
+          "task_id": "jsonpointer__resolve_core__001",
+          "pro_rres": 0.777778,
+          "compared_rres": 1.093333,
+          "delta_rres": 0.31555500000000014,
+          "pro_copy": 0.828571,
+          "compared_copy": 0.845528,
+          "delta_copy": 0.016957
+        },
+        {
+          "task_id": "jsonschema__validator_core__001",
+          "pro_rres": 0.890511,
+          "compared_rres": 0.938237,
+          "delta_rres": 0.047725999999999935,
+          "pro_copy": 0.967844,
+          "compared_copy": 0.962298,
+          "delta_copy": -0.005546000000000051
+        },
+        {
+          "task_id": "jupyter_server__extension_config_core__hard3_001",
+          "pro_rres": 2.109091,
+          "compared_rres": 4.418182,
+          "delta_rres": 2.309091,
+          "pro_copy": 0.025862,
+          "compared_copy": 0.131687,
+          "delta_copy": 0.105825
+        },
+        {
+          "task_id": "lark__parse_tree_core__001",
+          "pro_rres": 1.003452,
+          "compared_rres": 0.864342,
+          "delta_rres": -0.13910999999999996,
+          "pro_copy": 0.997764,
+          "compared_copy": 0.909345,
+          "delta_copy": -0.08841900000000003
+        },
+        {
+          "task_id": "mako__lexer_expression_core__001",
+          "pro_rres": 0.691589,
+          "compared_rres": 1.463695,
+          "delta_rres": 0.772106,
+          "pro_copy": 0.977131,
+          "compared_copy": 0.925344,
+          "delta_copy": -0.051786999999999916
+        },
+        {
+          "task_id": "markdown__extensions_core__001",
+          "pro_rres": 1.080908,
+          "compared_rres": 1.134634,
+          "delta_rres": 0.05372599999999994,
+          "pro_copy": 0.99497,
+          "compared_copy": 0.989008,
+          "delta_copy": -0.005962000000000023
+        },
+        {
+          "task_id": "markdown_it__commonmark_render__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.039891,
+          "delta_rres": 0.0398909999999999,
+          "pro_copy": 0.998187,
+          "compared_copy": 0.988448,
+          "delta_copy": -0.009739000000000053
+        },
+        {
+          "task_id": "marshmallow__schema_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 0.987297,
+          "delta_rres": -0.01270300000000002,
+          "pro_copy": 0.965955,
+          "compared_copy": 0.966804,
+          "delta_copy": 0.0008489999999999887
+        },
+        {
+          "task_id": "msgpack__pack_unpack_core__001",
+          "pro_rres": 0.976447,
+          "compared_rres": 0.947988,
+          "delta_rres": -0.0284589999999999,
+          "pro_copy": 1.0,
+          "compared_copy": 0.983437,
+          "delta_copy": -0.016562999999999994
+        },
+        {
+          "task_id": "packaging__requirement_marker_specifier__001",
+          "pro_rres": 0.58387,
+          "compared_rres": 0.580803,
+          "delta_rres": -0.003067000000000042,
+          "pro_copy": 0.984244,
+          "compared_copy": 0.973601,
+          "delta_copy": -0.010642999999999958
+        },
+        {
+          "task_id": "parse__format_parser_core__001",
+          "pro_rres": 8.444444,
+          "compared_rres": 9.288889,
+          "delta_rres": 0.8444449999999986,
+          "pro_copy": 0.855263,
+          "compared_copy": 0.813397,
+          "delta_copy": -0.04186599999999996
+        },
+        {
+          "task_id": "parso__python_parse_core__001",
+          "pro_rres": 1.006434,
+          "compared_rres": 0.950743,
+          "delta_rres": -0.055691000000000046,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.980163,
+          "delta_copy": -0.002862000000000031
+        },
+        {
+          "task_id": "passlib__hash_context_core__001",
+          "pro_rres": 1.907812,
+          "compared_rres": 2.958481,
+          "delta_rres": 1.0506689999999999,
+          "pro_copy": 0.956833,
+          "compared_copy": 0.966854,
+          "delta_copy": 0.010020999999999947
+        },
+        {
+          "task_id": "pathvalidate__sanitize_core__001",
+          "pro_rres": 1.0125,
+          "compared_rres": 1.043421,
+          "delta_rres": 0.030920999999999976,
+          "pro_copy": 0.997401,
+          "compared_copy": 0.972888,
+          "delta_copy": -0.024513000000000007
+        },
+        {
+          "task_id": "pendulum__parse_format_core__001",
+          "pro_rres": 0.429059,
+          "compared_rres": 1.146503,
+          "delta_rres": 0.717444,
+          "pro_copy": 0.714754,
+          "compared_copy": 0.927958,
+          "delta_copy": 0.21320399999999995
+        },
+        {
+          "task_id": "phonenumbers__parse_format_core__001",
+          "pro_rres": 1.005836,
+          "compared_rres": 1.094835,
+          "delta_rres": 0.08899900000000005,
+          "pro_copy": 0.985205,
+          "compared_copy": 0.992271,
+          "delta_copy": 0.007066000000000017
+        },
+        {
+          "task_id": "pluggy__hook_call_order__001",
+          "pro_rres": 0.992997,
+          "compared_rres": 0.854342,
+          "delta_rres": -0.13865499999999997,
+          "pro_copy": 0.997179,
+          "compared_copy": 0.977049,
+          "delta_copy": -0.020130000000000092
+        },
+        {
+          "task_id": "pluggy__hook_specs_core__001",
+          "pro_rres": 0.932773,
+          "compared_rres": 0.941176,
+          "delta_rres": 0.00840300000000005,
+          "pro_copy": 0.995495,
+          "compared_copy": 0.97619,
+          "delta_copy": -0.019305000000000017
+        },
+        {
+          "task_id": "pygments__formatter_core__001",
+          "pro_rres": 1.336635,
+          "compared_rres": 1.337356,
+          "delta_rres": 0.0007209999999999717,
+          "pro_copy": 0.957283,
+          "compared_copy": 0.943165,
+          "delta_copy": -0.014117999999999964
+        },
+        {
+          "task_id": "pyramid__configurator_action_core__hard3_001",
+          "pro_rres": 3.627907,
+          "compared_rres": 26.116279,
+          "delta_rres": 22.488372,
+          "pro_copy": 0.141026,
+          "compared_copy": 0.447017,
+          "delta_copy": 0.305991
+        },
+        {
+          "task_id": "pytest__mark_expression_core__001",
+          "pro_rres": 1.041353,
+          "compared_rres": 1.071429,
+          "delta_rres": 0.03007599999999999,
+          "pro_copy": 0.960289,
+          "compared_copy": 0.915789,
+          "delta_copy": -0.044499999999999984
+        },
+        {
+          "task_id": "python_box__config_box_core__001",
+          "pro_rres": 0.737849,
+          "compared_rres": 0.89004,
+          "delta_rres": 0.15219100000000008,
+          "pro_copy": 0.975162,
+          "compared_copy": 0.932856,
+          "delta_copy": -0.042305999999999955
+        },
+        {
+          "task_id": "python_dateutil__relativedelta_core__001",
+          "pro_rres": 0.978723,
+          "compared_rres": 1.062057,
+          "delta_rres": 0.08333400000000002,
+          "pro_copy": 0.96558,
+          "compared_copy": 0.931553,
+          "delta_copy": -0.03402700000000003
+        },
+        {
+          "task_id": "python_dateutil__rrule_core__001",
+          "pro_rres": 0.991798,
+          "compared_rres": 1.028391,
+          "delta_rres": 0.0365930000000001,
+          "pro_copy": 0.951018,
+          "compared_copy": 0.899387,
+          "delta_copy": -0.05163099999999998
+        },
+        {
+          "task_id": "python_dotenv__env_parse_core__001",
+          "pro_rres": 0.835772,
+          "compared_rres": 1.118699,
+          "delta_rres": 0.28292700000000015,
+          "pro_copy": 0.992218,
+          "compared_copy": 0.656977,
+          "delta_copy": -0.335241
+        },
+        {
+          "task_id": "python_frontmatter__roundtrip_core__001",
+          "pro_rres": 0.608527,
+          "compared_rres": 0.641473,
+          "delta_rres": 0.03294599999999992,
+          "pro_copy": 0.88535,
+          "compared_copy": 0.824773,
+          "delta_copy": -0.06057699999999999
+        },
+        {
+          "task_id": "python_multipart__form_parse_core__001",
+          "pro_rres": 1.162562,
+          "compared_rres": 0.898194,
+          "delta_rres": -0.26436800000000005,
+          "pro_copy": 0.983051,
+          "compared_copy": 0.784278,
+          "delta_copy": -0.19877299999999998
+        },
+        {
+          "task_id": "pyyaml__safe_load_dump__001",
+          "pro_rres": 0.920899,
+          "compared_rres": 0.943146,
+          "delta_rres": 0.022247000000000017,
+          "pro_copy": 0.990727,
+          "compared_copy": 0.988802,
+          "delta_copy": -0.0019250000000000655
+        },
+        {
+          "task_id": "redis__resp_parser_core__001",
+          "pro_rres": 1.753071,
+          "compared_rres": 1.465602,
+          "delta_rres": -0.287469,
+          "pro_copy": 0.969867,
+          "compared_copy": 0.552389,
+          "delta_copy": -0.417478
+        },
+        {
+          "task_id": "referencing__json_schema_refs_core__001",
+          "pro_rres": 1.026128,
+          "compared_rres": 1.064925,
+          "delta_rres": 0.03879699999999997,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.937546,
+          "delta_copy": -0.04547900000000005
+        },
+        {
+          "task_id": "returns__result_pipeline_core__hard3_001",
+          "pro_rres": 2.5,
+          "compared_rres": 10.884615,
+          "delta_rres": 8.384615,
+          "pro_copy": 0.038462,
+          "compared_copy": 0.625442,
+          "delta_copy": 0.5869800000000001
+        },
+        {
+          "task_id": "rfc3986__uri_parse_core__001",
+          "pro_rres": 0.639041,
+          "compared_rres": 0.592611,
+          "delta_rres": -0.04642999999999997,
+          "pro_copy": 0.978125,
+          "compared_copy": 0.911542,
+          "delta_copy": -0.06658300000000006
+        },
+        {
+          "task_id": "ruamel_yaml__roundtrip_core__001",
+          "pro_rres": 1.003156,
+          "compared_rres": 1.035508,
+          "delta_rres": 0.03235200000000016,
+          "pro_copy": 0.977277,
+          "compared_copy": 0.950893,
+          "delta_copy": -0.026383999999999963
+        },
+        {
+          "task_id": "sortedcontainers__sorted_list_core__001",
+          "pro_rres": 0.921617,
+          "compared_rres": 0.885314,
+          "delta_rres": -0.036302999999999974,
+          "pro_copy": 0.986571,
+          "compared_copy": 0.960857,
+          "delta_copy": -0.025714000000000015
+        },
+        {
+          "task_id": "sphinx__extension_registry_core__hard3_001",
+          "pro_rres": 3.9,
+          "compared_rres": 7.7,
+          "delta_rres": 3.8000000000000003,
+          "pro_copy": 0.179487,
+          "compared_copy": 0.220779,
+          "delta_copy": 0.041291999999999995
+        },
+        {
+          "task_id": "sqlparse__format_filters_core__001",
+          "pro_rres": 1.002768,
+          "compared_rres": 1.00519,
+          "delta_rres": 0.002421999999999924,
+          "pro_copy": 0.979986,
+          "compared_copy": 0.976936,
+          "delta_copy": -0.003049999999999997
+        }
+      ],
+      "summaries": {
+        "rres": {
+          "median": 0.0365930000000001,
+          "q1": -0.004106500000000068,
+          "q3": 0.29924100000000015,
+          "min": -0.287469,
+          "max": 27.176471,
+          "positive": 49,
+          "negative": 18,
+          "ties": 0
+        },
+        "copy": {
+          "median": -0.013238000000000083,
+          "q1": -0.04438099999999999,
+          "q3": 0.00039200000000000346,
+          "min": -0.47566300000000006,
+          "max": 0.5869800000000001,
+          "positive": 17,
+          "negative": 49,
+          "ties": 1
+        }
+      }
+    },
+    {
+      "backend": "Qwen",
+      "common_passing_tasks": 63,
+      "points": [
+        {
+          "task_id": "blinker__signal_registry_core__001",
+          "pro_rres": 9.0,
+          "compared_rres": 13.0,
+          "delta_rres": 4.0,
+          "pro_copy": 0.578431,
+          "compared_copy": 0.900452,
+          "delta_copy": 0.322021
+        },
+        {
+          "task_id": "boltons__iterutils_core__001",
+          "pro_rres": 0.370968,
+          "compared_rres": 0.377419,
+          "delta_rres": 0.0064509999999999845,
+          "pro_copy": 0.586957,
+          "compared_copy": 0.491453,
+          "delta_copy": -0.09550399999999998
+        },
+        {
+          "task_id": "cachetools__cache_eviction_core__001",
+          "pro_rres": 0.759815,
+          "compared_rres": 0.721709,
+          "delta_rres": -0.03810599999999997,
+          "pro_copy": 0.978723,
+          "compared_copy": 0.8624,
+          "delta_copy": -0.11632299999999995
+        },
+        {
+          "task_id": "cattrs__structure_core__001",
+          "pro_rres": 1.004701,
+          "compared_rres": 1.032236,
+          "delta_rres": 0.027534999999999865,
+          "pro_copy": 0.996992,
+          "compared_copy": 0.992843,
+          "delta_copy": -0.004148999999999958
+        },
+        {
+          "task_id": "coverage__config_merge_core__001",
+          "pro_rres": 0.70991,
+          "compared_rres": 0.881081,
+          "delta_rres": 0.17117099999999996,
+          "pro_copy": 0.927665,
+          "compared_copy": 0.317996,
+          "delta_copy": -0.609669
+        },
+        {
+          "task_id": "coverage__glob_matcher_core__001",
+          "pro_rres": 0.179342,
+          "compared_rres": 0.359818,
+          "delta_rres": 0.18047600000000003,
+          "pro_copy": 0.829114,
+          "compared_copy": 0.195584,
+          "delta_copy": -0.63353
+        },
+        {
+          "task_id": "coverage__path_remap_core__001",
+          "pro_rres": 0.328036,
+          "compared_rres": 0.330306,
+          "delta_rres": 0.0022699999999999942,
+          "pro_copy": 0.944637,
+          "compared_copy": 0.570447,
+          "delta_copy": -0.3741899999999999
+        },
+        {
+          "task_id": "dataclasses_json__serde_core__001",
+          "pro_rres": 0.868836,
+          "compared_rres": 0.812623,
+          "delta_rres": -0.05621300000000007,
+          "pro_copy": 0.945516,
+          "compared_copy": 0.29733,
+          "delta_copy": -0.648186
+        },
+        {
+          "task_id": "diskcache__eviction_policy_core__hard3_001",
+          "pro_rres": 1.125,
+          "compared_rres": 1.55,
+          "delta_rres": 0.42500000000000004,
+          "pro_copy": 0.0,
+          "compared_copy": 0.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "distlib__wheel_metadata_core__hard3_001",
+          "pro_rres": 3.133333,
+          "compared_rres": 4.866667,
+          "delta_rres": 1.7333339999999997,
+          "pro_copy": 0.042553,
+          "compared_copy": 0.027397,
+          "delta_copy": -0.015156
+        },
+        {
+          "task_id": "email_validator__validate_core__001",
+          "pro_rres": 0.972141,
+          "compared_rres": 1.035191,
+          "delta_rres": 0.06304999999999994,
+          "pro_copy": 0.99095,
+          "compared_copy": 0.73796,
+          "delta_copy": -0.25299000000000005
+        },
+        {
+          "task_id": "environs__typed_env_core__001",
+          "pro_rres": 0.694087,
+          "compared_rres": 0.602828,
+          "delta_rres": -0.09125899999999998,
+          "pro_copy": 0.909259,
+          "compared_copy": 0.660981,
+          "delta_copy": -0.248278
+        },
+        {
+          "task_id": "h11__message_parse_core__001",
+          "pro_rres": 1.000681,
+          "compared_rres": 0.829816,
+          "delta_rres": -0.17086499999999993,
+          "pro_copy": 0.997279,
+          "compared_copy": 0.902379,
+          "delta_copy": -0.09489999999999998
+        },
+        {
+          "task_id": "h2__frame_parse_core__001",
+          "pro_rres": 0.958534,
+          "compared_rres": 0.720347,
+          "delta_rres": -0.23818700000000004,
+          "pro_copy": 0.2666,
+          "compared_copy": 0.121821,
+          "delta_copy": -0.144779
+        },
+        {
+          "task_id": "humanize__naturaltime_core__001",
+          "pro_rres": 0.426102,
+          "compared_rres": 0.283492,
+          "delta_rres": -0.14260999999999996,
+          "pro_copy": 0.914807,
+          "compared_copy": 0.667683,
+          "delta_copy": -0.247124
+        },
+        {
+          "task_id": "isodate__duration_parse_core__001",
+          "pro_rres": 0.572102,
+          "compared_rres": 0.590009,
+          "delta_rres": 0.017907000000000006,
+          "pro_copy": 0.904448,
+          "compared_copy": 0.757188,
+          "delta_copy": -0.14726000000000006
+        },
+        {
+          "task_id": "jinja2__compile_render_core__001",
+          "pro_rres": 1.242468,
+          "compared_rres": 1.002016,
+          "delta_rres": -0.2404519999999999,
+          "pro_copy": 0.989995,
+          "compared_copy": 0.994747,
+          "delta_copy": 0.0047520000000000895
+        },
+        {
+          "task_id": "jinja2__extensions_core__001",
+          "pro_rres": 1.155007,
+          "compared_rres": 0.999479,
+          "delta_rres": -0.1555279999999999,
+          "pro_copy": 0.999189,
+          "compared_copy": 0.997292,
+          "delta_copy": -0.0018970000000000375
+        },
+        {
+          "task_id": "jinja2__filters_tests_core__001",
+          "pro_rres": 1.242944,
+          "compared_rres": 1.125112,
+          "delta_rres": -0.11783200000000016,
+          "pro_copy": 0.986843,
+          "compared_copy": 0.999204,
+          "delta_copy": 0.012360999999999955
+        },
+        {
+          "task_id": "jinja2__loader_inheritance_core__001",
+          "pro_rres": 1.174839,
+          "compared_rres": 1.174521,
+          "delta_rres": -0.00031800000000004047,
+          "pro_copy": 0.995854,
+          "compared_copy": 0.996484,
+          "delta_copy": 0.0006300000000000194
+        },
+        {
+          "task_id": "json5__parse_core__001",
+          "pro_rres": 1.059545,
+          "compared_rres": 1.061296,
+          "delta_rres": 0.001751000000000058,
+          "pro_copy": 0.995868,
+          "compared_copy": 0.997525,
+          "delta_copy": 0.0016570000000000196
+        },
+        {
+          "task_id": "jsonpointer__resolve_core__001",
+          "pro_rres": 0.777778,
+          "compared_rres": 0.768889,
+          "delta_rres": -0.008888999999999925,
+          "pro_copy": 0.828571,
+          "compared_copy": 0.196532,
+          "delta_copy": -0.6320389999999999
+        },
+        {
+          "task_id": "lark__grammar_loader_core__001",
+          "pro_rres": 0.921085,
+          "compared_rres": 0.921085,
+          "delta_rres": 0.0,
+          "pro_copy": 0.998822,
+          "compared_copy": 0.99899,
+          "delta_copy": 0.000168000000000057
+        },
+        {
+          "task_id": "lark__visitor_transform_core__001",
+          "pro_rres": 0.991964,
+          "compared_rres": 0.97472,
+          "delta_rres": -0.017243999999999926,
+          "pro_copy": 0.99865,
+          "compared_copy": 0.998454,
+          "delta_copy": -0.000196000000000085
+        },
+        {
+          "task_id": "markdown__extensions_core__001",
+          "pro_rres": 1.080908,
+          "compared_rres": 1.682123,
+          "delta_rres": 0.601215,
+          "pro_copy": 0.99497,
+          "compared_copy": 0.995627,
+          "delta_copy": 0.0006570000000000187
+        },
+        {
+          "task_id": "markdown_it__commonmark_render__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.0,
+          "delta_rres": 0.0,
+          "pro_copy": 0.998187,
+          "compared_copy": 0.998187,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "networkx__dag_topo_core__001",
+          "pro_rres": 0.114422,
+          "compared_rres": 0.087564,
+          "delta_rres": -0.026857999999999993,
+          "pro_copy": 0.406752,
+          "compared_copy": 0.273109,
+          "delta_copy": -0.133643
+        },
+        {
+          "task_id": "packaging__requirement_marker_specifier__001",
+          "pro_rres": 0.58387,
+          "compared_rres": 0.410917,
+          "delta_rres": -0.17295300000000002,
+          "pro_copy": 0.984244,
+          "compared_copy": 0.898507,
+          "delta_copy": -0.08573700000000006
+        },
+        {
+          "task_id": "parse__format_parser_core__001",
+          "pro_rres": 8.444444,
+          "compared_rres": 8.6,
+          "delta_rres": 0.15555599999999892,
+          "pro_copy": 0.855263,
+          "compared_copy": 0.193798,
+          "delta_copy": -0.661465
+        },
+        {
+          "task_id": "parso__python_parse_core__001",
+          "pro_rres": 1.006434,
+          "compared_rres": 1.105392,
+          "delta_rres": 0.09895799999999988,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.979727,
+          "delta_copy": -0.003298000000000023
+        },
+        {
+          "task_id": "phonenumbers__parse_format_core__001",
+          "pro_rres": 1.005836,
+          "compared_rres": 1.289758,
+          "delta_rres": 0.283922,
+          "pro_copy": 0.985205,
+          "compared_copy": 0.997738,
+          "delta_copy": 0.012533000000000016
+        },
+        {
+          "task_id": "pluggy__hook_call_order__001",
+          "pro_rres": 0.992997,
+          "compared_rres": 0.941176,
+          "delta_rres": -0.051821000000000006,
+          "pro_copy": 0.997179,
+          "compared_copy": 0.989583,
+          "delta_copy": -0.007596000000000047
+        },
+        {
+          "task_id": "pluggy__hook_specs_core__001",
+          "pro_rres": 0.932773,
+          "compared_rres": 0.577031,
+          "delta_rres": -0.355742,
+          "pro_copy": 0.995495,
+          "compared_copy": 0.759709,
+          "delta_copy": -0.23578600000000005
+        },
+        {
+          "task_id": "pydantic__field_validator_core__hard3_001",
+          "pro_rres": 8.0,
+          "compared_rres": 8.025641,
+          "delta_rres": 0.025641000000000247,
+          "pro_copy": 0.012821,
+          "compared_copy": 0.004792,
+          "delta_copy": -0.008029000000000001
+        },
+        {
+          "task_id": "pydantic_settings__env_source_core__001",
+          "pro_rres": 0.760178,
+          "compared_rres": 0.707195,
+          "delta_rres": -0.052983,
+          "pro_copy": 0.969919,
+          "compared_copy": 0.727918,
+          "delta_copy": -0.24200100000000002
+        },
+        {
+          "task_id": "pyramid__configurator_action_core__hard3_001",
+          "pro_rres": 3.627907,
+          "compared_rres": 2.209302,
+          "delta_rres": -1.418605,
+          "pro_copy": 0.141026,
+          "compared_copy": 0.042105,
+          "delta_copy": -0.09892100000000001
+        },
+        {
+          "task_id": "pytest__fixture_resolve_core__001",
+          "pro_rres": 1.0,
+          "compared_rres": 2.251969,
+          "delta_rres": 1.2519689999999999,
+          "pro_copy": 0.165354,
+          "compared_copy": 0.097902,
+          "delta_copy": -0.067452
+        },
+        {
+          "task_id": "pytest__mark_expression_core__001",
+          "pro_rres": 1.041353,
+          "compared_rres": 2.015038,
+          "delta_rres": 0.9736850000000001,
+          "pro_copy": 0.960289,
+          "compared_copy": 0.425373,
+          "delta_copy": -0.534916
+        },
+        {
+          "task_id": "pytest__skipif_eval_core__001",
+          "pro_rres": 1.530864,
+          "compared_rres": 1.530864,
+          "delta_rres": 0.0,
+          "pro_copy": 0.451613,
+          "compared_copy": 0.395161,
+          "delta_copy": -0.056452
+        },
+        {
+          "task_id": "python_box__config_box_core__001",
+          "pro_rres": 0.737849,
+          "compared_rres": 0.873307,
+          "delta_rres": 0.13545800000000008,
+          "pro_copy": 0.975162,
+          "compared_copy": 0.95438,
+          "delta_copy": -0.020781999999999967
+        },
+        {
+          "task_id": "python_dateutil__relativedelta_core__001",
+          "pro_rres": 0.978723,
+          "compared_rres": 1.010638,
+          "delta_rres": 0.031914999999999916,
+          "pro_copy": 0.96558,
+          "compared_copy": 0.929825,
+          "delta_copy": -0.03575499999999998
+        },
+        {
+          "task_id": "python_dateutil__rrule_core__001",
+          "pro_rres": 0.991798,
+          "compared_rres": 0.908517,
+          "delta_rres": -0.08328099999999994,
+          "pro_copy": 0.951018,
+          "compared_copy": 0.924306,
+          "delta_copy": -0.02671200000000007
+        },
+        {
+          "task_id": "python_dotenv__env_parse_core__001",
+          "pro_rres": 0.835772,
+          "compared_rres": 0.627642,
+          "delta_rres": -0.20812999999999993,
+          "pro_copy": 0.992218,
+          "compared_copy": 0.784974,
+          "delta_copy": -0.2072440000000001
+        },
+        {
+          "task_id": "python_frontmatter__roundtrip_core__001",
+          "pro_rres": 0.608527,
+          "compared_rres": 0.428295,
+          "delta_rres": -0.18023200000000006,
+          "pro_copy": 0.88535,
+          "compared_copy": 0.334842,
+          "delta_copy": -0.550508
+        },
+        {
+          "task_id": "python_multipart__form_parse_core__001",
+          "pro_rres": 1.162562,
+          "compared_rres": 1.01642,
+          "delta_rres": -0.146142,
+          "pro_copy": 0.983051,
+          "compared_copy": 0.876414,
+          "delta_copy": -0.10663699999999998
+        },
+        {
+          "task_id": "pyyaml__safe_load_dump__001",
+          "pro_rres": 0.920899,
+          "compared_rres": 0.92809,
+          "delta_rres": 0.0071909999999999474,
+          "pro_copy": 0.990727,
+          "compared_copy": 0.994189,
+          "delta_copy": 0.003461999999999965
+        },
+        {
+          "task_id": "redis__resp_parser_core__001",
+          "pro_rres": 1.753071,
+          "compared_rres": 0.620393,
+          "delta_rres": -1.132678,
+          "pro_copy": 0.969867,
+          "compared_copy": 0.845545,
+          "delta_copy": -0.12432200000000004
+        },
+        {
+          "task_id": "referencing__json_schema_refs_core__001",
+          "pro_rres": 1.026128,
+          "compared_rres": 1.065717,
+          "delta_rres": 0.039589000000000096,
+          "pro_copy": 0.983025,
+          "compared_copy": 0.681278,
+          "delta_copy": -0.301747
+        },
+        {
+          "task_id": "rfc3986__uri_parse_core__001",
+          "pro_rres": 0.639041,
+          "compared_rres": 0.311033,
+          "delta_rres": -0.32800799999999997,
+          "pro_copy": 0.978125,
+          "compared_copy": 0.521669,
+          "delta_copy": -0.456456
+        },
+        {
+          "task_id": "rich__markup_parse_core__001",
+          "pro_rres": 0.267573,
+          "compared_rres": 0.195586,
+          "delta_rres": -0.071987,
+          "pro_copy": 0.955837,
+          "compared_copy": 0.929365,
+          "delta_copy": -0.02647200000000005
+        },
+        {
+          "task_id": "ruamel_yaml__roundtrip_core__001",
+          "pro_rres": 1.003156,
+          "compared_rres": 1.008241,
+          "delta_rres": 0.005085000000000006,
+          "pro_copy": 0.977277,
+          "compared_copy": 0.976435,
+          "delta_copy": -0.0008419999999998984
+        },
+        {
+          "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+          "pro_rres": 2.112903,
+          "compared_rres": 2.725806,
+          "delta_rres": 0.6129029999999998,
+          "pro_copy": 0.022901,
+          "compared_copy": 0.0,
+          "delta_copy": -0.022901
+        },
+        {
+          "task_id": "sqlparse__format_filters_core__001",
+          "pro_rres": 1.002768,
+          "compared_rres": 1.237024,
+          "delta_rres": 0.2342559999999998,
+          "pro_copy": 0.979986,
+          "compared_copy": 0.981259,
+          "delta_copy": 0.0012729999999999686
+        },
+        {
+          "task_id": "sqlparse__parse_split_core__001",
+          "pro_rres": 0.962947,
+          "compared_rres": 1.219232,
+          "delta_rres": 0.2562850000000001,
+          "pro_copy": 0.982135,
+          "compared_copy": 0.968524,
+          "delta_copy": -0.013610999999999929
+        },
+        {
+          "task_id": "stevedore__extension_manager_core__hard3_001",
+          "pro_rres": 1.766234,
+          "compared_rres": 4.748918,
+          "delta_rres": 2.982684,
+          "pro_copy": 0.401961,
+          "compared_copy": 0.170465,
+          "delta_copy": -0.231496
+        },
+        {
+          "task_id": "tomlkit__roundtrip_document__001",
+          "pro_rres": 1.0,
+          "compared_rres": 0.988074,
+          "delta_rres": -0.011925999999999992,
+          "pro_copy": 0.969523,
+          "compared_copy": 0.935405,
+          "delta_copy": -0.03411799999999998
+        },
+        {
+          "task_id": "transitions__state_machine_core__hard3_001",
+          "pro_rres": 4.52,
+          "compared_rres": 4.6,
+          "delta_rres": 0.08000000000000007,
+          "pro_copy": 0.348673,
+          "compared_copy": 0.372174,
+          "delta_copy": 0.023500999999999994
+        },
+        {
+          "task_id": "urllib3__retry_backoff_core__001",
+          "pro_rres": 0.628086,
+          "compared_rres": 0.472222,
+          "delta_rres": -0.15586400000000006,
+          "pro_copy": 0.899263,
+          "compared_copy": 0.287582,
+          "delta_copy": -0.611681
+        },
+        {
+          "task_id": "voluptuous__schema_validate_core__001",
+          "pro_rres": 0.583333,
+          "compared_rres": 0.672783,
+          "delta_rres": 0.08945000000000003,
+          "pro_copy": 0.897772,
+          "compared_copy": 0.839773,
+          "delta_copy": -0.05799900000000002
+        },
+        {
+          "task_id": "werkzeug__routing_core__001",
+          "pro_rres": 0.239819,
+          "compared_rres": 0.135747,
+          "delta_rres": -0.104072,
+          "pro_copy": 0.91283,
+          "compared_copy": 0.694,
+          "delta_copy": -0.21883000000000008
+        },
+        {
+          "task_id": "wheel__metadata_normalize_core__hard3_001",
+          "pro_rres": 2.302326,
+          "compared_rres": 2.093023,
+          "delta_rres": -0.2093029999999998,
+          "pro_copy": 0.454545,
+          "compared_copy": 0.122222,
+          "delta_copy": -0.332323
+        },
+        {
+          "task_id": "wsproto__frame_parse_core__001",
+          "pro_rres": 0.479017,
+          "compared_rres": 0.929376,
+          "delta_rres": 0.45035899999999995,
+          "pro_copy": 0.987179,
+          "compared_copy": 0.505507,
+          "delta_copy": -0.481672
+        },
+        {
+          "task_id": "xmltodict__xml_parse_core__001",
+          "pro_rres": 0.607774,
+          "compared_rres": 0.734982,
+          "delta_rres": 0.127208,
+          "pro_copy": 0.718023,
+          "compared_copy": 0.516827,
+          "delta_copy": -0.20119599999999993
+        }
+      ],
+      "summaries": {
+        "rres": {
+          "median": 0.0,
+          "q1": -0.11095200000000008,
+          "q3": 0.13133300000000003,
+          "min": -1.418605,
+          "max": 4.0,
+          "positive": 31,
+          "negative": 29,
+          "ties": 3
+        },
+        "copy": {
+          "median": -0.08573700000000006,
+          "q1": -0.24456250000000002,
+          "q3": -0.0025975000000000303,
+          "min": -0.661465,
+          "max": 0.322021,
+          "positive": 11,
+          "negative": 50,
+          "ties": 2
+        }
+      }
+    },
+    {
+      "backend": "OSS",
+      "common_passing_tasks": 33,
+      "points": [
+        {
+          "task_id": "apscheduler__cron_trigger_core__hard3_001",
+          "pro_rres": 7.59322,
+          "compared_rres": 2.237288,
+          "delta_rres": -5.355931999999999,
+          "pro_copy": 0.573661,
+          "compared_copy": 0.0,
+          "delta_copy": -0.573661
+        },
+        {
+          "task_id": "bidict__bidirectional_map_core__001",
+          "pro_rres": 1.008539,
+          "compared_rres": 0.196395,
+          "delta_rres": -0.8121440000000001,
+          "pro_copy": 0.988711,
+          "compared_copy": 0.0,
+          "delta_copy": -0.988711
+        },
+        {
+          "task_id": "boltons__iterutils_core__001",
+          "pro_rres": 0.370968,
+          "compared_rres": 0.237903,
+          "delta_rres": -0.13306500000000002,
+          "pro_copy": 0.586957,
+          "compared_copy": 0.440678,
+          "delta_copy": -0.14627899999999994
+        },
+        {
+          "task_id": "cachetools__cache_eviction_core__001",
+          "pro_rres": 0.759815,
+          "compared_rres": 0.844111,
+          "delta_rres": 0.08429599999999993,
+          "pro_copy": 0.978723,
+          "compared_copy": 0.4829,
+          "delta_copy": -0.495823
+        },
+        {
+          "task_id": "coverage__glob_matcher_core__001",
+          "pro_rres": 0.179342,
+          "compared_rres": 0.138479,
+          "delta_rres": -0.04086300000000001,
+          "pro_copy": 0.829114,
+          "compared_copy": 0.172131,
+          "delta_copy": -0.656983
+        },
+        {
+          "task_id": "coverage__path_remap_core__001",
+          "pro_rres": 0.328036,
+          "compared_rres": 0.214529,
+          "delta_rres": -0.113507,
+          "pro_copy": 0.944637,
+          "compared_copy": 0.248677,
+          "delta_copy": -0.6959599999999999
+        },
+        {
+          "task_id": "diskcache__eviction_policy_core__hard3_001",
+          "pro_rres": 1.125,
+          "compared_rres": 1.325,
+          "delta_rres": 0.19999999999999996,
+          "pro_copy": 0.0,
+          "compared_copy": 0.0,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "distlib__wheel_metadata_core__hard3_001",
+          "pro_rres": 3.133333,
+          "compared_rres": 3.1,
+          "delta_rres": -0.033332999999999835,
+          "pro_copy": 0.042553,
+          "compared_copy": 0.0,
+          "delta_copy": -0.042553
+        },
+        {
+          "task_id": "environs__typed_env_core__001",
+          "pro_rres": 0.694087,
+          "compared_rres": 0.466581,
+          "delta_rres": -0.22750599999999999,
+          "pro_copy": 0.909259,
+          "compared_copy": 0.024793,
+          "delta_copy": -0.8844660000000001
+        },
+        {
+          "task_id": "h11__message_parse_core__001",
+          "pro_rres": 1.000681,
+          "compared_rres": 1.000681,
+          "delta_rres": 0.0,
+          "pro_copy": 0.997279,
+          "compared_copy": 0.997279,
+          "delta_copy": 0.0
+        },
+        {
+          "task_id": "humanize__naturaltime_core__001",
+          "pro_rres": 0.426102,
+          "compared_rres": 0.277442,
+          "delta_rres": -0.14865999999999996,
+          "pro_copy": 0.914807,
+          "compared_copy": 0.52648,
+          "delta_copy": -0.3883270000000001
+        },
+        {
+          "task_id": "isodate__duration_parse_core__001",
+          "pro_rres": 0.572102,
+          "compared_rres": 0.495759,
+          "delta_rres": -0.076343,
+          "pro_copy": 0.904448,
+          "compared_copy": 0.401141,
+          "delta_copy": -0.503307
+        },
+        {
+          "task_id": "itsdangerous__timed_serializer_core__001",
+          "pro_rres": 6.512821,
+          "compared_rres": 4.641026,
+          "delta_rres": -1.8717949999999997,
+          "pro_copy": 0.271654,
+          "compared_copy": 0.016575,
+          "delta_copy": -0.255079
+        },
+        {
+          "task_id": "jinja2__compile_render_core__001",
+          "pro_rres": 1.242468,
+          "compared_rres": 1.240116,
+          "delta_rres": -0.0023519999999999097,
+          "pro_copy": 0.989995,
+          "compared_copy": 0.998465,
+          "delta_copy": 0.008470000000000089
+        },
+        {
+          "task_id": "jinja2__loader_inheritance_core__001",
+          "pro_rres": 1.174839,
+          "compared_rres": 0.014402,
+          "delta_rres": -1.160437,
+          "pro_copy": 0.995854,
+          "compared_copy": 0.080882,
+          "delta_copy": -0.914972
+        },
+        {
+          "task_id": "jsonpointer__resolve_core__001",
+          "pro_rres": 0.777778,
+          "compared_rres": 0.822222,
+          "delta_rres": 0.04444400000000004,
+          "pro_copy": 0.828571,
+          "compared_copy": 0.205405,
+          "delta_copy": -0.6231659999999999
+        },
+        {
+          "task_id": "jsonschema__validator_core__001",
+          "pro_rres": 0.890511,
+          "compared_rres": 0.093768,
+          "delta_rres": -0.7967430000000001,
+          "pro_copy": 0.967844,
+          "compared_copy": 0.008982,
+          "delta_copy": -0.958862
+        },
+        {
+          "task_id": "markdown_it__commonmark_render__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.019719,
+          "delta_rres": 0.019719000000000042,
+          "pro_copy": 0.998187,
+          "compared_copy": 0.997555,
+          "delta_copy": -0.0006320000000000769
+        },
+        {
+          "task_id": "pluggy__hook_call_order__001",
+          "pro_rres": 0.992997,
+          "compared_rres": 0.810924,
+          "delta_rres": -0.18207300000000004,
+          "pro_copy": 0.997179,
+          "compared_copy": 0.758204,
+          "delta_copy": -0.23897500000000005
+        },
+        {
+          "task_id": "pygments__formatter_core__001",
+          "pro_rres": 1.336635,
+          "compared_rres": 0.024316,
+          "delta_rres": -1.312319,
+          "pro_copy": 0.957283,
+          "compared_copy": 0.0,
+          "delta_copy": -0.957283
+        },
+        {
+          "task_id": "pyramid__configurator_action_core__hard3_001",
+          "pro_rres": 3.627907,
+          "compared_rres": 2.953488,
+          "delta_rres": -0.6744189999999999,
+          "pro_copy": 0.141026,
+          "compared_copy": 0.03937,
+          "delta_copy": -0.10165600000000001
+        },
+        {
+          "task_id": "pytest__mark_expression_core__001",
+          "pro_rres": 1.041353,
+          "compared_rres": 0.966165,
+          "delta_rres": -0.07518799999999992,
+          "pro_copy": 0.960289,
+          "compared_copy": 0.610895,
+          "delta_copy": -0.349394
+        },
+        {
+          "task_id": "pytest__skipif_eval_core__001",
+          "pro_rres": 1.530864,
+          "compared_rres": 1.617284,
+          "delta_rres": 0.08641999999999994,
+          "pro_copy": 0.451613,
+          "compared_copy": 0.175573,
+          "delta_copy": -0.27603999999999995
+        },
+        {
+          "task_id": "python_dotenv__env_parse_core__001",
+          "pro_rres": 0.835772,
+          "compared_rres": 0.728455,
+          "delta_rres": -0.107317,
+          "pro_copy": 0.992218,
+          "compared_copy": 0.542411,
+          "delta_copy": -0.44980700000000007
+        },
+        {
+          "task_id": "python_frontmatter__roundtrip_core__001",
+          "pro_rres": 0.608527,
+          "compared_rres": 0.296512,
+          "delta_rres": -0.31201500000000004,
+          "pro_copy": 0.88535,
+          "compared_copy": 0.026144,
+          "delta_copy": -0.8592059999999999
+        },
+        {
+          "task_id": "python_multipart__form_parse_core__001",
+          "pro_rres": 1.162562,
+          "compared_rres": 1.152709,
+          "delta_rres": -0.009853000000000112,
+          "pro_copy": 0.983051,
+          "compared_copy": 0.98433,
+          "delta_copy": 0.0012790000000000301
+        },
+        {
+          "task_id": "returns__result_pipeline_core__hard3_001",
+          "pro_rres": 2.5,
+          "compared_rres": 2.173077,
+          "delta_rres": -0.32692299999999985,
+          "pro_copy": 0.038462,
+          "compared_copy": 0.0,
+          "delta_copy": -0.038462
+        },
+        {
+          "task_id": "rfc3986__uri_parse_core__001",
+          "pro_rres": 0.639041,
+          "compared_rres": 0.117823,
+          "delta_rres": -0.521218,
+          "pro_copy": 0.978125,
+          "compared_copy": 0.258475,
+          "delta_copy": -0.71965
+        },
+        {
+          "task_id": "sphinx__extension_registry_core__hard3_001",
+          "pro_rres": 3.9,
+          "compared_rres": 2.866667,
+          "delta_rres": -1.0333329999999998,
+          "pro_copy": 0.179487,
+          "compared_copy": 0.0,
+          "delta_copy": -0.179487
+        },
+        {
+          "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+          "pro_rres": 2.112903,
+          "compared_rres": 1.177419,
+          "delta_rres": -0.9354840000000002,
+          "pro_copy": 0.022901,
+          "compared_copy": 0.0,
+          "delta_copy": -0.022901
+        },
+        {
+          "task_id": "tomlkit__roundtrip_document__001",
+          "pro_rres": 1.0,
+          "compared_rres": 1.003313,
+          "delta_rres": 0.0033129999999998994,
+          "pro_copy": 0.969523,
+          "compared_copy": 0.965441,
+          "delta_copy": -0.00408200000000003
+        },
+        {
+          "task_id": "trafaret__validation_rules_core__hard3_001",
+          "pro_rres": 2.352941,
+          "compared_rres": 1.741176,
+          "delta_rres": -0.6117649999999999,
+          "pro_copy": 0.015,
+          "compared_copy": 0.02027,
+          "delta_copy": 0.00527
+        },
+        {
+          "task_id": "wsproto__frame_parse_core__001",
+          "pro_rres": 0.479017,
+          "compared_rres": 0.517912,
+          "delta_rres": 0.03889500000000001,
+          "pro_copy": 0.987179,
+          "compared_copy": 0.62253,
+          "delta_copy": -0.364649
+        }
+      ],
+      "summaries": {
+        "rres": {
+          "median": -0.13306500000000002,
+          "q1": -0.6744189999999999,
+          "q3": -0.0023519999999999097,
+          "min": -5.355931999999999,
+          "max": 0.19999999999999996,
+          "positive": 7,
+          "negative": 25,
+          "ties": 1
+        },
+        "copy": {
+          "median": -0.349394,
+          "q1": -0.656983,
+          "q3": -0.038462,
+          "min": -0.988711,
+          "max": 0.008470000000000089,
+          "positive": 3,
+          "negative": 28,
+          "ties": 2
+        }
+      }
+    }
+  ],
+  "sources": [
+    {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+      "sha256": "c651d163e15c4bb18faf41816511b51d7ebaac0f72b5b292fa403ebbfda89a8e"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    }
+  ]
+}

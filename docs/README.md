@@ -1,15 +1,15 @@
 # FeatureLiftBench 文档入口
 
-> **Status: current · Last verified: 2026-09-02**
+> **Status: current · Last verified: 2026-09-11**
 
-日常只从这里进入。**数字只看 [STATUS.md](STATUS.md)**，方法结论只看
-[FINDINGS.md](FINDINGS.md)。论文主套件是冻结 Python-150 + Hard-50（Python-200′）。
+当前优先进行论文写作，入口为 [论文工作流](paper/WORKFLOW.md)。最终范围：**200 题；150 题六配置主比较；其余 50 题五配置扩展**。数字摘要见 [STATUS.md](STATUS.md)，正式输入见 [paper_sources.json](paper/paper_sources.json)。下列运行与方法文档保留供开发参考，内部批次名称不作为论文分类。
 
 ## 权威
 
 | 需要 | 文档 |
 | --- | --- |
-| 规模、freeze、可用结果、blocker | [STATUS.md](STATUS.md) |
+| 最终规模与当前结果 | [STATUS.md](STATUS.md) |
+| 论文数据、表格、绘图与打包 | [paper/WORKFLOW.md](paper/WORKFLOW.md) |
 | 方法结论 | [FINDINGS.md](FINDINGS.md) |
 | Main 条件、指标、正式实验臂 | [EVALUATION.md](EVALUATION.md) |
 | 出题规则 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |

@@ -1,50 +1,24 @@
 # Paper analysis
 
-> **Status: current index · Last verified: 2026-09-04**
+> **Status: current index · Last verified: 2026-09-11**
 
-Current candidate evidence:
+The paper uses one 200-task benchmark, with a common 150-task comparison across six configurations and an additional 50-task evaluation across five configurations.
 
-- `python200_prime_v2_main_20260904/`: freeze v2 OpenHands Main mechanical analysis
-  (DeepSeek 143/200, Luna/OpenLux 132/200, Qwen 80/200). Start at
-  `readout.md`. **24 shared freeze-preflight blocks**; Hard-50 is *not* harder
-  than launched Python-150. Semantic 5.3 labels are not done. GLM-Flash excluded.
+Start with [the paper workflow](../../docs/paper/WORKFLOW.md). Its [input manifest](../../docs/paper/paper_sources.json) selects exact files; directory names and dates alone do not define current evidence.
 
-- `python200_hard_main_20260829/`: DeepSeek V4 Flash OpenHands Main on the
-  Python-200′ (frozen Python-150 + Hard-50) task set. Start with
-  `offline_closure_checklist.md` and `paper_readout.md`; `summary.json`,
-  `provenance_attestation.json`, `context_audit.json`, and `failure_audit.json`
-  are the reusable machine-readable layers. The received 132/200 headline is
-  blocked: 17 tasks did not launch, 16 stopped at offline dependency install,
-  and the frozen strict replacement union contains 84 task IDs. For failure
-  causality, read `failure_process_analysis.md` and then the stricter
-  `contract_clarity_vs_exploration.md`; the latter separates model exploration
-  failures from TASK exact-oracle gaps on the 19 first-pass aligned failures.
-  `clause_narrowing/clause_narrowing.md` then narrows to the 8 Hidden-first
-  failures and asks whether each obligation was recoverable from the public
-  contract at all, which bounds how much any agent-side method can win;
-  `clause_narrowing/evidence_packets.md` carries the per-task evidence.
-  `strict84_replacement_audit_20260902.md`.
-  Offline v2 analysis subset × received-package slice (81/96 on the fixed
-  eligible 116; not a leaderboard):
-  `offline_standard_slice_20260902/`.
+## Inputs used by the current paper
 
-- `benchmark_tiers/`: **v1 provisional** two-state labels. Historical only;
-  do not treat 163/37 as the paper analysis set.
-- `benchmark_tiers_v2_candidate/`: protocol v2 three-state labels and
-  `adjudications.csv`. Official analysis subset is
-  `benchmark/selection/python200_hard_standard_suite.json` (**168/32**,
-  `undetermined = 0`, schema v2). Precision/recall-sample notes:
-  `precision.md`. Protocol:
-  [BENCHMARK_VALIDATION_GATE.md](../../docs/BENCHMARK_VALIDATION_GATE.md) §13.
+| File or directory | Current use |
+| --- | --- |
+| `python150_prime_v2_analysis_20260905/task_results.csv` | 900 retained model–task outcomes, 150 common tasks, six configurations |
+| `python150_paper_analysis_final/json/stats.json` | Saved paired statistics and solve-frequency counts |
+| `python150_paper_analysis_final/csv/main_table.csv` | Saved summary checked against task-level calculations |
+| Model run directories listed in the input manifest | Recorded run profiles and evaluator outputs for the remaining 50 tasks |
 
-Exploratory historical evidence:
+Main passing counts, in the manifest's model order, are 115 / 108 / 102 / 68 / 63 / 36. The current numeric generators use all 150 common tasks and do not apply a historical exclusion set.
 
-- `python150_exploratory_20260830/`: reproducible four-model analysis of the
-  frozen Python-150 matrix, including an executed notebook, exact CSV tables,
-  and seven PNG/PDF figures. Use it to develop analysis and figure designs, not
-  as the final Python-200′ leaderboard.
+## Historical analyses
 
-Historical v1 note: `mixed_snapshot_v1` is no longer present. Do not use its
-150-task figures as Full-Repository / No-Hint Main. Current result status lives
-in [docs/STATUS.md](../../docs/STATUS.md) and
-[docs/FINDINGS.md](../../docs/FINDINGS.md).
+Earlier campaign summaries, pilots, sensitivity analyses, task audits and draft README narratives remain at their original paths. Only files selected by the manifest feed the current numeric workflow. A directory used for a numeric CSV can also contain historical prose that has not been updated; treat those files by their own scope.
+
+The previous index is preserved in the [documentation snapshot](../../docs/archive/snapshots/paper_workflow_20260911/README.md). Current results and naming are summarized in [STATUS.md](../../docs/STATUS.md).

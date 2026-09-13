@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "record_type": "new_candidate",
+  "plan_id": "hard_next_plan_20260912",
+  "status": "design_only",
+  "candidate_id": null,
+  "planned_task_id": null,
+  "consumer": {
+    "role": null,
+    "workflow": null,
+    "example_code_path": null,
+    "observable_value": null,
+    "why_native_package_is_insufficient": null,
+    "evidence": []
+  },
+  "source": {
+    "name": null,
+    "url": null,
+    "pinned_commit": null,
+    "license": null,
+    "license_path": null,
+    "archive_path": null,
+    "archive_sha256": null,
+    "tree_sha256": null,
+    "snapshot_id": null,
+    "registry_path": null,
+    "core_source_evidence": [],
+    "upstream_behavior_tests": []
+  },
+  "overlap_review": {
+    "python150": null,
+    "hard50": null,
+    "retired_external50": null,
+    "other_staging": null,
+    "closure_comparison_evidence": [],
+    "decision": null
+  },
+  "feature": {
+    "inherited_behaviors": [],
+    "necessary_adaptations": [],
+    "adaptation_consumer_justification": [],
+    "host_dependencies_to_replace": [],
+    "state_transitions": [],
+    "cross_entry_invariants": [],
+    "excluded_behaviors": [],
+    "source_absence_or_greenfield_risks": []
+  },
+  "contract": {
+    "public_spec_path": null,
+    "generated_task_path": null,
+    "api_table_path": null,
+    "errors_defaults_state_contract_path": null,
+    "assertion_clause_map_path": null,
+    "sequence_coverage_path": null,
+    "underdeclared_requirements": []
+  },
+  "package": {
+    "task_directory": null,
+    "requirements_lock_sha256": null,
+    "evaluation_paths": [],
+    "reference_path": null,
+    "reference_registry_path": null,
+    "reference_loc": null,
+    "reference_is_minimal": null,
+    "reference_limitations": null,
+    "input_lock_path": null,
+    "input_lock_sha256": null
+  },
+  "oracle": {
+    "upstream_differential_evidence": [],
+    "adaptation_independent_oracle_evidence": [],
+    "docker_runs": [],
+    "all_three_runs_passed": null,
+    "isolation_evidence": []
+  },
+  "baselines": [
+    {
+      "name": "full_package_rename_thin_adapter",
+      "status": "not_implemented",
+      "submission_path": null,
+      "edits_and_effort_path": null,
+      "result_path": null,
+      "functional_pass": null,
+      "build_pass": null,
+      "failure_clause_ids": [],
+      "failure_is_meaningful": null,
+      "reviewer_notes": null
+    },
+    {
+      "name": "core_copy_naive_host_replacement",
+      "status": "not_implemented",
+      "submission_path": null,
+      "edits_and_effort_path": null,
+      "result_path": null,
+      "functional_pass": null,
+      "build_pass": null,
+      "failure_clause_ids": [],
+      "failure_is_meaningful": null,
+      "reviewer_notes": null
+    },
+    {
+      "name": "independent_shallow_implementation",
+      "status": "not_implemented",
+      "submission_path": null,
+      "edits_and_effort_path": null,
+      "result_path": null,
+      "functional_pass": null,
+      "build_pass": null,
+      "failure_clause_ids": [],
+      "failure_is_meaningful": null,
+      "reviewer_notes": null
+    }
+  ],
+  "independent_review": {
+    "reviewer_type": null,
+    "reviewer_id": null,
+    "independent_of_author": null,
+    "fairness": null,
+    "source_reuse_substantial": null,
+    "consumer_justification": null,
+    "shortcut_review": null,
+    "decision": null
+  },
+  "calibration": {
+    "environment_record_sha256": null,
+    "flash_run_records": [],
+    "second_model_run_records": [],
+    "all_attempts_retained": null
+  },
+  "decision": {
+    "eligible_for_P4": null,
+    "retain_as_hard_candidate": null,
+    "reason": null,
+    "not_an_estimate_of_target_pass_band": true
+  }
+}

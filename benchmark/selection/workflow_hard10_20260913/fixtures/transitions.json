@@ -1,0 +1,886 @@
+[
+  {
+    "name": "nested-initial",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "start"
+        }
+      ],
+      "initial": "idle"
+    },
+    "behavior_ids": [
+      "B001"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "work_ready",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "guard-false",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "run"
+        }
+      ],
+      "initial": "work"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "result": false,
+        "error": null,
+        "state": "work_ready",
+        "context": {},
+        "log": [
+          {
+            "kind": "guard",
+            "name": "permitted",
+            "value": false,
+            "state": "work_ready"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unknown-event",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "unknown"
+        }
+      ],
+      "initial": "idle"
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "result": null,
+        "error": "event",
+        "state": "idle",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "parent-event-in-child",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        }
+      ],
+      "operations": [
+        {
+          "op": "set",
+          "values": {
+            "permitted": true
+          }
+        },
+        {
+          "op": "event",
+          "event": "run"
+        },
+        {
+          "op": "event",
+          "event": "finish"
+        }
+      ],
+      "initial": "work"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null,
+        "error": null,
+        "state": "work_ready",
+        "context": {
+          "permitted": true
+        },
+        "log": []
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "work_busy",
+        "context": {
+          "permitted": true
+        },
+        "log": [
+          {
+            "kind": "guard",
+            "name": "permitted",
+            "value": true,
+            "state": "work_ready"
+          }
+        ]
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "done",
+        "context": {
+          "permitted": true
+        },
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "invalid-state-event",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "run"
+        },
+        {
+          "op": "event",
+          "event": "start"
+        }
+      ],
+      "initial": "idle"
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null,
+        "error": "transition",
+        "state": "idle",
+        "context": {},
+        "log": []
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "work_ready",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "reentrant-False",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "on_enter": "entered"
+        },
+        "c"
+      ],
+      "transitions": [
+        {
+          "trigger": "go",
+          "source": "a",
+          "dest": "b",
+          "before": "pre",
+          "after": "post"
+        },
+        {
+          "trigger": "next",
+          "source": "b",
+          "dest": "c",
+          "before": "nextpre"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "queued": false,
+      "callbacks": {
+        "pre": [],
+        "post": [],
+        "nextpre": [],
+        "entered": [
+          {
+            "op": "emit",
+            "event": "next"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "go",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "entered",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "nextpre",
+            "event": "next",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "go",
+            "state": "c"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reentrant-True",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "on_enter": "entered"
+        },
+        "c"
+      ],
+      "transitions": [
+        {
+          "trigger": "go",
+          "source": "a",
+          "dest": "b",
+          "before": "pre",
+          "after": "post"
+        },
+        {
+          "trigger": "next",
+          "source": "b",
+          "dest": "c",
+          "before": "nextpre"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "queued": true,
+      "callbacks": {
+        "pre": [],
+        "post": [],
+        "nextpre": [],
+        "entered": [
+          {
+            "op": "emit",
+            "event": "next"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "go",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "entered",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "nextpre",
+            "event": "next",
+            "state": "b"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "internal-versus-self",
+    "args": {
+      "states": [
+        {
+          "name": "a",
+          "on_enter": "enter",
+          "on_exit": "exit"
+        }
+      ],
+      "transitions": [
+        {
+          "trigger": "inside",
+          "source": "a",
+          "dest": null,
+          "before": "pre",
+          "after": "post"
+        },
+        {
+          "trigger": "self",
+          "source": "a",
+          "dest": "a"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "inside"
+        },
+        {
+          "op": "event",
+          "event": "self"
+        }
+      ],
+      "initial": "a",
+      "callbacks": {
+        "enter": [],
+        "exit": [],
+        "pre": [],
+        "post": []
+      }
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "inside",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "inside",
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "exit",
+            "event": "self",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "enter",
+            "event": "self",
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "ordered-guard-fallback",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        "c"
+      ],
+      "transitions": [
+        {
+          "trigger": "go",
+          "source": "a",
+          "dest": "b",
+          "conditions": "first"
+        },
+        {
+          "trigger": "go",
+          "source": "a",
+          "dest": "c",
+          "unless": "blocked"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "guard",
+            "name": "first",
+            "value": false,
+            "state": "a"
+          },
+          {
+            "kind": "guard",
+            "name": "blocked",
+            "value": false,
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "parallel-regions",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "active",
+          "parallel": [
+            {
+              "name": "left",
+              "initial": "x",
+              "children": [
+                "x",
+                "y"
+              ]
+            },
+            {
+              "name": "right",
+              "initial": "x",
+              "children": [
+                "x",
+                "y"
+              ]
+            }
+          ]
+        }
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "active"
+        },
+        {
+          "trigger": "tick",
+          "source": "active_left_x",
+          "dest": "active_left_y"
+        },
+        {
+          "trigger": "tick",
+          "source": "active_right_x",
+          "dest": "active_right_y"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "start"
+        },
+        {
+          "op": "event",
+          "event": "tick"
+        }
+      ],
+      "initial": "idle"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": [
+          "active_left_x",
+          "active_right_x"
+        ],
+        "context": {},
+        "log": []
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": [
+          "active_left_y",
+          "active_right_y"
+        ],
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "callback-error-recovery",
+    "args": {
+      "states": [
+        "a",
+        "b"
+      ],
+      "transitions": [
+        {
+          "trigger": "fail",
+          "source": "a",
+          "dest": "b",
+          "before": "broken"
+        },
+        {
+          "trigger": "go",
+          "source": "a",
+          "dest": "b"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "fail"
+        },
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "queued": true,
+      "callbacks": {
+        "broken": [
+          {
+            "op": "raise"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B006",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null,
+        "error": "callback",
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "broken",
+            "event": "fail",
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "b",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "child-transition-before-parent",
+    "args": {
+      "states": [
+        "idle",
+        {
+          "name": "work",
+          "initial": "ready",
+          "children": [
+            "ready",
+            "busy"
+          ]
+        },
+        "done"
+      ],
+      "transitions": [
+        {
+          "trigger": "start",
+          "source": "idle",
+          "dest": "work"
+        },
+        {
+          "trigger": "run",
+          "source": "work_ready",
+          "dest": "work_busy",
+          "conditions": "permitted"
+        },
+        {
+          "trigger": "finish",
+          "source": "work",
+          "dest": "done"
+        },
+        {
+          "trigger": "finish",
+          "source": "work_ready",
+          "dest": "work_busy"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "finish"
+        },
+        {
+          "op": "event",
+          "event": "finish"
+        }
+      ],
+      "initial": "work"
+    },
+    "behavior_ids": [
+      "B001"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": true,
+        "error": null,
+        "state": "work_busy",
+        "context": {},
+        "log": []
+      },
+      {
+        "result": true,
+        "error": null,
+        "state": "done",
+        "context": {},
+        "log": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "record_type": "historical_case",
+  "plan_id": "hard_next_plan_20260912",
+  "status": "pending",
+  "case_id": null,
+  "original_task_id": null,
+  "historical_inputs": {
+    "run_directory": null,
+    "run_json_sha256": null,
+    "freeze_id": null,
+    "task_md_path": null,
+    "task_md_sha256": null,
+    "metadata_sha256": null,
+    "test_input_lock_path": null,
+    "test_input_lock_sha256": null,
+    "reference_input_sha256": null,
+    "source_snapshot_id": null,
+    "source_commit": null,
+    "source_tree_sha256": null,
+    "submission_path": null,
+    "submission_sha256": null,
+    "eval_result_path": null,
+    "eval_result_sha256": null
+  },
+  "consumer": {
+    "who_calls_it": null,
+    "real_workflow": null,
+    "example": null,
+    "why_native_package_is_insufficient": null,
+    "evidence": []
+  },
+  "differences": [
+    {
+      "difference_id": null,
+      "upstream_behavior": null,
+      "upstream_evidence_path_and_lines": null,
+      "target_behavior": null,
+      "public_contract_clause": null,
+      "public_contract_evidence_path_and_lines": null,
+      "failed_assertion": null,
+      "failed_assertion_evidence_path_and_lines": null,
+      "actual_submission_behavior": null,
+      "submission_evidence_path_and_lines": null,
+      "minimal_possible_repair": null,
+      "repair_verified": null,
+      "work_label": null,
+      "alternative_explanations": []
+    }
+  ],
+  "allowed_work_labels": [
+    "explicit_adaptation",
+    "semantic_integration",
+    "contract_risk",
+    "infrastructure",
+    "undetermined"
+  ],
+  "specification_review": {
+    "required_api_complete": null,
+    "default_and_error_rules_complete": null,
+    "state_and_callback_rules_complete": null,
+    "hidden_assertions_mapped_to_contract": null,
+    "known_risks": [],
+    "original_recovery_possible": null
+  },
+  "variant_feasibility": {
+    "O": null,
+    "C": null,
+    "N": null,
+    "scope_choices_needed_for_C": [],
+    "native_changes_needed_for_N": [],
+    "skip_reason": null
+  },
+  "independent_review": {
+    "reviewer_type": null,
+    "reviewer_id": null,
+    "independent_of_test_and_oracle_author": null,
+    "reviewed_evidence": [],
+    "disagreements": [],
+    "decision": null
+  },
+  "decision": {
+    "continue_to_P2": null,
+    "reason": null,
+    "evidence_paths": []
+  }
+}

@@ -178,10 +178,40 @@ def main():
         tex,n = re.subn(r'(% BEGIN VERIFIED SOURCE ABLATION TABLE\n).*?(% END VERIFIED SOURCE ABLATION TABLE)',
                         lambda m:m[1]+ablation_table+'\n'+m[2],tex,flags=re.S)
         assert n == 1
-    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[0]))==2
+    exposure_dir=ROOT/'reports/paper_analysis/source_exposure/diagnosis'
+    exposure_stats=json.loads((exposure_dir/'statistics.json').read_text(encoding='utf-8'))
+    assert exposure_stats['runs']==900 and exposure_stats['tasks']==150
+    for record in exposure_stats['files']:
+        assert hashlib.sha256((ROOT/record['path']).read_bytes()).hexdigest()==record['sha256'],record['path']
+    exposure_table=(exposure_dir/'source_exposure_table.tex').read_text(encoding='utf-8').rstrip()
+    tex,n=re.subn(r'(% BEGIN VERIFIED SOURCE EXPOSURE TABLE\n).*?(% END VERIFIED SOURCE EXPOSURE TABLE)',
+                  lambda m:m[1]+exposure_table+'\n'+m[2],tex,flags=re.S)
+    assert n==1
+    exposure_summary=read_csv(exposure_dir/'summary_by_model_outcome.csv')
+    by_model_outcome={(r['model'],r['outcome_group']):r for r in exposure_summary}
+    exposure_config_rows=[]
+    for model in [*MODELS,'ALL']:
+        cells=[]
+        for outcome in ['Pass','Behavioral-first failure']:
+            row=by_model_outcome[model,outcome]
+            count=int(row['confirmed_explicit_read_runs']);total=int(row['all_runs'])
+            cells.append(f'{count}/{total} ({100*count/total:.1f})')
+        if model=='ALL':exposure_config_rows.append(r'\midrule')
+        exposure_config_rows.append([full[model] if model!='ALL' else 'Pooled',*cells])
+    for outcome in ['Pass','Behavioral-first failure']:
+        for field in ['all_runs','confirmed_explicit_read_runs']:
+            assert sum(int(by_model_outcome[m,outcome][field]) for m in MODELS)==int(by_model_outcome['ALL',outcome][field])
+    exposure_config_table=table('source-exposure-by-configuration',
+        'Confirmed reads of entrypoint-associated source files by configuration.',
+        'Xrr',['Configuration','Pass exposure','Behavioral-first exposure'],exposure_config_rows,
+        r'Cells report $n/N$ (\%), where $N$ is the number of runs in that configuration and outcome group and $n$ has a confirmed explicit read. Behavioral-first means Primary- or Extended-first failure. The criterion matches Table~\ref{tab:source-exposure}; search snippets are excluded. Non-matches mean unconfirmed exposure, not demonstrated absence of reading.',flexible=True)
+    tex,n=re.subn(r'(% BEGIN VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE\n).*?(% END VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE)',
+                  lambda m:m[1]+exposure_config_table+'\n'+m[2],tex,flags=re.S)
+    assert n==1
+    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[0]))==3
     assert tex.count(r'\label{tab:structure}')==1
     assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)',tex.split(r'\appendix')[0])==['main']
-    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[1]))==5+ablation_tables
+    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[1]))==6+ablation_tables
     assert tex.count(r'\label{tab:positioning}')==1
     assert tex.split(r'\appendix')[0].count(r'\begin{figure}')==5
     assert tex.split(r'\appendix')[1].count(r'\begin{figure}')==2
@@ -190,16 +220,16 @@ def main():
         assert tex==before,'Generated tables differ: rerun without --check.'
     else:
         (PAPER/'main.tex').write_text(tex,encoding='utf-8')
-    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]+ablation_sources
-    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':900,'main_tables':2,'main_generated_data_tables':1,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables else 0,'appendix_tables':5+ablation_tables,'main_figures':5,'appendix_figures':2,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':1,
-        'main_table_order':['main','positioning'],
+    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv']
+    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':900,'main_tables':3,'main_generated_data_tables':2,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables else 0,'source_exposure_traces':900,'appendix_tables':6+ablation_tables,'main_figures':5,'appendix_figures':2,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':1,
+        'main_table_order':['main','source-exposure','positioning'],
         'structure_table_updater':'writing/update_structure_results.py',
-        'table_revision':'figure_story_and_appendix_details_20260913',
+        'table_revision':'source_exposure_added_20260913',
         'detailed_profiles':[dict(zip(['backend','condenser','trigger_target','outcomes'],r)) for r in config_rows],
-        'scope':'Main-comparison generated tables and run profiles; source-ablation table from separately verified 240 retained records. Service-error limitations remain attached to the measured ablation.',
+        'scope':'Main-comparison tables and run profiles; source-ablation table from 240 retained records; conservative source-file exposure table from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.',
         'sources':[{'path':p.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sources]}
     if not args.check:(PAPER/'writing/table_validation.json').write_text(json.dumps(qa,indent=2)+'\n',encoding='utf-8')
-    print(('Checked' if args.check else 'Updated')+f' {5+ablation_tables} tables and 1 text block; 900 main result/profile records; '+('240 ablation outcomes; ' if ablation_tables else '')+'no agent evaluations.')
+    print(('Checked' if args.check else 'Updated')+f' {7+ablation_tables} data tables and 1 text block; 900 main result/profile records; 900 exposure traces; '+('240 ablation outcomes; ' if ablation_tables else '')+'no agent evaluations.')
 
 
 if __name__=='__main__':main()

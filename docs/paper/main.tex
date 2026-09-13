@@ -37,8 +37,10 @@ Their Full-only successes correspond to behaviorally failing Contract-only
 artifacts, showing a benefit beyond package delivery.
 Behavioral preservation dominates the observed failure boundary: DeepSeek V4
 Pro and DeepSeek V4 Flash deliver packages for every task, yet 76 of their 77
-combined failures first occur at behavioral gates. Qualitative inspection
-further reveals \emph{contract-closure gaps}: substantial implementations
+combined failures first occur at behavioral gates. Across the 900 main-comparison
+traces, 241 of 303 behavioral-first failures (79.5\%) include confirmed reads
+returning entrypoint-associated source-file content. Qualitative inspection
+separately reveals \emph{contract-closure gaps}: substantial implementations
 omit required behavior.
 Equal functional success also permits different implementation footprints.
 On 97 common passing tasks, Pro and GPT-5.6 Luna have median direct source
@@ -132,7 +134,7 @@ loading, behavior, and isolation without access to the source repository.
 Here, independence means that the package is loadable and executable under the
 benchmark environment; release-ready packaging is not a requirement.
 Construction combines automated consistency checks and reference execution
-with AI-assisted review and author review. The task taxonomy describes
+with AI-assisted review and author semantic review of all 150 tasks. The task taxonomy describes
 three lift types and four entanglement mechanisms.
 
 Our primary comparison evaluates \textbf{six configurations on the same
@@ -143,9 +145,7 @@ Section~\ref{sec:protocol}. Functional pass rates range from
 behavioral preservation remains the dominant observed failure boundary:
 DeepSeek V4 Pro and DeepSeek V4 Flash deliver packages for all 150 tasks and
 have no Build-first failures, but 76 of their 77 combined failures first occur
-at a behavioral gate. Separately, qualitative inspection illustrates
-contract-closure gaps in artifacts that preserve a visible operation while
-omitting another required behavior.
+at a behavioral gate.
 
 A separate 40-task paired ablation examines the role of repository evidence
 with Luna, Pro, and Qwen. Full Source increases Luna's success from 9 to 23 tasks
@@ -156,6 +156,18 @@ gain is accompanied by Contract-only LLM timeouts, which we analyze separately
 (Section~\ref{sec:source-ablation-results}). These results support using intact
 repository evidence to study reconstruction of existing capabilities, while
 the remaining Full Source failures show that access alone is insufficient.
+
+Offline analysis of the 900 main-comparison traces connects source availability
+to observable file-content exposure: \textbf{241 of 303 behavioral-first
+failures (79.5\%)} include confirmed reads returning content from
+\textbf{entrypoint-associated source files}. Thus, behavioral failure often
+persists after such file content has been returned to the agent. File exposure
+does not establish that the complete implementation has been located or
+understood. Separately, two illustrative artifact cases show contract-closure
+gaps in which substantial implementations omit required behavior. Together,
+the ablation, traces, and cases show that repository evidence helps, yet its
+availability and observed file-content exposure do not ensure behavior-preserving
+reconstruction.
 
 We characterize successful artifacts using reference-relative implementation
 size and detected direct source overlap, and report execution steps and token
@@ -179,7 +191,8 @@ The paper makes three contributions:
  artifacts (Sections~\ref{sec:validation} and~\ref{sec:protocol}).
  \item \textbf{Evidence on current feature-lifting capabilities.} We report
  a six-configuration comparison on all 150 tasks, a paired source-evidence
- ablation with three configurations, and analyses of behavioral failures. We
+ ablation with three configurations, a 900-run source-exposure diagnosis, and
+ illustrative analyses of behavioral mismatches. We
  additionally characterize successful artifacts by size and source overlap
  (Sections~\ref{sec:results} and~\ref{sec:diagnostics}).
 \end{itemize}
@@ -320,6 +333,10 @@ Validated task packages are versioned with their specifications, source
 snapshots, tests, references, and execution policies. The release contains
 150 tasks from 126 repositories and 132 snapshots. Appendix~\ref{app:provenance}
 provides the task index and validation details.
+The paper's frozen membership is the same 150-task set used for every
+configuration in the main comparison. The task index binds each task to its
+contract and source snapshot; evaluator assets and execution settings are
+recorded alongside the results (Appendix~\ref{app:reproduction}).
 
 \subsection{Benchmark Validation}
 \label{sec:validation}
@@ -338,7 +355,8 @@ missing API declarations, and mappings to nonexistent tests.
 
 \paragraph{AI-assisted audit and author semantic review.}
 The paper authors completed semantic review of all 150 retained task packages,
-supported by AI-assisted checks. Review relates the public contract to source
+supported by AI-assisted checks. This review covers the entire reported
+benchmark, rather than only selected repaired tasks. Review relates the public contract to source
 evidence and the test assertions that operationalize it. The criteria are
 whether required behavior is supported by the source or a declared adaptation,
 whether tests remain within the contract, and whether explicit exclusions are
@@ -347,6 +365,8 @@ interpretations are checked against the associated contract and submitted
 artifact when available. AI-assisted checks provide evidence for author
 inspection, while the authors make the semantic judgments. They supplement
 structural checks with examination of what the requirements and tests mean.
+Thus, automated checks establish asset consistency, author review assesses
+semantic alignment, and reference replay checks executable feasibility.
 Problematic candidates were excluded during construction. Appendix~\ref{app:provenance}
 separates the saved AI repair record from full author-review coverage;
 Section~\ref{sec:threats} discusses reviewer involvement and finite-test limits.
@@ -592,6 +612,8 @@ interpolation between ordered observations.
 The primary comparison contains 900 model--task outcomes: one retained final
 outcome for each of six configurations on each of the 150 common tasks.
 All six-configuration comparisons use this complete task set.
+The analysis retains every assigned task for every configuration, regardless
+of its individual outcome; it does not filter task membership by model success.
 
 Empty submissions remain failures, including tool-validation and early-exit
 events. Correctness is determined by the evaluator, independently of agent
@@ -610,7 +632,8 @@ remain part of the evaluated systems.
 
 
 We retain Wilson intervals in the analysis artifact and report selected
-two-sided exact McNemar tests for paired model outcomes. Reported $p$-values are
+two-sided exact McNemar tests for paired main-comparison outcomes in
+Appendix~\ref{app:paired-functional}. These $p$-values are
 unadjusted exploratory comparisons; they do not establish a total ordering of
 backends. To describe task variation, we count how many configurations pass each task
 and report category-wise rates descriptively. This empirical frequency does not assign a
@@ -662,13 +685,30 @@ same source repository. We separately examine recorded LLM/API errors and
 pairs with two delivered artifacts, without replacing the assigned-task scores.
 % END SOURCE ABLATION PROTOCOL
 
+\subsection{Trace-Based Source-Exposure Measurement}
+\label{sec:source-exposure-protocol}
+We analyze the 900 saved main-comparison trajectories without additional agent
+runs. For each task, we statically map its declared source entrypoints to files
+in the source snapshot. A confirmed file read requires a successful, paired
+tool observation from an explicit read of a mapped file inside the source
+repository, with at least two adjacent normalized source lines present in the
+returned content. Filename mentions, copying commands, failed reads, and
+execution tracebacks do not qualify. Search snippets are analyzed separately.
+This measures exposure to \emph{entrypoint-associated file content}; the
+returned lines need not contain the entrypoint definition itself. The detector
+therefore does not establish complete localization or code understanding.
+Mapping coverage and detector limitations appear in
+Appendix~\ref{app:source-exposure}.
+
 \section{Benchmark Results}
 \label{sec:results}
 
-The four research questions follow the path from attempted reuse to a delivered
-artifact. We first measure functional success, then examine failure stages and
-variation across tasks. Finally, comparisons on common successes reveal
-implementation differences that a pass/fail score alone does not describe.
+The four research questions examine overall functional capability (RQ1),
+observed failure boundaries (RQ2), the benefit of repository evidence (RQ3),
+and the characteristics of successful artifacts (RQ4). Solve-frequency
+variation provides descriptive context. Alongside the source ablation,
+the trace diagnosis tests whether behavioral failures coexist with recorded
+exposure to entrypoint-associated source-file content.
 
 \subsection{RQ1: Overall Functional Capability}
 \label{sec:rq1}
@@ -725,12 +765,9 @@ the denominator on whether the agent produced a package.
 % END GENERATED TABLE: main
 
 
-The point estimates do not support every adjacent ranking. Pro succeeds alone
-on ten tasks relative to Flash, while Flash succeeds alone on three; the exact
-McNemar $p$-value is 0.0923. GLM versus Qwen has 27 versus 22 exclusive passes
-($p=0.5682$). Pro versus Luna has 18 versus five exclusive passes
-($p=0.0106$, unadjusted). We therefore describe the observed range and paired
-differences rather than asserting that each successive backend is better.
+The point estimates describe observed configuration performance, rather than
+establishing every adjacent ranking. Exploratory paired comparisons are
+reported in Appendix~\ref{app:paired-functional}.
 
 The strongest configuration still fails 35 frozen tasks. Twenty-eight tasks
 are passed by none of the six backends, while 17 are passed by all six. The main result is substantial but incomplete success under the recorded
@@ -773,16 +810,13 @@ the overlapping gate counts and their interpretation.
  \label{fig:failures}
 \end{figure}
 
-\subsection{RQ3: How Does Performance Vary across FeatureLiftBench Tasks?}
-\label{sec:rq3}
-
-\paragraph{A heterogeneous solve-frequency spectrum.}
+\paragraph{Descriptive task variation.}
+\label{sec:task-variation}
 The right panel of Figure~\ref{fig:failures} shows the number of configurations
 passing each task: 28 tasks (18.7\%) are passed by none, 17 (11.3\%) by all six,
-and 105 (70.0\%) have mixed outcomes. These observations characterize task
+and 105 (70.0\%) have mixed outcomes. These observations characterize
 observed performance variation under the evaluated configurations.
 
-\paragraph{Shared unresolved tasks and descriptive structure.}
 The union of the six configurations' observed successes covers 122 tasks,
 only seven more than Pro alone. Thus, 28 of Pro's 35 failed tasks are also
 failed by every other configuration. These are unresolved tasks under the
@@ -795,67 +829,9 @@ Appendix Table~\ref{tab:structure} reports descriptive category-wise outcomes.
 Because task properties co-occur and mechanism labels overlap, those rates do
 not isolate an independent performance effect attributable to an individual category.
 
-\subsection{RQ4: How Do Successful Lifted Artifacts Differ in Implementation Footprint?}
-\label{sec:rq4}
-
-To characterize extraction after functional evaluation, we measure size and
-direct source overlap only after
-functional success. Table~\ref{tab:main} describes these artifacts. Pro and Flash have
-median RRES near one and median detected copy fractions above 0.95. Luna has
-median RRES 0.815 and median copy fraction 0.164. These medians involve different
-passing sets and cannot alone establish a paired difference. They also conceal
-substantial within-backend variation: the first and third copy-fraction
-quartiles are [0.048, 0.967] for Luna and [0.716, 0.987] for Pro.
-
-
-On common passing tasks, the differences extend beyond marginal medians:
-Pro has higher RRES than Luna on 85 of 97 tasks and higher detected copying
-on 76 of 97. Flash shows the same direction on 85 and 75 of its 92 common
-passes with Luna, respectively. Appendix~\ref{app:footprint-details} reports
-paired medians, direction counts, and task-level distributions across all five
-comparisons with Pro.
-
-Size and copying need not vary together. On the 63 Pro/Qwen common successes,
-Pro has more detected copying on 50 tasks, whereas size differences have mixed
-directions: Pro is larger on 29 tasks and smaller on 31, with three ties.
-This contrast supports measuring artifact size and source overlap separately,
-even after controlling functional success within each pair.
-
-
-Functional success thus coexists with systematic differences in artifact size
-and source overlap even after fixing the task. A high copy fraction can describe
-a faithful small extraction, and a low fraction can describe a large rewrite;
-the two measures should remain distinct. These results do not establish that
-Luna is globally better, that copying is undesirable, or that smaller artifacts
-are easier to maintain. They show why a pass score alone does not characterize
-the delivered reusable artifact.
-
-\paragraph{Configuration-level synthesis.}
-Taken together, RQ1--RQ4 distinguish functional success, delivery behavior,
-and the structure of passing outputs. Pro has the highest observed pass rate
-and reliable delivery; Flash shares the delivery pattern, and the paired
-comparison does not establish a significant Pro--Flash difference. Both have
-high source overlap among passing artifacts. Luna passes 102 tasks and, on
-matched successes with Pro, typically produces smaller artifacts with less
-detected source copying. This is an output characteristic, not proof of a
-particular reasoning strategy. GLM combines high overlap among its successful
-outputs with substantial non-delivery, showing that retaining source code
-does not guarantee overall success. Qwen's matched comparison separates source
-overlap from size: the former tends to be lower than Pro's, while size
-differences have mixed directions. OSS usually submits an artifact, but its
-loading and behavioral failures sharply limit functional success.
-
-Interaction counts add context without defining a universal efficiency ranking.
-Pro has fewer median recorded assistant steps than Flash (41.5 versus 63.0)
-and a higher observed pass rate, whereas OSS has the shortest median interaction
-count (19.0) and the lowest pass rate. Early termination and unsuccessful work
-are included in these counts. Provider token definitions differ and verified
-token totals are unavailable for Luna and GLM, preventing a unified cost ranking.
-These profiles describe the evaluated OpenHands/backend/provider configurations;
-they do not isolate the causal effect of the base model alone.
-
 % BEGIN SOURCE ABLATION RESULTS
-\subsection{Source Evidence Improves Behavioral Reconstruction}
+\subsection{RQ3: Does Repository Evidence Improve Behavioral Reconstruction?}
+\label{sec:rq3}
 \label{sec:source-ablation-results}
 
 Repository evidence substantially improves observed functional success
@@ -901,16 +877,112 @@ from that of repository documentation or tests, nor show that every individual
 task benefits from source access.
 % END SOURCE ABLATION RESULTS
 
-% PENDING ANALYSIS (not reported as completed evidence):
-% After trace validation, insert Section 4.6, Trace-Based Diagnosis of Source
-% Exposure. Report observed entrypoint-file exposure by final outcome; retain
-% unknown/incomplete traces explicitly. Inspecting an entrypoint does not
-% establish complete localization, comprehension, or behavioral dependency
-% closure. Report annotated-file and closure_gold coverage only on verified
-% subsets. Protocol: experiments/SOURCE_EXPOSURE_HINT_RUNBOOK.md.
-% After the 120 Hint runs, compare Full+Entrypoint Hint against the existing
-% Full arm on the fixed 40 tasks; update Fig. 5 or add a compact measured table.
-% Do not insert predicted scores or classify tool exposure as a causal failure.
+\subsection{Trace-Based Diagnosis of Source Exposure}
+\label{sec:source-exposure}
+
+Using the file-content exposure measure defined in
+Section~\ref{sec:source-exposure-protocol}, we examine whether behavioral
+failures persist after observable reads of entrypoint-associated source files.
+
+% BEGIN VERIFIED SOURCE EXPOSURE TABLE
+\begin{table}[tbp]
+ \caption{Observed entrypoint-associated file reads in the 900 main-comparison traces.}
+ \label{tab:source-exposure}
+ \centering
+ \small
+ \begin{tabularx}{\linewidth}{@{}Xrrr@{}}
+ \toprule
+ Final outcome & Runs & Confirmed read, $n$ (\%) & First-read step \\
+ \midrule
+ Pass & 492 & 363 (73.8) & 5 \\
+ Behavioral-first failure & 303 & 241 (79.5) & 5 \\
+ Delivery/build failure & 101 & 51 (50.5) & 5 \\
+ Isolation-first failure & 4 & 4 (100.0) & 10.5 \\
+ \bottomrule
+ \end{tabularx}
+ \par\smallskip
+ {\footnotesize Reads require a successful tool observation with content matching a statically mapped source file. Percentages use all runs in each outcome group; non-matches mean unconfirmed exposure. First-read step is the median one-based tool-action index among confirmed reads. Of 101 delivery/build failures, 23 have no paired tool observations. Search snippets are excluded here.}
+\end{table}
+% END VERIFIED SOURCE EXPOSURE TABLE
+
+\paragraph{Behavioral failure persists after recorded source-file reads.}
+Of 303 Primary/Extended-first failures, 241 (79.5\%) have a confirmed read of
+an entrypoint-associated file (Table~\ref{tab:source-exposure}). Among these
+runs, the median first read occurs at tool action five. For Pro and Flash
+together, 63 of their 76 behavioral-first failures have such evidence.
+Thus, many failures coexist with observable access to source-file content
+associated with the requested capability. The practical implication is to
+check the reconstructed behavior even after entrypoint-associated source files have been
+opened: a file-read milestone cannot substitute for behavioral verification.
+
+The remaining 62 behavioral-first failures have \emph{unconfirmed} exposure,
+not demonstrated absence of localization. Likewise, the 73.8\% confirmation
+rate among passing runs is not a measure of how often source access was
+necessary. Read styles, unresolved mappings, and partial outputs affect
+detection. These observational results neither estimate the causal benefit of
+localization hints nor attribute all behavior failures to contract-closure
+gaps. The artifact cases below provide separate, illustrative evidence of
+specific behavioral mismatches.
+
+\subsection{RQ4: How Do Successful Lifted Artifacts Differ in Implementation Footprint?}
+\label{sec:rq4}
+
+To characterize extraction after functional evaluation, we measure size and
+direct source overlap only after
+functional success. Table~\ref{tab:main} describes these artifacts. Pro and Flash have
+median RRES near one and median detected copy fractions above 0.95. Luna has
+median RRES 0.815 and median copy fraction 0.164. These medians involve different
+passing sets and cannot alone establish a paired difference. They also conceal
+substantial within-backend variation: the first and third copy-fraction
+quartiles are [0.048, 0.967] for Luna and [0.716, 0.987] for Pro.
+
+
+On common passing tasks, the differences extend beyond marginal medians:
+Pro has higher RRES than Luna on 85 of 97 tasks and higher detected copying
+on 76 of 97. Flash shows the same direction on 85 and 75 of its 92 common
+passes with Luna, respectively. Appendix~\ref{app:footprint-details} reports
+paired medians, direction counts, and task-level distributions across all five
+comparisons with Pro.
+
+Size and copying need not vary together. On the 63 Pro/Qwen common successes,
+Pro has more detected copying on 50 tasks, whereas size differences have mixed
+directions: Pro is larger on 29 tasks and smaller on 31, with three ties.
+This contrast supports measuring artifact size and source overlap separately,
+even after controlling functional success within each pair.
+
+
+Functional success thus coexists with systematic differences in artifact size
+and source overlap even after fixing the task. A high copy fraction can describe
+a faithful small extraction, and a low fraction can describe a large rewrite;
+the two measures should remain distinct. These results do not establish that
+Luna is globally better, that copying is undesirable, or that smaller artifacts
+are easier to maintain. They show why a pass score alone does not characterize
+the delivered reusable artifact.
+
+\paragraph{Configuration-level synthesis.}
+Taken together, RQ1--RQ4 show substantial but incomplete success, a benefit
+from repository evidence, and variation in successful artifacts. The trace
+analysis further shows that many behavioral failures follow confirmed
+entrypoint-associated source-file reads. Pro has the highest observed pass rate
+and reliable delivery; Flash shares the delivery pattern. Both have
+high source overlap among passing artifacts. Luna passes 102 tasks and, on
+matched successes with Pro, typically produces smaller artifacts with less
+detected source copying. This is an output characteristic, not proof of a
+particular reasoning strategy. GLM combines high overlap among its successful
+outputs with substantial non-delivery, showing that retaining source code
+does not guarantee overall success. Qwen's matched comparison separates source
+overlap from size: the former tends to be lower than Pro's, while size
+differences have mixed directions. OSS usually submits an artifact, but its
+loading and behavioral failures sharply limit functional success.
+
+Interaction counts add context without defining a universal efficiency ranking.
+Pro has fewer median recorded assistant steps than Flash (41.5 versus 63.0)
+and a higher observed pass rate, whereas OSS has the shortest median interaction
+count (19.0) and the lowest pass rate. Early termination and unsuccessful work
+are included in these counts. Provider token definitions differ and verified
+token totals are unavailable for Luna and GLM, preventing a unified cost ranking.
+These profiles describe the evaluated OpenHands/backend/provider configurations;
+they do not isolate the causal effect of the base model alone.
 
 \section{Diagnostic Analysis and Discussion}
 \label{sec:diagnostics}
@@ -1076,7 +1148,8 @@ artifact alone establishes faithful extraction, and the frozen reference is a
 comparison point rather than a proven minimum implementation.
 
 \paragraph{Use observed task variation to guide diagnosis.}
-The shared failures and mixed outcomes in RQ3 can guide diagnostic sampling.
+The descriptive solve-frequency analysis (Section~\ref{sec:task-variation})
+can guide diagnostic sampling.
 Such samples should span the observed solve-frequency range and requested
 behavior types. Contract and artifact evidence must then explain individual
 implementation mismatches; neither a category label nor a low pass rate is
@@ -1091,10 +1164,6 @@ its evaluation under the same task definition.
 
 \section{Threats to Validity}
 \label{sec:threats}
-
-\paragraph{Coverage and future extension.}
-The present benchmark contains 150 Python tasks; an additional 50-task pool
-is reserved for future extension and contributes to none of this paper's scores.
 
 \paragraph{Construct validity.}
 Finite behavioral tests cannot prove equivalence to every behavior of an upstream
@@ -1132,10 +1201,12 @@ Task packages received author review supported by AI-assisted checks. Author
 involvement in construction can introduce confirmation bias. Reference replay establishes executable
 feasibility, but does not supply independent semantic validation. The qualitative
 cases are purposively selected, and we do not report independent inter-rater
-agreement or a representative six-configuration causal taxonomy. Repository
-access is not proof of successful localization, and observing an entrypoint
-inspection would not establish that the agent identified or understood the
-complete behavioral dependency closure. RRES depends on the feasible reference
+agreement or a representative six-configuration causal taxonomy. Our trace
+detector confirms selected file-content exposures from tool observations;
+it can miss unsupported command forms or reads of unresolved entrypoints.
+Returned content may lie outside the entrypoint body, and does not prove that
+the agent identified or understood the complete behavioral dependency closure.
+RRES depends on the feasible reference
 and line-counting convention, and direct-copy detection is a syntactic proxy.
 Neither metric establishes minimality, maintainability, or semantic superiority.
 
@@ -1287,9 +1358,12 @@ packages reliably, but
 The paired ablation further shows that repository evidence improves Luna's
 and Qwen's observed success by 35.0 and 27.5 percentage points, respectively;
 their Full-only successes correspond to behaviorally failing Contract-only
-artifacts. Source access helps recover functionality, but does not guarantee
-its preservation. Concrete failure cases show how required behavior is lost
-during adaptation or reconstruction.
+artifacts. Across the 900 main-comparison trajectories, 241 of 303
+behavioral-first failures (79.5\%) include confirmed reads returning
+entrypoint-associated source-file content. Repository evidence improves
+observed reconstruction success, yet behavior can still be lost after such
+exposure. The illustrative cases separately demonstrate specific ways in
+which required behavior is omitted during adaptation or reconstruction.
 Artifact and efficiency measurements characterize successful implementation
 size, direct source overlap, and observed execution effort. Together, these results position
 behavior preservation across software boundaries as a distinct challenge for
@@ -1319,13 +1393,10 @@ reference execution demonstrates feasibility under source-free evaluation.
 % AUTHOR TODO: link the full review record; do not infer a new reviewer count,
 % agreement statistic, or per-change replay from the coverage statement.
 
-Within the benchmark, the repair ledger covers 24 tasks from an AI review round addressing
-missing API declarations, source entry-point metadata, and duplicated test
-bodies. All 24 received LLM repair-scope review, and four decisions additionally
-received coding-agent maintainer-proxy adjudication. The closed record reports
-preserved task scope for all 24. These counts describe a construction activity and do not replace
-the full author-review coverage. The saved replay is reported as execution
-evidence; it does not record the timing of each individual review decision.
+The repair ledger preserves construction-time corrections to API declarations,
+source-entrypoint metadata, and test assets, together with the associated
+AI-assisted review records. It provides traceability for these corrections
+alongside the full author review and reference-replay evidence.
 
 \paragraph{Reference construction assets.}
 The reference registry links each task to a retained implementation and its
@@ -1388,6 +1459,17 @@ the denominator, whereas Figure~\ref{fig:coverage}(b) uses all 150 tasks.
 
 \section{Additional Quantitative Results}
 \label{app:quantitative}
+
+\paragraph{Exploratory paired functional comparisons.}
+\label{app:paired-functional}
+The point estimates do not support every adjacent ranking. Pro succeeds alone
+on ten tasks relative to Flash, while Flash succeeds alone on three; the exact
+McNemar $p$-value is 0.0923. GLM versus Qwen has 27 versus 22 exclusive passes
+($p=0.5682$). Pro versus Luna has 18 versus five exclusive passes
+($p=0.0106$, unadjusted). We therefore describe the observed range and paired
+differences rather than asserting that each successive backend is better.
+
+
 Primary and Extended are the paper's names for the evaluator fields stored as
 \texttt{public} and \texttt{hidden}, respectively; the underlying tests, gate
 order, and outcomes are unchanged.
@@ -1601,9 +1683,8 @@ absent in all 120 Contract Only cells. Both conditions hide benchmark tests and
 source-location hints. The agent mounts the harness package rather than the
 full project tree. Agent containers use bridge networking for Luna/Pro and
 host networking for the local Qwen endpoint; common source-distribution hosts
-are blocked through host mappings. These controls and the no-retrieval
-instructions are not a proof that every possible external source-access route
-is unavailable. Evaluation containers use network-disabled source-free execution.
+are blocked through host mappings, and the instructions prohibit retrieval of
+the original project. Evaluation containers use network-disabled source-free execution.
 
 All retained runs use the same timeout and context settings within each
 configuration. Persisted OpenHands conversation states specify 500 maximum
@@ -1668,11 +1749,8 @@ It also specifies model identifiers, display names, and their reporting order.
 The benchmark manifest retains task-specific specification and source hashes;
 raw run records retain the agent/evaluator image IDs and runtime settings.
 This mapping connects the reported tables and figures to their task-level
-inputs while preserving the original files and identifiers. Historical source
-freezes and run directories may contain tasks outside the paper; an explicit
-membership list selects the fixed 150-task collection before analysis.
-Membership is the common 150-task set recorded for the six-configuration
-comparison. The current writing pipeline applies this fixed membership
+inputs while preserving the original files and identifiers. An explicit
+membership list selects the fixed 150-task collection before analysis,
 without filtering individual tasks by model outcome.
 
 \paragraph{Detailed configuration.}
@@ -1729,6 +1807,81 @@ allowing an incremental measure of uncached prompt plus completion tokens;
 their overall medians are approximately 88.0k and 123.6k. Qwen and OSS have
 provider total-token counts without the same cache breakdown. We therefore
 do not rank all six backends by token cost.
+
+\subsection{Source-Exposure Measurement Details}
+\label{app:source-exposure}
+
+\paragraph{Exposure by configuration.}
+Table~\ref{tab:source-exposure-by-configuration} separates the aggregate
+result by configuration, using the same explicit-read criterion as
+Table~\ref{tab:source-exposure}. Among behavioral-first failures, confirmed
+exposure ranges from 71.0\% to 92.3\% across the six configurations.
+Behavioral failure following entrypoint-associated source-file exposure is
+therefore observed across all six, rather than being confined to one
+configuration. These rates describe observed file-content exposure, not
+differences in code understanding.
+
+% BEGIN VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE
+\begin{table}[tbp]
+ \caption{Confirmed reads of entrypoint-associated source files by configuration.}
+ \label{tab:source-exposure-by-configuration}
+ \centering\small
+ \setlength{\tabcolsep}{4pt}
+ \renewcommand{\arraystretch}{1.12}
+ \begin{tabularx}{\linewidth}{@{}Xrr@{}}
+ \toprule
+ Configuration & Pass exposure & Behavioral-first exposure \\
+ \midrule
+ DeepSeek V4 Pro & 86/115 (74.8) & 29/35 (82.9) \\
+ DeepSeek V4 Flash & 83/108 (76.9) & 34/41 (82.9) \\
+ GPT-5.6 Luna & 80/102 (78.4) & 33/39 (84.6) \\
+ GLM-5.3-Flash & 46/68 (67.6) & 36/39 (92.3) \\
+ Qwen3.6-35B-A3B-FP8 & 43/63 (68.3) & 43/56 (76.8) \\
+ GPT-OSS 120B & 25/36 (69.4) & 66/93 (71.0) \\
+ \midrule
+ Pooled & 363/492 (73.8) & 241/303 (79.5) \\
+ \bottomrule
+ \end{tabularx}
+ \par\smallskip\begin{minipage}{\linewidth}\footnotesize
+ Cells report $n/N$ (\%), where $N$ is the number of runs in that configuration and outcome group and $n$ has a confirmed explicit read. Behavioral-first means Primary- or Extended-first failure. The criterion matches Table~\ref{tab:source-exposure}; search snippets are excluded. Non-matches mean unconfirmed exposure, not demonstrated absence of reading.
+ \end{minipage}
+\end{table}
+% END VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE
+
+\paragraph{Mapping and trace coverage.}
+Static resolution maps 607 of 641 declared entrypoints to source files.
+At least one declaration maps for 145 tasks, and all declarations map for
+130; unresolved declarations remain explicit in the evidence index. The
+analysis retains all 900 runs in its denominators. There are 877 runs with
+paired tool actions and observations; the other 23 are delivery/build
+failures with no paired observations. No malformed JSON lines or orphan
+observations are detected. Available event pairs do not establish that the
+log contains every interaction.
+
+The detector resolves literal file-read operands against the source mount
+and recorded working directory, then checks returned content against the
+source snapshot. It requires two adjacent normalized, non-comment lines
+of at least 12 characters each; docstrings can qualify. It skips ambiguous
+shell constructs, variable expansion, and commands containing writes.
+This trades coverage for directly inspectable content evidence. The
+first-read step counts one-based tool-action events, rather than the
+configured agent-budget counter. Including content-bearing search snippets
+changes confirmed exposure from 363 to 366 passing runs and from 241 to
+242 behavioral-first failures. The artifact includes event IDs, resolved
+paths, matching line pairs, and observation hashes for inspection.
+
+\paragraph{Annotated-file subsets.}
+Nonempty reference support-file lists exist for 107 tasks, rather than all
+150. Nine of these lists contain unresolved entries; one has no mapped
+files. On the resulting 636 runs with a nonempty mapped list, 503 expose at
+least one annotated file and 326 expose all mapped files. These counts
+include content-bearing search snippets. Separately, 39 tasks have file
+closure annotations: among their 234 runs, 177 expose at least one annotated
+file and 110 expose all mapped files. The median mapped-file coverage is
+1.00 and 0.75 in the two subsets, respectively. Lists and alternative
+reference annotations are descriptive support evidence; neither is treated
+as a complete gold behavioral dependency closure. Coverage of their mapped
+files does not establish recovery of all required code, state, or behavior.
 
 \subsection{Offline Reproduction of Tables and Figures}
 The entrypoint \path{scripts/paper.py} reads the shared input manifest through

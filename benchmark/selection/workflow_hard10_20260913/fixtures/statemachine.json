@@ -1,0 +1,977 @@
+[
+  {
+    "name": "initial-and-go",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "cond": "allowed"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "context": {
+        "allowed": true
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {
+          "allowed": true
+        },
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "b",
+        "context": {
+          "allowed": true
+        },
+        "log": [
+          {
+            "kind": "guard",
+            "name": "allowed",
+            "value": true,
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "guard-refusal",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "cond": "allowed"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": "transition",
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "guard",
+            "name": "allowed",
+            "value": false,
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "tolerant-event",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "cond": "allowed"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "finish"
+        }
+      ],
+      "initial": "a",
+      "allow_empty": true
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "reentrant-False",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "enter": "entered"
+        },
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "before": "pre",
+          "after": "post"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c",
+          "before": "last"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "rtc": false,
+      "callbacks": {
+        "pre": [],
+        "post": [],
+        "last": [],
+        "entered": [
+          {
+            "op": "emit",
+            "event": "finish"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "go",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "entered",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "last",
+            "event": "finish",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "go",
+            "state": "c"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "reentrant-True",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "enter": "entered"
+        },
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "before": "pre",
+          "after": "post"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c",
+          "before": "last"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "rtc": true,
+      "callbacks": {
+        "pre": [],
+        "post": [],
+        "last": [],
+        "entered": [
+          {
+            "op": "emit",
+            "event": "finish"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "go",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "entered",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "go",
+            "state": "b"
+          },
+          {
+            "kind": "callback",
+            "name": "last",
+            "event": "finish",
+            "state": "b"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "initial-entry-visible",
+    "args": {
+      "states": [
+        {
+          "name": "a",
+          "enter": "init"
+        },
+        {
+          "name": "b",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b"
+        }
+      ],
+      "operations": [],
+      "initial": "a",
+      "callbacks": {
+        "init": [
+          {
+            "op": "set",
+            "key": "ready",
+            "value": true
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {
+          "ready": true
+        },
+        "log": [
+          {
+            "kind": "callback",
+            "name": "init",
+            "event": "__initial__",
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "internal-versus-self",
+    "args": {
+      "states": [
+        {
+          "name": "a",
+          "enter": "enter",
+          "exit": "exit"
+        },
+        {
+          "name": "b",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "inside",
+          "source": "a",
+          "target": "a",
+          "internal": true,
+          "before": "pre",
+          "on": "on",
+          "after": "post"
+        },
+        {
+          "event": "self",
+          "source": "a",
+          "target": "a"
+        },
+        {
+          "event": "end",
+          "source": "a",
+          "target": "b"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "inside"
+        },
+        {
+          "op": "event",
+          "event": "self"
+        }
+      ],
+      "initial": "a",
+      "callbacks": {
+        "enter": [],
+        "exit": [],
+        "pre": [],
+        "on": [],
+        "post": []
+      }
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "enter",
+            "event": "__initial__",
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "pre",
+            "event": "inside",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "on",
+            "event": "inside",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "post",
+            "event": "inside",
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "exit",
+            "event": "self",
+            "state": "a"
+          },
+          {
+            "kind": "callback",
+            "name": "enter",
+            "event": "self",
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "guard-fallback",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "cond": "first"
+        },
+        {
+          "event": "go",
+          "source": "a",
+          "target": "c",
+          "unless": "blocked"
+        },
+        {
+          "event": "end",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": [
+          {
+            "kind": "guard",
+            "name": "first",
+            "value": false,
+            "state": "a"
+          },
+          {
+            "kind": "guard",
+            "name": "blocked",
+            "value": false,
+            "state": "a"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "before-failure-state-retained",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "fail",
+          "source": "a",
+          "target": "b",
+          "before": "bad"
+        },
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "fail"
+        },
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a",
+      "callbacks": {
+        "bad": [
+          {
+            "op": "raise"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": "callback",
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "bad",
+            "event": "fail",
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "b",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "entry-failure-state-changed",
+    "args": {
+      "states": [
+        "a",
+        {
+          "name": "b",
+          "enter": "bad"
+        },
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b"
+        },
+        {
+          "event": "end",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        },
+        {
+          "op": "event",
+          "event": "end"
+        }
+      ],
+      "initial": "a",
+      "callbacks": {
+        "bad": [
+          {
+            "op": "raise"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": "callback",
+        "state": "b",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "bad",
+            "event": "go",
+            "state": "b"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "queue-cleared-on-error",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "after": "bad"
+        },
+        {
+          "event": "end",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        },
+        {
+          "op": "snapshot"
+        },
+        {
+          "op": "event",
+          "event": "end"
+        }
+      ],
+      "initial": "a",
+      "callbacks": {
+        "bad": [
+          {
+            "op": "emit",
+            "event": "end"
+          },
+          {
+            "op": "raise"
+          }
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": "callback",
+        "state": "b",
+        "context": {},
+        "log": [
+          {
+            "kind": "callback",
+            "name": "bad",
+            "event": "go",
+            "state": "b"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "b",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {},
+        "log": []
+      }
+    ]
+  },
+  {
+    "name": "guard-update-between-events",
+    "args": {
+      "states": [
+        "a",
+        "b",
+        {
+          "name": "c",
+          "final": true
+        }
+      ],
+      "transitions": [
+        {
+          "event": "go",
+          "source": "a",
+          "target": "b",
+          "cond": "allowed"
+        },
+        {
+          "event": "finish",
+          "source": "b",
+          "target": "c"
+        }
+      ],
+      "operations": [
+        {
+          "op": "event",
+          "event": "go"
+        },
+        {
+          "op": "set",
+          "values": {
+            "allowed": true
+          }
+        },
+        {
+          "op": "event",
+          "event": "go"
+        },
+        {
+          "op": "event",
+          "event": "finish"
+        },
+        {
+          "op": "event",
+          "event": "go"
+        }
+      ],
+      "initial": "a"
+    },
+    "behavior_ids": [
+      "B002",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "state": "a",
+        "context": {},
+        "log": []
+      },
+      {
+        "error": "transition",
+        "state": "a",
+        "context": {},
+        "log": [
+          {
+            "kind": "guard",
+            "name": "allowed",
+            "value": false,
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "a",
+        "context": {
+          "allowed": true
+        },
+        "log": []
+      },
+      {
+        "error": null,
+        "state": "b",
+        "context": {
+          "allowed": true
+        },
+        "log": [
+          {
+            "kind": "guard",
+            "name": "allowed",
+            "value": true,
+            "state": "a"
+          }
+        ]
+      },
+      {
+        "error": null,
+        "state": "c",
+        "context": {
+          "allowed": true
+        },
+        "log": []
+      },
+      {
+        "error": "transition",
+        "state": "c",
+        "context": {
+          "allowed": true
+        },
+        "log": []
+      }
+    ]
+  }
+]

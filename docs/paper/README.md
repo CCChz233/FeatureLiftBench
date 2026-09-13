@@ -7,16 +7,16 @@
 ## 当前口径
 
 - FeatureLiftBench：150 个 Python 任务、126 个仓库、132 个快照。
-- 主比较：六配置覆盖全部 150 题，共 900 条结果；额外 50 题仅作为未来扩展计划，不进入本文统计。
+- 主比较：六配置覆盖全部 150 题，共 900 条结果；本文不讨论额外任务池。
 - 核心问题：完整源码可见时，目标能力能否跨越新软件包边界并保持行为？
 - 作者原有全量复核声明覆盖本文的全部 150 题，AI 辅助。
 - Functional pass 为正确性结果；RRES / Copy 为产物诊断；Steps / Tokens 为效率统计。
 - 正文统一 source repository、Primary / Extended；两组 evaluator tests 均不向智能体开放。
-- RQ3 使用通过频次与共同未解决任务；不将内部构建批次写成 benchmark 分组，lift type 不作为难度刻度。
+- RQ3 为 Source Ablation，检验 repository evidence 的作用。通过频次与共同未解决任务降为描述性分析；lift type 不作为难度刻度。
 
 ## 代码与数据入口
 
-下一轮只补两项：[Source exposure 离线诊断与 Entrypoint-Hint 实验清单](experiments/SOURCE_EXPOSURE_HINT_RUNBOOK.md)。预检入口为 `python -B docs/paper/experiments/prepare_process_diagnosis.py`：目前确认 900 个非空事件文件、150 题入口声明、107 题非空参考文件列表、39 题 closure 标注。预检不等于已经完成 exposure 分析。Hint 正式新增 120 runs；服务器需先完成仅 symbol + file 的提示注入核对，沿用原 Full 的实际运行配置。
+最终决策为**不新增大实验，暂缓 120-run Entrypoint-Hint**，见[执行指南](experiments/SOURCE_EXPOSURE_HINT_RUNBOOK.md)。900 条轨迹已分析：303 次行为首败中，241 次（79.5%）有成功工具返回入口关联文件内容的证据。该指标仅为文件内容暴露，不证明入口定义已读取、理解或完整定位。方法、原始事件索引、映射缺失和 107/39 题标注子集见[离线报告](../../reports/paper_analysis/source_exposure/diagnosis/REPORT.md)。方法放 §3，结果放 §4，附录说明检测范围。摘要、引言与结论均包含 79.5%，主线为源码证据有帮助、相关文件内容已暴露、行为仍未完整保留。
 
 先看 [WORKFLOW.md](WORKFLOW.md)。当前输入路径、模型全名和顺序集中在 [paper_sources.json](paper_sources.json)，由 [paper_inputs.py](paper_inputs.py) 读取。旧文件夹名称只作存储标识。
 

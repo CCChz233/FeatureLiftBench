@@ -1,0 +1,144 @@
+{
+  "generated_from": "benchmark/tasks/*/metadata.json",
+  "policy_id": "featureliftbench.full_repository_source.v2",
+  "repositories": [
+    {
+      "canonical_url": "https://github.com/dbt-labs/dbt-core",
+      "display_names": [
+        "dbt-core"
+      ],
+      "ecosystem_family": "unassigned",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "snapshot_ids": [
+        "github__dbt_labs__dbt_core__30d8b66398e1"
+      ],
+      "source_kind": "external_oss",
+      "source_repo_id": "github__dbt_labs__dbt_core",
+      "task_ids": [
+        "dbt_core__offline_graph_selection__workflow_001"
+      ],
+      "upstream_org": "dbt-labs"
+    },
+    {
+      "canonical_url": "https://github.com/pypa/pip",
+      "display_names": [
+        "pip"
+      ],
+      "ecosystem_family": "unassigned",
+      "licenses": [
+        "MIT"
+      ],
+      "snapshot_ids": [
+        "github__pypa__pip__c47a51737afd"
+      ],
+      "source_kind": "external_oss",
+      "source_repo_id": "github__pypa__pip",
+      "task_ids": [
+        "pip__offline_distribution_selection__workflow_001"
+      ],
+      "upstream_org": "pypa"
+    },
+    {
+      "canonical_url": "https://github.com/tobymao/sqlglot",
+      "display_names": [
+        "sqlglot"
+      ],
+      "ecosystem_family": "unassigned",
+      "licenses": [
+        "MIT"
+      ],
+      "snapshot_ids": [
+        "github__tobymao__sqlglot__9794dc14fae7"
+      ],
+      "source_kind": "external_oss",
+      "source_repo_id": "github__tobymao__sqlglot",
+      "task_ids": [
+        "sqlglot__column_lineage_graph__workflow_001"
+      ],
+      "upstream_org": "tobymao"
+    }
+  ],
+  "schema_version": "featureliftbench.source_registry.v1",
+  "snapshots": [
+    {
+      "acquisition_method": "git_checkout",
+      "archive_path": "benchmark/sources/archives/workflow-pilot-dbt-core-7d7d64ed6724.tar.gz",
+      "archive_sha256": "16e88f591a8a36b707b4f5e55acaa6598448baed324a7a18d5e301fc061ff6b7",
+      "current_snapshot_scope": "full_tracked_tree",
+      "license_text_path": "License.md",
+      "max_path_depth": 7,
+      "python_file_count": 763,
+      "python_loc": 117724,
+      "requested_revision": "7d7d64ed6724f77d25c7e75d14751b9515a474ef",
+      "resolved_commit": "7d7d64ed6724f77d25c7e75d14751b9515a474ef",
+      "revision_kind": "git_commit",
+      "source_repo_id": "github__dbt_labs__dbt_core",
+      "source_snapshot_id": "github__dbt_labs__dbt_core__30d8b66398e1",
+      "source_tree_sha256": "3f5ad1e1fd349125796f9bb5939d3162580a8543259388883ff548dbab146215",
+      "status": "ready",
+      "target_snapshot_scope": "full_tracked_tree",
+      "task_ids": [
+        "dbt_core__offline_graph_selection__workflow_001"
+      ],
+      "total_bytes": 15489250,
+      "tracked_file_count": 5111
+    },
+    {
+      "acquisition_method": "git_checkout",
+      "archive_path": "benchmark/sources/archives/workflow-pilot-pip-2e05cae3da2c.tar.gz",
+      "archive_sha256": "943421d2997e5093a39fca2d7009699f2d5f9d0e577eece4fe730baa55696c98",
+      "current_snapshot_scope": "full_tracked_tree",
+      "license_text_path": "LICENSE.txt",
+      "max_path_depth": 7,
+      "python_file_count": 629,
+      "python_loc": 134487,
+      "requested_revision": "2e05cae3da2cfafa6dce58167a25b7dba4bc2a33",
+      "resolved_commit": "2e05cae3da2cfafa6dce58167a25b7dba4bc2a33",
+      "revision_kind": "git_commit",
+      "source_repo_id": "github__pypa__pip",
+      "source_snapshot_id": "github__pypa__pip__c47a51737afd",
+      "source_tree_sha256": "dfa97330567e6febd773187fa1fcb84aacec1c4a77ead75d06f1eaac97c9bb27",
+      "status": "ready",
+      "target_snapshot_scope": "full_tracked_tree",
+      "task_ids": [
+        "pip__offline_distribution_selection__workflow_001"
+      ],
+      "total_bytes": 14812308,
+      "tracked_file_count": 998
+    },
+    {
+      "acquisition_method": "git_checkout",
+      "archive_path": "benchmark/sources/archives/workflow-pilot-sqlglot-cce19bbccf61.tar.gz",
+      "archive_sha256": "473437f2191f29e70abda1662be7335725b1e96ca2216eabd92c0b3fdc624b2d",
+      "current_snapshot_scope": "full_tracked_tree",
+      "license_text_path": "LICENSE",
+      "max_path_depth": 5,
+      "python_file_count": 136,
+      "python_loc": 82899,
+      "requested_revision": "cce19bbccf61198263208cf07f2fd3aed0d8217b",
+      "resolved_commit": "cce19bbccf61198263208cf07f2fd3aed0d8217b",
+      "revision_kind": "git_commit",
+      "source_repo_id": "github__tobymao__sqlglot",
+      "source_snapshot_id": "github__tobymao__sqlglot__9794dc14fae7",
+      "source_tree_sha256": "3a7e0c3fda030efd015097f90f0e1e42afa903a2e0ea073ba69ece91a056a205",
+      "status": "ready",
+      "target_snapshot_scope": "full_tracked_tree",
+      "task_ids": [
+        "sqlglot__column_lineage_graph__workflow_001"
+      ],
+      "total_bytes": 13275944,
+      "tracked_file_count": 249
+    }
+  ],
+  "summary": {
+    "curated_repository_count": 0,
+    "external_repository_count": 3,
+    "pending_snapshot_count": 0,
+    "ready_snapshot_count": 3,
+    "repository_count": 3,
+    "snapshot_count": 3,
+    "task_count": 3
+  }
+}

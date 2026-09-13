@@ -1,0 +1,993 @@
+[
+  {
+    "name": "normal-change",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "low",
+          "value": 3
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 3,
+          "high": 10,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 0,
+            "new": 3,
+            "values": {
+              "low": 3,
+              "high": 10,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "invalid-type",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "low",
+          "value": "3"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": "TraitError",
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "defaults",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "snapshot"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "batch-compress",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "batch",
+          "updates": [
+            {
+              "field": "low",
+              "value": 2
+            },
+            {
+              "field": "high",
+              "value": 20
+            },
+            {
+              "field": "low",
+              "value": 4
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "field": "low",
+          "other": "high",
+          "op": "le"
+        },
+        {
+          "field": "high",
+          "other": "low",
+          "op": "ge"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B002",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 4,
+          "high": 20,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 0,
+            "new": 4,
+            "values": {
+              "low": 4,
+              "high": 20,
+              "items": []
+            }
+          },
+          {
+            "name": "high",
+            "old": 10,
+            "new": 20,
+            "values": {
+              "low": 4,
+              "high": 20,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "batch-final-validation",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "batch",
+          "updates": [
+            {
+              "field": "low",
+              "value": 15
+            },
+            {
+              "field": "high",
+              "value": 20
+            }
+          ]
+        }
+      ],
+      "rules": [
+        {
+          "field": "low",
+          "other": "high",
+          "op": "le"
+        },
+        {
+          "field": "high",
+          "other": "low",
+          "op": "ge"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 15,
+          "high": 20,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 0,
+            "new": 15,
+            "values": {
+              "low": 15,
+              "high": 20,
+              "items": []
+            }
+          },
+          {
+            "name": "high",
+            "old": 10,
+            "new": 20,
+            "values": {
+              "low": 15,
+              "high": 20,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "batch-cross-rollback",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "batch",
+          "updates": [
+            {
+              "field": "low",
+              "value": 5
+            },
+            {
+              "field": "high",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "op": "set",
+          "field": "low",
+          "value": 3
+        }
+      ],
+      "rules": [
+        {
+          "field": "low",
+          "other": "high",
+          "op": "le"
+        },
+        {
+          "field": "high",
+          "other": "low",
+          "op": "ge"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": "TraitError",
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 3,
+          "high": 10,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 0,
+            "new": 3,
+            "values": {
+              "low": 3,
+              "high": 10,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "batch-type-rollback",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "batch",
+          "updates": [
+            {
+              "field": "low",
+              "value": 2
+            },
+            {
+              "field": "high",
+              "value": "bad"
+            }
+          ]
+        },
+        {
+          "op": "snapshot"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": "TraitError",
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "no-op-assignment",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "low",
+          "value": 0
+        },
+        {
+          "op": "batch",
+          "updates": [
+            {
+              "field": "low",
+              "value": 3
+            },
+            {
+              "field": "low",
+              "value": 0
+            }
+          ]
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B002",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 0,
+            "new": 0,
+            "values": {
+              "low": 0,
+              "high": 10,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "in-place-list-versus-assignment",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "append",
+          "field": "items",
+          "value": 1
+        },
+        {
+          "op": "set",
+          "field": "items",
+          "value": [
+            1,
+            2
+          ]
+        },
+        {
+          "op": "set",
+          "field": "items",
+          "value": [
+            "bad"
+          ]
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": [
+            1
+          ]
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": [
+            1,
+            2
+          ]
+        },
+        "changes": [
+          {
+            "name": "items",
+            "old": [
+              1
+            ],
+            "new": [
+              1,
+              2
+            ],
+            "values": {
+              "low": 0,
+              "high": 10,
+              "items": [
+                1,
+                2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "error": "TraitError",
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": [
+            1,
+            2
+          ]
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "watch-unwatch",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "operations": [
+        {
+          "op": "unwatch",
+          "fields": [
+            "low"
+          ]
+        },
+        {
+          "op": "set",
+          "field": "low",
+          "value": 2
+        },
+        {
+          "op": "watch",
+          "fields": [
+            "low"
+          ]
+        },
+        {
+          "op": "watch",
+          "fields": [
+            "low"
+          ]
+        },
+        {
+          "op": "set",
+          "field": "low",
+          "value": 3
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B007"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 0,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 2,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 2,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 2,
+          "high": 10,
+          "items": []
+        },
+        "changes": []
+      },
+      {
+        "error": null,
+        "values": {
+          "low": 3,
+          "high": 10,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 2,
+            "new": 3,
+            "values": {
+              "low": 3,
+              "high": 10,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bounded-int",
+    "args": {
+      "schema": {
+        "x": {
+          "type": "int",
+          "min": 1,
+          "max": 3,
+          "default": 1
+        }
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "x",
+          "value": 3
+        },
+        {
+          "op": "set",
+          "field": "x",
+          "value": 4
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "x": 3
+        },
+        "changes": [
+          {
+            "name": "x",
+            "old": 1,
+            "new": 3,
+            "values": {
+              "x": 3
+            }
+          }
+        ]
+      },
+      {
+        "error": "TraitError",
+        "values": {
+          "x": 3
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "float-text-bool-none",
+    "args": {
+      "schema": {
+        "f": {
+          "type": "float"
+        },
+        "s": {
+          "type": "text",
+          "allow_none": true
+        },
+        "b": {
+          "type": "bool"
+        }
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "f",
+          "value": 2
+        },
+        {
+          "op": "set",
+          "field": "s",
+          "value": null
+        },
+        {
+          "op": "set",
+          "field": "b",
+          "value": true
+        },
+        {
+          "op": "set",
+          "field": "b",
+          "value": "true"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "f": 2.0,
+          "s": "",
+          "b": false
+        },
+        "changes": [
+          {
+            "name": "f",
+            "old": 0.0,
+            "new": 2.0,
+            "values": {
+              "f": 2.0,
+              "s": "",
+              "b": false
+            }
+          }
+        ]
+      },
+      {
+        "error": null,
+        "values": {
+          "f": 2.0,
+          "s": null,
+          "b": false
+        },
+        "changes": [
+          {
+            "name": "s",
+            "old": "",
+            "new": null,
+            "values": {
+              "f": 2.0,
+              "s": null,
+              "b": false
+            }
+          }
+        ]
+      },
+      {
+        "error": null,
+        "values": {
+          "f": 2.0,
+          "s": null,
+          "b": true
+        },
+        "changes": [
+          {
+            "name": "b",
+            "old": false,
+            "new": true,
+            "values": {
+              "f": 2.0,
+              "s": null,
+              "b": true
+            }
+          }
+        ]
+      },
+      {
+        "error": "TraitError",
+        "values": {
+          "f": 2.0,
+          "s": null,
+          "b": true
+        },
+        "changes": []
+      }
+    ]
+  },
+  {
+    "name": "initial-values-before-observation",
+    "args": {
+      "schema": {
+        "low": {
+          "type": "int",
+          "default": 0,
+          "min": 0
+        },
+        "high": {
+          "type": "int",
+          "default": 10
+        },
+        "items": {
+          "type": "list_int"
+        }
+      },
+      "initial": {
+        "low": 2,
+        "high": 5
+      },
+      "operations": [
+        {
+          "op": "set",
+          "field": "low",
+          "value": 4
+        }
+      ],
+      "rules": [
+        {
+          "field": "low",
+          "other": "high",
+          "op": "le"
+        },
+        {
+          "field": "high",
+          "other": "low",
+          "op": "ge"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": null,
+        "values": {
+          "low": 4,
+          "high": 5,
+          "items": []
+        },
+        "changes": [
+          {
+            "name": "low",
+            "old": 2,
+            "new": 4,
+            "values": {
+              "low": 4,
+              "high": 5,
+              "items": []
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

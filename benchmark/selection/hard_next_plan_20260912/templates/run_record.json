@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "record_type": "model_run",
+  "plan_id": "hard_next_plan_20260912",
+  "status": "not_started",
+  "identity": {
+    "run_id": null,
+    "phase": null,
+    "case_or_candidate_id": null,
+    "task_id": null,
+    "variant": null,
+    "independent_repeat": null,
+    "planned_order": null,
+    "confirmation_trigger_record": null
+  },
+  "inputs": {
+    "environment_record_sha256": null,
+    "task_input_lock_sha256": null,
+    "source_snapshot_id": null,
+    "source_tree_sha256": null,
+    "reference_sha256": null,
+    "profile_sha256": null
+  },
+  "execution": {
+    "started_at_utc": null,
+    "finished_at_utc": null,
+    "endpoint": null,
+    "requested_model_id": null,
+    "returned_model_id": null,
+    "system_fingerprint": null,
+    "agent_image_id": null,
+    "evaluator_image_id": null,
+    "fresh_workspace_verified": null,
+    "run_directory": null,
+    "run_json_sha256": null,
+    "agent_status": null,
+    "exit_reason": null,
+    "api_calls": null,
+    "steps": null,
+    "wall_clock_seconds": null,
+    "input_tokens": null,
+    "output_tokens": null,
+    "token_usage_verified": null,
+    "cost_amount": null,
+    "cost_currency": null
+  },
+  "evaluation": {
+    "result_path": null,
+    "result_sha256": null,
+    "build_pass": null,
+    "public_pass": null,
+    "hidden_pass": null,
+    "isolation_pass": null,
+    "functional_pass": null,
+    "submission_loc": null,
+    "reference_loc": null,
+    "copied_fraction": null,
+    "compactness_class": null
+  },
+  "validity": {
+    "input_lock_unchanged": null,
+    "protocol_matches_environment": null,
+    "source_binding_complete": null,
+    "reference_binding_complete": null,
+    "context_violation": null,
+    "model_drift_detected": null,
+    "infrastructure_failure": null,
+    "usable_as_task_difficulty_evidence": null,
+    "reasons": []
+  },
+  "failure_analysis": {
+    "work_label": null,
+    "failed_contract_clauses": [],
+    "submission_and_log_evidence": [],
+    "specification_issue_found": null,
+    "independent_review_path": null
+  },
+  "accounting": {
+    "counts_toward_model_run_budget": null,
+    "retained_in_all_attempts_view": true,
+    "missing_or_skipped_reason": null,
+    "retry_of_run_id": null
+  },
+  "decision": {
+    "next_action": null,
+    "reason": null
+  }
+}

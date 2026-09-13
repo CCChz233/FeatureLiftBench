@@ -1,0 +1,8996 @@
+[
+  {
+    "name": "single_model",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "bounded_ancestors",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "1+b"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_test_selection",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ]
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_b c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b c"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_b,c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b,c"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_tag:nightly,tag:finance",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:nightly,tag:finance"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_+b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "source.shop.raw",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_b+1",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b+1"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_0+b+0",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "0+b+0"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_@b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "source.shop.raw",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_shop.marts.*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "shop.marts.*"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_package:other",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "package:other"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.other.a"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_tag:fin*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:fin*"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_bc",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "bc"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_unmatched",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "unmatched"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "eager_+b,+c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b,+c"
+      ],
+      "indirect_selection": "eager"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "source.shop.raw",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": [
+        "test.shop.ab",
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "cautious_b c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b c"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.bc"
+      ],
+      "indirect_only": [
+        "test.shop.ab"
+      ]
+    }
+  },
+  {
+    "name": "cautious_b,c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b,c"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "cautious_tag:nightly,tag:finance",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:nightly,tag:finance"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": [
+        "test.shop.ab",
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "cautious_+b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "source.shop.raw",
+        "test.shop.ab"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "cautious_b+1",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b+1"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_0+b+0",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "0+b+0"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": [
+        "test.shop.ab",
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "cautious_@b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "source.shop.raw",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_shop.marts.*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "shop.marts.*"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "test.shop.bc"
+      ],
+      "indirect_only": [
+        "test.shop.ab"
+      ]
+    }
+  },
+  {
+    "name": "cautious_package:other",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "package:other"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.other.a"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_tag:fin*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:fin*"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.bc"
+      ],
+      "indirect_only": [
+        "test.shop.ab"
+      ]
+    }
+  },
+  {
+    "name": "cautious_bc",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "bc"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_unmatched",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "unmatched"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "cautious_+b,+c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b,+c"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "source.shop.raw"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_b c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b c"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_b,c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b,c"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_tag:nightly,tag:finance",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:nightly,tag:finance"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_+b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "source.shop.raw",
+        "test.shop.ab"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_b+1",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b+1"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_0+b+0",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "0+b+0"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "test.shop.ab"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "buildable_@b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "source.shop.raw",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_shop.marts.*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "shop.marts.*"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_package:other",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "package:other"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.other.a"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_tag:fin*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:fin*"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_bc",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "bc"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_unmatched",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "unmatched"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "buildable_+b,+c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b,+c"
+      ],
+      "indirect_selection": "buildable"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "source.shop.raw"
+      ],
+      "indirect_only": [
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "empty_b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_b c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b c"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_b,c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b,c"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_tag:nightly,tag:finance",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:nightly,tag:finance"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_+b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "source.shop.raw"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_b+1",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b+1"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_0+b+0",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "0+b+0"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_@b",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d",
+        "source.shop.raw",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_shop.marts.*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "shop.marts.*"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c",
+        "model.shop.d"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_package:other",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "package:other"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.other.a"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_tag:fin*",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "tag:fin*"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.b",
+        "model.shop.c"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_bc",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "bc"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_unmatched",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "unmatched"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_+b,+c",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "+b,+c"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003",
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "source.shop.raw"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "exclude_after_expansion",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b"
+      ],
+      "exclude": [
+        "tag:finance"
+      ],
+      "indirect_selection": "cautious"
+    },
+    "behavior_ids": [
+      "B002",
+      "B003",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.d",
+        "source.shop.raw",
+        "test.shop.ab"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "resource_filter_after_test_expansion",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b c"
+      ],
+      "indirect_selection": "cautious",
+      "resource_types": [
+        "test"
+      ]
+    },
+    "behavior_ids": [
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "test.shop.bc"
+      ],
+      "indirect_only": [
+        "test.shop.ab"
+      ]
+    }
+  },
+  {
+    "name": "pending_not_resource_filtered",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "cautious",
+      "resource_types": [
+        "source"
+      ]
+    },
+    "behavior_ids": [
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": [
+        "test.shop.ab",
+        "test.shop.bc"
+      ]
+    }
+  },
+  {
+    "name": "empty_include",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": []
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "disabled_breaks_path",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ],
+          "enabled": false
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "a+"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B003",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.other.a",
+        "model.shop.a",
+        "test.shop.ab"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "empty_does_not_break_path",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ],
+          "empty": true
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "shop.staging.a+"
+      ],
+      "indirect_selection": "empty"
+    },
+    "behavior_ids": [
+      "B003",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "selected": [
+        "model.shop.a",
+        "model.shop.d",
+        "test.shop.ab",
+        "test.shop.bc"
+      ],
+      "indirect_only": []
+    }
+  },
+  {
+    "name": "bad_modifier",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "@b+"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "bad_method",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "not_a_method:b"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "bad_mode",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ],
+      "indirect_selection": "unknown"
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "duplicate",
+    "args": {
+      "nodes": [
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        },
+        {
+          "id": "model.shop.a",
+          "fqn": [
+            "shop",
+            "staging",
+            "a"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "nightly"
+          ]
+        },
+        {
+          "id": "model.shop.b",
+          "fqn": [
+            "shop",
+            "marts",
+            "b"
+          ],
+          "parents": [
+            "model.shop.a"
+          ],
+          "tags": [
+            "nightly",
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.c",
+          "fqn": [
+            "shop",
+            "marts",
+            "c"
+          ],
+          "parents": [
+            "source.shop.raw"
+          ],
+          "tags": [
+            "finance"
+          ]
+        },
+        {
+          "id": "model.shop.d",
+          "fqn": [
+            "shop",
+            "marts",
+            "d"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ]
+        },
+        {
+          "id": "test.shop.bc",
+          "fqn": [
+            "shop",
+            "tests",
+            "bc"
+          ],
+          "parents": [
+            "model.shop.b",
+            "model.shop.c"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "test.shop.ab",
+          "fqn": [
+            "shop",
+            "tests",
+            "ab"
+          ],
+          "parents": [
+            "model.shop.a",
+            "model.shop.b"
+          ],
+          "resource_type": "test"
+        },
+        {
+          "id": "model.other.a",
+          "fqn": [
+            "other",
+            "a"
+          ],
+          "tags": [
+            "weekly"
+          ]
+        },
+        {
+          "id": "source.shop.raw",
+          "fqn": [
+            "shop",
+            "raw"
+          ],
+          "resource_type": "source",
+          "tags": [
+            "input"
+          ]
+        }
+      ],
+      "include": [
+        "b"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "missing_parent",
+    "args": {
+      "nodes": [
+        {
+          "id": "m.a",
+          "parents": [
+            "m.missing"
+          ]
+        }
+      ],
+      "include": [
+        "a"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "cycle",
+    "args": {
+      "nodes": [
+        {
+          "id": "m.a",
+          "parents": [
+            "m.b"
+          ]
+        },
+        {
+          "id": "m.b",
+          "parents": [
+            "m.a"
+          ]
+        }
+      ],
+      "include": [
+        "a"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "short_fqn",
+    "args": {
+      "nodes": [
+        {
+          "id": "a"
+        }
+      ],
+      "include": [
+        "a"
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  }
+]

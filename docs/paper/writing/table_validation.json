@@ -4,22 +4,24 @@
   "tasks": 150,
   "models": 6,
   "run_profiles_checked": 900,
-  "main_tables": 2,
-  "main_generated_data_tables": 1,
+  "main_tables": 3,
+  "main_generated_data_tables": 2,
   "main_authored_literature_tables": 1,
   "unverified_hypothetical_tables": 0,
   "verified_source_ablation_outcomes": 240,
-  "appendix_tables": 6,
+  "source_exposure_traces": 900,
+  "appendix_tables": 7,
   "main_figures": 5,
   "appendix_figures": 2,
   "figure_placeholders": 0,
   "generated_text_blocks": 1,
   "main_table_order": [
     "main",
+    "source-exposure",
     "positioning"
   ],
   "structure_table_updater": "writing/update_structure_results.py",
-  "table_revision": "figure_story_and_appendix_details_20260913",
+  "table_revision": "source_exposure_added_20260913",
   "detailed_profiles": [
     {
       "backend": "Pro",
@@ -58,7 +60,7 @@
       "outcomes": 150
     }
   ],
-  "scope": "Main-comparison generated tables and run profiles; source-ablation table from separately verified 240 retained records. Service-error limitations remain attached to the measured ablation.",
+  "scope": "Main-comparison tables and run profiles; source-ablation table from 240 retained records; conservative source-file exposure table from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.",
   "sources": [
     {
       "path": "docs/paper/paper_sources.json",
@@ -103,6 +105,18 @@
     {
       "path": "reports/paper_analysis/source_ablation_40_20260913/source_ablation_table.tex",
       "sha256": "af9cddfbdb51372ad0031951159d8ede3d08532919aecff6533755f6d9163e6f"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/statistics.json",
+      "sha256": "b8390213f590bb6135addd21b74d0bd5ac76d25976eaba3c00fa03cab7e189a7"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/source_exposure_table.tex",
+      "sha256": "88c485e34253344085f3cb7fd7c6c5262126757bb8656da9d01e9e32b603eaef"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/summary_by_model_outcome.csv",
+      "sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec"
     }
   ]
 }

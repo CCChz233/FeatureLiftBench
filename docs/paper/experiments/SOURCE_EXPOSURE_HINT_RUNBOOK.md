@@ -1,13 +1,13 @@
-# 最后一轮补充实验清单：Source Exposure + Entrypoint Hint
+# 当前执行：Source Exposure 离线诊断（Entrypoint Hint 暂缓）
 
-**当前方案，2026-09-13。优先级 S → A；只做这两项。**
+**最终执行决策，2026-09-13：只执行 S，离线分析现有 900 条轨迹，不新增模型调用。A（120-run Hint）暂缓；下文 A 节仅保留备选协议，不是当前执行任务。**
 
 本文 benchmark 为固定 150 题，六配置主比较 900 条结果。已完成的源码消融为同一 40 题 × Luna / Pro / Qwen × 两臂，共 240 条保留结果。本轮不改题、不扩展到 200、不增加模型或机械 baseline，不自动给失败标注因果根因。
 
 | 顺序 | 工作 | 新 agent runs | 交付物 | 论文位置 |
 |---|---|---:|---|---|
-| S | 900-run trajectory-based source exposure diagnosis | 0 | 逐事件证据、逐运行表、结果分组表、子集分析 | §4.6；更细子集放附录 |
-| A | 40 题 × 3 配置 Full Source + Entrypoint Hint | 120 | Hint manifest、prompt diff、运行包、Hint vs Full 配对统计 | 更新 Fig.5 或一张小表 |
+| S | 900-run trajectory-based source exposure diagnosis | 0 | 逐事件证据、逐运行表、结果分组表、子集分析 | §3 方法、§4 结果；更细子集放附录 |
+| 暂缓 | 40 题 × 3 配置 Full Source + Entrypoint Hint | 当前 0（备选 120） | 暂不执行 | 当前 Fig.5 保持实测两臂 |
 
 **先阅读本指南，不再按旧 `SUPPLEMENTARY_EXPERIMENT_RUNBOOK.md` 的模型数、200 题范围或 mechanical baseline 计划执行。** 那是前一轮设计历史，服务器实际完成的两臂运行记录才是本次控制配置的依据。
 
@@ -52,6 +52,20 @@ python3 -B docs/paper/experiments/prepare_process_diagnosis.py \
 
 ## S. 离线轨迹诊断
 
+**已完成第一轮文件内容暴露诊断。** 当前实现、数据和论文以以下命令为准（不调用模型，不执行任务）：
+
+```bash
+python3 -B docs/paper/experiments/prepare_process_diagnosis.py
+python3 -B docs/paper/experiments/test_source_exposure.py
+python3 -B docs/paper/experiments/diagnose_source_exposure.py
+python3 -B docs/paper/experiments/summarize_source_exposure.py
+python3 -B docs/paper/experiments/validate_source_exposure.py
+python3 -B scripts/paper.py tables
+python3 -B scripts/paper.py check
+```
+
+结果位于 `reports/paper_analysis/source_exposure/diagnosis/`，说明见 `REPORT.md`。主指标为显式读取后的文件内容匹配；含搜索片段作为敏感性。未实现 symbol-body exposure，不能把本文数字称为入口函数体读取率。下文是设计原则，其中精细符号范围和未覆盖工具形式不是已完成的测量。
+
 ### S1. 先建立入口与源码文件的对应关系
 
 在每题固定源码快照中解析入口声明，保存 `task_id, declared_symbol, resolved_file, symbol_start, symbol_end, resolution_status, evidence`。规范化 `src/`、package root、re-export、别名及运行工作目录。
@@ -63,7 +77,7 @@ python3 -B docs/paper/experiments/prepare_process_diagnosis.py \
 
 ### S2. 统计“可观察到的内容暴露”，而不是指令里出现过路径
 
-**当前 `harness/featureliftbench/trajectory_audit.py` 不足以直接完成该实验。** 它会把 `rg/find` 等命令计为 source read，并未逐条验证工具结果和实际返回内容。服务器侧需按以下规则实现独立的 `source_exposure` 分析器；不要把旧 `unique_source_files_read` 直接改名为 inspected。
+**不使用 `harness/featureliftbench/trajectory_audit.py` 的旧 source-read 汇总作为本实验结果。** 它没有逐条验证实际返回内容。本轮独立实现为 `diagnose_source_exposure.py`，通过 action/observation 配对、明确源码挂载路径和连续内容匹配确认暴露；不会把旧 `unique_source_files_read` 直接改名为 inspected。
 
 | 字段 | 可接受证据 | 不接受的替代证据 |
 |---|---|---|
@@ -110,7 +124,7 @@ python3 -B docs/paper/experiments/prepare_process_diagnosis.py \
 
 可以写：**behavioral failures remain among runs with observed entrypoint-file exposure**。不能写：看过入口就等于完成 localization、理解源码、恢复闭包，或者据此证明 reasoning failure。没有暴露记录也不证明没找到代码：可能通过其他实现位置或未覆盖的工具路径获取证据。
 
-## A. Entrypoint-Hint 消融：新增 120 条正式运行
+## A. 备选协议：Entrypoint-Hint 消融（暂缓，不执行）
 
 ### A1. 固定比较与预算
 
@@ -194,10 +208,10 @@ PYTHONPATH=harness python3 -B -m featureliftbench.cli run-agent benchmark/tasks 
 
 ## 论文落点与停止条件
 
-当前立即修改：删除 future independent audit，保留真实 author review；RQ3 改 Performance；摘要分开定量 behavioral boundary 与定性 contract-closure；§5 定位 illustrative mechanisms；未来 50 题压缩为一句。
+当前叙事已调整：保留真实 author review；Source Ablation 升为 RQ3，task variation 降为描述性分析；摘要分开定量 behavioral boundary 与定性 contract-closure；§5 定位 illustrative mechanisms；论文不讨论额外 50 题池。
 
-S 完成且解析器验证通过后，插入 §4.6 **Trace-Based Diagnosis of Source Exposure**，正文一张简洁 outcome × exposure 表，逐模型和支持文件子集放附录。Threats 明确 exposure 不等于完整 localization/understanding/closure。
+S 已完成：方法放 §3，**Trace-Based Diagnosis of Source Exposure** 结果放 §4，紧接 RQ3 的 Source Ablation。正文一张 outcome × exposure 表；支持文件子集和方法限制放附录，逐模型完整汇总保存在报告中。摘要、引言、结论均报告 241/303（79.5%）；Threats 明确文件内容暴露不等于入口函数体读取、完整 localization/understanding/closure。
 
-A 完成后决定 Fig.5 改为三条件，或保留现有图另加紧凑 Hint 表；不提前填第三臂预测数字。LaTeX 当前只放不可见 TODO，读者不会看到尚未完成的结果小节。
+A 暂缓，当前 Fig.5 保持已完成的两臂实测结果，不添加第三臂或预测数字。
 
-最终交付压缩包只含本轮报告、代码、Hint allowlist、prompt 与脱敏配置、轨迹、提交、评测结果、恢复记录和 checksum；不要包含 `.env`、API keys 或凭据。先完成 S 再跑 A，做到这些停止扩展实验，不追加模型、200 题、机械 baseline、全量 repeats 或自动根因分类。
+最终交付压缩包只含本轮离线报告、代码、证据索引和 checksum；不要包含 `.env`、API keys 或凭据。当前只完成 S，不启动 A，不追加模型、200 题、机械 baseline、全量 repeats 或自动根因分类。

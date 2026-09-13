@@ -1,0 +1,804 @@
+[
+  {
+    "name": "coalesce-before-grace",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          }
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:25+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B003"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:20+00:00",
+            "status": "missed"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:30+00:00"
+        }
+      },
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "all-due-with-grace",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "coalesce": false,
+          "grace": 5
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:25+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B002",
+      "B003"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "missed"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "missed"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:20+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:30+00:00"
+        }
+      },
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "nothing-due",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          }
+        }
+      ],
+      "operations": [],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B001"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": []
+  },
+  {
+    "name": "grace-inclusive",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "coalesce": false,
+          "grace": 5
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:05+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:10+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "unlimited-grace",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "coalesce": false,
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:35+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:35+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B002",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:20+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      },
+      {
+        "events": [],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "pause-resume-skip",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:00+00:00"
+        },
+        {
+          "op": "pause",
+          "id": "j"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:25+00:00"
+        },
+        {
+          "op": "resume",
+          "id": "j",
+          "now": "2025-01-01T00:00:25+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:10+00:00"
+        }
+      },
+      {
+        "events": [],
+        "next": {
+          "j": null
+        }
+      },
+      {
+        "events": [],
+        "next": {
+          "j": null
+        }
+      },
+      {
+        "events": [],
+        "next": {
+          "j": "2025-01-01T00:00:30+00:00"
+        }
+      },
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "date-exhaustion",
+    "args": {
+      "jobs": [
+        {
+          "id": "once",
+          "trigger": {
+            "type": "date",
+            "run_date": "2025-01-01T00:00:00+00:00"
+          },
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:20+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B001",
+      "B003",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "once",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {}
+      },
+      {
+        "events": [],
+        "next": {}
+      }
+    ]
+  },
+  {
+    "name": "interval-end-inclusive",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00",
+            "end_date": "2025-01-01T00:00:20+00:00"
+          },
+          "coalesce": false,
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:20+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:20+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {}
+      },
+      {
+        "events": [],
+        "next": {}
+      }
+    ]
+  },
+  {
+    "name": "zero-interval-upstream-one-second",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 0
+          },
+          "coalesce": false,
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:03+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:01+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:02+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:03+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:04+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "tie-job-order",
+    "args": {
+      "jobs": [
+        {
+          "id": "z",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "grace": null
+        },
+        {
+          "id": "a",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:10+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "a",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "z",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "a": "2025-01-01T00:00:20+00:00",
+          "z": "2025-01-01T00:00:20+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "replace-paused",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          },
+          "paused": true
+        }
+      ],
+      "operations": [
+        {
+          "op": "replace",
+          "job": {
+            "id": "j",
+            "trigger": {
+              "type": "interval",
+              "seconds": 10,
+              "start_date": "2025-01-01T00:00:00+00:00"
+            },
+            "grace": null
+          },
+          "now": "2025-01-01T00:00:25+00:00"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B004",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [],
+        "next": {
+          "j": "2025-01-01T00:00:30+00:00"
+        }
+      },
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "remove",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "interval",
+            "seconds": 10,
+            "start_date": "2025-01-01T00:00:00+00:00"
+          }
+        }
+      ],
+      "operations": [
+        {
+          "op": "remove",
+          "id": "j"
+        },
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:30+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [],
+        "next": {}
+      },
+      {
+        "events": [],
+        "next": {}
+      }
+    ]
+  },
+  {
+    "name": "or-cron-combination",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "or",
+            "triggers": [
+              {
+                "type": "cron",
+                "second": "*/10"
+              },
+              {
+                "type": "cron",
+                "second": "*/15"
+              }
+            ]
+          },
+          "coalesce": false,
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:31+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B005",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:10+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:15+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:20+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-01T00:00:40+00:00"
+        }
+      }
+    ]
+  },
+  {
+    "name": "timezone-cron",
+    "args": {
+      "jobs": [
+        {
+          "id": "j",
+          "trigger": {
+            "type": "cron",
+            "timezone": "Asia/Shanghai",
+            "hour": 8,
+            "minute": 0,
+            "second": "0,30"
+          },
+          "coalesce": false,
+          "grace": null
+        }
+      ],
+      "operations": [
+        {
+          "op": "poll",
+          "now": "2025-01-01T00:00:31+00:00"
+        }
+      ],
+      "start": "2025-01-01T00:00:00+00:00"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "events": [
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:00+00:00",
+            "status": "ready"
+          },
+          {
+            "id": "j",
+            "time": "2025-01-01T00:00:30+00:00",
+            "status": "ready"
+          }
+        ],
+        "next": {
+          "j": "2025-01-02T00:00:00+00:00"
+        }
+      }
+    ]
+  }
+]

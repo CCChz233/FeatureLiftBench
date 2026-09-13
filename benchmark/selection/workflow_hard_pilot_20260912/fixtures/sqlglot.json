@@ -1,0 +1,747 @@
+[
+  {
+    "name": "direct",
+    "args": {
+      "column": "x",
+      "sql": "SELECT x FROM tbl"
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "tbl.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "tbl.x",
+          "expression": "tbl AS tbl",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "computed_join",
+    "args": {
+      "column": "total",
+      "sql": "SELECT a.x + b.y AS total FROM a JOIN b ON a.id = b.id"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "name": "total",
+      "expression": "a.x + b.y AS total",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "a.x",
+          "expression": "a AS a",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        },
+        {
+          "name": "b.y",
+          "expression": "b AS b",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "cte",
+    "args": {
+      "column": "out",
+      "sql": "WITH q AS (SELECT x AS value FROM raw) SELECT value AS out FROM q"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "q.value AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "q.value",
+          "expression": "raw.x AS value",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "raw.x",
+              "expression": "raw AS raw",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "constant",
+    "args": {
+      "column": "x",
+      "sql": "SELECT 42 AS x"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "42 AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": []
+    }
+  },
+  {
+    "name": "quoted",
+    "args": {
+      "column": "\"MiXeD\"",
+      "sql": "SELECT \"Input\" AS \"MiXeD\" FROM \"Table\""
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "MiXeD",
+      "expression": "table.\"Input\" AS \"MiXeD\"",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "table.\"Input\"",
+          "expression": "\"Table\" AS table",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "unquoted_case",
+    "args": {
+      "column": "OUT",
+      "sql": "SELECT INPUT AS OUT FROM DATA"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "data.input AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "data.input",
+          "expression": "data AS data",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "nested_cte",
+    "args": {
+      "column": "z",
+      "sql": "WITH first AS (SELECT x AS v FROM raw), second AS (SELECT v + 1 AS z FROM first) SELECT z FROM second"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "z",
+      "expression": "second.z AS z",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "second.z",
+          "expression": "first.v + 1 AS z",
+          "source_name": "",
+          "reference_node_name": "second",
+          "downstream": [
+            {
+              "name": "first.v",
+              "expression": "raw.x AS v",
+              "source_name": "",
+              "reference_node_name": "first",
+              "downstream": [
+                {
+                  "name": "raw.x",
+                  "expression": "raw AS raw",
+                  "source_name": "",
+                  "reference_node_name": "",
+                  "downstream": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "derived",
+    "args": {
+      "column": "z",
+      "sql": "SELECT q.v AS z FROM (SELECT x AS v FROM raw) AS q"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "z",
+      "expression": "q.v AS z",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "q.v",
+          "expression": "raw.x AS v",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "raw.x",
+              "expression": "raw AS raw",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "union",
+    "args": {
+      "column": "x",
+      "sql": "SELECT a AS x FROM one UNION SELECT b AS x FROM two"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "UNION",
+      "expression": "one.a AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "0",
+          "expression": "one.a AS x",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": [
+            {
+              "name": "one.a",
+              "expression": "one AS one",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        },
+        {
+          "name": "0",
+          "expression": "two.b AS x",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": [
+            {
+              "name": "two.b",
+              "expression": "two AS two",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "union_all_cte",
+    "args": {
+      "column": "x",
+      "sql": "WITH q AS (SELECT a AS x FROM one UNION ALL SELECT b AS x FROM two) SELECT x FROM q"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "q.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "0",
+          "expression": "one.a AS x",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "one.a",
+              "expression": "one AS one",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        },
+        {
+          "name": "0",
+          "expression": "two.b AS x",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "two.b",
+              "expression": "two AS two",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "star_schema",
+    "args": {
+      "column": "x",
+      "sql": "SELECT * FROM raw",
+      "schema": {
+        "raw": {
+          "x": "INT",
+          "y": "TEXT"
+        }
+      }
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "raw.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "raw.x",
+          "expression": "raw AS raw",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "cte_star",
+    "args": {
+      "column": "x",
+      "sql": "WITH q AS (SELECT * FROM raw) SELECT q.x FROM q",
+      "schema": {
+        "raw": {
+          "x": "INT",
+          "y": "INT"
+        }
+      }
+    },
+    "behavior_ids": [
+      "B003",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "q.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "q.x",
+          "expression": "raw.x AS x",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "raw.x",
+              "expression": "raw AS raw",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "qualified_star",
+    "args": {
+      "column": "y",
+      "sql": "SELECT q.* FROM (SELECT x, y FROM raw) q",
+      "schema": {
+        "raw": {
+          "x": "INT",
+          "y": "INT"
+        }
+      }
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "y",
+      "expression": "q.y AS y",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "q.y",
+          "expression": "raw.y AS y",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "raw.y",
+              "expression": "raw AS raw",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "source_expansion",
+    "args": {
+      "column": "out",
+      "sql": "SELECT x AS out FROM view_a",
+      "sources": {
+        "view_a": "SELECT value AS x FROM base"
+      }
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "view_a.x AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "view_a.x",
+          "expression": "base.value AS x",
+          "source_name": "view_a",
+          "reference_node_name": "",
+          "downstream": [
+            {
+              "name": "base.value",
+              "expression": "base AS base",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "source_star",
+    "args": {
+      "column": "out",
+      "sql": "SELECT x AS out FROM view_a",
+      "sources": {
+        "view_a": "SELECT * FROM base"
+      },
+      "schema": {
+        "base": {
+          "x": "INT"
+        }
+      }
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "view_a.x AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "view_a.x",
+          "expression": "base.x AS x",
+          "source_name": "view_a",
+          "reference_node_name": "",
+          "downstream": [
+            {
+              "name": "base.x",
+              "expression": "base AS base",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "coalesce",
+    "args": {
+      "column": "out",
+      "sql": "SELECT COALESCE(a.x, b.x) AS out FROM a LEFT JOIN b ON a.id = b.id"
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "COALESCE(a.x, b.x) AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "a.x",
+          "expression": "a AS a",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        },
+        {
+          "name": "b.x",
+          "expression": "b AS b",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "nested_shadow",
+    "args": {
+      "column": "x",
+      "sql": "WITH q AS (SELECT a AS x FROM base) SELECT q.x FROM (WITH q AS (SELECT b AS x FROM other) SELECT x FROM q) q"
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "q.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "q.x",
+          "expression": "q.x AS x",
+          "source_name": "",
+          "reference_node_name": "q",
+          "downstream": [
+            {
+              "name": "q.x",
+              "expression": "other.b AS x",
+              "source_name": "",
+              "reference_node_name": "q",
+              "downstream": [
+                {
+                  "name": "other.b",
+                  "expression": "other AS other",
+                  "source_name": "",
+                  "reference_node_name": "",
+                  "downstream": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "same_column_two_scopes",
+    "args": {
+      "column": "out",
+      "sql": "SELECT a.x + b.x AS out FROM (SELECT x FROM one) a JOIN (SELECT x FROM two) b ON TRUE"
+    },
+    "behavior_ids": [
+      "B002",
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "out",
+      "expression": "a.x + b.x AS out",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "a.x",
+          "expression": "one.x AS x",
+          "source_name": "",
+          "reference_node_name": "a",
+          "downstream": [
+            {
+              "name": "one.x",
+              "expression": "one AS one",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        },
+        {
+          "name": "b.x",
+          "expression": "two.x AS x",
+          "source_name": "",
+          "reference_node_name": "b",
+          "downstream": [
+            {
+              "name": "two.x",
+              "expression": "two AS two",
+              "source_name": "",
+              "reference_node_name": "",
+              "downstream": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "external_column",
+    "args": {
+      "column": "x",
+      "sql": "SELECT other.x AS x FROM known"
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "name": "x",
+      "expression": "known.other.x AS x",
+      "source_name": "",
+      "reference_node_name": "",
+      "downstream": [
+        {
+          "name": "known.other",
+          "expression": "known AS known",
+          "source_name": "",
+          "reference_node_name": "",
+          "downstream": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "absent_output",
+    "args": {
+      "column": "missing",
+      "sql": "SELECT x FROM tbl"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "invalid_sql",
+    "args": {
+      "column": "x",
+      "sql": "SELECT FROM"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  },
+  {
+    "name": "not_query",
+    "args": {
+      "column": "x",
+      "sql": "DELETE FROM tbl"
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": true,
+    "expected": {
+      "raises": "ValueError"
+    }
+  }
+]

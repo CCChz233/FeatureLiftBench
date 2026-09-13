@@ -1,0 +1,1554 @@
+[
+  {
+    "name": "wheel_and_source",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.tar.gz"
+        },
+        {
+          "filename": "demo-1.0-py3-none-any.whl"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B002",
+      "B006"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "requires_python",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0.tar.gz",
+          "requires_python": ">=3.13"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz"
+      ],
+      "best": "demo-1.0.tar.gz",
+      "rejected": {
+        "demo-2.0.tar.gz": "requires_python_mismatch"
+      }
+    }
+  },
+  {
+    "name": "empty",
+    "args": {
+      "project": "demo",
+      "files": []
+    },
+    "behavior_ids": [
+      "B001",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [],
+      "applicable": [],
+      "best": null,
+      "rejected": {}
+    }
+  },
+  {
+    "name": "no_applicable_version",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ],
+      "specifier": ">=2"
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [],
+      "best": null,
+      "rejected": {}
+    }
+  },
+  {
+    "name": "name_formats_and_tags",
+    "args": {
+      "project": "Demo_Pkg",
+      "files": [
+        {
+          "filename": "demo_pkg-1.0-py3-none-any.whl"
+        },
+        {
+          "filename": "demo-pkg-2.0.tar.gz"
+        },
+        {
+          "filename": "other-9.0.tar.gz"
+        },
+        {
+          "filename": "demo_pkg-3.0-cp311-cp311-win_amd64.whl"
+        },
+        {
+          "filename": "bad.whl"
+        },
+        {
+          "filename": "demo_pkg-4.0.exe"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo_pkg-1.0-py3-none-any.whl",
+        "demo-pkg-2.0.tar.gz"
+      ],
+      "applicable": [
+        "demo_pkg-1.0-py3-none-any.whl",
+        "demo-pkg-2.0.tar.gz"
+      ],
+      "best": "demo-pkg-2.0.tar.gz",
+      "rejected": {
+        "other-9.0.tar.gz": "format_invalid",
+        "demo_pkg-3.0-cp311-cp311-win_amd64.whl": "platform_mismatch",
+        "bad.whl": "format_invalid",
+        "demo_pkg-4.0.exe": "format_unsupported"
+      }
+    }
+  },
+  {
+    "name": "compressed_tags",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py2.py3-none-any.whl"
+        },
+        {
+          "filename": "demo-2.0-py2-none-any.whl"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py2.py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py2.py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py2.py3-none-any.whl",
+      "rejected": {
+        "demo-2.0-py2-none-any.whl": "platform_mismatch"
+      }
+    }
+  },
+  {
+    "name": "build_tag_priority",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-2z-py3-none-any.whl"
+        },
+        {
+          "filename": "demo-1.0-10a-py3-none-any.whl"
+        },
+        {
+          "filename": "demo-1.0-10b-py3-none-any.whl"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-2z-py3-none-any.whl",
+        "demo-1.0-10a-py3-none-any.whl",
+        "demo-1.0-10b-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-2z-py3-none-any.whl",
+        "demo-1.0-10a-py3-none-any.whl",
+        "demo-1.0-10b-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-10b-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "tag_priority",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl"
+        },
+        {
+          "filename": "demo-1.0-cp312-cp312-manylinux_2_17_x86_64.whl"
+        }
+      ],
+      "supported_tags": [
+        "cp312-cp312-manylinux_2_17_x86_64",
+        "py3-none-any"
+      ]
+    },
+    "behavior_ids": [
+      "B002",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-1.0-cp312-cp312-manylinux_2_17_x86_64.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-1.0-cp312-cp312-manylinux_2_17_x86_64.whl"
+      ],
+      "best": "demo-1.0-cp312-cp312-manylinux_2_17_x86_64.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "equal_keys_stable",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.zip"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.zip",
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.zip",
+        "demo-1.0.tar.gz"
+      ],
+      "best": "demo-1.0.zip",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "invalid_python_requirement",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0.tar.gz",
+          "requires_python": "not a specifier"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "ignore_python_requirement",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0.tar.gz",
+          "requires_python": ">=3.13"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ],
+      "ignore_requires_python": true
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "explicit_prerelease_spec",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ],
+      "specifier": ">=2.0rc1"
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0rc1.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-2.0rc1.tar.gz"
+      ],
+      "best": "demo-2.0rc1.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "prerelease_only",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0rc1.tar.gz"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0rc1.tar.gz"
+      ],
+      "applicable": [
+        "demo-2.0rc1.tar.gz"
+      ],
+      "best": "demo-2.0rc1.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "source_only",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0-py3-none-any.whl"
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ],
+      "formats": [
+        "source"
+      ]
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz"
+      ],
+      "best": "demo-1.0.tar.gz",
+      "rejected": {
+        "demo-2.0-py3-none-any.whl": "format_unsupported"
+      }
+    }
+  },
+  {
+    "name": "binary_only",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-3.0.tar.gz"
+        },
+        {
+          "filename": "demo-2.0-py3-none-any.whl"
+        }
+      ],
+      "formats": [
+        "binary"
+      ]
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0-py3-none-any.whl"
+      ],
+      "best": "demo-2.0-py3-none-any.whl",
+      "rejected": {
+        "demo-3.0.tar.gz": "format_unsupported"
+      }
+    }
+  },
+  {
+    "name": "hash_match_beats_newer",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.tar.gz",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-3.0.tar.gz"
+        },
+        {
+          "filename": "demo-4.0.tar.gz",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B005",
+      "B006"
+    ],
+    "tier": "public",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz",
+        "demo-3.0.tar.gz",
+        "demo-4.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-3.0.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "best": "demo-1.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "hash_no_match_retains",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-2.0.tar.gz",
+          "hashes": {
+            "sha256": "bad"
+          }
+        },
+        {
+          "filename": "demo-1.0.tar.gz"
+        }
+      ],
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-1.0.tar.gz",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "hash_match_outside_specifier",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.tar.gz",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      },
+      "specifier": ">=2"
+    },
+    "behavior_ids": [
+      "B004",
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz",
+        "demo-2.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "hash_other_algorithm",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0.tar.gz",
+          "hashes": {
+            "sha256": "bad",
+            "sha512": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        }
+      ],
+      "allowed_hashes": {
+        "sha512": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0.tar.gz",
+        "demo-2.0.tar.gz"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-1.0.tar.gz"
+      ],
+      "best": "demo-1.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_0000",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": false,
+      "allow_yanked": false,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_0001",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": false,
+      "allow_yanked": false,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_0010",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": false,
+      "allow_yanked": true,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz"
+      ],
+      "best": "demo-2.0.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_0011",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": false,
+      "allow_yanked": true,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_0100",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": true,
+      "allow_yanked": false,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz"
+      ],
+      "best": "demo-3.0rc1.tar.gz",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_0101",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": true,
+      "allow_yanked": false,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz"
+      ],
+      "best": "demo-3.0rc1.tar.gz",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_0110",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": true,
+      "allow_yanked": true,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-1.5-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz"
+      ],
+      "best": "demo-3.0rc1.tar.gz",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_0111",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": false,
+      "allow_prereleases": true,
+      "allow_yanked": true,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_1000",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": false,
+      "allow_yanked": false,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_1001",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": false,
+      "allow_yanked": false,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_1010",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": false,
+      "allow_yanked": true,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_1011",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": false,
+      "allow_yanked": true,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_1100",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": true,
+      "allow_yanked": false,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_1101",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": true,
+      "allow_yanked": false,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {
+        "demo-1.0-py3-none-any.whl": "yanked"
+      }
+    }
+  },
+  {
+    "name": "preferences_1110",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": true,
+      "allow_yanked": true,
+      "allowed_hashes": null
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "best": "demo-1.5-py3-none-any.whl",
+      "rejected": {}
+    }
+  },
+  {
+    "name": "preferences_1111",
+    "args": {
+      "project": "demo",
+      "files": [
+        {
+          "filename": "demo-1.0-py3-none-any.whl",
+          "yanked_reason": "",
+          "hashes": {
+            "sha256": "abc"
+          }
+        },
+        {
+          "filename": "demo-2.0.tar.gz"
+        },
+        {
+          "filename": "demo-3.0rc1.tar.gz"
+        },
+        {
+          "filename": "demo-1.5-py3-none-any.whl",
+          "hashes": {
+            "sha256": "bad"
+          }
+        }
+      ],
+      "prefer_binary": true,
+      "allow_prereleases": true,
+      "allow_yanked": true,
+      "allowed_hashes": {
+        "sha256": [
+          "abc"
+        ]
+      }
+    },
+    "behavior_ids": [
+      "B001",
+      "B004",
+      "B005",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": false,
+    "expected": {
+      "candidates": [
+        "demo-1.0-py3-none-any.whl",
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.5-py3-none-any.whl"
+      ],
+      "applicable": [
+        "demo-2.0.tar.gz",
+        "demo-3.0rc1.tar.gz",
+        "demo-1.0-py3-none-any.whl"
+      ],
+      "best": "demo-1.0-py3-none-any.whl",
+      "rejected": {}
+    }
+  }
+]

@@ -1,0 +1,848 @@
+[
+  {
+    "name": "singleton-through-transients",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "handler"
+        },
+        {
+          "op": "get",
+          "key": "handler"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "key": "handler",
+          "serial": 2,
+          "deps": [
+            {
+              "key": "repo",
+              "serial": 1,
+              "deps": [
+                {
+                  "url": "local"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "result": {
+          "key": "handler",
+          "serial": 3,
+          "deps": [
+            {
+              "key": "repo",
+              "serial": 1,
+              "deps": [
+                {
+                  "url": "local"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "missing-key",
+    "args": {
+      "bindings": [],
+      "operations": [
+        {
+          "op": "get",
+          "key": "missing"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B006"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "error": "missing"
+      }
+    ]
+  },
+  {
+    "name": "value-binding",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "config"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001"
+    ],
+    "tier": "public",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "url": "local"
+        }
+      }
+    ]
+  },
+  {
+    "name": "singleton-identity",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "repo",
+          "save": "a"
+        },
+        {
+          "op": "get",
+          "key": "repo",
+          "save": "b"
+        },
+        {
+          "op": "same",
+          "left": "a",
+          "right": "b"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      },
+      {
+        "result": true
+      }
+    ]
+  },
+  {
+    "name": "transient-identity",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "handler",
+          "save": "a"
+        },
+        {
+          "op": "get",
+          "key": "handler",
+          "save": "b"
+        },
+        {
+          "op": "same",
+          "left": "a",
+          "right": "b"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "key": "handler",
+          "serial": 2,
+          "deps": [
+            {
+              "key": "repo",
+              "serial": 1,
+              "deps": [
+                {
+                  "url": "local"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "result": {
+          "key": "handler",
+          "serial": 3,
+          "deps": [
+            {
+              "key": "repo",
+              "serial": 1,
+              "deps": [
+                {
+                  "url": "local"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "result": false
+      }
+    ]
+  },
+  {
+    "name": "child-inherited-singleton",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "child",
+          "name": "child",
+          "bindings": [
+            {
+              "key": "config",
+              "kind": "value",
+              "value": "child"
+            }
+          ]
+        },
+        {
+          "op": "get",
+          "key": "repo",
+          "container": "child",
+          "save": "a"
+        },
+        {
+          "op": "get",
+          "key": "repo",
+          "save": "b"
+        },
+        {
+          "op": "same",
+          "left": "a",
+          "right": "b"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      },
+      {
+        "result": true
+      }
+    ]
+  },
+  {
+    "name": "child-explicit-singleton",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "child",
+          "name": "child",
+          "bindings": [
+            {
+              "key": "repo",
+              "deps": [
+                "config"
+              ],
+              "scope": "singleton"
+            },
+            {
+              "key": "config",
+              "kind": "value",
+              "value": "child"
+            }
+          ]
+        },
+        {
+          "op": "get",
+          "key": "repo",
+          "container": "child"
+        },
+        {
+          "op": "get",
+          "key": "repo"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            "child"
+          ]
+        }
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 2,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "parent-missing-child-satisfies",
+    "args": {
+      "bindings": [
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        }
+      ],
+      "operations": [
+        {
+          "op": "child",
+          "name": "child",
+          "bindings": [
+            {
+              "key": "config",
+              "kind": "value",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "op": "get",
+          "key": "repo",
+          "container": "child"
+        },
+        {
+          "op": "get",
+          "key": "repo"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B003",
+      "B006"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null
+      },
+      {
+        "error": "missing"
+      },
+      {
+        "error": "missing"
+      }
+    ]
+  },
+  {
+    "name": "rebind-cached-singleton",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "repo"
+        },
+        {
+          "op": "bind",
+          "binding": {
+            "key": "repo",
+            "kind": "value",
+            "value": "new",
+            "scope": "singleton"
+          }
+        },
+        {
+          "op": "get",
+          "key": "repo"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      },
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            {
+              "url": "local"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "rebind-before-first-get",
+    "args": {
+      "bindings": [
+        {
+          "key": "config",
+          "kind": "value",
+          "value": {
+            "url": "local"
+          }
+        },
+        {
+          "key": "repo",
+          "deps": [
+            "config"
+          ],
+          "scope": "singleton"
+        },
+        {
+          "key": "handler",
+          "deps": [
+            "repo"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "bind",
+          "binding": {
+            "key": "config",
+            "kind": "value",
+            "value": "new"
+          }
+        },
+        {
+          "op": "get",
+          "key": "repo"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "repo",
+          "serial": 1,
+          "deps": [
+            "new"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "cycle-and-recovery",
+    "args": {
+      "bindings": [
+        {
+          "key": "a",
+          "deps": [
+            "b"
+          ]
+        },
+        {
+          "key": "b",
+          "deps": [
+            "a"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "a"
+        },
+        {
+          "op": "bind",
+          "binding": {
+            "key": "b",
+            "kind": "value",
+            "value": 1
+          }
+        },
+        {
+          "op": "get",
+          "key": "a"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B005",
+      "B004"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": "cycle"
+      },
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "a",
+          "serial": 1,
+          "deps": [
+            1
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "failed-singleton-not-cached",
+    "args": {
+      "bindings": [
+        {
+          "key": "a",
+          "fail": true,
+          "scope": "singleton"
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "a"
+        },
+        {
+          "op": "bind",
+          "binding": {
+            "key": "a",
+            "scope": "singleton"
+          }
+        },
+        {
+          "op": "get",
+          "key": "a"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B005"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "error": "provider"
+      },
+      {
+        "result": null
+      },
+      {
+        "result": {
+          "key": "a",
+          "serial": 1,
+          "deps": []
+        }
+      }
+    ]
+  },
+  {
+    "name": "multiple-dependencies-construction-order",
+    "args": {
+      "bindings": [
+        {
+          "key": "a"
+        },
+        {
+          "key": "b"
+        },
+        {
+          "key": "c",
+          "deps": [
+            "b",
+            "a",
+            "b"
+          ]
+        }
+      ],
+      "operations": [
+        {
+          "op": "get",
+          "key": "c"
+        }
+      ]
+    },
+    "behavior_ids": [
+      "B001",
+      "B002"
+    ],
+    "tier": "hidden",
+    "error": null,
+    "expected": [
+      {
+        "result": {
+          "key": "c",
+          "serial": 4,
+          "deps": [
+            {
+              "key": "b",
+              "serial": 1,
+              "deps": []
+            },
+            {
+              "key": "a",
+              "serial": 2,
+              "deps": []
+            },
+            {
+              "key": "b",
+              "serial": 3,
+              "deps": []
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

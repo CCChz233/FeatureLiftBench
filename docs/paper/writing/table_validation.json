@@ -4,19 +4,22 @@
   "tasks": 150,
   "models": 6,
   "run_profiles_checked": 900,
-  "main_tables": 3,
-  "main_generated_data_tables": 2,
+  "main_tables": 2,
+  "main_generated_data_tables": 1,
   "main_authored_literature_tables": 1,
-  "appendix_tables": 4,
+  "unverified_hypothetical_tables": 0,
+  "verified_source_ablation_outcomes": 240,
+  "appendix_tables": 6,
+  "main_figures": 5,
+  "appendix_figures": 2,
   "figure_placeholders": 0,
-  "generated_text_blocks": 2,
+  "generated_text_blocks": 1,
   "main_table_order": [
     "main",
-    "paired",
     "positioning"
   ],
   "structure_table_updater": "writing/update_structure_results.py",
-  "table_revision": "paper_workflow_cleanup_20260911",
+  "table_revision": "figure_story_and_appendix_details_20260913",
   "detailed_profiles": [
     {
       "backend": "Pro",
@@ -55,11 +58,11 @@
       "outcomes": 150
     }
   ],
-  "scope": "Current numeric tables and recorded run profiles; historical audits remain separate artifacts.",
+  "scope": "Main-comparison generated tables and run profiles; source-ablation table from separately verified 240 retained records. Service-error limitations remain attached to the measured ablation.",
   "sources": [
     {
       "path": "docs/paper/paper_sources.json",
-      "sha256": "d6af24e9a04ec8f29e58322f36da4e89fede69f439e0cb070a47fd6a5aafe00a"
+      "sha256": "155b92f991246e8c43daec05d76d92bdb04eced36818942aac13f8002afeb37f"
     },
     {
       "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
@@ -78,8 +81,28 @@
       "sha256": "0d05968c81a3319ca53d5272b7652963bc955a9cbb4ba29457c8f8dfc383d2e8"
     },
     {
-      "path": "docs/paper/writing/chapter2_evidence.json",
-      "sha256": "4c0a15a8ce193abcbbf3d9b5badb5986f0e69a54b02efd8185c5b439253298b3"
+      "path": "docs/paper/writing/chapter2_python150_evidence.json",
+      "sha256": "723f3970d0f6847ff0f5aa05720d268b4500653a330efb421ca9624f1466979f"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/statistics.json",
+      "sha256": "e71d22ef230f65f0fca7427bed1ff981c7c5b16fa6fbb56efe8e3a0130b7833f"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/verification.json",
+      "sha256": "12acb1742d93bae5ab9fca3d3642cfe997957d5639a209ff2ec2884c402d57a9"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/task_outcomes.csv",
+      "sha256": "7befb52de2634ea6a10b9d16aa116b83a64788ac93c1e3243f45c4e90084f021"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/paired_outcomes.csv",
+      "sha256": "417dcdac33270d3471bed11e94d2cd80c6ca3153dc0de321cbca801214c3cc1e"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/source_ablation_table.tex",
+      "sha256": "af9cddfbdb51372ad0031951159d8ede3d08532919aecff6533755f6d9163e6f"
     }
   ]
 }

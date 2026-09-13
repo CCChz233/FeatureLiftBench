@@ -1,0 +1,131 @@
+{
+  "source": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+  "source_sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1",
+  "scope": "Six configurations, identical 150 tasks, 900 retained outcomes; descriptive reanalysis only.",
+  "configurations": [
+    {
+      "model": "DeepSeek V4 Pro",
+      "assigned": 150,
+      "passed": 115,
+      "delivered": 150,
+      "first_outcomes": {
+        "hidden_failure": 10,
+        "public_failure": 25,
+        "functional_pass": 115
+      },
+      "pass_given_delivery_pct": 76.66666666666667,
+      "build_and_public_passed": 125,
+      "hidden_fail_after_build_public": 10,
+      "hidden_fail_given_build_public_pct": 8.0
+    },
+    {
+      "model": "DeepSeek V4 Flash",
+      "assigned": 150,
+      "passed": 108,
+      "delivered": 150,
+      "first_outcomes": {
+        "hidden_failure": 15,
+        "public_failure": 26,
+        "functional_pass": 108,
+        "isolation_failure": 1
+      },
+      "pass_given_delivery_pct": 72.0,
+      "build_and_public_passed": 124,
+      "hidden_fail_after_build_public": 15,
+      "hidden_fail_given_build_public_pct": 12.096774193548388
+    },
+    {
+      "model": "GPT-5.6 Luna",
+      "assigned": 150,
+      "passed": 102,
+      "delivered": 144,
+      "first_outcomes": {
+        "functional_pass": 102,
+        "public_failure": 27,
+        "missing_submission": 6,
+        "hidden_failure": 12,
+        "build_failure": 3
+      },
+      "pass_given_delivery_pct": 70.83333333333333,
+      "build_and_public_passed": 114,
+      "hidden_fail_after_build_public": 12,
+      "hidden_fail_given_build_public_pct": 10.526315789473685
+    },
+    {
+      "model": "GLM-5.3-Flash",
+      "assigned": 150,
+      "passed": 68,
+      "delivered": 112,
+      "first_outcomes": {
+        "public_failure": 31,
+        "missing_submission": 38,
+        "functional_pass": 68,
+        "build_failure": 3,
+        "hidden_failure": 8,
+        "isolation_failure": 2
+      },
+      "pass_given_delivery_pct": 60.714285714285715,
+      "build_and_public_passed": 78,
+      "hidden_fail_after_build_public": 8,
+      "hidden_fail_given_build_public_pct": 10.256410256410257
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-FP8",
+      "assigned": 150,
+      "passed": 63,
+      "delivered": 125,
+      "first_outcomes": {
+        "hidden_failure": 21,
+        "public_failure": 35,
+        "missing_submission": 25,
+        "build_failure": 6,
+        "functional_pass": 63
+      },
+      "pass_given_delivery_pct": 50.4,
+      "build_and_public_passed": 84,
+      "hidden_fail_after_build_public": 21,
+      "hidden_fail_given_build_public_pct": 25.0
+    },
+    {
+      "model": "GPT-OSS 120B",
+      "assigned": 150,
+      "passed": 36,
+      "delivered": 148,
+      "first_outcomes": {
+        "hidden_failure": 23,
+        "public_failure": 70,
+        "functional_pass": 36,
+        "build_failure": 18,
+        "isolation_failure": 1,
+        "missing_submission": 2
+      },
+      "pass_given_delivery_pct": 24.324324324324323,
+      "build_and_public_passed": 60,
+      "hidden_fail_after_build_public": 23,
+      "hidden_fail_given_build_public_pct": 38.333333333333336
+    }
+  ],
+  "solve_frequency": {
+    "0": 28,
+    "1": 7,
+    "2": 9,
+    "3": 22,
+    "4": 36,
+    "5": 31,
+    "6": 17
+  },
+  "union_successes": 122,
+  "union_success_rate_pct": 81.33333333333333,
+  "union_extra_over_pro": 7,
+  "top_three_union": 121,
+  "all_fail": 28,
+  "pro_fail": 35,
+  "all_fail_share_of_pro_fail_pct": 80.0,
+  "interpretation_limits": [
+    "The union is retrospective coverage, not an implemented selection or ensemble system.",
+    "Conditional rates use model-specific selected artifacts; they are not counterfactual improvements or adjusted rankings.",
+    "Both Public and Hidden benchmark tests are withheld; differences do not demonstrate public-test overfitting.",
+    "Failure gates locate outcomes, not semantic root causes; all-fail is not intrinsic unsolvability.",
+    "Source-ablation hypothetical values are excluded."
+  ]
+}

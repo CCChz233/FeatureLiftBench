@@ -1,0 +1,61 @@
+{
+  "task_count": 40,
+  "results": [
+    {
+      "model": "gpt-5.6-luna",
+      "n": 40,
+      "full_pass": 23,
+      "contract_pass": 9,
+      "full_only": 17,
+      "contract_only": 3,
+      "delta_pp": 35.0,
+      "paired_bootstrap_95ci_pp": [
+        15.0,
+        55.00000000000001
+      ]
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "n": 40,
+      "full_pass": 25,
+      "contract_pass": 6,
+      "full_only": 20,
+      "contract_only": 1,
+      "delta_pp": 47.5,
+      "paired_bootstrap_95ci_pp": [
+        30.0,
+        65.0
+      ]
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "n": 40,
+      "full_pass": 12,
+      "contract_pass": 1,
+      "full_only": 12,
+      "contract_only": 1,
+      "delta_pp": 27.5,
+      "paired_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ]
+    }
+  ],
+  "interval": "95% paired task-bootstrap percentile interval for Full minus Contract only, in percentage points",
+  "bootstrap_resamples": 100000,
+  "pro_caveat": "18 missing Contract-only submissions have recorded LLM timeouts; aggregate gain includes interruptions",
+  "sources": [
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/paired_outcomes.csv",
+      "sha256": "417dcdac33270d3471bed11e94d2cd80c6ca3153dc0de321cbca801214c3cc1e"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/statistics.json",
+      "sha256": "e71d22ef230f65f0fca7427bed1ff981c7c5b16fa6fbb56efe8e3a0130b7833f"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/task_outcomes.csv",
+      "sha256": "7befb52de2634ea6a10b9d16aa116b83a64788ac93c1e3243f45c4e90084f021"
+    }
+  ]
+}

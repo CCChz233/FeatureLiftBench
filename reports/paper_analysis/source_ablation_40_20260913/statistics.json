@@ -1,0 +1,363 @@
+{
+  "seed": 20260913,
+  "bootstrap_resamples": 100000,
+  "results": [
+    {
+      "n": 40,
+      "full_pass": 23,
+      "contract_pass": 9,
+      "both": 6,
+      "full_only": 17,
+      "contract_only": 3,
+      "neither": 14,
+      "delta_pp": 35.0,
+      "mcnemar_exact_p": 0.0025768280029296875,
+      "paired_bootstrap_95ci_pp": [
+        15.0,
+        55.00000000000001
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        15.789473684210526,
+        52.63157894736842
+      ],
+      "model": "gpt-5.6-luna",
+      "sensitivity_both_delivered": {
+        "n": 34,
+        "full_pass": 23,
+        "contract_pass": 8,
+        "both": 6,
+        "full_only": 17,
+        "contract_only": 2,
+        "neither": 9,
+        "delta_pp": 44.11764705882353,
+        "mcnemar_exact_p": 0.000728607177734375
+      },
+      "sensitivity_no_recorded_service_error": {
+        "n": 28,
+        "full_pass": 18,
+        "contract_pass": 7,
+        "both": 4,
+        "full_only": 14,
+        "contract_only": 3,
+        "neither": 7,
+        "delta_pp": 39.285714285714285,
+        "mcnemar_exact_p": 0.012725830078125
+      },
+      "sensitivity_exclude_api_empty_pairs": {
+        "n": 36,
+        "full_pass": 23,
+        "contract_pass": 9,
+        "both": 6,
+        "full_only": 17,
+        "contract_only": 3,
+        "neither": 10,
+        "delta_pp": 38.888888888888886,
+        "mcnemar_exact_p": 0.0025768280029296875
+      },
+      "api_empty_outcome_bounds_delta_pp": [
+        27.5,
+        42.5
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 23,
+          "Missing": 5,
+          "Public": 10,
+          "Hidden": 2
+        },
+        "contract_only": {
+          "Pass": 9,
+          "Public": 20,
+          "Missing": 3,
+          "Hidden": 8
+        }
+      },
+      "full_only_contract_failure_stages": {
+        "Public": 11,
+        "Hidden": 6
+      },
+      "full_only_tasks": [
+        "mako__lexer_expression_core__001",
+        "parso__python_parse_core__001",
+        "babel__plural_core__001",
+        "tomlkit__roundtrip_document__001",
+        "lark__parse_tree_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "humanize__naturaltime_core__001",
+        "environs__typed_env_core__001",
+        "pytest__mark_expression_core__001",
+        "bidict__bidirectional_map_core__001",
+        "pluggy__hook_call_order__001",
+        "httpx__request_model_core__001",
+        "coverage__source_selection_core__001",
+        "jsonpointer__resolve_core__001",
+        "wsproto__frame_parse_core__001",
+        "markdown_it__commonmark_render__001",
+        "sqlparse__token_tree_core__001"
+      ],
+      "contract_only_tasks": [
+        "jinja2__loader_inheritance_core__001",
+        "python_decouple__config_repository_core__001",
+        "dateutil__zone_resolver_core__hard3_001"
+      ],
+      "both_fail_tasks": [
+        "pydantic_v1__validation_error_core__001",
+        "pytest__ini_markers_core__001",
+        "decorator__signature_preserving_core__001",
+        "hatch__project_metadata_core__hard3_001",
+        "astroid__nodes_core__001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "requests_cache__cache_key_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "yamale__schema_validate_core__hard3_001",
+        "license_expression__policy_core__hard3_001",
+        "celery__signal_dispatch_core__hard3_001",
+        "flake8__plugin_options_core__hard3_001",
+        "readme_renderer__content_type_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001"
+      ],
+      "holm_adjusted_p_three_models": 0.005153656005859375
+    },
+    {
+      "n": 40,
+      "full_pass": 25,
+      "contract_pass": 6,
+      "both": 5,
+      "full_only": 20,
+      "contract_only": 1,
+      "neither": 14,
+      "delta_pp": 47.5,
+      "mcnemar_exact_p": 2.09808349609375e-05,
+      "paired_bootstrap_95ci_pp": [
+        30.0,
+        65.0
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        30.76923076923077,
+        64.1025641025641
+      ],
+      "model": "deepseek-v4-pro",
+      "sensitivity_both_delivered": {
+        "n": 22,
+        "full_pass": 11,
+        "contract_pass": 6,
+        "both": 5,
+        "full_only": 6,
+        "contract_only": 1,
+        "neither": 10,
+        "delta_pp": 22.727272727272727,
+        "mcnemar_exact_p": 0.125
+      },
+      "sensitivity_no_recorded_service_error": {
+        "n": 22,
+        "full_pass": 11,
+        "contract_pass": 6,
+        "both": 5,
+        "full_only": 6,
+        "contract_only": 1,
+        "neither": 10,
+        "delta_pp": 22.727272727272727,
+        "mcnemar_exact_p": 0.125
+      },
+      "sensitivity_exclude_api_empty_pairs": {
+        "n": 22,
+        "full_pass": 11,
+        "contract_pass": 6,
+        "both": 5,
+        "full_only": 6,
+        "contract_only": 1,
+        "neither": 10,
+        "delta_pp": 22.727272727272727,
+        "mcnemar_exact_p": 0.125
+      },
+      "api_empty_outcome_bounds_delta_pp": [
+        2.5,
+        47.5
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 25,
+          "Public": 12,
+          "Hidden": 3
+        },
+        "contract_only": {
+          "Missing": 18,
+          "Public": 10,
+          "Hidden": 6,
+          "Pass": 6
+        }
+      },
+      "full_only_contract_failure_stages": {
+        "Missing": 14,
+        "Public": 2,
+        "Hidden": 4
+      },
+      "full_only_tasks": [
+        "deepdiff__deep_compare_core__001",
+        "mako__lexer_expression_core__001",
+        "parso__python_parse_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "astroid__nodes_core__001",
+        "babel__plural_core__001",
+        "attrs__validators_core__001",
+        "tomlkit__roundtrip_document__001",
+        "voluptuous__schema_validate_core__001",
+        "lark__parse_tree_core__001",
+        "humanize__naturaltime_core__001",
+        "bleach__sanitize_core__001",
+        "environs__typed_env_core__001",
+        "pluggy__hook_call_order__001",
+        "httpx__request_model_core__001",
+        "coverage__source_selection_core__001",
+        "jsonpointer__resolve_core__001",
+        "wsproto__frame_parse_core__001",
+        "markdown_it__commonmark_render__001",
+        "sqlparse__token_tree_core__001"
+      ],
+      "contract_only_tasks": [
+        "decorator__signature_preserving_core__001"
+      ],
+      "both_fail_tasks": [
+        "pytest__ini_markers_core__001",
+        "hatch__project_metadata_core__hard3_001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "requests_cache__cache_key_core__hard3_001",
+        "python_decouple__config_repository_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "yamale__schema_validate_core__hard3_001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "license_expression__policy_core__hard3_001",
+        "celery__signal_dispatch_core__hard3_001",
+        "flake8__plugin_options_core__hard3_001",
+        "readme_renderer__content_type_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001"
+      ],
+      "holm_adjusted_p_three_models": 6.29425048828125e-05
+    },
+    {
+      "n": 40,
+      "full_pass": 12,
+      "contract_pass": 1,
+      "both": 0,
+      "full_only": 12,
+      "contract_only": 1,
+      "neither": 27,
+      "delta_pp": 27.5,
+      "mcnemar_exact_p": 0.00341796875,
+      "paired_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ],
+      "model": "qwen3.6-35b-a3b-fp8",
+      "sensitivity_both_delivered": {
+        "n": 35,
+        "full_pass": 12,
+        "contract_pass": 1,
+        "both": 0,
+        "full_only": 12,
+        "contract_only": 1,
+        "neither": 22,
+        "delta_pp": 31.428571428571427,
+        "mcnemar_exact_p": 0.00341796875
+      },
+      "sensitivity_no_recorded_service_error": {
+        "n": 40,
+        "full_pass": 12,
+        "contract_pass": 1,
+        "both": 0,
+        "full_only": 12,
+        "contract_only": 1,
+        "neither": 27,
+        "delta_pp": 27.5,
+        "mcnemar_exact_p": 0.00341796875
+      },
+      "sensitivity_exclude_api_empty_pairs": {
+        "n": 40,
+        "full_pass": 12,
+        "contract_pass": 1,
+        "both": 0,
+        "full_only": 12,
+        "contract_only": 1,
+        "neither": 27,
+        "delta_pp": 27.5,
+        "mcnemar_exact_p": 0.00341796875
+      },
+      "api_empty_outcome_bounds_delta_pp": [
+        27.5,
+        27.5
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 12,
+          "Public": 15,
+          "Hidden": 6,
+          "Build": 2,
+          "Missing": 4,
+          "Isolation": 1
+        },
+        "contract_only": {
+          "Public": 33,
+          "Hidden": 5,
+          "Pass": 1,
+          "Missing": 1
+        }
+      },
+      "full_only_contract_failure_stages": {
+        "Public": 10,
+        "Hidden": 2
+      },
+      "full_only_tasks": [
+        "deepdiff__deep_compare_core__001",
+        "parso__python_parse_core__001",
+        "attrs__validators_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "tomlkit__roundtrip_document__001",
+        "bleach__sanitize_core__001",
+        "environs__typed_env_core__001",
+        "pytest__mark_expression_core__001",
+        "bidict__bidirectional_map_core__001",
+        "coverage__source_selection_core__001",
+        "jsonpointer__resolve_core__001",
+        "wsproto__frame_parse_core__001"
+      ],
+      "contract_only_tasks": [
+        "decorator__signature_preserving_core__001"
+      ],
+      "both_fail_tasks": [
+        "mako__lexer_expression_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "pytest__ini_markers_core__001",
+        "hatch__project_metadata_core__hard3_001",
+        "astroid__nodes_core__001",
+        "babel__plural_core__001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "requests_cache__cache_key_core__hard3_001",
+        "python_decouple__config_repository_core__001",
+        "voluptuous__schema_validate_core__001",
+        "lark__parse_tree_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "yamale__schema_validate_core__hard3_001",
+        "humanize__naturaltime_core__001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "license_expression__policy_core__hard3_001",
+        "celery__signal_dispatch_core__hard3_001",
+        "schema__nested_validate_core__hard3_001",
+        "ruamel_yaml__roundtrip_core__001",
+        "pluggy__hook_call_order__001",
+        "httpx__request_model_core__001",
+        "flake8__plugin_options_core__hard3_001",
+        "readme_renderer__content_type_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001",
+        "markdown_it__commonmark_render__001",
+        "sqlparse__token_tree_core__001"
+      ],
+      "holm_adjusted_p_three_models": 0.005153656005859375
+    }
+  ]
+}

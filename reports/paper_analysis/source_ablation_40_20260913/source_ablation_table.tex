@@ -1,0 +1,19 @@
+\begin{table}[tbp]
+ \caption{Source-evidence ablation on 40 paired tasks per configuration (240 retained outcomes).}
+ \label{tab:source-ablation}
+ \centering\footnotesize
+ \setlength{\tabcolsep}{3pt}
+ \begin{tabularx}{\linewidth}{@{}Xrrrccr@{}}
+ \toprule
+ Configuration & Full & Contract only & $\Delta$ (pp) & 95\% CI & $b/c$ & $p_{\mathrm{Holm}}$ \\
+ \midrule
+ GPT-5.6 Luna & 23/40 & 9/40 & +35.0 & [15.0, 55.0] & 17/3 & 0.00515 \\
+ DeepSeek V4 Pro$^{\dagger}$ & 25/40 & 6/40 & +47.5 & [30.0, 65.0] & 20/1 & 0.00006 \\
+ Qwen3.6-35B-A3B-FP8 & 12/40 & 1/40 & +27.5 & [12.5, 42.5] & 12/1 & 0.00515 \\
+ \bottomrule
+ \end{tabularx}
+ \par\smallskip\begin{minipage}{\linewidth}\footnotesize
+ Full provides the complete source repository and contract; Contract only omits repository evidence. Missing submissions count as failures. $\Delta$ is Full minus Contract only; intervals are paired task-bootstrap percentile intervals in percentage points (100,000 resamples). $b/c$ counts Full-only/Contract-only successes. Exact two-sided McNemar tests use Holm adjustment across the three exploratory comparisons.
+ $\dagger$: all 18 missing Pro Contract-only submissions have recorded LLM timeouts; its full-sample difference includes service interruptions. On the 22 pairs without these errors, Pro passes 11 versus six tasks (unadjusted $p=0.125$).
+ \end{minipage}
+\end{table}

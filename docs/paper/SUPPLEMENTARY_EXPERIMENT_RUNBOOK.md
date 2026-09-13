@@ -1,6 +1,7 @@
 # FeatureLiftBench 补充实验：设计与服务器执行指南
 
-> **Status: current · Last verified: 2026-09-11**
+> **Status: historical design · Superseded: 2026-09-13**
+> 当前执行清单见 [Source exposure 与 Entrypoint-Hint](experiments/SOURCE_EXPOSURE_HINT_RUNBOOK.md)。本文件保留旧两臂实验的设计历史；其中 200 题范围、机械 baseline、模型数和未实现状态不是当前安排。已有源码消融已完成 40 题 × 三配置 × 两臂，请按原始服务器记录复用设置。
 > 本文是一份执行方案，不是实验结果。当前已固定任务清单；尚未实现 Contract-only 和新的机械 baseline，也未启动模型调用。
 
 ## 1. 先跑什么

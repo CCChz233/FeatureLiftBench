@@ -8,7 +8,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from paper_inputs import PAPER, ROOT, RESULTS as MATRIX, MODELS, input_path
+from paper_inputs import PAPER, ROOT, RESULTS as MATRIX, MODELS, SHORT, MODEL_RECORDS, input_path
 
 TAXONOMY = input_path('coverage_data')
 
@@ -40,8 +40,10 @@ def build():
     for i,g in enumerate(groups):
         if i == 3: lines.append(r' \midrule')
         lines.append(' ' + ' & '.join([g['name'], str(g['n']), *[f'{v:.1f}' for v in g['rates']]]) + r' \\')
+    names = '; '.join(f'{SHORT[m]}: {MODEL_RECORDS[m]["display"]}' for m in MODELS) + '.'
     lines += [r' \bottomrule', r' \end{tabular}', r' \par\smallskip\begin{minipage}{\linewidth}\footnotesize',
-              r' $n$ is the task denominator for every configuration in that row. Lift types partition the tasks; mechanism categories overlap. Model abbreviations follow Section~\ref{sec:protocol}. These unadjusted comparisons describe composition; Section~\ref{sec:rq3} reports the construction-adjusted analysis.',
+              ' '+names,
+              r' $n$ is the task denominator for every configuration in that row. Lift types classify the tasks; mechanism categories overlap. These unadjusted comparisons describe the observed categories and do not isolate independent difficulty effects.',
               r' \end{minipage}', r'\end{table}']
     evidence = dict(scope='Six configurations on the common 150 tasks', models=MODELS, groups=groups,
                     method='Within-category passing tasks / assigned tasks; overlapping mechanisms, no causal or significance claim',

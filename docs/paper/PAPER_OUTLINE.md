@@ -1,10 +1,10 @@
 # FeatureLiftBench 论文大纲与图表方案
 
-> **Documentation status: current · Last verified: 2026-09-11**
+> **Documentation status: current · Last verified: 2026-09-13**
 >
-> 当前实现以 [main.tex](main.tex) 为准，数据与代码入口见 [WORKFLOW.md](WORKFLOW.md)。Benchmark 为 200 题、176 个仓库、182 个快照；主比较为相同 150 题上的六配置结果，五配置额外覆盖其余 50 题。
+> 当前实现以 [main.tex](main.tex) 为准，数据与代码入口见 [WORKFLOW.md](WORKFLOW.md)。Benchmark 为 150 题、126 个仓库、132 个快照；六配置覆盖全部 150 题，不再报告额外 50 题。
 >
-> 当前正文采用八章结构、七张表和五张定稿图。Fig. 1 为通用 motivation，Fig. 2 为构建与验证，Fig. 3 为任务组成，Fig. 4 为功能结果和通过频次，Fig. 5 为共同成功产物差异。RQ3 使用通过频次与构建批次控制分析，分类表放在附录。
+> 当前正文采用八章结构和五张正式图。Fig. 1 为通用 motivation，Fig. 2 为构建与验证，Fig. 3 为任务组成，Fig. 4 为功能结果和通过频次，Fig. 5 为源码证据消融；产物差异图与详细配对表移到附录。Fig. 3 右侧为四类机制的边际覆盖，不再采用交叉热力图。RQ3 使用通过频次与共同未解决任务，不按内部构建批次分组。下文保留较早规划，当前实施以 main.tex 及 writing/FIGURE_STORY_REVISION_20260913.md 为准。
 >
 > 2026-09-11 已按最终实验范围重写评测协议、内部有效性和复现附录，开发历史不再作为当前实验问题展开。正文保留实际配置、评分规则与统计限制。此前大纲全文见 [历史快照](../archive/snapshots/paper_final_scope_20260911/README.md)。
 >

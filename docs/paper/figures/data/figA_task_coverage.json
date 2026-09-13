@@ -1,52 +1,52 @@
 {
-  "scope": "Functional families and lift types: full 200-task release; mechanism coverage: common 150-task comparison",
+  "scope": "All panels: the fixed 150-task benchmark",
   "claim_scope": "Descriptive taxonomy coverage; author confirms full task review; no independent difficulty claim",
-  "release_tasks": 200,
+  "release_tasks": 150,
   "mechanism_tasks": 150,
   "panel_scopes": {
-    "a": "Full release (n = 200)",
-    "b": "Common comparison (n = 150)"
+    "a": "Benchmark (n = 150)",
+    "b": "Benchmark (n = 150)"
   },
-  "mechanism_scope_reason": "The other 50 records are ledger-seeded and omit source-derived mechanisms. They are not pooled with the complete v2 taxonomy or counted as mechanism-negative.",
+  "mechanism_scope_reason": "All selected tasks have consistently normalized mechanism records.",
   "feature_families": [
     {
       "key": "registry_plugin_dispatch",
       "label": "Registry / dispatch",
-      "count": 38,
+      "count": 22,
       "lift_counts": {
-        "Direct": 4,
-        "Adapted": 18,
-        "Composite": 16
+        "Direct": 3,
+        "Adapted": 10,
+        "Composite": 9
       }
     },
     {
       "key": "parse_tokenize_decode",
       "label": "Parsing / decoding",
-      "count": 37,
+      "count": 31,
       "lift_counts": {
-        "Direct": 17,
-        "Adapted": 20,
+        "Direct": 14,
+        "Adapted": 17,
         "Composite": 0
       }
     },
     {
       "key": "config_resolve_discover",
       "label": "Configuration / discovery",
-      "count": 26,
+      "count": 18,
       "lift_counts": {
-        "Direct": 6,
-        "Adapted": 17,
-        "Composite": 3
+        "Direct": 5,
+        "Adapted": 11,
+        "Composite": 2
       }
     },
     {
       "key": "validate_normalize_construct",
       "label": "Validation / construction",
-      "count": 22,
+      "count": 15,
       "lift_counts": {
-        "Direct": 8,
-        "Adapted": 13,
-        "Composite": 1
+        "Direct": 6,
+        "Adapted": 9,
+        "Composite": 0
       }
     },
     {
@@ -62,19 +62,19 @@
     {
       "key": "workflow_session_orchestration",
       "label": "Workflow / orchestration",
-      "count": 14,
+      "count": 5,
       "lift_counts": {
-        "Direct": 3,
-        "Adapted": 5,
-        "Composite": 6
+        "Direct": 2,
+        "Adapted": 2,
+        "Composite": 1
       }
     },
     {
       "key": "resource_metadata_loading",
       "label": "Resources / metadata",
-      "count": 14,
+      "count": 12,
       "lift_counts": {
-        "Direct": 5,
+        "Direct": 3,
         "Adapted": 6,
         "Composite": 3
       }
@@ -92,9 +92,9 @@
     {
       "key": "protocol_state_transition",
       "label": "Protocol / state transitions",
-      "count": 11,
+      "count": 9,
       "lift_counts": {
-        "Direct": 5,
+        "Direct": 3,
         "Adapted": 6,
         "Composite": 0
       }
@@ -111,9 +111,9 @@
     }
   ],
   "release_lift_counts": {
-    "Adapted": 100,
-    "Direct": 68,
-    "Composite": 32
+    "Adapted": 76,
+    "Direct": 56,
+    "Composite": 18
   },
   "complete_tasks": [
     {
@@ -143,39 +143,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "anyio__task_group_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__agronholm__anyio",
-      "source_snapshot_id": "github__agronholm__anyio__ae250440c900",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "apischema__serialization_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__wyfo__apischema",
-      "source_snapshot_id": "github__wyfo__apischema__a35301341c71",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "apispec__plugin_documenter_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__marshmallow_code__apispec",
-      "source_snapshot_id": "github__marshmallow_code__apispec__b8a369570aa6",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "apscheduler__cron_trigger_core__hard3_001",
@@ -221,17 +188,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "asttokens__token_annotate_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Direct",
-      "source_repo_id": "github__gristlabs__asttokens",
-      "source_snapshot_id": "github__gristlabs__asttokens__f97a6e1403d9",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "attrs__validators_core__001",
       "feature_family": "validate_normalize_construct",
       "lift_type": "Direct",
@@ -247,17 +203,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "authlib__oauth2_server_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__lepture__authlib",
-      "source_snapshot_id": "github__lepture__authlib__772bc72fe844",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "babel__plural_core__001",
       "feature_family": "cache_retry_policy",
       "lift_type": "Adapted",
@@ -271,39 +216,6 @@
         "Environment and resources"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "bandit__config_plugin_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Direct",
-      "source_repo_id": "github__pycqa__bandit",
-      "source_snapshot_id": "github__pycqa__bandit__f8b9f1a2210f",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "beaker__session_cache_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__bbangert__beaker",
-      "source_snapshot_id": "github__bbangert__beaker__14368d97c2da",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "betamax__cassette_match_core__001",
-      "feature_family": "resource_metadata_loading",
-      "lift_type": "Direct",
-      "source_repo_id": "github__betamaxpy__betamax",
-      "source_snapshot_id": "github__betamaxpy__betamax__8f3d28410367",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "bidict__bidirectional_map_core__001",
@@ -420,17 +332,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "cement__controller_plugin_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__datafolklabs__cement",
-      "source_snapshot_id": "github__datafolklabs__cement__b5af20431d4c",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "cerberus__schema_validate_core__001",
       "feature_family": "validate_normalize_construct",
       "lift_type": "Direct",
@@ -459,17 +360,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "cherrypy__dispatch_tool_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__cherrypy__cherrypy",
-      "source_snapshot_id": "github__cherrypy__cherrypy__1f75bc9eed8e",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "click__lazy_command_core__hard3_001",
@@ -502,17 +392,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "cliff__command_dispatch_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__openstack__cliff",
-      "source_snapshot_id": "github__openstack__cliff__89efc71e3660",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "configobj__roundtrip_config_core__001",
       "feature_family": "config_resolve_discover",
       "lift_type": "Direct",
@@ -528,17 +407,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "connexion__openapi_resolver_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__spec_first__connexion",
-      "source_snapshot_id": "github__spec_first__connexion__a23d44e0e042",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "cookiecutter__repo_finder_core__hard3_001",
       "feature_family": "config_resolve_discover",
       "lift_type": "Composite",
@@ -551,17 +419,6 @@
         "Environment and resources"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "copier__template_answers_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__copier_org__copier",
-      "source_snapshot_id": "github__copier_org__copier__5f71fad40920",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "coverage__config_merge_core__001",
@@ -742,39 +599,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "dogpile_cache__region_backend_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__sqlalchemy__dogpile_cache",
-      "source_snapshot_id": "github__sqlalchemy__dogpile_cache__185db4fb6cd8",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "dramatiq__actor_stub_broker_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Composite",
-      "source_repo_id": "github__bogdanp__dramatiq",
-      "source_snapshot_id": "github__bogdanp__dramatiq__848b35f2f960",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "dulwich__config_parse_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__jelmer__dulwich",
-      "source_snapshot_id": "github__jelmer__dulwich__2f039e679035",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "dynaconf__settings_merge_core__001",
       "feature_family": "config_resolve_discover",
       "lift_type": "Adapted",
@@ -834,17 +658,6 @@
         "Environment and resources"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "falcon__responder_routing_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Direct",
-      "source_repo_id": "github__falconry__falcon",
-      "source_snapshot_id": "github__falconry__falcon__ea2b14d34bdb",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "filelock__reentrant_lock_core__001",
@@ -934,28 +747,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "goodconf__typed_env_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__lincolnloop__goodconf",
-      "source_snapshot_id": "github__lincolnloop__goodconf__6fd9a4561ba6",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "graphene__schema_execute_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Composite",
-      "source_repo_id": "github__graphql_python__graphene",
-      "source_snapshot_id": "github__graphql_python__graphene__82903263080b",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "h11__message_parse_core__001",
       "feature_family": "protocol_state_transition",
       "lift_type": "Direct",
@@ -999,17 +790,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "httpretty__uri_stub_core__001",
-      "feature_family": "protocol_state_transition",
-      "lift_type": "Direct",
-      "source_repo_id": "github__gabrielfalcao__httpretty",
-      "source_snapshot_id": "github__gabrielfalcao__httpretty__f9f012711597",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "httpx__request_model_core__001",
       "feature_family": "validate_normalize_construct",
       "lift_type": "Adapted",
@@ -1037,17 +817,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "hydra_core__compose_initialize_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__facebookresearch__hydra",
-      "source_snapshot_id": "github__facebookresearch__hydra__02ba9be659d0",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "importlib_metadata__entry_points_core__001",
@@ -1403,28 +1172,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "limits__strategy_storage_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__alisaifee__limits",
-      "source_snapshot_id": "github__alisaifee__limits__cb0ff4294d1b",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "luigi__task_requires_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Composite",
-      "source_repo_id": "github__spotify__luigi",
-      "source_snapshot_id": "github__spotify__luigi__715f65c4a56a",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "mako__lexer_expression_core__001",
       "feature_family": "parse_tokenize_decode",
       "lift_type": "Direct",
@@ -1482,50 +1229,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "mashumaro__dataclass_codec_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__fatal1ty__mashumaro",
-      "source_snapshot_id": "github__fatal1ty__mashumaro__0ad3eaed34f0",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "mimesis__person_address_core__001",
-      "feature_family": "resource_metadata_loading",
-      "lift_type": "Direct",
-      "source_repo_id": "github__lk_geimfari__mimesis",
-      "source_snapshot_id": "github__lk_geimfari__mimesis__b285fd17ada4",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "mistune__markdown_plugin_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__lepture__mistune",
-      "source_snapshot_id": "github__lepture__mistune__a1b50bc12e06",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "mitmproxy__url_parse_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Direct",
-      "source_repo_id": "github__mitmproxy__mitmproxy",
-      "source_snapshot_id": "github__mitmproxy__mitmproxy__2ac5b089d953",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "mkdocs__plugin_config_core__hard3_001",
@@ -1586,50 +1289,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "oauthlib__grant_dispatch_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__oauthlib__oauthlib",
-      "source_snapshot_id": "github__oauthlib__oauthlib__40b0ab56da36",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "openapi_schema_validator__draft_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Direct",
-      "source_repo_id": "github__python_openapi__openapi_schema_validator",
-      "source_snapshot_id": "github__python_openapi__openapi_schema_validator__005e0804dd85",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "oslo_config__opt_group_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Composite",
-      "source_repo_id": "github__openstack__oslo_config",
-      "source_snapshot_id": "github__openstack__oslo_config__37b787699a6c",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "oslo_policy__enforcer_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__openstack__oslo_policy",
-      "source_snapshot_id": "github__openstack__oslo_policy__69890e470480",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "packaging__requirement_marker_specifier__001",
       "feature_family": "parse_tokenize_decode",
       "lift_type": "Direct",
@@ -1642,17 +1301,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "pandera__dataframe_schema_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Composite",
-      "source_repo_id": "github__unionai_oss__pandera",
-      "source_snapshot_id": "github__unionai_oss__pandera__9777c23b4bbc",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "parse__format_parser_core__001",
@@ -1711,17 +1359,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "paste__dispatch_map_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__cdent__paste",
-      "source_snapshot_id": "github__cdent__paste__28e461548498",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "pathvalidate__sanitize_core__001",
       "feature_family": "validate_normalize_construct",
       "lift_type": "Direct",
@@ -1766,17 +1403,6 @@
         "Environment and resources"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "pika__channel_spec_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Direct",
-      "source_repo_id": "github__pika__pika",
-      "source_snapshot_id": "github__pika__pika__2126d43a76c1",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "platformdirs__app_dirs_core__hard3_001",
@@ -1850,28 +1476,6 @@
         "Environment and resources"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "polyfactory__model_factory_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__litestar_org__polyfactory",
-      "source_snapshot_id": "github__litestar_org__polyfactory__e420486b11b9",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "pre_commit__config_load_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__pre_commit__pre_commit",
-      "source_snapshot_id": "github__pre_commit__pre_commit__a9bba55a3f74",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "pydantic__field_validator_core__hard3_001",
@@ -1948,17 +1552,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "pylint__config_find_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__pylint_dev__pylint",
-      "source_snapshot_id": "github__pylint_dev__pylint__46d7486dd3d1",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "pyramid__configurator_action_core__hard3_001",
@@ -2065,17 +1658,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "python_configuration__layered_config_core__001",
-      "feature_family": "config_resolve_discover",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__tr11__python_configuration",
-      "source_snapshot_id": "github__tr11__python_configuration__f9da97f5e6a3",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "python_dateutil__relativedelta_core__001",
       "feature_family": "algorithm_data_structure",
       "lift_type": "Direct",
@@ -2178,17 +1760,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "quart__blueprint_dispatch_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__pallets__quart",
-      "source_snapshot_id": "github__pallets__quart__47dcc0119287",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "readme_renderer__content_type_core__hard3_001",
       "feature_family": "serialize_format_render",
       "lift_type": "Adapted",
@@ -2201,17 +1772,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "redbaron__fst_mutate_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__pycqa__redbaron",
-      "source_snapshot_id": "github__pycqa__redbaron__9b4a1825d160",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "redis__resp_parser_core__001",
@@ -2313,28 +1873,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "rocketry__cond_schedule_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Direct",
-      "source_repo_id": "github__miksus__rocketry",
-      "source_snapshot_id": "github__miksus__rocketry__8da223c74300",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "routes__mapper_match_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__bbangert__routes",
-      "source_snapshot_id": "github__bbangert__routes__7e82bd895a12",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "ruamel_yaml__roundtrip_core__001",
       "feature_family": "serialize_format_render",
       "lift_type": "Adapted",
@@ -2418,17 +1956,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "spiffworkflow__bpmn_engine_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Composite",
-      "source_repo_id": "github__sartography__spiffworkflow",
-      "source_snapshot_id": "github__sartography__spiffworkflow__d4d6915ca2ae",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
@@ -2517,17 +2044,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "stdnum__isbn_validate_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__arthurdejong__python_stdnum",
-      "source_snapshot_id": "github__arthurdejong__python_stdnum__006192e59be8",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "stevedore__extension_manager_core__hard3_001",
       "feature_family": "registry_plugin_dispatch",
       "lift_type": "Composite",
@@ -2557,17 +2073,6 @@
       "annotation_source_status": "v2_full"
     },
     {
-      "task_id": "taskiq__broker_task_core__001",
-      "feature_family": "workflow_session_orchestration",
-      "lift_type": "Composite",
-      "source_repo_id": "github__taskiq_python__taskiq",
-      "source_snapshot_id": "github__taskiq_python__taskiq__ced190957412",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
       "task_id": "tenacity__retry_state_core__hard3_001",
       "feature_family": "cache_retry_policy",
       "lift_type": "Adapted",
@@ -2594,17 +2099,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "tornado__http_headers_core__001",
-      "feature_family": "parse_tokenize_decode",
-      "lift_type": "Adapted",
-      "source_repo_id": "github__tornadoweb__tornado",
-      "source_snapshot_id": "github__tornadoweb__tornado__0096f2897c98",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "tox__factor_expression_core__hard3_001",
@@ -2649,17 +2143,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "typedload__type_load_core__001",
-      "feature_family": "validate_normalize_construct",
-      "lift_type": "Direct",
-      "source_repo_id": "github__ltworf__typedload",
-      "source_snapshot_id": "github__ltworf__typedload__0806c8192a9c",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "typer__command_parser_core__001",
@@ -2718,17 +2201,6 @@
         "Framework mechanisms"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "webob__request_response_core__001",
-      "feature_family": "protocol_state_transition",
-      "lift_type": "Direct",
-      "source_repo_id": "github__pylons__webob",
-      "source_snapshot_id": "github__pylons__webob__c0d70f985ff6",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     },
     {
       "task_id": "websockets__handshake_parse_core__001",
@@ -2829,28 +2301,6 @@
         "Data and state"
       ],
       "annotation_source_status": "v2_full"
-    },
-    {
-      "task_id": "zope_component__site_lookup_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__zopefoundation__zope_component",
-      "source_snapshot_id": "github__zopefoundation__zope_component__bb12836f35b4",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
-    },
-    {
-      "task_id": "zope_interface__adapter_registry_core__001",
-      "feature_family": "registry_plugin_dispatch",
-      "lift_type": "Composite",
-      "source_repo_id": "github__zopefoundation__zope_interface",
-      "source_snapshot_id": "github__zopefoundation__zope_interface__2bd6aec44be6",
-      "common_comparison": false,
-      "mechanism_coverage_available": false,
-      "mechanisms": null,
-      "annotation_source_status": "ledger_seed"
     }
   ],
   "author_review": {
@@ -2906,6 +2356,32 @@
       "resource_packaging"
     ]
   },
+  "mechanism_marginals": [
+    {
+      "mechanism": "Code dependencies",
+      "count": 139,
+      "denominator": 150,
+      "percent": 92.66666666666667
+    },
+    {
+      "mechanism": "Data and state",
+      "count": 127,
+      "denominator": 150,
+      "percent": 84.66666666666667
+    },
+    {
+      "mechanism": "Framework mechanisms",
+      "count": 71,
+      "denominator": 150,
+      "percent": 47.333333333333336
+    },
+    {
+      "mechanism": "Environment and resources",
+      "count": 49,
+      "denominator": 150,
+      "percent": 32.666666666666664
+    }
+  ],
   "cells": [
     {
       "lift_type": "Direct",
@@ -5744,14 +5220,14 @@
     }
   ],
   "validation": {
-    "task_identity_join": 200,
-    "public_specs_match_freeze": 200,
-    "task_statements_match_freeze": 200,
-    "original_mechanism_labels_match_metadata": 200,
-    "family_count_sum": 200,
-    "lift_count_sum": 200,
+    "task_identity_join": 150,
+    "public_specs_match_freeze": 150,
+    "task_statements_match_freeze": 150,
+    "original_mechanism_labels_match_metadata": 150,
+    "family_count_sum": 150,
+    "lift_count_sum": 150,
     "mechanism_scope": 150,
-    "missing_mechanism_rows_not_zero_filled": 50,
+    "missing_mechanism_rows_not_zero_filled": 0,
     "historical_source_identity_string_mismatches": 44,
     "semantic_reaudit_by_this_plot_script": false
   },
@@ -5767,406 +5243,6 @@
     {
       "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
       "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
-    },
-    {
-      "path": "benchmark/hard50/anyio__task_group_core__001/metadata.json",
-      "sha256": "9d9dfef561849f9dd69a7f4db407a463bd6871670fecdbc106f864a407320c1f"
-    },
-    {
-      "path": "benchmark/hard50/anyio__task_group_core__001/TASK.md",
-      "sha256": "806e67fc3eddd2aa5c277f6078a03d05011300210174b987923f1b54848a7ac0"
-    },
-    {
-      "path": "benchmark/hard50/apischema__serialization_core__001/metadata.json",
-      "sha256": "6e6f72c225f88676425e5a730fcc39fc756da05f9bd3de67351864ffc0d6e2a0"
-    },
-    {
-      "path": "benchmark/hard50/apischema__serialization_core__001/TASK.md",
-      "sha256": "1c1c50c104e7f55ce6f6b987beb36097c37901f8177db1aa4a5c70b7e75a446b"
-    },
-    {
-      "path": "benchmark/hard50/apispec__plugin_documenter_core__001/metadata.json",
-      "sha256": "0dc9da06d117166ec7efeb6546750b6d32665da9756487c3fa49db55b7291a63"
-    },
-    {
-      "path": "benchmark/hard50/apispec__plugin_documenter_core__001/TASK.md",
-      "sha256": "e850c1005a09ebf461597b6df3644a8b9f119dc8c96a13b68e26f38f442cbd36"
-    },
-    {
-      "path": "benchmark/hard50/asttokens__token_annotate_core__001/metadata.json",
-      "sha256": "34e163908bd296060e05af73f5769c920ee1d39049c3b24ffcc287d9144a0a54"
-    },
-    {
-      "path": "benchmark/hard50/asttokens__token_annotate_core__001/TASK.md",
-      "sha256": "a898f151e08e35150c08024d0aacf537f2cd1fc74d08b20ffa13907df12acfff"
-    },
-    {
-      "path": "benchmark/hard50/authlib__oauth2_server_core__001/metadata.json",
-      "sha256": "f6d9bbc467cf57f4ed6c416f7dd35e5b44667a25cc900b6bd0b6c8f5969e74f8"
-    },
-    {
-      "path": "benchmark/hard50/authlib__oauth2_server_core__001/TASK.md",
-      "sha256": "89bb9e0631ffc86d45b3bf93bf381e0357e006c9e3e319e6b1c5e2f3ab70ca3a"
-    },
-    {
-      "path": "benchmark/hard50/bandit__config_plugin_core__001/metadata.json",
-      "sha256": "ea5958882a951f8e67b6f0796dc42fc524d9899a0e1acd44b0204f54ad3dace3"
-    },
-    {
-      "path": "benchmark/hard50/bandit__config_plugin_core__001/TASK.md",
-      "sha256": "6767fe10744754218ad637df26c9a4865b2dc1a0d79267566c92f6a643ba46ed"
-    },
-    {
-      "path": "benchmark/hard50/beaker__session_cache_core__001/metadata.json",
-      "sha256": "41003e823574425d4221e3aa2b84070be0aa8c51f57b7e6ba9d1fdf303fa155a"
-    },
-    {
-      "path": "benchmark/hard50/beaker__session_cache_core__001/TASK.md",
-      "sha256": "20fb1127e17f9d0a68c602d19d642cbf1f8087fdded886dfce120ff8b40f7258"
-    },
-    {
-      "path": "benchmark/hard50/betamax__cassette_match_core__001/metadata.json",
-      "sha256": "72da19414511dd21a4004bc5026e454e0ee0a10181fb0caeeb73e9c7d2098cbf"
-    },
-    {
-      "path": "benchmark/hard50/betamax__cassette_match_core__001/TASK.md",
-      "sha256": "4ecd6e475e2b28f58a523f30259319ab7edc892f7c3ab4019e51e44799a50478"
-    },
-    {
-      "path": "benchmark/hard50/cement__controller_plugin_core__001/metadata.json",
-      "sha256": "8c6447f67a5e277d6a8b695c7d49df745f84bd33217143a2ecc681f4ea3ce295"
-    },
-    {
-      "path": "benchmark/hard50/cement__controller_plugin_core__001/TASK.md",
-      "sha256": "da2f7b6894c9182b46f290f607872b8d72a8935daa9fceb9f81bee2bd7bd8224"
-    },
-    {
-      "path": "benchmark/hard50/cherrypy__dispatch_tool_core__001/metadata.json",
-      "sha256": "184f97846460c1a33eae0c40fce6561bf6205522e79759be296feaa6e2a777c7"
-    },
-    {
-      "path": "benchmark/hard50/cherrypy__dispatch_tool_core__001/TASK.md",
-      "sha256": "8391caf976cefe3c609cdc6256d643d60f0567adcc88f0b1e24315fac1afd0c2"
-    },
-    {
-      "path": "benchmark/hard50/cliff__command_dispatch_core__001/metadata.json",
-      "sha256": "59c52f1d6ba66becaaddb05deb64dc9a1404e23c7122d83bca1f903824fe98c8"
-    },
-    {
-      "path": "benchmark/hard50/cliff__command_dispatch_core__001/TASK.md",
-      "sha256": "692cbc24f9a91820dc71a711cebb23c0fbec9dbf61f61139cb07553b4808bcaf"
-    },
-    {
-      "path": "benchmark/hard50/connexion__openapi_resolver_core__001/metadata.json",
-      "sha256": "2cf5befcbaf66f6905312cf3fe3b1645c68c55defd248983457b9ade6b289c6a"
-    },
-    {
-      "path": "benchmark/hard50/connexion__openapi_resolver_core__001/TASK.md",
-      "sha256": "6200c2914806cfb4fbee6eba03ec2abf367881fd1e53e107104cfdf362a8e289"
-    },
-    {
-      "path": "benchmark/hard50/copier__template_answers_core__001/metadata.json",
-      "sha256": "4ebe65ae8c9eb412001333af393193114c1b0cb939c9046b553c9fcaa136daec"
-    },
-    {
-      "path": "benchmark/hard50/copier__template_answers_core__001/TASK.md",
-      "sha256": "7acd8a0c58119ce19f371478d0d03409b11823346c8bb8c05e61a6f0f565312c"
-    },
-    {
-      "path": "benchmark/hard50/dogpile_cache__region_backend_core__001/metadata.json",
-      "sha256": "864c612c1b160330671fa3d8569832c7030f9932c3a9063f87c4eb02349370ca"
-    },
-    {
-      "path": "benchmark/hard50/dogpile_cache__region_backend_core__001/TASK.md",
-      "sha256": "1471ce5df2090b363710bff2288ec33e4fcc4ff3fe3d2f3813e266cb4f94ffb1"
-    },
-    {
-      "path": "benchmark/hard50/dramatiq__actor_stub_broker_core__001/metadata.json",
-      "sha256": "a7650430333c9dbad66b49300ea1c43e56add14ff2ddfc28fec6de68f5fff588"
-    },
-    {
-      "path": "benchmark/hard50/dramatiq__actor_stub_broker_core__001/TASK.md",
-      "sha256": "42bd15fc33bef336a1c16a6efe4b40c666b7dadcce710f41d0779c388586c663"
-    },
-    {
-      "path": "benchmark/hard50/dulwich__config_parse_core__001/metadata.json",
-      "sha256": "e7813544fb0f23efdbcc52786ecda4ece244017d69cec45ed3e620e0723eca77"
-    },
-    {
-      "path": "benchmark/hard50/dulwich__config_parse_core__001/TASK.md",
-      "sha256": "2b66680987f923c052e5ce31cd100381fb9d8a27de8888bc85257e1958021b50"
-    },
-    {
-      "path": "benchmark/hard50/falcon__responder_routing_core__001/metadata.json",
-      "sha256": "202a27394a865cae25abfe5e26edc8cc538ef09151993fd47719ca23210d78b3"
-    },
-    {
-      "path": "benchmark/hard50/falcon__responder_routing_core__001/TASK.md",
-      "sha256": "d6ca712d8fedb8e645d21ca7734bf279758b9e1f57df25d4ac382576e20ebf50"
-    },
-    {
-      "path": "benchmark/hard50/goodconf__typed_env_core__001/metadata.json",
-      "sha256": "5e7d0f28e9993b02ecf380d75932e46f5cc6d509ebfabbd16cb8864354fb45f6"
-    },
-    {
-      "path": "benchmark/hard50/goodconf__typed_env_core__001/TASK.md",
-      "sha256": "bbd28d51d22a87c69043e10fd21b02eee852bedf64d977dac083ecbe3c36a15c"
-    },
-    {
-      "path": "benchmark/hard50/graphene__schema_execute_core__001/metadata.json",
-      "sha256": "8691d25ffb38196875fd8181f0d8ce879abb149887534b1358d147e55643fffb"
-    },
-    {
-      "path": "benchmark/hard50/graphene__schema_execute_core__001/TASK.md",
-      "sha256": "cf72590efe681e300dd5f63dadf5e10ab53bc404eb9a079971e3e233ca6dccaa"
-    },
-    {
-      "path": "benchmark/hard50/httpretty__uri_stub_core__001/metadata.json",
-      "sha256": "1cabd1fcc3a9d04afc5b3e338d4028488c6b0b463cbe1ef9f42f606102cbae5c"
-    },
-    {
-      "path": "benchmark/hard50/httpretty__uri_stub_core__001/TASK.md",
-      "sha256": "e458860c83fe352d022ac5599c0e081678715da8661af1d0733568f8be3f217e"
-    },
-    {
-      "path": "benchmark/hard50/hydra_core__compose_initialize_core__001/metadata.json",
-      "sha256": "5304fd5a3e6d861a6fe572addee983e2495789e10ebd38af8a759b84a3fdb810"
-    },
-    {
-      "path": "benchmark/hard50/hydra_core__compose_initialize_core__001/TASK.md",
-      "sha256": "cd607d94efa0d5d77f129f76425a826f4e8f4581b2ad5182d4cbb03503f6248c"
-    },
-    {
-      "path": "benchmark/hard50/limits__strategy_storage_core__001/metadata.json",
-      "sha256": "25008c3462f3cc70e967e5848a03685b816556aaac55f8a7506ba8d789ad9098"
-    },
-    {
-      "path": "benchmark/hard50/limits__strategy_storage_core__001/TASK.md",
-      "sha256": "3ca67003122dd077f574dcec193bd837e31767c3c0f5e1629e6336d9bd42c370"
-    },
-    {
-      "path": "benchmark/hard50/luigi__task_requires_core__001/metadata.json",
-      "sha256": "97129addd5dae19a0d246ca61834468354fdedc2540ea77335e00d8091c02635"
-    },
-    {
-      "path": "benchmark/hard50/luigi__task_requires_core__001/TASK.md",
-      "sha256": "d9ccfcc89f02d0e1a344464656e84bb5d49e1c6b3157833fdfa7e0a493377de9"
-    },
-    {
-      "path": "benchmark/hard50/mashumaro__dataclass_codec_core__001/metadata.json",
-      "sha256": "5f72e6117c59be5c0f49d158ba36d3fe1bf7c6015c3a1408576945c5e910fd99"
-    },
-    {
-      "path": "benchmark/hard50/mashumaro__dataclass_codec_core__001/TASK.md",
-      "sha256": "e560b5d3d68285129310b567fb41f57c80fd96d1bb8c430d7581260839630aee"
-    },
-    {
-      "path": "benchmark/hard50/mimesis__person_address_core__001/metadata.json",
-      "sha256": "a6ec8ac3845aef5464eb590f7a04272c35d5ff28cb8ba23765b2ea7e2913c1f3"
-    },
-    {
-      "path": "benchmark/hard50/mimesis__person_address_core__001/TASK.md",
-      "sha256": "4b4723b27baace76e60c9ed7bca1631b6a9a4f4d5ae3873fdbb6f943169e27fa"
-    },
-    {
-      "path": "benchmark/hard50/mistune__markdown_plugin_core__001/metadata.json",
-      "sha256": "1f981a4a7328120d32215d72d3db3a724e1896fa2b7dbf21c24655badfc9757d"
-    },
-    {
-      "path": "benchmark/hard50/mistune__markdown_plugin_core__001/TASK.md",
-      "sha256": "71f03818548a879a9252b820193d41cdc5881ab93ec0dc9058d866014cc20277"
-    },
-    {
-      "path": "benchmark/hard50/mitmproxy__url_parse_core__001/metadata.json",
-      "sha256": "9201232d69f2fbb8029d277179f7ca801859839b9679f2f3819ec4fd39d6c44f"
-    },
-    {
-      "path": "benchmark/hard50/mitmproxy__url_parse_core__001/TASK.md",
-      "sha256": "7c906d9cd0d7db2b1dc357ce12c038baacca19ff7bd4bdeac83caf1f98c614f9"
-    },
-    {
-      "path": "benchmark/hard50/oauthlib__grant_dispatch_core__001/metadata.json",
-      "sha256": "32d3a157eca44aa291a7b36fe94171f039ddba9674a54c594c2be5bc896d1054"
-    },
-    {
-      "path": "benchmark/hard50/oauthlib__grant_dispatch_core__001/TASK.md",
-      "sha256": "563ddd8f7df9a4841cf973225d94b569cb62d56bdf89616784eaa0fc77108343"
-    },
-    {
-      "path": "benchmark/hard50/openapi_schema_validator__draft_core__001/metadata.json",
-      "sha256": "470debf8af3bf1aee5dc244e1889ccbdd2ec13be37429a3e43121e649a829ec4"
-    },
-    {
-      "path": "benchmark/hard50/openapi_schema_validator__draft_core__001/TASK.md",
-      "sha256": "a169f043410ea91546f6d3507cd85fbf23550f99a5d141c01122b488058fa791"
-    },
-    {
-      "path": "benchmark/hard50/oslo_config__opt_group_core__001/metadata.json",
-      "sha256": "1972836ec48ce35a46861b01c2210cc5ef663cf9efbb07b41ad69ae740788272"
-    },
-    {
-      "path": "benchmark/hard50/oslo_config__opt_group_core__001/TASK.md",
-      "sha256": "a6bb70115398d159493419dd9dd51a8198b360df72fb3186900842f5e1953562"
-    },
-    {
-      "path": "benchmark/hard50/oslo_policy__enforcer_core__001/metadata.json",
-      "sha256": "326a68e3c647706c633096f46918e323647d5a104c8f3b41b97c8a72c8c8522f"
-    },
-    {
-      "path": "benchmark/hard50/oslo_policy__enforcer_core__001/TASK.md",
-      "sha256": "117530e7d2a52770990d1c5ba64782ae5f1682acf25fbcf4f4169a8847d0724e"
-    },
-    {
-      "path": "benchmark/hard50/pandera__dataframe_schema_core__001/metadata.json",
-      "sha256": "f38ba1d31d0c9b2ed621e457b2c9b6a7555246e381150d855273470fe1aabf6f"
-    },
-    {
-      "path": "benchmark/hard50/pandera__dataframe_schema_core__001/TASK.md",
-      "sha256": "5374130d27f93623d5fc5923e1b87d680f51a3b7c0edf9b74bfeecf805e0340a"
-    },
-    {
-      "path": "benchmark/hard50/paste__dispatch_map_core__001/metadata.json",
-      "sha256": "0c8dc76d6cf1eda480f073a6fb99411a080be38ada3e7ba58a834f1cf941b3c9"
-    },
-    {
-      "path": "benchmark/hard50/paste__dispatch_map_core__001/TASK.md",
-      "sha256": "929c364d226681c17e6123573f5fb05fa471fc4f137470c4ec69db6130078c29"
-    },
-    {
-      "path": "benchmark/hard50/pika__channel_spec_core__001/metadata.json",
-      "sha256": "0b4160ff5113c030052b50949002c42c3c67709147dce8c588d1bb833cc2d323"
-    },
-    {
-      "path": "benchmark/hard50/pika__channel_spec_core__001/TASK.md",
-      "sha256": "f4ca3f48c6bed4bbb0cef36c7f51cc67b8cca96a57cb823d2040bdc8a0e02539"
-    },
-    {
-      "path": "benchmark/hard50/polyfactory__model_factory_core__001/metadata.json",
-      "sha256": "4fdf68ada17028b00b47eb4b5fb5fdfe34459eab10d1f4826c5b8e75ed858f40"
-    },
-    {
-      "path": "benchmark/hard50/polyfactory__model_factory_core__001/TASK.md",
-      "sha256": "2df8991cc99fac0538e9d17fbb2c3e0c91233779463ce428b2b0218473f46fe0"
-    },
-    {
-      "path": "benchmark/hard50/pre_commit__config_load_core__001/metadata.json",
-      "sha256": "a65da65f849b96348d773f8bfd018c79e2747d6ce464002dfd103f81fc4597d6"
-    },
-    {
-      "path": "benchmark/hard50/pre_commit__config_load_core__001/TASK.md",
-      "sha256": "79a6d3c0146fc0a8c3a727d17e3741007742ef954b54aeeafb5f93f669479462"
-    },
-    {
-      "path": "benchmark/hard50/pylint__config_find_core__001/metadata.json",
-      "sha256": "848d3627a2ea9d0a811339dd45c2f1b59a5e1f2429de5dfe845083bb408c2817"
-    },
-    {
-      "path": "benchmark/hard50/pylint__config_find_core__001/TASK.md",
-      "sha256": "cc279f4e437625ad0f495e576dcdf3dde5cd5f5d52460f783fab0e33196a5163"
-    },
-    {
-      "path": "benchmark/hard50/python_configuration__layered_config_core__001/metadata.json",
-      "sha256": "78be5259ec7dfecf6ea36249ffa8f5534525c5a59559b0885b73326573751f9c"
-    },
-    {
-      "path": "benchmark/hard50/python_configuration__layered_config_core__001/TASK.md",
-      "sha256": "80197f6cc70bcfce0e29ddfe0bd44b925a4aafb8608155dcc2e9cfec128d1171"
-    },
-    {
-      "path": "benchmark/hard50/quart__blueprint_dispatch_core__001/metadata.json",
-      "sha256": "2682db3120b1665a32c8b8a7529ce1a8e376a873df824a8a175869b802fee9ab"
-    },
-    {
-      "path": "benchmark/hard50/quart__blueprint_dispatch_core__001/TASK.md",
-      "sha256": "3354405771fb98dd23722b7c2986401eebfecab58e1f9bab74fd3ad2735a952e"
-    },
-    {
-      "path": "benchmark/hard50/redbaron__fst_mutate_core__001/metadata.json",
-      "sha256": "97f7eb4fef82428894b056dab6818f0acc7678e94553754dd5c3050b5b8c6d55"
-    },
-    {
-      "path": "benchmark/hard50/redbaron__fst_mutate_core__001/TASK.md",
-      "sha256": "13789009afe883d7521cfb43d49619e3d3a0e010a042e808cb4f05846dfd4cc1"
-    },
-    {
-      "path": "benchmark/hard50/rocketry__cond_schedule_core__001/metadata.json",
-      "sha256": "d819501d3b571f4f1bd233d44dfae1ea2e3afadc5f5411f8b1b108580df88c30"
-    },
-    {
-      "path": "benchmark/hard50/rocketry__cond_schedule_core__001/TASK.md",
-      "sha256": "8e0bed3019831cf02df1ab9166dbcb3382c100eda3adb4a97a50d25b701b8b23"
-    },
-    {
-      "path": "benchmark/hard50/routes__mapper_match_core__001/metadata.json",
-      "sha256": "0b43bcdcfa3607a498a9d00c69bbbe60d3e0740857f12954a755304fca2deeec"
-    },
-    {
-      "path": "benchmark/hard50/routes__mapper_match_core__001/TASK.md",
-      "sha256": "8418543ff74ab81ee772a39846a537f86786e97175ec074b0dedc0562735973b"
-    },
-    {
-      "path": "benchmark/hard50/spiffworkflow__bpmn_engine_core__001/metadata.json",
-      "sha256": "fd9a8cb0c030303e1e40caa3b0a5d54a13db783d45650144a52ec903098332b9"
-    },
-    {
-      "path": "benchmark/hard50/spiffworkflow__bpmn_engine_core__001/TASK.md",
-      "sha256": "09fd6f72a85cd6277694295221a1ceb280fcdf76e8ca5c212344610b12a67e60"
-    },
-    {
-      "path": "benchmark/hard50/stdnum__isbn_validate_core__001/metadata.json",
-      "sha256": "f8db47fa8aa861c8e50c0606a7e4a560abe9f1230f3f45495b9eed77d40b57e5"
-    },
-    {
-      "path": "benchmark/hard50/stdnum__isbn_validate_core__001/TASK.md",
-      "sha256": "ceaacd525e4dcd25046d52acaba3f2f7729a63055eae7704274bd02139d1dbdd"
-    },
-    {
-      "path": "benchmark/hard50/taskiq__broker_task_core__001/metadata.json",
-      "sha256": "5d1130c3cb1e855418edc41b413384cb551f771f56d71d8f67f62b4a04f38fbb"
-    },
-    {
-      "path": "benchmark/hard50/taskiq__broker_task_core__001/TASK.md",
-      "sha256": "bebc1ee499aad5b594058d20df70129518e0d6439fe3ee2b97a9642d0f39e31e"
-    },
-    {
-      "path": "benchmark/hard50/tornado__http_headers_core__001/metadata.json",
-      "sha256": "6af9d52037369ae427de03492ed199c3c33452386ce103f4ff2a89cfeb4b7edf"
-    },
-    {
-      "path": "benchmark/hard50/tornado__http_headers_core__001/TASK.md",
-      "sha256": "9677f3dd41e8941406a0855070f3e2a9e4482d7428de527d6b13b96de19e6267"
-    },
-    {
-      "path": "benchmark/hard50/typedload__type_load_core__001/metadata.json",
-      "sha256": "fd1d6a0064ff0bc8389adbd51026b60ba1fb35a08be4b7e6296dff3394eab51e"
-    },
-    {
-      "path": "benchmark/hard50/typedload__type_load_core__001/TASK.md",
-      "sha256": "08251780e9ccb9a95634079d756f59d4070e46b52739236349b8127392f494b6"
-    },
-    {
-      "path": "benchmark/hard50/webob__request_response_core__001/metadata.json",
-      "sha256": "14d660df5f0962d577ae447de69775f33fee42d58043cb4aa80f44d9e656c56e"
-    },
-    {
-      "path": "benchmark/hard50/webob__request_response_core__001/TASK.md",
-      "sha256": "0e0634c065957aa82366cdcdc56d27f7f53de84603a37790aa7ecb6f793dd364"
-    },
-    {
-      "path": "benchmark/hard50/zope_component__site_lookup_core__001/metadata.json",
-      "sha256": "b6d926edb5cc25a34c718c5979607f26c3cea7654bd1ce3396d2a7501f9c5ef8"
-    },
-    {
-      "path": "benchmark/hard50/zope_component__site_lookup_core__001/TASK.md",
-      "sha256": "aa0fb9daec0933dd102ced594fef7711cd038a05136027adb767030aa3cf4df6"
-    },
-    {
-      "path": "benchmark/hard50/zope_interface__adapter_registry_core__001/metadata.json",
-      "sha256": "a7e8455cb2c87abd02cfb1ba13c4968bb32e62286db8796237c72d1d9eb77c92"
-    },
-    {
-      "path": "benchmark/hard50/zope_interface__adapter_registry_core__001/TASK.md",
-      "sha256": "c31083bd4325146bdd36db2419876cf00874c72e16a98374ff1a228e396915e4"
     },
     {
       "path": "benchmark/tasks/aiohttp__url_params_core__hard3_001/metadata.json",
@@ -7373,8 +6449,12 @@
       "sha256": "f6436122d688217bbaaca90af08cd6f0f59f27345b23472dd2a12900683a59ec"
     },
     {
-      "path": "docs/paper/writing/chapter2_task_inventory.json",
-      "sha256": "154ee0ec1c13c74b0815292b1e1f758a8b414bfb51e5df98667b38179ef13248"
+      "path": "docs/paper/writing/chapter2_python150_task_inventory.json",
+      "sha256": "fee253aaf6e55266a090000eca899202879546f8c790f2cfd7c21c4d7ccffc93"
+    },
+    {
+      "path": "docs/paper/writing/python150_membership.json",
+      "sha256": "9d0cca7eac73b4ee992c26029d8447a48668bc5bb593b8b28d4717a00dff1cf0"
     },
     {
       "path": "docs/reference/LIFT_TAXONOMY.md",

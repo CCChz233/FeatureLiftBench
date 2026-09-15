@@ -41,32 +41,32 @@ description = "Hard-50 packages only (no reference_solution/). Do not copy into 
 
 [suites.python200_legacy]
 aliases = ["python200-e50", "python200_e50", "legacy-python200"]
-tasks_root = "benchmark/python200_tasks"
+tasks_root = "archive/paper_unrelated_20260914/benchmark/python200_tasks"
 source_registry = "benchmark/sources/python200_registry.json"
-status = "superseded"
+status = "archived"
 paper_main = false
-description = "Superseded 150 + External-50. Do not report as the new paper main table."
+description = "Superseded 150 + External-50. Archived 2026-09-14. Do not report as the paper main table."
 
 [suites.sanity]
 aliases = ["sanity"]
-tasks_root = "benchmark/sanity"
+tasks_root = "archive/paper_unrelated_20260914/benchmark/sanity"
 source_registry = "benchmark/sources/registry.json"
-status = "internal"
+status = "archived"
 paper_main = false
-description = "Tiny smoke suite."
+description = "Tiny smoke suite. Archived 2026-09-14."
 
 [suites.staging]
 aliases = ["staging"]
-tasks_root = "benchmark/staging"
+tasks_root = "archive/paper_unrelated_20260914/benchmark/staging"
 source_registry = "benchmark/sources/external50_registry.json"
-status = "internal"
+status = "archived"
 paper_main = false
-description = "Staging / candidate tasks. Not a leaderboard."
+description = "Staging / candidate tasks. Archived 2026-09-14. Not a leaderboard."
 
 [suites.batch3_pilot]
 aliases = ["pilot", "batch3", "batch3_pilot"]
-tasks_root = "benchmark/batch3_pilot"
+tasks_root = "archive/paper_unrelated_20260914/benchmark/batch3_pilot"
 source_registry = "benchmark/sources/registry.json"
-status = "internal"
+status = "archived"
 paper_main = false
-description = "Batch-3 pilot root."
+description = "Batch-3 pilot root. Archived 2026-09-14."

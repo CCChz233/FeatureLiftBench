@@ -1,85 +1,23 @@
-# experiments/
+# FeatureLiftBench 原始实验记录
 
-> **Documentation status: reference · Last verified: 2026-08-29**
+> **Status: reference · Last verified: 2026-09-14**
 
-原始模型运行和验证证据只进入以下七个目录：
+本目录保存实际恢复的原始结果和恢复台账。当前正文取数路径由
+[paper_sources.json](../docs/paper/paper_sources.json) 登记，不按目录日期或名称挑选成绩。
 
-| Directory | Purpose |
+| 目录 / 文件 | 当前内容 |
 | --- | --- |
-| `python/` | OpenHands leaderboard（`openhands/`）与可选 runtime ablation（`runtime/`；不是 Main） |
-| `GO/` | Go calibration runs |
-| `smoke/` | 临时 smoke/debug，不进入论文主表 |
-| `methods/` | 方法 pilot、历史 ablation、负结果，以及 AutoSaddler 等 screening |
-| `validation/` | reference、oracle、preflight、Hard-50 校准、agentic-evidence 原料 |
-| `bundles/` | incoming、outgoing、archive 和 retired 传输包 |
-| `registry/` | 可提交的 suite index、路径映射、bundle ledger、维护记录 |
+| `python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1` | Pro 150 题原始记录 |
+| `python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1` | Flash 200 题；本文选其中 150 题 |
+| `python/openhands/glm-5.3-flash/python200-prime-v2-main-r1` | 截断包恢复 12 题；其中 7 题属于论文集合 |
+| [paper_results_20260913/](paper_results_20260913/README.md) | 压缩包和恢复范围说明 |
+| `paper-results-full-20260913T154543Z.tar.gz` | 原始截断传输包，保留用于溯源 |
+| [registry/](registry/README.md) | 历史实验身份与维护台账 |
 
-顶层不要再放 run 目录或结果 tar。校验：
+Luna/Qwen/OSS 的当前主实验原始目录未恢复。论文有完整的 900 条派生逐题结果，
+但本地主实验 profile 仅 307/900；二者不是同一完整性声明。
 
-```bash
-python3.12 scripts/reorganize_experiments.py --check
-```
-
-Python-200' 当前状态见 [`docs/STATUS.md`](../docs/STATUS.md)，正式实验条件见
-[`docs/EVALUATION.md`](../docs/EVALUATION.md)。正式 OpenHands run 写入：
-
-```text
-experiments/python/openhands/<model>/<run-id>/
-```
-
-可选 runtime ablation 写入：
-
-```text
-experiments/python/runtime/<adapter>/<model>/<run-id>/
-```
-
-不得把 runtime 目录并入 OpenHands 主表。规范见
-[`docs/METHOD_AGENT_RUNTIME.md`](../docs/METHOD_AGENT_RUNTIME.md)。
-
-正式 ablation 也应使用标准 suite 布局，并在 suite/run metadata 中登记 arm；
-`methods/ablation/` 只保留历史方法实验。新的 screening（如 AutoSaddler）写入
-`methods/<method-id>/`，不要写入 `evidence/`。
-
-## Path Compatibility
-
-历史报告中的旧路径不重写。解析旧路径：
-
-```bash
-PYTHONPATH=harness python3.12 harness/scripts/resolve_experiment_path.py \
-  experiments/v1_1_oracle_validation/536c2beec549fdc8
-```
-
-映射表是 `registry/path_aliases.json`，采用 longest-prefix resolution。迁移和删除
-记录见 `registry/bundle_ledger.json`。2026-08-29 整理见
-`registry/repository_maintenance_20260829.md`。
-
-## Maintenance
-
-```bash
-python3.12 scripts/reorganize_experiments.py --check
-PYTHONPATH=harness python3.12 harness/scripts/build_experiment_registry.py
-```
-
-Raw evidence 默认不进 Git；不得覆盖 completed suite。Resume 只能补没有 terminal
-`run.json` 的 task。
-
-## Historical result snapshots（不是 Python-200' 主表）
-
-2026-08-18 起，跨模型 **旧** Python-200 Main（冻结 150 + External-50）以逐题
-`eval/result.json` 为准，由 `harness/scripts/merge_python200_main_results.py`
-按题号合并。快照：
-[`python200_cross_model_main_20260818.json`](../artifacts/research_analysis/current_results/python200_cross_model_main_20260818.json)。
-这是 superseded 对照，**不是** 150+Hard-50 主表。
-
-2026-08-17 起，DeepSeek 旧 Python-200 Main vs Lite V1 以本机 `suite.json` 与逐题
-`eval/result.json` 为准。结论见 [`docs/FINDINGS.md`](../docs/FINDINGS.md) 和
-[`deepseek_main_vs_lite_v1_20260817.json`](../artifacts/research_analysis/current_results/deepseek_main_vs_lite_v1_20260817.json)。
-那次比较的是已退役 Lite V1 协议，不是当前 [V1 = Main+2M](../docs/METHOD_V1.md)。
-
-当前 V1 分片（旧套件）写入
-`experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-qwen3.6-35b-a3b-fp8-v1-0817-001-shardN-p803N/`，
-合并 suite 为同目录下不带 `-shard` 的 run-id。Core-12 诊断路径见
-[`docs/METHOD_V1.md`](../docs/METHOD_V1.md)。
-
-Hard-50 Flash 校准原料在 `validation/hard50/`。数字是否进入 STATUS 由
-[`docs/STATUS.md`](../docs/STATUS.md) 决定，不因目录位置自动进主表。
+旧运行、校准与传输包已移动至
+[archive/paper_unrelated_20260914/](../archive/paper_unrelated_20260914/README.md)。
+历史运行保留原始身份，不改名冒充新实验。新实验仍通过 `scripts/run_benchmark.sh` 运行，
+写入 `experiments/python/<runtime>/<model>/<run-id>/`，不在本轮执行。

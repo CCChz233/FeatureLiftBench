@@ -1,0 +1,57 @@
+\begin{table}[tbp]
+  \caption{Main comparison on the common 150-task benchmark. Artifact
+  characteristics are reported only for functionally successful submissions.}
+  \label{tab:main}
+
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.12}
+
+  \begin{tabularx}{\linewidth}{@{}Xr rrr rrr rr rr@{}}
+    \toprule
+
+    &
+    \multicolumn{1}{c}{Correctness} &
+    \multicolumn{3}{c}{RRES} &
+    \multicolumn{3}{c}{Copy} &
+    \multicolumn{2}{c}{Steps} &
+    \multicolumn{2}{c}{Tokens ($10^3$)} \\
+
+    \cmidrule(lr){2-2}
+    \cmidrule(lr){3-5}
+    \cmidrule(lr){6-8}
+    \cmidrule(lr){9-10}
+    \cmidrule(lr){11-12}
+
+    Configuration
+      & \shortstack{Pass@1\\$n$ (\%)}
+      & Mean
+      & Median
+      & $[Q_1,Q_3]$
+      & Mean
+      & Median
+      & $[Q_1,Q_3]$
+      & Median
+      & P90
+      & Median
+      & P90 \\
+
+    \midrule
+@@ROWS@@
+
+
+    \bottomrule
+  \end{tabularx}
+
+  \par\smallskip
+  \begin{minipage}{\linewidth}
+    \footnotesize
+    Pass@1 uses all 150 assigned tasks; RRES and Copy use only functionally
+    passing artifacts. Steps use all assigned runs. $^{\dagger}$ reports
+    uncached prompt plus completion tokens; $^{\ddagger}$ reports provider total
+    tokens. These accounting schemes are not directly comparable, and verified
+    token totals are unavailable for Luna and GLM.
+  \end{minipage}
+
+\end{table}

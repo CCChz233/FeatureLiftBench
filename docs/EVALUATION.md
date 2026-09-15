@@ -17,10 +17,14 @@
 | Core metric 1 | Functional Pass Rate |
 | Core metric 2 | Reference-Relative Extraction Size (RRES) |
 
-Main 是 leaderboard 和论文主结果的唯一默认条件。当前论文套件是 Python-200'
-（`--benchmark python200_hard`）。Task contract 与可见性以
+Main 是 leaderboard 和论文主结果的唯一默认条件。当前论文使用固定的 Python-150 身份集合，见
+[paper/paper_sources.json](paper/paper_sources.json)。`python200_hard` 是历史 200 题运行套件，不能直接当作本文任务集合。Task contract 与可见性以
 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 为准，当前 suite identity 以
 [STATUS.md](STATUS.md) 为准。
+
+## 已完成的论文消融
+
+当前已保留的源码消融为 Luna / Pro / Qwen 三配置 × 40 题 × Full Source / Contract Only 两臂，共 240 条记录；实际设置、Pro timeout 和敏感性限制见 [结果报告](../reports/paper_analysis/source_ablation_40_20260913/REPORT.md)。本节以下其他实验臂属于协议支持或历史计划，不表示已经完成。
 
 ## Formal Ablations
 
@@ -45,7 +49,7 @@ agent、evaluator、image、attempt policy 与其余 Main 条件不变。
 | Evaluator | isolated eval Docker，`functional_gate` + RRES |
 | Execution | 默认 host CLI + eval Docker；agent 镜像可用 `FEATURELIFTBENCH_INSTALL_RUNTIME_AGENTS=1` 装入 `dsh`/`codex` |
 | Slice | 先 Core-12，与同日 OpenHands+Flash Main 成对 |
-| Reporting | 独立 runtime 表；**不得并入** 5-model OpenHands Python-200 主表 |
+| Reporting | 独立 runtime 表；**不得并入** 当前六配置 Python-150 主表 |
 
 Pins、adapter 与入口见 [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md)。
 尚无正式分数时，STATUS / FINDINGS 只记基础设施就绪，不编造通过率。

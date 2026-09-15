@@ -1,0 +1,5704 @@
+{
+  "models": [
+    {
+      "id": "deepseek-v4-pro",
+      "short": "Pro",
+      "display": "DeepSeek V4 Pro"
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "short": "Flash",
+      "display": "DeepSeek V4 Flash"
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "short": "Luna",
+      "display": "GPT-5.6 Luna"
+    },
+    {
+      "id": "glm-5.3-flash",
+      "short": "GLM",
+      "display": "GLM-5.3-Flash"
+    },
+    {
+      "id": "qwen3.6-35b-a3b-fp8",
+      "short": "Qwen",
+      "display": "Qwen3.6-35B-A3B-FP8"
+    },
+    {
+      "id": "gpt-oss-120b",
+      "short": "OSS",
+      "display": "GPT-OSS 120B"
+    }
+  ],
+  "structure": [
+    {
+      "kind": "lift_type",
+      "name": "Direct",
+      "n": 56,
+      "task_ids": [
+        "attrs__validators_core__001",
+        "bidict__bidirectional_map_core__001",
+        "blinker__signal_registry_core__001",
+        "cachetools__cache_eviction_core__001",
+        "cattrs__structure_core__001",
+        "cerberus__schema_validate_core__001",
+        "configobj__roundtrip_config_core__001",
+        "coverage__glob_matcher_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "decorator__signature_preserving_core__001",
+        "deepdiff__deep_compare_core__001",
+        "email_validator__validate_core__001",
+        "environs__typed_env_core__001",
+        "faker__provider_core__001",
+        "h11__message_parse_core__001",
+        "humanize__naturaltime_core__001",
+        "importlib_metadata__entry_points_core__001",
+        "intervaltree__interval_tree_core__001",
+        "json5__parse_core__001",
+        "json_logic__evaluator_core__hard3_001",
+        "jsonpath_ng__expression_eval_core__001",
+        "jsonpointer__resolve_core__001",
+        "jsonschema__validator_core__001",
+        "lark__grammar_loader_core__001",
+        "lark__parse_tree_core__001",
+        "license_expression__policy_core__hard3_001",
+        "mako__lexer_expression_core__001",
+        "markdown_it__commonmark_render__001",
+        "marshmallow__schema_core__001",
+        "multidict__multidict_mutation_core__hard3_001",
+        "networkx__dag_topo_core__001",
+        "packaging__requirement_marker_specifier__001",
+        "parse__format_parser_core__001",
+        "parso__python_parse_core__001",
+        "passlib__hash_context_core__001",
+        "pathvalidate__sanitize_core__001",
+        "phonenumbers__parse_format_core__001",
+        "pluggy__hook_call_order__001",
+        "pluggy__hook_specs_core__001",
+        "pygments__formatter_core__001",
+        "pygments__lexer_core__001",
+        "python_box__config_box_core__001",
+        "python_dateutil__relativedelta_core__001",
+        "python_dateutil__rrule_core__001",
+        "python_dotenv__env_parse_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "python_multipart__form_parse_core__001",
+        "sortedcontainers__sorted_list_core__001",
+        "sqlparse__format_filters_core__001",
+        "tabulate__table_format_core__001",
+        "tomlkit__roundtrip_document__001",
+        "typer__command_parser_core__001",
+        "urllib3__retry_backoff_core__001",
+        "voluptuous__schema_validate_core__001",
+        "xmltodict__xml_parse_core__001"
+      ],
+      "passes": [
+        51,
+        50,
+        45,
+        40,
+        31,
+        16
+      ],
+      "rates": [
+        91.07142857142857,
+        89.28571428571429,
+        80.35714285714286,
+        71.42857142857143,
+        55.357142857142854,
+        28.571428571428573
+      ]
+    },
+    {
+      "kind": "lift_type",
+      "name": "Adapted",
+      "n": 76,
+      "task_ids": [
+        "aiohttp__url_params_core__hard3_001",
+        "alembic__revision_map_core__hard3_001",
+        "apscheduler__cron_trigger_core__hard3_001",
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "babel__plural_core__001",
+        "bleach__sanitize_core__001",
+        "boltons__iterutils_core__001",
+        "build__pyproject_backend_core__hard3_001",
+        "celery__signal_dispatch_core__hard3_001",
+        "chameleon__template_compile_core__001",
+        "click__lazy_command_core__hard3_001",
+        "click__option_parser__001",
+        "coverage__config_merge_core__001",
+        "coverage__path_remap_core__001",
+        "coverage__report_core__001",
+        "coverage__source_selection_core__001",
+        "distlib__wheel_metadata_core__hard3_001",
+        "dynaconf__settings_merge_core__001",
+        "filelock__reentrant_lock_core__001",
+        "flask__route_dispatch_core__001",
+        "fs__url_opener_core__hard3_001",
+        "fsspec__url_chain_core__hard3_001",
+        "glom__spec_eval_core__hard3_001",
+        "h2__frame_parse_core__001",
+        "hatch__project_metadata_core__hard3_001",
+        "httpx__request_model_core__001",
+        "installer__wheel_record_core__hard3_001",
+        "isodate__duration_parse_core__001",
+        "isort__settings_resolver_core__hard3_001",
+        "itsdangerous__timed_serializer_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jupyter_core__paths_resolver_core__hard3_001",
+        "lark__visitor_transform_core__001",
+        "markdown__extensions_core__001",
+        "msgpack__pack_unpack_core__001",
+        "parsel__selector_namespace_core__hard3_001",
+        "pendulum__parse_format_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "pydantic__field_validator_core__hard3_001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "pytest__mark_expression_core__001",
+        "python_decouple__config_repository_core__001",
+        "pyyaml__safe_load_dump__001",
+        "readme_renderer__content_type_core__hard3_001",
+        "redis__resp_parser_core__001",
+        "referencing__json_schema_refs_core__001",
+        "returns__result_pipeline_core__hard3_001",
+        "rfc3986__uri_parse_core__001",
+        "rich__markup_parse_core__001",
+        "ruamel_yaml__roundtrip_core__001",
+        "schema__nested_validate_core__hard3_001",
+        "scrapy__item_loader_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "sqlalchemy__event_dispatch_core__hard3_001",
+        "sqlparse__parse_format_core__001",
+        "sqlparse__parse_split_core__001",
+        "sqlparse__token_tree_core__001",
+        "starlette__route_matching_core__hard3_001",
+        "tenacity__retry_state_core__hard3_001",
+        "tox__factor_expression_core__hard3_001",
+        "trafaret__validation_rules_core__hard3_001",
+        "transitions__state_machine_core__hard3_001",
+        "virtualenv__interpreter_spec_core__hard3_001",
+        "websockets__handshake_parse_core__001",
+        "werkzeug__routing_core__001",
+        "wheel__metadata_normalize_core__hard3_001",
+        "wsproto__frame_parse_core__001",
+        "yamale__schema_validate_core__hard3_001",
+        "yarl__url_model_core__001"
+      ],
+      "passes": [
+        55,
+        51,
+        50,
+        24,
+        27,
+        16
+      ],
+      "rates": [
+        72.36842105263158,
+        67.10526315789474,
+        65.78947368421052,
+        31.57894736842105,
+        35.526315789473685,
+        21.05263157894737
+      ]
+    },
+    {
+      "kind": "lift_type",
+      "name": "Composite",
+      "n": 18,
+      "task_ids": [
+        "cookiecutter__repo_finder_core__hard3_001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "diskcache__eviction_policy_core__hard3_001",
+        "flake8__plugin_options_core__hard3_001",
+        "importlib_resources__traversable_tree_core__hard3_001",
+        "jupyter_server__extension_config_core__hard3_001",
+        "keyring__backend_select_core__hard3_001",
+        "mkdocs__plugin_config_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001",
+        "pyramid__configurator_action_core__hard3_001",
+        "pytest__fixture_resolve_core__001",
+        "pytest__ini_markers_core__001",
+        "pytest__marker_registry_core__hard3_001",
+        "pytest__skipif_eval_core__001",
+        "requests_cache__cache_key_core__hard3_001",
+        "responses__request_matcher_core__hard3_001",
+        "sphinx__extension_registry_core__hard3_001",
+        "stevedore__extension_manager_core__hard3_001"
+      ],
+      "passes": [
+        9,
+        7,
+        7,
+        4,
+        5,
+        4
+      ],
+      "rates": [
+        50.0,
+        38.888888888888886,
+        38.888888888888886,
+        22.22222222222222,
+        27.77777777777778,
+        22.22222222222222
+      ]
+    },
+    {
+      "kind": "mechanism",
+      "name": "Code dependencies",
+      "n": 139,
+      "task_ids": [
+        "aiohttp__url_params_core__hard3_001",
+        "alembic__revision_map_core__hard3_001",
+        "apscheduler__cron_trigger_core__hard3_001",
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "attrs__validators_core__001",
+        "babel__plural_core__001",
+        "bidict__bidirectional_map_core__001",
+        "bleach__sanitize_core__001",
+        "blinker__signal_registry_core__001",
+        "build__pyproject_backend_core__hard3_001",
+        "cachetools__cache_eviction_core__001",
+        "cattrs__structure_core__001",
+        "cerberus__schema_validate_core__001",
+        "chameleon__template_compile_core__001",
+        "click__lazy_command_core__hard3_001",
+        "click__option_parser__001",
+        "configobj__roundtrip_config_core__001",
+        "cookiecutter__repo_finder_core__hard3_001",
+        "coverage__config_merge_core__001",
+        "coverage__glob_matcher_core__001",
+        "coverage__path_remap_core__001",
+        "coverage__report_core__001",
+        "coverage__source_selection_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "deepdiff__deep_compare_core__001",
+        "diskcache__eviction_policy_core__hard3_001",
+        "distlib__wheel_metadata_core__hard3_001",
+        "dynaconf__settings_merge_core__001",
+        "email_validator__validate_core__001",
+        "environs__typed_env_core__001",
+        "faker__provider_core__001",
+        "flake8__plugin_options_core__hard3_001",
+        "flask__route_dispatch_core__001",
+        "fs__url_opener_core__hard3_001",
+        "fsspec__url_chain_core__hard3_001",
+        "glom__spec_eval_core__hard3_001",
+        "h11__message_parse_core__001",
+        "h2__frame_parse_core__001",
+        "httpx__request_model_core__001",
+        "humanize__naturaltime_core__001",
+        "importlib_metadata__entry_points_core__001",
+        "importlib_resources__traversable_tree_core__hard3_001",
+        "installer__wheel_record_core__hard3_001",
+        "intervaltree__interval_tree_core__001",
+        "isodate__duration_parse_core__001",
+        "isort__settings_resolver_core__hard3_001",
+        "itsdangerous__timed_serializer_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "json5__parse_core__001",
+        "jsonpath_ng__expression_eval_core__001",
+        "jsonschema__validator_core__001",
+        "jupyter_core__paths_resolver_core__hard3_001",
+        "jupyter_server__extension_config_core__hard3_001",
+        "keyring__backend_select_core__hard3_001",
+        "lark__grammar_loader_core__001",
+        "lark__parse_tree_core__001",
+        "lark__visitor_transform_core__001",
+        "license_expression__policy_core__hard3_001",
+        "mako__lexer_expression_core__001",
+        "markdown__extensions_core__001",
+        "markdown_it__commonmark_render__001",
+        "marshmallow__schema_core__001",
+        "mkdocs__plugin_config_core__hard3_001",
+        "msgpack__pack_unpack_core__001",
+        "multidict__multidict_mutation_core__hard3_001",
+        "networkx__dag_topo_core__001",
+        "packaging__requirement_marker_specifier__001",
+        "parsel__selector_namespace_core__hard3_001",
+        "parso__python_parse_core__001",
+        "passlib__hash_context_core__001",
+        "pathvalidate__sanitize_core__001",
+        "pendulum__parse_format_core__001",
+        "phonenumbers__parse_format_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "pluggy__hook_call_order__001",
+        "pluggy__hook_specs_core__001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001",
+        "pydantic__field_validator_core__hard3_001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "pygments__formatter_core__001",
+        "pygments__lexer_core__001",
+        "pyramid__configurator_action_core__hard3_001",
+        "pytest__fixture_resolve_core__001",
+        "pytest__ini_markers_core__001",
+        "pytest__mark_expression_core__001",
+        "pytest__marker_registry_core__hard3_001",
+        "pytest__skipif_eval_core__001",
+        "python_box__config_box_core__001",
+        "python_dateutil__relativedelta_core__001",
+        "python_dateutil__rrule_core__001",
+        "python_dotenv__env_parse_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "python_multipart__form_parse_core__001",
+        "pyyaml__safe_load_dump__001",
+        "readme_renderer__content_type_core__hard3_001",
+        "redis__resp_parser_core__001",
+        "referencing__json_schema_refs_core__001",
+        "requests_cache__cache_key_core__hard3_001",
+        "responses__request_matcher_core__hard3_001",
+        "returns__result_pipeline_core__hard3_001",
+        "rfc3986__uri_parse_core__001",
+        "rich__markup_parse_core__001",
+        "ruamel_yaml__roundtrip_core__001",
+        "scrapy__item_loader_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "sortedcontainers__sorted_list_core__001",
+        "sphinx__extension_registry_core__hard3_001",
+        "sqlalchemy__event_dispatch_core__hard3_001",
+        "sqlparse__format_filters_core__001",
+        "sqlparse__parse_format_core__001",
+        "sqlparse__parse_split_core__001",
+        "sqlparse__token_tree_core__001",
+        "starlette__route_matching_core__hard3_001",
+        "stevedore__extension_manager_core__hard3_001",
+        "tabulate__table_format_core__001",
+        "tenacity__retry_state_core__hard3_001",
+        "tomlkit__roundtrip_document__001",
+        "tox__factor_expression_core__hard3_001",
+        "trafaret__validation_rules_core__hard3_001",
+        "transitions__state_machine_core__hard3_001",
+        "typer__command_parser_core__001",
+        "urllib3__retry_backoff_core__001",
+        "virtualenv__interpreter_spec_core__hard3_001",
+        "voluptuous__schema_validate_core__001",
+        "websockets__handshake_parse_core__001",
+        "werkzeug__routing_core__001",
+        "wheel__metadata_normalize_core__hard3_001",
+        "xmltodict__xml_parse_core__001",
+        "yamale__schema_validate_core__hard3_001",
+        "yarl__url_model_core__001"
+      ],
+      "passes": [
+        111,
+        102,
+        96,
+        64,
+        59,
+        31
+      ],
+      "rates": [
+        79.85611510791367,
+        73.38129496402878,
+        69.06474820143885,
+        46.0431654676259,
+        42.44604316546763,
+        22.302158273381295
+      ]
+    },
+    {
+      "kind": "mechanism",
+      "name": "Data and state",
+      "n": 127,
+      "task_ids": [
+        "aiohttp__url_params_core__hard3_001",
+        "alembic__revision_map_core__hard3_001",
+        "apscheduler__cron_trigger_core__hard3_001",
+        "arrow__parse_format_core__001",
+        "astroid__nodes_core__001",
+        "attrs__validators_core__001",
+        "babel__plural_core__001",
+        "bidict__bidirectional_map_core__001",
+        "bleach__sanitize_core__001",
+        "blinker__signal_registry_core__001",
+        "boltons__iterutils_core__001",
+        "build__pyproject_backend_core__hard3_001",
+        "cachetools__cache_eviction_core__001",
+        "cattrs__structure_core__001",
+        "celery__signal_dispatch_core__hard3_001",
+        "cerberus__schema_validate_core__001",
+        "chameleon__template_compile_core__001",
+        "click__option_parser__001",
+        "configobj__roundtrip_config_core__001",
+        "coverage__report_core__001",
+        "coverage__source_selection_core__001",
+        "croniter__cron_parse_core__001",
+        "dataclasses_json__serde_core__001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "decorator__signature_preserving_core__001",
+        "deepdiff__deep_compare_core__001",
+        "distlib__wheel_metadata_core__hard3_001",
+        "dynaconf__settings_merge_core__001",
+        "email_validator__validate_core__001",
+        "environs__typed_env_core__001",
+        "faker__provider_core__001",
+        "flask__route_dispatch_core__001",
+        "glom__spec_eval_core__hard3_001",
+        "h11__message_parse_core__001",
+        "h2__frame_parse_core__001",
+        "hatch__project_metadata_core__hard3_001",
+        "httpx__request_model_core__001",
+        "humanize__naturaltime_core__001",
+        "importlib_metadata__entry_points_core__001",
+        "importlib_resources__traversable_tree_core__hard3_001",
+        "installer__wheel_record_core__hard3_001",
+        "intervaltree__interval_tree_core__001",
+        "isodate__duration_parse_core__001",
+        "itsdangerous__timed_serializer_core__001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "json5__parse_core__001",
+        "json_logic__evaluator_core__hard3_001",
+        "jsonpath_ng__expression_eval_core__001",
+        "jsonpointer__resolve_core__001",
+        "jsonschema__validator_core__001",
+        "keyring__backend_select_core__hard3_001",
+        "lark__grammar_loader_core__001",
+        "lark__parse_tree_core__001",
+        "lark__visitor_transform_core__001",
+        "license_expression__policy_core__hard3_001",
+        "mako__lexer_expression_core__001",
+        "markdown__extensions_core__001",
+        "markdown_it__commonmark_render__001",
+        "marshmallow__schema_core__001",
+        "msgpack__pack_unpack_core__001",
+        "multidict__multidict_mutation_core__hard3_001",
+        "networkx__dag_topo_core__001",
+        "packaging__requirement_marker_specifier__001",
+        "parse__format_parser_core__001",
+        "parsel__selector_namespace_core__hard3_001",
+        "parso__python_parse_core__001",
+        "passlib__hash_context_core__001",
+        "pathvalidate__sanitize_core__001",
+        "pendulum__parse_format_core__001",
+        "phonenumbers__parse_format_core__001",
+        "pluggy__hook_call_order__001",
+        "pluggy__hook_specs_core__001",
+        "poetry_core__dependency_groups_core__hard3_001",
+        "pydantic__field_validator_core__hard3_001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "pygments__formatter_core__001",
+        "pygments__lexer_core__001",
+        "pytest__fixture_resolve_core__001",
+        "pytest__ini_markers_core__001",
+        "pytest__mark_expression_core__001",
+        "pytest__marker_registry_core__hard3_001",
+        "python_box__config_box_core__001",
+        "python_dateutil__relativedelta_core__001",
+        "python_dateutil__rrule_core__001",
+        "python_dotenv__env_parse_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "python_multipart__form_parse_core__001",
+        "pyyaml__safe_load_dump__001",
+        "readme_renderer__content_type_core__hard3_001",
+        "redis__resp_parser_core__001",
+        "referencing__json_schema_refs_core__001",
+        "requests_cache__cache_key_core__hard3_001",
+        "responses__request_matcher_core__hard3_001",
+        "returns__result_pipeline_core__hard3_001",
+        "rfc3986__uri_parse_core__001",
+        "rich__markup_parse_core__001",
+        "ruamel_yaml__roundtrip_core__001",
+        "schema__nested_validate_core__hard3_001",
+        "scrapy__item_loader_core__hard3_001",
+        "setuptools_scm__version_normalize_core__hard3_001",
+        "sortedcontainers__sorted_list_core__001",
+        "sqlalchemy__event_dispatch_core__hard3_001",
+        "sqlparse__format_filters_core__001",
+        "sqlparse__parse_format_core__001",
+        "sqlparse__parse_split_core__001",
+        "sqlparse__token_tree_core__001",
+        "starlette__route_matching_core__hard3_001",
+        "tabulate__table_format_core__001",
+        "tenacity__retry_state_core__hard3_001",
+        "tomlkit__roundtrip_document__001",
+        "tox__factor_expression_core__hard3_001",
+        "trafaret__validation_rules_core__hard3_001",
+        "transitions__state_machine_core__hard3_001",
+        "urllib3__retry_backoff_core__001",
+        "voluptuous__schema_validate_core__001",
+        "websockets__handshake_parse_core__001",
+        "werkzeug__routing_core__001",
+        "wheel__metadata_normalize_core__hard3_001",
+        "wsproto__frame_parse_core__001",
+        "xmltodict__xml_parse_core__001",
+        "yamale__schema_validate_core__hard3_001",
+        "yarl__url_model_core__001"
+      ],
+      "passes": [
+        102,
+        96,
+        91,
+        61,
+        56,
+        30
+      ],
+      "rates": [
+        80.31496062992126,
+        75.59055118110236,
+        71.65354330708661,
+        48.031496062992126,
+        44.09448818897638,
+        23.62204724409449
+      ]
+    },
+    {
+      "kind": "mechanism",
+      "name": "Framework mechanisms",
+      "n": 71,
+      "task_ids": [
+        "astroid__nodes_core__001",
+        "attrs__validators_core__001",
+        "blinker__signal_registry_core__001",
+        "cattrs__structure_core__001",
+        "celery__signal_dispatch_core__hard3_001",
+        "cerberus__schema_validate_core__001",
+        "chameleon__template_compile_core__001",
+        "click__lazy_command_core__hard3_001",
+        "click__option_parser__001",
+        "coverage__config_merge_core__001",
+        "coverage__report_core__001",
+        "coverage__source_selection_core__001",
+        "dataclasses_json__serde_core__001",
+        "decorator__signature_preserving_core__001",
+        "distlib__wheel_metadata_core__hard3_001",
+        "dynaconf__settings_merge_core__001",
+        "faker__provider_core__001",
+        "flake8__plugin_options_core__hard3_001",
+        "flask__route_dispatch_core__001",
+        "fs__url_opener_core__hard3_001",
+        "fsspec__url_chain_core__hard3_001",
+        "hatch__project_metadata_core__hard3_001",
+        "importlib_metadata__entry_points_core__001",
+        "importlib_resources__traversable_tree_core__hard3_001",
+        "isort__settings_resolver_core__hard3_001",
+        "jinja2__compile_render_core__001",
+        "jinja2__extensions_core__001",
+        "jinja2__filters_tests_core__001",
+        "jinja2__lexer_parser_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jupyter_server__extension_config_core__hard3_001",
+        "keyring__backend_select_core__hard3_001",
+        "lark__grammar_loader_core__001",
+        "lark__parse_tree_core__001",
+        "lark__visitor_transform_core__001",
+        "mako__lexer_expression_core__001",
+        "markdown__extensions_core__001",
+        "marshmallow__schema_core__001",
+        "mkdocs__plugin_config_core__hard3_001",
+        "networkx__dag_topo_core__001",
+        "passlib__hash_context_core__001",
+        "pendulum__parse_format_core__001",
+        "phonenumbers__parse_format_core__001",
+        "pluggy__hook_call_order__001",
+        "pluggy__hook_specs_core__001",
+        "pluggy__hook_wrapper_core__hard3_001",
+        "pydantic__field_validator_core__hard3_001",
+        "pydantic_settings__env_source_core__001",
+        "pydantic_v1__validation_error_core__001",
+        "pygments__formatter_core__001",
+        "pygments__lexer_core__001",
+        "pyramid__configurator_action_core__hard3_001",
+        "pytest__fixture_resolve_core__001",
+        "pytest__ini_markers_core__001",
+        "pytest__mark_expression_core__001",
+        "pytest__marker_registry_core__hard3_001",
+        "pytest__skipif_eval_core__001",
+        "python_dotenv__env_parse_core__001",
+        "pyyaml__safe_load_dump__001",
+        "rich__markup_parse_core__001",
+        "ruamel_yaml__roundtrip_core__001",
+        "scrapy__item_loader_core__hard3_001",
+        "sphinx__extension_registry_core__hard3_001",
+        "sqlalchemy__event_dispatch_core__hard3_001",
+        "starlette__route_matching_core__hard3_001",
+        "stevedore__extension_manager_core__hard3_001",
+        "tox__factor_expression_core__hard3_001",
+        "transitions__state_machine_core__hard3_001",
+        "typer__command_parser_core__001",
+        "voluptuous__schema_validate_core__001",
+        "werkzeug__routing_core__001"
+      ],
+      "passes": [
+        56,
+        52,
+        47,
+        29,
+        31,
+        12
+      ],
+      "rates": [
+        78.87323943661971,
+        73.2394366197183,
+        66.19718309859155,
+        40.84507042253521,
+        43.66197183098591,
+        16.901408450704224
+      ]
+    },
+    {
+      "kind": "mechanism",
+      "name": "Environment and resources",
+      "n": 49,
+      "task_ids": [
+        "babel__plural_core__001",
+        "build__pyproject_backend_core__hard3_001",
+        "click__option_parser__001",
+        "configobj__roundtrip_config_core__001",
+        "cookiecutter__repo_finder_core__hard3_001",
+        "coverage__config_merge_core__001",
+        "coverage__glob_matcher_core__001",
+        "coverage__path_remap_core__001",
+        "coverage__report_core__001",
+        "coverage__source_selection_core__001",
+        "croniter__cron_parse_core__001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "diskcache__eviction_policy_core__hard3_001",
+        "distlib__wheel_metadata_core__hard3_001",
+        "dynaconf__settings_merge_core__001",
+        "environs__typed_env_core__001",
+        "faker__provider_core__001",
+        "filelock__reentrant_lock_core__001",
+        "flake8__plugin_options_core__hard3_001",
+        "fs__url_opener_core__hard3_001",
+        "fsspec__url_chain_core__hard3_001",
+        "hatch__project_metadata_core__hard3_001",
+        "httpx__request_model_core__001",
+        "importlib_metadata__entry_points_core__001",
+        "importlib_resources__traversable_tree_core__hard3_001",
+        "installer__wheel_record_core__hard3_001",
+        "isort__settings_resolver_core__hard3_001",
+        "itsdangerous__timed_serializer_core__001",
+        "jinja2__loader_inheritance_core__001",
+        "jupyter_core__paths_resolver_core__hard3_001",
+        "jupyter_server__extension_config_core__hard3_001",
+        "lark__grammar_loader_core__001",
+        "mkdocs__plugin_config_core__hard3_001",
+        "pathvalidate__sanitize_core__001",
+        "phonenumbers__parse_format_core__001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "poetry_core__dependency_groups_core__hard3_001",
+        "pydantic_settings__env_source_core__001",
+        "pytest__ini_markers_core__001",
+        "pytest__skipif_eval_core__001",
+        "python_decouple__config_repository_core__001",
+        "python_dotenv__env_parse_core__001",
+        "python_frontmatter__roundtrip_core__001",
+        "python_multipart__form_parse_core__001",
+        "tabulate__table_format_core__001",
+        "urllib3__retry_backoff_core__001",
+        "virtualenv__interpreter_spec_core__hard3_001",
+        "wsproto__frame_parse_core__001",
+        "xmltodict__xml_parse_core__001"
+      ],
+      "passes": [
+        37,
+        35,
+        31,
+        16,
+        17,
+        12
+      ],
+      "rates": [
+        75.51020408163265,
+        71.42857142857143,
+        63.265306122448976,
+        32.6530612244898,
+        34.69387755102041,
+        24.489795918367346
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+      "sha256": "eb11cbcc40c809d8033c23d79225d8ef522eb339726c16ac6a572612666b285f"
+    },
+    {
+      "path": "docs/paper/figures/data/figA_task_coverage.json",
+      "sha256": "dd607df5ed8695bc9ea6d81aa00a29ef30ec51693e5e0e1a8aae87463ac8b57c"
+    },
+    {
+      "path": "docs/paper/writing/python150_membership.json",
+      "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+    }
+  ],
+  "adjusted_footprint": {
+    "schema_version": 1,
+    "sample": {
+      "tasks": 115,
+      "artifacts": 485,
+      "repositories": 97,
+      "all_successes": 492,
+      "singleton_successes_excluded": 7,
+      "singleton_task_ids": [
+        "aiohttp__url_params_core__hard3_001",
+        "dateutil__zone_resolver_core__hard3_001",
+        "installer__wheel_record_core__hard3_001",
+        "platformdirs__app_dirs_core__hard3_001",
+        "responses__request_matcher_core__hard3_001",
+        "tox__factor_expression_core__hard3_001",
+        "virtualenv__interpreter_spec_core__hard3_001"
+      ],
+      "tasks_by_success_count": {
+        "0": 28,
+        "1": 7,
+        "2": 9,
+        "3": 22,
+        "4": 36,
+        "5": 31,
+        "6": 17
+      },
+      "included_per_model": [
+        113,
+        107,
+        99,
+        68,
+        63,
+        35
+      ],
+      "pairwise_overlap": [
+        [
+          113,
+          105,
+          97,
+          67,
+          63,
+          33
+        ],
+        [
+          105,
+          107,
+          92,
+          64,
+          61,
+          35
+        ],
+        [
+          97,
+          92,
+          99,
+          59,
+          57,
+          33
+        ],
+        [
+          67,
+          64,
+          59,
+          68,
+          41,
+          24
+        ],
+        [
+          63,
+          61,
+          57,
+          41,
+          63,
+          25
+        ],
+        [
+          33,
+          35,
+          33,
+          24,
+          25,
+          35
+        ]
+      ],
+      "lift_types": {
+        "Adapted": 55,
+        "Direct": 52,
+        "Composite": 8
+      }
+    },
+    "models": [
+      {
+        "id": "deepseek-v4-pro",
+        "short": "Pro",
+        "display": "DeepSeek V4 Pro"
+      },
+      {
+        "id": "deepseek-v4-flash",
+        "short": "Flash",
+        "display": "DeepSeek V4 Flash"
+      },
+      {
+        "id": "gpt-5.6-luna",
+        "short": "Luna",
+        "display": "GPT-5.6 Luna"
+      },
+      {
+        "id": "glm-5.3-flash",
+        "short": "GLM",
+        "display": "GLM-5.3-Flash"
+      },
+      {
+        "id": "qwen3.6-35b-a3b-fp8",
+        "short": "Qwen",
+        "display": "Qwen3.6-35B-A3B-FP8"
+      },
+      {
+        "id": "gpt-oss-120b",
+        "short": "OSS",
+        "display": "GPT-OSS 120B"
+      }
+    ],
+    "estimand": {
+      "rres": "log2(RRES) = task FE + configuration FE; sum(configuration FE)=0; report 2^beta",
+      "copy": "copied_fraction = task FE + configuration FE; sum(configuration FE)=0; report 100*beta pp",
+      "center": "sum-to-zero center of configuration effects",
+      "interval": "pointwise 95% cluster-bootstrap percentile CI; not simultaneous",
+      "scope": "Successful artifacts only; no extrapolation to failed configurations on a task",
+      "bootstrap_variation": "Across sampled task/repository clusters, not repeated agent runs"
+    },
+    "analyses": {
+      "task_bootstrap": {
+        "weighting": "equal artifact weight",
+        "cluster": "task",
+        "bootstrap": {
+          "accepted": 10000,
+          "attempts": 10000,
+          "disconnected_rejected": 0,
+          "seed": 20260915,
+          "clusters": 115
+        },
+        "coefficients": [
+          [
+            0.23660390781160923,
+            0.15424735977856266
+          ],
+          [
+            0.3935325349648034,
+            0.16808294503911522
+          ],
+          [
+            -0.7081565627191018,
+            -0.2063726388927545
+          ],
+          [
+            0.6368697787154531,
+            0.1419746173406258
+          ],
+          [
+            0.14947590090218013,
+            -0.017949500071363374
+          ],
+          [
+            -0.708325559674944,
+            -0.23998278319418576
+          ]
+        ],
+        "rows": [
+          {
+            "model": "deepseek-v4-pro",
+            "short": "Pro",
+            "included_success_n": 113,
+            "rres_ratio": 1.1782158840146495,
+            "rres_ratio_ci": [
+              1.087926856754939,
+              1.2880595679044256
+            ],
+            "copy_pp": 15.424735977856265,
+            "copy_pp_ci": [
+              12.353098836416807,
+              18.56076218140069
+            ]
+          },
+          {
+            "model": "deepseek-v4-flash",
+            "short": "Flash",
+            "included_success_n": 107,
+            "rres_ratio": 1.3136059208728157,
+            "rres_ratio_ci": [
+              1.2121350362299141,
+              1.439352120212296
+            ],
+            "copy_pp": 16.808294503911522,
+            "copy_pp_ci": [
+              13.606367673717083,
+              20.166303056840437
+            ]
+          },
+          {
+            "model": "gpt-5.6-luna",
+            "short": "Luna",
+            "included_success_n": 99,
+            "rres_ratio": 0.6121017666953611,
+            "rres_ratio_ci": [
+              0.5367590257005213,
+              0.6926172357587463
+            ],
+            "copy_pp": -20.637263889275452,
+            "copy_pp_ci": [
+              -26.070567719491393,
+              -15.276404468979052
+            ]
+          },
+          {
+            "model": "glm-5.3-flash",
+            "short": "GLM",
+            "included_success_n": 68,
+            "rres_ratio": 1.554951711576473,
+            "rres_ratio_ci": [
+              1.3872527598971995,
+              1.7541896906721484
+            ],
+            "copy_pp": 14.19746173406258,
+            "copy_pp_ci": [
+              10.565707090861295,
+              17.729591219245027
+            ]
+          },
+          {
+            "model": "qwen3.6-35b-a3b-fp8",
+            "short": "Qwen",
+            "included_success_n": 63,
+            "rres_ratio": 1.1091664633042868,
+            "rres_ratio_ci": [
+              1.015745491618581,
+              1.2272006234581492
+            ],
+            "copy_pp": -1.7949500071363373,
+            "copy_pp_ci": [
+              -5.892978507430624,
+              2.4496789765574687
+            ]
+          },
+          {
+            "model": "gpt-oss-120b",
+            "short": "OSS",
+            "included_success_n": 35,
+            "rres_ratio": 0.6120300694385756,
+            "rres_ratio_ci": [
+              0.4615536677157324,
+              0.767095164354125
+            ],
+            "copy_pp": -23.998278319418574,
+            "copy_pp_ci": [
+              -31.395282294967004,
+              -17.027793967779832
+            ]
+          }
+        ]
+      },
+      "task_equal_weight": {
+        "weighting": "1/k_t per artifact",
+        "cluster": "task",
+        "bootstrap": {
+          "accepted": 10000,
+          "attempts": 10000,
+          "disconnected_rejected": 0,
+          "seed": 20260915,
+          "clusters": 115
+        },
+        "coefficients": [
+          [
+            0.2685836276655107,
+            0.15571337913843164
+          ],
+          [
+            0.4304702958739088,
+            0.16980741370964772
+          ],
+          [
+            -0.7776714445004678,
+            -0.21244549851653796
+          ],
+          [
+            0.6609419961256017,
+            0.14827300319941028
+          ],
+          [
+            0.1626035125031977,
+            -0.013653720860025805
+          ],
+          [
+            -0.7449279876677509,
+            -0.24769457667092587
+          ]
+        ],
+        "rows": [
+          {
+            "model": "deepseek-v4-pro",
+            "short": "Pro",
+            "included_success_n": 113,
+            "rres_ratio": 1.2046246013554378,
+            "rres_ratio_ci": [
+              1.1002723686263622,
+              1.3328887083977816
+            ],
+            "copy_pp": 15.571337913843164,
+            "copy_pp_ci": [
+              12.494096957108312,
+              18.780909804739732
+            ]
+          },
+          {
+            "model": "deepseek-v4-flash",
+            "short": "Flash",
+            "included_success_n": 107,
+            "rres_ratio": 1.347672825395147,
+            "rres_ratio_ci": [
+              1.235360607112496,
+              1.4877704677104482
+            ],
+            "copy_pp": 16.980741370964772,
+            "copy_pp_ci": [
+              13.779346147157876,
+              20.288424812429696
+            ]
+          },
+          {
+            "model": "gpt-5.6-luna",
+            "short": "Luna",
+            "included_success_n": 99,
+            "rres_ratio": 0.5833075106571067,
+            "rres_ratio_ci": [
+              0.5008329723606193,
+              0.6738838166472033
+            ],
+            "copy_pp": -21.244549851653797,
+            "copy_pp_ci": [
+              -26.84163056868308,
+              -15.658356363904549
+            ]
+          },
+          {
+            "model": "glm-5.3-flash",
+            "short": "GLM",
+            "included_success_n": 68,
+            "rres_ratio": 1.5811146628639374,
+            "rres_ratio_ci": [
+              1.409614917736879,
+              1.782047271726027
+            ],
+            "copy_pp": 14.827300319941028,
+            "copy_pp_ci": [
+              11.113320283098645,
+              18.333950030102105
+            ]
+          },
+          {
+            "model": "qwen3.6-35b-a3b-fp8",
+            "short": "Qwen",
+            "included_success_n": 63,
+            "rres_ratio": 1.1193052342257777,
+            "rres_ratio_ci": [
+              1.0235358248386797,
+              1.2394843575374919
+            ],
+            "copy_pp": -1.3653720860025804,
+            "copy_pp_ci": [
+              -5.434735008644346,
+              2.7839579274196575
+            ]
+          },
+          {
+            "model": "gpt-oss-120b",
+            "short": "OSS",
+            "included_success_n": 35,
+            "rres_ratio": 0.5966976550225406,
+            "rres_ratio_ci": [
+              0.4502338972992383,
+              0.7525650041851036
+            ],
+            "copy_pp": -24.76945766709259,
+            "copy_pp_ci": [
+              -32.08726279993603,
+              -17.828627071652726
+            ]
+          }
+        ]
+      },
+      "repository_bootstrap": {
+        "weighting": "equal artifact weight",
+        "cluster": "repository",
+        "bootstrap": {
+          "accepted": 10000,
+          "attempts": 10000,
+          "disconnected_rejected": 0,
+          "seed": 20260916,
+          "clusters": 97
+        },
+        "coefficients": [
+          [
+            0.23660390781160923,
+            0.15424735977856266
+          ],
+          [
+            0.3935325349648034,
+            0.16808294503911522
+          ],
+          [
+            -0.7081565627191018,
+            -0.2063726388927545
+          ],
+          [
+            0.6368697787154531,
+            0.1419746173406258
+          ],
+          [
+            0.14947590090218013,
+            -0.017949500071363374
+          ],
+          [
+            -0.708325559674944,
+            -0.23998278319418576
+          ]
+        ],
+        "rows": [
+          {
+            "model": "deepseek-v4-pro",
+            "short": "Pro",
+            "included_success_n": 113,
+            "rres_ratio": 1.1782158840146495,
+            "rres_ratio_ci": [
+              1.0825197009764367,
+              1.2930257889455306
+            ],
+            "copy_pp": 15.424735977856265,
+            "copy_pp_ci": [
+              12.161709906268408,
+              18.85727305904967
+            ]
+          },
+          {
+            "model": "deepseek-v4-flash",
+            "short": "Flash",
+            "included_success_n": 107,
+            "rres_ratio": 1.3136059208728157,
+            "rres_ratio_ci": [
+              1.2137403135525555,
+              1.4356397348157606
+            ],
+            "copy_pp": 16.808294503911522,
+            "copy_pp_ci": [
+              13.359007356505806,
+              20.346433063128302
+            ]
+          },
+          {
+            "model": "gpt-5.6-luna",
+            "short": "Luna",
+            "included_success_n": 99,
+            "rres_ratio": 0.6121017666953611,
+            "rres_ratio_ci": [
+              0.53460333629638,
+              0.6935242878825559
+            ],
+            "copy_pp": -20.637263889275452,
+            "copy_pp_ci": [
+              -26.180548765154306,
+              -15.166980461120803
+            ]
+          },
+          {
+            "model": "glm-5.3-flash",
+            "short": "GLM",
+            "included_success_n": 68,
+            "rres_ratio": 1.554951711576473,
+            "rres_ratio_ci": [
+              1.387327877478393,
+              1.750899523058731
+            ],
+            "copy_pp": 14.19746173406258,
+            "copy_pp_ci": [
+              10.489999476873864,
+              17.886504823189828
+            ]
+          },
+          {
+            "model": "qwen3.6-35b-a3b-fp8",
+            "short": "Qwen",
+            "included_success_n": 63,
+            "rres_ratio": 1.1091664633042868,
+            "rres_ratio_ci": [
+              1.0101478083676754,
+              1.2163884158876443
+            ],
+            "copy_pp": -1.7949500071363373,
+            "copy_pp_ci": [
+              -6.238918009532795,
+              2.5282876888991153
+            ]
+          },
+          {
+            "model": "gpt-oss-120b",
+            "short": "OSS",
+            "included_success_n": 35,
+            "rres_ratio": 0.6120300694385756,
+            "rres_ratio_ci": [
+              0.4763204287445049,
+              0.7614866371473775
+            ],
+            "copy_pp": -23.998278319418574,
+            "copy_pp_ci": [
+              -30.96894641695025,
+              -17.24986234571963
+            ]
+          }
+        ]
+      }
+    },
+    "checks": {
+      "task_bootstrap_dense_max_error": 2.4424906541753444e-15,
+      "task_equal_weight_dense_max_error": 5.051514762044462e-15,
+      "comparison_graph_connected": true,
+      "disconnected_guard_checked": true,
+      "within_design_rank": 5,
+      "sum_centered_all_replicates": true,
+      "task_equal_same_sign": [
+        [
+          true,
+          true
+        ],
+        [
+          true,
+          true
+        ],
+        [
+          true,
+          true
+        ],
+        [
+          true,
+          true
+        ],
+        [
+          true,
+          true
+        ],
+        [
+          true,
+          true
+        ]
+      ],
+      "task_equal_rank_order_same": [
+        false,
+        true
+      ],
+      "task_equal_max_ratio_relative_change": 0.047041615634782374,
+      "task_equal_max_copy_pp_change": 0.7711793476740114
+    },
+    "observations": [
+      {
+        "task_id": "apscheduler__cron_trigger_core__hard3_001",
+        "repository": "github__agronholm__apscheduler",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 7.59322,
+        "copied_fraction": 0.573661,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "apscheduler__cron_trigger_core__hard3_001",
+        "repository": "github__agronholm__apscheduler",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 8.983051,
+        "copied_fraction": 0.573585,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "apscheduler__cron_trigger_core__hard3_001",
+        "repository": "github__agronholm__apscheduler",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 2.237288,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "arrow__parse_format_core__001",
+        "repository": "github__arrow_py__arrow",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.686354,
+        "copied_fraction": 0.913452,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "arrow__parse_format_core__001",
+        "repository": "github__arrow_py__arrow",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.898846,
+        "copied_fraction": 0.988293,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "astroid__nodes_core__001",
+        "repository": "github__pycqa__astroid",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.403068,
+        "copied_fraction": 0.955751,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "astroid__nodes_core__001",
+        "repository": "github__pycqa__astroid",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.068676,
+        "copied_fraction": 0.963382,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "attrs__validators_core__001",
+        "repository": "github__python_attrs__attrs",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.884291,
+        "copied_fraction": 0.995667,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "attrs__validators_core__001",
+        "repository": "github__python_attrs__attrs",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.98493,
+        "copied_fraction": 0.997147,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "attrs__validators_core__001",
+        "repository": "github__python_attrs__attrs",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.095785,
+        "copied_fraction": 0.149333,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "attrs__validators_core__001",
+        "repository": "github__python_attrs__attrs",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.067433,
+        "copied_fraction": 0.983489,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "babel__plural_core__001",
+        "repository": "github__python_babel__babel",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.58529,
+        "copied_fraction": 0.920803,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "babel__plural_core__001",
+        "repository": "github__python_babel__babel",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.991965,
+        "copied_fraction": 0.980685,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "babel__plural_core__001",
+        "repository": "github__python_babel__babel",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.413473,
+        "copied_fraction": 0.783259,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "babel__plural_core__001",
+        "repository": "github__python_babel__babel",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.728059,
+        "copied_fraction": 0.968591,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "bidict__bidirectional_map_core__001",
+        "repository": "github__jab__bidict",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.008539,
+        "copied_fraction": 0.988711,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "bidict__bidirectional_map_core__001",
+        "repository": "github__jab__bidict",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.998102,
+        "copied_fraction": 0.989544,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "bidict__bidirectional_map_core__001",
+        "repository": "github__jab__bidict",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.291271,
+        "copied_fraction": 0.084691,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "bidict__bidirectional_map_core__001",
+        "repository": "github__jab__bidict",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 2.036053,
+        "copied_fraction": 0.513048,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "bidict__bidirectional_map_core__001",
+        "repository": "github__jab__bidict",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.196395,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "bleach__sanitize_core__001",
+        "repository": "github__mozilla__bleach",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.933479,
+        "copied_fraction": 0.99399,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "bleach__sanitize_core__001",
+        "repository": "github__mozilla__bleach",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.024044,
+        "copied_fraction": 0.048485,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "bleach__sanitize_core__001",
+        "repository": "github__mozilla__bleach",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.945719,
+        "copied_fraction": 0.980354,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "repository": "github__pallets_eco__blinker",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 9.0,
+        "copied_fraction": 0.578431,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "repository": "github__pallets_eco__blinker",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 18.411765,
+        "copied_fraction": 0.916933,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "repository": "github__pallets_eco__blinker",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 4.617647,
+        "copied_fraction": 0.11465,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "repository": "github__pallets_eco__blinker",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 36.176471,
+        "copied_fraction": 0.72439,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "blinker__signal_registry_core__001",
+        "repository": "github__pallets_eco__blinker",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 13.0,
+        "copied_fraction": 0.900452,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.370968,
+        "copied_fraction": 0.586957,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.549194,
+        "copied_fraction": 0.941263,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.289516,
+        "copied_fraction": 0.158774,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.965323,
+        "copied_fraction": 0.802005,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.377419,
+        "copied_fraction": 0.491453,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "boltons__iterutils_core__001",
+        "repository": "github__mahmoud__boltons",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.237903,
+        "copied_fraction": 0.440678,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.759815,
+        "copied_fraction": 0.978723,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.767898,
+        "copied_fraction": 0.977444,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.69746,
+        "copied_fraction": 0.746689,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.762125,
+        "copied_fraction": 0.975758,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.721709,
+        "copied_fraction": 0.8624,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cachetools__cache_eviction_core__001",
+        "repository": "github__tkem__cachetools",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.844111,
+        "copied_fraction": 0.4829,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "cattrs__structure_core__001",
+        "repository": "github__python_attrs__cattrs",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.004701,
+        "copied_fraction": 0.996992,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "cattrs__structure_core__001",
+        "repository": "github__python_attrs__cattrs",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.009402,
+        "copied_fraction": 0.995675,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "cattrs__structure_core__001",
+        "repository": "github__python_attrs__cattrs",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.188381,
+        "copied_fraction": 0.074866,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "cattrs__structure_core__001",
+        "repository": "github__python_attrs__cattrs",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.835124,
+        "copied_fraction": 0.983112,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "cattrs__structure_core__001",
+        "repository": "github__python_attrs__cattrs",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.032236,
+        "copied_fraction": 0.992843,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "cerberus__schema_validate_core__001",
+        "repository": "github__pyeve__cerberus",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.90549,
+        "copied_fraction": 0.98874,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "cerberus__schema_validate_core__001",
+        "repository": "github__pyeve__cerberus",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.001961,
+        "copied_fraction": 0.960078,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "cerberus__schema_validate_core__001",
+        "repository": "github__pyeve__cerberus",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.994902,
+        "copied_fraction": 0.951912,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "chameleon__template_compile_core__001",
+        "repository": "github__malthe__chameleon",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.949022,
+        "copied_fraction": 0.967655,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "chameleon__template_compile_core__001",
+        "repository": "github__malthe__chameleon",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.951763,
+        "copied_fraction": 0.965252,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "chameleon__template_compile_core__001",
+        "repository": "github__malthe__chameleon",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.9556,
+        "copied_fraction": 0.963671,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "chameleon__template_compile_core__001",
+        "repository": "github__malthe__chameleon",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.162434,
+        "copied_fraction": 0.954417,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "click__option_parser__001",
+        "repository": "github__pallets__click",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.96694,
+        "copied_fraction": 0.998923,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "click__option_parser__001",
+        "repository": "github__pallets__click",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.00013,
+        "copied_fraction": 0.998829,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "click__option_parser__001",
+        "repository": "github__pallets__click",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.83444,
+        "copied_fraction": 0.999532,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "click__option_parser__001",
+        "repository": "github__pallets__click",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.887284,
+        "copied_fraction": 0.999707,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "configobj__roundtrip_config_core__001",
+        "repository": "github__diffsk__configobj",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.99041,
+        "copied_fraction": 0.999332,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "configobj__roundtrip_config_core__001",
+        "repository": "github__diffsk__configobj",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.991071,
+        "copied_fraction": 0.998665,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "configobj__roundtrip_config_core__001",
+        "repository": "github__diffsk__configobj",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.990741,
+        "copied_fraction": 0.999332,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "configobj__roundtrip_config_core__001",
+        "repository": "github__diffsk__configobj",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.006614,
+        "copied_fraction": 0.988502,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "coverage__config_merge_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.70991,
+        "copied_fraction": 0.927665,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__config_merge_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.803604,
+        "copied_fraction": 0.873318,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__config_merge_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.241441,
+        "copied_fraction": 0.149254,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__config_merge_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.391892,
+        "copied_fraction": 0.623301,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__config_merge_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.881081,
+        "copied_fraction": 0.317996,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.179342,
+        "copied_fraction": 0.829114,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.221339,
+        "copied_fraction": 0.641026,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.121453,
+        "copied_fraction": 0.140187,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.6958,
+        "copied_fraction": 0.750408,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.359818,
+        "copied_fraction": 0.195584,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__glob_matcher_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.138479,
+        "copied_fraction": 0.172131,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "coverage__path_remap_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.328036,
+        "copied_fraction": 0.944637,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__path_remap_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.406356,
+        "copied_fraction": 0.930168,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__path_remap_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.402951,
+        "copied_fraction": 0.861972,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__path_remap_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.330306,
+        "copied_fraction": 0.570447,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__path_remap_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.214529,
+        "copied_fraction": 0.248677,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "coverage__report_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.271663,
+        "copied_fraction": 0.755747,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "coverage__report_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.495316,
+        "copied_fraction": 0.839243,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "coverage__report_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.14637,
+        "copied_fraction": 0.216,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "coverage__source_selection_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.250862,
+        "copied_fraction": 0.801572,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "coverage__source_selection_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.265155,
+        "copied_fraction": 0.836431,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "coverage__source_selection_core__001",
+        "repository": "github__coveragepy__coveragepy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.103992,
+        "copied_fraction": 0.037915,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "croniter__cron_parse_core__001",
+        "repository": "github__pallets_eco__croniter",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.877124,
+        "copied_fraction": 0.940387,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "croniter__cron_parse_core__001",
+        "repository": "github__pallets_eco__croniter",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.926797,
+        "copied_fraction": 0.961918,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "croniter__cron_parse_core__001",
+        "repository": "github__pallets_eco__croniter",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.92549,
+        "copied_fraction": 0.950565,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "dataclasses_json__serde_core__001",
+        "repository": "github__lidatong__dataclasses_json",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.868836,
+        "copied_fraction": 0.945516,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "dataclasses_json__serde_core__001",
+        "repository": "github__lidatong__dataclasses_json",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.894477,
+        "copied_fraction": 0.93495,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "dataclasses_json__serde_core__001",
+        "repository": "github__lidatong__dataclasses_json",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.335306,
+        "copied_fraction": 0.041176,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "dataclasses_json__serde_core__001",
+        "repository": "github__lidatong__dataclasses_json",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.508876,
+        "copied_fraction": 0.692157,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "dataclasses_json__serde_core__001",
+        "repository": "github__lidatong__dataclasses_json",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.812623,
+        "copied_fraction": 0.29733,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "deepdiff__deep_compare_core__001",
+        "repository": "github__qlustered__deepdiff",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.880439,
+        "copied_fraction": 0.976488,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "deepdiff__deep_compare_core__001",
+        "repository": "github__qlustered__deepdiff",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.887481,
+        "copied_fraction": 0.96636,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 1.125,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 1.2375,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 0.6875,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "glm-5.3-flash",
+        "lift_type": "Composite",
+        "rres": 5.5,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Composite",
+        "rres": 1.55,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "diskcache__eviction_policy_core__hard3_001",
+        "repository": "github__grantjenks__python_diskcache",
+        "model": "gpt-oss-120b",
+        "lift_type": "Composite",
+        "rres": 1.325,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "distlib__wheel_metadata_core__hard3_001",
+        "repository": "github__pypa__distlib",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 3.133333,
+        "copied_fraction": 0.042553,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "distlib__wheel_metadata_core__hard3_001",
+        "repository": "github__pypa__distlib",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.633333,
+        "copied_fraction": 0.037975,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "distlib__wheel_metadata_core__hard3_001",
+        "repository": "github__pypa__distlib",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 2.9,
+        "copied_fraction": 0.045977,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "distlib__wheel_metadata_core__hard3_001",
+        "repository": "github__pypa__distlib",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 4.866667,
+        "copied_fraction": 0.027397,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "distlib__wheel_metadata_core__hard3_001",
+        "repository": "github__pypa__distlib",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 3.1,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "dynaconf__settings_merge_core__001",
+        "repository": "github__dynaconf__dynaconf",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.301403,
+        "copied_fraction": 0.920936,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "dynaconf__settings_merge_core__001",
+        "repository": "github__dynaconf__dynaconf",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.141413,
+        "copied_fraction": 0.992825,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "dynaconf__settings_merge_core__001",
+        "repository": "github__dynaconf__dynaconf",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.047895,
+        "copied_fraction": 0.067103,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "email_validator__validate_core__001",
+        "repository": "github__joshdata__python_email_validator",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.972141,
+        "copied_fraction": 0.99095,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "email_validator__validate_core__001",
+        "repository": "github__joshdata__python_email_validator",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.967742,
+        "copied_fraction": 0.990909,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "email_validator__validate_core__001",
+        "repository": "github__joshdata__python_email_validator",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.978006,
+        "copied_fraction": 0.97901,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "email_validator__validate_core__001",
+        "repository": "github__joshdata__python_email_validator",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.035191,
+        "copied_fraction": 0.73796,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "environs__typed_env_core__001",
+        "repository": "github__sloria__environs",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.694087,
+        "copied_fraction": 0.909259,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "environs__typed_env_core__001",
+        "repository": "github__sloria__environs",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.989717,
+        "copied_fraction": 0.980519,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "environs__typed_env_core__001",
+        "repository": "github__sloria__environs",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.395887,
+        "copied_fraction": 0.142857,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "environs__typed_env_core__001",
+        "repository": "github__sloria__environs",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.602828,
+        "copied_fraction": 0.660981,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "environs__typed_env_core__001",
+        "repository": "github__sloria__environs",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.466581,
+        "copied_fraction": 0.024793,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "faker__provider_core__001",
+        "repository": "github__joke2k__faker",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.313846,
+        "copied_fraction": 0.993606,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "faker__provider_core__001",
+        "repository": "github__joke2k__faker",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.431371,
+        "copied_fraction": 0.995968,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "faker__provider_core__001",
+        "repository": "github__joke2k__faker",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.240602,
+        "copied_fraction": 0.934668,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "fs__url_opener_core__hard3_001",
+        "repository": "github__pyfilesystem__pyfilesystem2",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.717647,
+        "copied_fraction": 0.178082,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "fs__url_opener_core__hard3_001",
+        "repository": "github__pyfilesystem__pyfilesystem2",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.482353,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "fsspec__url_chain_core__hard3_001",
+        "repository": "github__fsspec__filesystem_spec",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 4.314607,
+        "copied_fraction": 0.085938,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "fsspec__url_chain_core__hard3_001",
+        "repository": "github__fsspec__filesystem_spec",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 5.696629,
+        "copied_fraction": 0.027613,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "fsspec__url_chain_core__hard3_001",
+        "repository": "github__fsspec__filesystem_spec",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.966292,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "glom__spec_eval_core__hard3_001",
+        "repository": "github__mahmoud__glom",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 41.588235,
+        "copied_fraction": 0.95521,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "glom__spec_eval_core__hard3_001",
+        "repository": "github__mahmoud__glom",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 3.901961,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.000681,
+        "copied_fraction": 0.997279,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.003404,
+        "copied_fraction": 0.995251,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.998639,
+        "copied_fraction": 0.994547,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.001361,
+        "copied_fraction": 0.996601,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.829816,
+        "copied_fraction": 0.902379,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h11__message_parse_core__001",
+        "repository": "github__python_hyper__h11",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 1.000681,
+        "copied_fraction": 0.997279,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "h2__frame_parse_core__001",
+        "repository": "github__python_hyper__h2",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.958534,
+        "copied_fraction": 0.2666,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "h2__frame_parse_core__001",
+        "repository": "github__python_hyper__h2",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.960463,
+        "copied_fraction": 0.27008,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "h2__frame_parse_core__001",
+        "repository": "github__python_hyper__h2",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.815815,
+        "copied_fraction": 0.122931,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "h2__frame_parse_core__001",
+        "repository": "github__python_hyper__h2",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.923819,
+        "copied_fraction": 0.222338,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "h2__frame_parse_core__001",
+        "repository": "github__python_hyper__h2",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.720347,
+        "copied_fraction": 0.121821,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "httpx__request_model_core__001",
+        "repository": "github__encode__httpx",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.442722,
+        "copied_fraction": 0.975224,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "httpx__request_model_core__001",
+        "repository": "github__encode__httpx",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.0323,
+        "copied_fraction": 0.960367,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "httpx__request_model_core__001",
+        "repository": "github__encode__httpx",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.223945,
+        "copied_fraction": 0.044231,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "httpx__request_model_core__001",
+        "repository": "github__encode__httpx",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.1559,
+        "copied_fraction": 0.928838,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.426102,
+        "copied_fraction": 0.914807,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.440795,
+        "copied_fraction": 0.941176,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.248055,
+        "copied_fraction": 0.508711,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.615385,
+        "copied_fraction": 0.88764,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.283492,
+        "copied_fraction": 0.667683,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "humanize__naturaltime_core__001",
+        "repository": "github__python_humanize__humanize",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.277442,
+        "copied_fraction": 0.52648,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "importlib_metadata__entry_points_core__001",
+        "repository": "github__python__importlib_metadata",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.157797,
+        "copied_fraction": 0.862745,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "importlib_metadata__entry_points_core__001",
+        "repository": "github__python__importlib_metadata",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.254332,
+        "copied_fraction": 0.812652,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "importlib_metadata__entry_points_core__001",
+        "repository": "github__python__importlib_metadata",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.097772,
+        "copied_fraction": 0.474684,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "importlib_metadata__entry_points_core__001",
+        "repository": "github__python__importlib_metadata",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.619431,
+        "copied_fraction": 0.451548,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+        "repository": "github__python__importlib_resources",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 1.06135,
+        "copied_fraction": 0.034682,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+        "repository": "github__python__importlib_resources",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 2.656442,
+        "copied_fraction": 0.143187,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "intervaltree__interval_tree_core__001",
+        "repository": "github__chaimleib__intervaltree",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.018296,
+        "copied_fraction": 0.979225,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "intervaltree__interval_tree_core__001",
+        "repository": "github__chaimleib__intervaltree",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.007433,
+        "copied_fraction": 1.0,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "intervaltree__interval_tree_core__001",
+        "repository": "github__chaimleib__intervaltree",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 1.002287,
+        "copied_fraction": 0.994866,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "intervaltree__interval_tree_core__001",
+        "repository": "github__chaimleib__intervaltree",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.01315,
+        "copied_fraction": 0.981377,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.572102,
+        "copied_fraction": 0.904448,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.723845,
+        "copied_fraction": 0.865885,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.558907,
+        "copied_fraction": 0.733558,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.852969,
+        "copied_fraction": 0.898343,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.590009,
+        "copied_fraction": 0.757188,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isodate__duration_parse_core__001",
+        "repository": "github__gweis__isodate",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.495759,
+        "copied_fraction": 0.401141,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "isort__settings_resolver_core__hard3_001",
+        "repository": "github__pycqa__isort",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.698529,
+        "copied_fraction": 0.24026,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "isort__settings_resolver_core__hard3_001",
+        "repository": "github__pycqa__isort",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.257353,
+        "copied_fraction": 0.364821,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "isort__settings_resolver_core__hard3_001",
+        "repository": "github__pycqa__isort",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.305147,
+        "copied_fraction": 0.022535,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "itsdangerous__timed_serializer_core__001",
+        "repository": "github__pallets__itsdangerous",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 6.512821,
+        "copied_fraction": 0.271654,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "itsdangerous__timed_serializer_core__001",
+        "repository": "github__pallets__itsdangerous",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 8.769231,
+        "copied_fraction": 0.391813,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "itsdangerous__timed_serializer_core__001",
+        "repository": "github__pallets__itsdangerous",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 3.871795,
+        "copied_fraction": 0.086093,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "itsdangerous__timed_serializer_core__001",
+        "repository": "github__pallets__itsdangerous",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 4.641026,
+        "copied_fraction": 0.016575,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.242468,
+        "copied_fraction": 0.989995,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.026207,
+        "copied_fraction": 0.995744,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.001232,
+        "copied_fraction": 0.994072,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.012319,
+        "copied_fraction": 0.994247,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.002016,
+        "copied_fraction": 0.994747,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__compile_render_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 1.240116,
+        "copied_fraction": 0.998465,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jinja2__extensions_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.155007,
+        "copied_fraction": 0.999189,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jinja2__extensions_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.968978,
+        "copied_fraction": 0.994306,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jinja2__extensions_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.066105,
+        "copied_fraction": 0.990528,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jinja2__extensions_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.999479,
+        "copied_fraction": 0.997292,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jinja2__filters_tests_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.242944,
+        "copied_fraction": 0.986843,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__filters_tests_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.020161,
+        "copied_fraction": 0.986715,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__filters_tests_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.99888,
+        "copied_fraction": 0.995403,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__filters_tests_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.007953,
+        "copied_fraction": 0.996777,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__filters_tests_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.125112,
+        "copied_fraction": 0.999204,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__lexer_parser_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.802646,
+        "copied_fraction": 0.94879,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "jinja2__lexer_parser_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.843468,
+        "copied_fraction": 0.955941,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "jinja2__lexer_parser_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.309966,
+        "copied_fraction": 0.263397,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.174839,
+        "copied_fraction": 0.995854,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.004554,
+        "copied_fraction": 0.98735,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.045007,
+        "copied_fraction": 0.075294,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.174521,
+        "copied_fraction": 0.996484,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jinja2__loader_inheritance_core__001",
+        "repository": "github__pallets__jinja",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.014402,
+        "copied_fraction": 0.080882,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json5__parse_core__001",
+        "repository": "github__dpranke__pyjson5",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.059545,
+        "copied_fraction": 0.995868,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json5__parse_core__001",
+        "repository": "github__dpranke__pyjson5",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.064799,
+        "copied_fraction": 0.993421,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json5__parse_core__001",
+        "repository": "github__dpranke__pyjson5",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 1.049912,
+        "copied_fraction": 0.996664,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json5__parse_core__001",
+        "repository": "github__dpranke__pyjson5",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.074431,
+        "copied_fraction": 0.97392,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json5__parse_core__001",
+        "repository": "github__dpranke__pyjson5",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.061296,
+        "copied_fraction": 0.997525,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "json_logic__evaluator_core__hard3_001",
+        "repository": "github__nadirizr__json_logic_py",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.248227,
+        "copied_fraction": 0.823864,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "json_logic__evaluator_core__hard3_001",
+        "repository": "github__nadirizr__json_logic_py",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 1.184397,
+        "copied_fraction": 0.071856,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "json_logic__evaluator_core__hard3_001",
+        "repository": "github__nadirizr__json_logic_py",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 1.312057,
+        "copied_fraction": 0.183784,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "jsonpath_ng__expression_eval_core__001",
+        "repository": "github__h2non__jsonpath_ng",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 2.914849,
+        "copied_fraction": 0.996137,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jsonpath_ng__expression_eval_core__001",
+        "repository": "github__h2non__jsonpath_ng",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 2.915552,
+        "copied_fraction": 0.995897,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jsonpath_ng__expression_eval_core__001",
+        "repository": "github__h2non__jsonpath_ng",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.389163,
+        "copied_fraction": 0.086799,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jsonpath_ng__expression_eval_core__001",
+        "repository": "github__h2non__jsonpath_ng",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 2.915552,
+        "copied_fraction": 0.995897,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.777778,
+        "copied_fraction": 0.828571,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.946667,
+        "copied_fraction": 1.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.671111,
+        "copied_fraction": 0.463576,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.093333,
+        "copied_fraction": 0.845528,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.768889,
+        "copied_fraction": 0.196532,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonpointer__resolve_core__001",
+        "repository": "github__stefankoegl__python_json_pointer",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.822222,
+        "copied_fraction": 0.205405,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "jsonschema__validator_core__001",
+        "repository": "github__python_jsonschema__jsonschema",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.890511,
+        "copied_fraction": 0.967844,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jsonschema__validator_core__001",
+        "repository": "github__python_jsonschema__jsonschema",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.927288,
+        "copied_fraction": 0.989706,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jsonschema__validator_core__001",
+        "repository": "github__python_jsonschema__jsonschema",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.157215,
+        "copied_fraction": 0.057143,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jsonschema__validator_core__001",
+        "repository": "github__python_jsonschema__jsonschema",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.938237,
+        "copied_fraction": 0.962298,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jsonschema__validator_core__001",
+        "repository": "github__python_jsonschema__jsonschema",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.093768,
+        "copied_fraction": 0.008982,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "jupyter_server__extension_config_core__hard3_001",
+        "repository": "github__jupyter_server__jupyter_server",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 2.109091,
+        "copied_fraction": 0.025862,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "jupyter_server__extension_config_core__hard3_001",
+        "repository": "github__jupyter_server__jupyter_server",
+        "model": "glm-5.3-flash",
+        "lift_type": "Composite",
+        "rres": 4.418182,
+        "copied_fraction": 0.131687,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "lark__grammar_loader_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.921085,
+        "copied_fraction": 0.998822,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__grammar_loader_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.937829,
+        "copied_fraction": 0.998182,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__grammar_loader_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.91845,
+        "copied_fraction": 0.997806,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__grammar_loader_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.921085,
+        "copied_fraction": 0.99899,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__parse_tree_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.003452,
+        "copied_fraction": 0.997764,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "lark__parse_tree_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.798412,
+        "copied_fraction": 0.99546,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "lark__parse_tree_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.864342,
+        "copied_fraction": 0.909345,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "lark__visitor_transform_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.991964,
+        "copied_fraction": 0.99865,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__visitor_transform_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.991964,
+        "copied_fraction": 0.998987,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__visitor_transform_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.991964,
+        "copied_fraction": 0.99865,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "lark__visitor_transform_core__001",
+        "repository": "github__lark_parser__lark",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.97472,
+        "copied_fraction": 0.998454,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "mako__lexer_expression_core__001",
+        "repository": "github__sqlalchemy__mako",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.691589,
+        "copied_fraction": 0.977131,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "mako__lexer_expression_core__001",
+        "repository": "github__sqlalchemy__mako",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.71711,
+        "copied_fraction": 0.980451,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "mako__lexer_expression_core__001",
+        "repository": "github__sqlalchemy__mako",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.308411,
+        "copied_fraction": 0.261072,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "mako__lexer_expression_core__001",
+        "repository": "github__sqlalchemy__mako",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.463695,
+        "copied_fraction": 0.925344,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "markdown__extensions_core__001",
+        "repository": "github__python_markdown__markdown",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.080908,
+        "copied_fraction": 0.99497,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "markdown__extensions_core__001",
+        "repository": "github__python_markdown__markdown",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.084106,
+        "copied_fraction": 0.993215,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "markdown__extensions_core__001",
+        "repository": "github__python_markdown__markdown",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.069396,
+        "copied_fraction": 0.995215,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "markdown__extensions_core__001",
+        "repository": "github__python_markdown__markdown",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.134634,
+        "copied_fraction": 0.989008,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "markdown__extensions_core__001",
+        "repository": "github__python_markdown__markdown",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.682123,
+        "copied_fraction": 0.995627,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.998187,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.998187,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 1.000907,
+        "copied_fraction": 0.997283,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.039891,
+        "copied_fraction": 0.988448,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.998187,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "markdown_it__commonmark_render__001",
+        "repository": "github__executablebooks__markdown_it_py",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 1.019719,
+        "copied_fraction": 0.997555,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "marshmallow__schema_core__001",
+        "repository": "github__marshmallow_code__marshmallow",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.965955,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "marshmallow__schema_core__001",
+        "repository": "github__marshmallow_code__marshmallow",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.990346,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "marshmallow__schema_core__001",
+        "repository": "github__marshmallow_code__marshmallow",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.986535,
+        "copied_fraction": 0.967551,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "marshmallow__schema_core__001",
+        "repository": "github__marshmallow_code__marshmallow",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.987297,
+        "copied_fraction": 0.966804,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "msgpack__pack_unpack_core__001",
+        "repository": "github__msgpack__msgpack_python",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.976447,
+        "copied_fraction": 1.0,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "msgpack__pack_unpack_core__001",
+        "repository": "github__msgpack__msgpack_python",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.980373,
+        "copied_fraction": 0.96997,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "msgpack__pack_unpack_core__001",
+        "repository": "github__msgpack__msgpack_python",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.957802,
+        "copied_fraction": 0.98873,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "msgpack__pack_unpack_core__001",
+        "repository": "github__msgpack__msgpack_python",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.947988,
+        "copied_fraction": 0.983437,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "networkx__dag_topo_core__001",
+        "repository": "github__networkx__networkx",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.114422,
+        "copied_fraction": 0.406752,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "networkx__dag_topo_core__001",
+        "repository": "github__networkx__networkx",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.435798,
+        "copied_fraction": 0.957999,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "networkx__dag_topo_core__001",
+        "repository": "github__networkx__networkx",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.034768,
+        "copied_fraction": 0.113757,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "networkx__dag_topo_core__001",
+        "repository": "github__networkx__networkx",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.087564,
+        "copied_fraction": 0.273109,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "packaging__requirement_marker_specifier__001",
+        "repository": "github__pypa__packaging",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.58387,
+        "copied_fraction": 0.984244,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "packaging__requirement_marker_specifier__001",
+        "repository": "github__pypa__packaging",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.587243,
+        "copied_fraction": 0.980157,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "packaging__requirement_marker_specifier__001",
+        "repository": "github__pypa__packaging",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.580803,
+        "copied_fraction": 0.975185,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "packaging__requirement_marker_specifier__001",
+        "repository": "github__pypa__packaging",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.580803,
+        "copied_fraction": 0.973601,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "packaging__requirement_marker_specifier__001",
+        "repository": "github__pypa__packaging",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.410917,
+        "copied_fraction": 0.898507,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "repository": "github__r1chardj0n3s__parse",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 8.444444,
+        "copied_fraction": 0.855263,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "repository": "github__r1chardj0n3s__parse",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 9.555556,
+        "copied_fraction": 0.837209,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "repository": "github__r1chardj0n3s__parse",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 5.644444,
+        "copied_fraction": 0.023622,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "repository": "github__r1chardj0n3s__parse",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 9.288889,
+        "copied_fraction": 0.813397,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parse__format_parser_core__001",
+        "repository": "github__r1chardj0n3s__parse",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 8.6,
+        "copied_fraction": 0.193798,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parso__python_parse_core__001",
+        "repository": "github__davidhalter__parso",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.006434,
+        "copied_fraction": 0.983025,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parso__python_parse_core__001",
+        "repository": "github__davidhalter__parso",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.005547,
+        "copied_fraction": 0.981686,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parso__python_parse_core__001",
+        "repository": "github__davidhalter__parso",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.923009,
+        "copied_fraction": 0.967788,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parso__python_parse_core__001",
+        "repository": "github__davidhalter__parso",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.950743,
+        "copied_fraction": 0.980163,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "parso__python_parse_core__001",
+        "repository": "github__davidhalter__parso",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.105392,
+        "copied_fraction": 0.979727,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "passlib__hash_context_core__001",
+        "repository": "source__foss_heptapod_net__fff35bde6fd1",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.907812,
+        "copied_fraction": 0.956833,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "passlib__hash_context_core__001",
+        "repository": "source__foss_heptapod_net__fff35bde6fd1",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.981699,
+        "copied_fraction": 0.978429,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "passlib__hash_context_core__001",
+        "repository": "source__foss_heptapod_net__fff35bde6fd1",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.047391,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "passlib__hash_context_core__001",
+        "repository": "source__foss_heptapod_net__fff35bde6fd1",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 2.958481,
+        "copied_fraction": 0.966854,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pathvalidate__sanitize_core__001",
+        "repository": "github__thombashi__pathvalidate",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.0125,
+        "copied_fraction": 0.997401,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pathvalidate__sanitize_core__001",
+        "repository": "github__thombashi__pathvalidate",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.009868,
+        "copied_fraction": 0.997394,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pathvalidate__sanitize_core__001",
+        "repository": "github__thombashi__pathvalidate",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.356579,
+        "copied_fraction": 0.04797,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pathvalidate__sanitize_core__001",
+        "repository": "github__thombashi__pathvalidate",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.043421,
+        "copied_fraction": 0.972888,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pendulum__parse_format_core__001",
+        "repository": "github__sdispater__pendulum",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.429059,
+        "copied_fraction": 0.714754,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pendulum__parse_format_core__001",
+        "repository": "github__sdispater__pendulum",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.153336,
+        "copied_fraction": 0.145478,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pendulum__parse_format_core__001",
+        "repository": "github__sdispater__pendulum",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.146503,
+        "copied_fraction": 0.927958,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "phonenumbers__parse_format_core__001",
+        "repository": "github__daviddrysdale__python_phonenumbers",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.005836,
+        "copied_fraction": 0.985205,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "phonenumbers__parse_format_core__001",
+        "repository": "github__daviddrysdale__python_phonenumbers",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.095711,
+        "copied_fraction": 0.98775,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "phonenumbers__parse_format_core__001",
+        "repository": "github__daviddrysdale__python_phonenumbers",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.101838,
+        "copied_fraction": 0.054441,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "phonenumbers__parse_format_core__001",
+        "repository": "github__daviddrysdale__python_phonenumbers",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.094835,
+        "copied_fraction": 0.992271,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "phonenumbers__parse_format_core__001",
+        "repository": "github__daviddrysdale__python_phonenumbers",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.289758,
+        "copied_fraction": 0.997738,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.992997,
+        "copied_fraction": 0.997179,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.998599,
+        "copied_fraction": 0.990182,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.578431,
+        "copied_fraction": 0.191283,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.854342,
+        "copied_fraction": 0.977049,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.941176,
+        "copied_fraction": 0.989583,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_call_order__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.810924,
+        "copied_fraction": 0.758204,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pluggy__hook_specs_core__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.932773,
+        "copied_fraction": 0.995495,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pluggy__hook_specs_core__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.931373,
+        "copied_fraction": 0.995489,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pluggy__hook_specs_core__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.941176,
+        "copied_fraction": 0.97619,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pluggy__hook_specs_core__001",
+        "repository": "github__pytest_dev__pluggy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.577031,
+        "copied_fraction": 0.759709,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pydantic__field_validator_core__hard3_001",
+        "repository": "github__pydantic__pydantic",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 8.0,
+        "copied_fraction": 0.012821,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pydantic__field_validator_core__hard3_001",
+        "repository": "github__pydantic__pydantic",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 2.935897,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pydantic__field_validator_core__hard3_001",
+        "repository": "github__pydantic__pydantic",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 8.025641,
+        "copied_fraction": 0.004792,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pydantic_settings__env_source_core__001",
+        "repository": "github__pydantic__pydantic_settings",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.760178,
+        "copied_fraction": 0.969919,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pydantic_settings__env_source_core__001",
+        "repository": "github__pydantic__pydantic_settings",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.990519,
+        "copied_fraction": 0.942005,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pydantic_settings__env_source_core__001",
+        "repository": "github__pydantic__pydantic_settings",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.196319,
+        "copied_fraction": 0.099432,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pydantic_settings__env_source_core__001",
+        "repository": "github__pydantic__pydantic_settings",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.707195,
+        "copied_fraction": 0.727918,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pydantic_v1__validation_error_core__001",
+        "repository": "github__pydantic__pydantic",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.083685,
+        "copied_fraction": 0.981006,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pydantic_v1__validation_error_core__001",
+        "repository": "github__pydantic__pydantic",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.552894,
+        "copied_fraction": 0.980552,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pydantic_v1__validation_error_core__001",
+        "repository": "github__pydantic__pydantic",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.069681,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "pygments__formatter_core__001",
+        "repository": "github__pygments__pygments",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.336635,
+        "copied_fraction": 0.957283,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pygments__formatter_core__001",
+        "repository": "github__pygments__pygments",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.358249,
+        "copied_fraction": 0.980507,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pygments__formatter_core__001",
+        "repository": "github__pygments__pygments",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.813761,
+        "copied_fraction": 0.971226,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pygments__formatter_core__001",
+        "repository": "github__pygments__pygments",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.337356,
+        "copied_fraction": 0.943165,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pygments__formatter_core__001",
+        "repository": "github__pygments__pygments",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.024316,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 3.627907,
+        "copied_fraction": 0.141026,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 4.162791,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 2.395349,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "glm-5.3-flash",
+        "lift_type": "Composite",
+        "rres": 26.116279,
+        "copied_fraction": 0.447017,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Composite",
+        "rres": 2.209302,
+        "copied_fraction": 0.042105,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyramid__configurator_action_core__hard3_001",
+        "repository": "github__pylons__pyramid",
+        "model": "gpt-oss-120b",
+        "lift_type": "Composite",
+        "rres": 2.953488,
+        "copied_fraction": 0.03937,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__fixture_resolve_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 1.0,
+        "copied_fraction": 0.165354,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pytest__fixture_resolve_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 1.944882,
+        "copied_fraction": 0.097166,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pytest__fixture_resolve_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 1.283465,
+        "copied_fraction": 0.018405,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pytest__fixture_resolve_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Composite",
+        "rres": 2.251969,
+        "copied_fraction": 0.097902,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.041353,
+        "copied_fraction": 0.960289,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.078947,
+        "copied_fraction": 0.923345,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.909774,
+        "copied_fraction": 0.876033,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.071429,
+        "copied_fraction": 0.915789,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 2.015038,
+        "copied_fraction": 0.425373,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__mark_expression_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.966165,
+        "copied_fraction": 0.610895,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pytest__skipif_eval_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 1.530864,
+        "copied_fraction": 0.451613,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pytest__skipif_eval_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 0.962963,
+        "copied_fraction": 0.333333,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pytest__skipif_eval_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 0.728395,
+        "copied_fraction": 0.169492,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pytest__skipif_eval_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Composite",
+        "rres": 1.530864,
+        "copied_fraction": 0.395161,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pytest__skipif_eval_core__001",
+        "repository": "github__pytest_dev__pytest",
+        "model": "gpt-oss-120b",
+        "lift_type": "Composite",
+        "rres": 1.617284,
+        "copied_fraction": 0.175573,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_box__config_box_core__001",
+        "repository": "github__cdgriffith__box",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.737849,
+        "copied_fraction": 0.975162,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_box__config_box_core__001",
+        "repository": "github__cdgriffith__box",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.857371,
+        "copied_fraction": 0.972119,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_box__config_box_core__001",
+        "repository": "github__cdgriffith__box",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.310757,
+        "copied_fraction": 0.087179,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_box__config_box_core__001",
+        "repository": "github__cdgriffith__box",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.89004,
+        "copied_fraction": 0.932856,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_box__config_box_core__001",
+        "repository": "github__cdgriffith__box",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.873307,
+        "copied_fraction": 0.95438,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dateutil__relativedelta_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.978723,
+        "copied_fraction": 0.96558,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "python_dateutil__relativedelta_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.984043,
+        "copied_fraction": 0.972973,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "python_dateutil__relativedelta_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.062057,
+        "copied_fraction": 0.931553,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "python_dateutil__relativedelta_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.010638,
+        "copied_fraction": 0.929825,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "python_dateutil__rrule_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.991798,
+        "copied_fraction": 0.951018,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dateutil__rrule_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.053628,
+        "copied_fraction": 0.907784,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dateutil__rrule_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.998738,
+        "copied_fraction": 0.950726,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dateutil__rrule_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.028391,
+        "copied_fraction": 0.899387,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dateutil__rrule_core__001",
+        "repository": "github__dateutil__dateutil",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.908517,
+        "copied_fraction": 0.924306,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.835772,
+        "copied_fraction": 0.992218,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.835772,
+        "copied_fraction": 0.994163,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.455285,
+        "copied_fraction": 0.275,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.118699,
+        "copied_fraction": 0.656977,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.627642,
+        "copied_fraction": 0.784974,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_dotenv__env_parse_core__001",
+        "repository": "github__theskumar__python_dotenv",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.728455,
+        "copied_fraction": 0.542411,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.608527,
+        "copied_fraction": 0.88535,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.637597,
+        "copied_fraction": 0.820669,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.420543,
+        "copied_fraction": 0.599078,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.641473,
+        "copied_fraction": 0.824773,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.428295,
+        "copied_fraction": 0.334842,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_frontmatter__roundtrip_core__001",
+        "repository": "github__eyeseast__python_frontmatter",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 0.296512,
+        "copied_fraction": 0.026144,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.162562,
+        "copied_fraction": 0.983051,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.215928,
+        "copied_fraction": 0.986496,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.995074,
+        "copied_fraction": 0.95132,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.898194,
+        "copied_fraction": 0.784278,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.01642,
+        "copied_fraction": 0.876414,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "python_multipart__form_parse_core__001",
+        "repository": "github__kludex__python_multipart",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 1.152709,
+        "copied_fraction": 0.98433,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "pyyaml__safe_load_dump__001",
+        "repository": "github__yaml__pyyaml",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.920899,
+        "copied_fraction": 0.990727,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pyyaml__safe_load_dump__001",
+        "repository": "github__yaml__pyyaml",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.849663,
+        "copied_fraction": 0.993917,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pyyaml__safe_load_dump__001",
+        "repository": "github__yaml__pyyaml",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.839101,
+        "copied_fraction": 0.983128,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pyyaml__safe_load_dump__001",
+        "repository": "github__yaml__pyyaml",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.943146,
+        "copied_fraction": 0.988802,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "pyyaml__safe_load_dump__001",
+        "repository": "github__yaml__pyyaml",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.92809,
+        "copied_fraction": 0.994189,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "redis__resp_parser_core__001",
+        "repository": "github__redis__redis_py",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.753071,
+        "copied_fraction": 0.969867,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "redis__resp_parser_core__001",
+        "repository": "github__redis__redis_py",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.869779,
+        "copied_fraction": 0.946328,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "redis__resp_parser_core__001",
+        "repository": "github__redis__redis_py",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.506143,
+        "copied_fraction": 0.383495,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "redis__resp_parser_core__001",
+        "repository": "github__redis__redis_py",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.465602,
+        "copied_fraction": 0.552389,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "redis__resp_parser_core__001",
+        "repository": "github__redis__redis_py",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.620393,
+        "copied_fraction": 0.845545,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "referencing__json_schema_refs_core__001",
+        "repository": "github__python_jsonschema__referencing",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.026128,
+        "copied_fraction": 0.983025,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "referencing__json_schema_refs_core__001",
+        "repository": "github__python_jsonschema__referencing",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.981789,
+        "copied_fraction": 0.983871,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "referencing__json_schema_refs_core__001",
+        "repository": "github__python_jsonschema__referencing",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.469517,
+        "copied_fraction": 0.158516,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "referencing__json_schema_refs_core__001",
+        "repository": "github__python_jsonschema__referencing",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.064925,
+        "copied_fraction": 0.937546,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "referencing__json_schema_refs_core__001",
+        "repository": "github__python_jsonschema__referencing",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.065717,
+        "copied_fraction": 0.681278,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "returns__result_pipeline_core__hard3_001",
+        "repository": "github__dry_python__returns",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 2.5,
+        "copied_fraction": 0.038462,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "returns__result_pipeline_core__hard3_001",
+        "repository": "github__dry_python__returns",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.423077,
+        "copied_fraction": 0.119048,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "returns__result_pipeline_core__hard3_001",
+        "repository": "github__dry_python__returns",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 2.173077,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "returns__result_pipeline_core__hard3_001",
+        "repository": "github__dry_python__returns",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 10.884615,
+        "copied_fraction": 0.625442,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "returns__result_pipeline_core__hard3_001",
+        "repository": "github__dry_python__returns",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 2.173077,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.639041,
+        "copied_fraction": 0.978125,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.793809,
+        "copied_fraction": 0.988679,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.487269,
+        "copied_fraction": 0.085041,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 0.592611,
+        "copied_fraction": 0.911542,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.311033,
+        "copied_fraction": 0.521669,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rfc3986__uri_parse_core__001",
+        "repository": "github__python_hyper__rfc3986",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.117823,
+        "copied_fraction": 0.258475,
+        "successful_configurations_on_task": 6
+      },
+      {
+        "task_id": "rich__markup_parse_core__001",
+        "repository": "github__textualize__rich",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.267573,
+        "copied_fraction": 0.955837,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "rich__markup_parse_core__001",
+        "repository": "github__textualize__rich",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.391085,
+        "copied_fraction": 0.993668,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "rich__markup_parse_core__001",
+        "repository": "github__textualize__rich",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.195586,
+        "copied_fraction": 0.929365,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "ruamel_yaml__roundtrip_core__001",
+        "repository": "source__sourceforge_net__a935d43b47a4",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.003156,
+        "copied_fraction": 0.977277,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "ruamel_yaml__roundtrip_core__001",
+        "repository": "source__sourceforge_net__a935d43b47a4",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.004384,
+        "copied_fraction": 0.975122,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "ruamel_yaml__roundtrip_core__001",
+        "repository": "source__sourceforge_net__a935d43b47a4",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.000526,
+        "copied_fraction": 0.977567,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "ruamel_yaml__roundtrip_core__001",
+        "repository": "source__sourceforge_net__a935d43b47a4",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 1.035508,
+        "copied_fraction": 0.950893,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "ruamel_yaml__roundtrip_core__001",
+        "repository": "source__sourceforge_net__a935d43b47a4",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.008241,
+        "copied_fraction": 0.976435,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "schema__nested_validate_core__hard3_001",
+        "repository": "github__keleshev__schema",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 4.382979,
+        "copied_fraction": 0.558252,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "schema__nested_validate_core__hard3_001",
+        "repository": "github__keleshev__schema",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.808511,
+        "copied_fraction": 0.017647,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "schema__nested_validate_core__hard3_001",
+        "repository": "github__keleshev__schema",
+        "model": "glm-5.3-flash",
+        "lift_type": "Adapted",
+        "rres": 4.446809,
+        "copied_fraction": 0.578947,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "schema__nested_validate_core__hard3_001",
+        "repository": "github__keleshev__schema",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 2.0,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sortedcontainers__sorted_list_core__001",
+        "repository": "github__grantjenks__python_sortedcontainers",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.921617,
+        "copied_fraction": 0.986571,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sortedcontainers__sorted_list_core__001",
+        "repository": "github__grantjenks__python_sortedcontainers",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.924917,
+        "copied_fraction": 0.966102,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sortedcontainers__sorted_list_core__001",
+        "repository": "github__grantjenks__python_sortedcontainers",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.316007,
+        "copied_fraction": 0.143603,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sortedcontainers__sorted_list_core__001",
+        "repository": "github__grantjenks__python_sortedcontainers",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 0.885314,
+        "copied_fraction": 0.960857,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sphinx__extension_registry_core__hard3_001",
+        "repository": "github__sphinx_doc__sphinx",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 3.9,
+        "copied_fraction": 0.179487,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sphinx__extension_registry_core__hard3_001",
+        "repository": "github__sphinx_doc__sphinx",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 5.933333,
+        "copied_fraction": 0.129213,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sphinx__extension_registry_core__hard3_001",
+        "repository": "github__sphinx_doc__sphinx",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 1.9,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sphinx__extension_registry_core__hard3_001",
+        "repository": "github__sphinx_doc__sphinx",
+        "model": "glm-5.3-flash",
+        "lift_type": "Composite",
+        "rres": 7.7,
+        "copied_fraction": 0.220779,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sphinx__extension_registry_core__hard3_001",
+        "repository": "github__sphinx_doc__sphinx",
+        "model": "gpt-oss-120b",
+        "lift_type": "Composite",
+        "rres": 2.866667,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+        "repository": "github__sqlalchemy__sqlalchemy",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 2.112903,
+        "copied_fraction": 0.022901,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+        "repository": "github__sqlalchemy__sqlalchemy",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 3.193548,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+        "repository": "github__sqlalchemy__sqlalchemy",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 2.112903,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+        "repository": "github__sqlalchemy__sqlalchemy",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 2.725806,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlalchemy__event_dispatch_core__hard3_001",
+        "repository": "github__sqlalchemy__sqlalchemy",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 1.177419,
+        "copied_fraction": 0.0,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "sqlparse__format_filters_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.002768,
+        "copied_fraction": 0.979986,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__format_filters_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.003806,
+        "copied_fraction": 0.978283,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__format_filters_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "glm-5.3-flash",
+        "lift_type": "Direct",
+        "rres": 1.00519,
+        "copied_fraction": 0.976936,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__format_filters_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 1.237024,
+        "copied_fraction": 0.981259,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__parse_format_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.012741,
+        "copied_fraction": 0.978579,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "sqlparse__parse_format_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 1.008953,
+        "copied_fraction": 0.980887,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "sqlparse__parse_format_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.009986,
+        "copied_fraction": 0.979884,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "sqlparse__parse_split_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.962947,
+        "copied_fraction": 0.982135,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__parse_split_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.963388,
+        "copied_fraction": 0.983516,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__parse_split_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.954124,
+        "copied_fraction": 0.981507,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__parse_split_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 1.219232,
+        "copied_fraction": 0.968524,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "sqlparse__token_tree_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.95977,
+        "copied_fraction": 0.979272,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "sqlparse__token_tree_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.936782,
+        "copied_fraction": 0.983011,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "sqlparse__token_tree_core__001",
+        "repository": "github__andialbrecht__sqlparse",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.874447,
+        "copied_fraction": 0.987867,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "stevedore__extension_manager_core__hard3_001",
+        "repository": "github__openstack__stevedore",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Composite",
+        "rres": 1.766234,
+        "copied_fraction": 0.401961,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "stevedore__extension_manager_core__hard3_001",
+        "repository": "github__openstack__stevedore",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Composite",
+        "rres": 2.679654,
+        "copied_fraction": 0.463651,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "stevedore__extension_manager_core__hard3_001",
+        "repository": "github__openstack__stevedore",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Composite",
+        "rres": 1.168831,
+        "copied_fraction": 0.188889,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "stevedore__extension_manager_core__hard3_001",
+        "repository": "github__openstack__stevedore",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Composite",
+        "rres": 4.748918,
+        "copied_fraction": 0.170465,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "tabulate__table_format_core__001",
+        "repository": "github__astanin__python_tabulate",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.992644,
+        "copied_fraction": 1.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "tabulate__table_format_core__001",
+        "repository": "github__astanin__python_tabulate",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.992644,
+        "copied_fraction": 1.0,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "tabulate__table_format_core__001",
+        "repository": "github__astanin__python_tabulate",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.997404,
+        "copied_fraction": 0.989154,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "tenacity__retry_state_core__hard3_001",
+        "repository": "github__jd__tenacity",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 1.425993,
+        "copied_fraction": 0.387342,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "tenacity__retry_state_core__hard3_001",
+        "repository": "github__jd__tenacity",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.314079,
+        "copied_fraction": 0.21978,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "tomlkit__roundtrip_document__001",
+        "repository": "github__python_poetry__tomlkit",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.969523,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "tomlkit__roundtrip_document__001",
+        "repository": "github__python_poetry__tomlkit",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.0,
+        "copied_fraction": 0.969523,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "tomlkit__roundtrip_document__001",
+        "repository": "github__python_poetry__tomlkit",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.993154,
+        "copied_fraction": 0.970425,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "tomlkit__roundtrip_document__001",
+        "repository": "github__python_poetry__tomlkit",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.988074,
+        "copied_fraction": 0.935405,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "tomlkit__roundtrip_document__001",
+        "repository": "github__python_poetry__tomlkit",
+        "model": "gpt-oss-120b",
+        "lift_type": "Direct",
+        "rres": 1.003313,
+        "copied_fraction": 0.965441,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "trafaret__validation_rules_core__hard3_001",
+        "repository": "github__deepwalker__trafaret",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 2.352941,
+        "copied_fraction": 0.015,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "trafaret__validation_rules_core__hard3_001",
+        "repository": "github__deepwalker__trafaret",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 4.376471,
+        "copied_fraction": 0.112903,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "trafaret__validation_rules_core__hard3_001",
+        "repository": "github__deepwalker__trafaret",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 3.047059,
+        "copied_fraction": 0.015444,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "trafaret__validation_rules_core__hard3_001",
+        "repository": "github__deepwalker__trafaret",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 1.741176,
+        "copied_fraction": 0.02027,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "transitions__state_machine_core__hard3_001",
+        "repository": "github__pytransitions__transitions",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 4.52,
+        "copied_fraction": 0.348673,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "transitions__state_machine_core__hard3_001",
+        "repository": "github__pytransitions__transitions",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 6.816,
+        "copied_fraction": 0.181925,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "transitions__state_machine_core__hard3_001",
+        "repository": "github__pytransitions__transitions",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 2.248,
+        "copied_fraction": 0.010676,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "transitions__state_machine_core__hard3_001",
+        "repository": "github__pytransitions__transitions",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 4.6,
+        "copied_fraction": 0.372174,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "typer__command_parser_core__001",
+        "repository": "github__fastapi__typer",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.922718,
+        "copied_fraction": 0.300542,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "typer__command_parser_core__001",
+        "repository": "github__fastapi__typer",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.045894,
+        "copied_fraction": 0.009242,
+        "successful_configurations_on_task": 2
+      },
+      {
+        "task_id": "urllib3__retry_backoff_core__001",
+        "repository": "github__urllib3__urllib3",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.628086,
+        "copied_fraction": 0.899263,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "urllib3__retry_backoff_core__001",
+        "repository": "github__urllib3__urllib3",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.027778,
+        "copied_fraction": 0.948949,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "urllib3__retry_backoff_core__001",
+        "repository": "github__urllib3__urllib3",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.50463,
+        "copied_fraction": 0.727829,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "urllib3__retry_backoff_core__001",
+        "repository": "github__urllib3__urllib3",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.472222,
+        "copied_fraction": 0.287582,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "voluptuous__schema_validate_core__001",
+        "repository": "github__alecthomas__voluptuous",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.583333,
+        "copied_fraction": 0.897772,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "voluptuous__schema_validate_core__001",
+        "repository": "github__alecthomas__voluptuous",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 1.038226,
+        "copied_fraction": 0.958027,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "voluptuous__schema_validate_core__001",
+        "repository": "github__alecthomas__voluptuous",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.355505,
+        "copied_fraction": 0.070968,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "voluptuous__schema_validate_core__001",
+        "repository": "github__alecthomas__voluptuous",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.672783,
+        "copied_fraction": 0.839773,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "websockets__handshake_parse_core__001",
+        "repository": "github__python_websockets__websockets",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.990323,
+        "copied_fraction": 0.925081,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "websockets__handshake_parse_core__001",
+        "repository": "github__python_websockets__websockets",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.983065,
+        "copied_fraction": 0.943396,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "websockets__handshake_parse_core__001",
+        "repository": "github__python_websockets__websockets",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.41371,
+        "copied_fraction": 0.444444,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "werkzeug__routing_core__001",
+        "repository": "github__pallets__werkzeug",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.239819,
+        "copied_fraction": 0.91283,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "werkzeug__routing_core__001",
+        "repository": "github__pallets__werkzeug",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.279005,
+        "copied_fraction": 0.935452,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "werkzeug__routing_core__001",
+        "repository": "github__pallets__werkzeug",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.197104,
+        "copied_fraction": 0.95225,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "werkzeug__routing_core__001",
+        "repository": "github__pallets__werkzeug",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.135747,
+        "copied_fraction": 0.694,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "wheel__metadata_normalize_core__hard3_001",
+        "repository": "github__pypa__wheel",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 2.302326,
+        "copied_fraction": 0.454545,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "wheel__metadata_normalize_core__hard3_001",
+        "repository": "github__pypa__wheel",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 2.744186,
+        "copied_fraction": 0.211864,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "wheel__metadata_normalize_core__hard3_001",
+        "repository": "github__pypa__wheel",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.55814,
+        "copied_fraction": 0.044776,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "wheel__metadata_normalize_core__hard3_001",
+        "repository": "github__pypa__wheel",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 2.093023,
+        "copied_fraction": 0.122222,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "wsproto__frame_parse_core__001",
+        "repository": "github__python_hyper__wsproto",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.479017,
+        "copied_fraction": 0.987179,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "wsproto__frame_parse_core__001",
+        "repository": "github__python_hyper__wsproto",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.528147,
+        "copied_fraction": 0.967054,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "wsproto__frame_parse_core__001",
+        "repository": "github__python_hyper__wsproto",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 0.474923,
+        "copied_fraction": 0.991379,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "wsproto__frame_parse_core__001",
+        "repository": "github__python_hyper__wsproto",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Adapted",
+        "rres": 0.929376,
+        "copied_fraction": 0.505507,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "wsproto__frame_parse_core__001",
+        "repository": "github__python_hyper__wsproto",
+        "model": "gpt-oss-120b",
+        "lift_type": "Adapted",
+        "rres": 0.517912,
+        "copied_fraction": 0.62253,
+        "successful_configurations_on_task": 5
+      },
+      {
+        "task_id": "xmltodict__xml_parse_core__001",
+        "repository": "github__martinblech__xmltodict",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Direct",
+        "rres": 0.607774,
+        "copied_fraction": 0.718023,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "xmltodict__xml_parse_core__001",
+        "repository": "github__martinblech__xmltodict",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Direct",
+        "rres": 0.641343,
+        "copied_fraction": 0.884298,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "xmltodict__xml_parse_core__001",
+        "repository": "github__martinblech__xmltodict",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Direct",
+        "rres": 0.620141,
+        "copied_fraction": 0.358974,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "xmltodict__xml_parse_core__001",
+        "repository": "github__martinblech__xmltodict",
+        "model": "qwen3.6-35b-a3b-fp8",
+        "lift_type": "Direct",
+        "rres": 0.734982,
+        "copied_fraction": 0.516827,
+        "successful_configurations_on_task": 4
+      },
+      {
+        "task_id": "yarl__url_model_core__001",
+        "repository": "github__aio_libs__yarl",
+        "model": "deepseek-v4-pro",
+        "lift_type": "Adapted",
+        "rres": 0.996124,
+        "copied_fraction": 0.995553,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "yarl__url_model_core__001",
+        "repository": "github__aio_libs__yarl",
+        "model": "deepseek-v4-flash",
+        "lift_type": "Adapted",
+        "rres": 0.996124,
+        "copied_fraction": 0.995553,
+        "successful_configurations_on_task": 3
+      },
+      {
+        "task_id": "yarl__url_model_core__001",
+        "repository": "github__aio_libs__yarl",
+        "model": "gpt-5.6-luna",
+        "lift_type": "Adapted",
+        "rres": 1.0,
+        "copied_fraction": 0.999446,
+        "successful_configurations_on_task": 3
+      }
+    ],
+    "software": {
+      "numpy": "1.26.4",
+      "python": "3.12.2"
+    },
+    "sources": [
+      {
+        "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+        "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+      },
+      {
+        "path": "docs/paper/paper_sources.json",
+        "sha256": "67423859f0430fcdbcfe03f994fe805e15e9e68a764ab7ab447e42949a7e9866"
+      },
+      {
+        "path": "docs/paper/writing/python150_membership.json",
+        "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+      },
+      {
+        "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+        "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
+      },
+      {
+        "path": "docs/paper/figures/scripts/fig7_adjusted_analysis.py",
+        "sha256": "c07ac2aba1afb1e925a5fb307c4a69880ba5cc712f35b41196d791fa831c73f6"
+      }
+    ]
+  }
+}

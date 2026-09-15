@@ -1,7 +1,16 @@
-experiments/
+# Keep paper-facing benchmark/experiments visible.
+# Hide bulky nested payloads and the local archive dump.
+
+benchmark/**/repo/
+benchmark/sources/archives/
+
+experiments/python/**/workspace/
+experiments/python/**/openhands_persistence/
+
+archive/
 artifacts/
-benchmark/
 exports/
+
 **/__pycache__/
 **/.git/
 **/openhands_persistence/

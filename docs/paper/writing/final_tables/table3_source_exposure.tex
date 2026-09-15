@@ -1,0 +1,36 @@
+\begin{table}[tbp]
+  \centering
+  \begin{minipage}{0.78\linewidth}
+    \caption{Source exposure by final outcome.}
+    \label{tab:source-exposure}
+
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.05}
+
+    \begin{tabular}{@{}lrrr@{}}
+      \toprule
+      Outcome
+        & Runs
+        & \shortstack{Confirmed read\\$n/N$ (\%)}
+        & \shortstack{Median first\\read step} \\
+      \midrule
+      Pass & 492 & 363/492 (73.8) & 5 \\
+      Behavioral-first & 303 & \textbf{241/303 (79.5)} & 5 \\
+      Delivery/build & 101 & 51/101 (50.5) & 5 \\
+      Isolation-first & 4 & 4/4 (100.0) & 10.5 \\
+
+      \bottomrule
+    \end{tabular}
+
+    \par\smallskip
+    {\scriptsize
+    Confirmed reads require returned content matching a statically mapped
+    source file. Steps are computed among confirmed reads; search snippets
+    are excluded. A confirmed read is not complete localization or
+    understanding, and this table does not estimate a causal effect of
+    source access.
+    }
+  \end{minipage}
+\end{table}

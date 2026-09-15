@@ -116,3 +116,27 @@ def validate_scope() -> dict:
             "snapshots": scope["snapshots"], "common_tasks": len(task_ids),
             "configurations": len(MODELS), "outcomes": len(rows),
             "main_passes": counts}
+
+
+def validate_manuscript() -> dict:
+    """Check local figure assets and references, independent of TeX layout."""
+    import re
+    text = (PAPER / 'main.tex').read_text(encoding='utf-8')
+    text = re.sub(r'(?<!\\)%[^\n]*', '', text)
+    labels = re.findall(r'\\label\{([^}]+)\}', text)
+    refs = re.findall(r'\\(?:ref|autoref|eqref)\{([^}]+)\}', text)
+    assert len(labels) == len(set(labels)), 'Duplicate LaTeX labels'
+    missing = set(refs) - set(labels)
+    assert not missing, f'Unresolved references: {sorted(missing)}'
+    assets = re.findall(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}', text)
+    assert all((PAPER / name).is_file() for name in assets)
+    packaged = {name for name in MANIFEST['paper_files'] if name.startswith('figures/')}
+    assert set(assets) == packaged, 'Figure usage and package manifest differ'
+    assert not re.search(r'\\caption\{\s*\.\.\.\s*\}', text), 'Placeholder caption'
+    if r'\appendix' in text:
+        body, appendix = text.split(r'\appendix', 1)
+    else:
+        body, appendix = text, ''
+    return {'main_figures': body.count(r'\begin{figure}'),
+            'appendix_figures': appendix.count(r'\begin{figure}'),
+            'figure_assets': len(assets), 'unresolved_references': 0}

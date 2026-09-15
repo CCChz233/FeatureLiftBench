@@ -1,7 +1,7 @@
 """Shared presentation settings for FeatureLiftBench paper figures.
 
 Project-specific implementation informed by the figures4papers design notes.
-See ../FIGURES4PAPERS_ADOPTION.md for sources and adaptation decisions.
+See archive/paper_workspace_20260914/notes/FIGURES4PAPERS_ADOPTION.md.
 Only the shared paper configuration is read at import; no figures are created.
 """
 from pathlib import Path

@@ -1,0 +1,25 @@
+\begin{table}[tbp]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \renewcommand{\arraystretch}{1.12}
+  \caption{Observed functional pass rates (\%) by task structure.}
+  \label{tab:structure}
+  \begin{tabularx}{\linewidth}{@{}Xrrrrrrr@{}}
+    \toprule
+    Category & $n$ & Pro & Flash & Luna & GLM & Qwen & OSS \\
+    \midrule
+    Direct & 56 & 91.1 & 89.3 & 80.4 & 71.4 & 55.4 & 28.6 \\
+    Adapted & 76 & 72.4 & 67.1 & 65.8 & 31.6 & 35.5 & 21.1 \\
+    Composite & 18 & 50.0 & 38.9 & 38.9 & 22.2 & 27.8 & 22.2 \\
+    \midrule
+    Code dependencies & 139 & 79.9 & 73.4 & 69.1 & 46.0 & 42.4 & 22.3 \\
+    Data and state & 127 & 80.3 & 75.6 & 71.7 & 48.0 & 44.1 & 23.6 \\
+    Framework mechanisms & 71 & 78.9 & 73.2 & 66.2 & 40.8 & 43.7 & 16.9 \\
+    Environment and resources & 49 & 75.5 & 71.4 & 63.3 & 32.7 & 34.7 & 24.5 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  Every cell uses the task denominator $n$ in its row. Configuration abbreviations follow Table~\ref{tab:main}. Lift types partition the 150 tasks; the four mechanism groups overlap. These are descriptive outcomes, not independent difficulty effects. The Composite group contains 18 tasks, so one task changes its rate by 5.6 percentage points.
+  \end{minipage}
+\end{table}

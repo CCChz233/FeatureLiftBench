@@ -1,4 +1,4 @@
-"""Assemble the three revised figures from saved records, without evaluation."""
+"""Assemble current paper figure data from saved records, without evaluation."""
 import csv
 import hashlib
 import json

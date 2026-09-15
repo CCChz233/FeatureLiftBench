@@ -15,7 +15,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 ROOT = Path(__file__).resolve().parents[1]
 PAPER = ROOT / "docs/paper"
 sys.path.insert(0, str(PAPER))
-from paper_inputs import MANIFEST, validate_scope
+from paper_inputs import MANIFEST, validate_scope, validate_manuscript
 
 
 def run(relative: str, *args: str) -> None:
@@ -24,6 +24,7 @@ def run(relative: str, *args: str) -> None:
 
 def check() -> None:
     print(json.dumps(validate_scope(), ensure_ascii=False), flush=True)
+    print(json.dumps(validate_manuscript(), ensure_ascii=False), flush=True)
     run("docs/paper/writing/update_tables.py", "--check")
     run("docs/paper/writing/update_structure_results.py", "--check")
     print("Paper inputs and generated tables agree; no files changed.", flush=True)
@@ -31,10 +32,13 @@ def check() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "tables", "figures", "package"))
+    parser.add_argument("command", choices=("check", "audit", "tables", "figures", "package"))
     args = parser.parse_args()
     if args.command == "check":
         check()
+    elif args.command == "audit":
+        check()
+        run("docs/paper/writing/update_tables.py", "--check", "--require-raw-profiles")
     elif args.command == "tables":
         validate_scope()
         run("docs/paper/writing/update_tables.py")

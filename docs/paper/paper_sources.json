@@ -75,18 +75,28 @@
     "acmart.cls",
     "ACM-Reference-Format.bst",
     "acm-jdslogo.png",
+    "LICENSE",
     "figures/fig1.png",
     "figures/fig2.png",
-    "figures/fig3.pdf",
+    "figures/fig3a_families.pdf",
+    "figures/fig3b_entanglement.pdf",
+    "figures/fig4_structure.pdf",
     "figures/fig4.pdf",
-    "figures/fig5.pdf",
-    "figures/fig6.pdf",
-    "figures/fig7.pdf"
+    "figures/fig5a_pass_rate.pdf",
+    "figures/fig5b_paired_gain.pdf",
+    "figures/fig7_matched_footprint.pdf"
   ],
   "notes": [
     "Paths preserve existing storage names. Python-150, hard50, prime and v2 in paths are internal identifiers, not paper-facing benchmark names or difficulty tiers.",
     "This file selects existing final evidence for writing. It does not create another benchmark release, rerun experiments, or rewrite historical run metadata.",
     "Recorded pass counts are regression expectations; table values are computed from task-level results.",
-    "The paper reports the fixed Python-150 collection only. The historical 200-task freeze and run directories are provenance sources; membership is explicitly filtered before analysis. Excluded extension outcomes are not part of the paper."
-  ]
+    "The paper reports the fixed Python-150 collection only. The historical 200-task freeze and run directories are provenance sources; membership is explicitly filtered before analysis. Excluded extension outcomes are not part of the paper.",
+    "Results visual expansion: seven main figures and six tables. New statistical figures preserve the existing failure and ablation PDF assets; figure numbers are assigned by LaTeX."
+  ],
+  "manuscript_source": {
+    "archive": "docs/archive/snapshots/fse_sync_20260914/FSE.zip",
+    "sha256": "c8a06900e0c4f777f2e4102f5b88be609f048b6d0fcdc39faad87ef57f641a14",
+    "import_record": "docs/archive/snapshots/fse_sync_20260914/import_manifest.json",
+    "date": "2026-09-14"
+  }
 }

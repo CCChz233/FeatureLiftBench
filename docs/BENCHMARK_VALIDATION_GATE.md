@@ -810,8 +810,8 @@ undetermined = 0
 
 写出：
 
-- [`benchmark/selection/python200_hard_standard_suite.json`](../benchmark/selection/python200_hard_standard_suite.json)
-- [`benchmark/selection/python200_hard_excluded.json`](../benchmark/selection/python200_hard_excluded.json)
+- [`benchmark/selection/python200_hard_standard_suite.json`](../archive/paper_unrelated_20260914/benchmark/selection/python200_hard_standard_suite.json)
+- [`benchmark/selection/python200_hard_excluded.json`](../archive/paper_unrelated_20260914/benchmark/selection/python200_hard_excluded.json)
 - `harness/config/experiments/python200_hard_standard.txt`
 - `benchmark/suites.toml` 中的分析 suite（如需改别名，与发布同一提交）
 - [STATUS.md](STATUS.md) 与论文中的标准子集数量

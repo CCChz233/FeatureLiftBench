@@ -3,25 +3,71 @@
   "rows": 900,
   "tasks": 150,
   "models": 6,
-  "run_profiles_checked": 900,
-  "main_tables": 3,
-  "main_generated_data_tables": 2,
+  "run_profiles_checked": 307,
+  "missing_run_profiles": 593,
+  "source_verification": [
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "verification": "exact"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "resolved_path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "benchmark/references/python200_prime_compactness.json",
+      "resolved_path": "archive/paper_unrelated_20260914/benchmark/references/python200_prime_compactness.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "resolved_path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "verification": "exact"
+    },
+    {
+      "recorded_path": "docs/paper/writing/python150_membership.json",
+      "resolved_path": "docs/paper/writing/python150_membership.json",
+      "verification": "CRLF-equivalent"
+    }
+  ],
+  "main_tables": 6,
+  "main_generated_data_tables": 5,
   "main_authored_literature_tables": 1,
   "unverified_hypothetical_tables": 0,
   "verified_source_ablation_outcomes": 240,
   "source_exposure_traces": 900,
-  "appendix_tables": 7,
-  "main_figures": 5,
-  "appendix_figures": 2,
+  "appendix_tables": 0,
+  "main_figures": 7,
+  "appendix_figures": 0,
   "figure_placeholders": 0,
-  "generated_text_blocks": 1,
+  "generated_text_blocks": 0,
   "main_table_order": [
     "main",
+    "structure",
     "source-exposure",
-    "positioning"
+    "paired-ablation",
+    "matched-footprint",
+    "task-comparison"
   ],
   "structure_table_updater": "writing/update_structure_results.py",
-  "table_revision": "source_exposure_added_20260913",
+  "table_revision": "task_adjusted_rq4_20260915",
   "detailed_profiles": [
     {
       "backend": "Pro",
@@ -39,32 +85,32 @@
       "backend": "Luna",
       "condenser": "default",
       "trigger_target": "Unspecified",
-      "outcomes": 150
+      "outcomes": 0
     },
     {
       "backend": "GLM",
       "condenser": "default",
       "trigger_target": "Unspecified",
-      "outcomes": 150
+      "outcomes": 7
     },
     {
       "backend": "Qwen",
       "condenser": "default",
       "trigger_target": "Unspecified",
-      "outcomes": 150
+      "outcomes": 0
     },
     {
       "backend": "OSS",
       "condenser": "default",
       "trigger_target": "Unspecified",
-      "outcomes": 150
+      "outcomes": 0
     }
   ],
-  "scope": "Main-comparison tables and run profiles; source-ablation table from 240 retained records; conservative source-file exposure table from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.",
+  "scope": "Condensed FSE manuscript: main comparison table from 900 outcomes; source-ablation headlines from 240 retained records; source-file exposure counts from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.",
   "sources": [
     {
       "path": "docs/paper/paper_sources.json",
-      "sha256": "155b92f991246e8c43daec05d76d92bdb04eced36818942aac13f8002afeb37f"
+      "sha256": "67423859f0430fcdbcfe03f994fe805e15e9e68a764ab7ab447e42949a7e9866"
     },
     {
       "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
@@ -76,7 +122,7 @@
     },
     {
       "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
-      "sha256": "c651d163e15c4bb18faf41816511b51d7ebaac0f72b5b292fa403ebbfda89a8e"
+      "sha256": "eb11cbcc40c809d8033c23d79225d8ef522eb339726c16ac6a572612666b285f"
     },
     {
       "path": "reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv",
@@ -84,27 +130,7 @@
     },
     {
       "path": "docs/paper/writing/chapter2_python150_evidence.json",
-      "sha256": "723f3970d0f6847ff0f5aa05720d268b4500653a330efb421ca9624f1466979f"
-    },
-    {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/statistics.json",
-      "sha256": "e71d22ef230f65f0fca7427bed1ff981c7c5b16fa6fbb56efe8e3a0130b7833f"
-    },
-    {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/verification.json",
-      "sha256": "12acb1742d93bae5ab9fca3d3642cfe997957d5639a209ff2ec2884c402d57a9"
-    },
-    {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/task_outcomes.csv",
-      "sha256": "7befb52de2634ea6a10b9d16aa116b83a64788ac93c1e3243f45c4e90084f021"
-    },
-    {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/paired_outcomes.csv",
-      "sha256": "417dcdac33270d3471bed11e94d2cd80c6ca3153dc0de321cbca801214c3cc1e"
-    },
-    {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/source_ablation_table.tex",
-      "sha256": "af9cddfbdb51372ad0031951159d8ede3d08532919aecff6533755f6d9163e6f"
+      "sha256": "8ece3ad215af8f8126ca7865bf07a5a815446a3a6b026154693b29a2359a9f76"
     },
     {
       "path": "reports/paper_analysis/source_exposure/diagnosis/statistics.json",
@@ -117,6 +143,46 @@
     {
       "path": "reports/paper_analysis/source_exposure/diagnosis/summary_by_model_outcome.csv",
       "sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec"
+    },
+    {
+      "path": "docs/paper/writing/templates/main_table.tex",
+      "sha256": "cbf9e5f4dca0164a612b0ce068b74ab461eb27aea46c5b748bbb4cb3fa668702"
+    },
+    {
+      "path": "docs/paper/writing/templates/source_exposure_table.tex",
+      "sha256": "b9d3dfd093cc096a0aefe3d23011f3db98d23a419e79ea51ad1bc0695bbf900f"
+    },
+    {
+      "path": "docs/paper/writing/results_visuals.py",
+      "sha256": "9a449290458ba29b323b716fdb15ee376d054c088428846c119fda3ba87c3864"
+    },
+    {
+      "path": "docs/paper/writing/results_tables.py",
+      "sha256": "f69229cebd677c02bbc8964d7299adbf6cf65be82af45ac01c3bb36c94911e81"
+    },
+    {
+      "path": "docs/paper/figures/data/figA_task_coverage.json",
+      "sha256": "dd607df5ed8695bc9ea6d81aa00a29ef30ec51693e5e0e1a8aae87463ac8b57c"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/statistics.json",
+      "sha256": "22dd8318c541be3f2cac032aad31e247a2aca5cda0943336a840c18031755b85"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/task_outcomes.csv",
+      "sha256": "efad4d5aeb9a33728600d804f3b1e7741261cb1ee0e4cb56046fbaf75c3dfab7"
+    },
+    {
+      "path": "reports/paper_analysis/source_ablation_40_20260913/paired_outcomes.csv",
+      "sha256": "4ef9034c0a2ebebb3d7b79b0d49197a82920bbe63a2270af0819078b421c3165"
+    },
+    {
+      "path": "docs/paper/figures/scripts/fig7_adjusted_analysis.py",
+      "sha256": "c07ac2aba1afb1e925a5fb307c4a69880ba5cc712f35b41196d791fa831c73f6"
+    },
+    {
+      "path": "docs/paper/writing/python150_membership.json",
+      "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
     }
   ]
 }

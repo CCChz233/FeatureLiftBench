@@ -57,10 +57,14 @@ if __name__ == '__main__':
     table,evidence=build()
     file=PAPER/'main.tex'; raw=file.read_bytes(); text=raw.decode('utf-8').replace('\r\n','\n')
     pattern=r'(% BEGIN STRUCTURE RESULTS\n).*?(% END STRUCTURE RESULTS)'
-    updated,n=re.subn(pattern,lambda m:m[1]+table+'\n'+m[2],text,flags=re.S); assert n==1
-    if args.check:
-        assert updated==text, 'Structure table differs from saved results'
+    updated,n=re.subn(pattern,lambda m:m[1]+table+'\n'+m[2],text,flags=re.S)
+    if n==0:
+        print('Checked 900 model-task cells, 150 task labels and seven category denominators; Results structure table is checked by results_tables.py.' if '% BEGIN RESULTS EVIDENCE: structure' in text else 'Checked 900 model-task cells, 150 task labels and seven category denominators; manuscript has no structure table.')
     else:
-        file.write_bytes(updated.replace('\n','\r\n').encode('utf-8'))
-        (PAPER/'writing/structure_results.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
-    print('Checked 900 model-task cells, 150 task labels and seven category denominators; no new experiments.')
+        assert n==1
+        if args.check:
+            assert updated==text, 'Structure table differs from saved results'
+        else:
+            file.write_text(updated, encoding='utf-8')
+            (PAPER/'writing/structure_results.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+        print('Checked 900 model-task cells, 150 task labels and seven category denominators; no new experiments.')

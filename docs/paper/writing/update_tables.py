@@ -15,6 +15,7 @@ import re
 from statistics import median
 import sys
 from comprehensive_table import comprehensive_table
+from evidence_sources import verify_source
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from paper_inputs import (RESULTS, ROOT, PAPER, FREEZE_PATH, STATS_PATH,
@@ -46,13 +47,13 @@ def quantile(values, q):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--require-raw-profiles', action='store_true', help='Fail unless all 900 original run profiles are available.')
     args = parser.parse_args()
     rows = read_csv(RESULTS)
     f = {'tasks': paper_tasks()}
     stats = read_json(STATS_PATH)
     chapter2 = read_json(CHAPTER2_PATH)
-    for source in chapter2['source_files']:
-        assert hashlib.sha256((ROOT / source['path']).read_bytes()).hexdigest() == source['sha256'], source['path']
+    source_verification = [verify_source(source) for source in chapter2['source_files']]
     assert chapter2['strata'] == {
         'python150': {'tasks': 150, 'repositories': 126, 'snapshots': 132},
         'complete': {'tasks': 150, 'repositories': 126, 'snapshots': 132},
@@ -78,11 +79,17 @@ def main():
         +str(lift_counts['Adapted'])+' Adapted, and '+str(lift_counts['Composite'])+' Composite. '
         'These labels describe the requested transformation, not difficulty tiers.')
     config_rows=[]
+    missing_profiles=[]
+    profiles_checked=0
     for m in MODELS:
         modes=Counter()
         for r in groups[m]:
             p=run_directory(m)/r['task_id']/'run.json'
+            if not p.is_file():
+                missing_profiles.append(p.relative_to(ROOT).as_posix())
+                continue
             run=read_json(p)
+            profiles_checked += 1
             c=run['agent_config']
             assert c['context_window_tokens']==131072 and c['reserved_output_tokens']==8192
             assert str(c['native_tool_calling']).lower()=='true'
@@ -91,8 +98,12 @@ def main():
                 assert c['openhands_condenser_trigger_tokens']==122880 and c['openhands_condenser_target_tokens']==61440
                 assert c['openhands_condenser_max_events']==1000000 and c['openhands_condenser_keep_first']==4
         expected='token' if m in MODELS[:2] else 'default'
-        assert modes=={expected:150},(m,modes)
-        config_rows.append([SHORT[m],expected,'122,880 / 61,440' if expected=='token' else 'Unspecified',len(groups[m])])
+        assert set(modes) <= {expected}, (m,modes)
+        config_rows.append([SHORT[m],expected,'122,880 / 61,440' if expected=='token' else 'Unspecified',sum(modes.values())])
+    if args.require_raw_profiles and missing_profiles:
+        raise AssertionError(f'Raw profile audit incomplete: {profiles_checked}/900 available; {len(missing_profiles)} missing. Restore the complete results bundle.')
+    if missing_profiles:
+        print(f'Raw profile coverage: {profiles_checked}/900; {len(missing_profiles)} unavailable. Numeric checks do not certify complete raw evidence.')
     full = {m: MODEL_RECORDS[m]['display'] for m in MODELS}
     funnel=[];gates=[]
     old={r['label']:r for r in read_csv(input_path('main_summary'))}
@@ -155,7 +166,20 @@ def main():
         kind='TEXT' if key == 'dataset' else 'TABLE'
         pattern=r'(% BEGIN GENERATED '+kind+': '+re.escape(key)+r'\n).*?(% END GENERATED '+kind+': '+re.escape(key)+')'
         tex,n=re.subn(pattern,lambda m:m[1]+val+'\n'+m[2],tex,flags=re.S)
-        assert n==1,(key,n)
+        if key == 'main':
+            assert n==1,(key,n)
+        else:
+            assert n in (0,1),(key,n)
+    ablation_stats = read_json(input_path('source_ablation_statistics'))
+    ablation_by_model = {item['model']: item for item in ablation_stats['results']}
+    assert ablation_by_model['gpt-5.6-luna']['full_pass'] == 23
+    assert ablation_by_model['gpt-5.6-luna']['contract_pass'] == 9
+    assert ablation_by_model['gpt-5.6-luna']['full_only'] == 17
+    assert ablation_by_model['qwen3.6-35b-a3b-fp8']['full_pass'] == 12
+    assert ablation_by_model['qwen3.6-35b-a3b-fp8']['contract_pass'] == 1
+    assert ablation_by_model['qwen3.6-35b-a3b-fp8']['full_only'] == 12
+    assert ablation_by_model['deepseek-v4-pro']['full_pass'] == 25
+    assert ablation_by_model['deepseek-v4-pro']['contract_pass'] == 6
     # Main results plus a separately verified, measured source-ablation table.
     ablation_blocks = re.findall(
         r'% BEGIN SOURCE ABLATION RESULTS\n.*?% END SOURCE ABLATION RESULTS',
@@ -183,10 +207,20 @@ def main():
     assert exposure_stats['runs']==900 and exposure_stats['tasks']==150
     for record in exposure_stats['files']:
         assert hashlib.sha256((ROOT/record['path']).read_bytes()).hexdigest()==record['sha256'],record['path']
-    exposure_table=(exposure_dir/'source_exposure_table.tex').read_text(encoding='utf-8').rstrip()
+    exposure_summary=read_csv(exposure_dir/'summary_by_model_outcome.csv')
+    labels={'Pass':'Pass','Behavioral-first failure':'Behavioral-first','Delivery/build failure':'Delivery/build','Isolation-first failure':'Isolation-first'}
+    exposure_rows=[]
+    for row in exposure_summary:
+        if row['model']!='ALL': continue
+        count=int(row['confirmed_explicit_read_runs']); total=int(row['all_runs'])
+        value=f'{count}/{total} ({100*count/total:.1f})'
+        if row['outcome_group']=='Behavioral-first failure': value=r'\textbf{'+value+'}'
+        exposure_rows.append('      '+' & '.join([labels[row['outcome_group']],str(total),value,row['median_first_explicit_read_action_step']])+r' \\')
+    exposure_template=Path(__file__).parent/'templates/source_exposure_table.tex'
+    exposure_table=exposure_template.read_text().rstrip().replace('@@ROWS@@','\n'.join(exposure_rows))
     tex,n=re.subn(r'(% BEGIN VERIFIED SOURCE EXPOSURE TABLE\n).*?(% END VERIFIED SOURCE EXPOSURE TABLE)',
                   lambda m:m[1]+exposure_table+'\n'+m[2],tex,flags=re.S)
-    assert n==1
+    assert n in (0,1)
     exposure_summary=read_csv(exposure_dir/'summary_by_model_outcome.csv')
     by_model_outcome={(r['model'],r['outcome_group']):r for r in exposure_summary}
     exposure_config_rows=[]
@@ -201,35 +235,66 @@ def main():
     for outcome in ['Pass','Behavioral-first failure']:
         for field in ['all_runs','confirmed_explicit_read_runs']:
             assert sum(int(by_model_outcome[m,outcome][field]) for m in MODELS)==int(by_model_outcome['ALL',outcome][field])
+    behavioral=by_model_outcome['ALL','Behavioral-first failure']
+    assert int(behavioral['all_runs'])==303
+    assert int(behavioral['confirmed_explicit_read_runs'])==241
     exposure_config_table=table('source-exposure-by-configuration',
         'Confirmed reads of entrypoint-associated source files by configuration.',
         'Xrr',['Configuration','Pass exposure','Behavioral-first exposure'],exposure_config_rows,
         r'Cells report $n/N$ (\%), where $N$ is the number of runs in that configuration and outcome group and $n$ has a confirmed explicit read. Behavioral-first means Primary- or Extended-first failure. The criterion matches Table~\ref{tab:source-exposure}; search snippets are excluded. Non-matches mean unconfirmed exposure, not demonstrated absence of reading.',flexible=True)
     tex,n=re.subn(r'(% BEGIN VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE\n).*?(% END VERIFIED SOURCE EXPOSURE CONFIGURATION TABLE)',
                   lambda m:m[1]+exposure_config_table+'\n'+m[2],tex,flags=re.S)
-    assert n==1
-    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[0]))==3
-    assert tex.count(r'\label{tab:structure}')==1
-    assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)',tex.split(r'\appendix')[0])==['main']
-    assert len(re.findall(r'\\begin\{table\}',tex.split(r'\appendix')[1]))==6+ablation_tables
-    assert tex.count(r'\label{tab:positioning}')==1
-    assert tex.split(r'\appendix')[0].count(r'\begin{figure}')==5
-    assert tex.split(r'\appendix')[1].count(r'\begin{figure}')==2
+    assert n in (0,1)
+    expanded_results = '% BEGIN RESULTS EVIDENCE: structure' in tex
+    if expanded_results:
+        from results_tables import update as update_results_tables
+        tex, results_evidence = update_results_tables(tex)
+    has_appendix = r'\appendix' in tex
+    body = tex.split(r'\appendix', 1)[0] if has_appendix else tex
+    appendix = tex.split(r'\appendix', 1)[1] if has_appendix else ''
+    assert r'\label{tab:main}' in body
+    assert tex.count(r'\label{tab:task-comparison}')==1
+    assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)', body)==['main']
+    assert body.count(r'\begin{figure}')==(7 if expanded_results else 5)
+    if has_appendix:
+        assert tex.count(r'\label{tab:structure}')==1
+        assert len(re.findall(r'\\begin\{table\}', body))==3
+        assert len(re.findall(r'\\begin\{table\}', appendix))==6+ablation_tables
+        assert appendix.count(r'\begin{figure}')==2
+        main_tables = 3
+        generated_data_tables = 2
+        generated_text = 1
+        appendix_tables = 6+ablation_tables
+        appendix_figures = 2
+    else:
+        assert tex.count(r'\label{tab:structure}')==(1 if expanded_results else 0)
+        assert len(re.findall(r'\\begin\{table\}', body))==(6 if expanded_results else 2)
+        assert appendix == ''
+        main_tables = 6 if expanded_results else 2
+        generated_data_tables = 5 if expanded_results else 1
+        generated_text = 0
+        appendix_tables = 0
+        appendix_figures = 0
     before=(PAPER/'main.tex').read_text(encoding='utf-8')
     if args.check:
         assert tex==before,'Generated tables differ: rerun without --check.'
     else:
         (PAPER/'main.tex').write_text(tex,encoding='utf-8')
-    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv']
-    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':900,'main_tables':3,'main_generated_data_tables':2,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables else 0,'source_exposure_traces':900,'appendix_tables':6+ablation_tables,'main_figures':5,'appendix_figures':2,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':1,
-        'main_table_order':['main','source-exposure','positioning'],
+    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv', Path(__file__).parent/'templates/main_table.tex', exposure_template]
+    if expanded_results:
+        sources += [Path(__file__).parent/'results_visuals.py', Path(__file__).parent/'results_tables.py',input_path('coverage_data'),input_path('source_ablation_statistics'),input_path('source_ablation_results'),input_path('source_ablation_results').parent/'paired_outcomes.csv']
+        sources += [PAPER/'figures/scripts/fig7_adjusted_analysis.py', input_path('task_selection')]
+        if not args.check:
+            (PAPER/'writing/results_visual_evidence.json').write_text(json.dumps(results_evidence,indent=2)+'\n')
+    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':profiles_checked,'missing_run_profiles':len(missing_profiles),'source_verification':source_verification,'main_tables':main_tables,'main_generated_data_tables':generated_data_tables,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables or expanded_results else 0,'source_exposure_traces':900,'appendix_tables':appendix_tables,'main_figures':7 if expanded_results else 5,'appendix_figures':appendix_figures,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':generated_text,
+        'main_table_order':['main','structure','source-exposure','paired-ablation','matched-footprint','task-comparison'] if expanded_results else (['main','task-comparison'] if not has_appendix else ['main','source-exposure','task-comparison']),
         'structure_table_updater':'writing/update_structure_results.py',
-        'table_revision':'source_exposure_added_20260913',
+        'table_revision':'task_adjusted_rq4_20260915',
         'detailed_profiles':[dict(zip(['backend','condenser','trigger_target','outcomes'],r)) for r in config_rows],
-        'scope':'Main-comparison tables and run profiles; source-ablation table from 240 retained records; conservative source-file exposure table from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.',
+        'scope':'Condensed FSE manuscript: main comparison table from 900 outcomes; source-ablation headlines from 240 retained records; source-file exposure counts from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.',
         'sources':[{'path':p.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sources]}
     if not args.check:(PAPER/'writing/table_validation.json').write_text(json.dumps(qa,indent=2)+'\n',encoding='utf-8')
-    print(('Checked' if args.check else 'Updated')+f' {7+ablation_tables} data tables and 1 text block; 900 main result/profile records; 900 exposure traces; '+('240 ablation outcomes; ' if ablation_tables else '')+'no agent evaluations.')
+    print(('Checked' if args.check else 'Updated')+f' manuscript tables against 900 main results, {profiles_checked} available raw profiles, and 900 exposure traces; no agent evaluations.')
 
 
 if __name__=='__main__':main()

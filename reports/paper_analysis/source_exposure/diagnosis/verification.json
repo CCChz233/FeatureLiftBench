@@ -1,0 +1,153 @@
+{
+  "sample_runs": 24,
+  "sample_unique_tasks": 7,
+  "sample_selection": "First two confirmed reads per model and Pass/behavioral-first group, ordered by SHA256(task_id)",
+  "checks": [
+    {
+      "model": "deepseek-v4-flash",
+      "task_id": "babel__plural_core__001",
+      "file": "babel/localedata.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/wheel.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "file": "src/poetry/core/packages/dependency_group.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "file": "src/_pytest/mark/structures.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "task_id": "babel__plural_core__001",
+      "file": "babel/plural.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/wheel.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "file": "src/poetry/core/packages/dependency_group.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "file": "src/_pytest/mark/structures.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "glm-5.3-flash",
+      "task_id": "babel__plural_core__001",
+      "file": "babel/plural.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "glm-5.3-flash",
+      "task_id": "referencing__json_schema_refs_core__001",
+      "file": "referencing/_core.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "glm-5.3-flash",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/wheel.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "glm-5.3-flash",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "file": "src/poetry/core/packages/dependency_group.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "babel__plural_core__001",
+      "file": "babel/plural.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/resources.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "file": "src/poetry/core/packages/dependency_group.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "file": "src/tox/config/loader/ini/factor.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/wheel.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "coverage__path_remap_core__001",
+      "file": "coverage/files.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "babel__plural_core__001",
+      "file": "babel/plural.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "gpt-oss-120b",
+      "task_id": "referencing__json_schema_refs_core__001",
+      "file": "referencing/_core.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "file": "distlib/wheel.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "referencing__json_schema_refs_core__001",
+      "file": "referencing/_core.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "file": "src/poetry/core/packages/dependency_group.py",
+      "paired_observation_and_source_content_agree": true
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "file": "src/_pytest/mark/structures.py",
+      "paired_observation_and_source_content_agree": true
+    }
+  ],
+  "hashed_input_files": 1451,
+  "scope": "Programmatic evidence consistency plus assistant inspection; not independent human audit or detector precision/recall estimate"
+}

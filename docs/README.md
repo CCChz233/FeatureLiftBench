@@ -1,53 +1,34 @@
 # FeatureLiftBench 文档入口
 
-> **Status: current · Last verified: 2026-09-11**
+> **Status: current · Last verified: 2026-09-14**
 
-当前优先进行论文写作，入口为 [论文工作流](paper/WORKFLOW.md)。最终范围：**200 题；150 题六配置主比较；其余 50 题五配置扩展**。数字摘要见 [STATUS.md](STATUS.md)，正式输入见 [paper_sources.json](paper/paper_sources.json)。下列运行与方法文档保留供开发参考，内部批次名称不作为论文分类。
+当前以新版 FSE 论文为主：150 题、126 仓库、132 快照，六配置共 900 条结果。
+项目全貌先读 [PROJECT_MAP.md](PROJECT_MAP.md)，数字与缺口见 [STATUS.md](STATUS.md)。
 
-## 权威
-
-| 需要 | 文档 |
+| 需要 | 入口 |
 | --- | --- |
-| 最终规模与当前结果 | [STATUS.md](STATUS.md) |
-| 论文数据、表格、绘图与打包 | [paper/WORKFLOW.md](paper/WORKFLOW.md) |
-| 方法结论 | [FINDINGS.md](FINDINGS.md) |
-| Main 条件、指标、正式实验臂 | [EVALUATION.md](EVALUATION.md) |
-| 出题规则 | [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) |
-| 题目验证 / 三态打标（筛题暂停） | [BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md) |
-| 失败分析定义（标签/分母） | [FAILURE_ANALYSIS_PROTOCOL.md](FAILURE_ANALYSIS_PROTOCOL.md) |
-| 失败分析怎么做（5.3 / F3 SOP） | [FAILURE_ANALYSIS_SOP.md](FAILURE_ANALYSIS_SOP.md) |
-| 当前 cost arm：V1 = Main + 2M | [METHOD_V1.md](METHOD_V1.md) |
-| 构念 | [BENCHMARK_DESIGN.md](BENCHMARK_DESIGN.md) |
-| source / freeze 政策 | [BENCHMARK_DESIGN_PRINCIPLES.md](BENCHMARK_DESIGN_PRINCIPLES.md) · [FULL_REPOSITORY_SOURCE_POLICY.md](FULL_REPOSITORY_SOURCE_POLICY.md) |
+| 写论文、更新图表和打包 | [论文工作流](paper/WORKFLOW.md) |
+| 看最新正文与图表状态 | [论文 README](paper/README.md) |
+| 查数据来源 | [paper_sources.json](paper/paper_sources.json) |
+| 改单张图 | [绘图源码](paper/figures/scripts/README.md) |
+| 查本轮整理与验证 | [FSE 同步记录](paper/FSE_SYNC_20260914.md) |
+| 当前论文发现 | [FINDINGS.md](FINDINGS.md) |
+| 理解任务与评测 | [设计](BENCHMARK_DESIGN.md) · [评测协议](EVALUATION.md) |
+| 准备新运行 | [RUN.md](../RUN.md) · [服务器手册](SERVER_RUNBOOK_PYTHON200.md) |
+| 查任务与原始运行 | [目录对应](paper/PAPER_FOLDERS.md) |
+| 查历史研究与记录 | [历史文档](archive/README.md) · [派生报告](../reports/README.md) |
+| 开发维护 | [维护手册](REPOSITORY_MAINTENANCE.md) · [脚本入口](../scripts/README.md) |
 
-## 运行
+## 任务构建与方法参考
 
-| 需要 | 文档 |
-| --- | --- |
-| 本地跑实验 | [RUN.md](../RUN.md) |
-| 论文补充实验：Source ablation / 机械提取 | [设计与服务器执行指南](paper/SUPPLEMENTARY_EXPERIMENT_RUNBOOK.md) |
-| 服务器跑 Python-200′ | [SERVER_RUNBOOK_PYTHON200.md](SERVER_RUNBOOK_PYTHON200.md) |
-| 可选 DeepSeek Harness / Codex | [METHOD_AGENT_RUNTIME.md](METHOD_AGENT_RUNTIME.md) |
-| 脚本哪些能用 | [scripts/README.md](../scripts/README.md) |
-| 仓库结构 | [benchmark/](../benchmark/README.md) · [agent/](../agent/README.md) · [method/](../method/README.md) · [harness/](../harness/README.md) |
-| 整理仓库 | [REPOSITORY_MAINTENANCE.md](REPOSITORY_MAINTENANCE.md) |
+任务构建规范：[TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md)、
+[BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md)、
+[失败分析协议](FAILURE_ANALYSIS_PROTOCOL.md)、[标注 SOP](FAILURE_ANALYSIS_SOP.md)。
+来源与身份规则：[设计原则](BENCHMARK_DESIGN_PRINCIPLES.md)、
+[完整源码政策](FULL_REPOSITORY_SOURCE_POLICY.md)、[参考规范](reference/README.md)。
 
-正式入口只有 `./scripts/run_benchmark.sh`（或 `featureliftbench` CLI）。
-`--benchmark python200_hard`。不要用 `run_python200_paper.sh` 写新主表。
+历史/可选方法入口：[V1](METHOD_V1.md)、[runtime](METHOD_AGENT_RUNTIME.md)。
+这些方法不进入当前 OpenHands Main 表。旧文档中的批次名称和分数按其原日期理解。
 
-## 论文与参考
-
-| 需要 | 文档 |
-| --- | --- |
-| 论文稿 | [paper/](paper/README.md) |
-| schema、生命周期、Go/Python 轨道 | [reference/](reference/README.md) · [06_task_schema.md](reference/06_task_schema.md) · [07_incremental_task_rules.md](reference/07_incremental_task_rules.md) |
-| 已停方法、完成的计划、组会稿 | [archive/](archive/README.md) |
-
-`HIDDEN_CONTRACT_PROVENANCE.md` 仍留在本目录：freeze 钉住了这个路径，不要改内容。
-它不是活的审计入口；可复跑检查见 [BENCHMARK_VALIDATION_GATE.md](BENCHMARK_VALIDATION_GATE.md)。
-
-写完文档后运行：
-
-```bash
-python3.12 scripts/check_docs.py --warnings-as-errors
-```
+文档检查：`python -B scripts/check_docs.py`。
+论文检查：`python -B scripts/paper.py check`。

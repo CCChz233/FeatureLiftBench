@@ -1,105 +1,58 @@
 # FeatureLiftBench
 
-> **Documentation status: current · Last verified: 2026-09-11**
+> **Status: current · Last verified: 2026-09-14**
 
-FeatureLiftBench evaluates whether a coding agent can extract and reconstruct a
-coherent feature from a real upstream repository under a controlled information
-boundary. The official Main arm provides the full upstream repository, hides
-benchmark tests and source hints, and evaluates the submitted `featurelifted`
-package in an isolated Docker capsule.
+FeatureLiftBench evaluates behavior-preserving feature lifting: given an intact,
+version-pinned source repository and a public behavioral contract, a coding agent
+builds an independent package, evaluated without runtime access to the source repository.
 
-Current release status, freeze identifiers, task counts, and available results
-are maintained only in [docs/STATUS.md](docs/STATUS.md).
+The current FSE manuscript reports **150 Python tasks, 126 repositories, 132 snapshots**,
+with **six configurations × 150 tasks = 900 retained outcomes**. A separate paired
+source ablation contains 240 outcomes on 40 tasks. The historical 200-task storage
+view remains on disk; the extra 50 tasks are outside the paper.
 
-The paper describes **200 tasks from 176 repositories (182 snapshots)**. Its
-primary comparison uses the same **150 tasks across six configurations**; five
-configurations also cover the remaining 50 tasks. For the current writing phase,
-start with [the paper workflow](docs/paper/WORKFLOW.md) and
-`python -B scripts/paper.py check`. Stored directory names are internal identifiers.
+## Start here
 
-## Start Here
-
-| Goal | Entry |
+| Work | Entry |
 | --- | --- |
-| Write the paper, update tables, or package Overleaf | [Paper workflow](docs/paper/WORKFLOW.md) |
-| Understand the benchmark | [Design](docs/BENCHMARK_DESIGN.md) |
-| Check readiness and current results | [Status](docs/STATUS.md) |
-| Current V1 method (Main + 2M cap) | [V1](docs/METHOD_V1.md) |
-| Optional DeepSeek Harness / Codex runtime | [Agent runtime](docs/METHOD_AGENT_RUNTIME.md) |
-| Run an experiment | [Run quick reference](RUN.md) · **only** `./scripts/run_benchmark.sh` |
-| Operate a server run | [Python-200 runbook](docs/SERVER_RUNBOOK_PYTHON200.md) |
-| Reorganize or clean the repository | [Repository maintenance](docs/REPOSITORY_MAINTENANCE.md) |
-| Create or review a task | [Task design rules](docs/TASK_DESIGN_RULES.md) |
-| Navigate all documentation | [Documentation portal](docs/README.md) |
-
-## Five-Minute Preflight
+| Understand the entire project and its evidence | [Project map](docs/PROJECT_MAP.md) |
+| Read current results and remaining gaps | [Status](docs/STATUS.md) |
+| Write, check, and package the updated paper | [Paper workflow](docs/paper/WORKFLOW.md) |
+| Edit one figure | [Per-figure source index](docs/paper/figures/scripts/README.md) |
+| Find the data behind a table or figure | [Paper source manifest](docs/paper/paper_sources.json) |
+| Understand the benchmark and evaluator | [Design](docs/BENCHMARK_DESIGN.md) · [Evaluation](docs/EVALUATION.md) |
+| Prepare an experiment | [Run guide](RUN.md) |
+| Browse current and historical documentation | [Documentation portal](docs/README.md) |
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ./harness
-
-PYTHONPATH=harness python -B -m featureliftbench.cli catalog check
+python -B scripts/paper.py check
+python -B scripts/paper.py tables
+python -B scripts/paper.py package
 ```
 
-`catalog check` validates `benchmark/suites.toml`, `agent/registry.toml`, and
-`method/registry.toml` against adapters and OpenHands profiles. Paper Main
-execution is `./scripts/run_benchmark.sh --benchmark python200_hard --agent
-openhands --method main`. `./harness/scripts/archive/run_python200_paper.sh` still
-validates the superseded 150+External-50 release; do not use it for Python-200'.
+`check` verifies saved numerical evidence, table contents, local figure assets and
+cross-references. It reports raw-run coverage separately: **307/900 main-task profiles
+are locally available**. `python -B scripts/paper.py audit` additionally requires all
+900 original profiles and currently fails on the missing 593. Neither command launches
+an agent. A successful numeric check does not establish complete raw-evidence recovery.
 
-## Repository Layout
+## Repository layout
 
-Experiments are **benchmark × agent × method**. List ids with
-`PYTHONPATH=harness python -B -m featureliftbench.cli catalog list`.
-
-| Path | Role |
+| Directory | Role |
 | --- | --- |
-| [`benchmark/`](benchmark/README.md) | Task packages and named suites. The current 200-task storage root is `python200_hard_tasks/`; this internal name does not define a paper difficulty tier |
-| `agent/` | Public catalog of coding runtimes (`--agent`). Adapters stay in `harness/` |
-| `method/` | Public catalog of protocols / information arms (`--method` / `--arm`) |
-| [`scripts/`](scripts/README.md) | Maintainer entrypoints. Root only has thin forwarders `run_benchmark.sh` / `run_experiment.sh` plus `setup.sh` |
-| [`harness/`](harness/README.md) | Evaluator, Docker capsule, agent adapters, and CLI. Not a third experiment axis |
-| `docs/` | Current specifications, runbooks, paper material, and archived narratives |
-| `reports/` | Audits and derived analysis; not a substitute for raw task results |
-| [`experiments/`](experiments/README.md) | Raw runs in seven canonical directories only |
-| `artifacts/` | Small freezes, selection, taxonomy snapshots — not full checkouts |
-| `evidence/` | Historical task-construction gates only |
-| `integrations/` | External method adapters (e.g. AutoSaddler) that do not fork the harness |
-| `archive/` | Local historical payload; not a run entrypoint |
+| `docs/paper/` | Active manuscript, bibliography, figures, table templates and paper tools |
+| `benchmark/` | Frozen tasks and source identities; paper membership is selected explicitly |
+| `harness/` | Evaluation gates, Docker capsule, adapters and CLI |
+| `agent/`, `method/` | Runtime and protocol catalogs; historical methods are separate from paper Main |
+| `reports/` | Derived results, source ablation and trace diagnostics |
+| `experiments/` | Recovered raw runs and recovery records |
+| `artifacts/` | Task selection, freeze identities and taxonomy records |
+| `scripts/`, `tools/` | Maintainer entrypoints and analysis utilities |
+| `docker/`, `integrations/`, `third_party/` | Execution environment and optional integrations |
+| `docs/archive/`, `archive/` | Historical documents and payloads |
+| `exports/` | Transfer/release bundles |
 
-```bash
-./scripts/run_benchmark.sh \
-  --benchmark python200_hard \
-  --agent openhands \
-  --method main \
-  --docker --workers 1 --timeout 3600
-```
-
-`--arm` is an alias of `--method`. Official paper numbers use OpenHands + `main`.
-DeepSeek Harness and Codex share this CLI but stay off the OpenHands table.
-Do not start experiments with deleted root wrappers (`run.sh`, `run_openhands.sh`, `run_easy.sh`).
-
-Task packages and source archives are **not** stored on GitHub. For a server
-run, copy `experiments/bundles/outgoing/FeatureLiftBench-benchmark-20260828.tar.gz`
-(about 690 MB) and unpack it at the repository root so `benchmark/` is restored.
-Verify with
-[`experiments/bundles/outgoing/current/FeatureLiftBench-benchmark-20260828.tar.gz.sha256`](experiments/bundles/outgoing/current/FeatureLiftBench-benchmark-20260828.tar.gz.sha256).
-Do not commit `.env` or `harness/config/agents.toml`.
-
-## Result Boundary
-
-The paper reports evaluator `Functional Pass@1`, pass-conditioned artifact
-diagnostics (RRES and Copy), and execution-effort statistics. Agent completion status is not a
-correctness score. Official Main uses OpenHands. DeepSeek Harness and Codex are
-the same CLI level after `./setup.sh`, but remain a runtime ablation and must
-not be merged into the OpenHands Python-200 table. Results are comparable only
-when the task set, attempt policy, model revision, agent runtime, agent
-profile, information arm, and agent/evaluator image identities match.
-Historical and current conditions must not be silently combined.
-
-## Citation and License
-
-Citation metadata and licensing will be finalized with the paper release.
-Upstream source snapshots retain their original licenses; see task metadata and
-the source registries for provenance.
+Current writing is based on the supplied `FSE.zip`; its immutable copy and the previous
+local state are recorded in [the import snapshot](docs/archive/snapshots/fse_sync_20260914/README.md).
+Task packages, model outputs and experiment identities were not rewritten during this sync.
+Do not commit `.env`, local credentials or complete upstream checkouts.

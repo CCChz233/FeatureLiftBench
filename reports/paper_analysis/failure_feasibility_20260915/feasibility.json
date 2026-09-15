@@ -1,0 +1,93 @@
+{
+  "scope": "Behavioral-first failures with confirmed explicit entrypoint source read",
+  "candidate_runs": 241,
+  "unique_tasks": 89,
+  "all_core_materials_present": 65,
+  "materials": {
+    "run_json": 65,
+    "eval_result": 65,
+    "first_failure_log": 65,
+    "submission_python": 65,
+    "public_contract_files": 241,
+    "events": 65,
+    "public_test_files": 241,
+    "hidden_test_files": 241
+  },
+  "previous_annotations_total": 122,
+  "previous_annotations_in_scope": 89,
+  "previous_flagged_runs_in_scope": 18,
+  "previous_flagged_tasks_in_scope": 5,
+  "independent_human_review_in_scope": 0,
+  "by_model": [
+    {
+      "model": "Pro",
+      "candidates": 29,
+      "core_present": 29,
+      "previous_annotations": 29,
+      "previous_flagged_runs": 4
+    },
+    {
+      "model": "Flash",
+      "candidates": 34,
+      "core_present": 34,
+      "previous_annotations": 34,
+      "previous_flagged_runs": 5
+    },
+    {
+      "model": "Luna",
+      "candidates": 33,
+      "core_present": 0,
+      "previous_annotations": 9,
+      "previous_flagged_runs": 5
+    },
+    {
+      "model": "GLM",
+      "candidates": 36,
+      "core_present": 2,
+      "previous_annotations": 0,
+      "previous_flagged_runs": 0
+    },
+    {
+      "model": "Qwen",
+      "candidates": 43,
+      "core_present": 0,
+      "previous_annotations": 9,
+      "previous_flagged_runs": 2
+    },
+    {
+      "model": "OSS",
+      "candidates": 66,
+      "core_present": 0,
+      "previous_annotations": 8,
+      "previous_flagged_runs": 2
+    }
+  ],
+  "limits": [
+    "File existence and non-emptiness are not semantic sufficiency or validity adjudication.",
+    "Existing labels are prior L1 assistant work, not independent human review.",
+    "241 is the candidate denominator; defect/evidence adjudication precedes valid-agent proportions.",
+    "No new labels, experiments, paper edits, or compilation."
+  ],
+  "sources": [
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/run_exposure.csv",
+      "sha256": "2225770987def0556f157fbdd322665c8e4354e92298a43494978afed64f2e0b"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/preflight/run_index.csv",
+      "sha256": "50d8de518d5dc7888cb42019044ee96a662c2dc484e6989558417a6fba35a366"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/failure_root_cause_annotations.csv",
+      "sha256": "6f87b65ceea63f2706faf48b3e814536846e06c4a8e6959bbd09058f3e672a38"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/postsample_annotations.csv",
+      "sha256": "c603df23769e52bcbe68890c4e509bc1a4d113e006f28e84cb6eba792c81a80b"
+    }
+  ]
+}

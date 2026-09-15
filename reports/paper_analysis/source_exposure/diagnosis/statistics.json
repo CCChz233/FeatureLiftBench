@@ -1,0 +1,191 @@
+{
+  "runs": 900,
+  "tasks": 150,
+  "models": 6,
+  "mapped_declarations": 607,
+  "unresolved_declarations": 34,
+  "tasks_with_any_mapped_entrypoint": 145,
+  "tasks_with_all_declarations_mapped": 130,
+  "nonempty_support_tasks": 107,
+  "support_tasks_with_unresolved_entries": 9,
+  "closure_annotation_tasks": 39,
+  "runs_without_paired_observations": 23,
+  "malformed_lines": 0,
+  "orphan_observations": 0,
+  "overall": [
+    {
+      "model": "ALL",
+      "outcome_group": "Pass",
+      "all_runs": "492",
+      "paired_trace_runs": "492",
+      "confirmed_explicit_read_runs": "363",
+      "confirmed_explicit_read_percent": "73.78048780487805",
+      "including_search_snippet_runs": "366",
+      "median_first_explicit_read_action_step": "5"
+    },
+    {
+      "model": "ALL",
+      "outcome_group": "Behavioral-first failure",
+      "all_runs": "303",
+      "paired_trace_runs": "303",
+      "confirmed_explicit_read_runs": "241",
+      "confirmed_explicit_read_percent": "79.53795379537954",
+      "including_search_snippet_runs": "242",
+      "median_first_explicit_read_action_step": "5"
+    },
+    {
+      "model": "ALL",
+      "outcome_group": "Delivery/build failure",
+      "all_runs": "101",
+      "paired_trace_runs": "78",
+      "confirmed_explicit_read_runs": "51",
+      "confirmed_explicit_read_percent": "50.495049504950494",
+      "including_search_snippet_runs": "51",
+      "median_first_explicit_read_action_step": "5"
+    },
+    {
+      "model": "ALL",
+      "outcome_group": "Isolation-first failure",
+      "all_runs": "4",
+      "paired_trace_runs": "4",
+      "confirmed_explicit_read_runs": "4",
+      "confirmed_explicit_read_percent": "100.0",
+      "including_search_snippet_runs": "4",
+      "median_first_explicit_read_action_step": "10.5"
+    }
+  ],
+  "subsets": [
+    {
+      "annotation": "support",
+      "outcome": "ALL",
+      "tasks": 107,
+      "runs": 642,
+      "nonempty_mapped_file_runs": 636,
+      "any_annotated_file_exposed": 503,
+      "all_mapped_files_exposed": 326,
+      "median_mapped_file_fraction": 1.0,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "support",
+      "outcome": "Pass",
+      "tasks": 81,
+      "runs": 313,
+      "nonempty_mapped_file_runs": 313,
+      "any_annotated_file_exposed": 247,
+      "all_mapped_files_exposed": 153,
+      "median_mapped_file_fraction": 0.8888888888888888,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "support",
+      "outcome": "Behavioral-first failure",
+      "tasks": 85,
+      "runs": 253,
+      "nonempty_mapped_file_runs": 247,
+      "any_annotated_file_exposed": 215,
+      "all_mapped_files_exposed": 154,
+      "median_mapped_file_fraction": 1.0,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "support",
+      "outcome": "Delivery/build failure",
+      "tasks": 56,
+      "runs": 73,
+      "nonempty_mapped_file_runs": 73,
+      "any_annotated_file_exposed": 38,
+      "all_mapped_files_exposed": 18,
+      "median_mapped_file_fraction": 0.05063291139240506,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "support",
+      "outcome": "Isolation-first failure",
+      "tasks": 3,
+      "runs": 3,
+      "nonempty_mapped_file_runs": 3,
+      "any_annotated_file_exposed": 3,
+      "all_mapped_files_exposed": 1,
+      "median_mapped_file_fraction": 0.9583333333333334,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "closure",
+      "outcome": "ALL",
+      "tasks": 39,
+      "runs": 234,
+      "nonempty_mapped_file_runs": 234,
+      "any_annotated_file_exposed": 177,
+      "all_mapped_files_exposed": 110,
+      "median_mapped_file_fraction": 0.75,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "closure",
+      "outcome": "Pass",
+      "tasks": 30,
+      "runs": 130,
+      "nonempty_mapped_file_runs": 130,
+      "any_annotated_file_exposed": 93,
+      "all_mapped_files_exposed": 53,
+      "median_mapped_file_fraction": 0.5357142857142857,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "closure",
+      "outcome": "Behavioral-first failure",
+      "tasks": 27,
+      "runs": 81,
+      "nonempty_mapped_file_runs": 81,
+      "any_annotated_file_exposed": 70,
+      "all_mapped_files_exposed": 51,
+      "median_mapped_file_fraction": 1.0,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "closure",
+      "outcome": "Delivery/build failure",
+      "tasks": 18,
+      "runs": 22,
+      "nonempty_mapped_file_runs": 22,
+      "any_annotated_file_exposed": 13,
+      "all_mapped_files_exposed": 6,
+      "median_mapped_file_fraction": 0.15833333333333333,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    },
+    {
+      "annotation": "closure",
+      "outcome": "Isolation-first failure",
+      "tasks": 1,
+      "runs": 1,
+      "nonempty_mapped_file_runs": 1,
+      "any_annotated_file_exposed": 1,
+      "all_mapped_files_exposed": 0,
+      "median_mapped_file_fraction": 0.029411764705882353,
+      "scope": "annotated files only; explicit reads or search snippets; not complete closure"
+    }
+  ],
+  "files": [
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/run_exposure.csv",
+      "sha256": "2225770987def0556f157fbdd322665c8e4354e92298a43494978afed64f2e0b"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/entrypoint_mapping.csv",
+      "sha256": "db6f40429a31103114d4d9e6879833daaecc0d35595776297e7ab0f68b5b4173"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/exposure_events.csv",
+      "sha256": "e09b268b195a01fb2ef5a3ad698a8810753ba20f1c9e331912b321c468af9180"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/summary_by_model_outcome.csv",
+      "sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/method.json",
+      "sha256": "1facf0313fe85305a15d75275e7e5b3eacd10ecf61c5cd7afbdccf84a105c328"
+    }
+  ]
+}

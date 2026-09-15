@@ -1,60 +1,53 @@
 # 论文代码与数据工作流
 
-> **Status: current · Last verified: 2026-09-13**
+> **Status: current · Last verified: 2026-09-14**
 
-论文 benchmark 为固定 Python-150 集合：150 题、126 个仓库、132 个快照，六配置覆盖全部题目，共 900 条结果。
-
-## 唯一入口
-
-[paper_sources.json](paper_sources.json) 登记输入、模型 ID / 全名 / 顺序、运行目录与 Overleaf 清单。[paper_inputs.py](paper_inputs.py) 统一读取配置。它们选择现有最终材料，不复制或重命名题包与原始结果。
+唯一输入入口是 [paper_sources.json](paper_sources.json)：固定 150 个任务身份、900 条逐题结果、分类数据、消融与暴露分析，以及正式文件清单。目录名称中的历史 200 题标识不改变这个范围。
 
 ```text
-固定 150 题身份记录与索引 + 150 × 6 逐题结果
-                          │
-                paper_sources.json
-                          │
-             表格脚本 / 分类统计 / 绘图数据
-                          │
-        main.tex + references.bib + figures/
-                          │
-           featureliftbench_overleaf.zip
+150 题身份 + 900 主比较结果 + 240 消融结果 + 暴露分析
+                          ↓
+                  paper_sources.json
+                          ↓
+          数值计算 / 表格模板 / 独立绘图脚本
+                          ↓
+          main.tex + 文献 + 模板 + 九个图片文件
+                          ↓
+              featureliftbench_overleaf.zip
 ```
 
-## 日常命令
-
-从项目根目录执行：
+## 日常命令（项目根目录）
 
 | 命令 | 作用 |
 | --- | --- |
-| `python -B scripts/paper.py check` | 只读核对范围、900 条结果、配置与当前表格 |
-| `python -B scripts/paper.py tables` | 更新生成表格和一段数值文字，保留其他正文 |
-| `python -B scripts/paper.py figures` | 生成 Fig. 3–5 和附录产物图数据与 PNG/PDF；不修改定稿 Fig. 1/2 |
-| `python -B scripts/paper.py package` | 先检查，再打包正文、bib、模板与五图 |
+| `python -B scripts/paper.py check` | 只读核对范围、数值、现有原始 profile、引用与图形清单 |
+| `python -B scripts/paper.py audit` | 在 check 基础上要求 900 个原始 profile；当前缺 593 个，会失败 |
+| `python -B scripts/paper.py tables` | 更新八张数据表和一段数值文字，另更新附录任务结构表 |
+| `python -B docs/paper/figures/scripts/redraw_figures.py --output-dir /tmp/flb-preview` | 生成统计图预览及派生数据，不覆盖正式资产 |
+| `python -B scripts/paper.py figures` | 重画 Fig. 3/4/5/7，并覆盖对应六个正式 PDF |
+| `python -B scripts/paper.py package` | 检查后打包正文、bib、模板/许可等六项及九个图片文件 |
 
-绘图需安装 NumPy / Matplotlib，本机可用 `D:/Anaconda3/python.exe`。这些命令不启动 agent、不执行任务、不编译 LaTeX。`check` 核对输入与数值关系，不声称重新进行了任务语义或环境等价性审核；绘图后仍需目视检查。
+绘图需要 Python、NumPy、Matplotlib。本机 `python` 可运行。以上入口不调用模型，不运行 benchmark，不编译论文。
 
-## 文件职责
+编译需本地 TeX Live，以下命令在 `docs/paper/` 执行：
 
-| 类别 | 当前文件 |
-| --- | --- |
-| 正文与文献 | `main.tex`、`references.bib` |
-| 主比较 | 清单中的 `main_results`，900 条 model–task 结果 |
-| 任务范围 | `task_selection` 中明确的 150 个 ID；历史 freeze 仅作源记录 |
-| 配对统计与交叉检查 | `paired_statistics`、`main_summary` |
-| 任务组成 | `task_inventory`、`lift_taxonomy`、`mechanism_taxonomy` |
-| 六张数据表、一段数值文字 | `writing/update_tables.py` |
-| 附录分类结果表 | `writing/update_structure_results.py` |
-| Fig. 3–5 及附录产物图数据 / 绘制 | `figures/scripts/redraw_data.py` / `redraw_figures.py` |
-| 图形样式 | `figures/scripts/paper_style.py`，模型名称来自公共清单 |
+```bash
+latexmk -pdf -pdflatex='pdflatex -no-shell-escape %O %S' -interaction=nonstopmode -halt-on-error -outdir=build main.tex
+```
 
-Fig. 3 两侧均覆盖全部 150 题。`writing/chapter2_evidence.py` 按同一集合重建 150 题索引，并从历史逐题记录核实 450 次参考执行与 24/4 修复记录。
+## 修改职责
 
-## 历史材料与后续整理
+[writing/update_tables.py](writing/update_tables.py) 处理生成标记区域；主表和源码暴露表的版式来自 [templates](writing/templates/README.md)。修改表头、间距、列结构时须同时核对模板和对应行生成器。作者撰写的 task-comparison 文献表不由数值脚本重写。
 
-旧目录继续作为存储路径使用，不能据目录中的 `final`、`v2` 或日期自动选择来源；以清单指定文件为准。
+[writing/update_structure_results.py](writing/update_structure_results.py) 更新附录类别通过率。
+[figures/scripts/README.md](figures/scripts/README.md) 列出每张图的独立源码。`figures/` 根目录只保留正文引用的九个文件；旧文件名在 [archive/paper_workspace_20260914](../../archive/paper_workspace_20260914/README.md)。当前 Fig. 1/2 没有精确对应的 Python renderer，旧附录分类图只有导入 PDF；正式使用这些导入资产。`figures/output/` 是本地重画草稿，默认不进版本库。
 
-旧组装器、历史敏感性分析、版本与镜像核对报告保留，但不参与日常表格生成。任务集合、唯一性、functional gates、配置、分母与配对统计检查继续保留。历史字段不被擦除，也不自动成为论文中的新 benchmark 名称或当前问题声明。
+FSE.zip 内源码消融图（现 Fig. 6） 的 PNG 与 PDF 不是同一版；本次以正文实际引用的 PDF 为准。已修正本地 renderer 缺失的标题、Pro 标记及边缘刻度留白，但重画布局不保证与导入 PDF 完全相同。替换正式图前应看预览。
 
-整理前的入口文档见 [快照目录](../archive/snapshots/paper_workflow_20260911/README.md)。本次范围修订保留题包、原始运行、轨迹与历史 freeze；图 1/2 的新范围版本另存为 `_python150.png`。
+## 核验与保留
 
-后续先完成论文写作，并同步清理正文中不必要的开发历史；保留实际协议与复现信息。如需对外发布代码，再单独整理安装、源码获取和运行示例，当前写作不依赖全面重构 harness。
+源证据要求原 SHA-256 匹配；若因 Windows / macOS 换行不同，只允许 LF/CRLF 转换后精确匹配记录的原哈希。已迁移证据只在确定的归档根目录寻找。脚本不会重写 freeze、历史哈希或原始运行。
+
+普通检查基于保留证据，只对本地找回的 307 个 profile 核对配置。完整审计需要补齐原始包。参考执行 450/450 是历史记录复算，本轮没有重跑。导入源包、修改前文件和本次清单见 [同步快照](../archive/snapshots/fse_sync_20260914/README.md)。
+
+当前为正文 7 图、6 表。新增表格由 `writing/results_tables.py` 生成，新增结构图和配对产物图与它共用 `writing/results_visuals.py`。`paper.py tables/check/package` 已支持全部生成区域；不执行 LaTeX。完整映射见 [实施计划](RESULTS_VISUAL_PLAN.md)。

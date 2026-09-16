@@ -1,3 +1,20 @@
+# 最终图表决策（2026-09-16）
+
+本节取代下方全部历史方案。正文 **7 图 + 7 表，无附录**。
+
+- Fig.1–Fig.3：图片、caption 和图块全部锁定，不重绘。
+- 删除原 Fig.4，不放结构柱状图或 task-level matrix 替代；Table 2 保留正文。
+- 原 Fig.5 → 新 Fig.4：首次失败阶段；Table 3 保留。
+- 原 Fig.6 → 新 Fig.5：各配置内部的 failure-category composition；Table 4 只给总体 count / percentage / taxonomy definition，不给逐模型计数。
+- 原 Fig.7 → 新 Fig.6：source-evidence ablation；Table 5 保留。
+- 原 Fig.8 → 新 Fig.7：保留零起点竖向柱状 footprint 图，拒绝 forest plot 替换；Table 6 保留，只精简表注。
+- Table 1 和 Table 7 保留。
+- 后四张图 caption 只介绍展示对象／panel；方法与解释留正文。特殊统计口径可用短表注。
+- 保持 acmsmall/acmart；figure caption 在下，table caption 在上。不修改模板，不使用强制浮动或负间距，不编译。
+- 结构柱状图、任务矩阵、forest plot 均为探索预览，不在论文默认绘图或打包清单内。
+
+---
+
 # Results 视觉规范
 
 > **Status: locked · 2026-09-15** · 先把清单看清，再决定要不要重画。

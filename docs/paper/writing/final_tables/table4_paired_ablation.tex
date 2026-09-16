@@ -1,8 +1,6 @@
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{2.2pt}
-  \renewcommand{\arraystretch}{1.12}
   \caption{Exact paired source-evidence ablation results on 40 tasks per configuration.}
   \label{tab:paired-ablation}
   \begin{tabularx}{\linewidth}{@{}Xrrrrrrr@{}}
@@ -10,11 +8,11 @@
     Configuration & \shortstack{Full\\pass} & \shortstack{Contract\\pass} & \shortstack{Full-\\only} & \shortstack{Contract-\\only} & \shortstack{$\Delta$\\(pp)} & \shortstack{95\%\\CI} & $p_{\mathrm{Holm}}$ \\
     \midrule
     GPT-5.6 Luna & 23/40 & 9/40 & 17 & 3 & 35.0 & [15.0, 55.0] & $5.15\times10^{-3}$ \\
-    DeepSeek V4 Pro$^{\dagger}$ & 25/40 & 6/40 & 20 & 1 & 47.5 & [30.0, 65.0] & $6.29\times10^{-5}$ \\
+    DeepSeek V4 Pro & 25/40 & 7/40 & 19 & 1 & 45.0 & [27.5, 62.5] & $1.20\times10^{-4}$ \\
     Qwen3.6-35B-A3B-FP8 & 12/40 & 1/40 & 12 & 1 & 27.5 & [12.5, 42.5] & $5.15\times10^{-3}$ \\
     \bottomrule
   \end{tabularx}
   \par\smallskip\begin{minipage}{\linewidth}\scriptsize
-  Full-only and Contract-only count discordant task pairs. $\Delta$ is Full minus Contract in percentage points. Two-sided exact McNemar tests are Holm-adjusted across the three configurations. Intervals are the same 100{,}000 paired task-bootstrap used in Figure~\ref{fig:source-evidence} and describe paired task variation, not repeated-run variance. Missing submissions remain failures. $\dagger$: Pro has 18 Contract-only missing submissions with recorded LLM timeouts, so its full-sample contrast includes service interruptions. On the 22 pairs without these interruptions, Pro passes 11 versus six tasks (unadjusted $p=0.125$); this selected-subset check does not replace the 40-task result.
+  Full-only and Contract-only count discordant pairs. $\Delta$: Full minus Contract (pp); CI: paired task-bootstrap interval; $p_{\mathrm{Holm}}$: Holm-adjusted exact McNemar test.
   \end{minipage}
 \end{table}

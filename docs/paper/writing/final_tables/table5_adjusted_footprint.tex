@@ -1,9 +1,7 @@
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{4pt}
-  \renewcommand{\arraystretch}{1.12}
-  \caption{Task-adjusted footprint of 485 successful artifacts from 115 tasks with at least two successful configurations.}
+  \caption{Task-adjusted implementation footprints among successful artifacts.}
   \label{tab:matched-footprint}
   \begin{tabularx}{\linewidth}{@{}Xrrr@{}}
     \toprule
@@ -18,6 +16,6 @@
     \bottomrule
   \end{tabularx}
   \par\smallskip\begin{minipage}{\linewidth}\scriptsize
-  Configuration abbreviations follow Table~\ref{tab:main}. Models include task fixed effects and sum-to-zero configuration effects. RRES ratios are $2^{\beta_m^{\mathrm{RRES}}}$; Copy differences are $100\beta_m^{\mathrm{Copy}}$ percentage points. The centers $1\times$ and 0 pp refer to configuration effects, not raw oracle-relative RRES. Intervals are pointwise 95\% task-cluster bootstrap percentile intervals (10{,}000 accepted resamples), not simultaneous intervals or estimates of repeated-run variance. These success-conditional estimates are descriptive, not causal effects or quality rankings.
+  Estimates follow Equation~\ref{eq:adjusted-footprint}; brackets show pointwise 95\% task-bootstrap intervals. Copy differences are in percentage points (pp).
   \end{minipage}
 \end{table}

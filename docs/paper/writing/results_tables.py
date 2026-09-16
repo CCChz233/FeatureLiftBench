@@ -8,11 +8,11 @@ import sys
 from scipy.stats import binomtest
 from results_visuals import evidence
 from paper_inputs import input_path
+from failure_analysis import counts as failure_counts, CATEGORIES
 
 
 def compact(label,caption,columns,headers,rows,note,colsep='3pt'):
     lines=[r'\begin{table}[tbp]',r'  \centering',r'  \footnotesize',
-           rf'  \setlength{{\tabcolsep}}{{{colsep}}}',r'  \renewcommand{\arraystretch}{1.12}',
            rf'  \caption{{{caption}}}',rf'  \label{{tab:{label}}}',
            rf'  \begin{{tabularx}}{{\linewidth}}{{@{{}}{columns}@{{}}}}',r'    \toprule',
            '    '+' & '.join(headers)+r' \\',r'    \midrule']
@@ -30,13 +30,28 @@ def sci(value):
 
 def build():
     data=evidence();outputs={}
+    failures=failure_counts()
+    data['failure_analysis']=failures
+    cause_rows=[]
+    for key,label,definition in CATEGORIES:
+        n=failures['pooled'][key]
+        value=f'{n} ({100*n/failures["valid"]:.1f})'
+        if key=='behavior_drift':
+            label=r'\textbf{'+label+'}'
+            value=r'\textbf{'+value+'}'
+        cause_rows.append([label,definition,value])
+    outputs['failure-analysis']=compact('failure-analysis',
+        'Failure taxonomy and pooled counts after confirmed source reading.',
+        r'p{0.23\linewidth}Xr',['Category','Observed gap',r'$n$ (\%)'],cause_rows,
+        r'$N=228$ reviewed failures; one primary category per failure.',
+        colsep='4pt')
     rows=[]
     for i,g in enumerate(data['structure']):
         if i==3:rows.append(None)
         rows.append([g['name'],str(g['n']),*[f'{v:.1f}' for v in g['rates']]])
     outputs['structure']=compact('structure',r'Observed functional pass rates (\%) by task structure.',
         'Xrrrrrrr',['Category','$n$',*[m['short'] for m in data['models']]],rows,
-        r'Every cell uses the task denominator $n$ in its row. Configuration abbreviations follow Table~\ref{tab:main}. Lift types partition the 150 tasks; the four mechanism groups overlap. These are descriptive outcomes, not independent difficulty effects. The Composite group contains 18 tasks, so one task changes its rate by 5.6 percentage points.')
+        r'$n$ is the row denominator. Lift types partition the tasks; mechanism groups overlap.')
     stats=json.loads(input_path('source_ablation_statistics').read_text())
     folder=input_path('source_ablation_results').parent
     def read(name):
@@ -64,15 +79,15 @@ def build():
     names={r['id']:r['display'] for r in data['models']}
     for s in stats['results']:
         m=s['model'];assert math.isclose(adjusted[m],s['holm_adjusted_p_three_models'],rel_tol=1e-10)
-        label=names[m]+(r'$^{\dagger}$' if m=='deepseek-v4-pro' else '')
+        label=names[m]
         lo,hi=s['paired_bootstrap_95ci_pp']
         rows.append([label,f"{s['full_pass']}/40",f"{s['contract_pass']}/40",str(s['full_only']),str(s['contract_only']),
                      f"{s['delta_pp']:.1f}",f'[{lo:.1f}, {hi:.1f}]',sci(adjusted[m])])
     pro_missing=[r for r in outcomes if r['model']=='deepseek-v4-pro' and r['arm']=='contract_only' and r['first_outcome']=='Missing']
-    assert len(pro_missing)==18 and all(r['last_conversation_error']=='LLMTimeoutError' for r in pro_missing)
+    assert len(pro_missing)==12 and all(r['last_conversation_error']=='LLMTimeoutError' for r in pro_missing)
     outputs['paired-ablation']=compact('paired-ablation','Exact paired source-evidence ablation results on 40 tasks per configuration.',
         'Xrrrrrrr',['Configuration',r'\shortstack{Full\\pass}',r'\shortstack{Contract\\pass}',r'\shortstack{Full-\\only}',r'\shortstack{Contract-\\only}',r'\shortstack{$\Delta$\\(pp)}',r'\shortstack{95\%\\CI}',r'$p_{\mathrm{Holm}}$'],rows,
-        r'Full-only and Contract-only count discordant task pairs. $\Delta$ is Full minus Contract in percentage points. Two-sided exact McNemar tests are Holm-adjusted across the three configurations. Intervals are the same 100{,}000 paired task-bootstrap used in Figure~\ref{fig:source-evidence} and describe paired task variation, not repeated-run variance. Missing submissions remain failures. $\dagger$: Pro has 18 Contract-only missing submissions with recorded LLM timeouts, so its full-sample contrast includes service interruptions. On the 22 pairs without these interruptions, Pro passes 11 versus six tasks (unadjusted $p=0.125$); this selected-subset check does not replace the 40-task result.',
+        r'Full-only and Contract-only count discordant pairs. $\Delta$: Full minus Contract (pp); CI: paired task-bootstrap interval; $p_{\mathrm{Holm}}$: Holm-adjusted exact McNemar test.',
         colsep='2.2pt')
     # Use the same task-adjusted estimand and bootstrap as the approved Fig. 7.
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'figures/scripts'))
@@ -88,11 +103,11 @@ def build():
                      f"{r['rres_ratio']:.3f} [{lo:.3f}, {hi:.3f}]",
                      f"${r['copy_pp']:+.2f}$ [${clo:+.2f}$, ${chi:+.2f}$]"])
     outputs['matched-footprint']=compact('matched-footprint',
-        'Task-adjusted footprint of 485 successful artifacts from 115 tasks with at least two successful configurations.',
+        'Task-adjusted implementation footprints among successful artifacts.',
         'Xrrr', ['Configuration', r'\shortstack{Included\\success $n$}',
                  r'\shortstack{Adjusted RRES ratio\\{[95\% CI]}}',
                  r'\shortstack{Adjusted Copy, pp\\{[95\% CI]}}'], rows,
-        r'Configuration abbreviations follow Table~\ref{tab:main}. Models include task fixed effects and sum-to-zero configuration effects. RRES ratios are $2^{\beta_m^{\mathrm{RRES}}}$; Copy differences are $100\beta_m^{\mathrm{Copy}}$ percentage points. The centers $1\times$ and 0 pp refer to configuration effects, not raw oracle-relative RRES. Intervals are pointwise 95\% task-cluster bootstrap percentile intervals (10{,}000 accepted resamples), not simultaneous intervals or estimates of repeated-run variance. These success-conditional estimates are descriptive, not causal effects or quality rankings.',
+        r'Estimates follow Equation~\ref{eq:adjusted-footprint}; brackets show pointwise 95\% task-bootstrap intervals. Copy differences are in percentage points (pp).',
         colsep='4pt')
     return outputs,data
 

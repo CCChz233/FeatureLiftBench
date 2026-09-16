@@ -1,0 +1,51 @@
+\begin{table}[tbp]
+  \caption{Task-interface comparison with closely related construction, reuse,
+  and refactoring settings.}
+  \label{tab:task-comparison}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3.6pt}
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{0.94\linewidth}{
+    @{}
+    >{\raggedright\arraybackslash}p{0.19\linewidth}
+    >{\raggedright\arraybackslash}X
+    >{\raggedright\arraybackslash}p{0.22\linewidth}
+    >{\raggedright\arraybackslash}p{0.22\linewidth}
+    @{}
+  }
+    \toprule
+    Setting & Starting point & Deliverable & Evaluation boundary \\
+    \midrule
+    SWE-bench / Pro
+      & Repository + issue
+      & Project patch
+      & Revised project \\
+    FeatBench
+      & Base repository + requirements
+      & Feature implementation
+      & Feature + regressions \\
+    FeatureBench L1
+      & Incomplete repository + interface
+      & Incremental implementation
+      & Feature + regressions \\
+    FeatureBench L2
+      & Task/interface; no repository
+      & Library from scratch
+      & Generated library \\
+    Donor--host transplantation
+      & Donor + host + tests
+      & Functionality in host
+      & Integrated functionality \\
+    SWE-Refactor
+      & Target method + refactoring type + repository context
+      & Refactored code
+      & Project build, tests, and transformation checks \\
+    \midrule
+    \textbf{FeatureLiftBench}
+      & \textbf{Intact source + behavioral contract}
+      & \textbf{Independent package}
+      & \textbf{Source-free functionality} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}

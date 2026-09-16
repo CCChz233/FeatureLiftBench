@@ -1,0 +1,21 @@
+\begin{table}[tbp]
+  \centering
+  \footnotesize
+  \caption{Failure taxonomy and pooled counts after confirmed source reading.}
+  \label{tab:failure-analysis}
+  \begin{tabularx}{\linewidth}{@{}p{0.23\linewidth}Xr@{}}
+    \toprule
+    Category & Observed gap & $n$ (\%) \\
+    \midrule
+    \textbf{Behavior drift} & Required API exists, but observable behavior differs from the contract. & \textbf{201 (88.2)} \\
+    API completion & Required export, member, or API path is missing. & 16 (7.0) \\
+    Dependency closure & A required helper, resource, registry, or dependency is absent. & 8 (3.5) \\
+    Packaging & Implementation is present but not exposed through the standalone package. & 2 (0.9) \\
+    Localization & Trajectory and submission indicate the wrong implementation region. & 0 (0.0) \\
+    Unknown & Available evidence does not distinguish a primary category. & 1 (0.4) \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  $N=228$ reviewed failures; one primary category per failure.
+  \end{minipage}
+\end{table}

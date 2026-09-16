@@ -1,78 +1,64 @@
-"""Fig. 4: grouped vertical bars for functional pass rates by lift type.
+"""Fig. 4: descriptive pass rates by lift type and entanglement mechanism.
 
-Each configuration has three independent bars with a common zero baseline.
-Colors identify Direct / Adapted / Composite; task denominators are explicit
-in the legend. The plot describes observed categories, not causal difficulty.
-Use preview_results.py --only structure to render without changing paper files.
+Configurations, rather than task categories, occupy the horizontal axis.
+Mechanism groups overlap; neither panel defines a calibrated difficulty scale.
 """
 from pathlib import Path
 import sys
 import numpy as np
 from figure_common import finish, run_single, INK
 from matplotlib import pyplot as plt
-from matplotlib.patches import Patch
 import redraw_data
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'writing'))
 from results_visuals import evidence
 
-FIGURE_SIZE = (7.2, 3.35)
-BAR_WIDTH = .19
-TYPE_STYLES = (
-    ('Direct', '#0072B2', -.23),
-    ('Adapted', '#E69F00', 0),
-    ('Composite', '#009E73', .23),
+# Lift-type colors match the benchmark composition figure. Mechanisms have a
+# separate palette and hatches so the two categorical encodings stay distinct.
+PANELS = (
+    ('(a) Pass rate by lift type', slice(0, 3),
+     ['Direct', 'Adapted', 'Composite'], ['#0072B2', '#E69F00', '#009E73'], ['', '', '']),
+    ('(b) Pass rate by entanglement mechanism', slice(3, 7),
+     ['Code deps.', 'Data/state', 'Framework', 'Env./resources'],
+     ['#5B5F97', '#9396BE', '#497D87', '#A5C7C6'], ['', '//', '', '//']),
 )
-GRID_COLOR = '#E7EBEF'
-AXIS_COLOR = '#89959D'
 
 
 def build_figure():
-    """Build the grouped bar chart without writing images or derived data."""
     data = evidence()
-    groups = data['structure'][:3]
-    assert [g['name'] for g in groups] == [s[0] for s in TYPE_STYLES]
-    fig, ax = plt.subplots(figsize=FIGURE_SIZE)
-    fig.subplots_adjust(left=.095, right=.98, bottom=.13, top=.875)
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.15), sharey=True)
+    fig.subplots_adjust(left=.075, right=.985, bottom=.14, top=.73, wspace=.15)
     positions = np.arange(len(data['models']))
-
-    for group, (_, color, offset) in zip(groups, TYPE_STYLES):
-        ax.bar(positions + offset, group['rates'], width=BAR_WIDTH,
-                bottom=0, color=color, edgecolor='white', linewidth=.35, zorder=3)
-
-    labels = [model['short'] for model in data['models']]
-    ax.set(xticks=positions, xticklabels=labels,
-           ylim=(0, 100), yticks=[0, 20, 40, 60, 80, 100],
-           xlim=(-.55, len(positions) - .45), ylabel='Functional pass rate (%)')
-    ax.tick_params(axis='x', length=0, pad=8, labelsize=9, labelcolor=INK)
-    ax.tick_params(axis='y', length=3, pad=4, labelsize=8,
-                   colors=AXIS_COLOR, labelcolor=INK)
-    ax.yaxis.label.set_color(INK)
-    ax.yaxis.label.set_size(8.5)
-    ax.yaxis.labelpad = 6
-    ax.set_axisbelow(True)
-    ax.grid(axis='y', color=GRID_COLOR, linewidth=.55)
-    for spine in ['top', 'right']:
-        ax.spines[spine].set_visible(False)
-    for spine in ['left', 'bottom']:
-        ax.spines[spine].set_color(AXIS_COLOR)
-        ax.spines[spine].set_linewidth(.7)
-
-    handles = [Patch(facecolor=color, edgecolor='none',
-                     label=group['name'])
-               for group, (_, color, _) in zip(groups, TYPE_STYLES)]
-    fig.legend(handles=handles, loc='upper center', bbox_to_anchor=(.535, .995),
-               ncol=3, fontsize=8, columnspacing=1.8, handlelength=1.1,
-               handleheight=.8, handletextpad=.6, frameon=False, labelcolor=INK)
-
-    payload = {
-        'models': data['models'], 'groups': groups,
-        'interpretation': 'Descriptive outcomes, not independent difficulty effects',
-        'design': {'geometry': 'grouped_bar', 'bar_width': BAR_WIDTH,
-                   'type_offsets': [style[2] for style in TYPE_STYLES],
-                   'baseline': 0, 'stacked': False, 'short_model_labels': True,
-                   'exact_value_labels': False},
-    }
+    designs = []
+    for ax, (title, subset, labels, colors, hatches) in zip(axes, PANELS):
+        groups = data['structure'][subset]
+        step = .78 / len(groups)
+        offsets = (np.arange(len(groups)) - (len(groups) - 1) / 2) * step
+        width = step * .86
+        for group, label, color, hatch, offset in zip(groups, labels, colors, hatches, offsets):
+            ax.bar(positions + offset, group['rates'], width=width, bottom=0,
+                   color=color, edgecolor='white', linewidth=.35, hatch=hatch,
+                   label=label, zorder=3)
+        ax.set(xticks=positions, xticklabels=[m['short'] for m in data['models']],
+               ylim=(0, 100), yticks=np.arange(0, 101, 20), xlim=(-.55, 5.55))
+        ax.set_title(title, loc='left', fontsize=8.3, fontweight='bold', y=1.30, pad=0)
+        ax.legend(loc='lower left', bbox_to_anchor=(0, 1.015), ncol=2,
+                  fontsize=7.3, columnspacing=1.2, handlelength=1.3,
+                  handletextpad=.5, borderaxespad=0, frameon=False)
+        ax.tick_params(axis='x', length=0, pad=7, labelsize=8, labelcolor=INK)
+        ax.tick_params(axis='y', length=3, pad=4, labelsize=8, colors='#89959D', labelcolor=INK)
+        ax.grid(axis='y', color='#E7EBEF', linewidth=.55)
+        ax.set_axisbelow(True)
+        for side in ('top', 'right'):
+            ax.spines[side].set_visible(False)
+        for side in ('left', 'bottom'):
+            ax.spines[side].set_color('#89959D')
+            ax.spines[side].set_linewidth(.7)
+        designs.append(dict(groups=groups, offsets=offsets.tolist(), bar_width=width))
+    axes[0].set_ylabel('Functional pass rate (%)', fontsize=8.5, labelpad=6)
+    payload = dict(models=data['models'], groups=data['structure'],
+                   interpretation='Descriptive category outcomes; mechanisms overlap; no independent difficulty effects',
+                   design=dict(geometry='two_panel_grouped_bar', panels=designs, baseline=0, stacked=False))
     sources = [redraw_data.ROOT / source['path'] for source in data['sources']]
     return fig, payload, sources
 

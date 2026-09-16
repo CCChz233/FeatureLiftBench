@@ -748,6 +748,101 @@
       "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
     }
   ],
+  "failure_analysis": {
+    "candidates": 241,
+    "tasks": 89,
+    "excluded": 13,
+    "excluded_tasks": 3,
+    "valid": 228,
+    "by_model": [
+      {
+        "model": "deepseek-v4-pro",
+        "short": "Pro",
+        "n": 26,
+        "counts": {
+          "behavior_drift": 25,
+          "contract_api_completion": 0,
+          "dependency_closure": 1,
+          "packaging_modularization": 0,
+          "localization": 0,
+          "unknown": 0
+        }
+      },
+      {
+        "model": "deepseek-v4-flash",
+        "short": "Flash",
+        "n": 31,
+        "counts": {
+          "behavior_drift": 30,
+          "contract_api_completion": 0,
+          "dependency_closure": 1,
+          "packaging_modularization": 0,
+          "localization": 0,
+          "unknown": 0
+        }
+      },
+      {
+        "model": "gpt-5.6-luna",
+        "short": "Luna",
+        "n": 30,
+        "counts": {
+          "behavior_drift": 27,
+          "contract_api_completion": 2,
+          "dependency_closure": 1,
+          "packaging_modularization": 0,
+          "localization": 0,
+          "unknown": 0
+        }
+      },
+      {
+        "model": "glm-5.3-flash",
+        "short": "GLM",
+        "n": 35,
+        "counts": {
+          "behavior_drift": 27,
+          "contract_api_completion": 7,
+          "dependency_closure": 1,
+          "packaging_modularization": 0,
+          "localization": 0,
+          "unknown": 0
+        }
+      },
+      {
+        "model": "qwen3.6-35b-a3b-fp8",
+        "short": "Qwen",
+        "n": 42,
+        "counts": {
+          "behavior_drift": 38,
+          "contract_api_completion": 2,
+          "dependency_closure": 1,
+          "packaging_modularization": 1,
+          "localization": 0,
+          "unknown": 0
+        }
+      },
+      {
+        "model": "gpt-oss-120b",
+        "short": "OSS",
+        "n": 64,
+        "counts": {
+          "behavior_drift": 54,
+          "contract_api_completion": 5,
+          "dependency_closure": 3,
+          "packaging_modularization": 1,
+          "localization": 0,
+          "unknown": 1
+        }
+      }
+    ],
+    "pooled": {
+      "behavior_drift": 201,
+      "contract_api_completion": 16,
+      "dependency_closure": 8,
+      "packaging_modularization": 2,
+      "localization": 0,
+      "unknown": 1
+    }
+  },
   "adjusted_footprint": {
     "schema_version": 1,
     "sample": {
@@ -5685,7 +5780,7 @@
       },
       {
         "path": "docs/paper/paper_sources.json",
-        "sha256": "67423859f0430fcdbcfe03f994fe805e15e9e68a764ab7ab447e42949a7e9866"
+        "sha256": "3fa87c34c8605a7e325c18b29544b80d835d29a60b92c352bc147f9ed5f94d78"
       },
       {
         "path": "docs/paper/writing/python150_membership.json",

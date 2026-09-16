@@ -47,8 +47,8 @@
       "verification": "CRLF-equivalent"
     }
   ],
-  "main_tables": 6,
-  "main_generated_data_tables": 5,
+  "main_tables": 7,
+  "main_generated_data_tables": 6,
   "main_authored_literature_tables": 1,
   "unverified_hypothetical_tables": 0,
   "verified_source_ablation_outcomes": 240,
@@ -62,12 +62,14 @@
     "main",
     "structure",
     "source-exposure",
+    "failure-analysis",
     "paired-ablation",
     "matched-footprint",
     "task-comparison"
   ],
   "structure_table_updater": "writing/update_structure_results.py",
-  "table_revision": "task_adjusted_rq4_20260915",
+  "table_revision": "author_clarifications_and_ablation_recovery_20260916",
+  "token_summary_provenance": "Luna/GLM aggregate totals confirmed by author; original delivery proxy labels retained in provenance; no independent provider-usage validation claimed.",
   "detailed_profiles": [
     {
       "backend": "Pro",
@@ -110,7 +112,7 @@
   "sources": [
     {
       "path": "docs/paper/paper_sources.json",
-      "sha256": "67423859f0430fcdbcfe03f994fe805e15e9e68a764ab7ab447e42949a7e9866"
+      "sha256": "3fa87c34c8605a7e325c18b29544b80d835d29a60b92c352bc147f9ed5f94d78"
     },
     {
       "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
@@ -133,6 +135,10 @@
       "sha256": "8ece3ad215af8f8126ca7865bf07a5a815446a3a6b026154693b29a2359a9f76"
     },
     {
+      "path": "docs/paper/writing/author_result_clarifications_20260916.json",
+      "sha256": "f8a600eac67a7b90cea0369a503c5160953fd1dfca6821ce2bd5de4434294625"
+    },
+    {
       "path": "reports/paper_analysis/source_exposure/diagnosis/statistics.json",
       "sha256": "b8390213f590bb6135addd21b74d0bd5ac76d25976eaba3c00fa03cab7e189a7"
     },
@@ -146,11 +152,23 @@
     },
     {
       "path": "docs/paper/writing/templates/main_table.tex",
-      "sha256": "cbf9e5f4dca0164a612b0ce068b74ab461eb27aea46c5b748bbb4cb3fa668702"
+      "sha256": "0f78a662356a7f550452f50894576765826b0224879a28db5b87fed6a1de5eb7"
     },
     {
       "path": "docs/paper/writing/templates/source_exposure_table.tex",
-      "sha256": "b9d3dfd093cc096a0aefe3d23011f3db98d23a419e79ea51ad1bc0695bbf900f"
+      "sha256": "1a9b67c910e7d3d308d024a845441a19561abdf3f670ec2aa75e5067da251bd0"
+    },
+    {
+      "path": "docs/paper/data/failure_analysis_20260916/classifications.csv",
+      "sha256": "eb83beadfb1fba642d2c2d31c031804a873849033adba7a995d3ab7d40c7f057"
+    },
+    {
+      "path": "docs/paper/data/failure_analysis_20260916/provenance.json",
+      "sha256": "ae87d54d7ddae6aa8965d95aee60baa14e099276c9284896eaed91840afc1103"
+    },
+    {
+      "path": "docs/paper/failure_analysis.py",
+      "sha256": "dc56f4a388dd47532d4e7a27a041a6f8d3c513e15594a3e0193b93c321bf8ebc"
     },
     {
       "path": "docs/paper/writing/results_visuals.py",
@@ -158,23 +176,23 @@
     },
     {
       "path": "docs/paper/writing/results_tables.py",
-      "sha256": "f69229cebd677c02bbc8964d7299adbf6cf65be82af45ac01c3bb36c94911e81"
+      "sha256": "cfe04945f4ceb2164f6bbbbdeacedfd79f6773eaa02b1cc6a5fa2ce3524538f3"
     },
     {
       "path": "docs/paper/figures/data/figA_task_coverage.json",
       "sha256": "dd607df5ed8695bc9ea6d81aa00a29ef30ec51693e5e0e1a8aae87463ac8b57c"
     },
     {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/statistics.json",
-      "sha256": "22dd8318c541be3f2cac032aad31e247a2aca5cda0943336a840c18031755b85"
+      "path": "docs/paper/data/source_ablation_recovery_20260916/statistics.json",
+      "sha256": "4a308641b39311f5fb1c47692d217cb356746a92969992f97756bf7b19f7266a"
     },
     {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/task_outcomes.csv",
-      "sha256": "efad4d5aeb9a33728600d804f3b1e7741261cb1ee0e4cb56046fbaf75c3dfab7"
+      "path": "docs/paper/data/source_ablation_recovery_20260916/task_outcomes.csv",
+      "sha256": "27b29b4d96ded1ce0f8fa5d1b722f5b8935209ba825a1c088d420aaa9de603c8"
     },
     {
-      "path": "reports/paper_analysis/source_ablation_40_20260913/paired_outcomes.csv",
-      "sha256": "4ef9034c0a2ebebb3d7b79b0d49197a82920bbe63a2270af0819078b421c3165"
+      "path": "docs/paper/data/source_ablation_recovery_20260916/paired_outcomes.csv",
+      "sha256": "910bbf4431b8dab8c81c8b30a98b3bc44bad3a9b42ad2c6a6c4a3e2d51b1421e"
     },
     {
       "path": "docs/paper/figures/scripts/fig7_adjusted_analysis.py",

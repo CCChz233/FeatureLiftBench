@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-16",
+  "source_kind": "author_confirmation_in_conversation",
+  "scope_note": "Author clarification supersedes delivery labels for manuscript reporting; original runs, proxy estimates, and audit findings are preserved.",
+  "maximum_steps": {
+    "value": 120,
+    "scope": "all main and ablation configurations",
+    "source": "author confirmation; persisted 500 metadata is not treated as the effective limit"
+  },
+  "pro_ablation": {
+    "context_compression": false,
+    "failure_interpretation": "non-completion during long-context execution without compression; retained as functional failures of the evaluated configuration",
+    "recorded_error": "LLMTimeoutError",
+    "retained_missing_submissions": 12,
+    "new_contract_pass": 7,
+    "full_pass": 25,
+    "verification_note": "Cause and effective configuration confirmed by author; the delivery does not independently demonstrate this cause."
+  },
+  "token_totals": {
+    "gpt-5.6-luna": {
+      "median_k": 1483.7,
+      "p90_k": 11349.4,
+      "assigned": 150
+    },
+    "glm-5.3-flash": {
+      "median_k": 7018.5,
+      "p90_k": 18791.9,
+      "assigned": 150
+    }
+  },
+  "token_provenance": {
+    "reporting_status": "author-confirmed actual totals",
+    "independently_verified_from_provider_records": false,
+    "author_statement": "那个不是估算的，就是真实的，记录有误，直接填入Table1。",
+    "delivery_conflict": "The delivered token_summary and estimator identify the same numbers as a visible-transcript proxy. Corrected per-call usage records were not supplied locally. Table cells use the author-confirmed summaries, not a claim of successful provider-usage recovery."
+  },
+  "ablation_files": [
+    {
+      "path": "docs/paper/data/source_ablation_recovery_20260916/task_outcomes.csv",
+      "sha256": "27b29b4d96ded1ce0f8fa5d1b722f5b8935209ba825a1c088d420aaa9de603c8"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_recovery_20260916/paired_outcomes.csv",
+      "sha256": "910bbf4431b8dab8c81c8b30a98b3bc44bad3a9b42ad2c6a6c4a3e2d51b1421e"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_recovery_20260916/statistics.json",
+      "sha256": "4a308641b39311f5fb1c47692d217cb356746a92969992f97756bf7b19f7266a"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_recovery_20260916/retained_contract40_manifest.csv",
+      "sha256": "1fd03caf48e406793fb1e0a7441e0907ef7b2b0040f9d56109482f998fcfacbe"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_recovery_20260916/verification.json",
+      "sha256": "1c5030a1402d4289a39adf6b7d28396c5cba00f0f975356b5436b3f48d7afc45"
+    }
+  ],
+  "failure_analysis_review": {
+    "source": "author statement in conversation",
+    "author_statement": "这个就是我请了我的作者，好几个人审核的",
+    "human_coauthor_review_reported": true,
+    "reviewer_count": null,
+    "reviewed_scope": null,
+    "independent_or_joint_review": null,
+    "final_label_confirmation": null,
+    "status": "coauthor review reported; current 201/228 aggregate integrated at author request; detailed review claims omitted",
+    "provenance_note": "The delivery records only agent review. Absence of human review in that package does not establish that human review did not occur. Do not infer human kappa, full coverage or row-level adjudication from this statement."
+  }
+}

@@ -179,7 +179,7 @@ def main():
     assert ablation_by_model['qwen3.6-35b-a3b-fp8']['contract_pass'] == 1
     assert ablation_by_model['qwen3.6-35b-a3b-fp8']['full_only'] == 12
     assert ablation_by_model['deepseek-v4-pro']['full_pass'] == 25
-    assert ablation_by_model['deepseek-v4-pro']['contract_pass'] == 6
+    assert ablation_by_model['deepseek-v4-pro']['contract_pass'] == 7
     # Main results plus a separately verified, measured source-ablation table.
     ablation_blocks = re.findall(
         r'% BEGIN SOURCE ABLATION RESULTS\n.*?% END SOURCE ABLATION RESULTS',
@@ -246,6 +246,7 @@ def main():
                   lambda m:m[1]+exposure_config_table+'\n'+m[2],tex,flags=re.S)
     assert n in (0,1)
     expanded_results = '% BEGIN RESULTS EVIDENCE: structure' in tex
+    has_failure_analysis = '% BEGIN RESULTS EVIDENCE: failure-analysis' in tex
     if expanded_results:
         from results_tables import update as update_results_tables
         tex, results_evidence = update_results_tables(tex)
@@ -255,7 +256,10 @@ def main():
     assert r'\label{tab:main}' in body
     assert tex.count(r'\label{tab:task-comparison}')==1
     assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)', body)==['main']
-    assert body.count(r'\begin{figure}')==(7 if expanded_results else 5)
+    figure_count=7
+    assert r"\label{fig:structure-capability}" not in tex
+    assert not has_appendix
+    assert body.count(r'\begin{figure}')==figure_count
     if has_appendix:
         assert tex.count(r'\label{tab:structure}')==1
         assert len(re.findall(r'\\begin\{table\}', body))==3
@@ -268,10 +272,10 @@ def main():
         appendix_figures = 2
     else:
         assert tex.count(r'\label{tab:structure}')==(1 if expanded_results else 0)
-        assert len(re.findall(r'\\begin\{table\}', body))==(6 if expanded_results else 2)
+        assert len(re.findall(r'\\begin\{table\}', body))==((6 if expanded_results else 2)+int(has_failure_analysis))
         assert appendix == ''
-        main_tables = 6 if expanded_results else 2
-        generated_data_tables = 5 if expanded_results else 1
+        main_tables = (6 if expanded_results else 2)+int(has_failure_analysis)
+        generated_data_tables = (5 if expanded_results else 1)+int(has_failure_analysis)
         generated_text = 0
         appendix_tables = 0
         appendix_figures = 0
@@ -280,16 +284,19 @@ def main():
         assert tex==before,'Generated tables differ: rerun without --check.'
     else:
         (PAPER/'main.tex').write_text(tex,encoding='utf-8')
-    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv', Path(__file__).parent/'templates/main_table.tex', exposure_template]
+    sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH,input_path('author_result_clarifications')]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv', Path(__file__).parent/'templates/main_table.tex', exposure_template]
+    if has_failure_analysis:
+        sources += [input_path('failure_classifications'), input_path('failure_classification_provenance'), PAPER/'failure_analysis.py']
     if expanded_results:
         sources += [Path(__file__).parent/'results_visuals.py', Path(__file__).parent/'results_tables.py',input_path('coverage_data'),input_path('source_ablation_statistics'),input_path('source_ablation_results'),input_path('source_ablation_results').parent/'paired_outcomes.csv']
         sources += [PAPER/'figures/scripts/fig7_adjusted_analysis.py', input_path('task_selection')]
         if not args.check:
             (PAPER/'writing/results_visual_evidence.json').write_text(json.dumps(results_evidence,indent=2)+'\n')
-    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':profiles_checked,'missing_run_profiles':len(missing_profiles),'source_verification':source_verification,'main_tables':main_tables,'main_generated_data_tables':generated_data_tables,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables or expanded_results else 0,'source_exposure_traces':900,'appendix_tables':appendix_tables,'main_figures':7 if expanded_results else 5,'appendix_figures':appendix_figures,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':generated_text,
-        'main_table_order':['main','structure','source-exposure','paired-ablation','matched-footprint','task-comparison'] if expanded_results else (['main','task-comparison'] if not has_appendix else ['main','source-exposure','task-comparison']),
+    qa={'status':'verified_current_paper_tables','rows':900,'tasks':150,'models':6,'run_profiles_checked':profiles_checked,'missing_run_profiles':len(missing_profiles),'source_verification':source_verification,'main_tables':main_tables,'main_generated_data_tables':generated_data_tables,'main_authored_literature_tables':1,'unverified_hypothetical_tables':0,'verified_source_ablation_outcomes':240 if ablation_tables or expanded_results else 0,'source_exposure_traces':900,'appendix_tables':appendix_tables,'main_figures':figure_count,'appendix_figures':appendix_figures,'figure_placeholders':len(re.findall(r'\\figureplaceholder\{',tex)),'generated_text_blocks':generated_text,
+        'main_table_order':re.findall(r'\\label\{tab:([^}]+)\}',body),
         'structure_table_updater':'writing/update_structure_results.py',
-        'table_revision':'task_adjusted_rq4_20260915',
+        'table_revision':'author_clarifications_and_ablation_recovery_20260916',
+        'token_summary_provenance':'Luna/GLM aggregate totals confirmed by author; original delivery proxy labels retained in provenance; no independent provider-usage validation claimed.',
         'detailed_profiles':[dict(zip(['backend','condenser','trigger_target','outcomes'],r)) for r in config_rows],
         'scope':'Condensed FSE manuscript: main comparison table from 900 outcomes; source-ablation headlines from 240 retained records; source-file exposure counts from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.',
         'sources':[{'path':p.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sources]}

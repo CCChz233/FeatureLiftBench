@@ -19,7 +19,7 @@ from matplotlib.collections import PathCollection, LineCollection
 from matplotlib.text import Text
 import redraw_data
 from fig4_structure import build_figure as build_structure
-from fig7_matched_footprint import build_figure as build_matched
+from fig7_footprint_forest_preview import build_figure as build_matched
 
 SCRIPTS = Path(__file__).resolve().parent
 FIGURES = SCRIPTS.parent
@@ -33,53 +33,40 @@ def validate_geometry(name, fig, payload):
     """Check plotted data and transformed geometry, not just declared metadata."""
     fig.canvas.draw()
     checks = {}
+    assert len(fig.axes) == 2
     if name == 'footprint':
-        assert len(fig.axes) == 2
-        assert payload['geometry'] == 'task_adjusted_vertical_bars'
+        assert payload['geometry'] == 'task_adjusted_forest'
         assert payload['sample']['tasks'] == 115 and payload['sample']['artifacts'] == 485
         rows = payload['analyses']['task_bootstrap']['rows']
         for ax, metric, limits, scale, center in zip(
                 fig.axes, ['rres_ratio', 'copy_pp'], [payload['rres_limits'], payload['copy_limits']],
-                ['linear', 'linear'], [1, 0]):
-            assert ax.get_yscale() == scale and np.allclose(ax.get_ylim(), limits)
+                ['log', 'linear'], [1, 0]):
+            assert ax.get_xscale() == scale and np.allclose(ax.get_xlim(), limits)
             points = [c for c in ax.collections if isinstance(c, PathCollection)]
             intervals = [c for c in ax.collections if isinstance(c, LineCollection)]
-            assert len(points) == 0 and len(intervals) == 1
-            assert len(ax.containers) == 1 and len(ax.patches) == 6
-            assert all(b.get_y() == 0 for b in ax.patches)
-            assert np.allclose([b.get_y() + b.get_height() for b in ax.patches], [r[metric] for r in rows])
-            assert np.allclose([b.get_x() + b.get_width()/2 for b in ax.patches], np.arange(6))
-            expected = [[[i, r[metric + '_ci'][0]], [i, r[metric + '_ci'][1]]] for i, r in enumerate(rows)]
+            assert len(points) == len(intervals) == 1 and not ax.patches
+            assert np.allclose(points[0].get_offsets(), [[r[metric], i] for i, r in enumerate(rows)])
+            expected = [[[r[metric + '_ci'][0], i], [r[metric + '_ci'][1], i]] for i, r in enumerate(rows)]
             assert np.allclose(intervals[0].get_segments(), expected)
-            assert len(ax.lines) == 3 and np.allclose(ax.lines[0].get_ydata(), center)
-            for j in (0, 1):
-                assert np.allclose(ax.lines[j + 1].get_xdata(), np.arange(6))
-                assert np.allclose(ax.lines[j + 1].get_ydata(), [r[metric + '_ci'][j] for r in rows])
+            assert len(ax.lines) == 1 and np.allclose(ax.lines[0].get_xdata(), center)
             assert all(limits[0] < r[metric + '_ci'][0] <= r[metric + '_ci'][1] < limits[1] for r in rows)
-            checks[metric] = {'bars': 6, 'bar_baseline': 0, 'intervals_match_bootstrap': True,
-                              'scale': scale, 'reference': center, 'no_clipping': True}
-        assert [t.get_text() for t in fig.axes[0].get_xticklabels()] == [r['short'] for r in rows]
+            checks[metric] = dict(points=6, intervals_match_bootstrap=True, scale=scale, reference=center, no_clipping=True)
+        assert [t.get_text() for t in fig.axes[0].get_yticklabels()] == [r['short'] for r in rows]
     else:
-        ax, = fig.axes
-        assert np.allclose(ax.get_ylim(),[0,100])
-        assert list(ax.get_yticks())==[0,20,40,60,80,100]
-        assert [g['n'] for g in payload['groups']]==[56,76,18]
-        assert payload['design']['geometry']=='grouped_bar'
-        assert len(ax.containers)==3 and len(ax.patches)==18
-        assert len(ax.collections)==0 and len(ax.lines)==0
-        assert all(bar.get_y()==0 for bar in ax.patches)
-        offsets=payload['design']['type_offsets']
-        width=payload['design']['bar_width']
-        assert width < min(np.diff(offsets)), 'Grouped bars must not overlap'
-        for bars, group, shift in zip(ax.containers,payload['groups'],offsets):
-            assert len(bars)==6
-            assert np.allclose([b.get_height() for b in bars],group['rates'])
-            assert np.allclose([b.get_x()+b.get_width()/2 for b in bars],np.arange(6)+shift)
-            assert all(np.isclose(b.get_width(),width) for b in bars)
-        assert [t.get_text() for t in ax.get_xticklabels()]==[m['short'] for m in payload['models']]
-        checks={'bars':18,'denominators':[56,76,18],'y_limits':[0,100],
-                'zero_baseline':True,'stacked':False,'bar_values_match_evidence':True,
-                'model_order_matches_main_table':True}
+        assert payload['design']['geometry'] == 'two_panel_grouped_bar'
+        assert [g['n'] for g in payload['groups']] == [56,76,18,139,127,71,49]
+        for ax, panel in zip(fig.axes, payload['design']['panels']):
+            assert np.allclose(ax.get_ylim(), [0,100])
+            assert len(ax.containers) == len(panel['groups'])
+            assert len(ax.patches) == 6 * len(panel['groups'])
+            assert panel['bar_width'] < min(np.diff(panel['offsets']))
+            for bars, group, shift in zip(ax.containers, panel['groups'], panel['offsets']):
+                assert all(b.get_y() == 0 for b in bars)
+                assert np.allclose([b.get_height() for b in bars], group['rates'])
+                assert np.allclose([b.get_x()+b.get_width()/2 for b in bars], np.arange(6)+shift)
+            assert [t.get_text() for t in ax.get_xticklabels()] == [m['short'] for m in payload['models']]
+        checks = dict(bars=42, panels=2, denominators=[g['n'] for g in payload['groups']],
+                      zero_baseline=True, bar_values_match_evidence=True, model_order_matches_main_table=True)
     # Titles, tick labels, axis labels and figure notes must remain on the canvas.
     renderer=fig.canvas.get_renderer();frame=fig.bbox
     for obj in fig.findobj(Text):

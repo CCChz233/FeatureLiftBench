@@ -59,16 +59,8 @@ def build_figure():
         ax.spines['left'].set_color('#89959D')
         ax.spines['left'].set_linewidth(.7)
     payload = dict(data, geometry='task_adjusted_vertical_bars',
-                   caption_note=(
-                       'Task-adjusted implementation footprints of 485 successful artifacts from 115 tasks '
-                       'with at least two successful configurations. (a) Configuration effects from a '
-                       'task fixed-effects model of log2(RRES), displayed as multiplicative size effects '
-                       'on a linear ratio axis. (b) Configuration effects for detected source overlap (Copy), '
-                       'in percentage points. Bars start at zero. Dashed lines mark the sum-to-zero center '
-                       'of configuration effects (1× and 0 pp); error bars show pointwise 95% task-cluster bootstrap '
-                       'percentile confidence intervals from 10,000 accepted resamples. The analysis '
-                       'characterizes successful artifacts only and does not extrapolate to tasks '
-                       'on which a configuration fails.'),
+                   caption_note=('Task-adjusted successful-artifact footprints: (a) RRES ratios; '
+                                 '(b) Copy differences in percentage points.'),
                    figure_analysis='task_bootstrap', rres_limits=list(RRES_LIM), copy_limits=list(COPY_LIM))
     return fig, payload, [redraw_data.ROOT / s['path'] for s in data['sources']] + [Path(__file__).resolve()]
 

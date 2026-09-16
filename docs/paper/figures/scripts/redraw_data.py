@@ -83,13 +83,13 @@ def source_ablation():
         selected.append({k: summary[k] for k in ("model", "n", "full_pass", "contract_pass", "full_only", "contract_only", "delta_pp", "paired_bootstrap_95ci_pp")})
     assert len({r["task_id"] for r in pairs}) == 40
     pro_missing = [r for r in outcomes if r["model"] == "deepseek-v4-pro" and r["arm"] == "contract_only" and r["first_outcome"] == "Missing"]
-    assert len(pro_missing) == 18
+    assert len(pro_missing) == 12
     assert all(r["last_conversation_error"] == "LLMTimeoutError" for r in pro_missing)
     return export("figD_source_evidence", {
         "task_count": 40, "results": selected,
         "interval": "95% paired task-bootstrap percentile interval for Full minus Contract only, in percentage points",
         "bootstrap_resamples": stats["bootstrap_resamples"],
-        "pro_caveat": "18 missing Contract-only submissions have recorded LLM timeouts; aggregate gain includes interruptions",
+        "pro_caveat": "12 Contract-only runs fail to complete during long-context execution without compression; missing submissions remain functional failures",
     }, [stats_path, outcomes_path, pairs_path])
 
 

@@ -1,4 +1,4 @@
-%% FeatureLiftBench: FSE-oriented condensed manuscript, revised 2026-09-15.
+%% FeatureLiftBench: FSE-oriented condensed manuscript, revised 2026-09-16.
 %% Scope: Python-150 benchmark; 150 tasks x 6 configurations (900 outcomes).
 %% Current inputs and model configurations: paper_sources.json.
 \documentclass[acmsmall,screen,review,anonymous]{acmart}
@@ -65,8 +65,9 @@ distinct challenge for repository-level coding agents.
 \section{Introduction}
 \label{sec:introduction}
 
-Software reuse often requires moving an existing capability across project
-boundaries. A developer may need a parser from a larger tool, configuration
+Software reuse involves selecting, adapting, and integrating existing
+artifacts~\cite{krueger1992reuse}. Moving a capability across project boundaries
+is one such reuse scenario: a developer may need a parser from a larger tool, configuration
 handling from a framework, or a signal registry for a new library. Although the
 source implementation is available, the target capability may extend beyond any
 single file or function: its behavior can depend on supporting modules, shared
@@ -178,7 +179,8 @@ $A$:
   A = \operatorname{Run}(M,H,R,S,W).
 \end{equation}
 
-The contract specifies the required API surface and observable behavior,
+We use a behavioral contract to make interface obligations
+explicit~\cite{meyer1992contract}. It specifies the required API surface and observable behavior,
 including relevant defaults, exceptions, state changes, ordering constraints,
 and explicit exclusions. The agent may inspect the complete pinned repository,
 including upstream tests and documentation, but must construct the result in a
@@ -267,6 +269,8 @@ every configuration in the main comparison.
 \subsection{Benchmark Validation}
 \label{sec:validation}
 
+Validation must address whether evaluator judgments capture the intended
+behavior, an instance of the test-oracle problem~\cite{barr2015oracle}.
 We validate the frozen benchmark at three complementary levels: structural
 consistency, semantic alignment, and executable feasibility.
 
@@ -400,17 +404,19 @@ diagnostic analyses used to study repository evidence.
 We evaluate DeepSeek V4 Pro, DeepSeek V4 Flash, GPT-5.6 Luna, GLM-5.3-Flash,
 Qwen3.6-35B-A3B-FP8, and GPT-OSS 120B, abbreviated as Pro, Flash, Luna, GLM,
 Qwen, and OSS. All configurations use OpenHands CLI 1.16.0 with native tool
-calling. Agents receive the complete pinned source repository and public
+calling~\cite{wang2025openhands}. Agents receive the complete pinned source repository and public
 behavioral contract, while benchmark tests, reference implementations, and
 benchmark-provided source-location hints are withheld.
 
 Every run in the main comparison and paired ablation uses a 3,600-second timeout,
 a 131,072-token context window with 8,192 tokens reserved for output, and the
-same 120-step interaction limit. Pro and Flash use
+same maximum of 120 interaction steps. In the main comparison, Pro and Flash use
 token-based context condensation; the remaining configurations use the default
-OpenHands context handling. We therefore treat each evaluated model--harness
-configuration as the experimental unit rather than attributing observed
-differences to the base model alone.
+OpenHands context handling. Work on agent--computer interfaces and harness
+effects motivates reporting these execution choices as part of the evaluated
+system~\cite{yang2024sweagent,yao2026harnessbench}. We therefore treat each
+model--harness configuration as the experimental unit rather than attributing
+observed differences to the base model alone.
 
 \subsection{Functional Evaluation and Artifact Metrics}
 
@@ -437,17 +443,17 @@ not measure minimality.
 
 We additionally report \emph{Copy}, the fraction of submitted Python source
 matched to the source repository in normalized runs of at least three non-empty,
-non-comment lines. Copy is a syntactic overlap diagnostic and can miss rewritten
-equivalents. Both RRES and Copy are reported only after functional success and
+non-comment lines. Copy measures syntactic overlap rather than semantic
+equivalence, a distinction established in code-clone
+research~\cite{roy2009clones}, and can miss rewritten equivalents.
+Both RRES and Copy are reported only after functional success and
 are not incorporated into the functional score.
 
 \paragraph{Execution effort.}
-We report recorded assistant-step counts for all assigned tasks. Token totals
-are reported only where provider accounting is verifiable: uncached prompt plus
-completion tokens for Pro and Flash, and provider-reported total tokens for Qwen
-and OSS. Luna and GLM lack verified token totals, so token measurements are
-descriptive within their respective accounting definitions rather than a
-cross-provider cost ranking.
+We report recorded assistant-step counts for all assigned tasks. Token usage
+includes uncached prompt plus completion tokens for Pro and Flash, and total
+tokens for Luna, GLM, Qwen, and OSS. These measurements are descriptive within
+their respective accounting definitions rather than a cross-provider cost ranking.
 
 \subsection{Comparison Scope and Statistical Analysis}
 
@@ -464,7 +470,10 @@ stochastic variance.
 
 The source-evidence ablation compares Full Source and Contract Only on the same
 tasks using paired pass-rate differences, paired bootstrap confidence intervals,
-and exact McNemar tests with Holm correction across configurations.
+and exact conditional McNemar tests~\cite{fagerland2013mcnemar}, with Holm
+correction across configurations~\cite{holm1979multiple}. Intervals use
+100{,}000 paired task-bootstrap resamples and describe variation across task
+pairs rather than repeated agent runs.
 
 For successful-artifact comparisons, we retain tasks with successful artifacts
 from at least two configurations and fit task fixed-effects models:
@@ -489,7 +498,7 @@ the RRES ratio is not an adjusted median or a raw size ratio to the reference
 implementation.
 
 Pointwise 95\% percentile intervals use 10{,}000 accepted task-cluster bootstrap
-resamples, retaining all successful artifacts of each sampled task and refitting
+resamples~\cite{field2007cluster}, retaining all successful artifacts of each sampled task and refitting
 and centering both models on every resample. We check that the six-configuration
 co-success graph remains connected; a disconnected draw would be rejected and
 redrawn. Sensitivity analyses give each artifact weight $1/k_t$, where $k_t$ is
@@ -526,11 +535,15 @@ code, upstream tests, documentation, and packaged resources, rather than
 isolating source-code text alone.
 
 Within each configuration, the paired conditions use the same model--harness
-settings, including the common 120-step limit, and the same source-free evaluator.
-We compare functional success using
+settings and source-free evaluator. The Pro configuration in this ablation does
+not apply context compression. We compare functional success using
 paired pass-rate differences, paired bootstrap confidence intervals, and exact
 McNemar tests with Holm correction across the three configurations. Missing
-submissions remain functional failures.
+submissions remain functional failures. We make one fresh attempt for each of
+18 Pro Contract-Only runs initially recorded as timeouts without a submission.
+Six produce evaluable artifacts and replace their original outcomes under a
+predefined earliest-eligible-attempt rule, regardless of functional success;
+the other 12 retain their original failed outcomes. All attempts are preserved.
 
 \subsection{Trace-Based Source-Exposure Measurement}
 \label{sec:source-exposure-protocol}
@@ -620,8 +633,8 @@ model--harness configurations rather than run-to-run success probabilities.
     \midrule
     DeepSeek V4 Pro$^{\dagger}$ & \textbf{115 (76.7)} & 1.781 & 0.993 & [0.769, 1.290] & 0.777 & 0.957 & [0.716, 0.987] & 41.5 & 80.1 & 88.0 & 225.3 \\
     DeepSeek V4 Flash$^{\dagger}$ & 108 (72.0) & 1.730 & 0.998 & [0.893, 1.221] & 0.810 & 0.968 & [0.839, 0.990] & 63.0 & 116.2 & 123.6 & 269.5 \\
-    GPT-5.6 Luna & 102 (68.0) & 0.953 & 0.815 & [0.310, 1.002] & 0.415 & 0.164 & [0.048, 0.967] & 35.5 & 74.4 & --- & --- \\
-    GLM-5.3-Flash & 68 (45.3) & 2.473 & 1.013 & [0.917, 1.158] & 0.843 & 0.947 & [0.811, 0.979] & 85.5 & 127.0 & --- & --- \\
+    GPT-5.6 Luna$^{\ddagger}$ & 102 (68.0) & 0.953 & 0.815 & [0.310, 1.002] & 0.415 & 0.164 & [0.048, 0.967] & 35.5 & 74.4 & 1483.7 & 11349.4 \\
+    GLM-5.3-Flash$^{\ddagger}$ & 68 (45.3) & 2.473 & 1.013 & [0.917, 1.158] & 0.843 & 0.947 & [0.811, 0.979] & 85.5 & 127.0 & 7018.5 & 18791.9 \\
     Qwen3.6-35B-A3B-FP8$^{\ddagger}$ & 63 (42.0) & 1.556 & 0.975 & [0.650, 1.228] & 0.645 & 0.757 & [0.326, 0.972] & 41.5 & 106.6 & 1818.6 & 5521.0 \\
     GPT-OSS 120B$^{\ddagger}$ & 36 (24.0) & 1.176 & 0.983 & [0.292, 1.648] & 0.305 & 0.180 & [0.007, 0.530] & 19.0 & 61.1 & 526.0 & 1877.3 \\
 
@@ -634,9 +647,8 @@ model--harness configurations rather than run-to-run success probabilities.
     \footnotesize
     Pass@1 uses all 150 assigned tasks; RRES and Copy use only functionally
     passing artifacts. Steps use all assigned runs. $^{\dagger}$ reports
-    uncached prompt plus completion tokens; $^{\ddagger}$ reports provider total
-    tokens. These accounting schemes are not directly comparable, and verified
-    token totals are unavailable for Luna and GLM.
+    uncached prompt plus completion tokens; $^{\ddagger}$ reports total
+    tokens. These accounting schemes are not directly comparable.
   \end{minipage}
 
 \end{table}
@@ -644,35 +656,18 @@ model--harness configurations rather than run-to-run success probabilities.
 
 
 \paragraph{Observed variation across task structures.}
-Figure~\ref{fig:structure-capability} compares the same configurations within
-Direct, Adapted, and Composite task groups. Pro, Flash, and Luna have lower
+Table~\ref{tab:structure} reports pass rates within the three lift types
+and four overlapping entanglement-mechanism groups. Pro, Flash, and Luna have lower
 observed pass rates on Adapted and Composite tasks than on Direct tasks.
-Table~\ref{tab:structure} gives the exact rates and denominators, including
-coverage-conditioned results for four overlapping entanglement mechanisms.
 These descriptive comparisons do not isolate a causal difficulty effect:
 category membership co-varies with other task properties, and the Composite
 group contains only 18 tasks.
 
-\begin{figure}[tbp]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig4_structure.pdf}
-  \caption{Observed functional capability by lift type. Each configuration has
-  three bars with denominators 56 (Direct), 76 (Adapted), and 18 (Composite).
-  Bar heights show within-category pass rates, not an independently calibrated
-  difficulty scale. Exact results appear in Table~\ref{tab:structure}.}
-  \Description{A vertical grouped bar chart compares six configurations on a common
-  zero-to-100 percent axis. Direct tasks have the highest observed pass rate for
-  every configuration. The three strongest configurations have lower rates on
-  Adapted and then Composite tasks. Categories are descriptive.}
-  \label{fig:structure-capability}
-\end{figure}
 
 % BEGIN RESULTS EVIDENCE: structure
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{3pt}
-  \renewcommand{\arraystretch}{1.12}
   \caption{Observed functional pass rates (\%) by task structure.}
   \label{tab:structure}
   \begin{tabularx}{\linewidth}{@{}Xrrrrrrr@{}}
@@ -690,7 +685,7 @@ group contains only 18 tasks.
     \bottomrule
   \end{tabularx}
   \par\smallskip\begin{minipage}{\linewidth}\scriptsize
-  Every cell uses the task denominator $n$ in its row. Configuration abbreviations follow Table~\ref{tab:main}. Lift types partition the 150 tasks; the four mechanism groups overlap. These are descriptive outcomes, not independent difficulty effects. The Composite group contains 18 tasks, so one task changes its rate by 5.6 percentage points.
+  $n$ is the row denominator. Lift types partition the tasks; mechanism groups overlap.
   \end{minipage}
 \end{table}
 % END RESULTS EVIDENCE: structure
@@ -721,12 +716,7 @@ the same operational bottleneck across configurations.
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{figures/fig4.pdf}
-  \caption{Functional outcomes for six configurations on the same 150 tasks.
-  Each bar partitions runs into functional success, no usable submission, or the
-  first failed evaluator gate. Pro and Flash deliver packages for all tasks, yet
-  76 of their 77 combined failures first appear at the withheld behavioral
-  gates. First failure identifies an observed evaluation boundary, not a causal
-  root cause.}
+  \caption{Functional outcomes by configuration, partitioned into success, no submission, and first failed evaluator gate.}
   \Description{Horizontal stacked bars show Pass, no usable submission,
   Build-first, Primary-first, Extended-first, and Isolation-first outcomes for
   six configurations over 150 tasks each.}
@@ -754,14 +744,11 @@ observed.
 % BEGIN VERIFIED SOURCE EXPOSURE TABLE
 \begin{table}[tbp]
   \centering
-  \begin{minipage}{0.78\linewidth}
     \caption{Source exposure by final outcome.}
     \label{tab:source-exposure}
 
     \centering
     \footnotesize
-    \setlength{\tabcolsep}{4pt}
-    \renewcommand{\arraystretch}{1.05}
 
     \begin{tabular}{@{}lrrr@{}}
       \toprule
@@ -780,15 +767,60 @@ observed.
 
     \par\smallskip
     {\scriptsize
-    Confirmed reads require returned content matching a statically mapped
-    source file. Steps are computed among confirmed reads; search snippets
-    are excluded. A confirmed read is not complete localization or
-    understanding, and this table does not estimate a causal effect of
-    source access.
+    Read-step medians are conditional on confirmed source reads.
     }
-  \end{minipage}
 \end{table}
 % END VERIFIED SOURCE EXPOSURE TABLE
+
+\paragraph{Behavior drift dominates the reviewed failures.}
+We analyze a reviewed set of 228 source-exposed behavioral failures.
+Multiple coauthors reviewed the failure classifications against the public
+contracts, submitted implementations, and evaluation logs.
+Each failure has one primary category.
+Figure~\ref{fig:failure-analysis} compares category composition within each
+configuration; Table~\ref{tab:failure-analysis} defines the taxonomy and
+reports pooled counts and percentages.
+Of these, 201 (88.2\%) exhibit behavior drift: the required API exists, but its
+observable behavior differs from the public contract. Behavior drift is also
+the largest category within every configuration.
+This distribution suggests that preserving behavior through the reconstructed
+API is the dominant remaining issue within this reviewed set, even after an
+entrypoint-associated source file has been read.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig8_failure_analysis.pdf}
+  \caption{Within-configuration composition of reviewed source-exposed behavioral failures.}
+  \Description{Six horizontal stacked bars show the distribution of API
+  completion, dependency closure, behavior drift, packaging, and unknown
+  categories. Behavior drift is the largest category for every configuration.}
+  \label{fig:failure-analysis}
+\end{figure}
+
+
+% BEGIN RESULTS EVIDENCE: failure-analysis
+\begin{table}[tbp]
+  \centering
+  \footnotesize
+  \caption{Failure taxonomy and pooled counts after confirmed source reading.}
+  \label{tab:failure-analysis}
+  \begin{tabularx}{\linewidth}{@{}p{0.23\linewidth}Xr@{}}
+    \toprule
+    Category & Observed gap & $n$ (\%) \\
+    \midrule
+    \textbf{Behavior drift} & Required API exists, but observable behavior differs from the contract. & \textbf{201 (88.2)} \\
+    API completion & Required export, member, or API path is missing. & 16 (7.0) \\
+    Dependency closure & A required helper, resource, registry, or dependency is absent. & 8 (3.5) \\
+    Packaging & Implementation is present but not exposed through the standalone package. & 2 (0.9) \\
+    Localization & Trajectory and submission indicate the wrong implementation region. & 0 (0.0) \\
+    Unknown & Available evidence does not distinguish a primary category. & 1 (0.4) \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  $N=228$ reviewed failures; one primary category per failure.
+  \end{minipage}
+\end{table}
+% END RESULTS EVIDENCE: failure-analysis
 
 \subsection{RQ3: Does Repository Evidence Improve Behavioral Reconstruction?}
 \label{sec:rq3}
@@ -799,34 +831,29 @@ Repository evidence substantially improves functional success on the paired
 tasks with Full Source versus 9/40 with Contract Only, a gain of 35.0 percentage
 points. Qwen passes 12/40 versus 1/40, a gain of 27.5 points. Both paired
 differences remain significant after Holm correction ($p=0.00515$ for each).
-Pro also shows a large raw contrast (25/40 versus 6/40), but 18 of its
-Contract-Only runs end without a submission and record LLM timeouts; we therefore
-do not interpret that contrast as a clean estimate of reconstruction benefit.
+Pro passes 25/40 tasks with Full Source and 7/40 with Contract Only, a gain of
+45.0 percentage points. In the latter condition, 12 runs fail to complete during
+long-context execution without context compression and return no submission.
+These are unsuccessful attempts under the evaluated configuration and remain
+in the denominator. Pro's result therefore reflects both behavioral
+reconstruction and the configuration's ability to complete long-context runs.
 
 \begin{figure}[tbp]
   \centering
   \begin{minipage}[t]{0.55\linewidth}
-    \vspace{0pt}
     \centering
     \includegraphics[width=\linewidth]{figures/fig5a_pass_rate.pdf}
   \end{minipage}
   \hfill
   \begin{minipage}[t]{0.42\linewidth}
-    \vspace{0pt}
     \centering
     \includegraphics[width=\linewidth]{figures/fig5b_paired_gain.pdf}
   \end{minipage}
-  \caption{Paired source-evidence ablation on the same 40 tasks. Full Source
-  provides the intact repository and public contract; Contract Only provides the
-  contract without repository evidence. (a) Functional success under the two
-  conditions. (b) Paired Full-minus-Contract-Only differences with 95\% paired
-  task-bootstrap intervals. Luna and Qwen show substantial gains. Pro's raw
-  contrast is shown descriptively because 18 Contract-Only runs record LLM
-  timeouts and no submission.}
+  \caption{Paired source-evidence ablation: (a) functional pass rates with Full Source and Contract Only; (b) paired pass-rate differences.}
   \Description{Two panels compare Full Source and Contract Only for GPT-5.6
   Luna, DeepSeek V4 Pro, and Qwen. Luna and Qwen have substantially higher pass
-  rates with repository evidence. Pro also has a large raw difference, but its
-  Contract-Only condition contains timeout-related missing submissions.}
+  rates with repository evidence. Pro also has a large difference, with
+  12 long-context non-completions retained as Contract-Only failures.}
   \label{fig:source-evidence}
 \end{figure}
 
@@ -834,8 +861,6 @@ do not interpret that contrast as a clean estimate of reconstruction benefit.
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{2.2pt}
-  \renewcommand{\arraystretch}{1.12}
   \caption{Exact paired source-evidence ablation results on 40 tasks per configuration.}
   \label{tab:paired-ablation}
   \begin{tabularx}{\linewidth}{@{}Xrrrrrrr@{}}
@@ -843,12 +868,12 @@ do not interpret that contrast as a clean estimate of reconstruction benefit.
     Configuration & \shortstack{Full\\pass} & \shortstack{Contract\\pass} & \shortstack{Full-\\only} & \shortstack{Contract-\\only} & \shortstack{$\Delta$\\(pp)} & \shortstack{95\%\\CI} & $p_{\mathrm{Holm}}$ \\
     \midrule
     GPT-5.6 Luna & 23/40 & 9/40 & 17 & 3 & 35.0 & [15.0, 55.0] & $5.15\times10^{-3}$ \\
-    DeepSeek V4 Pro$^{\dagger}$ & 25/40 & 6/40 & 20 & 1 & 47.5 & [30.0, 65.0] & $6.29\times10^{-5}$ \\
+    DeepSeek V4 Pro & 25/40 & 7/40 & 19 & 1 & 45.0 & [27.5, 62.5] & $1.20\times10^{-4}$ \\
     Qwen3.6-35B-A3B-FP8 & 12/40 & 1/40 & 12 & 1 & 27.5 & [12.5, 42.5] & $5.15\times10^{-3}$ \\
     \bottomrule
   \end{tabularx}
   \par\smallskip\begin{minipage}{\linewidth}\scriptsize
-  Full-only and Contract-only count discordant task pairs. $\Delta$ is Full minus Contract in percentage points. Two-sided exact McNemar tests are Holm-adjusted across the three configurations. Intervals are the same 100{,}000 paired task-bootstrap used in Figure~\ref{fig:source-evidence} and describe paired task variation, not repeated-run variance. Missing submissions remain failures. $\dagger$: Pro has 18 Contract-only missing submissions with recorded LLM timeouts, so its full-sample contrast includes service interruptions. On the 22 pairs without these interruptions, Pro passes 11 versus six tasks (unadjusted $p=0.125$); this selected-subset check does not replace the 40-task result.
+  Full-only and Contract-only count discordant pairs. $\Delta$: Full minus Contract (pp); CI: paired task-bootstrap interval; $p_{\mathrm{Holm}}$: Holm-adjusted exact McNemar test.
   \end{minipage}
 \end{table}
 % END RESULTS EVIDENCE: paired-ablation
@@ -892,7 +917,22 @@ estimates above the center on both measures. Qwen has an RRES ratio of 1.109
 [1.016, 1.227], while its Copy difference of $-1.79$ pp has an interval
 spanning zero [$-5.89$, $+2.45$]. The reference center is symmetric across
 configurations; it does not designate Pro or the benchmark reference package
-as a baseline configuration.
+as a baseline configuration. The dashed lines in
+Figure~\ref{fig:matched-footprint} mark these centers; error bars show the
+pointwise 95\% task-bootstrap intervals defined in our analysis protocol.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig7_matched_footprint.pdf}
+  \caption{Task-adjusted successful-artifact footprints: (a) RRES ratios; (b) Copy differences in percentage points.}
+  \Description{Two vertical bar charts compare Pro, Flash, Luna, GLM, Qwen,
+  and OSS. The left panel shows task-adjusted implementation-size ratios with
+  a reference line at one; the right shows source-overlap differences with a
+  reference line at zero percentage points. Luna and OSS are below both
+  centers; Qwen's source-overlap interval crosses zero. Each bar has a 95 percent
+  task-bootstrap interval.}
+  \label{fig:matched-footprint}
+\end{figure}
 
 \paragraph{Sensitivity to weighting and repository dependence.}
 Giving each task total weight one preserves the direction of every
@@ -912,34 +952,11 @@ Neither measures minimality, maintainability, or semantic superiority.
 The analysis characterizes successful artifacts only and does not extrapolate
 footprint behavior to tasks on which a configuration fails.
 
-\begin{figure}[tbp]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig7_matched_footprint.pdf}
-  \caption{Task-adjusted implementation footprints of 485 successful artifacts
-  from 115 tasks with at least two successful configurations.
-  (a) Configuration effects from the task fixed-effects model of
-  $\log_2(\operatorname{RRES})$, displayed as multiplicative ratios on a linear
-  axis. (b) Adjusted Copy differences in percentage points. Bars start at zero;
-  dashed lines mark the sum-to-zero center of configuration effects ($1\times$
-  and 0 pp), rather than an oracle-relative size reference. Error bars show
-  pointwise 95\% task-cluster bootstrap percentile intervals from 10{,}000
-  accepted resamples.}
-  \Description{Two vertical bar charts compare Pro, Flash, Luna, GLM, Qwen,
-  and OSS. The left panel shows task-adjusted implementation-size ratios with
-  a reference line at one; the right shows source-overlap differences with a
-  reference line at zero percentage points. Luna and OSS are below both
-  centers; Qwen's source-overlap interval crosses zero. Each bar has a 95 percent
-  task-bootstrap interval.}
-  \label{fig:matched-footprint}
-\end{figure}
-
 % BEGIN RESULTS EVIDENCE: matched-footprint
 \begin{table}[tbp]
   \centering
   \footnotesize
-  \setlength{\tabcolsep}{4pt}
-  \renewcommand{\arraystretch}{1.12}
-  \caption{Task-adjusted footprint of 485 successful artifacts from 115 tasks with at least two successful configurations.}
+  \caption{Task-adjusted implementation footprints among successful artifacts.}
   \label{tab:matched-footprint}
   \begin{tabularx}{\linewidth}{@{}Xrrr@{}}
     \toprule
@@ -954,7 +971,7 @@ footprint behavior to tasks on which a configuration fails.
     \bottomrule
   \end{tabularx}
   \par\smallskip\begin{minipage}{\linewidth}\scriptsize
-  Configuration abbreviations follow Table~\ref{tab:main}. Models include task fixed effects and sum-to-zero configuration effects. RRES ratios are $2^{\beta_m^{\mathrm{RRES}}}$; Copy differences are $100\beta_m^{\mathrm{Copy}}$ percentage points. The centers $1\times$ and 0 pp refer to configuration effects, not raw oracle-relative RRES. Intervals are pointwise 95\% task-cluster bootstrap percentile intervals (10{,}000 accepted resamples), not simultaneous intervals or estimates of repeated-run variance. These success-conditional estimates are descriptive, not causal effects or quality rankings.
+  Estimates follow Equation~\ref{eq:adjusted-footprint}; brackets show pointwise 95\% task-bootstrap intervals. Copy differences are in percentage points (pp).
   \end{minipage}
 \end{table}
 % END RESULTS EVIDENCE: matched-footprint
@@ -977,8 +994,10 @@ observable mechanisms rather than estimate their prevalence across failures.
 RQ2 and RQ3 together suggest that source access should be treated as evidence to
 be organized around explicit behavioral obligations, not as an endpoint in
 itself. Repository evidence materially improves reconstruction, but many failures
-occur after entrypoint-associated source files have already been read. A
-feature-lifting agent should therefore connect each public obligation to the
+occur after entrypoint-associated source files have already been read. The
+reviewed failure set is dominated by behavior drift, further motivating
+checks of observable semantics beyond API presence. A feature-lifting agent
+should therefore connect each public obligation to the
 source evidence that supports it and then verify the reconstructed behavior
 through the exported package boundary. In particular, checking that expected
 functions or helpers exist is weaker than tracing required inputs, state changes,
@@ -1007,7 +1026,9 @@ complete test validity. Because the reviewers are members of the author team, th
 is not independent external validation and confirmation bias can remain. The trace detector establishes only observable
 exposure to mapped source-file content and can miss unsupported read styles or
 unresolved entrypoints; a confirmed read does not prove complete localization or
-understanding. RRES depends on one feasible reference and a line-counting
+understanding. Failure categories involve author judgment and describe the
+retained source-exposed failures rather than all failures or causal process
+mechanisms. RRES depends on one feasible reference and a line-counting
 convention, while Copy is a syntactic overlap proxy. Neither establishes
 minimality, maintainability, or semantic superiority.
 
@@ -1018,9 +1039,10 @@ use different context-condensation settings from the other backends, and provide
 behavior or tool-call compatibility can affect execution. One retained outcome
 per model--task cell does not estimate run-to-run stochastic variance. The paired
 source ablation improves within-task control, but the 40-task sample is a subset
-of the benchmark; moreover, Pro's Contract-Only condition contains timeout-related
-missing submissions, so its raw contrast is not interpreted as a clean causal
-estimate. The footprint analysis includes only successful artifacts on tasks
+of the benchmark. Pro's ablation result includes long-context non-completion
+and therefore does not isolate behavioral reconstruction from execution limits.
+Its replacement attempts were collected later than the original runs.
+The footprint analysis includes only successful artifacts on tasks
 with at least two successful configurations. Task fixed effects absorb common
 task-level variation but do not remove success selection or fully characterize
 configuration-by-task interactions. Repository-cluster bootstrap and task-equal
@@ -1042,50 +1064,39 @@ software reuse.
 \section{Related Work}
 \label{sec:related-work}
 
-We position feature lifting by the evidence available to the agent, the artifact
-it must produce, and the environment in which that artifact is evaluated. These
-dimensions connect \flb to software reuse and repository-level coding benchmarks
-while distinguishing its source-backed, source-free execution boundary.
-
-\subsection{Program Analysis and Software Reuse}
-
-Program slicing retains statements relevant to a specified slicing criterion
-through dependence analysis~\cite{weiser1984slicing}, while feature location asks
-which source entities implement a concern using static, dynamic, or textual
-evidence~\cite{dit2013featurelocation}. Separation-of-concerns research likewise
-studies decomposition when concerns cross module boundaries~\cite{tarr1999degrees}.
-These techniques address parts of the evidence-recovery problem, but \flb scores
-the delivered package rather than the quality of a located slice.
-
-Automated software transplantation is the closest reuse antecedent. Barr
-et~al. extract donor functionality and adapt it into a supplied host using
-analysis, testing, and search~\cite{barr2015transplantation}. \flb preserves the
-source-backed reuse objective but changes the task interface: the donor repository
-and a bounded behavioral contract are supplied, source-location hints are
-withheld, and the destination is an independent package rather than a host
-application. The extraction strategy remains open, including behaviorally
-compatible reimplementation.
+Feature lifting connects repository-level coding evaluation with software reuse
+and behavior-preserving transformation. We organize the comparison around the
+implementation evidence available to an agent and the boundary at which its
+deliverable must remain correct.
 
 \subsection{Repository-Level Coding and Feature Development}
 
-SWE-bench supplies an issue and repository snapshot and evaluates a patch in the
-revised project~\cite{jimenez2024swebench}; SWE-Bench Pro extends this setting to
-longer-horizon repository changes~\cite{deng2025swebenchpro}. FeatBench evaluates
-feature implementation from natural-language requirements in a base repository,
-while withholding code-level hints~\cite{chen2026featbench}. FeatureBench defines
-callable interfaces and includes both incomplete-repository and from-scratch
-settings~\cite{zhou2026featurebench}. These benchmarks ask whether agents can
-modify or construct functionality. \flb instead asks whether an agent can use an
-\emph{intact implementation} as evidence, reconstruct the requested capability
-across a new package boundary, and preserve behavior when the donor repository is
-removed at runtime.
+SWE-bench evaluates repository patches that resolve real GitHub
+issues~\cite{jimenez2024swebench}, and SWE-Bench Pro extends this direction to
+longer-horizon software engineering tasks~\cite{deng2025swebenchpro}.
+Feature-development benchmarks broaden the objective beyond issue resolution.
+FeatBench evaluates implementation from natural-language requirements without
+code hints, including whether changes preserve existing
+features~\cite{chen2026featbench}. FeatureBench derives tasks through test-driven
+dependency tracing and evaluates both incremental development in an incomplete
+repository and construction of the requested functionality from
+scratch~\cite{zhou2026featurebench}.
+
+These settings already cover substantial feature construction, including
+standalone implementations. \flb focuses on reconstruction with an
+\emph{intact implementation available as evidence}: the agent must carry a
+specified capability across a new package boundary, and evaluation removes
+runtime access to the donor repository. Supporting code, state, and resources
+must therefore be incorporated or replaced sufficiently to preserve the public
+contract. This combination makes source-backed reuse and source-independent
+execution the central evaluation objective.
 
 Table~\ref{tab:task-comparison} summarizes these task interfaces. The comparison
 concerns what each setting asks an agent to do, not relative difficulty.
 
 \begin{table}[tbp]
-  \caption{Task-interface comparison with closely related construction and reuse
-  settings.}
+  \caption{Task-interface comparison with closely related construction, reuse,
+  and refactoring settings.}
   \label{tab:task-comparison}
   \centering
   \footnotesize
@@ -1118,10 +1129,14 @@ concerns what each setting asks an agent to do, not relative difficulty.
       & Task/interface; no repository
       & Library from scratch
       & Generated library \\
-    Software transplantation
+    Donor--host transplantation
       & Donor + host + tests
       & Functionality in host
       & Integrated functionality \\
+    SWE-Refactor
+      & Target method + refactoring type + repository context
+      & Refactored code
+      & Project build, tests, and transformation checks \\
     \midrule
     \textbf{FeatureLiftBench}
       & \textbf{Intact source + behavioral contract}
@@ -1131,17 +1146,64 @@ concerns what each setting asks an agent to do, not relative difficulty.
   \end{tabularx}
 \end{table}
 
-\subsection{Agent Runtimes and Evaluation Scope}
+\subsection{Feature Location, Extraction, and Software Reuse}
 
-SWE-agent studies interfaces through which language models navigate repositories,
-edit files, and execute tests~\cite{yang2024sweagent}. OpenHands provides an
-extensible developer-agent runtime with sandboxed tool execution~\cite{wang2025openhands},
-and Harness-Bench examines variation across model--harness configurations under
-shared tasks and budgets~\cite{yao2026harnessbench}. These studies motivate
-reporting the harness and context-management policy as part of the evaluated
-system. Our experiments use OpenHands to instantiate feature lifting; the results
-therefore characterize the recorded model--harness configurations rather than a
-harness-independent ordering of base models.
+Program slicing uses dependence analysis to retain statements relevant to a
+specified criterion~\cite{weiser1984slicing}, while feature location identifies
+source entities associated with a requested concern~\cite{dit2013featurelocation}.
+Research on multi-dimensional separation of concerns addresses functionality
+that cuts across module boundaries~\cite{tarr1999degrees}. These foundations
+explain why recovering a reusable capability can require reasoning beyond its
+entrypoint: the implementing statements and their supporting dependencies need
+not form an existing module.
+
+Software transplantation turns this recovery problem into executable reuse.
+Barr et~al. combine analysis, testing, and search to extract donor functionality
+and adapt it to a supplied host~\cite{barr2015transplantation}. Foundry extends
+transplantation to software product lines; its prodScalpel tool uses tests and
+annotations identifying features and implantation points to extract and
+integrate functionality across codebases~\cite{souza2025foundry}.
+\flb builds on this reuse objective through a benchmark for general-purpose
+coding agents. It supplies the intact donor and a behavioral contract, while
+leaving source localization and reconstruction to the agent. The destination is
+an independent package, and the contract permits extraction, adaptation, or
+compatible reimplementation. The contribution is an evaluation setting for this
+end-to-end capability, complementary to techniques that automate particular
+extraction and integration steps.
+
+\subsection{Behavior-Preserving Refactoring and Transformation}
+
+Classic refactoring work defines restructuring operations with preconditions
+under which program behavior is preserved~\cite{opdyke1992refactoring}.
+EM-Assist combines LLM suggestions with static analysis to
+select Extract Method candidates and uses IDE machinery to perform the
+transformation~\cite{pomian2024emassist}. SWE-Refactor evaluates atomic and
+compound refactorings mined from real Java projects. Its verification combines
+project compilation and tests with checks that the requested structural
+transformation occurred~\cite{xu2026swerefactor}.
+
+Feature lifting moves the preservation obligation to the exported interface of
+a new package. The agent must reconstruct enough of the supporting
+implementation for the specified behavior to survive without the donor
+repository. No particular refactoring sequence or correspondence to the
+original internal structure is required. Thus, successful lifting may use
+refactoring techniques, but its acceptance criterion is the behavior and
+independence of the delivered capability. Artifact size and source overlap then
+characterize successful implementations without prescribing how the agent must
+transform the code.
+
+\subsection{Repository Context and Evidence Utilization}
+
+RepoCoder uses iterative retrieval and generation for repository-level code
+completion~\cite{zhang2023repocoder}. RepoBench evaluates retrieval, completion,
+and their combined pipeline~\cite{liu2024repobench}, while CrossCodeEval targets
+completion requiring cross-file context~\cite{ding2023crosscodeeval}. These works
+establish repository information as a resource for generation. \flb examines
+its use across a new execution boundary: the source-evidence ablation measures
+its contribution to reconstruction, and the failure analysis examines which
+behavioral obligations remain unmet after observable source exposure. This
+connects context utilization to the correctness of the resulting independent
+artifact.
 
 \section{Conclusion}
 

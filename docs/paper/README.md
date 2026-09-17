@@ -1,10 +1,10 @@
 # FeatureLiftBench 论文工作区
 
-> **Status: current · Last verified: 2026-09-16**
+> **Status: current · Last verified: 2026-09-17**
 
 新版正文来自用户提供的 FSE.zip。入口：[main.tex](main.tex) · [项目地图](../PROJECT_MAP.md) · [本次同步记录](FSE_SYNC_20260914.md)。
 
-当前论文包含 150 个 Python 任务、126 个仓库、132 个快照；六配置各 150 题，共 900 条主比较结果。另有三配置 × 40 题 × 两臂的 240 条源码消融结果。当前正文七张图、七张表，引用九个图形文件；没有附录。
+当前论文包含 150 个 Python 任务、126 个仓库、132 个快照；六配置各 150 题，共 900 条主比较结果。另有三配置 × 40 题 × 两臂的 240 条源码消融结果。当前正文五个 RQ、八张图、八张表，引用十个图形文件；没有附录。
 
 ## 写作与修改
 
@@ -35,5 +35,7 @@ Luna / GLM 的 Token 总量按作者确认值写入 Table 1。Pro 的 Contract-O
 当前使用 `acmsmall,screen,review,anonymous`，未修改 `acmart.cls`。图 caption 在下、表 caption 在上；本轮未编译或验证最终分页。
 
 辅助入口：[写作证据](writing/README.md) · [图形工作区](figures/README.md) · [大纲与历史论证](PAPER_OUTLINE.md) · [方法与结果修订记录](writing/METHODS_RESULTS_REVISION_20260912.md)。
+
+新增 RQ2 的口径、执行记录及样本范围见 [Token 与执行开销整合计划](TOKEN_EFFICIENCY_INTEGRATION_PLAN.md)。
 
 最新分工及图表编号见 [Results 视觉证据计划](RESULTS_VISUAL_PLAN.md) 顶部最终决定；历史预览不进入 Overleaf 包。

@@ -123,6 +123,8 @@ class EvalCache:
             return None
         if meta.get("eval_status") in {"error", "timeout", "infra_error"}:
             return None
+        if _eval_status(result) != "ok":
+            return None
         return {"result": result, "meta": meta, "result_path": result_path}
 
     def evaluate_hash(
@@ -331,6 +333,8 @@ def _eval_status(result: dict[str, Any]) -> str:
     if status in {"error", "timeout"}:
         return status
     errors = result.get("errors") or []
+    if any("dependency installation failed" in str(error).lower() for error in errors):
+        return "infra_error"
     if status in {"failed", "passed"} or "build_pass" in result:
         return "ok" if status != "error" else "error"
     if errors and status not in {"failed", "passed"}:

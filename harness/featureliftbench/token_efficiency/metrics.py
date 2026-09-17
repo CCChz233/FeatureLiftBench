@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Mapping
 
-from .constants import ACCOUNTING_TOTAL, RUN_METRICS_FIELDS
+from .constants import ACCOUNTING_TOTAL, RUN_METRICS_FIELDS, METHOD_VERSION
 from .evaluate import SnapshotEvaluation
 from .ledger import RunLedger
 from .replay import ReplayOutcome, TimelineState
@@ -99,6 +99,7 @@ def compute_run_metrics(
             and first_pass_upper is not None
             and first_pass_lower == first_pass_upper
             and ledger.token_usage_status == "complete"
+            and ledger.token_alignment_status == "exact"
         )
         if token_exact and first_pass_tokens is None:
             first_pass_tokens = first_pass_lower
@@ -164,6 +165,10 @@ def compute_run_metrics(
         and replay is not None
         and replay.full_timeline_covered
         and sufficiency == "exact"
+        and ledger.token_usage_status == "complete"
+        and ledger.token_alignment_status == "exact"
+        and unresolved_states == 0
+        and replay.last_matches_disk
         and ledger.accounting_basis == ACCOUNTING_TOTAL
         and ledger.total_tokens
         and ledger.total_tokens > 0
@@ -194,6 +199,7 @@ def compute_run_metrics(
         not run.final_pass
         and identity_status == "ok"
         and replay is not None
+        and final_eval_matches is True
         and replay.full_timeline_covered
         and unresolved_states == 0
         and sufficiency in {"exact", "bounded", "never_sufficient"}
@@ -205,6 +211,7 @@ def compute_run_metrics(
         failure_reason = "incomplete_failure_history"
 
     values = {
+        "method_version": METHOD_VERSION,
         "run_id": run.run_id,
         "configuration": run.configuration,
         "task_id": run.task_id,

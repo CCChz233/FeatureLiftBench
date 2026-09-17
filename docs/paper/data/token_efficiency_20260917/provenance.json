@@ -1,0 +1,20 @@
+{
+  "method": "execution_effort_reviewed.v1",
+  "source": "experiments/token\u5b9e\u9a8c/token_efficiency_delivery_20260917T051402Z.tar.gz",
+  "source_sha256": "45a45537100bf2aac783b50cdf9829f9d07a7f21df7fc0698ee721d04e2fb61c",
+  "members_sha256": {
+    "run_metrics.csv": "f49a7d5e07be8263d31c98f4b31e28377a95b92a8b29d7e46c6de025c5939252",
+    "calls.jsonl.gz": "a65fbf3d526db0cae6fdf34593f255d8426e9b0b18f5325249b929bdcf40ad47",
+    "artifact_timeline.jsonl.gz": "f9d43302ebe2805885da42e5fa6270f52900681e902f81890bc2dc4655084709",
+    "snapshot_evaluations.csv": "d57716320c3cfa6011058798e5a56b5071b0b2187bef9fc14191110eef294fb9"
+  },
+  "estimand": "post-execution after first reconstructed evaluator-passing checkpoint",
+  "sample_policy": "same conservative, jointly measurable success subset in both panels",
+  "accounting": "input+output total; cache-hit input is included, not added twice",
+  "limitations": [
+    "No claim that every transient state was captured by replay.",
+    "No new Docker replay or model calls in this local integration.",
+    "Small Qwen sample is descriptive only; no configuration ranking.",
+    "Luna and GLM historical per-call usage unavailable."
+  ]
+}

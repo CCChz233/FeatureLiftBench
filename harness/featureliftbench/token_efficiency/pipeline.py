@@ -17,6 +17,7 @@ from .constants import (
     PILOT_PASS_QUOTA,
     RUN_MANIFEST_FIELDS,
     RUN_METRICS_FIELDS,
+    METHOD_VERSION,
 )
 from .evaluate import EvalCache, gates_match, original_gates
 from .events import load_events, load_persistence_events, original_steps
@@ -153,7 +154,9 @@ def process_one_run(
     if resume and metrics_path.is_file():
         try:
             existing = read_json(metrics_path)
-            if existing.get("run_id") == run.run_id and existing.get("replay_status") != "running":
+            if (existing.get("run_id") == run.run_id
+                    and existing.get("method_version") == METHOD_VERSION
+                    and existing.get("replay_status") != "running"):
                 print(f"[token-efficiency] resume-skip {run.run_id}", flush=True)
                 return existing
         except (OSError, ValueError):

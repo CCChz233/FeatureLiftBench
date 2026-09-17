@@ -171,7 +171,11 @@ def build_run_ledger(
 
     token_usage_status = "missing"
     missing_reason = ""
-    if has_complete and len(has_complete) == len(included) and included:
+    missing_calls = [call for call in calls if call.inclusion_status == "excluded_missing_usage"]
+    if has_complete and missing_calls:
+        token_usage_status = "partial"
+        missing_reason = "some_calls_missing_usage"
+    elif has_complete and len(has_complete) == len(included) and included:
         token_usage_status = "complete"
     elif has_complete:
         token_usage_status = "partial"
@@ -347,10 +351,10 @@ def tokens_for_completion(
     bounds = ledger.cumulative_bounds_by_call.get(call_id)
     if ledger.token_alignment_status == "exact" and exact is not None:
         return exact, exact, exact, "exact"
-    if bounds is not None:
-        if bounds[0] == bounds[1]:
-            return bounds[0], bounds[0], bounds[1], "exact"
-        return None, bounds[0], bounds[1], "bounded"
+    # A precise sum for a candidate call does not make its event mapping exact.
+    # Without a proven mapping, the candidate prefix is not a valid tight bound.
+    if ledger.token_alignment_status == "bounded":
+        return None, 0, ledger.total_tokens, "bounded"
     return None, None, None, "unresolved"
 
 

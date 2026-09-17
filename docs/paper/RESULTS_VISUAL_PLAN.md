@@ -1,3 +1,18 @@
+# 当前增补：执行开销 RQ2（2026-09-17）
+
+已按 [Token 整合计划](TOKEN_EFFICIENCY_INTEGRATION_PLAN.md) 增加新的 RQ2：正文 **5 个 RQ、8 图 + 8 表，无附录**。
+
+- Fig.1–3 完全保留；新增 Fig.4 为首次重建通过版本后的 token 比例与模型调用次数。
+- 新 Table 3 给最终 Pass/Fail 的 token 中位数、IQR 和有效 n/N；Table 1 原口径和数值不变。
+- 原 Fig.4–7 顺延为 Fig.5–8，原 Table 3–7 顺延为 Table 4–8，保留现有图型及文件名。
+- 两 panel 暂用同一保守联合样本：Pro 89、Flash 75、Qwen 5、OSS 25；Luna/GLM 不填估算值。
+- 口径是 observed reconstructed passing checkpoint，不声称发现所有瞬时状态或可安全省去这些 token。
+- 新图已单独渲染；旧图未重绘。未编译论文。
+
+下方保留历史决策；与本增补冲突时以本节为准。
+
+---
+
 # 最终图表决策（2026-09-16）
 
 本节取代下方全部历史方案。正文 **7 图 + 7 表，无附录**。

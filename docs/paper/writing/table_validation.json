@@ -47,20 +47,21 @@
       "verification": "CRLF-equivalent"
     }
   ],
-  "main_tables": 7,
-  "main_generated_data_tables": 6,
+  "main_tables": 8,
+  "main_generated_data_tables": 7,
   "main_authored_literature_tables": 1,
   "unverified_hypothetical_tables": 0,
   "verified_source_ablation_outcomes": 240,
   "source_exposure_traces": 900,
   "appendix_tables": 0,
-  "main_figures": 7,
+  "main_figures": 8,
   "appendix_figures": 0,
   "figure_placeholders": 0,
   "generated_text_blocks": 0,
   "main_table_order": [
     "main",
     "structure",
+    "execution-effort",
     "source-exposure",
     "failure-analysis",
     "paired-ablation",
@@ -112,7 +113,7 @@
   "sources": [
     {
       "path": "docs/paper/paper_sources.json",
-      "sha256": "3fa87c34c8605a7e325c18b29544b80d835d29a60b92c352bc147f9ed5f94d78"
+      "sha256": "ebf4585900f93839880fae9803e0b397b0ae9a296e72d4099f1d93dfd53b2340"
     },
     {
       "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
@@ -169,6 +170,22 @@
     {
       "path": "docs/paper/failure_analysis.py",
       "sha256": "dc56f4a388dd47532d4e7a27a041a6f8d3c513e15594a3e0193b93c321bf8ebc"
+    },
+    {
+      "path": "docs/paper/data/token_efficiency_20260917/records.json",
+      "sha256": "d33e4d4c07e0eb6a7e6af7d37adde0ea7322f59073727b2edc566ae6519670df"
+    },
+    {
+      "path": "docs/paper/data/token_efficiency_20260917/analysis.json",
+      "sha256": "5e721faf7be0cc73e0b9afa9dee787fd1258c127542267896398d8777022cca1"
+    },
+    {
+      "path": "docs/paper/execution_effort.py",
+      "sha256": "cde1a0e328bbfabfef63bb9d18a2c623fe8f55ff250d3f119baa6782cbdd5f3b"
+    },
+    {
+      "path": "docs/paper/writing/execution_effort_tables.py",
+      "sha256": "980b6d864093d15936fde7d75a995e89141880942c51f430df3e3e1bc802d190"
     },
     {
       "path": "docs/paper/writing/results_visuals.py",

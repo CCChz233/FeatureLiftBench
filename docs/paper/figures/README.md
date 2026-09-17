@@ -2,7 +2,7 @@
 
 > **Status: current · Updated: 2026-09-14**
 
-正文 7 张图引用 9 个图片文件。图号、源码和资产对应见 [每图源码索引](scripts/README.md)，输入清单见 [paper_sources.json](../paper_sources.json)。
+正文 8 张图引用 10 个图片文件。图号、源码和资产对应见 [每图源码索引](scripts/README.md)，输入清单见 [paper_sources.json](../paper_sources.json)。
 
 本轮新增：
 

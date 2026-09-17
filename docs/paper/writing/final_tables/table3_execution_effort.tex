@@ -1,0 +1,23 @@
+\begin{table}[tbp]
+  \centering
+  \footnotesize
+  \caption{Token expenditure by final outcome.}
+  \label{tab:execution-effort}
+  \begin{tabularx}{\linewidth}{@{}Xrlrl@{}}
+    \toprule
+    & \multicolumn{2}{c}{Successful runs} & \multicolumn{2}{c}{Failed runs} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    Configuration & $n/N$ & Median [IQR] & $n/N$ & Median [IQR] \\
+    \midrule
+    Pro & 115/115 & 2.24 [1.46, 3.88] & 34/35 & 2.71 [1.79, 4.67] \\
+    Flash & 108/108 & 4.01 [2.20, 7.08] & 42/42 & 4.72 [3.16, 8.46] \\
+    Luna & 0/102 & -- & 0/48 & -- \\
+    GLM & 0/68 & -- & 0/82 & -- \\
+    Qwen & 63/63 & 2.13 [1.59, 3.24] & 83/87 & 1.30 [0.25, 3.28] \\
+    OSS & 33/36 & 0.38 [0.23, 0.95] & 112/114 & 0.55 [0.30, 1.09] \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  Tokens are input plus output, including cached input, in millions. $n/N$ denotes usable records over assigned runs with that outcome.
+  \end{minipage}
+\end{table}

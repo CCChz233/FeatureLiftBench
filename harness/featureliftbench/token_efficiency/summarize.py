@@ -56,7 +56,7 @@ def summarize_suite(
         rows = by_config.get(model, [])
         official_success_n = official[model]
         psf_rows = [row for row in rows if _truthy(row.get("include_psf_primary"))]
-        psf_vals = [_float(row.get("first_pass_fraction")) for row in psf_rows]
+        psf_vals = [_float(row.get("post_sufficiency_fraction")) for row in psf_rows]
         psf_vals = [value for value in psf_vals if value is not None]
         post_vals = [
             _float(row.get("post_sufficiency_tokens"))
@@ -90,6 +90,7 @@ def summarize_suite(
                 "sum_post_over_sum_total": _pooled_post(psf_rows),
                 "ever_pass_final_fail_n": sum(
                     1 for row in rows if _truthy(row.get("ever_pass_final_fail"))
+                    and _truthy(row.get("include_failure_history"))
                 ),
                 "accounting_basis": ACCOUNTING_TOTAL,
             }
@@ -188,10 +189,10 @@ def summarize_suite(
         for lift in LIFT_TYPES:
             lift_subset = [row for row in rows if row.get("lift_type") == lift]
             psf_lift = [
-                _float(row.get("first_pass_fraction"))
+                _float(row.get("post_sufficiency_fraction"))
                 for row in lift_subset
                 if _truthy(row.get("include_psf_primary"))
-                and _float(row.get("first_pass_fraction")) is not None
+                and _float(row.get("post_sufficiency_fraction")) is not None
             ]
             lift_rows.append(
                 {
@@ -208,7 +209,7 @@ def summarize_suite(
             (lambda row: row.get("task_id") in included_ids, "psf_included"),
             (lambda row: row.get("task_id") not in included_ids, "psf_excluded"),
         ):
-            subset = [row for row in rows if flag(row)]
+            subset = [row for row in rows if _truthy(row.get("final_pass")) and flag(row)]
             tokens = [
                 _float(row.get("total_tokens"))
                 for row in subset
@@ -365,11 +366,11 @@ def _write_figures(rows: list[dict[str, Any]], figures: Path) -> dict[str, Any]:
     source = {"psf_ecdf": [], "token_steps": []}
     for model in CONFIG_ORDER:
         psf = sorted(
-            _float(row.get("first_pass_fraction"))
+            _float(row.get("post_sufficiency_fraction"))
             for row in rows
             if row.get("configuration") == model
             and _truthy(row.get("include_psf_primary"))
-            and _float(row.get("first_pass_fraction")) is not None
+            and _float(row.get("post_sufficiency_fraction")) is not None
         )
         psf = [value for value in psf if value is not None]
         for index, value in enumerate(psf):
@@ -521,7 +522,7 @@ def _latex_table(rows: list[dict[str, Any]]) -> str:
                 row["Configuration"],
                 row["Included successes n/N"],
                 row["Median post-sufficiency tokens [IQR]"],
-                row["Median PSF [95% CI]"],
+                row["Median PSF [95% CI]"].replace("%", r"\%"),
             )
         )
     lines.extend(

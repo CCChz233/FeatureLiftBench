@@ -13,8 +13,10 @@ from fig5_source_ablation import draw_all as draw_source_ablation
 from fig7_matched_footprint import draw_matched as draw_footprint
 from fig4_structure import draw_structure
 from fig8_failure_analysis import draw_failure_analysis
+from fig_execution_effort import draw_execution_effort
 
 DRAWINGS = {
+    "execution-effort": draw_execution_effort,
     "coverage": draw_coverage,
     "structure": draw_structure,
     "functional": draw_functional,
@@ -27,7 +29,7 @@ DRAWINGS = {
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--only", nargs="+", choices=tuple(DRAWINGS),
-                        default=["functional", "failure-analysis", "ablation", "footprint"])
+                        default=["execution-effort", "functional", "failure-analysis", "ablation", "footprint"])
     parser.add_argument("--output-dir", type=Path,
                         help="Write images and data here without replacing the paper figures.")
     args = parser.parse_args()

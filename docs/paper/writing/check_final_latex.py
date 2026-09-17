@@ -30,11 +30,11 @@ def main():
     assert r'\usepackage{amsmath}' in text
     assert not re.search(r'\\\\\[95', text), 'CI header parsed as an optional line-break length'
     labels = re.findall(r'\\label\{(tab:[^}]+)\}', text)
-    assert labels == ['tab:main','tab:structure','tab:source-exposure','tab:failure-analysis','tab:paired-ablation',
+    assert labels == ['tab:main','tab:structure','tab:execution-effort','tab:source-exposure','tab:failure-analysis','tab:paired-ablation',
                       'tab:matched-footprint','tab:task-comparison']
     assert r'\appendix' not in text
     assert re.findall(r'\\label\{(fig:[^}]+)\}', text) == [
-        'fig:pipeline', 'fig:construction', 'fig:coverage', 'fig:failures',
+        'fig:pipeline', 'fig:construction', 'fig:coverage', 'fig:execution-effort', 'fig:failures',
         'fig:failure-analysis', 'fig:source-evidence', 'fig:matched-footprint']
     for block in re.findall(r'\\begin\{figure\}.*?\\end\{figure\}', text, re.S):
         assert block.index(r'\includegraphics') < block.index(r'\caption')
@@ -60,9 +60,9 @@ def main():
     assert failures['pooled']['behavior_drift']==201 and failures['valid']==228
     assert '201 (88.2\\%)' in text
     assert 'Multiple coauthors reviewed the failure classifications' in text
-    new_section=text.split(r'\paragraph{Behavior drift dominates the reviewed failures.}',1)[1].split(r'\subsection{RQ3:',1)[0]
+    new_section=text.split(r'\paragraph{Behavior drift dominates the reviewed failures.}',1)[1].split(r'\subsection{RQ4:',1)[0]
     assert not any(term in new_section for term in ['kappa','dual-agent','dual agent','independent reviewers'])
-    rq4 = text.split(r'\label{sec:rq4}', 1)[1].split(r'\section{Discussion}', 1)[0]
+    rq4 = text.split(r'\label{sec:rq5}', 1)[1].split(r'\section{Discussion}', 1)[0]
     assert not any(x in rq4 for x in ['Wilcoxon', 'rank-biserial', 'identity-scatter', '97 tasks passed'])
     assert '115 tasks' in rq4 and '485 successful artifacts' in rq4
     evidence = json.loads((PAPER/'writing/results_visual_evidence.json').read_text())['adjusted_footprint']
@@ -77,9 +77,22 @@ def main():
         assert vals == [row['short'], str(row['included_success_n']),
                         f"{row['rres_ratio']:.3f} [{lo:.3f}, {hi:.3f}]",
                         f"${row['copy_pp']:+.2f}$ [${clo:+.2f}$, ${chi:+.2f}$]"]
-    result = dict(validate_manuscript(), tables=7, brace_groups_balanced=True,
+    from execution_effort import load_analysis
+    effort = load_analysis()
+    rq2 = text.split(r'\label{sec:rq2}', 1)[1].split(r'\subsection{RQ3:', 1)[0]
+    assert re.findall(r'\\label\{sec:rq(\d)\}', text) == ['1','2','3','4','5']
+    assert 'first observed pass' in text or 'observed passing checkpoint' in text
+    for row in effort['summaries']:
+        if row['checkpoint_n']:
+            assert f"{100*row['psf']['median']:.1f}\\%" in rq2
+    from execution_effort_tables import build_table
+    region = re.search(r'% BEGIN RESULTS EVIDENCE: execution-effort\n(.*?)\n% END RESULTS EVIDENCE: execution-effort',tex,re.S)
+    assert region[1] == build_table()
+    result = dict(validate_manuscript(), tables=8, research_questions=5, brace_groups_balanced=True,
                   environments_balanced=True, bibliography_keys_resolved=len(cited),
-                  table6_matches_figure_analysis=True, old_rq4_statistics_removed=True,
+                  footprint_table_matches_figure_analysis=True, old_pairwise_footprint_statistics_removed=True,
+                  execution_effort_matches_reviewed_records=True,
+                  checkpoint_samples={row['short']: row['checkpoint_n'] for row in effort['summaries']},
                   author_confirmed_token_cells_match=True, maximum_steps_stated_once=True,
                   recovered_pro_results_integrated=True,
                   failure_analysis_counts_match=True,

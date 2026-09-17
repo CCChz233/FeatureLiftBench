@@ -26,7 +26,9 @@
     "source_ablation_statistics": "docs/paper/data/source_ablation_recovery_20260916/statistics.json",
     "author_result_clarifications": "docs/paper/writing/author_result_clarifications_20260916.json",
     "failure_classifications": "docs/paper/data/failure_analysis_20260916/classifications.csv",
-    "failure_classification_provenance": "docs/paper/data/failure_analysis_20260916/provenance.json"
+    "failure_classification_provenance": "docs/paper/data/failure_analysis_20260916/provenance.json",
+    "execution_effort_records": "docs/paper/data/token_efficiency_20260917/records.json",
+    "execution_effort_analysis": "docs/paper/data/token_efficiency_20260917/analysis.json"
   },
   "models": [
     {
@@ -83,6 +85,7 @@
     "figures/fig2.png",
     "figures/fig3a_families.pdf",
     "figures/fig3b_entanglement.pdf",
+    "figures/fig_execution_effort.pdf",
     "figures/fig4.pdf",
     "figures/fig5a_pass_rate.pdf",
     "figures/fig5b_paired_gain.pdf",
@@ -94,7 +97,7 @@
     "This file selects existing final evidence for writing. It does not create another benchmark release, rerun experiments, or rewrite historical run metadata.",
     "Recorded pass counts are regression expectations; table values are computed from task-level results.",
     "The paper reports the fixed Python-150 collection only. The historical 200-task freeze and run directories are provenance sources; membership is explicitly filtered before analysis. Excluded extension outcomes are not part of the paper.",
-    "Results visual expansion: seven main figures and seven main tables; no appendix. New statistical figures preserve the existing failure and ablation PDF assets; figure numbers are assigned by LaTeX."
+    "Results visual expansion: eight main figures and eight main tables; no appendix. New statistical figures preserve the existing failure and ablation PDF assets; figure numbers are assigned by LaTeX."
   ],
   "manuscript_source": {
     "archive": "docs/archive/snapshots/fse_sync_20260914/FSE.zip",

@@ -27,6 +27,8 @@ def check() -> None:
     print(json.dumps(validate_manuscript(), ensure_ascii=False), flush=True)
     run("docs/paper/writing/update_tables.py", "--check")
     run("docs/paper/writing/update_structure_results.py", "--check")
+    run("docs/paper/execution_effort.py", "--check")
+    run("docs/paper/writing/execution_effort_tables.py", "--check")
     print("Paper inputs and generated tables agree; no files changed.", flush=True)
 
 
@@ -43,6 +45,7 @@ def main() -> None:
         validate_scope()
         run("docs/paper/writing/update_tables.py")
         run("docs/paper/writing/update_structure_results.py")
+        run("docs/paper/writing/execution_effort_tables.py")
     elif args.command == "figures":
         validate_scope()
         run("docs/paper/figures/scripts/redraw_figures.py")

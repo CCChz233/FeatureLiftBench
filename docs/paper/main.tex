@@ -137,7 +137,9 @@ itself. Among 303 behavioral-first failures in the main comparison, 241 (79.5\%)
 already contain confirmed reads returning content from entrypoint-associated
 source files. Successful artifacts also differ substantially in implementation
 footprint, motivating us to characterize size and retained source overlap only
-after functional correctness has been established.
+after functional correctness has been established. Retrospective trajectory
+analysis additionally examines execution that continues after an observed passing
+artifact, beyond what final success rates alone describe.
 
 This work makes three contributions:
 \begin{itemize}
@@ -155,7 +157,8 @@ This work makes three contributions:
   We compare six configurations on the full benchmark, measure the effect of
   repository evidence through paired ablation, diagnose behavioral failures
   after observed source exposure, and characterize the implementation footprint
-  of functionally successful artifacts.
+  of functionally successful artifacts, together with execution effort before
+  and after an observed passing checkpoint.
 \end{itemize}
 
 \section{The FeatureLiftBench Benchmark}
@@ -564,16 +567,38 @@ located the complete implementation, followed all supporting dependencies, or
 understood the returned code. We use it as a diagnostic of whether behavioral
 failures can persist after relevant source content has already been observed.
 
+\subsection{Retrospective Execution-Effort Analysis}
+\label{sec:execution-effort-protocol}
+
+We analyze the retained main-comparison runs without invoking the agents again.
+For outcome-level expenditure, we sum verified input and output tokens over
+model calls, including cache-hit input once. Runs with missing call usage are
+unavailable for this analysis; they are not assigned zero tokens. This total-token
+accounting differs from the uncached-input accounting for Pro and Flash in
+Table~\ref{tab:main} and does not measure cross-provider prices or computation.
+
+For trajectory-level analysis, we use saved reconstructions at tool-completion
+boundaries, evaluated with the four functional gates. We identify the first
+\emph{observed passing checkpoint} among these reconstructed versions. Let
+$T_r^{\mathrm{obs}}$ denote cumulative tokens at this checkpoint and $T_r$ the
+run total. The post-sufficiency fraction is
+$\mathrm{PSF}_r=(T_r-T_r^{\mathrm{obs}})/T_r$.
+We also count subsequent model calls, excluding the call that produced the
+passing checkpoint. Both measures use the same conservative subset of final
+successes with complete token ledgers, exact call alignment, evaluated checkpoint
+chains, and matching reconstructed and re-evaluated final submissions. Values
+are summarized per run before aggregation. We do not claim to recover every
+transient filesystem state or infer a stopping signal available to the agent.
+
 \section{Benchmark Results}
 \label{sec:results}
 
-We organize the results around four questions: \textbf{RQ1} measures overall
-feature-lifting capability; \textbf{RQ2} examines where functional failures first
-become observable and whether they persist after observed source-file exposure;
-\textbf{RQ3}
-tests the effect of repository evidence through paired ablation; and
-\textbf{RQ4} characterizes the implementation footprint of functionally
-successful artifacts.
+We organize the results around five questions: \textbf{RQ1} measures overall
+feature-lifting capability; \textbf{RQ2} examines execution effort across outcomes
+and after an observed passing artifact; \textbf{RQ3} diagnoses functional failures
+and their persistence after source-file exposure; \textbf{RQ4} tests the effect
+of repository evidence through paired ablation; and \textbf{RQ5} characterizes
+the implementation footprint of functionally successful artifacts.
 
 \subsection{RQ1: How Capable Are Current Coding Agents at Feature Lifting?}
 \label{sec:rq1}
@@ -690,8 +715,82 @@ group contains only 18 tasks.
 \end{table}
 % END RESULTS EVIDENCE: structure
 
-\subsection{RQ2: Where Do Functional Failures First Emerge, and Do They Persist After Observed Source-File Exposure?}
+\subsection{RQ2: How Much Execution Effort Do Agents Expend on Feature Lifting?}
 \label{sec:rq2}
+
+Final pass rates do not reveal how effort differs across outcomes or when a
+sufficient artifact first appears. We therefore examine outcome-level token
+expenditure and execution after an observed passing checkpoint separately.
+
+\paragraph{Token expenditure varies across outcomes.}
+Table~\ref{tab:execution-effort} reports outcome-conditioned expenditure under
+a common total-token definition. Failed runs have higher median expenditure
+than successful runs for Pro, Flash, and OSS, whereas Qwen shows the opposite
+pattern. For example, Pro's medians are 2.24 million tokens for successes and
+2.71 million for failures; Qwen's are 2.13 million and 1.30 million, respectively.
+These comparisons concern different task sets and do not imply that greater
+expenditure causes success or failure. Historical per-call usage is unavailable
+for Luna and GLM, so their conditional token distributions are not reported.
+
+% BEGIN RESULTS EVIDENCE: execution-effort
+\begin{table}[tbp]
+  \centering
+  \footnotesize
+  \caption{Token expenditure by final outcome.}
+  \label{tab:execution-effort}
+  \begin{tabularx}{\linewidth}{@{}Xrlrl@{}}
+    \toprule
+    & \multicolumn{2}{c}{Successful runs} & \multicolumn{2}{c}{Failed runs} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    Configuration & $n/N$ & Median [IQR] & $n/N$ & Median [IQR] \\
+    \midrule
+    Pro & 115/115 & 2.24 [1.46, 3.88] & 34/35 & 2.71 [1.79, 4.67] \\
+    Flash & 108/108 & 4.01 [2.20, 7.08] & 42/42 & 4.72 [3.16, 8.46] \\
+    Luna & 0/102 & -- & 0/48 & -- \\
+    GLM & 0/68 & -- & 0/82 & -- \\
+    Qwen & 63/63 & 2.13 [1.59, 3.24] & 83/87 & 1.30 [0.25, 3.28] \\
+    OSS & 33/36 & 0.38 [0.23, 0.95] & 112/114 & 0.55 [0.30, 1.09] \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  Tokens are input plus output, including cached input, in millions. $n/N$ denotes usable records over assigned runs with that outcome.
+  \end{minipage}
+\end{table}
+% END RESULTS EVIDENCE: execution-effort
+
+\paragraph{Execution continues after an observed passing artifact.}
+The jointly measurable successful subsets contain 89/115 Pro, 75/108 Flash,
+5/63 Qwen, and 25/36 OSS runs. Figure~\ref{fig:execution-effort} shows their
+post-checkpoint distributions. Median PSF is 67.3\% for Pro and 72.3\% for
+Flash, accompanied by medians of 19 and 29 subsequent model calls. Qwen and
+OSS have median PSF values of 53.7\% and 37.1\%, with 11 and 4 subsequent
+calls; Qwen's five recoverable runs are a small descriptive subset. The samples
+differ across configurations and do not support an adjusted efficiency ranking.
+Points represent tasks; boxes summarize quartiles with 1.5-IQR whiskers, while
+Qwen's small sample is shown as individual points and its median.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_execution_effort.pdf}
+  \caption{Execution after the first reconstructed passing checkpoint: (a) token fraction; (b) subsequent model calls.}
+  \Description{Two panels show post-checkpoint token fractions and subsequent model calls for Pro, Flash, Qwen, and OSS. Luna and GLM have no jointly measurable sample.}
+  \label{fig:execution-effort}
+\end{figure}
+
+Using the first checkpoint after which all remaining reconstructed checkpoints
+pass changes the median token fractions to 67.3\%, 71.1\%, 53.7\%, and
+37.1\%, respectively, on the same samples. The observed continuation therefore
+is not explained solely by temporarily passing and then repairing regressions.
+It also need not be unproductive: in an inspected Pro JSONPath trajectory,
+subsequent actions run tests, inspect dependencies, and clean generated files
+without changing the evaluated artifact. Repeated context consumption matters:
+under the uncached-input accounting used in Table~\ref{tab:main}, median
+post-checkpoint fractions for the same Pro and Flash samples are 33.7\% and
+41.5\%. These observations characterize continued execution, not a directly
+recoverable saving in tokens, cost, or computation.
+
+\subsection{RQ3: Where Do Functional Failures First Emerge, and Do They Persist After Observed Source-File Exposure?}
+\label{sec:rq3}
 
 We first locate the observed boundary at which each unsuccessful run ceases to
 satisfy the evaluation protocol. We classify each run as Pass, no usable
@@ -822,8 +921,8 @@ entrypoint-associated source file has been read.
 \end{table}
 % END RESULTS EVIDENCE: failure-analysis
 
-\subsection{RQ3: Does Repository Evidence Improve Behavioral Reconstruction?}
-\label{sec:rq3}
+\subsection{RQ4: Does Repository Evidence Improve Behavioral Reconstruction?}
+\label{sec:rq4}
 \label{sec:source-ablation-results}
 
 Repository evidence substantially improves functional success on the paired
@@ -894,8 +993,8 @@ these results establish the value of repository evidence---including source
 code, upstream tests, documentation, and resources---rather than the isolated
 causal contribution of source-code text.
 
-\subsection{RQ4: How Do Successful Lifted Artifacts Differ in Implementation Footprint?}
-\label{sec:rq4}
+\subsection{RQ5: How Do Successful Lifted Artifacts Differ in Implementation Footprint?}
+\label{sec:rq5}
 
 Table~\ref{tab:main} summarizes footprint over each configuration's successful
 artifacts, but those marginal summaries involve different task sets. To compare
@@ -991,7 +1090,7 @@ artifacts pass Build and Isolation but fail Primary. These examples illustrate
 observable mechanisms rather than estimate their prevalence across failures.
 
 \paragraph{Implications for coding agents.}
-RQ2 and RQ3 together suggest that source access should be treated as evidence to
+RQ3 and RQ4 together suggest that source access should be treated as evidence to
 be organized around explicit behavioral obligations, not as an endpoint in
 itself. Repository evidence materially improves reconstruction, but many failures
 occur after entrypoint-associated source files have already been read. The
@@ -1002,6 +1101,13 @@ source evidence that supports it and then verify the reconstructed behavior
 through the exported package boundary. In particular, checking that expected
 functions or helpers exist is weaker than tracing required inputs, state changes,
 and cross-operation behavior through the submitted API.
+
+\paragraph{Verification and stopping decisions.}
+RQ2 shows that an observed passing artifact can precede termination by additional
+model calls. The agent does not observe the offline evaluator's verdict, and
+further verification may be reasonable. The result motivates studying how
+contract-grounded checks inform stopping decisions alongside final correctness,
+rather than treating post-checkpoint expenditure as automatically avoidable.
 
 \paragraph{Implications for evaluation.}
 Feature lifting separates several outcomes that repository-editing benchmarks
@@ -1030,7 +1136,10 @@ understanding. Failure categories involve author judgment and describe the
 retained source-exposed failures rather than all failures or causal process
 mechanisms. RRES depends on one feasible reference and a line-counting
 convention, while Copy is a syntactic overlap proxy. Neither establishes
-minimality, maintainability, or semantic superiority.
+minimality, maintainability, or semantic superiority. Execution-effort analysis
+uses reconstructed checkpoints rather than continuous filesystem observation;
+omitted transient states can shift the first observed pass. Token accounting
+includes cached input and is not a proxy for uniform computation or price.
 
 \paragraph{Internal and statistical validity.}
 The main comparison fixes task membership, evaluator policy, and agent framework,
@@ -1047,7 +1156,10 @@ with at least two successful configurations. Task fixed effects absorb common
 task-level variation but do not remove success selection or fully characterize
 configuration-by-task interactions. Repository-cluster bootstrap and task-equal
 weighting check sensitivity to dependence and weighting; neither supports
-extrapolation to footprint behavior on failed tasks. Pointwise confidence
+extrapolation to footprint behavior on failed tasks. The post-checkpoint
+analysis additionally conditions on recoverable, exactly aligned trajectories;
+its configuration-specific samples, particularly the five Qwen runs, need not
+represent all successful runs. Pointwise confidence
 intervals do not establish simultaneous or pairwise rankings across all six
 configurations.
 
@@ -1218,7 +1330,9 @@ evidence is therefore valuable but not sufficient: reliable feature lifting
 requires turning source evidence into behavior that survives outside the donor
 project. By separating functional preservation from source independence and
 successful-artifact footprint, \flb provides an executable setting for studying
-that capability directly.
+that capability directly. Retrospective execution analysis further shows why
+final correctness and the effort expended before termination should be examined
+separately.
 
 \section*{Data Availability}
 % TODO before submission: replace this statement with the exact anonymous

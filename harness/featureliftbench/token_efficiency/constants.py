@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-METHOD_VERSION = "token_efficiency_current.v1"
+METHOD_VERSION = "token_efficiency_current.v2"
 ANALYSIS_SEED = 20260916
 BOOTSTRAP_REPLICATES = 10_000
 DEFAULT_WORKERS = 2
@@ -71,6 +71,7 @@ RUN_MANIFEST_FIELDS = (
 )
 
 RUN_METRICS_FIELDS = (
+    "method_version",
     "run_id",
     "configuration",
     "task_id",

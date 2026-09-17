@@ -52,6 +52,52 @@ def _obs(event_id: str, action_id: str, call_id: str, tool: str, ts: str, observ
 
 
 class TokenEfficiencyTests(unittest.TestCase):
+    def test_mixed_missing_usage_is_not_complete(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            audit = root / "audit.jsonl"
+            _write_jsonl(audit, [
+                {"timestamp": "2026-09-16T00:00:00Z", "prompt_tokens": 80,
+                 "completion_tokens": 20, "total_tokens": 100, "status": 200},
+                {"timestamp": "2026-09-16T00:00:02Z", "prompt_tokens": None,
+                 "completion_tokens": None, "total_tokens": None, "status": 200},
+            ])
+            ledger = build_run_ledger(configuration="gpt-oss-120b", audit_path=audit,
+                                      usage_path=root / "absent.json", events=[])
+            self.assertEqual(ledger.token_usage_status, "partial")
+            self.assertIsNone(ledger.total_tokens)
+
+    def test_candidate_prefix_cannot_promote_bounded_alignment(self) -> None:
+        from types import SimpleNamespace
+        from featureliftbench.token_efficiency.ledger import tokens_for_completion
+        ledger = RunLedger([], ACCOUNTING_TOTAL, "complete", "bounded", 100, 100, 100, 0,
+                           response_to_call={"response": "call"}, cumulative_by_call={"call": 30},
+                           cumulative_bounds_by_call={"call": (30, 30)})
+        result = tokens_for_completion(ledger, SimpleNamespace(llm_response_id="response"), set())
+        self.assertEqual(result, (None, 0, 100, "bounded"))
+
+    def test_summary_uses_post_fraction_and_escapes_percent(self) -> None:
+        from unittest.mock import patch
+        from featureliftbench.token_efficiency.constants import CONFIG_ORDER
+        from featureliftbench.token_efficiency.summarize import summarize_suite
+        runs = [_run(model, "demo", True) for model in CONFIG_ORDER]
+        rows = [{"run_id": r.run_id, "configuration": r.configuration, "task_id": r.task_id,
+                 "final_pass": True, "include_psf_primary": True, "include_effort": True,
+                 "first_pass_fraction": .25, "post_sufficiency_fraction": .75,
+                 "total_tokens": 100, "post_sufficiency_tokens": 75, "lift_type": "Direct"}
+                for r in runs]
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch("featureliftbench.token_efficiency.summarize._write_figures", return_value={}):
+                output = summarize_suite(metrics_rows=rows, runs=runs, output_dir=Path(tmp))
+            self.assertEqual(output["summary"][0]["median_psf"], .75)
+            self.assertIn(r"75.0\%", (Path(tmp)/"paper_ready/efficiency_table.tex").read_text())
+
+    def test_dependency_install_failure_is_not_artifact_failure(self) -> None:
+        status = _eval_status({"status": "failed", "build_pass": False,
+                               "errors": ["dependency installation failed"]})
+        self.assertEqual(status, "infra_error")
+        self.assertIsNone(_gates({"build_pass": False}, status)["functional_pass"])
+
     def test_batch_tool_calls_pair_by_tool_call_id_not_last_action(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "events.jsonl"

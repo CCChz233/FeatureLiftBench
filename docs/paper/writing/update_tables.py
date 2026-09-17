@@ -247,6 +247,7 @@ def main():
     assert n in (0,1)
     expanded_results = '% BEGIN RESULTS EVIDENCE: structure' in tex
     has_failure_analysis = '% BEGIN RESULTS EVIDENCE: failure-analysis' in tex
+    has_execution_effort = '% BEGIN RESULTS EVIDENCE: execution-effort' in tex
     if expanded_results:
         from results_tables import update as update_results_tables
         tex, results_evidence = update_results_tables(tex)
@@ -256,7 +257,7 @@ def main():
     assert r'\label{tab:main}' in body
     assert tex.count(r'\label{tab:task-comparison}')==1
     assert re.findall(r'% BEGIN GENERATED TABLE: (\S+)', body)==['main']
-    figure_count=7
+    figure_count=7+int(has_execution_effort)
     assert r"\label{fig:structure-capability}" not in tex
     assert not has_appendix
     assert body.count(r'\begin{figure}')==figure_count
@@ -272,10 +273,10 @@ def main():
         appendix_figures = 2
     else:
         assert tex.count(r'\label{tab:structure}')==(1 if expanded_results else 0)
-        assert len(re.findall(r'\\begin\{table\}', body))==((6 if expanded_results else 2)+int(has_failure_analysis))
+        assert len(re.findall(r'\\begin\{table\}', body))==((6 if expanded_results else 2)+int(has_failure_analysis)+int(has_execution_effort))
         assert appendix == ''
-        main_tables = (6 if expanded_results else 2)+int(has_failure_analysis)
-        generated_data_tables = (5 if expanded_results else 1)+int(has_failure_analysis)
+        main_tables = (6 if expanded_results else 2)+int(has_failure_analysis)+int(has_execution_effort)
+        generated_data_tables = (5 if expanded_results else 1)+int(has_failure_analysis)+int(has_execution_effort)
         generated_text = 0
         appendix_tables = 0
         appendix_figures = 0
@@ -287,6 +288,8 @@ def main():
     sources=[MANIFEST_PATH,RESULTS,FREEZE_PATH,STATS_PATH,input_path('main_summary'),CHAPTER2_PATH,input_path('author_result_clarifications')]+ablation_sources+[exposure_dir/'statistics.json',exposure_dir/'source_exposure_table.tex',exposure_dir/'summary_by_model_outcome.csv', Path(__file__).parent/'templates/main_table.tex', exposure_template]
     if has_failure_analysis:
         sources += [input_path('failure_classifications'), input_path('failure_classification_provenance'), PAPER/'failure_analysis.py']
+    if has_execution_effort:
+        sources += [input_path('execution_effort_records'), input_path('execution_effort_analysis'), PAPER/'execution_effort.py', Path(__file__).parent/'execution_effort_tables.py']
     if expanded_results:
         sources += [Path(__file__).parent/'results_visuals.py', Path(__file__).parent/'results_tables.py',input_path('coverage_data'),input_path('source_ablation_statistics'),input_path('source_ablation_results'),input_path('source_ablation_results').parent/'paired_outcomes.csv']
         sources += [PAPER/'figures/scripts/fig7_adjusted_analysis.py', input_path('task_selection')]

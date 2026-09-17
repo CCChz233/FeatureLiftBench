@@ -40,6 +40,8 @@ class CatalogTests(unittest.TestCase):
             "public": "public_feedback",
             "short": "short_prompt",
             "pruned": "pruned_context",
+            "contract_only": "contract_only",
+            "no-source": "contract_only",
             "td": "td_cognition",
             "exec": "exec_contract",
             "cgcc": "cgcc_lite",
@@ -107,6 +109,18 @@ class CatalogTests(unittest.TestCase):
         self.assertFalse(dsh.agent.paper_table)
         self.assertEqual(codex.agent_cli, "codex")
         self.assertEqual(codex.profile, "codex_deepseek_v4_flash_main")
+
+    def test_contract_only_is_not_paper_table(self) -> None:
+        spec = get_method(self.catalog, "no-source")
+        self.assertEqual(spec.id, "contract_only")
+        self.assertFalse(spec.paper_table)
+        self.assertEqual(spec.status, "ablation")
+        self.assertIn("--source-context", spec.run_agent_flags)
+        self.assertIn("contract_only", spec.run_agent_flags)
+        main = get_method(self.catalog, "main")
+        self.assertTrue(main.paper_table)
+        self.assertIn("full_repository", main.run_agent_flags)
+        self.assertNotIn("contract_only", main.run_agent_flags)
 
     def test_public_feedback_mounts_public_tests(self) -> None:
         flags = get_method(self.catalog, "public_feedback").run_agent_flags

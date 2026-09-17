@@ -44,6 +44,8 @@ from .repo_graph.policy import QUERY_MAX_CHARS_ENV
 from .repo_graph.policy import TRANSPORT_ENV
 from .repo_graph.policy import VIEW_ENV
 from .repo_graph.policy import RepoGraphPolicy
+from .source_ablation import ISOLATION_ENV as SOURCE_ABLATION_ISOLATION_ENV
+from .source_ablation import isolation_enabled as source_ablation_isolation_enabled
 
 
 DEFAULT_API_KEY_ENV = "FEATURELIFTBENCH_API_KEY"
@@ -437,6 +439,10 @@ def load_agent_run_config(
             openhands_budget_values[env_name] = value
 
     env.update(ablation.to_env())
+    # Supplementary isolation is a process/CLI concern. Copy it into config.env
+    # so Docker mounts and run.json see the same flag. Official Main omits it.
+    if source_ablation_isolation_enabled(os.environ) or source_ablation_isolation_enabled(env):
+        env[SOURCE_ABLATION_ISOLATION_ENV] = "1"
     silent_finish_raw = _resolve_profile_env_value(
         base_config=base_config,
         env_values=env_values,

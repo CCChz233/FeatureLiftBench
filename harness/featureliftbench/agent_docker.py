@@ -20,6 +20,9 @@ from .paths import HARNESS_ROOT
 from .resource_limits import command_output_limit_bytes
 from .resource_limits import detect_resource_limited
 from .repo_graph.policy import ROOT_ENV as REPO_GRAPH_ROOT_ENV
+from .source_ablation import HARNESS_MOUNT_PACKAGE
+from .source_ablation import ISOLATION_BLOCKED_HOSTS
+from .source_ablation import agent_harness_mount_mode
 
 DEFAULT_AGENT_IMAGE = "featureliftbench-agent:latest"
 DEFAULT_GO_AGENT_IMAGE = "featureliftbench-agent-go:latest"
@@ -323,9 +326,8 @@ def build_agent_docker_invocation(
         f"{context.workspace_dir.resolve()}:{CONTAINER_WORKSPACE}:rw",
         "-v",
         f"{context.agent_output_dir.resolve()}:{CONTAINER_AGENT_OUTPUT}:rw",
-        "-v",
-        f"{HARNESS_ROOT.resolve()}:{CONTAINER_HARNESS}:ro",
     ]
+    command.extend(_harness_mount_args(config))
     command.extend(_docker_add_hosts(config))
     for key in sorted(env_keys):
         # Let Docker inherit the value from the child process environment so
@@ -390,18 +392,50 @@ def _docker_add_hosts(config: AgentRunConfig) -> list[str]:
     Configurable via FEATURELIFTBENCH_AGENT_DOCKER_ADD_HOSTS (comma-separated
     ``host:ip`` entries). When unset, OpenHands agents default to blocking
     github hosts so the startup public-skills clone fails fast instead of hanging.
+    Supplementary isolation additionally blackholes package indexes. Official
+    Main does not use that extra list.
     """
     raw = os.environ.get("FEATURELIFTBENCH_AGENT_DOCKER_ADD_HOSTS")
     if raw is None:
-        entries: tuple[str, ...] = (
-            DEFAULT_OPENHANDS_BLOCKED_HOSTS if _is_openhands_agent(config.agent) else ()
-        )
+        entries: list[str] = []
+        if _is_openhands_agent(config.agent):
+            entries.extend(DEFAULT_OPENHANDS_BLOCKED_HOSTS)
+        merged = {**os.environ, **(config.env or {})}
+        if agent_harness_mount_mode(merged) == HARNESS_MOUNT_PACKAGE:
+            entries.extend(ISOLATION_BLOCKED_HOSTS)
+        # Preserve first-seen order while dropping duplicates.
+        seen: set[str] = set()
+        unique: list[str] = []
+        for entry in entries:
+            if entry in seen:
+                continue
+            seen.add(entry)
+            unique.append(entry)
+        entries_tuple = tuple(unique)
     else:
-        entries = tuple(item.strip() for item in raw.split(",") if item.strip())
+        entries_tuple = tuple(item.strip() for item in raw.split(",") if item.strip())
     args: list[str] = []
-    for entry in entries:
+    for entry in entries_tuple:
         args.extend(["--add-host", entry])
     return args
+
+
+def _harness_mount_args(config: AgentRunConfig) -> list[str]:
+    """Official Main keeps the historical full-harness bind mount."""
+
+    merged = {**os.environ, **(config.env or {})}
+    if agent_harness_mount_mode(merged) == HARNESS_MOUNT_PACKAGE:
+        package = (HARNESS_ROOT / "featureliftbench").resolve()
+        # The paper agent image already contains /flb/harness/scripts and tests.
+        # Overlay a tmpfs so those image files are not readable, then expose
+        # only the Python package needed to launch OpenHands.
+        return [
+            "--tmpfs",
+            f"{CONTAINER_HARNESS}:rw,nosuid,nodev,mode=755",
+            "-v",
+            f"{package}:{CONTAINER_HARNESS}/featureliftbench:ro",
+        ]
+    return ["-v", f"{HARNESS_ROOT.resolve()}:{CONTAINER_HARNESS}:ro"]
 
 
 def _docker_env(config: AgentRunConfig) -> tuple[set[str], dict[str, str]]:

@@ -42,7 +42,7 @@ CGVL_ENV = "FEATURELIFTBENCH_CGVL"
 ABLATION_ARM_ENV = "FEATURELIFTBENCH_ABLATION_ARM"
 
 PROMPT_STYLES = frozenset({"standard", "short"})
-SOURCE_CONTEXTS = frozenset({"full_repository", "pruned_context"})
+SOURCE_CONTEXTS = frozenset({"full_repository", "pruned_context", "contract_only"})
 EXEC_CONTRACT_VARIANTS = frozenset(
     {"clean3", "cgcc_lite", "cgcc_roc", "cgcc_rmc", "fcec"}
 )
@@ -86,6 +86,10 @@ class AblationOptions:
                 f"got {self.source_context!r}"
             )
         object.__setattr__(self, "source_context", source_context)
+        if source_context == "contract_only" and bool(self.expose_source_hints):
+            raise ValueError(
+                "source_context='contract_only' cannot be combined with source-location hints"
+            )
         object.__setattr__(self, "td_cognition", bool(self.td_cognition))
         object.__setattr__(self, "exec_contract", bool(self.exec_contract))
         exec_contract_variant = str(
@@ -233,6 +237,8 @@ class AblationOptions:
             parts.append("short_prompt")
         if self.source_context == "pruned_context":
             parts.append("pruned_context")
+        if self.source_context == "contract_only":
+            parts.append("contract_only")
         return "_".join(parts) if parts else "main"
 
     def to_env(self) -> dict[str, str]:

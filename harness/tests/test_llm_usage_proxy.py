@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 import json
 import os
 import tempfile
@@ -14,7 +15,10 @@ from unittest import mock
 
 from featureliftbench.llm_usage_proxy import LLMUsageProxy
 from featureliftbench.llm_usage_proxy import LLMUsageProxyConfig
+from featureliftbench.llm_usage_proxy import _ensure_stream_include_usage
+from featureliftbench.llm_usage_proxy import _extract_provider_usage
 from featureliftbench.llm_usage_proxy import _normalize_tool_argument_aliases
+from featureliftbench.llm_usage_proxy import _strip_usage_only_sse
 from featureliftbench.openhands_runner import OpenHandsRunnerConfig
 from featureliftbench.openhands_runner import _write_usage
 
@@ -318,15 +322,241 @@ class LLMUsageProxyTests(unittest.TestCase):
                 "https://api.deepseek.com/v1/chat/completions",
             )
 
+    def test_extract_usage_from_sse_last_chunk(self) -> None:
+        body = (
+            'data: {"choices":[{"delta":{"content":"ok"}}],"usage":null}\n\n'
+            'data: {"choices":[],"usage":{"prompt_tokens":13,"completion_tokens":4,"total_tokens":17}}\n\n'
+            "data: [DONE]\n\n"
+        ).encode("utf-8")
+        usage, source = _extract_provider_usage(body)
+        self.assertEqual(source, "sse")
+        self.assertEqual(usage["prompt_tokens"], 13)
+        self.assertEqual(usage["total_tokens"], 17)
+
+    def test_strip_usage_only_sse_keeps_content_chunks(self) -> None:
+        body = (
+            'data: {"choices":[{"delta":{"content":"ok"}}]}\n\n'
+            'data: {"choices":[],"usage":{"prompt_tokens":1,"completion_tokens":1,"total_tokens":2}}\n\n'
+            "data: [DONE]\n\n"
+        ).encode("utf-8")
+        stripped = _strip_usage_only_sse(body).decode("utf-8")
+        self.assertNotIn("prompt_tokens", stripped)
+        self.assertIn('"content":"ok"', stripped)
+        self.assertIn("[DONE]", stripped)
+
+    def test_ensure_stream_include_usage_only_on_streaming_requests(self) -> None:
+        non_stream = {"model": "gpt-5.6-luna", "stream": False}
+        body, payload, injected = _ensure_stream_include_usage(
+            json.dumps(non_stream).encode("utf-8"),
+            non_stream,
+        )
+        self.assertFalse(injected)
+        self.assertEqual(payload, non_stream)
+
+        streaming = {"model": "gpt-5.6-luna", "stream": True}
+        _, payload, injected = _ensure_stream_include_usage(
+            json.dumps(streaming).encode("utf-8"),
+            streaming,
+        )
+        self.assertTrue(injected)
+        self.assertEqual(payload["stream_options"]["include_usage"], True)
+
+        _, _, responses_injected = _ensure_stream_include_usage(
+            json.dumps(streaming).encode("utf-8"),
+            streaming,
+            path="/v1/responses",
+        )
+        self.assertFalse(responses_injected)
+
+    def test_extract_usage_from_responses_completed_event(self) -> None:
+        body = (
+            "event: response.created\n"
+            'data: {"type":"response.created","response":{"usage":null}}\n\n'
+            "event: response.completed\n"
+            'data: {"type":"response.completed","response":{"usage":{"input_tokens":13,"output_tokens":5,"total_tokens":18}}}\n\n'
+        ).encode("utf-8")
+        usage, source = _extract_provider_usage(body)
+        self.assertEqual(source, "sse")
+        self.assertEqual(usage["input_tokens"], 13)
+        self.assertEqual(usage["output_tokens"], 5)
+        self.assertEqual(usage["total_tokens"], 18)
+
+    def test_proxy_records_sse_usage_after_injecting_include_usage(self) -> None:
+        try:
+            upstream = _FakeUpstreamServer()
+        except PermissionError as exc:
+            self.skipTest(f"local loopback sockets are unavailable: {exc}")
+        upstream.start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                proxy = LLMUsageProxy(
+                    LLMUsageProxyConfig(
+                        target_base_url=upstream.base_url + "/v1",
+                        api_key="sk-real",
+                        audit_path=root / "context_audit.jsonl",
+                        usage_path=root / "openhands_usage.json",
+                        model="gpt-5.6-luna",
+                    )
+                ).start()
+                try:
+                    body = json.dumps(
+                        {
+                            "model": "gpt-5.6-luna",
+                            "messages": [{"role": "user", "content": "hello"}],
+                            "stream": True,
+                        }
+                    ).encode("utf-8")
+                    request = urllib.request.Request(
+                        proxy.base_url + "/chat/completions",
+                        data=body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(request, timeout=10) as response:
+                        forwarded = response.read().decode("utf-8")
+                finally:
+                    proxy.close()
+
+                audit_records = [
+                    json.loads(line)
+                    for line in (root / "context_audit.jsonl").read_text(encoding="utf-8").splitlines()
+                ]
+                usage = json.loads((root / "openhands_usage.json").read_text(encoding="utf-8"))
+
+            self.assertTrue(upstream.last_payload["stream_options"]["include_usage"])
+            self.assertEqual(len(audit_records), 1)
+            self.assertTrue(audit_records[0]["usage_verified"])
+            self.assertTrue(audit_records[0]["stream_include_usage_injected"])
+            self.assertEqual(audit_records[0]["usage_parse"], "sse")
+            self.assertEqual(audit_records[0]["prompt_tokens"], 13)
+            self.assertEqual(audit_records[0]["completion_tokens"], 4)
+            self.assertEqual(usage["total_tokens"], 17)
+            self.assertFalse(usage["context_audit"]["usage_unverified"])
+            self.assertNotIn("prompt_tokens", forwarded)
+            self.assertIn("[DONE]", forwarded)
+        finally:
+            upstream.close()
+
+    def test_proxy_records_responses_api_sse_usage(self) -> None:
+        try:
+            upstream = _FakeUpstreamServer()
+        except PermissionError as exc:
+            self.skipTest(f"local loopback sockets are unavailable: {exc}")
+        upstream.start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                proxy = LLMUsageProxy(
+                    LLMUsageProxyConfig(
+                        target_base_url=upstream.base_url + "/v1",
+                        api_key="sk-real",
+                        audit_path=root / "context_audit.jsonl",
+                        usage_path=root / "openhands_usage.json",
+                        model="gpt-5.6-luna",
+                    )
+                ).start()
+                try:
+                    body = json.dumps(
+                        {
+                            "model": "gpt-5.6-luna",
+                            "input": "hello",
+                            "stream": True,
+                        }
+                    ).encode("utf-8")
+                    request = urllib.request.Request(
+                        proxy.base_url + "/responses",
+                        data=body,
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(request, timeout=10) as response:
+                        forwarded = response.read().decode("utf-8")
+                finally:
+                    proxy.close()
+
+                audit_records = [
+                    json.loads(line)
+                    for line in (root / "context_audit.jsonl").read_text(encoding="utf-8").splitlines()
+                ]
+                usage = json.loads((root / "openhands_usage.json").read_text(encoding="utf-8"))
+
+            self.assertNotIn("stream_options", upstream.last_payload or {})
+            self.assertEqual(len(audit_records), 1)
+            self.assertTrue(audit_records[0]["usage_verified"])
+            self.assertFalse(audit_records[0]["stream_include_usage_injected"])
+            self.assertEqual(audit_records[0]["usage_parse"], "sse")
+            self.assertEqual(audit_records[0]["prompt_tokens"], 13)
+            self.assertEqual(audit_records[0]["completion_tokens"], 5)
+            self.assertEqual(usage["total_tokens"], 18)
+            self.assertIn("response.completed", forwarded)
+        finally:
+            upstream.close()
+
+    def test_proxy_records_gzip_json_usage(self) -> None:
+        try:
+            upstream = _FakeUpstreamServer(gzip_json=True)
+        except PermissionError as exc:
+            self.skipTest(f"local loopback sockets are unavailable: {exc}")
+        upstream.start()
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                proxy = LLMUsageProxy(
+                    LLMUsageProxyConfig(
+                        target_base_url=upstream.base_url + "/v1",
+                        api_key="sk-real",
+                        audit_path=root / "context_audit.jsonl",
+                        usage_path=root / "openhands_usage.json",
+                        model="gpt-5.6-luna",
+                    )
+                ).start()
+                try:
+                    body = json.dumps(
+                        {
+                            "model": "gpt-5.6-luna",
+                            "input": "hello",
+                        }
+                    ).encode("utf-8")
+                    request = urllib.request.Request(
+                        proxy.base_url + "/responses",
+                        data=body,
+                        headers={
+                            "Content-Type": "application/json",
+                            "Accept-Encoding": "gzip",
+                        },
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(request, timeout=10) as response:
+                        response.read()
+                finally:
+                    proxy.close()
+
+                audit_records = [
+                    json.loads(line)
+                    for line in (root / "context_audit.jsonl").read_text(encoding="utf-8").splitlines()
+                ]
+                usage = json.loads((root / "openhands_usage.json").read_text(encoding="utf-8"))
+
+            self.assertTrue(audit_records[0]["usage_verified"])
+            self.assertEqual(audit_records[0]["usage_parse"], "json")
+            self.assertEqual(audit_records[0]["prompt_tokens"], 13)
+            self.assertEqual(audit_records[0]["completion_tokens"], 5)
+            self.assertEqual(usage["total_tokens"], 18)
+        finally:
+            upstream.close()
+
 
 class _FakeUpstreamServer:
-    def __init__(self) -> None:
+    def __init__(self, gzip_json: bool = False) -> None:
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), _FakeUpstreamHandler)
         self.server.owner = self  # type: ignore[attr-defined]
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.last_path = ""
         self.last_authorization = ""
+        self.last_payload: dict | None = None
         self.request_count = 0
+        self.gzip_json = gzip_json
 
     @property
     def base_url(self) -> str:
@@ -351,7 +581,85 @@ class _FakeUpstreamHandler(BaseHTTPRequestHandler):
         owner.last_authorization = self.headers.get("Authorization", "")
         owner.request_count += 1
         length = int(self.headers.get("Content-Length", "0"))
-        self.rfile.read(length)
+        raw = self.rfile.read(length)
+        try:
+            payload = json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            payload = {}
+        if not isinstance(payload, dict):
+            payload = {}
+        owner.last_payload = payload
+        if str(self.path).rstrip("/").endswith("/responses") and not getattr(
+            owner, "gzip_json", False
+        ):
+            completed = {
+                "type": "response.completed",
+                "response": {
+                    "usage": {
+                        "input_tokens": 13,
+                        "output_tokens": 5,
+                        "total_tokens": 18,
+                    }
+                },
+            }
+            sse = (
+                "event: response.created\n"
+                'data: {"type":"response.created","response":{"usage":null}}\n\n'
+                "event: response.completed\n"
+                "data: " + json.dumps(completed) + "\n\n"
+            ).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.send_header("Content-Length", str(len(sse)))
+            self.end_headers()
+            self.wfile.write(sse)
+            return
+        if payload.get("stream") is True:
+            chunks = [
+                {"id": "chatcmpl-test", "choices": [{"index": 0, "delta": {"content": "ok"}}], "usage": None},
+            ]
+            options = payload.get("stream_options") if isinstance(payload.get("stream_options"), dict) else {}
+            if options.get("include_usage") is True:
+                chunks.append(
+                    {
+                        "id": "chatcmpl-test",
+                        "choices": [],
+                        "usage": {
+                            "prompt_tokens": 13,
+                            "completion_tokens": 4,
+                            "total_tokens": 17,
+                        },
+                    }
+                )
+            body = "".join("data: " + json.dumps(chunk) + "\n\n" for chunk in chunks)
+            body += "data: [DONE]\n\n"
+            encoded = body.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.send_header("Content-Length", str(len(encoded)))
+            self.end_headers()
+            self.wfile.write(encoded)
+            return
+        if getattr(owner, "gzip_json", False):
+            body = gzip.compress(
+                json.dumps(
+                    {
+                        "id": "resp-test",
+                        "usage": {
+                            "input_tokens": 13,
+                            "output_tokens": 5,
+                            "total_tokens": 18,
+                        },
+                    }
+                ).encode("utf-8")
+            )
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Encoding", "gzip")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         body = json.dumps(
             {
                 "id": "chatcmpl-test",

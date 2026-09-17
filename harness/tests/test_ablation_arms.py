@@ -87,6 +87,11 @@ class AblationOptionsTests(unittest.TestCase):
             AblationOptions(cgvl=True).ablation_arm,
             "cgvl",
         )
+        self.assertEqual(
+            AblationOptions(source_context="contract_only").ablation_arm,
+            "contract_only",
+        )
+        self.assertEqual(AblationOptions().source_context, "full_repository")
 
     def test_contract_closure_gate_is_mutually_exclusive_with_other_methods(self) -> None:
         with self.assertRaisesRegex(ValueError, "mutually exclusive"):

@@ -525,6 +525,15 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         complete_note = (
             "- Keep the implementation behavior-complete, not only tailored to public tests.\n\n"
         )
+        source_line = "- Source code to inspect is under `repo/`.\n"
+    elif options.source_context == "contract_only":
+        from .source_ablation import openhands_contract_only_wrapper_lines
+
+        source_line, public_line, test_hint = openhands_contract_only_wrapper_lines()
+        complete_note = (
+            "- Keep the implementation behavior-complete against the Required Output API and "
+            "included behaviors.\n\n"
+        )
     else:
         public_line = (
             "- Benchmark-authored evaluator tests are **not mounted**. Upstream tests, docs, "
@@ -539,6 +548,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
             "- Keep the implementation behavior-complete against the Required Output API and "
             "included behaviors.\n\n"
         )
+        source_line = "- Source code to inspect is under `repo/`.\n"
     td_section = ""
     sc_section = ""
     tfl_section = ""
@@ -845,7 +855,7 @@ def _build_openhands_prompt(config: OpenHandsRunnerConfig) -> str:
         "You are being evaluated as the coding agent for FeatureLiftBench.\n\n"
         "## Workspace Contract\n\n"
         f"- Workspace root: `{config.workspace_dir}`\n"
-        "- Source code to inspect is under `repo/`.\n"
+        f"{source_line}"
         f"{public_line}"
         "- All benchmark-authored evaluator tests and evaluation files are private boundaries; "
         "do not use them as inputs.\n"

@@ -51,6 +51,14 @@ from .suite_utils import evaluation_payload as _evaluation_payload
 from .suite_utils import load_retained_runs
 from .suite_utils import rebuild_suite_summary
 from .suite_utils import run_status as _run_status
+from .source_ablation import VISIBLE_INVENTORY_NAME
+from .source_ablation import assert_contract_only_workspace
+from .source_ablation import contract_only_implementation_scope
+from .source_ablation import experiment_condition_fields as source_ablation_condition_fields
+from .source_ablation import is_contract_only
+from .source_ablation import records_source_ablation
+from .source_ablation import render_contract_only_agent_workspace_task
+from .source_ablation import write_visible_workspace_inventory
 from .source_archive import (
     materialize_task_source,
     source_provenance_for_task,
@@ -497,6 +505,13 @@ def run_agent_on_task(
             metadata,
             ablation=ablation,
         )
+        if records_source_ablation(ablation, config.env):
+            write_visible_workspace_inventory(
+                workspace_dir,
+                agent_output_dir,
+                options=ablation,
+                extra={"task_id": str(task_id)},
+            )
         run_config = config
         agent_ready = True
         try:
@@ -1962,13 +1977,15 @@ def run_agent_on_task(
             agent_docker_image=agent_docker_image,
             eval_docker=eval_docker,
             eval_docker_image=eval_docker_image,
+            extra=source_ablation_condition_fields(ablation, config.env),
         ),
         "source": source_provenance or {},
-        "workspace": {
-            "dir": str(workspace_dir),
-            "task_file": str(workspace_dir / "TASK.md"),
-            "public_tests_mounted": ablation.mount_public_tests,
-        },
+        "workspace": _workspace_payload(
+            workspace_dir,
+            agent_output_dir=agent_output_dir,
+            ablation=ablation,
+            env=config.env,
+        ),
         "submission": submission_payload,
         "evaluation": evaluation_payload,
         "eval_backend": "docker" if eval_docker else "local",
@@ -2010,9 +2027,10 @@ def _experiment_conditions(
     eval_docker: bool,
     eval_docker_image: str,
     evaluation: dict[str, Any] | None = None,
+    extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     env = config.env or {}
-    return {
+    payload = {
         "schema_version": "featureliftbench.experiment_conditions.v2",
         "benchmark_policy_id": (
             benchmark_freeze.get("policy_id") if benchmark_freeze else None
@@ -2062,6 +2080,30 @@ def _experiment_conditions(
             else None
         ),
     }
+    if extra:
+        payload.update(extra)
+    return payload
+
+
+def _workspace_payload(
+    workspace_dir: Path,
+    *,
+    agent_output_dir: Path,
+    ablation: AblationOptions,
+    env: dict[str, str] | None,
+) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "dir": str(workspace_dir),
+        "task_file": str(workspace_dir / "TASK.md"),
+        "public_tests_mounted": ablation.mount_public_tests,
+    }
+    extra = source_ablation_condition_fields(ablation, env)
+    if extra:
+        payload.update(extra)
+        inventory = agent_output_dir / VISIBLE_INVENTORY_NAME
+        if inventory.is_file():
+            payload["visible_inventory"] = str(inventory)
+    return payload
 
 
 def _validate_retained_runs(
@@ -3022,19 +3064,24 @@ def prepare_agent_workspace(
     workspace_path = Path(workspace_dir).resolve()
     workspace_path.mkdir(parents=True, exist_ok=True)
 
-    if options.source_context == "pruned_context":
+    if is_contract_only(options):
+        # Supplementary no-source arm: do not materialize or copy the repository.
+        source_provenance = None
+    elif options.source_context == "pruned_context":
         source_provenance = materialize_pruned_task_source(
             task_path.name,
             workspace_path / "repo",
         )
+        if source_provenance is None:
+            _copy_path(task_path / "repo", workspace_path / "repo")
     else:
         source_provenance = materialize_task_source(
             task_path.name,
             workspace_path / "repo",
             require_registered=_is_python_main_task(task_path),
         )
-    if source_provenance is None:
-        _copy_path(task_path / "repo", workspace_path / "repo")
+        if source_provenance is None:
+            _copy_path(task_path / "repo", workspace_path / "repo")
     language = str(metadata.get("language", "python"))
     if options.mount_public_tests:
         _copy_path(
@@ -3174,15 +3221,26 @@ def prepare_agent_workspace(
         (workspace_path / "submission").mkdir(exist_ok=True)
     task_file = workspace_path / "TASK.md"
     if get_spec_status(metadata) == SPEC_STATUS_COMPLIANT:
-        task_markdown = render_agent_workspace_task(
-            metadata,
-            mount_public_tests=options.mount_public_tests,
-            source_entrypoints=(
-                _source_entrypoints_from_metadata(metadata)
-                if options.expose_source_hints
-                else None
-            ),
-        )
+        if is_contract_only(options):
+            task_markdown = render_contract_only_agent_workspace_task(
+                metadata,
+                mount_public_tests=options.mount_public_tests,
+                source_entrypoints=(
+                    _source_entrypoints_from_metadata(metadata)
+                    if options.expose_source_hints
+                    else None
+                ),
+            )
+        else:
+            task_markdown = render_agent_workspace_task(
+                metadata,
+                mount_public_tests=options.mount_public_tests,
+                source_entrypoints=(
+                    _source_entrypoints_from_metadata(metadata)
+                    if options.expose_source_hints
+                    else None
+                ),
+            )
     else:
         task_markdown = build_task_prompt(redacted_metadata, ablation=options)
     if options.td_cognition:
@@ -3270,6 +3328,8 @@ def prepare_agent_workspace(
                 "No-Hint Main workspace contains source-location metadata: "
                 + ", ".join(leaks)
             )
+    if is_contract_only(options):
+        assert_contract_only_workspace(workspace_path)
     return task_file
 
 
@@ -3585,21 +3645,33 @@ def _build_python_task_prompt(
     )
     allowed_dependencies = _format_list(environment.get("allowed_dependencies", []))
     forbidden_dependencies = _format_list(environment.get("forbidden_dependencies", []))
-    parts = [
-        f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
-        "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
-        "`repo/` into a standalone, installable Python package under `submission/`.\n\n"
-    ]
+    if is_contract_only(options):
+        from .source_ablation import contract_only_python_intro
+
+        parts = [contract_only_python_intro(sections)]
+    else:
+        parts = [
+            f"# FeatureLiftBench Task: {sections['task_id']}\n\n"
+            "You are in a FeatureLiftBench agent workspace. Decouple the requested feature from "
+            "`repo/` into a standalone, installable Python package under `submission/`.\n\n"
+        ]
     parts.append(_python_howto_section(sections, options))
     parts.append(_python_workspace_section(options))
     if options.prompt_style == "standard":
-        localization = (
-            "- Start from the provided source entrypoints, then follow imports, helpers, "
-            "constants, data files, exceptions, and resources needed by the contract.\n"
-            if options.expose_source_hints
-            else "- Search the complete repository from the functional contract and required "
-            "output API; locate the implementation and its supporting closure yourself.\n"
-        )
+        if is_contract_only(options):
+            from .source_ablation import contract_only_closure_localization
+
+            localization = contract_only_closure_localization()
+        elif options.expose_source_hints:
+            localization = (
+                "- Start from the provided source entrypoints, then follow imports, helpers, "
+                "constants, data files, exceptions, and resources needed by the contract.\n"
+            )
+        else:
+            localization = (
+                "- Search the complete repository from the functional contract and required "
+                "output API; locate the implementation and its supporting closure yourself.\n"
+            )
         parts.append(
             "## Closure Discipline\n\n"
             "- Treat the target as a real extracted feature, not a toy rewrite for public tests.\n"
@@ -3634,27 +3706,44 @@ def _build_python_task_prompt(
             f"- Description: {sections['entanglement_description']}\n"
             f"- Signals:\n{sections['entanglement_signals']}\n"
         )
+    if is_contract_only(options):
+        implementation_scope = contract_only_implementation_scope()
+        repo_constraint = (
+            "- The upstream source repository is not present; do not search for it.\n"
+        )
+    elif options.expose_source_hints:
+        implementation_scope = (
+            "- Implementation scope: use the explicitly provided **Source entrypoints** to "
+            "locate code in `repo/`; the import line lists the public surface your package "
+            "must expose.\n\n"
+        )
+        repo_constraint = (
+            "- Do not modify `repo/`"
+            + (" or `public_tests/`" if options.mount_public_tests else "")
+            + " as your final deliverable.\n"
+        )
+    else:
+        implementation_scope = (
+            "- Implementation scope: locate the upstream implementation yourself from "
+            "the functional contract and required output API; the import line lists the "
+            "public surface your package must expose.\n\n"
+        )
+        repo_constraint = (
+            "- Do not modify `repo/`"
+            + (" or `public_tests/`" if options.mount_public_tests else "")
+            + " as your final deliverable.\n"
+        )
     parts.append(
         "## Required Output API\n\n"
         f"- Package: `{sections['output_package']}`\n"
         f"- Import: `{sections['output_import']}`\n"
         f"- Callable: `{sections['output_callable']}`\n"
         f"- Signature: `{sections['output_signature']}`\n"
-        + (
-            "- Implementation scope: use the explicitly provided **Source entrypoints** to "
-            "locate code in `repo/`; the import line lists the public surface your package "
-            "must expose.\n\n"
-            if options.expose_source_hints
-            else "- Implementation scope: locate the upstream implementation yourself from "
-            "the functional contract and required output API; the import line lists the "
-            "public surface your package must expose.\n\n"
-        )
+        + implementation_scope
         + "## Constraints\n\n"
         "- The final answer must be files under `submission/`.\n"
-        "- Do not modify `repo/`"
-        + (" or `public_tests/`" if options.mount_public_tests else "")
-        + " as your final deliverable.\n"
-        "- Do not import from the original source package or rely on the original repo path at runtime.\n"
+        + repo_constraint
+        + "- Do not import from the original source package or rely on the original repo path at runtime.\n"
         "- Do not symlink or copy hidden/evaluator files. They are intentionally unavailable.\n"
         "- Keep only behavior-relevant code and dependencies needed for the target feature; "
         "prefer a compact closure, but do not remove helpers/resources required by edge cases.\n"
@@ -3672,6 +3761,10 @@ def _build_python_task_prompt(
 
 
 def _python_howto_section(sections: dict[str, str], options: AblationOptions) -> str:
+    if is_contract_only(options):
+        from .source_ablation import contract_only_python_howto
+
+        return contract_only_python_howto(sections, options)
     if options.prompt_style == "short":
         lines = [
             "## How to work\n\n",
@@ -3747,6 +3840,10 @@ def _python_howto_section(sections: dict[str, str], options: AblationOptions) ->
 
 
 def _python_workspace_section(options: AblationOptions) -> str:
+    if is_contract_only(options):
+        from .source_ablation import contract_only_python_workspace
+
+        return contract_only_python_workspace()
     lines = [
         "## Workspace\n\n",
         "- `repo/`: source repository snapshot for the fixed commit.\n",

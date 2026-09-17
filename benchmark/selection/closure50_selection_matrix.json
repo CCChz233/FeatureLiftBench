@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "selection_id": "closure50_expansion_20260912",
+  "status": "phase0_matrix",
+  "split_name": "closure50",
+  "naming_note": "closure50 is an internal storage identifier at the same level as python150 / hard50 / prime / v2. It does not define a paper-facing difficulty tier or benchmark name.",
+  "positioning": {
+    "kind": "new_third_split",
+    "total_after": 250,
+    "freeze_v2_untouched": true,
+    "does_not_modify": [
+      "benchmark/tasks",
+      "benchmark/hard50",
+      "benchmark/python200_hard_tasks",
+      "freeze 6c20ff0307762503a73cbb9ff32e9992c6446e4b17483a68373027be58cbf419",
+      "experiments/python/openhands/**"
+    ]
+  },
+  "motivation": {
+    "hard50_saturated": {
+      "deepseek-v4-flash": "49/50",
+      "gpt-5.6-luna": "42/50"
+    },
+    "hard3_reference": {
+      "deepseek-v4-pro": "21/50",
+      "deepseek-v4-flash": "18/50",
+      "median_reference_loc": 101,
+      "hidden_over_public_test_ratio": 4.0,
+      "pass_conditioned_copy_median": 0.086
+    },
+    "hard50_contrast": {
+      "reference_solution_coverage": "0/50",
+      "hidden_over_public_test_ratio": 1.67,
+      "pass_conditioned_copy_median": 0.66
+    },
+    "evidence": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv"
+  },
+  "recipe": {
+    "required_api_size": "1-2 classes/functions, 2-4 members",
+    "behavior_clauses": "4-5 semantic clauses + 1 API-surface clause + 1 isolation clause",
+    "public_tests": "1-2 shallowest smoke tests only",
+    "hidden_tests": "4-5 tests, one per semantic clause (hidden/public ~= 4)",
+    "reference_loc": "80-150 LOC, single file preferred",
+    "rationale": "hard3 median reference is 101 LOC with pass-conditioned copy fraction 0.086: agents cannot copy their way through and must re-implement precise semantics. Hard-50 used large slices (copy 0.66) and saturated at Flash 49/50.",
+    "branch_types": [
+      "exception branch and exception type, including which entry point raises",
+      "default values and short-circuit paths",
+      "state transition order and return-value ordering",
+      "de-duplication, override precedence, alias resolution",
+      "weak references and lifecycle cleanup",
+      "module-level callability"
+    ],
+    "forbidden": [
+      "adding hidden tests after calibration to lower the score",
+      "hidden tests exercising undeclared API (blocking L2_C1_SURFACE)",
+      "over-strict match= regexes or vague contracts",
+      "raising difficulty by picking a bigger repo or a bigger slice",
+      "releasing without reference_solution",
+      "upstream overlap with the existing 200 tasks"
+    ]
+  },
+  "calibration": {
+    "primary_gate_model": "deepseek-v4-flash",
+    "protocol": "OpenHands Official Main, same agent/eval image as freeze v2",
+    "target_band": [
+      0.25,
+      0.45
+    ],
+    "swap_above": 0.55,
+    "keep_low_band": [
+      0.15,
+      0.25
+    ],
+    "investigate_fake_hard_below": 0.15,
+    "baselines": {
+      "oracle": "public + hidden pass, stable over N=3",
+      "naive": "public may pass, hidden must fail",
+      "copy_all": "may pass functionally, RRES clearly worse than reference"
+    },
+    "note": "Hard-50 calibrated at Flash 29/50 during construction but scored 49/50 on freeze v2 Official Main. Calibration must therefore reuse the Main image and profile, not a separate construction-time run."
+  },
+  "targets": {
+    "selected": 50,
+    "backup": 15,
+    "families": {
+      "registry_plugin_dispatch": 14,
+      "validate_normalize_construct": 10,
+      "config_resolve_discover": 9,
+      "workflow_session_orchestration": 7,
+      "parse_tokenize_decode": 6,
+      "resource_metadata_loading": 4
+    },
+    "lift_types": {
+      "Adapted": 26,
+      "Composite": 16,
+      "Direct": 8
+    }
+  },
+  "entanglement_policy": {
+    "level": "high",
+    "min_types": 2,
+    "prefer": [
+      "implicit_dependency_coupling",
+      "framework_coupling",
+      "data_model_coupling"
+    ]
+  },
+  "source_policy": {
+    "no_upstream_overlap_with": [
+      "benchmark/sources/python200_hard_registry.json",
+      "benchmark/sources/external50_registry.json"
+    ],
+    "reject": [
+      "requires network, services, browsers or credentials",
+      "large binary assets",
+      "unstable platform-dependent behavior"
+    ],
+    "reference_solution_required": "50/50"
+  }
+}

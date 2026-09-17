@@ -129,6 +129,26 @@ run_agent_flags = [
 [methods.pruned_context.profiles]
 openhands = "openhands_deepseek_v4_flash_main"
 
+[methods.contract_only]
+aliases = ["contract_only", "contract-only", "no_source", "no-source"]
+status = "ablation"
+paper_table = false
+docs = "docs/paper/SUPPLEMENTARY_EXPERIMENT_RUNBOOK.md"
+description = "Supplementary Contract-only arm: public contract without the source repository. Not Official Main and not a paper-table method."
+run_agent_flags = [
+  "--no-agent-source-hints",
+  "--no-agent-public-tests",
+  "--prompt-style", "standard",
+  "--source-context", "contract_only",
+  "--no-td-cognition",
+  "--no-exec-contract",
+  "--no-self-contract",
+  "--no-test-first-lift",
+]
+
+[methods.contract_only.profiles]
+openhands = "openhands_deepseek_v4_flash_main"
+
 [methods.td_cognition]
 aliases = ["td", "td_cognition", "td-cognition", "cognition"]
 status = "retired"

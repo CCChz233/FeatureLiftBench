@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import gzip
 import json
 import re
 import threading
 import time
 import urllib.error
 import urllib.request
+import zlib
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler
 from http.server import ThreadingHTTPServer
@@ -23,6 +25,7 @@ from .openhands_usage import openhands_context_limits
 PROXY_DISABLE_ENV = "FEATURELIFTBENCH_OPENHANDS_USAGE_PROXY"
 TOTAL_TOKEN_LIMIT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOTAL_TOKEN_LIMIT"
 TOOL_ALIAS_COMPAT_ENV = "FEATURELIFTBENCH_OPENHANDS_TOOL_ALIAS_COMPAT"
+STREAM_INCLUDE_USAGE_ENV = "FEATURELIFTBENCH_OPENHANDS_STREAM_INCLUDE_USAGE"
 _VERSIONED_API_PATH = re.compile(r"/v\d+$")
 
 
@@ -35,6 +38,8 @@ class LLMUsageProxyConfig:
     model: str = ""
     total_token_limit: int | None = None
     tool_alias_compat: bool = False
+    inject_stream_include_usage: bool = True
+    strip_usage_only_sse: bool = True
 
 
 class LLMUsageProxy:
@@ -97,6 +102,13 @@ class LLMUsageProxy:
         content_length = _safe_int(handler.headers.get("Content-Length"))
         body = handler.rfile.read(content_length if content_length is not None else 0)
         request_payload = _json_object(body)
+        injected_include_usage = False
+        if self.config.inject_stream_include_usage:
+            body, request_payload, injected_include_usage = _ensure_stream_include_usage(
+                body,
+                request_payload,
+                path=handler.path,
+            )
         target_url = self._target_url(handler.path)
         request = urllib.request.Request(
             target_url,
@@ -126,19 +138,28 @@ class LLMUsageProxy:
             ).encode("utf-8")
 
         alias_normalizations = 0
+        decoded_body = _decode_http_body(response_body, response_headers)
         if self.config.tool_alias_compat and status < 400:
-            response_body, alias_normalizations = _normalize_tool_argument_aliases(
-                response_body
+            decoded_body, alias_normalizations = _normalize_tool_argument_aliases(
+                decoded_body
             )
+            if decoded_body != response_body and not _content_encoding(response_headers):
+                response_body = decoded_body
 
         self._record_call(
             path=handler.path,
             target_url=target_url,
             status=status,
             request_payload=request_payload,
-            response_body=response_body,
+            response_body=decoded_body,
+            response_headers=response_headers,
             alias_normalizations=alias_normalizations,
+            stream_include_usage_injected=injected_include_usage,
         )
+        if self.config.strip_usage_only_sse:
+            stripped = _strip_usage_only_sse(decoded_body)
+            if stripped != decoded_body and not _content_encoding(response_headers):
+                response_body = stripped
         handler.send_response(status)
         for key, value in response_headers.items():
             if key.lower() in {"connection", "content-length", "transfer-encoding"}:
@@ -245,13 +266,17 @@ class LLMUsageProxy:
         status: int,
         request_payload: dict[str, Any] | None,
         response_body: bytes,
+        response_headers: dict[str, str] | None = None,
         alias_normalizations: int = 0,
+        stream_include_usage_injected: bool = False,
     ) -> None:
-        response_payload = _json_object(response_body)
-        usage = response_payload.get("usage") if isinstance(response_payload, dict) else None
-        usage = usage if isinstance(usage, dict) else {}
+        usage, usage_parse = _extract_provider_usage(response_body)
         prompt = _int_metric(usage.get("prompt_tokens"))
+        if prompt is None:
+            prompt = _int_metric(usage.get("input_tokens"))
         completion = _int_metric(usage.get("completion_tokens"))
+        if completion is None:
+            completion = _int_metric(usage.get("output_tokens"))
         cache_hit, cache_miss, cache_available = _prompt_cache_metrics(
             usage,
             prompt_tokens=prompt,
@@ -280,6 +305,8 @@ class LLMUsageProxy:
             "status": status,
             "model": model,
             "usage_verified": verified,
+            "usage_parse": usage_parse,
+            "stream_include_usage_injected": stream_include_usage_injected,
             "prompt_tokens": prompt,
             "completion_tokens": completion,
             "total_tokens": total,
@@ -290,6 +317,11 @@ class LLMUsageProxy:
             "max_allowed_prompt_tokens": limits.max_allowed_prompt_tokens,
             "context_violation": context_violation,
             "tool_alias_normalizations": alias_normalizations,
+            **_wire_debug(
+                response_body,
+                request_payload,
+                response_headers or {},
+            ),
         }
         with self._lock:
             self._api_calls += 1
@@ -415,6 +447,10 @@ def maybe_start_openhands_usage_proxy(
             model=env.get("LLM_MODEL") or env.get("FEATURELIFTBENCH_MODEL", ""),
             total_token_limit=_positive_int(env.get(TOTAL_TOKEN_LIMIT_ENV)),
             tool_alias_compat=_truthy(env.get(TOOL_ALIAS_COMPAT_ENV)),
+            inject_stream_include_usage=_env_flag(
+                env.get(STREAM_INCLUDE_USAGE_ENV),
+                default=True,
+            ),
         )
     )
 
@@ -494,12 +530,268 @@ def _response_headers(headers: Any) -> dict[str, str]:
     return result
 
 
+def _content_encoding(headers: dict[str, str] | None) -> str:
+    if not headers:
+        return ""
+    for key, value in headers.items():
+        if key.lower() == "content-encoding":
+            return value.lower().strip()
+    return ""
+
+
+def _decode_http_body(body: bytes, headers: dict[str, str] | None) -> bytes:
+    """Inflate gzip/deflate provider bodies so usage JSON can be parsed."""
+
+    encoding = _content_encoding(headers)
+    sniffed_gzip = body.startswith(b"\x1f\x8b")
+    if encoding in {"gzip", "x-gzip"} or (not encoding and sniffed_gzip):
+        try:
+            return gzip.decompress(body)
+        except (OSError, EOFError):
+            return body
+    if encoding == "deflate":
+        try:
+            return zlib.decompress(body)
+        except zlib.error:
+            try:
+                return zlib.decompress(body, -zlib.MAX_WBITS)
+            except zlib.error:
+                return body
+    return body
+
+
 def _json_object(data: bytes) -> dict[str, Any] | None:
     try:
         payload = json.loads(data.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         return None
     return payload if isinstance(payload, dict) else None
+
+
+def _env_flag(value: str | None, *, default: bool) -> bool:
+    if value is None or not str(value).strip():
+        return default
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "on"}:
+        return True
+    if text in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+def _is_streaming_request(payload: dict[str, Any]) -> bool:
+    stream = payload.get("stream")
+    return stream is True or stream == "true" or stream == 1
+
+
+def _ensure_stream_include_usage(
+    body: bytes,
+    request_payload: dict[str, Any] | None,
+    path: str = "",
+) -> tuple[bytes, dict[str, Any] | None, bool]:
+    """Ask chat-completions providers to emit a final SSE usage chunk.
+
+    The OpenAI Responses API (``/v1/responses``) already puts usage on
+    ``response.completed`` and rejects ``stream_options.include_usage``.
+    """
+
+    if _is_responses_path(path):
+        return body, request_payload, False
+    if not isinstance(request_payload, dict) or not _is_streaming_request(request_payload):
+        return body, request_payload, False
+    options = request_payload.get("stream_options")
+    if isinstance(options, dict) and options.get("include_usage") is True:
+        return body, request_payload, False
+    updated = dict(request_payload)
+    merged_options = dict(options) if isinstance(options, dict) else {}
+    merged_options["include_usage"] = True
+    updated["stream_options"] = merged_options
+    return json.dumps(updated).encode("utf-8"), updated, True
+
+
+def _is_responses_path(path: str) -> bool:
+    stripped = (path or "").split("?", 1)[0].rstrip("/")
+    return stripped.endswith("/responses")
+
+
+def _looks_like_model_usage(usage: dict[str, Any]) -> bool:
+    return any(
+        _int_metric(usage.get(key)) is not None
+        for key in (
+            "input_tokens",
+            "output_tokens",
+            "prompt_tokens",
+            "completion_tokens",
+            "total_tokens",
+        )
+    )
+
+
+def _walk_model_usage(payload: Any, *, depth: int = 0) -> dict[str, Any]:
+    if depth > 6 or not isinstance(payload, dict):
+        return {}
+    last: dict[str, Any] = {}
+    usage = payload.get("usage")
+    if isinstance(usage, dict) and _looks_like_model_usage(usage):
+        last = usage
+    for key, value in payload.items():
+        if key == "tool_usage":
+            continue
+        found = _walk_model_usage(value, depth=depth + 1)
+        if found:
+            last = found
+    return last
+
+
+def _usage_dict_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    candidates: list[Any] = [payload.get("usage")]
+    nested = payload.get("response")
+    if isinstance(nested, dict):
+        candidates.append(nested.get("usage"))
+    for usage in candidates:
+        if isinstance(usage, dict) and _looks_like_model_usage(usage):
+            return usage
+    return _walk_model_usage(payload)
+
+
+def _sse_event_data(event: str) -> str | None:
+    chunks: list[str] = []
+    for line in event.split("\n"):
+        if line.startswith("data:"):
+            chunks.append(line[5:].lstrip())
+    if not chunks:
+        return None
+    return "\n".join(chunks)
+
+
+def _is_usage_only_chunk(payload: dict[str, Any]) -> bool:
+    usage = payload.get("usage")
+    if not isinstance(usage, dict) or not usage:
+        return False
+    choices = payload.get("choices")
+    return choices == [] or choices is None
+
+
+def _extract_provider_usage(response_body: bytes) -> tuple[dict[str, Any], str]:
+    payload = _json_object(response_body)
+    if isinstance(payload, dict):
+        usage = _usage_dict_from_payload(payload)
+        if usage:
+            return usage, "json"
+        return {}, "none"
+    try:
+        text = response_body.decode("utf-8")
+    except UnicodeDecodeError:
+        return {}, "none"
+    if "data:" not in text:
+        return {}, "none"
+    last: dict[str, Any] = {}
+    for event in text.replace("\r\n", "\n").replace("\r", "\n").split("\n\n"):
+        data = _sse_event_data(event)
+        if not data or data == "[DONE]":
+            continue
+        try:
+            obj = json.loads(data)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        usage = _usage_dict_from_payload(obj)
+        if usage:
+            last = usage
+    if last:
+        return last, "sse"
+    # Concatenated JSON / messy SSE: scan every decodable object.
+    try:
+        text = response_body.decode("utf-8")
+    except UnicodeDecodeError:
+        return {}, "none"
+    decoder = json.JSONDecoder()
+    idx = 0
+    while idx < len(text):
+        while idx < len(text) and text[idx].isspace():
+            idx += 1
+        if idx >= len(text):
+            break
+        if text.startswith("data:", idx) or text.startswith("event:", idx):
+            newline = text.find("\n", idx)
+            idx = len(text) if newline < 0 else newline + 1
+            continue
+        try:
+            obj, end = decoder.raw_decode(text, idx)
+        except json.JSONDecodeError:
+            idx += 1
+            continue
+        if isinstance(obj, dict):
+            usage = _usage_dict_from_payload(obj)
+            if usage:
+                last = usage
+        idx = end
+    if last:
+        return last, "sse"
+    return {}, "none"
+
+
+def _wire_debug(
+    response_body: bytes,
+    request_payload: dict[str, Any] | None,
+    response_headers: dict[str, str],
+) -> dict[str, Any]:
+    content_type = ""
+    for key, value in response_headers.items():
+        if key.lower() == "content-type":
+            content_type = value
+            break
+    head = response_body[:64].decode("utf-8", "replace").replace("\n", " | ")
+    return {
+        "response_bytes": len(response_body),
+        "response_content_type": content_type.split(";")[0] if content_type else "",
+        "response_head": head[:96],
+        "has_response_completed": b"response.completed" in response_body,
+        "has_input_tokens": b"input_tokens" in response_body,
+        "has_prompt_tokens": b"prompt_tokens" in response_body,
+        "content_encoding": _content_encoding(response_headers),
+        "request_stream": (
+            request_payload.get("stream") if isinstance(request_payload, dict) else None
+        ),
+        "request_keys": (
+            sorted(request_payload.keys())[:24] if isinstance(request_payload, dict) else []
+        ),
+    }
+
+
+def _strip_usage_only_sse(response_body: bytes) -> bytes:
+    """Drop empty-choices usage chunks so OpenHands does not see include_usage."""
+
+    try:
+        text = response_body.decode("utf-8")
+    except UnicodeDecodeError:
+        return response_body
+    stripped = text.lstrip()
+    if not stripped.startswith("data:"):
+        return response_body
+    events = text.replace("\r\n", "\n").replace("\r", "\n").split("\n\n")
+    kept: list[str] = []
+    changed = False
+    for event in events:
+        if not event.strip():
+            continue
+        data = _sse_event_data(event)
+        if data and data != "[DONE]":
+            try:
+                obj = json.loads(data)
+            except json.JSONDecodeError:
+                obj = None
+            if isinstance(obj, dict) and _is_usage_only_chunk(obj):
+                changed = True
+                continue
+        kept.append(event)
+    if not changed:
+        return response_body
+    out = "\n\n".join(kept)
+    if out and not out.endswith("\n\n"):
+        out += "\n\n"
+    return out.encode("utf-8")
 
 
 def _safe_int(value: str | None) -> int | None:
@@ -547,6 +839,8 @@ def _prompt_cache_metrics(
     hit = _int_metric(usage.get("prompt_cache_hit_tokens"))
     miss = _int_metric(usage.get("prompt_cache_miss_tokens"))
     details = usage.get("prompt_tokens_details")
+    if not isinstance(details, dict):
+        details = usage.get("input_tokens_details")
     if hit is None and isinstance(details, dict):
         hit = _int_metric(details.get("cached_tokens"))
     available = hit is not None or miss is not None

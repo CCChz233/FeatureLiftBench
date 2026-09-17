@@ -125,6 +125,12 @@ reports/paper_analysis/python150_exploratory_20260830/analysis.sqlite
 !reports/paper_analysis/python200_prime_v2_main_20260904/**
 !reports/paper_analysis/qwen36_freeze_v2_final_20260905/
 !reports/paper_analysis/qwen36_freeze_v2_final_20260905/**
+# Token-efficiency tarballs/cas/eval_cache stay local for download; keep pointers.
+!reports/paper_analysis/token_efficiency_current/
+reports/paper_analysis/token_efficiency_current/**
+!reports/paper_analysis/token_efficiency_current/README.md
+!reports/paper_analysis/token_efficiency_current/DOWNLOAD.md
+!reports/paper_analysis/token_efficiency_current/token_efficiency_checksums_*.json
 reports/paper_analysis/**/__pycache__/
 !reports/token_efficiency_20260720/
 !reports/token_efficiency_20260720/**
@@ -202,6 +208,9 @@ scripts/archive/scratch/
 
 benchmark/staging/
 benchmark/batch3_pilot/
+# Local heavy pilots with full source checkouts; too large for GitHub.
+benchmark/closure50_pilot/
+benchmark/workflow_hard_pilot_20260912/
 benchmark/contract_v2/generated_tasks/
 benchmark/contract_v2/generated_references/
 # Hard-50 staging keeps complete upstream checkouts and frozen reference

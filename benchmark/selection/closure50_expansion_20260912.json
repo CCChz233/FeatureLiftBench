@@ -1,0 +1,1661 @@
+{
+  "schema_version": 1,
+  "selection_id": "closure50_expansion_20260912",
+  "status": "phase0_candidates",
+  "plan": "docs/PLAN_CLOSURE50.md",
+  "matrix": "benchmark/selection/closure50_selection_matrix.json",
+  "notes": [
+    "Commits stay pending_pin until a task package is materialized.",
+    "planned_branches with branches_verified=true were read from the cached tagged tree; see scripts/closure50_verified_slices.json.",
+    "Unverified rows still have branches_status=pending_source_read.",
+    "Reused Hard-50 backup rows keep their original paper_fit/why_hard text and add a reassessment under the Closure-50 recipe.",
+    "dependency-injector is recipe_rejected: Cython core cannot host an 80-150 LOC pure-Python extract."
+  ],
+  "counts": {
+    "reassessed_hard50_backups": 20,
+    "new_cards_wave1": 4,
+    "screened_sources_wave2": 10,
+    "keep": 15,
+    "revise": 3,
+    "rejected_by_design": 4,
+    "rejected_by_source_gate": 8,
+    "rejected_by_recipe": 1,
+    "branches_verified": 10,
+    "pending_source_resolution": 2,
+    "not_probed": 7,
+    "source_cleared_candidates": 15,
+    "new_repository_shortlist": 22,
+    "still_needed_for_50": 35
+  },
+  "source_gate": {
+    "metric": "core_loc",
+    "min_core_loc": 3000,
+    "definition": "implementation lines outside tests/docs/examples, counting .py plus Cython .pyx/.pxd",
+    "why": "A small upstream core cannot host an 80-150 LOC slice without the slice being most of the library, which lets copying pass. That is the Hard-50 failure mode (pass-conditioned copy median 0.66).",
+    "evidence": [
+      "reports/closure50/source_probe.json",
+      "reports/closure50/source_screen.json"
+    ],
+    "rejected_packages": [
+      {
+        "package": "confuse",
+        "core_loc": 1847
+      },
+      {
+        "package": "ConfigArgParse",
+        "core_loc": 1862
+      },
+      {
+        "package": "fastjsonschema",
+        "core_loc": 1962
+      },
+      {
+        "package": "respx",
+        "core_loc": 2227
+      },
+      {
+        "package": "PyHamcrest",
+        "core_loc": 2275
+      },
+      {
+        "package": "pybreaker",
+        "core_loc": 715
+      },
+      {
+        "package": "backoff",
+        "core_loc": 674
+      },
+      {
+        "package": "pyproject-metadata",
+        "core_loc": 1782
+      }
+    ]
+  },
+  "pilot_plan": {
+    "policy": "stratified by planned_lift_type (Adapted 5 / Composite 3 / Direct 2); within each stratum, candidates adding an uncovered feature_family win",
+    "size_target": 10,
+    "size_planned": 10,
+    "task_ids": [
+      "kombu__serialization_registry_core__001",
+      "traitlets__configurable_core__001",
+      "omegaconf__merge_resolve_core__001",
+      "flit__metadata_core__001",
+      "python_benedict__keypath_core__001",
+      "huey__task_registry_core__001",
+      "sismic__statechart_interpret_core__001",
+      "trio__nursery_cancel_core__001",
+      "bytecode__code_roundtrip_core__001",
+      "wcmatch__globmatch_core__001"
+    ],
+    "lift_breakdown": {
+      "Adapted": 5,
+      "Composite": 3,
+      "Direct": 2
+    },
+    "lift_shortfall": {},
+    "families_covered": [
+      "config_resolve_discover",
+      "parse_tokenize_decode",
+      "registry_plugin_dispatch",
+      "resource_metadata_loading",
+      "validate_normalize_construct",
+      "workflow_session_orchestration"
+    ],
+    "families_uncovered": [],
+    "blocking_note": ""
+  },
+  "rows": [
+    {
+      "task_id": "kombu__serialization_registry_core__001",
+      "package": "kombu",
+      "repository_url": "https://github.com/celery/kombu",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Small register/dumps/loads surface over a global registry; branches are independent.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "dumps returns a three-item tuple (content_type, content_encoding, payload) in that order",
+        "dumps of an unregistered serializer name raises SerializerNotInstalled",
+        "disable(name) makes later loads of that content-type raise ContentDisallowed unless force=True; dumps of the same serializer still succeeds",
+        "when serializer is None, bytes pass through as application/data + binary, str encodes as text/plain utf-8, and any other value uses the default encoder",
+        "register maps a short name and a content-type onto the same codec so dumps(name) and loads(content_type) round-trip"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ4 registry without requiring a live broker.",
+      "why_hard": "Serializers live in a global registry; transport code is a copy-all trap.",
+      "design_card": "benchmark/selection/closure50_design_cards/kombu__serialization_registry_core__001.md",
+      "source_screen": {
+        "core_loc": 17343,
+        "test_loc": 15407,
+        "core_file_count": 93,
+        "total_mb": 1.84,
+        "repository_url": "https://github.com/celery/kombu",
+        "requested_revision": "v5.6.2",
+        "resolved_commit": "279b81f3042f23524111d3afcc773e8bb5530672",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_probe.json"
+      },
+      "branches_status": "verified_from_source",
+      "verified_upstream_files": [
+        "kombu/serialization.py",
+        "kombu/exceptions.py"
+      ],
+      "rewrite_from_backup": "The Hard-50 card claimed disable still allows decode; upstream loads() refuses disabled content unless force=True (serialization.py:256-258)."
+    },
+    {
+      "task_id": "traitlets__configurable_core__001",
+      "package": "traitlets",
+      "repository_url": "https://github.com/ipython/traitlets",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Descriptor semantics give many independent branches on a tiny surface.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "framework_coupling"
+      ],
+      "planned_branches": [
+        "Int coerces numeric whole values to int and raises TraitError for near-miss types such as the string '1'",
+        "list/container defaults are created per instance rather than sharing one mutable default",
+        "constructor kwargs override values coming from config, not the other way around",
+        "failed trait assignment raises TraitError",
+        "cross-trait validators run against the fully assigned instance state after __init__ kwargs are applied"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1+RQ5: Jupyter-stack config objects without jupyter_core overlap.",
+      "why_hard": "Trait validation + config merge + help metadata; E50-style one-file extract fails.",
+      "design_card": "benchmark/selection/closure50_design_cards/traitlets__configurable_core__001.md",
+      "source_screen": {
+        "core_loc": 6477,
+        "test_loc": 5437,
+        "core_file_count": 21,
+        "total_mb": 0.69,
+        "repository_url": "https://github.com/ipython/traitlets",
+        "requested_revision": "v5.16.1",
+        "resolved_commit": "7beeb105cd8c3adab38631daf2da9524f47166e2",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_probe.json"
+      },
+      "branches_status": "verified_from_source",
+      "verified_upstream_files": [
+        "traitlets/traitlets.py",
+        "traitlets/config/configurable.py"
+      ]
+    },
+    {
+      "task_id": "confuse__nested_view_core__001",
+      "package": "confuse",
+      "repository_url": "https://github.com/beetbox/confuse",
+      "origin": "hard50_backup_20260827",
+      "verdict": "source_rejected",
+      "reassessment": "Lazy view is a classic drift target: naive dict merge passes smoke, fails branches. REJECTED BY SOURCE GATE: upstream core_loc 1847 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "views resolve lazily so later source additions are visible",
+        "override order across stacked sources",
+        "template-driven type conversion",
+        "missing key raises the declared not-found error",
+        "nested view chaining preserves the parent path in errors"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1 multi-source config. Distinct from python-dotenv/dynaconf already in 150/E50.",
+      "why_hard": "Views are lazy and templated; naive dict merge fails Hidden.",
+      "design_card": "benchmark/selection/closure50_design_cards/confuse__nested_view_core__001.md",
+      "source_screen": {
+        "core_loc": 1847,
+        "test_loc": 1660,
+        "core_file_count": 8,
+        "total_mb": 0.38,
+        "repository_url": "https://github.com/beetbox/confuse",
+        "requested_revision": "v2.2.1",
+        "resolved_commit": "99d55efbd30d04701ea896041b2edb80f3838eb4",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 1847 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "configargparse__layered_parse_core__001",
+      "package": "ConfigArgParse",
+      "repository_url": "https://github.com/bw2/ConfigArgParse",
+      "origin": "hard50_backup_20260827",
+      "verdict": "source_rejected",
+      "reassessment": "Precedence chains are easy to get partially right. REJECTED BY SOURCE GATE: upstream core_loc 1862 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "CLI overrides environment overrides config file",
+        "boolean literal spellings accepted from file and environment",
+        "declared type conversion applies to non-CLI sources too",
+        "unknown config keys are surfaced rather than silently dropped",
+        "list-valued options accumulate in declaration order"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ5 Adapted config: argparse-shaped API with extra overlay semantics.",
+      "why_hard": "Precedence is easy to get wrong; Hidden checks env-over-file.",
+      "design_card": "benchmark/selection/closure50_design_cards/configargparse__layered_parse_core__001.md",
+      "source_screen": {
+        "core_loc": 1862,
+        "test_loc": 3315,
+        "core_file_count": 2,
+        "total_mb": 0.29,
+        "repository_url": "https://github.com/bw2/ConfigArgParse",
+        "requested_revision": "v1.7.7",
+        "resolved_commit": "04fb885605a3aaa165b71c8f72fd7bbbc93ca469",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 1862 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "django_environ__env_cast_core__001",
+      "package": "django-environ",
+      "repository_url": "https://github.com/joke2k/django-environ",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Cast dialects are declared but numerous; naive getenv fails several.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "config_environment_coupling"
+      ],
+      "planned_branches": [
+        "database URL scheme maps to the declared backend dialect",
+        "list and tuple casts split and strip consistently",
+        "explicit default returned versus missing-variable error",
+        "boolean literal set is honored exactly",
+        "cache URL parsing preserves query options"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ5 framework_coupling without vendoring Django.",
+      "why_hard": "Cast helpers encode Django URL dialects; naive getenv fails db/list.",
+      "design_card": "benchmark/selection/closure50_design_cards/django_environ__env_cast_core__001.md",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "fabric__env_config_core__001",
+      "package": "fabric",
+      "repository_url": "https://github.com/fabric/fabric",
+      "origin": "hard50_backup_20260827",
+      "verdict": "drop",
+      "reassessment": "SSH-flavored configuration risks pulling transport dependencies and credential/service assumptions; violates the offline source-selection rule.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "trio__nursery_cancel_core__001",
+      "package": "trio",
+      "repository_url": "https://github.com/python-trio/trio",
+      "origin": "hard50_backup_20260827",
+      "verdict": "revise",
+      "reassessment": "Full structured-concurrency nursery is too large and risks <15% fake-hard. Shrink to cancel-scope deadline/shield semantics only.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "deadline expiry cancels the scope exactly once",
+        "shielding defers an outer cancellation",
+        "nested scope cancellation propagates to the correct level",
+        "cancellation delivered at the declared checkpoint",
+        "scope exit reports whether it was cancelled"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ4 lifecycle/cancel Hidden. Distinct from tenacity retry in 150.",
+      "why_hard": "Structured concurrency invariants; copying trio.socket fails isolation.",
+      "design_card": "benchmark/selection/closure50_design_cards/trio__nursery_cancel_core__001.md",
+      "source_screen": {
+        "core_loc": 15689,
+        "test_loc": 18552,
+        "core_file_count": 83,
+        "total_mb": 2.31,
+        "repository_url": "https://github.com/python-trio/trio",
+        "requested_revision": "v0.34.0",
+        "resolved_commit": "b3fd421ab1ac7830ed7440b85331e4ae2ccaaba9",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "openapi_core__request_validate_core__001",
+      "package": "openapi-core",
+      "repository_url": "https://github.com/python-openapi/openapi-core",
+      "origin": "hard50_backup_20260827",
+      "verdict": "revise",
+      "reassessment": "Spec + request + unmarshal together is too big; keep media-type/unmarshal axis only.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "framework_coupling"
+      ],
+      "planned_branches": [
+        "media-type selection falls back per the declared rule",
+        "parameter style/explode handling for the declared subset",
+        "type unmarshalling of declared formats",
+        "missing required parameter raises the declared error",
+        "additional properties handling follows the declared policy"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ4 unmarshalling vs jsonschema-only (jsonschema already in 150).",
+      "why_hard": "Spec+request+unmarshal types; naive jsonschema.validate misses media types.",
+      "design_card": "benchmark/selection/closure50_design_cards/openapi_core__request_validate_core__001.md",
+      "source_screen": {
+        "core_loc": 8843,
+        "test_loc": 14705,
+        "core_file_count": 159,
+        "total_mb": 1.3,
+        "repository_url": "https://github.com/python-openapi/openapi-core",
+        "requested_revision": "0.23.1",
+        "resolved_commit": "21f62cecf53a218e0f3066c55eb7c9bad5373ff5",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "fastjsonschema__compile_validate_core__001",
+      "package": "fastjsonschema",
+      "repository_url": "https://github.com/horejsek/python-fastjsonschema",
+      "origin": "hard50_backup_20260827",
+      "verdict": "source_rejected",
+      "reassessment": "Compiler output must match branch-by-branch; strong drift surface. REJECTED BY SOURCE GATE: upstream core_loc 1962 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "draft selection changes keyword interpretation",
+        "declared format checks are enforced only when requested",
+        "required plus dependent-schema combination",
+        "default values filled only where declared",
+        "error message carries the failing instance path"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1 compiled validator vs jsonschema library already in 150.",
+      "why_hard": "Compiler output must match formats/required; wrong draft fails Hidden.",
+      "design_card": "benchmark/selection/closure50_design_cards/fastjsonschema__compile_validate_core__001.md",
+      "source_screen": {
+        "core_loc": 1962,
+        "test_loc": 2178,
+        "core_file_count": 13,
+        "total_mb": 4.42,
+        "repository_url": "https://github.com/horejsek/python-fastjsonschema",
+        "requested_revision": "v2.22.2",
+        "resolved_commit": "b88fa37cd46bb81e8d9dce91a7e1bc4debedd3a2",
+        "source_verdict": "rejected",
+        "source_blockers": [
+          "core_loc 1962 < 3000",
+          "has submodules; needs recursive materialization review"
+        ],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "dependency_injector__container_core__001",
+      "package": "dependency-injector",
+      "repository_url": "https://github.com/ets-labs/python-dependency-injector",
+      "origin": "hard50_backup_20260827",
+      "verdict": "recipe_rejected",
+      "reassessment": "Provider graph is a registry-closure task with a tiny public surface. REJECTED BY RECIPE: Core implementation is Cython (providers.pyx ~5000 LOC, containers.pyx ~900 LOC). An 80-150 LOC pure-Python extract cannot carry Factory/Singleton/override semantics without vendoring the extension, which is the Hard-50 copy-pass failure mode.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "rejected",
+      "planned_lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "planned_branches": [],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ4 construct+registry: DI graph is the extraction target.",
+      "why_hard": "Provider graph and wiring by name; copying examples/flask fails isolation.",
+      "design_card": "benchmark/selection/closure50_design_cards/dependency_injector__container_core__001.md",
+      "source_screen": {
+        "core_loc": 6370,
+        "test_loc": 12127,
+        "core_file_count": 15,
+        "total_mb": 5.25,
+        "repository_url": "https://github.com/ets-labs/python-dependency-injector",
+        "requested_revision": "4.49.1",
+        "resolved_commit": "d6749b861915b86ec76566005f09037dc5f4acf2",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "docutils__rst_transform_core__001",
+      "package": "docutils",
+      "repository_url": "https://github.com/docutils/docutils",
+      "origin": "hard50_backup_20260827",
+      "verdict": "pending_source_resolution",
+      "reassessment": "Settings + parser + all transforms is too large; keep one transform plus settings. SOURCE NOT MEASURED: screen returned unresolved (could not resolve a GitHub repository from PyPI metadata). Resolve a real tagged revision before this candidate can be used.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "settings resolution order for the declared option subset",
+        "transform priority ordering",
+        "unknown role/directive reported rather than dropped",
+        "declared inline markup edge cases",
+        "document-level metadata extraction"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ5 deep parser state, not E50 tinycss2 roundtrip.",
+      "why_hard": "Settings+parser+transforms; copy rst2html launcher is the wrong closure.",
+      "design_card": "benchmark/selection/closure50_design_cards/docutils__rst_transform_core__001.md",
+      "source_screen": {
+        "core_loc": null,
+        "test_loc": null,
+        "core_file_count": null,
+        "total_mb": null,
+        "repository_url": null,
+        "requested_revision": null,
+        "resolved_commit": null,
+        "source_verdict": "unresolved",
+        "source_blockers": [
+          "could not resolve a GitHub repository from PyPI metadata"
+        ],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "bytecode__code_roundtrip_core__001",
+      "package": "bytecode",
+      "repository_url": "https://github.com/MatthieuDartiailh/bytecode",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Very small surface, highly branchy semantics. Watch Python-version oracle stability.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "Label jump targets survive Bytecode.from_code / to_code roundtrip",
+        "compute_stacksize on branching code matches the assembled code object",
+        "add_const de-duplicates constants via const_key rather than identity"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ4 instruction-stream state, not a string parser.",
+      "why_hard": "Label/jump and opcode versions; copy dis.dis wrappers fail Hidden.",
+      "design_card": "benchmark/selection/closure50_design_cards/bytecode__code_roundtrip_core__001.md",
+      "source_screen": {
+        "core_loc": 3384,
+        "test_loc": 5259,
+        "core_file_count": 7,
+        "total_mb": 0.45,
+        "repository_url": "https://github.com/MatthieuDartiailh/bytecode",
+        "requested_revision": "0.19.0",
+        "resolved_commit": "9eea62692be09d07a454aa5244029cc5434096d7",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_probe.json"
+      },
+      "branches_status": "verified_from_source",
+      "verified_upstream_files": [
+        "src/bytecode/bytecode.py",
+        "src/bytecode/instr.py",
+        "src/bytecode/concrete.py",
+        "src/bytecode/cfg.py"
+      ],
+      "risks": [
+        "pin the evaluator Python 3.11; do not claim 3.12-3.15 opcode coverage"
+      ],
+      "dropped_branches": [
+        "full line-number table preservation (3.11+ co_positions, too version-gated for 150 LOC)",
+        "cross-version opcode tables (must pin a single CPython minor)"
+      ]
+    },
+    {
+      "task_id": "pyfakefs__os_patch_core__001",
+      "package": "pyfakefs",
+      "repository_url": "https://github.com/pytest-dev/pyfakefs",
+      "origin": "hard50_backup_20260827",
+      "verdict": "revise",
+      "reassessment": "Copy-trap framing no longer buys difficulty (copy is not the lever). Retain only as a small Direct patch-target task.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "framework_coupling"
+      ],
+      "planned_branches": [
+        "patch targets the declared module attributes only",
+        "state restored on teardown",
+        "path separator normalization",
+        "symlink resolution within the fake tree",
+        "declared error parity with the real filesystem"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ2: large fake-os tree; feature is Patcher+FakeFilesystem, rest is decoy.",
+      "why_hard": "Must patch the right modules; copying tests/examples leaks real FS.",
+      "design_card": "benchmark/selection/closure50_design_cards/pyfakefs__os_patch_core__001.md",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "respx__route_mock_core__001",
+      "package": "respx",
+      "repository_url": "https://github.com/lundberg/respx",
+      "origin": "hard50_backup_20260827",
+      "verdict": "source_rejected",
+      "reassessment": "Route registry with precedence is a clean closure task; keep it transport-free. REJECTED BY SOURCE GATE: upstream core_loc 2227 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "framework_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "route match precedence when multiple patterns apply",
+        "pattern combination semantics (and/or)",
+        "unmatched request raises the declared error",
+        "side-effect versus static response resolution",
+        "route call counting and assertion state"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ2 httpx-oriented mock (httpx already in 150) with a bounded router slice.",
+      "why_hard": "Route matching patterns; copying httpx internals fails isolation.",
+      "design_card": "benchmark/selection/closure50_design_cards/respx__route_mock_core__001.md",
+      "source_screen": {
+        "core_loc": 2227,
+        "test_loc": 2332,
+        "core_file_count": 15,
+        "total_mb": 0.62,
+        "repository_url": "https://github.com/lundberg/respx",
+        "requested_revision": "0.23.1",
+        "resolved_commit": "fc8b43bc74a69d07a6bdccf61522069b12bb8fad",
+        "source_verdict": "rejected",
+        "source_blockers": [
+          "core_loc 2227 < 3000"
+        ],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "pyhamcrest__matcher_core__001",
+      "package": "PyHamcrest",
+      "repository_url": "https://github.com/hamcrest/PyHamcrest",
+      "origin": "hard50_backup_20260827",
+      "verdict": "source_rejected",
+      "reassessment": "Exact description strings are an excellent declared-but-easily-missed branch. REJECTED BY SOURCE GATE: upstream core_loc 2275 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "planned_lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "planned_branches": [
+        "mismatch description text for the declared matchers",
+        "combinator short-circuit behavior",
+        "type mismatch described rather than raised",
+        "nested matcher description composition",
+        "declared self-description output"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ2 matcher library with many unused combinators as decoy.",
+      "why_hard": "Mismatch descriptions and combinators; copying assertEqual fails Hidden.",
+      "design_card": "benchmark/selection/closure50_design_cards/pyhamcrest__matcher_core__001.md",
+      "source_screen": {
+        "core_loc": 2275,
+        "test_loc": 2287,
+        "core_file_count": 57,
+        "total_mb": 0.28,
+        "repository_url": "https://github.com/hamcrest/PyHamcrest",
+        "requested_revision": "V2.1.0",
+        "resolved_commit": "dede7a338d9bb9a3fa21ddd5958b8c64a6df3282",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 2275 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "injector__module_bind_core__001",
+      "package": "injector",
+      "repository_url": "https://github.com/python-injector/injector",
+      "origin": "hard50_backup_20260827",
+      "verdict": "drop",
+      "reassessment": "Mechanism duplicates dependency_injector container task; keep only one binder-graph task.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "myst_parser__md_to_docutils_core__001",
+      "package": "myst-parser",
+      "repository_url": "https://github.com/executablebooks/MyST-Parser",
+      "origin": "hard50_backup_20260827",
+      "verdict": "drop",
+      "reassessment": "Sphinx coupling pulls heavy dependencies; markdown-it-py and sphinx already appear in the 200.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "executing__source_node_core__001",
+      "package": "executing",
+      "repository_url": "https://github.com/alexmojaki/executing",
+      "origin": "hard50_backup_20260827",
+      "verdict": "drop",
+      "reassessment": "Frame/AST mapping is highly interpreter-version sensitive; oracle N=3 stability risk too high.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "waitress__adjustments_core__001",
+      "package": "waitress",
+      "repository_url": "https://github.com/Pylons/waitress",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Many independent knobs on a single adjustments object; no server socket needed.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "config_environment_coupling",
+        "framework_coupling"
+      ],
+      "planned_branches": [
+        "option aliases resolve to the same setting",
+        "declared unit conversion for size/time knobs",
+        "mutually exclusive options raise the declared error",
+        "type validation rejects near-miss values",
+        "defaults applied only for unset options"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "Backup config object inside a server (copy-all trap).",
+      "why_hard": "Many knobs; Hidden checks aliases and validation.",
+      "design_card": "benchmark/selection/closure50_design_cards/waitress__adjustments_core__001.md",
+      "source_screen": "not_probed"
+    },
+    {
+      "task_id": "wcmatch__globmatch_core__001",
+      "package": "wcmatch",
+      "repository_url": "https://github.com/facelessuser/wcmatch",
+      "origin": "hard50_backup_20260827",
+      "verdict": "keep",
+      "reassessment": "Tiny surface, naturally many independent flag branches. Strong fit.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "parser_state_coupling",
+        "data_model_coupling"
+      ],
+      "planned_branches": [
+        "flag combinations are masked and transformed per FLAG_MASK / _flag_transform, including PATHNAME being forced on",
+        "brace expansion runs before negation classification",
+        "a pattern set that is only negative injects a default ** when NEGATEALL is set",
+        "CASE / IGNORECASE / platform default decide matching case via get_case",
+        "PATHNAME makes slash a structural separator rather than a wildcard match"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "Backup Direct copy-trap if pathspec-like needed; larger than pathspec.",
+      "why_hard": "Flag combinations; Hidden brace/negate.",
+      "design_card": "benchmark/selection/closure50_design_cards/wcmatch__globmatch_core__001.md",
+      "source_screen": {
+        "core_loc": 3689,
+        "test_loc": 4913,
+        "core_file_count": 11,
+        "total_mb": 0.65,
+        "repository_url": "https://github.com/facelessuser/wcmatch",
+        "requested_revision": "11.0.1",
+        "resolved_commit": "9f8a9f6b7479e8ee4d033976d0a24faaca4a1830",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "branches_status": "verified_from_source",
+      "verified_upstream_files": [
+        "wcmatch/glob.py",
+        "wcmatch/_wcparse.py"
+      ]
+    },
+    {
+      "task_id": "pybreaker__breaker_state_core__001",
+      "package": "pybreaker",
+      "repository_url": "https://github.com/danielfm/pybreaker",
+      "origin": "closure50_new_repo_wave1",
+      "verdict": "source_rejected",
+      "reassessment": "New card authored under the Closure-50 recipe. REJECTED BY SOURCE GATE: upstream core_loc 715 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "license": "BSD-3-Clause",
+      "upstream_verified": "2026-09-12 github api: active, 183KB, default main",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "framework_coupling"
+      ],
+      "feature_one_liner": "Circuit-breaker state machine plus listener notification",
+      "planned_branches": [
+        "failure count reaching the threshold moves the breaker from closed to open",
+        "calls in the open state are refused rather than executed",
+        "after the reset timeout the breaker admits a single half-open trial",
+        "a failed half-open trial returns to open without restarting the count",
+        "listeners are notified of state changes and call outcomes in a fixed order",
+        "excluded exception types do not increment the failure count"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1/RQ4: two coupled concerns (state machine plus listener registry) behind a two-method surface. Failures should land on contract closure, not localization.",
+      "why_hard": "A naive implementation does counting and thresholds only. The half-open single-trial semantics and the listener notification order are declared but easy to miss, and a shallow smoke test cannot distinguish them.",
+      "risks": [
+        "reset timeout needs injectable time to keep the oracle deterministic"
+      ],
+      "design_card": "benchmark/selection/closure50_design_cards/pybreaker__breaker_state_core__001.md",
+      "source_screen": {
+        "core_loc": 715,
+        "test_loc": 1013,
+        "core_file_count": 1,
+        "total_mb": 0.1,
+        "repository_url": "https://github.com/danielfm/pybreaker",
+        "requested_revision": "v1.4.1",
+        "resolved_commit": "faf54de652991899768d7075feab6fcc10b72ba7",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 715 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "backoff__retry_policy_core__001",
+      "package": "backoff",
+      "repository_url": "https://github.com/litl/backoff",
+      "origin": "closure50_new_repo_wave1",
+      "verdict": "source_rejected",
+      "reassessment": "New card authored under the Closure-50 recipe. REJECTED BY SOURCE GATE: upstream core_loc 674 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "license": "MIT",
+      "upstream_verified": "2026-09-12 github api: archived 2024-05-02, 254KB. Archived upstream is an advantage here: behavior is frozen and cannot drift under us.",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "implicit_dependency_coupling",
+        "data_model_coupling"
+      ],
+      "feature_one_liner": "Wait generators, give-up predicates and retry event handlers",
+      "planned_branches": [
+        "exponential, fibonacci and constant wait generators produce their declared sequences",
+        "jitter is applied at the declared position and respects the declared bounds",
+        "a true give-up predicate abandons immediately without a further wait",
+        "max_tries and max_time interact per the declared precedence",
+        "backoff / give-up / success handlers fire with the declared counts and arguments",
+        "predicate-based retry and exception-based retry differ in return-value semantics"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1/RQ4: three orthogonal decoration points must all be recovered; a partially correct artifact still passes a shallow smoke test.",
+      "why_hard": "Public smoke can only observe that a retry happened. Getting the generator sequence, the jitter bounds, the give-up short circuit and the handler arguments all right requires reading the contract closely.",
+      "risks": [
+        "wait-time assertions must use injected sleep, not wall clock"
+      ],
+      "design_card": "benchmark/selection/closure50_design_cards/backoff__retry_policy_core__001.md",
+      "source_screen": {
+        "core_loc": 674,
+        "test_loc": 1378,
+        "core_file_count": 9,
+        "total_mb": 0.1,
+        "repository_url": "https://github.com/litl/backoff",
+        "requested_revision": "v2.2.1",
+        "resolved_commit": "d9d80a92d5a4483373acdaf9faa4068c85b3d268",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 674 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "pkginfo__metadata_reader_core__001",
+      "package": "pkginfo",
+      "repository_url": "https://github.com/tseaver/pkginfo",
+      "origin": "closure50_new_repo_wave1",
+      "verdict": "pending_source_resolution",
+      "reassessment": "New card authored under the Closure-50 recipe. SOURCE NOT MEASURED: screen returned unresolved (no version tag found; moving branches are forbidden as revisions). Resolve a real tagged revision before this candidate can be used.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "license": "MIT",
+      "upstream_verified": "2026-09-12 github api: active 2026-08-30, 1146KB, default main",
+      "planned_lift_type": "Composite",
+      "feature_family": "resource_metadata_loading",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "resource_coupling",
+        "data_model_coupling"
+      ],
+      "feature_one_liner": "Distribution metadata extraction across several carriers",
+      "planned_branches": [
+        "the same metadata read from differing carriers yields consistent declared fields",
+        "the metadata version determines which fields are present",
+        "multi-valued fields preserve order and are not de-duplicated",
+        "a missing optional field returns the declared empty value instead of raising",
+        "an unrecognized carrier raises the declared exception"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1/RQ5: several readers share one normalization layer, so copying a single reader cannot satisfy cross-carrier consistency.",
+      "why_hard": "The shared normalization is implicit closure: the surface looks like one reader class, but consistency across carriers is what the contract demands.",
+      "risks": [
+        "needs small offline fixture archives; keep them tiny and text-based",
+        "confirm no network or index access in the chosen slice"
+      ],
+      "design_card": "benchmark/selection/closure50_design_cards/pkginfo__metadata_reader_core__001.md",
+      "source_screen": {
+        "core_loc": null,
+        "test_loc": null,
+        "core_file_count": null,
+        "total_mb": null,
+        "repository_url": "https://github.com/tseaver/pkginfo",
+        "requested_revision": null,
+        "resolved_commit": null,
+        "source_verdict": "unresolved",
+        "source_blockers": [
+          "no version tag found; moving branches are forbidden as revisions"
+        ],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "pyproject_metadata__pep621_core__001",
+      "package": "pyproject-metadata",
+      "repository_url": "https://github.com/pypa/pyproject-metadata",
+      "origin": "closure50_new_repo_wave1",
+      "verdict": "source_rejected",
+      "reassessment": "New card authored under the Closure-50 recipe. REJECTED BY SOURCE GATE: upstream core_loc 1782 < 3000, so an 80-150 LOC slice would be most of the library and copying could pass.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "rejected",
+      "license": "MIT",
+      "upstream_verified": "2026-09-12 github api: active 2026-09-07, 641KB, default main",
+      "planned_lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "entanglement_level": "high",
+      "entanglement_types": [
+        "data_model_coupling",
+        "implicit_dependency_coupling"
+      ],
+      "feature_one_liner": "PEP 621 [project] table parsing, dynamic fields and validation",
+      "planned_branches": [
+        "a field declared dynamic must not also be given statically, per the declared error",
+        "fields not declared dynamic fall back to their declared defaults when absent",
+        "string and table spellings of the same field normalize to one representation",
+        "dependency lists normalize while preserving declared order",
+        "validation errors carry the failing field path"
+      ],
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "paper_fit": "RQ1/RQ4: the dynamic-field rule is a declared mutual-exclusion invariant, a clean instance of contract closure rather than localization.",
+      "why_hard": "A naive parser reads fields and stops. The dynamic semantics are a declared invariant between two parts of the same table, which shallow tests never reach.",
+      "risks": [
+        "keep the slice to the [project] table; do not pull in backend plumbing"
+      ],
+      "design_card": "benchmark/selection/closure50_design_cards/pyproject_metadata__pep621_core__001.md",
+      "source_screen": {
+        "core_loc": 1782,
+        "test_loc": 2723,
+        "core_file_count": 7,
+        "total_mb": 0.22,
+        "repository_url": "https://github.com/pypa/pyproject-metadata",
+        "requested_revision": "0.12.1",
+        "resolved_commit": "737644a1482a750ce8a38927b69bbbe07d4e8b65",
+        "source_verdict": "review_required",
+        "source_blockers": [
+          "core_loc 1782 < 3000: the slice would be most of the library, so copying it can pass"
+        ],
+        "evidence_report": "source_probe.json"
+      }
+    },
+    {
+      "task_id": "huey__task_registry_core__001",
+      "package": "huey",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "candidate_slice": "Task registration and retry/schedule bookkeeping",
+      "planned_branches": [
+        "registering the same task identifier twice raises ValueError",
+        "deserializing an unregistered task raises HueyException",
+        "unregister returns True on success and False when the task was not registered",
+        "create_message drops an injected kwargs['task'] only when it is the Task instance itself",
+        "Task retries/retry_delay/retry_backoff default to 0 and honor an explicit None-vs-value choice"
+      ],
+      "branches_status": "verified_from_source",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/huey__task_registry_core__001.md",
+      "source_screen": {
+        "core_loc": 5487,
+        "test_loc": 5163,
+        "core_file_count": 38,
+        "total_mb": 1.25,
+        "repository_url": "https://github.com/coleifer/huey",
+        "requested_revision": "3.4.0",
+        "resolved_commit": "6e8acd022346eeb1b09f46c7fa2612f760ee194b",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "verified_upstream_files": [
+        "huey/registry.py",
+        "huey/api.py"
+      ],
+      "verified_exclusions": [
+        "Redis, SQLite, enqueue loop, storage"
+      ]
+    },
+    {
+      "task_id": "sismic__statechart_interpret_core__001",
+      "package": "sismic",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Composite",
+      "feature_family": "workflow_session_orchestration",
+      "entanglement_level": "high",
+      "candidate_slice": "Statechart step semantics and event queue ordering",
+      "planned_branches": [
+        "internal events are selected before external events",
+        "an event with a future delay is queued but not consumed until interpreter time catches up",
+        "same-timestamp ordering prefers InternalEvent over external events",
+        "the first execute_once before initialization returns a MicroStep that enters the root state",
+        "execute_once returns None when there is no transition and no available event"
+      ],
+      "branches_status": "verified_from_source",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/sismic__statechart_interpret_core__001.md",
+      "source_screen": {
+        "core_loc": 3630,
+        "test_loc": 1838,
+        "core_file_count": 32,
+        "total_mb": 1.17,
+        "repository_url": "https://github.com/AlexandreDecan/sismic",
+        "requested_revision": "1.6.11",
+        "resolved_commit": "2905c80fd17eeb203197535a5e16fb4285a992c4",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "verified_upstream_files": [
+        "sismic/interpreter/default.py"
+      ],
+      "risks": [
+        "keep the slice to queue + execute_once + a tiny DummyEvaluator fixture"
+      ]
+    },
+    {
+      "task_id": "omegaconf__merge_resolve_core__001",
+      "package": "omegaconf",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "candidate_slice": "Merge semantics, interpolation and struct mode",
+      "planned_branches": [
+        "OmegaConf.merge raises ValueError when asked to merge a None config",
+        "struct mode raises ConfigAttributeError on an unknown key",
+        "open_dict temporarily disables struct and restores the previous flag on exit",
+        "recursive node interpolation raises InterpolationResolutionError",
+        "when a merge source node is itself an interpolation, the destination is replaced by that interpolation rather than merged key-by-key"
+      ],
+      "branches_status": "verified_from_source",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/omegaconf__merge_resolve_core__001.md",
+      "source_screen": {
+        "core_loc": 6270,
+        "test_loc": 20735,
+        "core_file_count": 25,
+        "total_mb": 4.5,
+        "repository_url": "https://github.com/omry/omegaconf",
+        "requested_revision": "v2.3.1",
+        "resolved_commit": "ddfcbbf5b11e4856b7c30e6ed123dafa9b0f15fb",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "verified_upstream_files": [
+        "omegaconf/omegaconf.py",
+        "omegaconf/basecontainer.py",
+        "omegaconf/dictconfig.py",
+        "omegaconf/base.py"
+      ],
+      "risks": [
+        "antlr4-python3-runtime dependency; keep the slice to dict merge + struct + node interpolation"
+      ]
+    },
+    {
+      "task_id": "python_benedict__keypath_core__001",
+      "package": "python-benedict",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "entanglement_level": "high",
+      "candidate_slice": "Keypath access, merge and cast helpers",
+      "planned_branches": [
+        "a key that contains the keypath separator raises ValueError",
+        "separator=None treats the key as a single literal and does not split it",
+        "index syntax item[0][1] parses into ['item', 0, 1]",
+        "merge overwrite=False keeps existing leaf values; concat=True concatenates lists",
+        "nested set creates a list when the next key is an int and a dict otherwise"
+      ],
+      "branches_status": "verified_from_source",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/python_benedict__keypath_core__001.md",
+      "source_screen": {
+        "core_loc": 3720,
+        "test_loc": 13426,
+        "core_file_count": 65,
+        "total_mb": 7.61,
+        "repository_url": "https://github.com/fabiocaccamo/python-benedict",
+        "requested_revision": "0.38.0",
+        "resolved_commit": "a922d1a622740554c31cffd428242f0d4c7b73c3",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "verified_upstream_files": [
+        "benedict/core/keypath_util.py",
+        "benedict/core/keylist_util.py",
+        "benedict/core/merge.py"
+      ]
+    },
+    {
+      "task_id": "flit__metadata_core__001",
+      "package": "flit",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": true,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "entanglement_level": "high",
+      "candidate_slice": "Module metadata discovery and normalization",
+      "planned_branches": [
+        "Module discovery raises ValueError when more than one file or folder could be the module",
+        "Module discovery raises ValueError when no file or folder matches the module name",
+        "version_files prefers version.py, _version.py and __version__.py over __init__.py",
+        "get_info_from_module reads docstring and version from the AST first and only then falls back to import",
+        "the summary is the first line of the docstring; a missing docstring raises NoDocstringError"
+      ],
+      "branches_status": "verified_from_source",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/flit__metadata_core__001.md",
+      "source_screen": {
+        "core_loc": 4717,
+        "test_loc": 2181,
+        "core_file_count": 41,
+        "total_mb": 0.47,
+        "repository_url": "https://github.com/pypa/flit",
+        "requested_revision": "4.0.2",
+        "resolved_commit": "60c0b3d97bf095fbdb7671a02e51f8d8aba2fb85",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      },
+      "verified_upstream_files": [
+        "flit_core/flit_core/common.py",
+        "flit_core/flit_core/versionno.py"
+      ]
+    },
+    {
+      "task_id": "pip_tools__requirements_parse_core__001",
+      "package": "pip-tools",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "entanglement_level": "high",
+      "candidate_slice": "Requirements file parsing and option propagation",
+      "planned_branches": [],
+      "branches_status": "pending_source_read",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/pip_tools__requirements_parse_core__001.md",
+      "source_screen": {
+        "core_loc": 4308,
+        "test_loc": 7478,
+        "core_file_count": 33,
+        "total_mb": 0.65,
+        "repository_url": "https://github.com/jazzband/pip-tools",
+        "requested_revision": "v7.6.1",
+        "resolved_commit": "5bc5ded0b685637d6dffb926c00829220b4c6834",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "beartype__type_check_core__001",
+      "package": "beartype",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "entanglement_level": "high",
+      "candidate_slice": "Runtime type checks over a declared hint subset",
+      "planned_branches": [],
+      "branches_status": "pending_source_read",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/beartype__type_check_core__001.md",
+      "source_screen": {
+        "core_loc": 69533,
+        "test_loc": 16402,
+        "core_file_count": 680,
+        "total_mb": 7.4,
+        "repository_url": "https://github.com/beartype/beartype",
+        "requested_revision": "v0.22.9",
+        "resolved_commit": "9430c6515af3b158acacdc47fe7b1adb646f6624",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "watchdog__event_dispatch_core__001",
+      "package": "watchdog",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "entanglement_level": "high",
+      "candidate_slice": "Event pattern matching and handler dispatch",
+      "planned_branches": [],
+      "branches_status": "pending_source_read",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/watchdog__event_dispatch_core__001.md",
+      "source_screen": {
+        "core_loc": 4814,
+        "test_loc": 2795,
+        "core_file_count": 26,
+        "total_mb": 0.45,
+        "repository_url": "https://github.com/gorakhargosh/watchdog",
+        "requested_revision": "v6.0.0",
+        "resolved_commit": "76c091dc8841de1d1a1cd6511bb509fe4f058de6",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    },
+    {
+      "task_id": "humanfriendly__parse_format_core__001",
+      "package": "humanfriendly",
+      "origin": "closure50_screened_wave2",
+      "verdict": "keep",
+      "reassessment": "Passed the core_loc source screen; slice intent recorded.",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "disposition": "candidate",
+      "planned_lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "entanglement_level": "high",
+      "candidate_slice": "Human-readable size and time parsing and formatting",
+      "planned_branches": [],
+      "branches_status": "pending_source_read",
+      "target_reference_loc": [
+        80,
+        150
+      ],
+      "target_api_size": "1-2 callables, 2-4 members",
+      "design_card": "benchmark/selection/closure50_design_cards/humanfriendly__parse_format_core__001.md",
+      "source_screen": {
+        "core_loc": 5526,
+        "test_loc": 0,
+        "core_file_count": 17,
+        "total_mb": 0.64,
+        "repository_url": "https://github.com/xolox/python-humanfriendly",
+        "requested_revision": "10.0",
+        "resolved_commit": "6758ac61f906cd8528682003070a57febe4ad3cf",
+        "source_verdict": "admissible",
+        "source_blockers": [],
+        "evidence_report": "source_screen.json"
+      }
+    }
+  ],
+  "new_repository_pool": [
+    {
+      "package": "pluginbase",
+      "feature_family": "registry_plugin_dispatch",
+      "candidate_slice": "Plugin source isolation and module namespacing",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "watchdog",
+      "feature_family": "registry_plugin_dispatch",
+      "candidate_slice": "Event pattern matching and observer registry dispatch",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "class-registry",
+      "feature_family": "registry_plugin_dispatch",
+      "candidate_slice": "Keyed class registry with fallback resolution",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "straight.plugin",
+      "feature_family": "registry_plugin_dispatch",
+      "candidate_slice": "Namespace plugin discovery and loading order",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "pluginlib",
+      "feature_family": "registry_plugin_dispatch",
+      "candidate_slice": "Plugin versioning and parent/child registration",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "schedule",
+      "feature_family": "workflow_session_orchestration",
+      "candidate_slice": "Job scheduling cadence and next-run computation",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "circuitbreaker",
+      "feature_family": "workflow_session_orchestration",
+      "candidate_slice": "Failure threshold and recovery timeout semantics",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "everett",
+      "feature_family": "config_resolve_discover",
+      "candidate_slice": "Layered config sources with namespaces and parsers",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "omegaconf",
+      "feature_family": "config_resolve_discover",
+      "candidate_slice": "Merge semantics, interpolation and struct mode",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "pyhocon",
+      "feature_family": "config_resolve_discover",
+      "candidate_slice": "HOCON include and substitution resolution",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "python-benedict",
+      "feature_family": "config_resolve_discover",
+      "candidate_slice": "Keypath access, merge and cast helpers",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "typeguard",
+      "feature_family": "validate_normalize_construct",
+      "candidate_slice": "Runtime type checks over generics and unions",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "validators",
+      "feature_family": "validate_normalize_construct",
+      "candidate_slice": "Declared validator edge cases and error reporting",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "dirty-equals",
+      "feature_family": "validate_normalize_construct",
+      "candidate_slice": "Declarative comparison objects and composition",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "annotated-types",
+      "feature_family": "validate_normalize_construct",
+      "candidate_slice": "Constraint metadata composition and resolution",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "jmespath",
+      "feature_family": "parse_tokenize_decode",
+      "candidate_slice": "Query compilation and projection semantics",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "parsimonious",
+      "feature_family": "parse_tokenize_decode",
+      "candidate_slice": "PEG grammar rules and node visiting",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "docopt",
+      "feature_family": "parse_tokenize_decode",
+      "candidate_slice": "Usage-string grammar to option parsing",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "humanfriendly",
+      "feature_family": "parse_tokenize_decode",
+      "candidate_slice": "Human-readable size/time parsing and formatting",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "ijson",
+      "feature_family": "parse_tokenize_decode",
+      "candidate_slice": "Incremental JSON event stream and prefix filtering",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "dparse",
+      "feature_family": "resource_metadata_loading",
+      "candidate_slice": "Dependency file parsing across declared formats",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    },
+    {
+      "package": "trove-classifiers",
+      "feature_family": "resource_metadata_loading",
+      "candidate_slice": "Classifier validation and deprecation handling",
+      "disposition": "shortlist",
+      "commit": "pending_pin",
+      "branches_verified": false,
+      "upstream_overlap_checked": true
+    }
+  ]
+}

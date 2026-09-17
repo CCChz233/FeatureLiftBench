@@ -250,8 +250,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     run_agent_parser.add_argument(
         "--source-context",
-        choices=("full_repository", "pruned_context"),
-        help="source workspace arm; Main requires full_repository",
+        choices=("full_repository", "pruned_context", "contract_only"),
+        help=(
+            "source workspace arm; Official Main is full_repository; "
+            "contract_only is the supplementary no-source arm and does not "
+            "change Main"
+        ),
     )
     td_cognition = run_agent_parser.add_mutually_exclusive_group()
     td_cognition.add_argument(

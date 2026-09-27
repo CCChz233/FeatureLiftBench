@@ -1,0 +1,1476 @@
+{
+  "schema": "featureliftbench.supplementary_selection_extension.v1",
+  "seed": "featureliftbench-source-ablation-20260911",
+  "population": "fixed python150 main-comparison task set",
+  "selection": "Original cohort x lift-type strata, proportional largest-remainder quotas, original SHA256 ordering within strata",
+  "extension_decided_after_40_task_outcomes": true,
+  "model_or_evaluator_outcomes_used_to_select_task_ids": false,
+  "membership_only_no_agent_runs": true,
+  "inventory_path": "docs/paper-workbench/writing/chapter2_python150_task_inventory.json",
+  "inventory_sha256": "d45aa8fd0acd011eb8a3e318182473d30e63bf5c3a5cb3d063fac5431a7137f8",
+  "parent_40_inventory_sha256": "154ee0ec1c13c74b0815292b1e1f758a8b414bfb51e5df98667b38179ef13248",
+  "inventory_identity_note": "Current inventory file differs from the original 40-task inventory; six stratum sizes and all 40 existing task labels/snapshots match the frozen 40-task manifest.",
+  "parent_40_path": "docs/paper-workbench/experiments/source_ablation_40.json",
+  "parent_40_sha256": "2f2254f0d15a0bd249c6447caba5979f3792fc84a907319fc5e80e79dd6bf091",
+  "sample_size": 100,
+  "original_task_count": 40,
+  "additional_task_count": 60,
+  "repository_count": 86,
+  "strata": [
+    {
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "population_n": 44,
+      "original_n": 12,
+      "sample_n": 30,
+      "additional_n": 18
+    },
+    {
+      "cohort": "earlier",
+      "lift_type": "Composite",
+      "population_n": 3,
+      "original_n": 1,
+      "sample_n": 2,
+      "additional_n": 1
+    },
+    {
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "population_n": 53,
+      "original_n": 14,
+      "sample_n": 35,
+      "additional_n": 21
+    },
+    {
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "population_n": 32,
+      "original_n": 8,
+      "sample_n": 21,
+      "additional_n": 13
+    },
+    {
+      "cohort": "later",
+      "lift_type": "Composite",
+      "population_n": 15,
+      "original_n": 4,
+      "sample_n": 10,
+      "additional_n": 6
+    },
+    {
+      "cohort": "later",
+      "lift_type": "Direct",
+      "population_n": 3,
+      "original_n": 1,
+      "sample_n": 2,
+      "additional_n": 1
+    }
+  ],
+  "lift_type_counts": {
+    "Adapted": 51,
+    "Composite": 12,
+    "Direct": 37
+  },
+  "tasks": [
+    {
+      "task_id": "deepdiff__deep_compare_core__001",
+      "task_path": "benchmark/tasks/deepdiff__deep_compare_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "algorithm_data_structure",
+      "source_repo_id": "github__qlustered__deepdiff",
+      "source_snapshot_id": "github__qlustered__deepdiff__94c962c3cc12",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "yarl__url_model_core__001",
+      "task_path": "benchmark/tasks/yarl__url_model_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__aio_libs__yarl",
+      "source_snapshot_id": "github__aio_libs__yarl__dae78c0d8fc6",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "configobj__roundtrip_config_core__001",
+      "task_path": "benchmark/tasks/configobj__roundtrip_config_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__diffsk__configobj",
+      "source_snapshot_id": "github__diffsk__configobj__38e58dce2418",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "tabulate__table_format_core__001",
+      "task_path": "benchmark/tasks/tabulate__table_format_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__astanin__python_tabulate",
+      "source_snapshot_id": "github__astanin__python_tabulate__ac7439e4e6c6",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "mako__lexer_expression_core__001",
+      "task_path": "benchmark/tasks/mako__lexer_expression_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__sqlalchemy__mako",
+      "source_snapshot_id": "github__sqlalchemy__mako__8e2a8cd3a196",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "task_path": "benchmark/tasks/installer__wheel_record_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__pypa__installer",
+      "source_snapshot_id": "github__pypa__installer__648a0b9a91d0",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "fs__url_opener_core__hard3_001",
+      "task_path": "benchmark/tasks/fs__url_opener_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pyfilesystem__pyfilesystem2",
+      "source_snapshot_id": "github__pyfilesystem__pyfilesystem2__317adb352ae7",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "click__lazy_command_core__hard3_001",
+      "task_path": "benchmark/tasks/click__lazy_command_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pallets__click",
+      "source_snapshot_id": "github__pallets__click__eadb3ec6941c",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "transitions__state_machine_core__hard3_001",
+      "task_path": "benchmark/tasks/transitions__state_machine_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__pytransitions__transitions",
+      "source_snapshot_id": "github__pytransitions__transitions__95166dc4eec7",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "arrow__parse_format_core__001",
+      "task_path": "benchmark/tasks/arrow__parse_format_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__arrow_py__arrow",
+      "source_snapshot_id": "github__arrow_py__arrow__c130ffb9980a",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "task_path": "benchmark/tasks/jupyter_core__paths_resolver_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__jupyter__jupyter_core",
+      "source_snapshot_id": "github__jupyter__jupyter_core__23116e7ef136",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "websockets__handshake_parse_core__001",
+      "task_path": "benchmark/tasks/websockets__handshake_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__python_websockets__websockets",
+      "source_snapshot_id": "github__python_websockets__websockets__1c71295d05ff",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "parso__python_parse_core__001",
+      "task_path": "benchmark/tasks/parso__python_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__davidhalter__parso",
+      "source_snapshot_id": "github__davidhalter__parso__f28d112ed2c9",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "pydantic_v1__validation_error_core__001",
+      "task_path": "benchmark/tasks/pydantic_v1__validation_error_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__pydantic__pydantic",
+      "source_snapshot_id": "github__pydantic__pydantic__5642e78c15f5",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pytest__ini_markers_core__001",
+      "task_path": "benchmark/tasks/pytest__ini_markers_core__001",
+      "cohort": "earlier",
+      "lift_type": "Composite",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__pytest_dev__pytest",
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "python_dateutil__rrule_core__001",
+      "task_path": "benchmark/tasks/python_dateutil__rrule_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__dateutil__dateutil",
+      "source_snapshot_id": "github__dateutil__dateutil__8f9462716028",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "task_path": "benchmark/tasks/keyring__backend_select_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__jaraco__keyring",
+      "source_snapshot_id": "github__jaraco__keyring__4c51f18f5ba6",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "redis__resp_parser_core__001",
+      "task_path": "benchmark/tasks/redis__resp_parser_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__redis__redis_py",
+      "source_snapshot_id": "github__redis__redis_py__5a532a3c39e1",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "task_path": "benchmark/tasks/stevedore__extension_manager_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__openstack__stevedore",
+      "source_snapshot_id": "github__openstack__stevedore__839bbf1a774f",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "coverage__report_core__001",
+      "task_path": "benchmark/tasks/coverage__report_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__coveragepy__coveragepy",
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "decorator__signature_preserving_core__001",
+      "task_path": "benchmark/tasks/decorator__signature_preserving_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "workflow_session_orchestration",
+      "source_repo_id": "github__micheles__decorator",
+      "source_snapshot_id": "github__micheles__decorator__09e3124ed957",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "werkzeug__routing_core__001",
+      "task_path": "benchmark/tasks/werkzeug__routing_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pallets__werkzeug",
+      "source_snapshot_id": "github__pallets__werkzeug__5dfbd7817e00",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "jsonpath_ng__expression_eval_core__001",
+      "task_path": "benchmark/tasks/jsonpath_ng__expression_eval_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__h2non__jsonpath_ng",
+      "source_snapshot_id": "github__h2non__jsonpath_ng__8d7356dcb6f2",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "task_path": "benchmark/tasks/pytest__marker_registry_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pytest_dev__pytest",
+      "source_snapshot_id": "github__pytest_dev__pytest__41b75f32604d",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "cachetools__cache_eviction_core__001",
+      "task_path": "benchmark/tasks/cachetools__cache_eviction_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "cache_retry_policy",
+      "source_repo_id": "github__tkem__cachetools",
+      "source_snapshot_id": "github__tkem__cachetools__b6ff34e99c6f",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "hatch__project_metadata_core__hard3_001",
+      "task_path": "benchmark/tasks/hatch__project_metadata_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__pypa__hatch",
+      "source_snapshot_id": "github__pypa__hatch__1c66b30e80a7",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "task_path": "benchmark/tasks/pydantic__field_validator_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__pydantic__pydantic",
+      "source_snapshot_id": "github__pydantic__pydantic__4a1b25d08f22",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "python_dotenv__env_parse_core__001",
+      "task_path": "benchmark/tasks/python_dotenv__env_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__theskumar__python_dotenv",
+      "source_snapshot_id": "github__theskumar__python_dotenv__e50d0b4faa5c",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "xmltodict__xml_parse_core__001",
+      "task_path": "benchmark/tasks/xmltodict__xml_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__martinblech__xmltodict",
+      "source_snapshot_id": "github__martinblech__xmltodict__a3d8ab67d4af",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "astroid__nodes_core__001",
+      "task_path": "benchmark/tasks/astroid__nodes_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__pycqa__astroid",
+      "source_snapshot_id": "github__pycqa__astroid__d140cd4da9d6",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "task_path": "benchmark/tasks/fsspec__url_chain_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__fsspec__filesystem_spec",
+      "source_snapshot_id": "github__fsspec__filesystem_spec__49231b1c487c",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "task_path": "benchmark/tasks/itsdangerous__timed_serializer_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__pallets__itsdangerous",
+      "source_snapshot_id": "github__pallets__itsdangerous__ec2acee1e8b4",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "rfc3986__uri_parse_core__001",
+      "task_path": "benchmark/tasks/rfc3986__uri_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__python_hyper__rfc3986",
+      "source_snapshot_id": "github__python_hyper__rfc3986__667bc45c9d13",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "task_path": "benchmark/tasks/responses__request_matcher_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__getsentry__responses",
+      "source_snapshot_id": "github__getsentry__responses__f5ae59453877",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "babel__plural_core__001",
+      "task_path": "benchmark/tasks/babel__plural_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "cache_retry_policy",
+      "source_repo_id": "github__python_babel__babel",
+      "source_snapshot_id": "github__python_babel__babel__daa7160174ce",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "attrs__validators_core__001",
+      "task_path": "benchmark/tasks/attrs__validators_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__python_attrs__attrs",
+      "source_snapshot_id": "github__python_attrs__attrs__48bfb491ee6a",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "jinja2__loader_inheritance_core__001",
+      "task_path": "benchmark/tasks/jinja2__loader_inheritance_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__pallets__jinja",
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "task_path": "benchmark/tasks/distlib__wheel_metadata_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__pypa__distlib",
+      "source_snapshot_id": "github__pypa__distlib__e71700d90bff",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "lark__grammar_loader_core__001",
+      "task_path": "benchmark/tasks/lark__grammar_loader_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__lark_parser__lark",
+      "source_snapshot_id": "github__lark_parser__lark__c80e589ad9d9",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "pluggy__hook_wrapper_core__hard3_001",
+      "task_path": "benchmark/tasks/pluggy__hook_wrapper_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pytest_dev__pluggy",
+      "source_snapshot_id": "github__pytest_dev__pluggy__0d767d1d9c54",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "filelock__reentrant_lock_core__001",
+      "task_path": "benchmark/tasks/filelock__reentrant_lock_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "workflow_session_orchestration",
+      "source_repo_id": "github__tox_dev__filelock",
+      "source_snapshot_id": "github__tox_dev__filelock__206f5893cac6",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "task_path": "benchmark/tasks/requests_cache__cache_key_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "cache_retry_policy",
+      "source_repo_id": "github__requests_cache__requests_cache",
+      "source_snapshot_id": "github__requests_cache__requests_cache__c116dd5c841c",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "python_multipart__form_parse_core__001",
+      "task_path": "benchmark/tasks/python_multipart__form_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__kludex__python_multipart",
+      "source_snapshot_id": "github__kludex__python_multipart__d9b56a41df65",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "referencing__json_schema_refs_core__001",
+      "task_path": "benchmark/tasks/referencing__json_schema_refs_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__python_jsonschema__referencing",
+      "source_snapshot_id": "github__python_jsonschema__referencing__1f0abc56e32e",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "typer__command_parser_core__001",
+      "task_path": "benchmark/tasks/typer__command_parser_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "workflow_session_orchestration",
+      "source_repo_id": "github__fastapi__typer",
+      "source_snapshot_id": "github__fastapi__typer__83e7087f95e1",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "tomlkit__roundtrip_document__001",
+      "task_path": "benchmark/tasks/tomlkit__roundtrip_document__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__python_poetry__tomlkit",
+      "source_snapshot_id": "github__python_poetry__tomlkit__b4d3e4a77252",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "python_decouple__config_repository_core__001",
+      "task_path": "benchmark/tasks/python_decouple__config_repository_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__hbnetwork__python_decouple",
+      "source_snapshot_id": "github__hbnetwork__python_decouple__b7c6532fe5fa",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "voluptuous__schema_validate_core__001",
+      "task_path": "benchmark/tasks/voluptuous__schema_validate_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__alecthomas__voluptuous",
+      "source_snapshot_id": "github__alecthomas__voluptuous__bfa173f9f008",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pygments__formatter_core__001",
+      "task_path": "benchmark/tasks/pygments__formatter_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__pygments__pygments",
+      "source_snapshot_id": "github__pygments__pygments__4330994af0fe",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "lark__parse_tree_core__001",
+      "task_path": "benchmark/tasks/lark__parse_tree_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__lark_parser__lark",
+      "source_snapshot_id": "github__lark_parser__lark__702440140c56",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "task_path": "benchmark/tasks/platformdirs__app_dirs_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__tox_dev__platformdirs",
+      "source_snapshot_id": "github__tox_dev__platformdirs__d6eab461f0cf",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "setuptools_scm__version_normalize_core__hard3_001",
+      "task_path": "benchmark/tasks/setuptools_scm__version_normalize_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__pypa__setuptools_scm",
+      "source_snapshot_id": "github__pypa__setuptools_scm__3d1b8ef01b27",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "task_path": "benchmark/tasks/yamale__schema_validate_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__23andme__yamale",
+      "source_snapshot_id": "github__23andme__yamale__db8654ca554b",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "humanize__naturaltime_core__001",
+      "task_path": "benchmark/tasks/humanize__naturaltime_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__python_humanize__humanize",
+      "source_snapshot_id": "github__python_humanize__humanize__7edd04a349f2",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "jinja2__filters_tests_core__001",
+      "task_path": "benchmark/tasks/jinja2__filters_tests_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__pallets__jinja",
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "task_path": "benchmark/tasks/dateutil__zone_resolver_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__dateutil__dateutil",
+      "source_snapshot_id": "github__dateutil__dateutil__908960127252",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "license_expression__policy_core__hard3_001",
+      "task_path": "benchmark/tasks/license_expression__policy_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__aboutcode_org__license_expression",
+      "source_snapshot_id": "github__aboutcode_org__license_expression__d9952b0e2bc0",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "sqlparse__parse_split_core__001",
+      "task_path": "benchmark/tasks/sqlparse__parse_split_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__andialbrecht__sqlparse",
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pygments__lexer_core__001",
+      "task_path": "benchmark/tasks/pygments__lexer_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__pygments__pygments",
+      "source_snapshot_id": "github__pygments__pygments__4330994af0fe",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "task_path": "benchmark/tasks/alembic__revision_map_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "algorithm_data_structure",
+      "source_repo_id": "github__sqlalchemy__alembic",
+      "source_snapshot_id": "github__sqlalchemy__alembic__56669fdd1c0f",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "bleach__sanitize_core__001",
+      "task_path": "benchmark/tasks/bleach__sanitize_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__mozilla__bleach",
+      "source_snapshot_id": "github__mozilla__bleach__985ad60b8e4f",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "jinja2__lexer_parser_core__001",
+      "task_path": "benchmark/tasks/jinja2__lexer_parser_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__pallets__jinja",
+      "source_snapshot_id": "github__pallets__jinja__9a72443c8587",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "cattrs__structure_core__001",
+      "task_path": "benchmark/tasks/cattrs__structure_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__python_attrs__cattrs",
+      "source_snapshot_id": "github__python_attrs__cattrs__5f60dbb75a07",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "environs__typed_env_core__001",
+      "task_path": "benchmark/tasks/environs__typed_env_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__sloria__environs",
+      "source_snapshot_id": "github__sloria__environs__562bcbac41b7",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "h2__frame_parse_core__001",
+      "task_path": "benchmark/tasks/h2__frame_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__python_hyper__h2",
+      "source_snapshot_id": "github__python_hyper__h2__bbdbf7654624",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "pytest__mark_expression_core__001",
+      "task_path": "benchmark/tasks/pytest__mark_expression_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__pytest_dev__pytest",
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "bidict__bidirectional_map_core__001",
+      "task_path": "benchmark/tasks/bidict__bidirectional_map_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "algorithm_data_structure",
+      "source_repo_id": "github__jab__bidict",
+      "source_snapshot_id": "github__jab__bidict__dbbb0ca3e3ea",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "task_path": "benchmark/tasks/apscheduler__cron_trigger_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__agronholm__apscheduler",
+      "source_snapshot_id": "github__agronholm__apscheduler__8b02f96b57dc",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "returns__result_pipeline_core__hard3_001",
+      "task_path": "benchmark/tasks/returns__result_pipeline_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "workflow_session_orchestration",
+      "source_repo_id": "github__dry_python__returns",
+      "source_snapshot_id": "github__dry_python__returns__885bf999e2df",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "faker__provider_core__001",
+      "task_path": "benchmark/tasks/faker__provider_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__joke2k__faker",
+      "source_snapshot_id": "github__joke2k__faker__2d3753ae9184",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "isodate__duration_parse_core__001",
+      "task_path": "benchmark/tasks/isodate__duration_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__gweis__isodate",
+      "source_snapshot_id": "github__gweis__isodate__f4373f2cf435",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "task_path": "benchmark/tasks/celery__signal_dispatch_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__celery__celery",
+      "source_snapshot_id": "github__celery__celery__ca877f3bafb2",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "task_path": "benchmark/tasks/schema__nested_validate_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__keleshev__schema",
+      "source_snapshot_id": "github__keleshev__schema__981d7e089474",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "ruamel_yaml__roundtrip_core__001",
+      "task_path": "benchmark/tasks/ruamel_yaml__roundtrip_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "source__sourceforge_net__a935d43b47a4",
+      "source_snapshot_id": "source__sourceforge_net__a935d43b47a4__608d9dbf5085",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pluggy__hook_call_order__001",
+      "task_path": "benchmark/tasks/pluggy__hook_call_order__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pytest_dev__pluggy",
+      "source_snapshot_id": "github__pytest_dev__pluggy__c62999277ecb",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "task_path": "benchmark/tasks/multidict__multidict_mutation_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Direct",
+      "feature_family": "algorithm_data_structure",
+      "source_repo_id": "github__aio_libs__multidict",
+      "source_snapshot_id": "github__aio_libs__multidict__083c5e312e59",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "httpx__request_model_core__001",
+      "task_path": "benchmark/tasks/httpx__request_model_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__encode__httpx",
+      "source_snapshot_id": "github__encode__httpx__3fdce099a597",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "task_path": "benchmark/tasks/cookiecutter__repo_finder_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__cookiecutter__cookiecutter",
+      "source_snapshot_id": "github__cookiecutter__cookiecutter__4a97d92d7fa3",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "task_path": "benchmark/tasks/importlib_resources__traversable_tree_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__python__importlib_resources",
+      "source_snapshot_id": "github__python__importlib_resources__001958068578",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "marshmallow__schema_core__001",
+      "task_path": "benchmark/tasks/marshmallow__schema_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__marshmallow_code__marshmallow",
+      "source_snapshot_id": "github__marshmallow_code__marshmallow__a4ceae103333",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pendulum__parse_format_core__001",
+      "task_path": "benchmark/tasks/pendulum__parse_format_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__sdispater__pendulum",
+      "source_snapshot_id": "github__sdispater__pendulum__970a8c189aaa",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "flake8__plugin_options_core__hard3_001",
+      "task_path": "benchmark/tasks/flake8__plugin_options_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pycqa__flake8",
+      "source_snapshot_id": "github__pycqa__flake8__4f658626a87a",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "dataclasses_json__serde_core__001",
+      "task_path": "benchmark/tasks/dataclasses_json__serde_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__lidatong__dataclasses_json",
+      "source_snapshot_id": "github__lidatong__dataclasses_json__3c5b2884e083",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "rich__markup_parse_core__001",
+      "task_path": "benchmark/tasks/rich__markup_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__textualize__rich",
+      "source_snapshot_id": "github__textualize__rich__76b5cd071400",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "task_path": "benchmark/tasks/importlib_metadata__entry_points_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__python__importlib_metadata",
+      "source_snapshot_id": "github__python__importlib_metadata__ba1c0026121e",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "jsonschema__validator_core__001",
+      "task_path": "benchmark/tasks/jsonschema__validator_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__python_jsonschema__jsonschema",
+      "source_snapshot_id": "github__python_jsonschema__jsonschema__032f23149b5a",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "coverage__source_selection_core__001",
+      "task_path": "benchmark/tasks/coverage__source_selection_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__coveragepy__coveragepy",
+      "source_snapshot_id": "github__coveragepy__coveragepy__e426d54694bd",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "jsonpointer__resolve_core__001",
+      "task_path": "benchmark/tasks/jsonpointer__resolve_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__stefankoegl__python_json_pointer",
+      "source_snapshot_id": "github__stefankoegl__python_json_pointer__362d9007ed9e",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "task_path": "benchmark/tasks/readme_renderer__content_type_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "serialize_format_render",
+      "source_repo_id": "github__pypa__readme_renderer",
+      "source_snapshot_id": "github__pypa__readme_renderer__6d94d0128c4f",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "intervaltree__interval_tree_core__001",
+      "task_path": "benchmark/tasks/intervaltree__interval_tree_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "algorithm_data_structure",
+      "source_repo_id": "github__chaimleib__intervaltree",
+      "source_snapshot_id": "github__chaimleib__intervaltree__9741eb324c97",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "click__option_parser__001",
+      "task_path": "benchmark/tasks/click__option_parser__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__pallets__click",
+      "source_snapshot_id": "github__pallets__click__a7cce6785c62",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "task_path": "benchmark/tasks/poetry_core__dependency_groups_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Composite",
+      "feature_family": "resource_metadata_loading",
+      "source_repo_id": "github__python_poetry__poetry_core",
+      "source_snapshot_id": "github__python_poetry__poetry_core__e0b3981cde6a",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "isort__settings_resolver_core__hard3_001",
+      "task_path": "benchmark/tasks/isort__settings_resolver_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "config_resolve_discover",
+      "source_repo_id": "github__pycqa__isort",
+      "source_snapshot_id": "github__pycqa__isort__8422ea593a22",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "pluggy__hook_specs_core__001",
+      "task_path": "benchmark/tasks/pluggy__hook_specs_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "registry_plugin_dispatch",
+      "source_repo_id": "github__pytest_dev__pluggy",
+      "source_snapshot_id": "github__pytest_dev__pluggy__c62999277ecb",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "task_path": "benchmark/tasks/aiohttp__url_params_core__hard3_001",
+      "cohort": "later",
+      "lift_type": "Adapted",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "github__aio_libs__aiohttp",
+      "source_snapshot_id": "github__aio_libs__aiohttp__f9b96545c5f4",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "passlib__hash_context_core__001",
+      "task_path": "benchmark/tasks/passlib__hash_context_core__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "validate_normalize_construct",
+      "source_repo_id": "source__foss_heptapod_net__fff35bde6fd1",
+      "source_snapshot_id": "source__foss_heptapod_net__fff35bde6fd1__d316cb7bd61f",
+      "in_original_40": false,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "wsproto__frame_parse_core__001",
+      "task_path": "benchmark/tasks/wsproto__frame_parse_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "protocol_state_transition",
+      "source_repo_id": "github__python_hyper__wsproto",
+      "source_snapshot_id": "github__python_hyper__wsproto__1cf5c7095c49",
+      "in_original_40": true,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "markdown_it__commonmark_render__001",
+      "task_path": "benchmark/tasks/markdown_it__commonmark_render__001",
+      "cohort": "earlier",
+      "lift_type": "Direct",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__executablebooks__markdown_it_py",
+      "source_snapshot_id": "github__executablebooks__markdown_it_py__4c5e1b22e6a4",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    },
+    {
+      "task_id": "pytest__skipif_eval_core__001",
+      "task_path": "benchmark/tasks/pytest__skipif_eval_core__001",
+      "cohort": "earlier",
+      "lift_type": "Composite",
+      "feature_family": "cache_retry_policy",
+      "source_repo_id": "github__pytest_dev__pytest",
+      "source_snapshot_id": "github__pytest_dev__pytest__4bec256f35f8",
+      "in_original_40": false,
+      "arm_order": [
+        "full_repository",
+        "contract_only"
+      ]
+    },
+    {
+      "task_id": "sqlparse__token_tree_core__001",
+      "task_path": "benchmark/tasks/sqlparse__token_tree_core__001",
+      "cohort": "earlier",
+      "lift_type": "Adapted",
+      "feature_family": "parse_tokenize_decode",
+      "source_repo_id": "github__andialbrecht__sqlparse",
+      "source_snapshot_id": "github__andialbrecht__sqlparse__7bd7593b3dbd",
+      "in_original_40": true,
+      "arm_order": [
+        "contract_only",
+        "full_repository"
+      ]
+    }
+  ]
+}

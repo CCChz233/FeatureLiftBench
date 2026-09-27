@@ -1,0 +1,19 @@
+\begin{table}[htbp]
+  \centering
+  \small
+  \caption{Paired repository-evidence outcomes and statistics on 40 tasks per configuration. Full-only and Contract-only count discordant pairs. $\Delta$ is Full Source minus Contract Only (pp); intervals are 95\% paired task-bootstrap intervals, and $p_{\mathrm{Holm}}$ gives exact McNemar p-values adjusted across the three configurations.}
+  \label{tab:paired-ablation}
+  \setlength{\tabcolsep}{3.6pt}
+  \renewcommand{\arraystretch}{1.10}
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{0.095\linewidth}>{\centering\arraybackslash}p{0.095\linewidth}>{\centering\arraybackslash}p{0.07\linewidth}>{\centering\arraybackslash}p{0.095\linewidth}>{\centering\arraybackslash}p{0.05\linewidth}>{\centering\arraybackslash}p{0.145\linewidth}>{\centering\arraybackslash}p{0.13\linewidth}@{}}
+    \toprule
+    & \multicolumn{2}{c}{\textbf{Passes}} & \multicolumn{2}{c}{\textbf{Discordant pairs}} & \multicolumn{3}{c}{\textbf{Paired effect}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-8}
+    \textbf{Configuration} & \shortstack{\textbf{Full}\\\textbf{source}} & \shortstack{\textbf{Contract}\\\textbf{only}} & \shortstack{\textbf{Full}\\\textbf{only}} & \shortstack{\textbf{Contract}\\\textbf{only}} & \shortstack{\boldmath$\Delta$\\\textbf{(pp)}} & \shortstack{\textbf{95\% CI}\\\textbf{(pp)}} & \boldmath$p_{\mathrm{Holm}}$ \\
+    \midrule
+    GPT-5.6 Luna & 23/40 & 9/40 & 17 & 3 & 35.0 & [15.0, 55.0] & $5.15\times10^{-3}$ \\
+    DeepSeek V4 Pro & 25/40 & 6/40 & 20 & 1 & 47.5 & [30.0, 65.0] & $6.29\times10^{-5}$ \\
+    Qwen3.6-35B-A3B & 12/40 & 1/40 & 12 & 1 & 27.5 & [12.5, 42.5] & $5.15\times10^{-3}$ \\
+    \bottomrule
+  \end{tabularx}
+\end{table}

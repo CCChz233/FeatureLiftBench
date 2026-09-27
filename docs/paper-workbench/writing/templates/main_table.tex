@@ -1,0 +1,43 @@
+\begin{table}[htb]
+  \caption{Main comparison on the common 150-task benchmark. Pass@1 and Steps
+  use all assigned runs. Successful-artifact footprints are analyzed in Figure~\ref{fig:matched-footprint}.}
+  \label{tab:main}
+
+  \centering
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.12}
+
+  \begin{tabular*}{\linewidth}{
+    @{\extracolsep{\fill}}
+    >{\raggedright\arraybackslash}p{3.15cm}
+    r
+    rr
+    rr
+    @{}
+  }
+    \toprule
+
+    &
+    \multicolumn{1}{c}{Correctness} &
+    \multicolumn{2}{c}{Steps} &
+    \multicolumn{2}{c}{Tokens ($10^4$)} \\
+
+    \cmidrule(lr){2-2}
+    \cmidrule(lr){3-4}
+    \cmidrule(lr){5-6}
+
+    Configuration
+      & \shortstack{Pass@1\\$n$ (\%)}
+      & Median
+      & P90
+      & Median
+      & P90 \\
+
+    \midrule
+@@ROWS@@
+
+    \bottomrule
+  \end{tabular*}
+
+\end{table}

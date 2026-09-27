@@ -1,0 +1,25 @@
+\begin{table}[tbp]
+  \centering
+  \small
+  \caption{Operational definitions of the behavioral-property codebook.}
+  \label{tab:failure-analysis}
+  \setlength{\tabcolsep}{4.0pt}
+  \renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Property} & \textbf{Operational definition} \\
+    \midrule
+    Value / representation & Returned values, result structure, canonical forms, or preserved text differ. \\
+    Call compatibility & An existing API handles a declared argument form, callback binding, or dispatch path incompatibly. \\
+    Validation / exceptions & Input acceptance, rejection, or required exception behavior differs. \\
+    Evaluation control & Whether or when an operand, callback, or branch executes differs. \\
+    Ordering / identity & Observable order, identity, or identity-based lookup differs. \\
+    State / lifecycle & Observable state evolution, object lifetime, reset, or cleanup differs. \\
+    Defaults / precedence & Default selection, fallback, or precedence among supplied values differs. \\
+    Interaction protocol & Available operations violate an explicit sequencing or interaction invariant. \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip\begin{minipage}{\linewidth}\scriptsize
+  One primary property is assigned per confirmed semantic violation. Interaction protocol remains in the codebook with no primary assignments in this analysis set.
+  \end{minipage}
+\end{table}

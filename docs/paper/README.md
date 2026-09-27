@@ -1,41 +1,33 @@
-# FeatureLiftBench 论文工作区
+# FeatureLiftBench 论文
 
-> **Status: current · Last verified: 2026-09-17**
+这里是唯一的正式写作目录，结构与 Overleaf 项目一致。
 
-新版正文来自用户提供的 FSE.zip。入口：[main.tex](main.tex) · [项目地图](../PROJECT_MAP.md) · [本次同步记录](FSE_SYNC_20260914.md)。
-
-当前论文包含 150 个 Python 任务、126 个仓库、132 个快照；六配置各 150 题，共 900 条主比较结果。另有三配置 × 40 题 × 两臂的 240 条源码消融结果。当前正文五个 RQ、八张图、八张表，引用十个图形文件；没有附录。
-
-## 写作与修改
-
-- 论述与文献：[main.tex](main.tex)、[references.bib](references.bib)。不运行历史章节组装器。
-- 输入、模型顺序、图片打包清单：[paper_sources.json](paper_sources.json)。
-- 表格布局：[writing/templates/](writing/templates/README.md)；数值从保留记录计算，模板修改不会被数值更新覆盖。
-- 正式图形资产位于 [figures/](figures/README.md) 根目录；绘图源码在 [figures/scripts/](figures/scripts/README.md)。旧文件名已归档，不进 Overleaf 包。
-- Fig.1–Fig.3 锁定不动；原结构 Fig.4 删除，Table 2 保留；footprint 使用柱状图。
-- 运行记录与题包：[PAPER_FOLDERS.md](PAPER_FOLDERS.md)。
-
-从项目根目录执行：
-
-```bash
-python -B scripts/paper.py check
-python -B scripts/paper.py tables
-python -B docs/paper/figures/scripts/redraw_figures.py --output-dir /tmp/flb-figures-preview
-python -B scripts/paper.py package
+```text
+paper/
+├── main.tex                       # 正文：日常修改入口
+├── references.bib                 # 参考文献
+├── figures/                       # 正文使用的 12 个图片文件（8 张图）
+├── acmart.cls                     # ACM 模板
+├── ACM-Reference-Format.bst        # ACM 参考文献样式
+├── acm-jdslogo.png                # 模板资源
+├── LICENSE                        # 模板许可证
+├── main.pdf                       # 最新本地编译结果
+└── featureliftbench_overleaf.zip   # 可直接上传 Overleaf
 ```
 
-`check` 只读核对，`tables` 更新生成区域，预览绘图不替换正式图片，`package` 检查后输出 [Overleaf 压缩包](featureliftbench_overleaf.zip)。完整步骤见 [WORKFLOW.md](WORKFLOW.md)。
+在 Overleaf 中上传 ZIP，主文件选择 `main.tex`，编译器使用 pdfLaTeX。
 
-## 当前证据边界
+从仓库根目录执行：
 
-主比较逐题结果完整，但本地仅有 307/900 个可核验原始运行 profile。`python -B scripts/paper.py audit` 要求 900 个全部可用，当前会明确报告缺失并失败。普通 `check` 通过不能代替完整原始记录审计。
+```bash
+python -B scripts/paper.py build    # 编译并更新这里的 main.pdf
+python -B scripts/paper.py package  # 检查后更新 Overleaf ZIP
+```
 
-Luna / GLM 的 Token 总量按作者确认值写入 Table 1。Pro 的 Contract-Only 恢复结果为 7/40，通过恢复后仍有 12 次长上下文执行未交付；原因与口径在正文说明。源码暴露分析的 241/303（79.5%）仅代表工具成功返回入口关联文件内容，不证明完整定位或理解。
+当前 `main.tex` 以 2026-09-26 用户提供的论文包为基础，并按 2026-09-27 全文审阅结果修订。Overleaf ZIP 只包含正文实际引用的图片，不包含原包的 3 个未引用旧图。正文表格直接写在 `main.tex` 中；旧版主表生成标记已不存在，`scripts/paper.py check` 会检查数据范围、图片、引用及仍适用的分析输入，但不会将旧版主表生成器用于这份正文。
 
-当前使用 `acmsmall,screen,review,anonymous`，未修改 `acmart.cls`。图 caption 在下、表 caption 在上；本轮未编译或验证最终分页。
+Benchmark 构建证据另见 [匿名构建证据包](../paper-workbench/replication/anonymous_construction_evidence.zip) 与 [说明](../paper-workbench/replication/CONSTRUCTION_EVIDENCE_README.md)。Fig. 2 现在由正文 LaTeX 排版为 Blinker 证据链实例，不再使用旧的 `fig02_construction.png`，因为旧图中的完整人工审阅与筛选流程说法缺少逐题历史记录。
 
-辅助入口：[写作证据](writing/README.md) · [图形工作区](figures/README.md) · [大纲与历史论证](PAPER_OUTLINE.md) · [方法与结果修订记录](writing/METHODS_RESULTS_REVISION_20260912.md)。
+分析脚本、数据、历史 PDF、检查记录与草稿全部在相邻的 [paper-workbench](../paper-workbench/README.md)。[Fig. 3–8 绘图索引](../paper-workbench/figures/scripts/README.md) 按用户提供的最新 PDF 图号列出源码和预览输出。本目录不提交独立 Supplement。
 
-新增 RQ2 的口径、执行记录及样本范围见 [Token 与执行开销整合计划](TOKEN_EFFICIENCY_INTEGRATION_PLAN.md)。
-
-最新分工及图表编号见 [Results 视觉证据计划](RESULTS_VISUAL_PLAN.md) 顶部最终决定；历史预览不进入 Overleaf 包。
+不要在 workbench 建立第二份正文：其中的正式源文件入口是指向这里的相对符号链接，脚本更新和手工编辑作用于同一份文件。Overleaf ZIP 里是实际文件，不含这些链接或工作记录。

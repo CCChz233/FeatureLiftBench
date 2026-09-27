@@ -49,9 +49,9 @@ Functional Pass = `build ∧ public ∧ hidden ∧ isolation`。空提交计失�
 | --- | --- | --- |
 | **L0 筛查** | 机械首败 + 公开测试 vs `required_api` 缺陷扫描 + 日志摘要包 | 只能出待标表和题目缺陷候选 |
 | **L1 精读** | 按 §5 对每条读契约、提交、首败日志，写 primary | `assistant_first_pass`；Finding 3 **暂定** |
-| **L2 金标** | 独立人工双审（Protocol §9）：≥20–30% 抽样 + 全部 unknown / 缺陷 / Hidden-only | 才能把根因比例写进主文 |
+| **L2 金标** | 第三方审核（Protocol §9）：≥20–30% 抽样 + 全部 unknown / 缺陷 / Hidden-only | 才能把根因比例写进主文 |
 
-AI 连做两遍 ≠ 两位独立 reviewer。L0 残差全部标成 `behavior_drift` 再加总成「94% closure」**禁止**。
+AI 连做两遍 ≠ 第三方审核。L0 残差全部标成 `behavior_drift` 再加总成「94% closure」**禁止**。
 
 ## 4. 一轮怎么跑
 
@@ -146,7 +146,7 @@ Hidden-only 失败另走 Protocol §11，不要在 L0 用隐藏断言反推缺�
 
 ### 4.7 L2 复核
 
-按 Protocol §9。未做则 `independent_human_review=false`，`review_status=assistant_first_pass`。
+按 Protocol §9 做第三方审核。未做则 `independent_human_review=false`，`review_status=assistant_first_pass`。
 
 ## 5. 单条记录字段
 

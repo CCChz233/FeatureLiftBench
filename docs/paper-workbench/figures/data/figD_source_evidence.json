@@ -1,0 +1,61 @@
+{
+  "task_count": 40,
+  "results": [
+    {
+      "model": "gpt-5.6-luna",
+      "n": 40,
+      "full_pass": 23,
+      "contract_pass": 9,
+      "full_only": 17,
+      "contract_only": 3,
+      "delta_pp": 35.0,
+      "paired_bootstrap_95ci_pp": [
+        15.0,
+        55.00000000000001
+      ]
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "n": 40,
+      "full_pass": 25,
+      "contract_pass": 6,
+      "full_only": 20,
+      "contract_only": 1,
+      "delta_pp": 47.5,
+      "paired_bootstrap_95ci_pp": [
+        30.0,
+        65.0
+      ]
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "n": 40,
+      "full_pass": 12,
+      "contract_pass": 1,
+      "full_only": 12,
+      "contract_only": 1,
+      "delta_pp": 27.500000000000004,
+      "paired_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ]
+    }
+  ],
+  "interval": "95% paired task-bootstrap percentile interval for Full minus Contract only, in percentage points",
+  "bootstrap_resamples": 100000,
+  "pro_caveat": "18 Contract Only runs without usable submissions are counted as functional failures",
+  "sources": [
+    {
+      "path": "docs/paper-workbench/data/source_ablation_retained_20260921/paired_outcomes.csv",
+      "sha256": "4ef9034c0a2ebebb3d7b79b0d49197a82920bbe63a2270af0819078b421c3165"
+    },
+    {
+      "path": "docs/paper-workbench/data/source_ablation_retained_20260921/statistics.json",
+      "sha256": "8d8da226b950d49ed2cdf5887f643b3a2b2a76929e300c0b19fa3c9150d4f329"
+    },
+    {
+      "path": "docs/paper-workbench/data/source_ablation_retained_20260921/task_outcomes.csv",
+      "sha256": "efad4d5aeb9a33728600d804f3b1e7741261cb1ee0e4cb56046fbaf75c3dfab7"
+    }
+  ]
+}

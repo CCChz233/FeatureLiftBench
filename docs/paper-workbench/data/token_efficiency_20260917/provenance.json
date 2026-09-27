@@ -1,0 +1,23 @@
+{
+  "source": "experiments/token\u5b9e\u9a8c/token_efficiency_raw_20260917T072646Z",
+  "archives_sha256": {
+    "token_efficiency_raw_20260917T072646Z_pro.tar.gz": "d13ccfde21f815f96dc6a74da9093ab6a23cca136353290a81b561a728c36bb3",
+    "token_efficiency_raw_20260917T072646Z_flash.tar.gz": "0eed62e2e07d765abe9cc4e439f381336b916b207db8b0ed898366a3e2366385",
+    "token_efficiency_raw_20260917T072646Z_luna.tar.gz": "e6847a8659506953f23675b8c9517ca5bd01be635ebf36aab3d328e6a7b80224",
+    "token_efficiency_raw_20260917T072646Z_glm.tar.gz": "e61fa1ce16c4319d30c5e5013c4c0d2c563ad41937d9e5d245a963ab64154265",
+    "token_efficiency_raw_20260917T072646Z_qwen.tar.gz": "3cc33dbb191688b2ccbfd52c4d692e39f65efe7077bba1206ecca2e122322e3b",
+    "token_efficiency_raw_20260917T072646Z_oss.tar.gz": "dcf5bf7bc217548b28852b6d939683396c2c087a8f2b873b0c87514b309cfecf",
+    "token_efficiency_raw_20260917T072646Z_analysis.tar.gz": "3f9825e2c2ba899df99776f62d7792e9d474cf6e108065cffa7dbcb785e95116"
+  },
+  "run_index_sha256": "2fd557f24b1ff63ae0446b18b58111b60ba5906545c27e9d36c1c851fb4e7f0c",
+  "token_source": "complete provider audit or complete persisted agent+condenser usage; exact response IDs for token timing",
+  "sample_policy": "independent token and primary-response samples, both conditional on final success",
+  "response_definition": "new unique response IDs in ActionEvent/MessageEvent after checkpoint observation; excludes condenser and HTTP retries",
+  "accounting": "prompt+completion including cached prompt once; token totals include recorded condenser usage",
+  "limitations": [
+    "Reconstructed observed checkpoints, not every transient state.",
+    "No new Docker replay or model calls.",
+    "Configuration-specific recoverable subsets do not establish adjusted rankings."
+  ],
+  "method": "execution_effort_recovered.v2"
+}

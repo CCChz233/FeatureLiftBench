@@ -1,0 +1,172 @@
+{
+  "status": "review_preview_not_final_paper_evidence",
+  "tier": "L1_assistant_first_pass",
+  "independent_human_review": false,
+  "frozen_classifications_sha256": "eb83beadfb1fba642d2c2d31c031804a873849033adba7a995d3ab7d40c7f057",
+  "annotations_sha256": "17438329d94c044b1f95702cf08b3067444121223006e9eec7a7a77af7eadd76",
+  "decision_ledger_sha256": "17beca6c50afdd4f16f0413d09253f6973a8fb43e7af3dc8cb1219cea7670790",
+  "raw_materials": {
+    "files_verified": 4272,
+    "verification": "SHA256 and byte counts checked by prepare_review.py"
+  },
+  "original_valid_denominator": 228,
+  "original_behavior_drift": 201,
+  "subtypes_assigned": 74,
+  "review_pending": 127,
+  "review_status_counts": {
+    "subtype_assigned": 74,
+    "subtype_candidate": 86,
+    "parent_label_review": 41
+  },
+  "subtype_definitions": {
+    "call": {
+      "label": "Call compatibility",
+      "definition": "Argument order, binding, or adapting a contracted input to an existing callable."
+    },
+    "result": {
+      "label": "Incorrect result",
+      "definition": "Wrong returned value, data structure, transformation, or result ordering."
+    },
+    "parse": {
+      "label": "Parsing / formatting",
+      "definition": "Parsing, normalization, syntax reconstruction, serialization, or text/path formatting."
+    },
+    "validation": {
+      "label": "Validation / exceptions",
+      "definition": "Input acceptance, rejection, warning, or exception behavior."
+    },
+    "state": {
+      "label": "State / control flow",
+      "definition": "State updates, lifecycle, callback dispatch, precedence, or short-circuit execution."
+    }
+  },
+  "by_model": [
+    {
+      "model": "deepseek-v4-pro",
+      "short": "Pro",
+      "n": 26,
+      "counts": {
+        "behavior_drift": 25,
+        "contract_api_completion": 0,
+        "dependency_closure": 1,
+        "packaging_modularization": 0,
+        "localization": 0,
+        "unknown": 0
+      },
+      "subtype_counts": {
+        "call": 0,
+        "result": 1,
+        "parse": 5,
+        "validation": 0,
+        "state": 2
+      },
+      "subtype_pending": 17
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "short": "Flash",
+      "n": 31,
+      "counts": {
+        "behavior_drift": 30,
+        "contract_api_completion": 0,
+        "dependency_closure": 1,
+        "packaging_modularization": 0,
+        "localization": 0,
+        "unknown": 0
+      },
+      "subtype_counts": {
+        "call": 1,
+        "result": 1,
+        "parse": 5,
+        "validation": 1,
+        "state": 3
+      },
+      "subtype_pending": 19
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "short": "Luna",
+      "n": 30,
+      "counts": {
+        "behavior_drift": 27,
+        "contract_api_completion": 2,
+        "dependency_closure": 1,
+        "packaging_modularization": 0,
+        "localization": 0,
+        "unknown": 0
+      },
+      "subtype_counts": {
+        "call": 0,
+        "result": 0,
+        "parse": 4,
+        "validation": 1,
+        "state": 2
+      },
+      "subtype_pending": 20
+    },
+    {
+      "model": "glm-5.3-flash",
+      "short": "GLM",
+      "n": 35,
+      "counts": {
+        "behavior_drift": 27,
+        "contract_api_completion": 7,
+        "dependency_closure": 1,
+        "packaging_modularization": 0,
+        "localization": 0,
+        "unknown": 0
+      },
+      "subtype_counts": {
+        "call": 0,
+        "result": 1,
+        "parse": 4,
+        "validation": 0,
+        "state": 2
+      },
+      "subtype_pending": 20
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "short": "Qwen",
+      "n": 42,
+      "counts": {
+        "behavior_drift": 38,
+        "contract_api_completion": 2,
+        "dependency_closure": 1,
+        "packaging_modularization": 1,
+        "localization": 0,
+        "unknown": 0
+      },
+      "subtype_counts": {
+        "call": 0,
+        "result": 4,
+        "parse": 6,
+        "validation": 2,
+        "state": 5
+      },
+      "subtype_pending": 21
+    },
+    {
+      "model": "gpt-oss-120b",
+      "short": "OSS",
+      "n": 64,
+      "counts": {
+        "behavior_drift": 54,
+        "contract_api_completion": 5,
+        "dependency_closure": 3,
+        "packaging_modularization": 1,
+        "localization": 0,
+        "unknown": 1
+      },
+      "subtype_counts": {
+        "call": 3,
+        "result": 5,
+        "parse": 9,
+        "validation": 2,
+        "state": 5
+      },
+      "subtype_pending": 30
+    }
+  ],
+  "display_policy": "Only unflagged L1 subtype assignments are plotted. Original API/dependency/packaging counts are carried forward, not re-reviewed. Original n is retained; pending cases and one original unclassified case are not plotted. Zeros mean no assigned cases, not proven absence."
+}

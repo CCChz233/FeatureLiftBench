@@ -7,6 +7,7 @@
 
 | 需要 | 入口 |
 | --- | --- |
+| 整理随论文公开的代码与数据 | [公开发布指南](PUBLIC_RELEASE_PLAN.md) · [材料盘点](PUBLIC_RELEASE_INVENTORY.json) |
 | 写论文、更新图表和打包 | [论文工作流](paper/WORKFLOW.md) |
 | 看最新正文与图表状态 | [论文 README](paper/README.md) |
 | 查数据来源 | [paper_sources.json](paper/paper_sources.json) |

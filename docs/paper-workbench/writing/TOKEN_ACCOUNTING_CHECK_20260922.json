@@ -1,0 +1,51 @@
+{
+  "definition": "input including cached input + output",
+  "results": [
+    {
+      "model": "deepseek-v4-pro",
+      "assigned": 150,
+      "verified_rows": 150,
+      "status": "recomputed_input_plus_output",
+      "median_1e4": 242.39,
+      "p90_1e4": 635.17
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "assigned": 150,
+      "verified_rows": 150,
+      "status": "recomputed_input_plus_output",
+      "median_1e4": 422.59,
+      "p90_1e4": 968.26
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "assigned": 150,
+      "verified_rows": 0,
+      "status": "existing_author_confirmed_aggregate_not_independently_recomputed",
+      "limitation": "Complete corrected per-run token components unavailable in selected main results."
+    },
+    {
+      "model": "glm-5.3-flash",
+      "assigned": 150,
+      "verified_rows": 0,
+      "status": "existing_author_confirmed_aggregate_not_independently_recomputed",
+      "limitation": "Complete corrected per-run token components unavailable in selected main results."
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "assigned": 150,
+      "verified_rows": 150,
+      "status": "recomputed_input_plus_output",
+      "median_1e4": 181.86,
+      "p90_1e4": 552.1
+    },
+    {
+      "model": "gpt-oss-120b",
+      "assigned": 150,
+      "verified_rows": 150,
+      "status": "recomputed_input_plus_output",
+      "median_1e4": 52.6,
+      "p90_1e4": 187.73
+    }
+  ]
+}

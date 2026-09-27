@@ -17,9 +17,9 @@ view remains on disk; the extra 50 tasks are outside the paper.
 | --- | --- |
 | Understand the entire project and its evidence | [Project map](docs/PROJECT_MAP.md) |
 | Read current results and remaining gaps | [Status](docs/STATUS.md) |
-| Write, check, and package the updated paper | [Paper workflow](docs/paper/WORKFLOW.md) |
-| Edit one figure | [Per-figure source index](docs/paper/figures/scripts/README.md) |
-| Find the data behind a table or figure | [Paper source manifest](docs/paper/paper_sources.json) |
+| Write, compile, and package the updated paper | [Paper workspace](docs/paper/README.md) |
+| Edit one figure | [Per-figure source index](docs/paper-workbench/figures/scripts/README.md) |
+| Find the data behind a table or figure | [Paper source manifest](docs/paper-workbench/paper_sources.json) |
 | Understand the benchmark and evaluator | [Design](docs/BENCHMARK_DESIGN.md) · [Evaluation](docs/EVALUATION.md) |
 | Prepare an experiment | [Run guide](RUN.md) |
 | Browse current and historical documentation | [Documentation portal](docs/README.md) |
@@ -40,7 +40,8 @@ an agent. A successful numeric check does not establish complete raw-evidence re
 
 | Directory | Role |
 | --- | --- |
-| `docs/paper/` | Active manuscript, bibliography, figures, table templates and paper tools |
+| `docs/paper/` | Overleaf-style manuscript, bibliography, final figures and latest PDF/ZIP |
+| `docs/paper-workbench/` | Paper analysis scripts, data, table templates, checks and historical drafts |
 | `benchmark/` | Frozen tasks and source identities; paper membership is selected explicitly |
 | `harness/` | Evaluation gates, Docker capsule, adapters and CLI |
 | `agent/`, `method/` | Runtime and protocol catalogs; historical methods are separate from paper Main |

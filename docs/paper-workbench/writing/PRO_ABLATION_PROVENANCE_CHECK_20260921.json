@@ -1,0 +1,91 @@
+{
+  "original_saved_table": {
+    "n": 40,
+    "passes": 6,
+    "outcomes": {
+      "Missing": 18,
+      "Public": 10,
+      "Hidden": 6,
+      "Pass": 6
+    }
+  },
+  "current_selected_table": {
+    "n": 40,
+    "passes": 7,
+    "outcomes": {
+      "Missing": 12,
+      "Public": 14,
+      "Hidden": 7,
+      "Pass": 7
+    }
+  },
+  "verified_selected_attempt_records": [
+    {
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/requests_cache__cache_key_core__hard3_001/run.json",
+      "sha256": "655c11e02947795e06bdabf2cbd3608f62c9ff75fd1e3febd0d5f323a16d943c",
+      "status": "failed",
+      "generated_at": "2026-09-15T18:11:18Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Public",
+      "evaluation_status": "failed"
+    },
+    {
+      "task_id": "tomlkit__roundtrip_document__001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/tomlkit__roundtrip_document__001/run.json",
+      "sha256": "f5fe784da3f2a5e339d2ecd99469963c56ade7cc8e2fa7e38079041f175f4953",
+      "status": "failed",
+      "generated_at": "2026-09-15T19:25:57Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Public",
+      "evaluation_status": "failed"
+    },
+    {
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/platformdirs__app_dirs_core__hard3_001/run.json",
+      "sha256": "eafd829868ed3ab556798abb03105ddf9cddfefcc866a04811ee218c7f03dd3d",
+      "status": "failed",
+      "generated_at": "2026-09-15T16:08:27Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Public",
+      "evaluation_status": "failed"
+    },
+    {
+      "task_id": "bleach__sanitize_core__001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/bleach__sanitize_core__001/run.json",
+      "sha256": "0e516e9a5097ffaad7fc2a9d06f8b3b20e8cb74a65bc82e850264dc5d441d975",
+      "status": "failed",
+      "generated_at": "2026-09-15T12:10:15Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Hidden",
+      "evaluation_status": "failed"
+    },
+    {
+      "task_id": "pluggy__hook_call_order__001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/pluggy__hook_call_order__001/run.json",
+      "sha256": "a193c5372a213ea81b4030bfbfa62929e2583a6db0d208eb238c2c16352937c6",
+      "status": "passed",
+      "generated_at": "2026-09-15T17:05:52Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Pass",
+      "evaluation_status": "passed"
+    },
+    {
+      "task_id": "wsproto__frame_parse_core__001",
+      "path": "reports/paper_analysis/server_delivery_review_20260916/failure_analysis_delivery_20260916T013305Z/private/b_recovery_attempts/attempt-01/contract_only/wsproto__frame_parse_core__001/run.json",
+      "sha256": "befc5754da9928709fbb0337e6e288c433390cee0e50599317ed4401ef999e89",
+      "status": "failed",
+      "generated_at": "2026-09-15T20:02:13Z",
+      "old_outcome": "Missing",
+      "retained_outcome": "Public",
+      "evaluation_status": "failed"
+    }
+  ],
+  "limitation": "Original ablation run directories are absent at their recorded paths. Attempt-01 records and evaluation artifacts are present; all six selected hashes match. Current table is not independently established as a no-retry original cohort.",
+  "subsequent_author_clarification": {
+    "date": "2026-09-21",
+    "statement": "The author confirms that 7/40 passes and 12 missing submissions are the original results and no reruns occurred.",
+    "disposition": "The historical file comparison above is preserved. Its interpretation as rerun-based result replacement is superseded for manuscript reporting by the explicit author clarification. Numeric inputs are unchanged.",
+    "source": "docs/paper/writing/author_result_clarifications_20260916.json"
+  }
+}

@@ -1,0 +1,2077 @@
+{
+  "schema_version": 1,
+  "scope": "The 201 original behavior-drift candidates within 228 retained source-exposed failures; not all failures.",
+  "unit": "run",
+  "interpretation": "Composition of confirmed behavioral violations, not property-specific failure rates.",
+  "source_ledger": "reports/paper_analysis/se_obligations_ledger_20260918/analyzable_ledger.jsonl",
+  "source_ledger_sha256": "eb6402419a6d1c6f992ccc37a68a8b47ce13146f83c103e41853336405a8ae1c",
+  "codebook_version": "reviewer-v0.2",
+  "review_coverage": {
+    "pilot_independent_AB": 40,
+    "subsequent_resolved_cases": 90,
+    "subsequent_review_basis": "author_confirmation_in_conversation",
+    "subsequent_review_design": "No additional reviewer identities, independent-review design, or agreement statistic specified.",
+    "note": "The two scopes overlap; do not add them or infer a new agreement statistic."
+  },
+  "selection": {
+    "source_exposed": 241,
+    "prior_excluded": 13,
+    "prior_retained": 228,
+    "original_behavior_candidates": 201,
+    "other_coarse_categories": 27
+  },
+  "properties": [
+    {
+      "key": "value_representation",
+      "label": "Value / representation",
+      "definition": "Returned values, result structure, canonical forms, or preserved text differ."
+    },
+    {
+      "key": "call_compatibility",
+      "label": "Call compatibility",
+      "definition": "An existing API handles a declared argument form, callback binding, or dispatch path incompatibly."
+    },
+    {
+      "key": "validation_exceptions",
+      "label": "Validation / exceptions",
+      "definition": "Input acceptance, rejection, or required exception behavior differs."
+    },
+    {
+      "key": "evaluation_control",
+      "label": "Evaluation control",
+      "definition": "Whether or when an operand, callback, or branch executes differs."
+    },
+    {
+      "key": "ordering_identity",
+      "label": "Ordering / identity",
+      "definition": "Observable order, identity, or identity-based lookup differs."
+    },
+    {
+      "key": "state_lifecycle",
+      "label": "State / lifecycle",
+      "definition": "Observable state evolution, object lifetime, reset, or cleanup differs."
+    },
+    {
+      "key": "defaults_precedence",
+      "label": "Defaults / precedence",
+      "definition": "Default selection, fallback, or precedence among supplied values differs."
+    },
+    {
+      "key": "interaction_protocol",
+      "label": "Interaction protocol",
+      "definition": "Available operations violate an explicit sequencing or interaction invariant."
+    }
+  ],
+  "records": [
+    {
+      "review_id": 0,
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 1,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 2,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 3,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 4,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 5,
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 6,
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 7,
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 8,
+      "task_id": "arrow__parse_format_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 9,
+      "task_id": "arrow__parse_format_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 10,
+      "task_id": "astroid__nodes_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 11,
+      "task_id": "astroid__nodes_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 12,
+      "task_id": "babel__plural_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 13,
+      "task_id": "bleach__sanitize_core__001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "artifact_constraint",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 14,
+      "task_id": "bleach__sanitize_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 15,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 16,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 17,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 18,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 19,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 20,
+      "task_id": "celery__signal_dispatch_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 21,
+      "task_id": "cerberus__schema_validate_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 22,
+      "task_id": "cerberus__schema_validate_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 23,
+      "task_id": "cerberus__schema_validate_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 24,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 25,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 26,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 27,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 28,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 29,
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 30,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 31,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 32,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 33,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 34,
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 35,
+      "task_id": "coverage__config_merge_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 36,
+      "task_id": "coverage__source_selection_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 37,
+      "task_id": "coverage__source_selection_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 38,
+      "task_id": "dataclasses_json__serde_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 39,
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 40,
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 41,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 42,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 43,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 44,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 45,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 46,
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 47,
+      "task_id": "deepdiff__deep_compare_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 48,
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 49,
+      "task_id": "dynaconf__settings_merge_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 50,
+      "task_id": "dynaconf__settings_merge_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 51,
+      "task_id": "faker__provider_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 52,
+      "task_id": "filelock__reentrant_lock_core__001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 53,
+      "task_id": "filelock__reentrant_lock_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 54,
+      "task_id": "filelock__reentrant_lock_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 55,
+      "task_id": "filelock__reentrant_lock_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 56,
+      "task_id": "flask__route_dispatch_core__001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 57,
+      "task_id": "flask__route_dispatch_core__001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 58,
+      "task_id": "flask__route_dispatch_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 59,
+      "task_id": "flask__route_dispatch_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 60,
+      "task_id": "flask__route_dispatch_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 61,
+      "task_id": "fs__url_opener_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 62,
+      "task_id": "fs__url_opener_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 63,
+      "task_id": "fs__url_opener_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 64,
+      "task_id": "fs__url_opener_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 65,
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 66,
+      "task_id": "fsspec__url_chain_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 67,
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 68,
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 69,
+      "task_id": "glom__spec_eval_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 70,
+      "task_id": "importlib_metadata__entry_points_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 71,
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 72,
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 73,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 74,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 75,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 76,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 77,
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 78,
+      "task_id": "intervaltree__interval_tree_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 79,
+      "task_id": "isort__settings_resolver_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 80,
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 81,
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 82,
+      "task_id": "jinja2__lexer_parser_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 83,
+      "task_id": "jinja2__lexer_parser_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 84,
+      "task_id": "json5__parse_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "insufficient_evidence",
+      "failure_kind": null,
+      "behavior_primary": "not_assigned",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 85,
+      "task_id": "json_logic__evaluator_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 86,
+      "task_id": "json_logic__evaluator_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 87,
+      "task_id": "json_logic__evaluator_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 88,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 89,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 90,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 91,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 92,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 93,
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 94,
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 95,
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 96,
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 97,
+      "task_id": "jupyter_server__extension_config_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 98,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 99,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 100,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 101,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 102,
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 103,
+      "task_id": "lark__visitor_transform_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 104,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 105,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 106,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 107,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 108,
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 109,
+      "task_id": "mako__lexer_expression_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 110,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 111,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 112,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 113,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 114,
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 115,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 116,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 117,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 118,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 119,
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 120,
+      "task_id": "networkx__dag_topo_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 121,
+      "task_id": "parse__format_parser_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 122,
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 123,
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 124,
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 125,
+      "task_id": "parsel__selector_namespace_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 126,
+      "task_id": "passlib__hash_context_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "defaults_precedence",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 127,
+      "task_id": "pathvalidate__sanitize_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 128,
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 129,
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 130,
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 131,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 132,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 133,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 134,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 135,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 136,
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 137,
+      "task_id": "pydantic__field_validator_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 138,
+      "task_id": "pygments__lexer_core__001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 139,
+      "task_id": "pygments__lexer_core__001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 140,
+      "task_id": "pygments__lexer_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 141,
+      "task_id": "pytest__fixture_resolve_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 142,
+      "task_id": "pytest__ini_markers_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 143,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 144,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 145,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 146,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 147,
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 148,
+      "task_id": "pytest__skipif_eval_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 149,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 150,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 151,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 152,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 153,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 154,
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 155,
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 156,
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 157,
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 158,
+      "task_id": "redis__resp_parser_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 159,
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 160,
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 161,
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 162,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 163,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 164,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 165,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 166,
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 167,
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 168,
+      "task_id": "schema__nested_validate_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 169,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 170,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 171,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 172,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 173,
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 174,
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 175,
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 176,
+      "task_id": "sqlparse__format_filters_core__001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 177,
+      "task_id": "sqlparse__parse_split_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 178,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 179,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 180,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 181,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "call_compatibility",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 182,
+      "task_id": "starlette__route_matching_core__hard3_001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 183,
+      "task_id": "stevedore__extension_manager_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 184,
+      "task_id": "tabulate__table_format_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 185,
+      "task_id": "tenacity__retry_state_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 186,
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 187,
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 188,
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 189,
+      "task_id": "transitions__state_machine_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "ordering_identity",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 190,
+      "task_id": "typer__command_parser_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "evaluation_control",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 191,
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "suite_id": "python150-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 192,
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "insufficient_evidence",
+      "failure_kind": null,
+      "behavior_primary": "not_assigned",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 193,
+      "task_id": "virtualenv__interpreter_spec_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 194,
+      "task_id": "voluptuous__schema_validate_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 195,
+      "task_id": "wheel__metadata_normalize_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 196,
+      "task_id": "xmltodict__xml_parse_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "state_lifecycle",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 197,
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 198,
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "validation_exceptions",
+      "in_confirmed_property_distribution": true
+    },
+    {
+      "review_id": 199,
+      "task_id": "yarl__url_model_core__001",
+      "model": "gpt-oss-120b",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "contract_api_completion",
+      "behavior_primary": "not_applicable",
+      "in_confirmed_property_distribution": false
+    },
+    {
+      "review_id": 200,
+      "task_id": "yarl__url_model_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "suite_id": "python200-prime-v2-main-r1",
+      "public_obligation_status": "confirmed_violation",
+      "failure_kind": "behavior_drift",
+      "behavior_primary": "value_representation",
+      "in_confirmed_property_distribution": true
+    }
+  ]
+}

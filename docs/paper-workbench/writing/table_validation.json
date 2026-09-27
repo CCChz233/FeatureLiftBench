@@ -1,0 +1,217 @@
+{
+  "status": "verified_current_paper_tables",
+  "rows": 900,
+  "tasks": 150,
+  "models": 6,
+  "run_profiles_checked": 307,
+  "missing_run_profiles": 593,
+  "source_verification": [
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "verification": "exact"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "resolved_path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "resolved_path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "benchmark/references/python200_prime_compactness.json",
+      "resolved_path": "archive/paper_unrelated_20260914/benchmark/references/python200_prime_compactness.json",
+      "verification": "CRLF-equivalent"
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "resolved_path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "verification": "exact"
+    },
+    {
+      "recorded_path": "docs/paper/writing/python150_membership.json",
+      "resolved_path": "docs/paper/writing/python150_membership.json",
+      "verification": "CRLF-equivalent"
+    }
+  ],
+  "main_tables": 5,
+  "main_generated_data_tables": 4,
+  "main_authored_literature_tables": 1,
+  "unverified_hypothetical_tables": 0,
+  "verified_source_ablation_outcomes": 240,
+  "source_exposure_traces": 900,
+  "appendix_tables": 0,
+  "supplementary_tables": 4,
+  "main_figures": 8,
+  "appendix_figures": 0,
+  "figure_placeholders": 0,
+  "generated_text_blocks": 0,
+  "main_table_order": [
+    "main",
+    "structure",
+    "paired-ablation",
+    "source-exposure",
+    "task-comparison"
+  ],
+  "structure_table_updater": "writing/update_structure_results.py",
+  "table_revision": "author_clarifications_and_ablation_recovery_20260916",
+  "token_summary_provenance": "Luna/GLM aggregate totals confirmed by author; original delivery proxy labels retained in provenance; no independent provider-usage validation claimed.",
+  "detailed_profiles": [
+    {
+      "backend": "Pro",
+      "condenser": "token",
+      "trigger_target": "122,880 / 61,440",
+      "outcomes": 150
+    },
+    {
+      "backend": "Flash",
+      "condenser": "token",
+      "trigger_target": "122,880 / 61,440",
+      "outcomes": 150
+    },
+    {
+      "backend": "Luna",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 0
+    },
+    {
+      "backend": "GLM",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 7
+    },
+    {
+      "backend": "Qwen",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 0
+    },
+    {
+      "backend": "OSS",
+      "condenser": "default",
+      "trigger_target": "Unspecified",
+      "outcomes": 0
+    }
+  ],
+  "scope": "Condensed FSE manuscript: main comparison table from 900 outcomes; source-ablation headlines from 240 retained records; source-file exposure counts from 900 saved traces. Service errors, incomplete mappings and proxy limits remain explicit.",
+  "sources": [
+    {
+      "path": "docs/paper/paper_sources.json",
+      "sha256": "5035f9d7206e7be4166bc3311b4dd7dc4bf86e99b9185945a415c2ff64ece10d"
+    },
+    {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    {
+      "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
+    },
+    {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+      "sha256": "eb11cbcc40c809d8033c23d79225d8ef522eb339726c16ac6a572612666b285f"
+    },
+    {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv",
+      "sha256": "0d05968c81a3319ca53d5272b7652963bc955a9cbb4ba29457c8f8dfc383d2e8"
+    },
+    {
+      "path": "docs/paper/writing/chapter2_python150_evidence.json",
+      "sha256": "8ece3ad215af8f8126ca7865bf07a5a815446a3a6b026154693b29a2359a9f76"
+    },
+    {
+      "path": "docs/paper/writing/author_result_clarifications_20260916.json",
+      "sha256": "5e4404288169c4ab0d681ca69e99ad4430afb1d7eb399d1e5c65e0ec13964d25"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/statistics.json",
+      "sha256": "b8390213f590bb6135addd21b74d0bd5ac76d25976eaba3c00fa03cab7e189a7"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/source_exposure_table.tex",
+      "sha256": "88c485e34253344085f3cb7fd7c6c5262126757bb8656da9d01e9e32b603eaef"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/summary_by_model_outcome.csv",
+      "sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec"
+    },
+    {
+      "path": "docs/paper/writing/templates/main_table.tex",
+      "sha256": "f7fcf25d29d9b177f171b94078685c96ac1690de6d568fb47fa14b59cc360458"
+    },
+    {
+      "path": "docs/paper/writing/templates/source_exposure_table.tex",
+      "sha256": "1d7f0f68523f718e8d6247c50fa0932948c7309a9ab5536e3bf9b2545cf3c14b"
+    },
+    {
+      "path": "docs/paper/data/token_efficiency_20260917/records.json",
+      "sha256": "2025c41dae691940543e85ac354da0ac0979d978aeb17a47a9f9796821f401cf"
+    },
+    {
+      "path": "docs/paper/data/token_efficiency_20260917/analysis.json",
+      "sha256": "cf6d4c8ac8d130884d7a70f0593b0a4fb2979bc8ed5435db193b3bf4517441ca"
+    },
+    {
+      "path": "docs/paper/execution_effort.py",
+      "sha256": "36cd11c27e7c5a7302017dbec9d835b213b64617b53139548cc358cdc60d3763"
+    },
+    {
+      "path": "docs/paper/import_execution_effort.py",
+      "sha256": "21bb54488c14f6284388a4d8f6e4f911d8eceed256d4ffb0f99b7d1237f159a6"
+    },
+    {
+      "path": "docs/paper/data/token_efficiency_20260917/provenance.json",
+      "sha256": "95115f5d21aadae67dcdccd6a41c4d6f2be2a597f8990eb4b6c5417678a6677d"
+    },
+    {
+      "path": "docs/paper/writing/execution_effort_tables.py",
+      "sha256": "748691decacb8cc7074e925e1286a6ce896e2e9cf0c6520125dc5d404e7a959d"
+    },
+    {
+      "path": "docs/paper/writing/results_visuals.py",
+      "sha256": "9a449290458ba29b323b716fdb15ee376d054c088428846c119fda3ba87c3864"
+    },
+    {
+      "path": "docs/paper/writing/results_tables.py",
+      "sha256": "5b0230eb1bec409a787433cb9e75c37a1dd73153feb6bf9b3161d340044f06f9"
+    },
+    {
+      "path": "docs/paper/figures/data/figA_task_coverage.json",
+      "sha256": "dd607df5ed8695bc9ea6d81aa00a29ef30ec51693e5e0e1a8aae87463ac8b57c"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_retained_20260921/statistics.json",
+      "sha256": "8d8da226b950d49ed2cdf5887f643b3a2b2a76929e300c0b19fa3c9150d4f329"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_retained_20260921/task_outcomes.csv",
+      "sha256": "efad4d5aeb9a33728600d804f3b1e7741261cb1ee0e4cb56046fbaf75c3dfab7"
+    },
+    {
+      "path": "docs/paper/data/source_ablation_retained_20260921/paired_outcomes.csv",
+      "sha256": "4ef9034c0a2ebebb3d7b79b0d49197a82920bbe63a2270af0819078b421c3165"
+    },
+    {
+      "path": "docs/paper/figures/scripts/footprint_analysis.py",
+      "sha256": "68ae859750305d98dcf11c666cc8944a6bbbfb1e6a56880c7022dcce178da41d"
+    },
+    {
+      "path": "docs/paper/writing/python150_membership.json",
+      "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+    }
+  ]
+}

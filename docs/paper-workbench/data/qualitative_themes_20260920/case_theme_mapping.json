@@ -1,0 +1,955 @@
+{
+  "scope": "Fixed purposively diverse 40-case sample; descriptive, nonexclusive themes, not benchmark prevalence.",
+  "selection_manifest_sha256": "d8f84cffbeb34014dc9108d0daa1d1aa70e9e8e9bfe1427ede4730005f50c95c",
+  "themes": {
+    "A": {
+      "name": "Changed ambient assumptions",
+      "cases": [
+        "SE004",
+        "SE020",
+        "SE035"
+      ],
+      "definition": "An explicit destination platform or time input conflicts with a retained host or construction-time assumption."
+    },
+    "B": {
+      "name": "Incompatible supporting representations and pipelines",
+      "cases": [
+        "SE012",
+        "SE027"
+      ],
+      "definition": "A producer/normalizer and its downstream consumer no longer agree on the representation needed for the public result."
+    },
+    "C": {
+      "name": "Destination-specific obligations requiring adaptation",
+      "cases": [
+        "SE001",
+        "SE015",
+        "SE016",
+        "SE040"
+      ],
+      "definition": "The destination requires behavior not guaranteed by the inspected upstream path; reuse needs an additional adapter or semantic change."
+    },
+    "O": {
+      "name": "Other / case-specific relationships",
+      "cases": [
+        "SE002",
+        "SE003",
+        "SE005",
+        "SE006",
+        "SE007",
+        "SE008",
+        "SE009",
+        "SE010",
+        "SE011",
+        "SE013",
+        "SE014",
+        "SE017",
+        "SE018",
+        "SE019",
+        "SE021",
+        "SE022",
+        "SE023",
+        "SE024",
+        "SE025",
+        "SE026",
+        "SE028",
+        "SE029",
+        "SE030",
+        "SE031",
+        "SE032",
+        "SE033",
+        "SE034",
+        "SE036",
+        "SE037",
+        "SE038",
+        "SE039"
+      ],
+      "definition": "No sufficiently supported match to A-C; includes local differences, omitted members, artifact constraints, and unresolved relationship evidence. Not a shared causal theme."
+    }
+  },
+  "cases": [
+    {
+      "case_id": "SE001",
+      "task_id": "json_logic__evaluator_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "C"
+      ],
+      "rationale": "Eager operand evaluation precedes operator dispatch in both source and submission; short-circuiting requires destination adaptation.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/__init__.py:186",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__nadirizr__json_logic_py__ba7f0a8e6175--272fd6cbcea69e2b.tar.gz",
+          "member": "json_logic/__init__.py",
+          "sha256": "3bfe59b53fc052bccd9500981c1f4fb970dc0a52d24bf3bf90df95c5328f15c3",
+          "start": 156,
+          "end": 203
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE002",
+      "task_id": "pytest__marker_registry_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Exception-family difference; no supported cross-component relationship identified.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/registry.py:220",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE003",
+      "task_id": "sqlparse__parse_split_core__001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Statement object exists but a queried member is absent; retain interface-completion case outside relationship themes.",
+      "contract_clause_ids": [
+        "B001",
+        "B004"
+      ],
+      "submission_location": "featurelifted/sql/__init__.py:5",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE004",
+      "task_id": "platformdirs__app_dirs_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "A"
+      ],
+      "rationale": "Explicit platform selection reaches host-dependent path joining.",
+      "contract_clause_ids": [
+        "B006"
+      ],
+      "submission_location": "featurelifted/__init__.py:79",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__tox_dev__platformdirs__d6eab461f0cf--d807412ce87ad92f.tar.gz",
+          "member": "src/platformdirs/__init__.py",
+          "sha256": "8fef2858b837779ca8ab3a22212c63c0eba81e28f3b367a1228ca342058cb5e2",
+          "start": 24,
+          "end": 51
+        },
+        {
+          "archive": "benchmark/sources/archives/github__tox_dev__platformdirs__d6eab461f0cf--d807412ce87ad92f.tar.gz",
+          "member": "src/platformdirs/windows.py",
+          "sha256": "cac864a60d8d1c83b82a2940d7046fb03fa1eae8280d136dd1ba88d4958bc111",
+          "start": 30,
+          "end": 49
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE005",
+      "task_id": "decorator__signature_preserving_core__001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Argument binding matches the inspected upstream path; no specific changed relationship established.",
+      "contract_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:12",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__micheles__decorator__09e3124ed957--bbbfca1166c63e92.tar.gz",
+          "member": "src/decorator.py",
+          "sha256": "7a5e5c0048284c4a5140deb9b4ec4684496e7be09c70cbf4c6897e27633039cd",
+          "start": 199,
+          "end": 232
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE006",
+      "task_id": "dateutil__zone_resolver_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Zone loading exists but a queried result attribute is absent; no supported relationship theme.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/resolver.py:34",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE007",
+      "task_id": "aiohttp__url_params_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Header mutation omits name validation; the evidence does not establish a shared-representation break.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/_multidict.py:101",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE008",
+      "task_id": "multidict__multidict_mutation_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Duplicate lookup/removal policies differ in the witness; no supported A-C relationship.",
+      "contract_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:121",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__aio_libs__multidict__083c5e312e59--7f8e1938ee2d8c53.tar.gz",
+          "member": "multidict/_multidict_py.py",
+          "sha256": "d45a67bb2f5c6eb6be14d054339bf228a73cc1791e733a39b48b75add49b61ef",
+          "start": 674,
+          "end": 691
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE009",
+      "task_id": "readme_renderer__content_type_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Renderer output discrepancy does not establish a relationship mechanism.",
+      "contract_clause_ids": [
+        "B001"
+      ],
+      "submission_location": "featurelifted/render_readme.py:16",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE010",
+      "task_id": "redis__resp_parser_core__001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Parser exists but a connection hook is absent; do not infer an incremental-buffer mechanism from that witness.",
+      "contract_clause_ids": [
+        "B005",
+        "B006"
+      ],
+      "submission_location": "featurelifted/_parsers/resp2.py:10",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE011",
+      "task_id": "responses__request_matcher_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Call-history scope differs for unmatched attempts; no supported A-C mechanism.",
+      "contract_clause_ids": [
+        "B004",
+        "B005"
+      ],
+      "submission_location": "featurelifted/__init__.py:182",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE012",
+      "task_id": "cerberus__schema_validate_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "B"
+      ],
+      "rationale": "Grouped child errors are produced but the formatter lacks compatible group-aware consumption.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/validator.py:73",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__pyeve__cerberus__f94b31d35afd--45e6e3e38921958c.tar.gz",
+          "member": "cerberus/validator.py",
+          "sha256": "c6e1d1e57a36595145d97400c7e5462f1dfe083d56d940e1e91ebe0e28854d32",
+          "start": 470,
+          "end": 475
+        },
+        {
+          "archive": "benchmark/sources/archives/github__pyeve__cerberus__f94b31d35afd--45e6e3e38921958c.tar.gz",
+          "member": "cerberus/validator.py",
+          "sha256": "c6e1d1e57a36595145d97400c7e5462f1dfe083d56d940e1e91ebe0e28854d32",
+          "start": 1493,
+          "end": 1505
+        },
+        {
+          "archive": "benchmark/sources/archives/github__pyeve__cerberus__f94b31d35afd--45e6e3e38921958c.tar.gz",
+          "member": "cerberus/errors.py",
+          "sha256": "de5634bdd55b18f878ce8beb844820c62d5cf1c302ac8697e9e555da72c632be",
+          "start": 527,
+          "end": 541
+        },
+        {
+          "archive": "benchmark/sources/archives/github__pyeve__cerberus__f94b31d35afd--45e6e3e38921958c.tar.gz",
+          "member": "cerberus/errors.py",
+          "sha256": "de5634bdd55b18f878ce8beb844820c62d5cf1c302ac8697e9e555da72c632be",
+          "start": 582,
+          "end": 592
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE013",
+      "task_id": "cookiecutter__repo_finder_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Abbreviation expansion has an argument-encoding mismatch; no established producer-consumer representation break.",
+      "contract_clause_ids": [
+        "B001"
+      ],
+      "submission_location": "featurelifted/repository.py:43",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE014",
+      "task_id": "license_expression__policy_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Diagnostic wording differs; no established cross-component mechanism.",
+      "contract_clause_ids": [
+        "B008"
+      ],
+      "submission_location": "featurelifted/__init__.py:1225",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE015",
+      "task_id": "importlib_resources__traversable_tree_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "C"
+      ],
+      "rationale": "An ordinary filesystem resource object lacks the destination traversal restriction.",
+      "contract_clause_ids": [
+        "B005",
+        "B007"
+      ],
+      "submission_location": "featurelifted/__init__.py:117",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__python__importlib_resources__001958068578--f4fb6be001d3faa5.tar.gz",
+          "member": "importlib_resources/_common.py",
+          "sha256": "fd1c683afb6a08fba54a62bfda0543ebffe0b84f3924383c104519430bf554b1",
+          "start": 18,
+          "end": 22
+        },
+        {
+          "archive": "benchmark/sources/archives/github__python__importlib_resources__001958068578--f4fb6be001d3faa5.tar.gz",
+          "member": "importlib_resources/_common.py",
+          "sha256": "fd1c683afb6a08fba54a62bfda0543ebffe0b84f3924383c104519430bf554b1",
+          "start": 87,
+          "end": 98
+        },
+        {
+          "archive": "benchmark/sources/archives/github__python__importlib_resources__001958068578--f4fb6be001d3faa5.tar.gz",
+          "member": "importlib_resources/readers.py",
+          "sha256": "b877fd5feb260370adc5d07d207587d33f8ee77dfbf7095c10c9b3036517cea1",
+          "start": 21,
+          "end": 34
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE016",
+      "task_id": "filelock__reentrant_lock_core__001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "C"
+      ],
+      "rationale": "Unlocking retains the file as upstream does; destination cleanup requires an additional operation. This is not a recommendation to unlink locks generally.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/__init__.py:133",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__tox_dev__filelock__206f5893cac6--f39d6186b5fc3931.tar.gz",
+          "member": "src/filelock/_unix.py",
+          "sha256": "5621b7f0f809b08853df1680aee82fc344cf3fa556a0fd95263ec51085b2a648",
+          "start": 52,
+          "end": 59
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE017",
+      "task_id": "sortedcontainers__sorted_list_core__001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "O"
+      ],
+      "rationale": "SortedList is implemented but count is missing; API omission is not evidence of one of the relationship themes.",
+      "contract_clause_ids": [
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:7",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE018",
+      "task_id": "pytest__skipif_eval_core__001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Exception hierarchy differs; no established relationship theme.",
+      "contract_clause_ids": [
+        "B001"
+      ],
+      "submission_location": "featurelifted/__init__.py:127",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE019",
+      "task_id": "itsdangerous__timed_serializer_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Injected time is treated as callable; an input-representation mismatch alone does not prove a retained ambient assumption.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/serializer.py:236",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE020",
+      "task_id": "apscheduler__cron_trigger_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "A"
+      ],
+      "rationale": "Construction-time default start bound constrains a later explicitly supplied current time.",
+      "contract_clause_ids": [
+        "B002",
+        "B003"
+      ],
+      "submission_location": "featurelifted/__init__.py:179",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__agronholm__apscheduler__8b02f96b57dc--4674cd6ed92cac4a.tar.gz",
+          "member": "src/apscheduler/triggers/cron/__init__.py",
+          "sha256": "fad7b418a934ac7d4646e6f3caac9e5925d1d72a26691797a55110a033a68e08",
+          "start": 39,
+          "end": 70
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE021",
+      "task_id": "keyring__backend_select_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Backend name lookup differs for classes and instances; keep case-specific rather than infer shared-representation failure.",
+      "contract_clause_ids": [
+        "B007"
+      ],
+      "submission_location": "featurelifted/core.py:14",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE022",
+      "task_id": "faker__provider_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Provider facade lacks a queried delegate; no relationship theme established.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/faker.py:97",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE023",
+      "task_id": "pygments__lexer_core__001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Whitespace option interpretation differs; no relationship theme established.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/lexer.py:240",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__pygments__pygments__4330994af0fe--715466d124017769.tar.gz",
+          "member": "pygments/lexer.py",
+          "sha256": "3179f1d0fc8af7cb9bc6cafa19043b0f79097b2dc24097aa70996beafa66a630",
+          "start": 240,
+          "end": 247
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE024",
+      "task_id": "pytest__ini_markers_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Local trimming contradicts description-whitespace preservation; not a cross-component relationship.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/ini.py:43",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE025",
+      "task_id": "tabulate__table_format_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Registry exposes a smaller listing; no supported A-C relationship.",
+      "contract_clause_ids": [
+        "B001",
+        "B007"
+      ],
+      "submission_location": "featurelifted/__init__.py:977",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE026",
+      "task_id": "alembic__revision_map_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Symbolic identifier resolution collides with a revision identifier; keep case-specific.",
+      "contract_clause_ids": [
+        "B006"
+      ],
+      "submission_location": "featurelifted/__init__.py:691",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE027",
+      "task_id": "requests_cache__cache_key_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "B"
+      ],
+      "rationale": "URL normalization can bypass query sorting before hashing, so the consumer receives a noncanonical representation.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/keys.py:247",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__requests_cache__requests_cache__c116dd5c841c--d11f8e5638fd5ef7.tar.gz",
+          "member": "requests_cache/cache_keys.py",
+          "sha256": "9beab14d6566a90e24cb885326836afa59e11338a031db174f94456a5fa7759e",
+          "start": 73,
+          "end": 82
+        },
+        {
+          "archive": "benchmark/sources/archives/github__requests_cache__requests_cache__c116dd5c841c--d11f8e5638fd5ef7.tar.gz",
+          "member": "requests_cache/cache_keys.py",
+          "sha256": "9beab14d6566a90e24cb885326836afa59e11338a031db174f94456a5fa7759e",
+          "start": 160,
+          "end": 165
+        },
+        {
+          "archive": "benchmark/sources/archives/github__requests_cache__requests_cache__c116dd5c841c--d11f8e5638fd5ef7.tar.gz",
+          "member": "requests_cache/cache_keys.py",
+          "sha256": "9beab14d6566a90e24cb885326836afa59e11338a031db174f94456a5fa7759e",
+          "start": 271,
+          "end": 297
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE028",
+      "task_id": "bleach__sanitize_core__001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "The recorded failure concerns source-import text in a docstring; artifact constraint, not runtime behavioral mechanism.",
+      "contract_clause_ids": [],
+      "submission_location": "featurelifted/sanitizer.py:62",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "artifact_constraint",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE029",
+      "task_id": "mkdocs__plugin_config_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Registry key convention and event registration differ; supporting destination encoding is insufficiently explicit for a firm B assignment.",
+      "contract_clause_ids": [
+        "B002",
+        "B003"
+      ],
+      "submission_location": "featurelifted/__init__.py:61",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE030",
+      "task_id": "poetry_core__dependency_groups_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Project dependency handling omits a path; input scope does not establish one of A-C.",
+      "contract_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:136",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE031",
+      "task_id": "scrapy__item_loader_core__hard3_001",
+      "model": "gpt-oss-120b",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Processor receives a list while expecting a scalar; source relationship remains unresolved, so do not use it to establish B recurrence.",
+      "contract_clause_ids": [
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:164",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE032",
+      "task_id": "sqlparse__format_filters_core__001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Comment stripping and indentation produce a formatting difference; pipeline existence alone does not prove representation incompatibility.",
+      "contract_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "submission_location": "featurelifted/formatter.py:620",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE033",
+      "task_id": "jinja2__lexer_parser_core__001",
+      "model": "qwen3.6-35b-a3b-fp8",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Template AST exists but a queried member is absent; retain outside relationship themes.",
+      "contract_clause_ids": [
+        "B002",
+        "B005"
+      ],
+      "submission_location": "featurelifted/nodes.py:113",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE034",
+      "task_id": "installer__wheel_record_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Ambiguous-directory handling differs; no established A-C mechanism.",
+      "contract_clause_ids": [
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:64",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE035",
+      "task_id": "jupyter_core__paths_resolver_core__hard3_001",
+      "model": "deepseek-v4-flash",
+      "themes": [
+        "A"
+      ],
+      "rationale": "Explicit target platform still uses host Path.resolve for directory construction.",
+      "contract_clause_ids": [
+        "B003"
+      ],
+      "submission_location": "featurelifted/__init__.py:120",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__jupyter__jupyter_core__23116e7ef136--0458e506793936f4.tar.gz",
+          "member": "jupyter_core/paths.py",
+          "start": 166,
+          "end": 194
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE036",
+      "task_id": "yamale__schema_validate_core__hard3_001",
+      "model": "gpt-5.6-luna",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Schema expression form differs; no established A-C relationship.",
+      "contract_clause_ids": [
+        "B001",
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:452",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE037",
+      "task_id": "click__lazy_command_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Lazy command collection exists but queried invoke is absent; no relationship mechanism established.",
+      "contract_clause_ids": [
+        "B004"
+      ],
+      "submission_location": "featurelifted/core.py:125",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "contract_api_completion",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE038",
+      "task_id": "tox__factor_expression_core__hard3_001",
+      "model": "deepseek-v4-pro",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Factor discovery retains an input-context expectation; relation to the destination is insufficiently resolved for A.",
+      "contract_clause_ids": [
+        "B001",
+        "B003"
+      ],
+      "submission_location": "featurelifted/__init__.py:102",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE039",
+      "task_id": "distlib__wheel_metadata_core__hard3_001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "O"
+      ],
+      "rationale": "Empty-field representation differs locally; not sufficient evidence of a producer-consumer break.",
+      "contract_clause_ids": [
+        "B001"
+      ],
+      "submission_location": "featurelifted/__init__.py:82",
+      "source_locations": [],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    },
+    {
+      "case_id": "SE040",
+      "task_id": "python_decouple__config_repository_core__001",
+      "model": "glm-5.3-flash",
+      "themes": [
+        "C"
+      ],
+      "rationale": "The inspected upstream and submitted parser lack the destination combination of quoted values and inline comment handling.",
+      "contract_clause_ids": [
+        "B002"
+      ],
+      "submission_location": "featurelifted/__init__.py:137",
+      "source_locations": [
+        {
+          "archive": "benchmark/sources/archives/github__hbnetwork__python_decouple__b7c6532fe5fa--98e12ab5f18a7472.tar.gz",
+          "member": "decouple.py",
+          "start": 143,
+          "end": 160
+        }
+      ],
+      "existing_review_status": "confirmed_violation",
+      "existing_failure_kind": "behavior_drift",
+      "theme_review": "assistant_evidence_synthesis_20260920",
+      "independent_human_review_of_new_themes": false
+    }
+  ],
+  "provenance_note": "Original A/B independent reviews and author adjudications remain unchanged. This mapping is a new assistant synthesis, not a new independent human review. O is a residual reporting bucket, not a mechanism."
+}

@@ -1,0 +1,112 @@
+{
+  "seed": 20260913,
+  "bootstrap_resamples": 100000,
+  "results": [
+    {
+      "model": "gpt-5.6-luna",
+      "n": 40,
+      "full_pass": 23,
+      "contract_pass": 9,
+      "both": 6,
+      "full_only": 17,
+      "contract_only": 3,
+      "neither": 14,
+      "delta_pp": 35.0,
+      "mcnemar_exact_p": 0.0025768280029296875,
+      "paired_bootstrap_95ci_pp": [
+        15.0,
+        55.00000000000001
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        15.789473684210526,
+        52.63157894736842
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 23,
+          "Missing": 5,
+          "Public": 10,
+          "Hidden": 2
+        },
+        "contract_only": {
+          "Pass": 9,
+          "Public": 20,
+          "Missing": 3,
+          "Hidden": 8
+        }
+      },
+      "holm_adjusted_p_three_models": 0.005153656005859375
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "n": 40,
+      "full_pass": 25,
+      "contract_pass": 6,
+      "both": 5,
+      "full_only": 20,
+      "contract_only": 1,
+      "neither": 14,
+      "delta_pp": 47.5,
+      "mcnemar_exact_p": 2.09808349609375e-05,
+      "paired_bootstrap_95ci_pp": [
+        30.0,
+        65.0
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        30.76923076923077,
+        64.1025641025641
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 25,
+          "Public": 12,
+          "Hidden": 3
+        },
+        "contract_only": {
+          "Missing": 18,
+          "Public": 10,
+          "Hidden": 6,
+          "Pass": 6
+        }
+      },
+      "holm_adjusted_p_three_models": 6.29425048828125e-05
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "n": 40,
+      "full_pass": 12,
+      "contract_pass": 1,
+      "both": 0,
+      "full_only": 12,
+      "contract_only": 1,
+      "neither": 27,
+      "delta_pp": 27.500000000000004,
+      "mcnemar_exact_p": 0.00341796875,
+      "paired_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ],
+      "repository_cluster_bootstrap_95ci_pp": [
+        12.5,
+        42.5
+      ],
+      "outcomes": {
+        "full_repository": {
+          "Pass": 12,
+          "Public": 15,
+          "Hidden": 6,
+          "Build": 2,
+          "Missing": 4,
+          "Isolation": 1
+        },
+        "contract_only": {
+          "Public": 33,
+          "Hidden": 5,
+          "Pass": 1,
+          "Missing": 1
+        }
+      },
+      "holm_adjusted_p_three_models": 0.005153656005859375
+    }
+  ]
+}

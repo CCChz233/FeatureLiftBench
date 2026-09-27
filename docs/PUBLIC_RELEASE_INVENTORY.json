@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-26",
+  "purpose": "Read-only publication inventory; not a release bundle or complete dependency allowlist.",
+  "basis": {
+    "git_head": "e3688ad7c561fc585c0e9c7e01569bfad2532498",
+    "working_tree_has_preexisting_changes": true,
+    "scope": "Current working tree. Paths and hashes are observations, not permission or license determinations."
+  },
+  "paper_manifest": {
+    "path": "docs/paper-workbench/paper_sources.json",
+    "exists": true,
+    "git_tracked": false,
+    "is_symlink": false,
+    "bytes": 7199,
+    "sha256": "8c6536ba9af429a1963edf566378338fa0e5f3e3b8ea9b82a22bd4cb4767e637"
+  },
+  "paper_scope": {
+    "name": "FeatureLiftBench",
+    "tasks": 150,
+    "repositories": 126,
+    "snapshots": 132
+  },
+  "main_comparison": {
+    "tasks": 150,
+    "configurations": 6,
+    "outcomes": 900
+  },
+  "source_ablation": {
+    "tasks": 40,
+    "configurations": 3,
+    "arms": 2,
+    "outcomes": 240
+  },
+  "task_selection": {
+    "path": "docs/paper-workbench/writing/python150_membership.json",
+    "exists": true,
+    "git_tracked": false,
+    "is_symlink": false,
+    "bytes": 6742,
+    "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+  },
+  "selected_task_ids": [
+    "aiohttp__url_params_core__hard3_001",
+    "alembic__revision_map_core__hard3_001",
+    "apscheduler__cron_trigger_core__hard3_001",
+    "arrow__parse_format_core__001",
+    "astroid__nodes_core__001",
+    "attrs__validators_core__001",
+    "babel__plural_core__001",
+    "bidict__bidirectional_map_core__001",
+    "bleach__sanitize_core__001",
+    "blinker__signal_registry_core__001",
+    "boltons__iterutils_core__001",
+    "build__pyproject_backend_core__hard3_001",
+    "cachetools__cache_eviction_core__001",
+    "cattrs__structure_core__001",
+    "celery__signal_dispatch_core__hard3_001",
+    "cerberus__schema_validate_core__001",
+    "chameleon__template_compile_core__001",
+    "click__lazy_command_core__hard3_001",
+    "click__option_parser__001",
+    "configobj__roundtrip_config_core__001",
+    "cookiecutter__repo_finder_core__hard3_001",
+    "coverage__config_merge_core__001",
+    "coverage__glob_matcher_core__001",
+    "coverage__path_remap_core__001",
+    "coverage__report_core__001",
+    "coverage__source_selection_core__001",
+    "croniter__cron_parse_core__001",
+    "dataclasses_json__serde_core__001",
+    "dateutil__zone_resolver_core__hard3_001",
+    "decorator__signature_preserving_core__001",
+    "deepdiff__deep_compare_core__001",
+    "diskcache__eviction_policy_core__hard3_001",
+    "distlib__wheel_metadata_core__hard3_001",
+    "dynaconf__settings_merge_core__001",
+    "email_validator__validate_core__001",
+    "environs__typed_env_core__001",
+    "faker__provider_core__001",
+    "filelock__reentrant_lock_core__001",
+    "flake8__plugin_options_core__hard3_001",
+    "flask__route_dispatch_core__001",
+    "fs__url_opener_core__hard3_001",
+    "fsspec__url_chain_core__hard3_001",
+    "glom__spec_eval_core__hard3_001",
+    "h11__message_parse_core__001",
+    "h2__frame_parse_core__001",
+    "hatch__project_metadata_core__hard3_001",
+    "httpx__request_model_core__001",
+    "humanize__naturaltime_core__001",
+    "importlib_metadata__entry_points_core__001",
+    "importlib_resources__traversable_tree_core__hard3_001",
+    "installer__wheel_record_core__hard3_001",
+    "intervaltree__interval_tree_core__001",
+    "isodate__duration_parse_core__001",
+    "isort__settings_resolver_core__hard3_001",
+    "itsdangerous__timed_serializer_core__001",
+    "jinja2__compile_render_core__001",
+    "jinja2__extensions_core__001",
+    "jinja2__filters_tests_core__001",
+    "jinja2__lexer_parser_core__001",
+    "jinja2__loader_inheritance_core__001",
+    "json5__parse_core__001",
+    "json_logic__evaluator_core__hard3_001",
+    "jsonpath_ng__expression_eval_core__001",
+    "jsonpointer__resolve_core__001",
+    "jsonschema__validator_core__001",
+    "jupyter_core__paths_resolver_core__hard3_001",
+    "jupyter_server__extension_config_core__hard3_001",
+    "keyring__backend_select_core__hard3_001",
+    "lark__grammar_loader_core__001",
+    "lark__parse_tree_core__001",
+    "lark__visitor_transform_core__001",
+    "license_expression__policy_core__hard3_001",
+    "mako__lexer_expression_core__001",
+    "markdown__extensions_core__001",
+    "markdown_it__commonmark_render__001",
+    "marshmallow__schema_core__001",
+    "mkdocs__plugin_config_core__hard3_001",
+    "msgpack__pack_unpack_core__001",
+    "multidict__multidict_mutation_core__hard3_001",
+    "networkx__dag_topo_core__001",
+    "packaging__requirement_marker_specifier__001",
+    "parse__format_parser_core__001",
+    "parsel__selector_namespace_core__hard3_001",
+    "parso__python_parse_core__001",
+    "passlib__hash_context_core__001",
+    "pathvalidate__sanitize_core__001",
+    "pendulum__parse_format_core__001",
+    "phonenumbers__parse_format_core__001",
+    "platformdirs__app_dirs_core__hard3_001",
+    "pluggy__hook_call_order__001",
+    "pluggy__hook_specs_core__001",
+    "pluggy__hook_wrapper_core__hard3_001",
+    "poetry_core__dependency_groups_core__hard3_001",
+    "pydantic__field_validator_core__hard3_001",
+    "pydantic_settings__env_source_core__001",
+    "pydantic_v1__validation_error_core__001",
+    "pygments__formatter_core__001",
+    "pygments__lexer_core__001",
+    "pyramid__configurator_action_core__hard3_001",
+    "pytest__fixture_resolve_core__001",
+    "pytest__ini_markers_core__001",
+    "pytest__mark_expression_core__001",
+    "pytest__marker_registry_core__hard3_001",
+    "pytest__skipif_eval_core__001",
+    "python_box__config_box_core__001",
+    "python_dateutil__relativedelta_core__001",
+    "python_dateutil__rrule_core__001",
+    "python_decouple__config_repository_core__001",
+    "python_dotenv__env_parse_core__001",
+    "python_frontmatter__roundtrip_core__001",
+    "python_multipart__form_parse_core__001",
+    "pyyaml__safe_load_dump__001",
+    "readme_renderer__content_type_core__hard3_001",
+    "redis__resp_parser_core__001",
+    "referencing__json_schema_refs_core__001",
+    "requests_cache__cache_key_core__hard3_001",
+    "responses__request_matcher_core__hard3_001",
+    "returns__result_pipeline_core__hard3_001",
+    "rfc3986__uri_parse_core__001",
+    "rich__markup_parse_core__001",
+    "ruamel_yaml__roundtrip_core__001",
+    "schema__nested_validate_core__hard3_001",
+    "scrapy__item_loader_core__hard3_001",
+    "setuptools_scm__version_normalize_core__hard3_001",
+    "sortedcontainers__sorted_list_core__001",
+    "sphinx__extension_registry_core__hard3_001",
+    "sqlalchemy__event_dispatch_core__hard3_001",
+    "sqlparse__format_filters_core__001",
+    "sqlparse__parse_format_core__001",
+    "sqlparse__parse_split_core__001",
+    "sqlparse__token_tree_core__001",
+    "starlette__route_matching_core__hard3_001",
+    "stevedore__extension_manager_core__hard3_001",
+    "tabulate__table_format_core__001",
+    "tenacity__retry_state_core__hard3_001",
+    "tomlkit__roundtrip_document__001",
+    "tox__factor_expression_core__hard3_001",
+    "trafaret__validation_rules_core__hard3_001",
+    "transitions__state_machine_core__hard3_001",
+    "typer__command_parser_core__001",
+    "urllib3__retry_backoff_core__001",
+    "virtualenv__interpreter_spec_core__hard3_001",
+    "voluptuous__schema_validate_core__001",
+    "websockets__handshake_parse_core__001",
+    "werkzeug__routing_core__001",
+    "wheel__metadata_normalize_core__hard3_001",
+    "wsproto__frame_parse_core__001",
+    "xmltodict__xml_parse_core__001",
+    "yamale__schema_validate_core__hard3_001",
+    "yarl__url_model_core__001"
+  ],
+  "selected_task_asset_counts": {
+    "public_tests": {
+      "task_directories_present": 150,
+      "tracked_files": 151
+    },
+    "hidden_tests": {
+      "task_directories_present": 150,
+      "tracked_files": 301
+    },
+    "repo": {
+      "task_directories_present": 150,
+      "tracked_files": 11218
+    },
+    "reference_solution": {
+      "task_directories_present": 0,
+      "tracked_files": 0
+    },
+    "TASK.md": {
+      "files_present": 150,
+      "tracked_files": 150
+    },
+    "metadata.json": {
+      "files_present": 150,
+      "tracked_files": 150
+    },
+    "requirements.lock": {
+      "files_present": 150,
+      "tracked_files": 150
+    },
+    "evaluation/oracle_manifest.json": {
+      "files_present": 150,
+      "tracked_files": 150
+    }
+  },
+  "paper_inputs": {
+    "release_manifest": {
+      "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 238106,
+      "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
+    },
+    "task_inventory": {
+      "path": "docs/paper-workbench/writing/chapter2_python150_task_inventory.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 124537,
+      "sha256": "d45aa8fd0acd011eb8a3e318182473d30e63bf5c3a5cb3d063fac5431a7137f8"
+    },
+    "task_evidence": {
+      "path": "docs/paper-workbench/writing/chapter2_python150_evidence.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 95513,
+      "sha256": "8ece3ad215af8f8126ca7865bf07a5a815446a3a6b026154693b29a2359a9f76"
+    },
+    "main_results": {
+      "path": "reports/paper_analysis/python150_prime_v2_analysis_20260905/task_results.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 591362,
+      "sha256": "b538ac9d7fd278604e53ed8c52efb5d862ddc66520b61ea0bbe2d2d81da064b1"
+    },
+    "paired_statistics": {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/json/stats.json",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 35234,
+      "sha256": "eb11cbcc40c809d8033c23d79225d8ef522eb339726c16ac6a572612666b285f"
+    },
+    "main_summary": {
+      "path": "reports/paper_analysis/python150_paper_analysis_final/csv/main_table.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 1087,
+      "sha256": "0d05968c81a3319ca53d5272b7652963bc955a9cbb4ba29457c8f8dfc383d2e8"
+    },
+    "lift_taxonomy": {
+      "path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 112155,
+      "sha256": "d60c96f861476d6166f1b1cde8bd53a08fdcbd852bf8451a7e2cc3c7aa77c296"
+    },
+    "mechanism_taxonomy": {
+      "path": "artifacts/research_analysis/python150_task_taxonomy.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 147370,
+      "sha256": "fa408e2f04268ec1964686277c4fa72f53af45a3f3cc45bd654130bd701ca755"
+    },
+    "coverage_data": {
+      "path": "docs/paper-workbench/figures/data/figA_task_coverage.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 228093,
+      "sha256": "dd607df5ed8695bc9ea6d81aa00a29ef30ec51693e5e0e1a8aae87463ac8b57c"
+    },
+    "task_selection": {
+      "path": "docs/paper-workbench/writing/python150_membership.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 6742,
+      "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+    },
+    "source_ablation_results": {
+      "path": "docs/paper-workbench/data/source_ablation_retained_20260921/task_outcomes.csv",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 81596,
+      "sha256": "efad4d5aeb9a33728600d804f3b1e7741261cb1ee0e4cb56046fbaf75c3dfab7"
+    },
+    "source_ablation_statistics": {
+      "path": "docs/paper-workbench/data/source_ablation_retained_20260921/statistics.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 2493,
+      "sha256": "8d8da226b950d49ed2cdf5887f643b3a2b2a76929e300c0b19fa3c9150d4f329"
+    },
+    "author_result_clarifications": {
+      "path": "docs/paper-workbench/writing/author_result_clarifications_20260916.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 5351,
+      "sha256": "0550fca2c43e9ef3cf0bdf1e078cf821d65459c23e26eb732ba8f3a56f366ccd"
+    },
+    "failure_classifications": {
+      "path": "docs/paper-workbench/data/failure_analysis_20260916/classifications.csv",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 26447,
+      "sha256": "eb83beadfb1fba642d2c2d31c031804a873849033adba7a995d3ab7d40c7f057"
+    },
+    "failure_classification_provenance": {
+      "path": "docs/paper-workbench/data/failure_analysis_20260916/provenance.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 805,
+      "sha256": "ae87d54d7ddae6aa8965d95aee60baa14e099276c9284896eaed91840afc1103"
+    },
+    "execution_effort_records": {
+      "path": "docs/paper-workbench/data/token_efficiency_20260917/records.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 2068777,
+      "sha256": "2025c41dae691940543e85ac354da0ac0979d978aeb17a47a9f9796821f401cf"
+    },
+    "execution_effort_analysis": {
+      "path": "docs/paper-workbench/data/token_efficiency_20260917/analysis.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 1680450,
+      "sha256": "cf6d4c8ac8d130884d7a70f0593b0a4fb2979bc8ed5435db193b3bf4517441ca"
+    },
+    "behavioral_obligations": {
+      "path": "docs/paper-workbench/data/failure_subtypes_20260918/behavioral_obligations.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 77362,
+      "sha256": "5f584d47f4b424daf82da59359644ad1e50e0da20ffd85fbc01928fe10c7b991"
+    },
+    "qualitative_themes": {
+      "path": "docs/paper-workbench/data/qualitative_themes_20260920/case_theme_mapping.json",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 35145,
+      "sha256": "b41825be7e0283dd6078ab28f217d750864c52738e64cfb3de081282a71450bd"
+    }
+  },
+  "chapter2_provenance_dependencies": [
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+      "recorded_sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6",
+      "matches": [
+        {
+          "resolved": {
+            "path": "artifacts/research_analysis/python200_prime/current_benchmark_freeze.json",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 238106,
+            "sha256": "8e14c6aca7c7f2bd2f51059bcb8c9513ed2d14a7fbc42e62b4746c074937f5c6"
+          },
+          "verification": "exact"
+        }
+      ]
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+      "recorded_sha256": "5c40b3174afee35a11c44a98bb7e3f3c48b2638ebb316bf2a5903f3d20d3a5fc",
+      "matches": [
+        {
+          "resolved": {
+            "path": "artifacts/research_analysis/python200_prime/current_candidate_freeze.json",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 301938,
+            "sha256": "4e6d71e3712f9513938f7026eae856d9b72eb9c6f67a039cdb591d90fc7770a6"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+      "recorded_sha256": "3ddca7fed5b7b8eec6153b846c94bb6493cc974fafb7ac56067a502fc75053ac",
+      "matches": [
+        {
+          "resolved": {
+            "path": "artifacts/research_analysis/python200_prime/current_repair_semantic_review_v2_closed.json",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 569854,
+            "sha256": "c0bf94dc41165fe74a410f8d0f00ac2541f6f40294bf94396b025fb1fecbbde4"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+      "recorded_sha256": "f85e7d778c5c1c9ab618273e3eb08fa7361766b6d8886426a2a1b1f1835cf3e3",
+      "matches": [
+        {
+          "resolved": {
+            "path": "artifacts/research_analysis/python200_prime/current_repair_maintainer_adjudication_v2.json",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 5307,
+            "sha256": "e1da5e4f2fa9c58211a922e6e6cdd8c865897a8e27fce0f296fe9814b1b7a90f"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    },
+    {
+      "recorded_path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+      "recorded_sha256": "40f62ca1effaa3b7e6178e4b8bd68c8692420cbc34079ff9ac21a0fba4fa03aa",
+      "matches": [
+        {
+          "resolved": {
+            "path": "reports/audits/python200_prime_oracle_revalidation/summary.json",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 1482557,
+            "sha256": "77db8aa9c29aaf4076e35b9f22de98598f30c89946b8a1c609937cf1e0c8805b"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    },
+    {
+      "recorded_path": "benchmark/references/python200_prime_compactness.json",
+      "recorded_sha256": "aeb5b8fdf1f9a7247001076349d5310eee47ea392c2048f709c03ddbb16233e9",
+      "matches": [
+        {
+          "resolved": {
+            "path": "archive/paper_unrelated_20260914/benchmark/references/python200_prime_compactness.json",
+            "exists": true,
+            "git_tracked": false,
+            "is_symlink": false,
+            "bytes": 49413,
+            "sha256": "a0f6aceb1c41d01c3959e0053b87f353b740ad93df7a720f7de4adcd39acfdfc"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    },
+    {
+      "recorded_path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+      "recorded_sha256": "d60c96f861476d6166f1b1cde8bd53a08fdcbd852bf8451a7e2cc3c7aa77c296",
+      "matches": [
+        {
+          "resolved": {
+            "path": "artifacts/research_analysis/python200_hard_task_taxonomy.csv",
+            "exists": true,
+            "git_tracked": true,
+            "is_symlink": false,
+            "bytes": 112155,
+            "sha256": "d60c96f861476d6166f1b1cde8bd53a08fdcbd852bf8451a7e2cc3c7aa77c296"
+          },
+          "verification": "exact"
+        }
+      ]
+    },
+    {
+      "recorded_path": "docs/paper/writing/python150_membership.json",
+      "recorded_sha256": "9d0cca7eac73b4ee992c26029d8447a48668bc5bb593b8b28d4717a00dff1cf0",
+      "matches": [
+        {
+          "resolved": {
+            "path": "docs/paper-workbench/writing/python150_membership.json",
+            "exists": true,
+            "git_tracked": false,
+            "is_symlink": false,
+            "bytes": 6742,
+            "sha256": "79761e93ed200490390e1f178cec98089b592ad92a859d04e7ed54c61774277b"
+          },
+          "verification": "CRLF-equivalent"
+        }
+      ]
+    }
+  ],
+  "source_exposure_additional_inputs": [
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/run_exposure.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 127801,
+      "sha256": "2225770987def0556f157fbdd322665c8e4354e92298a43494978afed64f2e0b",
+      "recorded_sha256": "2225770987def0556f157fbdd322665c8e4354e92298a43494978afed64f2e0b"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/entrypoint_mapping.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 64487,
+      "sha256": "db6f40429a31103114d4d9e6879833daaecc0d35595776297e7ab0f68b5b4173",
+      "recorded_sha256": "db6f40429a31103114d4d9e6879833daaecc0d35595776297e7ab0f68b5b4173"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/exposure_events.csv",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 1054570,
+      "sha256": "e09b268b195a01fb2ef5a3ad698a8810753ba20f1c9e331912b321c468af9180",
+      "recorded_sha256": "e09b268b195a01fb2ef5a3ad698a8810753ba20f1c9e331912b321c468af9180"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/summary_by_model_outcome.csv",
+      "exists": true,
+      "git_tracked": false,
+      "is_symlink": false,
+      "bytes": 1880,
+      "sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec",
+      "recorded_sha256": "4a0fc48af757ad03c11b989c94ce1cc39feea8f3539511893749b3734a1d44ec"
+    },
+    {
+      "path": "reports/paper_analysis/source_exposure/diagnosis/method.json",
+      "exists": true,
+      "git_tracked": true,
+      "is_symlink": false,
+      "bytes": 1018,
+      "sha256": "1facf0313fe85305a15d75275e7e5b3eacd10ecf61c5cd7afbdccf84a105c328",
+      "recorded_sha256": "1facf0313fe85305a15d75275e7e5b3eacd10ecf61c5cd7afbdccf84a105c328"
+    }
+  ],
+  "raw_main_profile_coverage": [
+    {
+      "model": "deepseek-v4-pro",
+      "run_directory": "experiments/python/openhands/deepseek-v4-pro/python150-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 150,
+      "missing_run_json": 0
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "run_directory": "experiments/python/openhands/deepseek-v4-flash/python200-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 150,
+      "missing_run_json": 0
+    },
+    {
+      "model": "gpt-5.6-luna",
+      "run_directory": "experiments/python/openhands/gpt-5.6-luna/python200-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 0,
+      "missing_run_json": 150
+    },
+    {
+      "model": "glm-5.3-flash",
+      "run_directory": "experiments/python/openhands/glm-5.3-flash/python200-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 7,
+      "missing_run_json": 143
+    },
+    {
+      "model": "qwen3.6-35b-a3b-fp8",
+      "run_directory": "experiments/python/openhands/qwen3.6-35b-a3b-fp8/python200-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 0,
+      "missing_run_json": 150
+    },
+    {
+      "model": "gpt-oss-120b",
+      "run_directory": "experiments/python/openhands/gpt-oss-120b/python200-prime-v2-main-r1",
+      "expected": 150,
+      "available_run_json": 0,
+      "missing_run_json": 150
+    }
+  ],
+  "archived_references": {
+    "oracle_parent": "archive/paper_unrelated_20260914/benchmark/submissions",
+    "selected_oracle_directories_present": 150,
+    "execution_and_identity_reverified": false,
+    "registries": [
+      {
+        "path": "archive/paper_unrelated_20260914/benchmark/references/compactness.json",
+        "exists": true,
+        "git_tracked": false,
+        "is_symlink": false,
+        "bytes": 30053,
+        "sha256": "94718686bc67423468008334192284d6bedf1da4cca05371eeb58b7fc3549ba7"
+      },
+      {
+        "path": "archive/paper_unrelated_20260914/benchmark/references/python200_prime_compactness.json",
+        "exists": true,
+        "git_tracked": false,
+        "is_symlink": false,
+        "bytes": 49413,
+        "sha256": "a0f6aceb1c41d01c3959e0053b87f353b740ad93df7a720f7de4adcd39acfdfc"
+      }
+    ]
+  },
+  "publication_gaps": {
+    "workbench_tracked_file_count": 0,
+    "root_license_present": false,
+    "root_citation_present": false,
+    "paper_license_identification": "LPPL 1.3c text; not established as the project-wide code license.",
+    "historical_budget_example": 120,
+    "current_documented_budget": 150,
+    "raw_profiles_missing": 593
+  },
+  "verification": {
+    "python": "3.12.2",
+    "paper_check": "passed",
+    "catalog_check": "passed",
+    "paper_audit": "failed: 307/900 profiles available; 593 missing",
+    "not_performed": [
+      "agent runs",
+      "Docker evaluation",
+      "reference revalidation",
+      "clean-clone reproduction",
+      "full harness tests",
+      "full secret/history scan",
+      "third-party license audit",
+      "remote publication"
+    ]
+  },
+  "release_policy": {
+    "include": [
+      "core harness and its required modules/tests",
+      "selected Python-150 task contracts and scoring assets",
+      "source identity and materialization scripts",
+      "reference/oracle implementations and frozen measurements after identity verification",
+      "paper-selected data and transitive analysis dependencies",
+      "Main and source-ablation configurations without credentials",
+      "artifact provenance, exception and missing-evidence records"
+    ],
+    "externalize_with_manifest": [
+      "large source snapshots",
+      "sanitized raw runs and submissions",
+      "offline dependency wheels"
+    ],
+    "exclude_from_paper_bundle": [
+      "credentials and machine-local configurations",
+      "caches, virtualenvs and build intermediates",
+      "unselected historical experiments and Hard-50 evaluation payloads",
+      "unrelated archives and duplicate transfer bundles"
+    ],
+    "caution": "Do not blindly exclude archive: selected references and provenance dependencies currently resolve there. Do not strip historical freeze entries or alter their hashes."
+  }
+}

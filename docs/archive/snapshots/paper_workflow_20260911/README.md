@@ -2,7 +2,7 @@
 
 > **Status: archived · Captured: 2026-09-11**
 
-这些是更新导航前的原文副本，以 `.md.txt` 保存，内部相对链接保留为历史文本。当前范围和入口见 [STATUS.md](../../../STATUS.md) 与 [论文工作流](../../../paper/WORKFLOW.md)。
+这些是更新导航前的原文副本，以 `.md.txt` 保存，内部相对链接保留为历史文本。当前范围和入口见 [STATUS.md](../../../STATUS.md) 与 [论文工作流](../../../paper-workbench/WORKFLOW.md)。
 
 | 原文件 | 快照 |
 | --- | --- |

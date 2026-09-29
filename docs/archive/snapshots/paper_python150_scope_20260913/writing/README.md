@@ -1,6 +1,6 @@
 # Paper writing materials
 
-> **Status: current · Last verified: 2026-09-11**
+> **Status: archived· Last verified: 2026-09-11**
 
 Edit [main.tex](../main.tex) and [references.bib](../references.bib). The outline is [PAPER_OUTLINE.md](../PAPER_OUTLINE.md). All five figures are present; older placeholder notes are historical.
 

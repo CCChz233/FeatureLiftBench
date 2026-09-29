@@ -1,6 +1,6 @@
 # FeatureLiftBench 论文大纲与图表方案
 
-> **Documentation status: current · Last verified: 2026-09-11**
+> **Documentation status: archived· Last verified: 2026-09-11**
 >
 > 当前实现以 [main.tex](main.tex) 为准，数据与代码入口见 [WORKFLOW.md](WORKFLOW.md)。Benchmark 为 200 题、176 个仓库、182 个快照；主比较为相同 150 题上的六配置结果，五配置额外覆盖其余 50 题。
 >

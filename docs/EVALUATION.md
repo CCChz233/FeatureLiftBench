@@ -21,7 +21,7 @@
 | Core metric 2 | Reference-Relative Extraction Size (RRES) |
 
 Main 是 leaderboard 和论文主结果的唯一默认条件。当前论文使用固定的 Python-150 身份集合，见
-[paper/paper_sources.json](paper/paper_sources.json)。`python200_hard` 是历史 200 题运行套件，不能直接当作本文任务集合。Task contract 与可见性以
+[paper/paper_sources.json](paper-workbench/paper_sources.json)。`python200_hard` 是历史 200 题运行套件，不能直接当作本文任务集合。Task contract 与可见性以
 [TASK_DESIGN_RULES.md](TASK_DESIGN_RULES.md) 为准，当前 suite identity 以
 [STATUS.md](STATUS.md) 为准。
 

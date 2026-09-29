@@ -3,7 +3,7 @@
 > **Status: current · Last verified: 2026-09-11**
 
 当前写作从 `python -B scripts/paper.py check` 开始，见
-[论文工作流](../docs/paper/WORKFLOW.md)。`paper.py` 的 `tables`、`figures`、
+[论文工作流](../docs/paper-workbench/WORKFLOW.md)。`paper.py` 的 `tables`、`figures`、
 `package` 分别更新表格、绘制统计图、打包 LaTeX；均不运行实验或编译论文。
 
 下列评测工具保留内部 catalog 键 `--benchmark python200_hard`。

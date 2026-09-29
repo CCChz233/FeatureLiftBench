@@ -15,8 +15,11 @@
 | `fig7_footprint_forest_preview.py` | 未采用的六配置 forest plot |
 | `preview_results.py` | 结构柱状图与 forest plot 的预览、几何检查入口 |
 | `FIGURE_TEXT_AUDIT.md` | 历史文本清理记录，其中状态不代表当前论文 |
+| `redraw_figures.py`、`fig06_failure_taxonomy.py` | 旧版集中绘图与失败分类图；不用于当前正文 |
+| `preview_*.py` | 消融、Fig. 4 排版与 Fig. 6 的探索预览 |
+| `FIGURE_TABLE_GUIDELINES.md`、`PAIR_LAYOUT_REVIEW.md` | 历史排版讨论 |
 
-移动后的试画脚本仍复用上一级的样式和数据模块。需要试画时显式指定独立输出目录，例如：
+这些旧脚本可能沿用迁移前路径，不能作为当前论文的可复算入口。当前论文使用 [draw_all.py](../draw_all.py)；需要检查旧图时先核对脚本依赖，并显式指定独立输出目录。
 
 ```bash
 python -B preview_results.py --output-dir /tmp/flb-legacy-preview

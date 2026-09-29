@@ -84,6 +84,7 @@
     "acm-jdslogo.png",
     "LICENSE",
     "figures/fig01_overview.png",
+    "figures/fig02_construction.png",
     "figures/fig03a_families.pdf",
     "figures/fig03b_entanglement.pdf",
     "figures/fig07a_post_pass_tokens.pdf",
@@ -101,7 +102,7 @@
     "This file selects existing final evidence for writing. It does not create another benchmark release, rerun experiments, or rewrite historical run metadata.",
     "Recorded pass counts are regression expectations; table values are computed from task-level results.",
     "The paper reports the fixed Python-150 collection only. The historical 200-task freeze and run directories are provenance sources; membership is explicitly filtered before analysis. Excluded extension outcomes are not part of the paper.",
-    "Eight main figures and five main tables. Figure and table numbers are assigned by LaTeX; no separate Supplement is packaged.",
+    "Historical 2026-09-27 paper: eight main figures and five main tables; superseded by the 2026-09-29 manuscript.",
     "RQ3 uses the purposively diverse 40-case pilot qualitatively; Fig.6 is authored in main.tex. Historical behavioral_obligations input is retained for archival tools, not current manuscript composition statistics.",
     "Current Fig.6 is a vector mechanism diagram. Supplement includes all 40 case-to-theme assignments; counts describe only the purposive sample.",
     "2026-09-20 author-directed revision: three core RQs (outcomes, source ablation, qualitative cases), followed by secondary execution and footprint analyses. LaTeX figures 4/7 are now source ablation/execution effort; tables 3/4 are paired ablation/source exposure. Numeric inputs unchanged. Figure 3 assets unchanged. Final validation disposition follows author confirmation; historical intermediate review labels are not final benchmark findings.",
@@ -109,11 +110,13 @@
     "Final 2026-09-21 author selection supersedes earlier Pro reporting instructions: retained Pro Contract Only outcomes are 6/40 passes and 18 missing submissions. Paired statistics are computed by writing/recompute_retained_ablation.py; manuscript contains no execution-history narrative.",
     "Final submission has no separate Supplement. Main-text pointers refer to replication materials; supplementary.tex and qualitative_mapping.tex remain local working files and are excluded from the Overleaf manuscript package. RepoZero is cited as v1 with its five-author list.",
     "Writing sources now live in docs/paper. This workbench retains relative symlinks to the single canonical sources; scripts and data live here. Historical provenance paths remain historical records.",
-    "2026-09-27 manuscript audit: Table 5 duplicating Fig. 4(c) was removed, Table 1 was revised into a qualitative five-dimension comparison, and the package excludes three unreferenced legacy figure files."
+    "Historical 2026-09-27 manuscript audit: Table 5 duplicating Fig. 4(c) was removed, Table 1 was revised into a qualitative five-dimension comparison, and the package excluded three unreferenced legacy figure files; superseded by the 2026-09-29 manuscript.",
+    "2026-09-29 author-supplied manuscript supersedes the prior 40-task RQ2 text and figures: the new manuscript reports 150-task Contract Only and DSE results. The corresponding run-level RQ2 data remain on the server and are not present in this local workspace; existing 40-task inputs are historical and must not be used to verify the new 150-task claims.",
+    "Current manuscript has eight main figures, six main tables, and thirteen referenced figure assets; Fig. 2 is the supplied fig02_construction.png."
   ],
   "manuscript_source": {
-    "archive": "/Users/chz/Downloads/FeatureLiftBench__Behavior_Preserving_Feature_Lifting__3_.zip",
-    "sha256": "5f0d3128202d74f9befa039f59e33d7c5db3097e5b6d40d46c2fa01d614d2fc6",
-    "date": "2026-09-26"
+    "archive": "docs/archive/paper_import_20260929/supplied_paper.zip",
+    "sha256": "3af9622392201e17c7708a25c5d308e5c58f4258256f5275c1e126a31f0d1270",
+    "date": "2026-09-29"
   }
 }

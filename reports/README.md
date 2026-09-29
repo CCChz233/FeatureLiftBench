@@ -3,7 +3,7 @@
 > **Status: reference · Last verified: 2026-09-14**
 
 这里保存派生分析，原始运行属于 `experiments/`。论文输入只按
-[paper_sources.json](../docs/paper/paper_sources.json) 选择。
+[paper_sources.json](../docs/paper-workbench/paper_sources.json) 选择。
 
 | 报告 | 当前用途 |
 | --- | --- |

@@ -3,7 +3,7 @@
 Scope: `docs/paper/main.tex` and its eight figures, under the current `acmsmall`
 template. The manuscript is based on the user-supplied 2026-09-26 ZIP. The
 pre-audit snapshot is
-`docs/paper-workbench/output/paper_pre_full_audit_20260927_100422.zip`.
+`docs/archive/paper_cleanup_20260929/package_snapshots/paper_pre_full_audit_20260927_100422.zip`.
 
 ## Changes made
 

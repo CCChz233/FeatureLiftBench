@@ -1,6 +1,6 @@
 # 论文图片
 
-> **Status: current · Last verified: 2026-09-11**
+> **Status: archived· Last verified: 2026-09-11**
 
 当前五张正式图如下。旧版图片、圆环对照和 AI 草图保留作设计记录，不参与正文打包。
 

@@ -4,7 +4,7 @@
 
 本页仅概括当前 150 题论文。历史方法结论与旧数据未删除，整理前版本保存在
 [本轮快照](archive/snapshots/fse_sync_20260914/README.md) 的 `before.zip`。
-正式数值以 [paper_sources.json](paper/paper_sources.json) 和正文为准。
+正式数值以 [paper_sources.json](paper-workbench/paper_sources.json) 和正文为准。
 
 1. 六配置的 Functional Pass@1 为 24.0%–76.7%，尚未全部解决这组任务。点估计不建立每一对配置的显著排序。
 2. Pro/Flash 均交付产物，77 次合计失败中 76 次首败位于行为门；首败阶段是可观察边界，不是语义根因。

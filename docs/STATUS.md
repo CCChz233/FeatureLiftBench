@@ -1,6 +1,6 @@
 # FeatureLiftBench 当前状态
 
-> **Status: current · Last verified: 2026-09-14**
+> **Status: current · Navigation checked: 2026-09-29 · Evidence summary retained from 2026-09-14**
 
 当前工作是基于用户提供的新版 `FSE.zip` 撰写 FSE 论文。
 论文范围为 **150 个 Python 任务，126 个仓库、132 个快照**；
@@ -35,9 +35,9 @@ Luna/GLM Token 用量仍不可核验，不能用日志默认零值代替缺失�
 ## 当前入口
 
 - [项目地图](PROJECT_MAP.md)：论文、代码、数据、实验的对应关系。
-- [论文工作流](paper/WORKFLOW.md)：编辑、检查、图表及打包。
-- [数据来源清单](paper/paper_sources.json)：唯一正式输入路径与模型顺序。
-- [本轮同步记录](paper/FSE_SYNC_20260914.md)：新版导入、修复与验证。
+- [论文工作流](paper-workbench/WORKFLOW.md)：编辑、检查、图表及打包。
+- [数据来源清单](paper-workbench/paper_sources.json)：唯一正式输入路径与模型顺序。
+- [本轮同步记录](archive/paper_cleanup_20260929/workbench_plans/FSE_SYNC_20260914.md)：新版导入、修复与验证。
 
 功能正确性仍由 Build ∧ Primary ∧ Extended ∧ Isolation 决定，agent 完成状态不替代功能分数。
 RRES/Copy 只描述成功产物；Steps/Token 只作执行诊断。方法与历史批次不得并入当前主比较。

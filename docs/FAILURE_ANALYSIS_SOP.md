@@ -3,7 +3,7 @@
 > **Status: current · SOP version: v1 · Last verified: 2026-09-05**  
 > **标签与分母的定义**以 [FAILURE_ANALYSIS_PROTOCOL.md](FAILURE_ANALYSIS_PROTOCOL.md) 为准。  
 > **本文只规定怎么执行一轮可复现的 5.3 / Finding 3 标注。**  
-> 论文章节顺序与可否写 Finding 见 [paper/08_experimental_analysis_chapter.md](paper/08_experimental_analysis_chapter.md)。
+> 论文章节顺序与可否写 Finding 见 [当前论文正文](paper/main.tex)。
 
 Agent 触发：`.agents/skills/featureliftbench-annotate-failures/SKILL.md`。
 
@@ -196,7 +196,7 @@ CSV 与 JSON 可经脚本生成，但 **primary 必须来自 L1 人工/助手精
 ## 8. 当前仓库指针
 
 - Protocol：[FAILURE_ANALYSIS_PROTOCOL.md](FAILURE_ANALYSIS_PROTOCOL.md)
-- 词表：[paper/05_failure_taxonomy.md](paper/05_failure_taxonomy.md)
-- 章节闸门：[paper/08_experimental_analysis_chapter.md](paper/08_experimental_analysis_chapter.md)
+- 词表：[失败分析协议](FAILURE_ANALYSIS_PROTOCOL.md)
+- 章节闸门：[当前论文正文](paper/main.tex)
 - 机械分析示例：`reports/paper_analysis/python150_prime_v2_analysis_20260905/`
 - 该目录的 F3 标注截至 2026-09-06 为 **L1 助手精读 + 轨迹/过程筛（Pro+Flash 普查）** 与 **Luna/Qwen/OSS 分层后抽**，不是 L2 金标；后抽不得并进普查分母。

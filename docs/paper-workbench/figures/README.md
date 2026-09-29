@@ -1,10 +1,17 @@
-# 论文图形工作区
+# 论文图片代码
 
-最新 PDF 的 Fig. 3–8 与源码、输出文件的逐项对应关系见 [scripts/README.md](scripts/README.md)。Fig. 1、Fig. 2 为 PPT 图片。
+> **Status: current · Last verified: 2026-09-29**
 
-`scripts/draw_all.py` 默认把所有预览写入 `output/latest_pdf/`，不会改动 `docs/paper/figures/` 中的正式图片。`data/` 保存派生数据和历史分析产物；`scripts/legacy/` 保存旧版绘图方案。Fig. 6 的正式图是 PNG 资产，`scripts/fig06_qualitative_cases.py` 只负责原样导出预览。
+正式图片仅在 [docs/paper/figures](../../paper/figures/)；本目录不存放第二套正式资产。
 
-```bash
-python -B docs/paper-workbench/figures/scripts/draw_all.py --list
-python -B docs/paper-workbench/figures/scripts/draw_all.py
-```
+当前正文逐图独立脚本的压缩包：[current_paper_figure_code_20260929.zip](current_paper_figure_code_20260929.zip)。
+
+| 目录 | 用途 |
+| --- | --- |
+| [standalone/](standalone/README.md) | 当前论文逐图独立脚本；适合改样式，数据为冻结值 |
+| [scripts/](scripts/README.md) | 从当前保存数据复算并绘制 Fig. 3–8 |
+| [drafts/rq2_150/](drafts/rq2_150/README.md) | 尚未纳入正文的 150 题 RQ2 试画 |
+| [data/](data/) | 绘图派生数据与统计输出 |
+| `output/` | 本地预览，不作为正式论文资产 |
+
+Fig. 6 的正式 PNG 来源见 [来源说明](fig6_final_provenance.md)。旧图与图号别名已移出本目录，见 [清理归档](../../archive/paper_cleanup_20260929/README.md)。

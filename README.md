@@ -1,6 +1,6 @@
 # FeatureLiftBench
 
-> **Status: current · Last verified: 2026-09-14**
+> **Status: current · Navigation checked: 2026-09-29**
 
 FeatureLiftBench evaluates behavior-preserving feature lifting: given an intact,
 version-pinned source repository and a public behavioral contract, a coding agent
@@ -18,7 +18,7 @@ view remains on disk; the extra 50 tasks are outside the paper.
 | Understand the entire project and its evidence | [Project map](docs/PROJECT_MAP.md) |
 | Read current results and remaining gaps | [Status](docs/STATUS.md) |
 | Write, compile, and package the updated paper | [Paper workspace](docs/paper/README.md) |
-| Edit one figure | [Per-figure source index](docs/paper-workbench/figures/scripts/README.md) |
+| Edit one figure | [Standalone per-figure scripts](docs/paper-workbench/figures/standalone/README.md) |
 | Find the data behind a table or figure | [Paper source manifest](docs/paper-workbench/paper_sources.json) |
 | Understand the benchmark and evaluator | [Design](docs/BENCHMARK_DESIGN.md) · [Evaluation](docs/EVALUATION.md) |
 | Prepare an experiment | [Run guide](RUN.md) |

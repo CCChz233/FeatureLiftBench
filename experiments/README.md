@@ -3,7 +3,7 @@
 > **Status: reference · Last verified: 2026-09-14**
 
 本目录保存实际恢复的原始结果和恢复台账。当前正文取数路径由
-[paper_sources.json](../docs/paper/paper_sources.json) 登记，不按目录日期或名称挑选成绩。
+[paper_sources.json](../docs/paper-workbench/paper_sources.json) 登记，不按目录日期或名称挑选成绩。
 
 | 目录 / 文件 | 当前内容 |
 | --- | --- |

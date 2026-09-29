@@ -8,4 +8,4 @@
 - `comprehensive_table.py.txt`：修改表头之前的生成器。
 - `fig02_construction_validation.png`：作者定稿的透明背景原图。
 
-当前稿件见 [main.tex](../../../paper/main.tex)，本轮说明见 [修改记录](../../../paper/writing/METHODS_RESULTS_REVISION_20260912.md)。
+当前稿件见 [main.tex](../../../paper/main.tex)，本轮说明见 [修改记录](../../../paper-workbench/writing/archive/notes_20260929/METHODS_RESULTS_REVISION_20260912.md)。

@@ -10,4 +10,4 @@
 - [git-status-before.txt](git-status-before.txt)：同步前已有 2111 条状态记录；这些历史改动不归因于本次整理。
 - [import_manifest.json](import_manifest.json)：来源哈希、导入文件哈希、基线提交与保留附录图决定。
 
-未执行整个项目的 reset、清理或提交。当前说明见 [同步记录](../../../paper/FSE_SYNC_20260914.md)。
+未执行整个项目的 reset、清理或提交。当前说明见 [同步记录](../../paper_cleanup_20260929/workbench_plans/FSE_SYNC_20260914.md)。

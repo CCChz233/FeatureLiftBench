@@ -1,6 +1,9 @@
 # FeatureLiftBench 论文代码公开整理
 
+> **Status: historical planning snapshot · 2026-09-26**
+
 盘点日期：2026-09-26。本文基于当前工作区，而非仅基于已提交版本。
+其中 Git 跟踪数量、缺口和旧路径只反映当日状态；当前论文入口见 [论文 README](paper/README.md) 与 [输入清单](paper-workbench/paper_sources.json)。
 配套机器可读盘点：[PUBLIC_RELEASE_INVENTORY.json](PUBLIC_RELEASE_INVENTORY.json)。
 这是发布范围与准备清单，不代表已完成公开打包、许可证审查或全新环境复现。
 

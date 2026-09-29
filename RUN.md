@@ -14,7 +14,7 @@ python -B scripts/paper.py package
 
 完整原始运行审计：`python -B scripts/paper.py audit`。
 当前主实验 profile 仅恢复 307/900，因此该严格审计会失败；数值检查可独立执行。
-单图与临时预览见 [绘图源码索引](docs/paper/figures/scripts/README.md)。
+单图与临时预览见 [绘图源码索引](docs/paper-workbench/figures/scripts/README.md)。
 
 ## 新实验与历史复现
 

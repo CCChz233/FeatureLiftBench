@@ -89,7 +89,7 @@ are sanitized; no hidden test names, assertions, or input literals are exported.
   labels, concerns, public clause IDs, and submission file/line references.
 - `summary.json`: definitions, per-model counts, review tiers, reconciliation,
   and source/annotation hashes.
-- `../../figures/scripts/preview_fig06_failure_subtypes.py`: checks source hashes,
+- `../../figures/scripts/legacy/preview_fig06_failure_subtypes.py`: historical preview that checks source hashes,
   independently aggregates the ledger, and renders PDF/PNG/SVG plus plot-data CSV.
 - The private evidence pointer in each CSV row is relative to
   `reports/paper_analysis/behavior_drift_subtypes_20260918/`. Its review index maps
@@ -108,7 +108,7 @@ From the repository root:
 
 ```sh
 python -B .agents/skills/featureliftbench-annotate-failures/scripts/validate_annotation_csv.py docs/paper/data/failure_subtypes_20260918/failure_root_cause_annotations.csv
-MPLCONFIGDIR=/tmp/flb-mpl python -B docs/paper/figures/scripts/preview_fig06_failure_subtypes.py
+MPLCONFIGDIR=/tmp/flb-mpl python -B docs/paper-workbench/figures/scripts/legacy/preview_fig06_failure_subtypes.py
 ```
 
 The renderer writes only to `docs/paper/figures/output/fig6_subtypes/` by default.

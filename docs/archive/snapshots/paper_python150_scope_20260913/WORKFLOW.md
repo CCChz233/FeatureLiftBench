@@ -1,6 +1,6 @@
 # 论文代码与数据工作流
 
-> **Status: current · Last verified: 2026-09-11**
+> **Status: archived· Last verified: 2026-09-11**
 
 最终 benchmark 为 200 题、176 个仓库、182 个快照；主比较为相同 150 题上的六配置结果，扩展为五配置的其余 50 题。
 

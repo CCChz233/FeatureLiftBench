@@ -2,7 +2,7 @@
 
 > **Status: archived · Captured: 2026-09-11**
 
-本目录保存本轮 LaTeX 修改前的正文、大纲和检查记录。当前论文见 [main.tex](../../../paper/main.tex)，当前工作流见 [WORKFLOW.md](../../../paper/WORKFLOW.md)。
+本目录保存本轮 LaTeX 修改前的正文、大纲和检查记录。当前论文见 [main.tex](../../../paper/main.tex)，当前工作流见 [WORKFLOW.md](../../../paper-workbench/WORKFLOW.md)。
 
 - [main.tex.txt](main.tex.txt)：修改前完整正文。
 - [PAPER_OUTLINE.md.txt](PAPER_OUTLINE.md.txt)：修改前大纲，内部链接为历史文本。

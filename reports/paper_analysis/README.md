@@ -4,7 +4,7 @@
 
 The paper uses one 200-task benchmark, with a common 150-task comparison across six configurations and an additional 50-task evaluation across five configurations.
 
-Start with [the paper workflow](../../docs/paper/WORKFLOW.md). Its [input manifest](../../docs/paper/paper_sources.json) selects exact files; directory names and dates alone do not define current evidence.
+Start with [the paper workflow](../../docs/paper-workbench/WORKFLOW.md). Its [input manifest](../../docs/paper-workbench/paper_sources.json) selects exact files; directory names and dates alone do not define current evidence.
 
 ## Inputs used by the current paper
 

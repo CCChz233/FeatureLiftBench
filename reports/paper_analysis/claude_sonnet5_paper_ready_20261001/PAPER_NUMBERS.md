@@ -76,11 +76,13 @@ Claude 行为失败中确认读过入口关联源码：46/59（78.0%），首次
 
 ## Fig. 7
 
-两块面板样本不同。未纳入的行不要填 0，原因在 `fig07_checkpoints.csv` 的 `exclusion_reason`。
+只改了 Claude。另外六个模型仍用论文原来的一一对应规则，这里没有重算。
+
+Claude 两个面板用同一批成功 run：第一次通过的快照能在事件流里唯一定位。Token 只加总事件流里对得上的主代理调用，子代理调用和另一段对话的调用两边都不计。`token_rule=event_aligned_main_agent`。原先一一对应的 14 条，放宽后比例不变。找不到切点的成功 run 仍留空，不填 0，原因在 `exclusion_reason`。`include_checkpoint_bijection` 保留未放宽的标记。
 
 | Panel | Eligible n | Median [IQR] |
 | --- | ---: | --- |
-| Post-pass tokens (%) | 7 | 62.9 [44.4, 65.8] |
+| Post-pass tokens (%) | 60 | 59.0 [42.1, 71.5] |
 | Subsequent responses | 60 | 10.0 [6.0, 17.2] |
 
 点值：token 用 `include_checkpoint=True` 的 `post_sufficiency_fraction`（乘 100 得到百分数）；回复用 `include_response=True` 的 `post_responses`。

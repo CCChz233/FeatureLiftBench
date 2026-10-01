@@ -248,7 +248,7 @@ def main():
                 'support_exposed_files':len(support&exposed.keys()),'has_closure_annotation':int(bool(t['closure_gold_path'])),
                 'closure_mapped_files':len(closure),'closure_exposed_files':len(closure&exposed.keys())})
         if task_num%25==0:print(f'{task_num}/150 tasks; {len(all_rows)} runs',flush=True)
-    assert len(all_rows)==900
+    assert len(all_rows)==len(runs)
     save_csv(out/'entrypoint_mapping.csv',mappings);save_csv(out/'exposure_events.csv',events);save_csv(out/'run_exposure.csv',all_rows)
     groups={'functional_pass':'Pass','public_failure':'Behavioral-first failure','hidden_failure':'Behavioral-first failure',
             'missing_submission':'Delivery/build failure','build_failure':'Delivery/build failure','isolation_failure':'Isolation-first failure'}

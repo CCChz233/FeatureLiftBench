@@ -1,0 +1,456 @@
+{
+  "sample": {
+    "models": [
+      "deepseek-v4-pro",
+      "deepseek-v4-flash",
+      "gpt-5.6-luna",
+      "glm-5.3-flash",
+      "qwen3.6-35b-a3b-fp8",
+      "gpt-oss-120b",
+      "claude-sonnet-5"
+    ],
+    "tasks": 116,
+    "artifacts": 574,
+    "repositories": 98,
+    "all_successes": 581,
+    "singleton_successes_excluded": 7,
+    "included_per_model": [
+      113,
+      108,
+      99,
+      68,
+      63,
+      35,
+      88
+    ],
+    "pairwise_overlap": [
+      [
+        113,
+        105,
+        97,
+        67,
+        63,
+        33,
+        86
+      ],
+      [
+        105,
+        108,
+        92,
+        64,
+        61,
+        35,
+        85
+      ],
+      [
+        97,
+        92,
+        99,
+        59,
+        57,
+        33,
+        76
+      ],
+      [
+        67,
+        64,
+        59,
+        68,
+        41,
+        24,
+        59
+      ],
+      [
+        63,
+        61,
+        57,
+        41,
+        63,
+        25,
+        53
+      ],
+      [
+        33,
+        35,
+        33,
+        24,
+        25,
+        35,
+        27
+      ],
+      [
+        86,
+        85,
+        76,
+        59,
+        53,
+        27,
+        88
+      ]
+    ],
+    "lift_types": {
+      "Adapted": 56,
+      "Direct": 52,
+      "Composite": 8
+    }
+  },
+  "analyses": {
+    "task_bootstrap": {
+      "weighting": "equal artifact weight",
+      "cluster": "task",
+      "dense_max_error": 4.760081218080359e-15,
+      "bootstrap": {
+        "accepted": 10000,
+        "attempts": 10000,
+        "disconnected_rejected": 0,
+        "seed": 20260915,
+        "clusters": 116
+      },
+      "rows": [
+        {
+          "model": "deepseek-v4-pro",
+          "short": "Pro",
+          "included_success_n": 113,
+          "rres_ratio": 1.1953504106170474,
+          "rres_ci": [
+            1.104694931841612,
+            1.305303223337525
+          ],
+          "copy_pp": 14.800698545203646,
+          "copy_ci": [
+            11.853441349343251,
+            17.799505496131857
+          ]
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "short": "Flash",
+          "included_success_n": 108,
+          "rres_ratio": 1.3229127122678053,
+          "rres_ci": [
+            1.2207764048887377,
+            1.4483633151665325
+          ],
+          "copy_pp": 16.067611704682776,
+          "copy_ci": [
+            13.011027302264141,
+            19.21991296426895
+          ]
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "short": "Luna",
+          "included_success_n": 99,
+          "rres_ratio": 0.6245232522589454,
+          "rres_ci": [
+            0.5532465053298163,
+            0.7011950190078504
+          ],
+          "copy_pp": -20.91560940579112,
+          "copy_ci": [
+            -26.341367664162807,
+            -15.53203003280735
+          ]
+        },
+        {
+          "model": "glm-5.3-flash",
+          "short": "GLM",
+          "included_success_n": 68,
+          "rres_ratio": 1.5737871313547152,
+          "rres_ci": [
+            1.3930135187806905,
+            1.7902677808588792
+          ],
+          "copy_pp": 13.525747376256508,
+          "copy_ci": [
+            9.892138518477795,
+            17.266381986009062
+          ]
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "short": "Qwen",
+          "included_success_n": 63,
+          "rres_ratio": 1.1108201971978613,
+          "rres_ci": [
+            1.0205786827537895,
+            1.2255267401003498
+          ],
+          "copy_pp": -2.534092766595282,
+          "copy_ci": [
+            -6.792778177224243,
+            1.7301777785081796
+          ]
+        },
+        {
+          "model": "gpt-oss-120b",
+          "short": "OSS",
+          "included_success_n": 35,
+          "rres_ratio": 0.617018347921893,
+          "rres_ci": [
+            0.46946292377511906,
+            0.7721303326091657
+          ],
+          "copy_pp": -24.866143819859772,
+          "copy_ci": [
+            -32.53075224946534,
+            -17.656925346469254
+          ]
+        },
+        {
+          "model": "claude-sonnet-5",
+          "short": "Claude",
+          "included_success_n": 88,
+          "rres_ratio": 0.9387222817514326,
+          "rres_ci": [
+            0.8577386967086993,
+            1.0212654837245616
+          ],
+          "copy_pp": 3.921788366103243,
+          "copy_ci": [
+            0.35984117739366817,
+            7.406035432421004
+          ]
+        }
+      ]
+    },
+    "task_equal_weight": {
+      "weighting": "1/k_t per artifact",
+      "cluster": "task",
+      "dense_max_error": 4.430483757644765e-15,
+      "bootstrap": {
+        "accepted": 10000,
+        "attempts": 10000,
+        "disconnected_rejected": 0,
+        "seed": 20260915,
+        "clusters": 116
+      },
+      "rows": [
+        {
+          "model": "deepseek-v4-pro",
+          "short": "Pro",
+          "included_success_n": 113,
+          "rres_ratio": 1.2346092010926855,
+          "rres_ci": [
+            1.1217025918245263,
+            1.367603820974742
+          ],
+          "copy_pp": 15.085298776041864,
+          "copy_ci": [
+            12.018543260738348,
+            18.203317676382564
+          ]
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "short": "Flash",
+          "included_success_n": 108,
+          "rres_ratio": 1.3549576474317684,
+          "rres_ci": [
+            1.2377489005351787,
+            1.4992754009918932
+          ],
+          "copy_pp": 16.20188356792324,
+          "copy_ci": [
+            13.132923457483207,
+            19.355425445384203
+          ]
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "short": "Luna",
+          "included_success_n": 99,
+          "rres_ratio": 0.5863413910253213,
+          "rres_ci": [
+            0.5064743282409059,
+            0.6752296771398786
+          ],
+          "copy_pp": -21.737534374890526,
+          "copy_ci": [
+            -27.281172316636525,
+            -16.19711544096481
+          ]
+        },
+        {
+          "model": "glm-5.3-flash",
+          "short": "GLM",
+          "included_success_n": 68,
+          "rres_ratio": 1.613873627218468,
+          "rres_ci": [
+            1.4216803970869702,
+            1.8416140942518806
+          ],
+          "copy_pp": 14.46961260334981,
+          "copy_ci": [
+            10.636767537460946,
+            18.38655509060919
+          ]
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "short": "Qwen",
+          "included_success_n": 63,
+          "rres_ratio": 1.1254994998668866,
+          "rres_ci": [
+            1.0271706920142465,
+            1.2503279395798783
+          ],
+          "copy_pp": -2.1630327603430826,
+          "copy_ci": [
+            -6.380597356315682,
+            2.077205222633196
+          ]
+        },
+        {
+          "model": "gpt-oss-120b",
+          "short": "OSS",
+          "included_success_n": 35,
+          "rres_ratio": 0.5970055415176068,
+          "rres_ci": [
+            0.4502928699529051,
+            0.7540264891066748
+          ],
+          "copy_pp": -25.724181843666706,
+          "copy_ci": [
+            -33.210243101909825,
+            -18.53996217441679
+          ]
+        },
+        {
+          "model": "claude-sonnet-5",
+          "short": "Claude",
+          "included_success_n": 88,
+          "rres_ratio": 0.9401583851974404,
+          "rres_ci": [
+            0.8527099433216588,
+            1.0290121924462607
+          ],
+          "copy_pp": 3.8679540315854055,
+          "copy_ci": [
+            0.18993026629018675,
+            7.487054120809806
+          ]
+        }
+      ]
+    },
+    "repository_bootstrap": {
+      "weighting": "equal artifact weight",
+      "cluster": "repository",
+      "dense_max_error": null,
+      "bootstrap": {
+        "accepted": 10000,
+        "attempts": 10000,
+        "disconnected_rejected": 0,
+        "seed": 20260916,
+        "clusters": 98
+      },
+      "rows": [
+        {
+          "model": "deepseek-v4-pro",
+          "short": "Pro",
+          "included_success_n": 113,
+          "rres_ratio": 1.1953504106170474,
+          "rres_ci": [
+            1.0973610797099884,
+            1.30834577610933
+          ],
+          "copy_pp": 14.800698545203646,
+          "copy_ci": [
+            11.58531233932562,
+            18.123624482924676
+          ]
+        },
+        {
+          "model": "deepseek-v4-flash",
+          "short": "Flash",
+          "included_success_n": 108,
+          "rres_ratio": 1.3229127122678053,
+          "rres_ci": [
+            1.2207807934434396,
+            1.446701962706565
+          ],
+          "copy_pp": 16.067611704682776,
+          "copy_ci": [
+            12.709972227132338,
+            19.55065308060587
+          ]
+        },
+        {
+          "model": "gpt-5.6-luna",
+          "short": "Luna",
+          "included_success_n": 99,
+          "rres_ratio": 0.6245232522589454,
+          "rres_ci": [
+            0.5493864825549509,
+            0.7033682779141291
+          ],
+          "copy_pp": -20.91560940579112,
+          "copy_ci": [
+            -26.553834656737763,
+            -15.364064376603531
+          ]
+        },
+        {
+          "model": "glm-5.3-flash",
+          "short": "GLM",
+          "included_success_n": 68,
+          "rres_ratio": 1.5737871313547152,
+          "rres_ci": [
+            1.3951212360110996,
+            1.7938182071730906
+          ],
+          "copy_pp": 13.525747376256508,
+          "copy_ci": [
+            9.7400949404319,
+            17.359998592859736
+          ]
+        },
+        {
+          "model": "qwen3.6-35b-a3b-fp8",
+          "short": "Qwen",
+          "included_success_n": 63,
+          "rres_ratio": 1.1108201971978613,
+          "rres_ci": [
+            1.0116387878077295,
+            1.214064116763833
+          ],
+          "copy_pp": -2.534092766595282,
+          "copy_ci": [
+            -7.151793390290244,
+            1.9818871208488087
+          ]
+        },
+        {
+          "model": "gpt-oss-120b",
+          "short": "OSS",
+          "included_success_n": 35,
+          "rres_ratio": 0.617018347921893,
+          "rres_ci": [
+            0.48095671495301684,
+            0.7674445892416455
+          ],
+          "copy_pp": -24.866143819859772,
+          "copy_ci": [
+            -31.994992613972308,
+            -18.065926567581776
+          ]
+        },
+        {
+          "model": "claude-sonnet-5",
+          "short": "Claude",
+          "included_success_n": 88,
+          "rres_ratio": 0.9387222817514326,
+          "rres_ci": [
+            0.8531556572986192,
+            1.0170350814265339
+          ],
+          "copy_pp": 3.921788366103243,
+          "copy_ci": [
+            0.4615294151216548,
+            7.364500756230949
+          ]
+        }
+      ]
+    }
+  }
+}

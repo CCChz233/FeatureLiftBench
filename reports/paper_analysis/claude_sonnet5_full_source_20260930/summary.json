@@ -1,0 +1,57 @@
+{
+  "suite": "experiments/python/openhands/claude-sonnet-5/python150-main-r1",
+  "n": 150,
+  "functional_pass": 89,
+  "functional_fail": 61,
+  "pass_rate": 0.5933333333333334,
+  "first_failure_stage": {
+    "hidden_failure": 20,
+    "public_failure": 39,
+    "functional_pass": 89,
+    "build_failure": 2
+  },
+  "steps_n": 150,
+  "steps_median": 32.5,
+  "steps_p90": 79.1,
+  "tokens_verified_n": 150,
+  "tokens_median": 1812118.0,
+  "tokens_p90": 4611793.699999998,
+  "duration_median_seconds": 600.9260859999999,
+  "timed_out": 0,
+  "by_lift_type": [
+    {
+      "group": "Adapted",
+      "n": 76,
+      "pass": 40,
+      "rate": 0.5263157894736842
+    },
+    {
+      "group": "Composite",
+      "n": 18,
+      "pass": 5,
+      "rate": 0.2777777777777778
+    },
+    {
+      "group": "Direct",
+      "n": 56,
+      "pass": 44,
+      "rate": 0.7857142857142857
+    }
+  ],
+  "by_construction_group": [
+    {
+      "group": "core100",
+      "n": 100,
+      "pass": 78,
+      "rate": 0.78
+    },
+    {
+      "group": "hard50",
+      "n": 50,
+      "pass": 11,
+      "rate": 0.22
+    }
+  ],
+  "issues": [],
+  "run_status_passed": 86
+}

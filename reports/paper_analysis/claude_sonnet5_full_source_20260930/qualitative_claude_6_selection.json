@@ -1,0 +1,21 @@
+{
+  "sample_size": 6,
+  "case_ids": ["SE041", "SE042", "SE043", "SE044", "SE045", "SE046"],
+  "continues": "SE001-SE040",
+  "pool": "Claude Full Source behavioral-first failures with a confirmed explicit entrypoint read, excluding the 40 tasks already in the purposive sample",
+  "pool_n": 46,
+  "eligible_after_one_case_per_task": 21,
+  "quota": "Largest remainder of 6 across lift type on the 21-task pool: Adapted 4, Direct 1, Composite 1",
+  "tie_break": "sha256(task_id) ascending within each lift type; take the next unused feature family, then fill by hash",
+  "family_limit": "The four non-overlapping Composite candidates are all registry_plugin_dispatch, so SE046 repeats that family",
+  "themes": {
+    "C": ["SE041", "SE042"],
+    "B": ["SE043"],
+    "O": ["SE044", "SE045", "SE046"],
+    "A": []
+  },
+  "theme_review": "assistant_evidence_synthesis_20260930",
+  "independent_human_review": false,
+  "evidence_tier": "L1",
+  "not_prevalence": true
+}
